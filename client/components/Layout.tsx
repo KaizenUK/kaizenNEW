@@ -16,11 +16,11 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       <header className="sticky top-0 z-50 bg-white border-b border-kaizen-light">
         <nav className="container mx-auto px-4 py-3 flex items-center justify-between">
           {/* Logo */}
-          <Link to="/" className="flex items-center gap-2 hover:opacity-80 transition">
+          <Link to="/" className="flex items-center gap-2 hover:opacity-80 transition flex-shrink-0">
             <img
               src="https://cdn.builder.io/api/v1/image/assets%2Fe4ae46bbd81b4b95bef54d66dd9748cc%2F19f6366118ef41298050443945090b5f?format=webp&width=800"
               alt="Kaizen Web"
-              className="h-14 w-auto"
+              className="h-20 w-auto"
             />
           </Link>
 
