@@ -16,6 +16,16 @@ interface BlogPost {
 
 const BLOG_POSTS: BlogPost[] = [
   {
+    id: "7",
+    title: "Agile: The No-Fluff Guide to Ceremonies and Sprints",
+    slug: "agile-no-fluff-guide",
+    excerpt: "Agile simplified. Learn the core ceremonies and sprints without the consultant fluff.",
+    category: "Agile Methodology",
+    image: "https://cdn.builder.io/api/v1/image/assets%2Fe4ae46bbd81b4b95bef54d66dd9748cc%2F7f77a0638dd04815ae44557e5538348c?format=webp&width=800",
+    publishedDate: "2024-01-20",
+    featured: true,
+  },
+  {
     id: "1",
     title: "Building Design Systems That Scale",
     slug: "design-systems-scale",
@@ -23,7 +33,6 @@ const BLOG_POSTS: BlogPost[] = [
     category: "Design Systems",
     image: "https://images.unsplash.com/photo-1561070791-2526d30994b5?w=800&h=600&fit=crop",
     publishedDate: "2024-01-15",
-    featured: true,
   },
   {
     id: "2",
