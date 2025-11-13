@@ -48,85 +48,104 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
               {servicesOpen && (
                 <div className="absolute left-0 top-full mt-0 w-screen bg-white border-t border-kaizen-light shadow-lg">
                   <div className="container mx-auto px-4 py-8">
-                    <div className="grid grid-cols-5 gap-6">
-                      {/* Web Design */}
+                    <div className="grid grid-cols-3 gap-8">
+                      {/* Web Services */}
                       <div>
-                        <Link
-                          to="/services/web-design"
-                          className="block font-heading font-bold text-sm mb-4 hover:text-kaizen-cyan transition"
-                        >
-                          Web Design
-                        </Link>
-                        <ul className="space-y-2 text-xs text-kaizen-text-dark/70">
-                          <li>Fast, modern websites</li>
-                          <li>Mobile-first design</li>
-                          <li>SEO-ready structure</li>
-                          <li>Easy to update</li>
-                        </ul>
+                        <p className="text-xs font-mono text-kaizen-text-dark/50 font-bold mb-4 tracking-widest">WEB & DESIGN</p>
+
+                        <div className="mb-6">
+                          <Link
+                            to="/services/web-design"
+                            className="block font-heading font-bold text-sm mb-2 hover:text-kaizen-cyan transition"
+                          >
+                            Web Design
+                          </Link>
+                          <ul className="space-y-1 text-xs text-kaizen-text-dark/70 ml-0">
+                            <li>Fast, modern websites</li>
+                            <li>Mobile-first design</li>
+                            <li>SEO-ready structure</li>
+                          </ul>
+                        </div>
+
+                        <div>
+                          <Link
+                            to="/services/local-seo"
+                            className="block font-heading font-bold text-sm mb-2 hover:text-kaizen-cyan transition"
+                          >
+                            Local SEO
+                          </Link>
+                          <ul className="space-y-1 text-xs text-kaizen-text-dark/70">
+                            <li>Google Business Profile</li>
+                            <li>Local search ranking</li>
+                            <li>Review strategy</li>
+                          </ul>
+                        </div>
                       </div>
 
-                      {/* Local SEO */}
+                      {/* E-commerce & Transformation */}
                       <div>
-                        <Link
-                          to="/services/local-seo"
-                          className="block font-heading font-bold text-sm mb-4 hover:text-kaizen-cyan transition"
-                        >
-                          Local SEO
-                        </Link>
-                        <ul className="space-y-2 text-xs text-kaizen-text-dark/70">
-                          <li>Google Business Profile</li>
-                          <li>Local search ranking</li>
-                          <li>Review strategy</li>
-                          <li>Location pages</li>
-                        </ul>
+                        <p className="text-xs font-mono text-kaizen-text-dark/50 font-bold mb-4 tracking-widest">OPERATIONS</p>
+
+                        <div className="mb-6">
+                          <Link
+                            to="/services/ecommerce"
+                            className="block font-heading font-bold text-sm mb-2 hover:text-kaizen-cyan transition"
+                          >
+                            E-commerce
+                          </Link>
+                          <ul className="space-y-1 text-xs text-kaizen-text-dark/70">
+                            <li>Online stores</li>
+                            <li>Payment integration</li>
+                            <li>Conversion optimized</li>
+                          </ul>
+                        </div>
+
+                        <div>
+                          <Link
+                            to="/services/digital-transformation"
+                            className="block font-heading font-bold text-sm mb-2 hover:text-kaizen-cyan transition"
+                          >
+                            Digital Transformation
+                          </Link>
+                          <ul className="space-y-1 text-xs text-kaizen-text-dark/70">
+                            <li>Workflow automation</li>
+                            <li>Process optimization</li>
+                            <li>Back-office systems</li>
+                          </ul>
+                        </div>
                       </div>
 
-                      {/* E-commerce */}
+                      {/* Team & Product */}
                       <div>
-                        <Link
-                          to="/services/ecommerce"
-                          className="block font-heading font-bold text-sm mb-4 hover:text-kaizen-cyan transition"
-                        >
-                          E-commerce
-                        </Link>
-                        <ul className="space-y-2 text-xs text-kaizen-text-dark/70">
-                          <li>Online stores</li>
-                          <li>Payment integration</li>
-                          <li>Inventory management</li>
-                          <li>Conversion optimized</li>
-                        </ul>
-                      </div>
+                        <p className="text-xs font-mono text-kaizen-text-dark/50 font-bold mb-4 tracking-widest">TEAMS & PRODUCT</p>
 
-                      {/* Digital Transformation */}
-                      <div>
-                        <Link
-                          to="/services/digital-transformation"
-                          className="block font-heading font-bold text-sm mb-4 hover:text-kaizen-cyan transition"
-                        >
-                          Digital Transformation
-                        </Link>
-                        <ul className="space-y-2 text-xs text-kaizen-text-dark/70">
-                          <li>Workflow automation</li>
-                          <li>Process optimization</li>
-                          <li>Integration strategy</li>
-                          <li>Back-office systems</li>
-                        </ul>
-                      </div>
+                        <div className="mb-6">
+                          <Link
+                            to="/agile-coaching"
+                            className="block font-heading font-bold text-sm mb-2 hover:text-kaizen-cyan transition"
+                          >
+                            Agile Coaching
+                          </Link>
+                          <ul className="space-y-1 text-xs text-kaizen-text-dark/70">
+                            <li>Team training</li>
+                            <li>Sprint coaching</li>
+                            <li>Process review</li>
+                          </ul>
+                        </div>
 
-                      {/* Contract PO */}
-                      <div>
-                        <Link
-                          to="/contract-product-owner"
-                          className="block font-heading font-bold text-sm mb-4 hover:text-kaizen-cyan transition"
-                        >
-                          Contract Product Owner
-                        </Link>
-                        <ul className="space-y-2 text-xs text-kaizen-text-dark/70">
-                          <li>Product roadmap</li>
-                          <li>Agile delivery</li>
-                          <li>Strategic guidance</li>
-                          <li>No full-time hire</li>
-                        </ul>
+                        <div>
+                          <Link
+                            to="/product-owner"
+                            className="block font-heading font-bold text-sm mb-2 hover:text-kaizen-cyan transition"
+                          >
+                            Product Owner
+                          </Link>
+                          <ul className="space-y-1 text-xs text-kaizen-text-dark/70">
+                            <li>Strategic roadmap</li>
+                            <li>Hands-on leadership</li>
+                            <li>No full-time hire</li>
+                          </ul>
+                        </div>
                       </div>
                     </div>
                   </div>
