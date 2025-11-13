@@ -20,7 +20,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             <img
               src="https://cdn.builder.io/api/v1/image/assets%2Fe4ae46bbd81b4b95bef54d66dd9748cc%2F19f6366118ef41298050443945090b5f?format=webp&width=800"
               alt="Kaizen Web"
-              className="h-10 w-auto"
+              className="h-14 w-auto"
             />
           </Link>
 
@@ -47,8 +47,8 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
               {/* Mega Menu Panel */}
               {servicesOpen && (
                 <div className="absolute left-0 top-full mt-0 w-screen bg-white border-t border-kaizen-light shadow-lg">
-                  <div className="container mx-auto px-4 py-12">
-                    <div className="grid grid-cols-5 gap-8">
+                  <div className="container mx-auto px-4 py-8">
+                    <div className="grid grid-cols-5 gap-6">
                       {/* Web Design */}
                       <div>
                         <Link
