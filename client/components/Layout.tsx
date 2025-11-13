@@ -231,16 +231,6 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                     Local SEO
                   </Link>
                   <Link
-                    to="/services/digital-transformation"
-                    className="block text-sm text-kaizen-text-dark/70 hover:text-kaizen-cyan transition"
-                    onClick={() => {
-                      setMobileMenuOpen(false);
-                      setServicesOpen(false);
-                    }}
-                  >
-                    Digital Transformation
-                  </Link>
-                  <Link
                     to="/services/ecommerce"
                     className="block text-sm text-kaizen-text-dark/70 hover:text-kaizen-cyan transition"
                     onClick={() => {
@@ -251,17 +241,44 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                     E-commerce
                   </Link>
                   <Link
-                    to="/contract-product-owner"
+                    to="/services/digital-transformation"
                     className="block text-sm text-kaizen-text-dark/70 hover:text-kaizen-cyan transition"
                     onClick={() => {
                       setMobileMenuOpen(false);
                       setServicesOpen(false);
                     }}
                   >
-                    Contract Product Owner
+                    Digital Transformation
+                  </Link>
+                  <Link
+                    to="/agile-coaching"
+                    className="block text-sm text-kaizen-text-dark/70 hover:text-kaizen-cyan transition"
+                    onClick={() => {
+                      setMobileMenuOpen(false);
+                      setServicesOpen(false);
+                    }}
+                  >
+                    Agile Coaching
+                  </Link>
+                  <Link
+                    to="/product-owner"
+                    className="block text-sm text-kaizen-text-dark/70 hover:text-kaizen-cyan transition"
+                    onClick={() => {
+                      setMobileMenuOpen(false);
+                      setServicesOpen(false);
+                    }}
+                  >
+                    Product Owner
                   </Link>
                 </div>
               )}
+              <Link
+                to="/about"
+                className="text-sm font-medium hover:text-kaizen-cyan transition"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                About
+              </Link>
               <Link
                 to="/case-studies"
                 className="text-sm font-medium hover:text-kaizen-cyan transition"
