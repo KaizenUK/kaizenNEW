@@ -530,14 +530,14 @@ export default function BlogDetail() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   {[
                     {
+                      title: "Building Design Systems That Scale",
+                      slug: "design-systems-scale",
+                      date: "2024-01-15",
+                    },
+                    {
                       title: "Agile Without the Buzzwords",
                       slug: "agile-without-buzzwords",
                       date: "2024-01-10",
-                    },
-                    {
-                      title: "Product Thinking for Web Design",
-                      slug: "product-thinking-design",
-                      date: "2024-01-01",
                     },
                   ].map((relatedPost, idx) => (
                     <Link
