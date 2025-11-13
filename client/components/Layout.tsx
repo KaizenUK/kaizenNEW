@@ -275,7 +275,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       {/* Footer */}
       <footer className="bg-kaizen-dark text-kaizen-text-light border-t border-kaizen-text-dark/10">
         <div className="container mx-auto px-4 py-12">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+          <div className="grid grid-cols-1 md:grid-cols-5 gap-8 mb-8">
             {/* Brand */}
             <div>
               <h3 className="font-heading font-bold text-lg mb-4">Kaizen Web</h3>
@@ -289,6 +289,11 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
               <h4 className="font-heading font-bold text-sm mb-4">Services</h4>
               <ul className="space-y-2 text-sm">
                 <li>
+                  <Link to="/services" className="hover:text-kaizen-cyan transition">
+                    All Services
+                  </Link>
+                </li>
+                <li>
                   <Link to="/services/web-design" className="hover:text-kaizen-cyan transition">
                     Web Design
                   </Link>
@@ -299,16 +304,8 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                   </Link>
                 </li>
                 <li>
-                  <Link
-                    to="/services/digital-transformation"
-                    className="hover:text-kaizen-cyan transition"
-                  >
-                    Digital Transformation
-                  </Link>
-                </li>
-                <li>
-                  <Link to="/services/ecommerce" className="hover:text-kaizen-cyan transition">
-                    E-commerce
+                  <Link to="/agile-coaching" className="hover:text-kaizen-cyan transition">
+                    Agile Coaching
                   </Link>
                 </li>
               </ul>
@@ -318,6 +315,11 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             <div>
               <h4 className="font-heading font-bold text-sm mb-4">Company</h4>
               <ul className="space-y-2 text-sm">
+                <li>
+                  <Link to="/about" className="hover:text-kaizen-cyan transition">
+                    About
+                  </Link>
+                </li>
                 <li>
                   <Link to="/case-studies" className="hover:text-kaizen-cyan transition">
                     Case Studies
@@ -331,6 +333,23 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                 <li>
                   <Link to="/contact" className="hover:text-kaizen-cyan transition">
                     Contact
+                  </Link>
+                </li>
+              </ul>
+            </div>
+
+            {/* Legal */}
+            <div>
+              <h4 className="font-heading font-bold text-sm mb-4">Legal</h4>
+              <ul className="space-y-2 text-sm">
+                <li>
+                  <Link to="/privacy-policy" className="hover:text-kaizen-cyan transition">
+                    Privacy Policy
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/gdpr-policy" className="hover:text-kaizen-cyan transition">
+                    GDPR Policy
                   </Link>
                 </li>
               </ul>
