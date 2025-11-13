@@ -20,6 +20,195 @@ interface BlogPostDetail {
 }
 
 const BLOG_POSTS_DETAIL: { [key: string]: BlogPostDetail } = {
+  "agile-no-fluff-guide": {
+    id: "7",
+    title: "Agile: The No-Fluff Guide to Ceremonies and Sprints",
+    slug: "agile-no-fluff-guide",
+    category: "Agile Methodology",
+    publishedDate: "2024-01-20",
+    author: {
+      name: "Sarah Chen",
+      role: "Agile Coach",
+      image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=128&h=128&fit=crop",
+    },
+    readingTime: 12,
+    tableOfContents: [
+      { id: "core-concept", title: "The Core Concept: Sprints", level: 2 },
+      { id: "the-ceremonies", title: "The Ceremonies", level: 2 },
+      { id: "ceremonies-detail", title: "The Ceremonies in Detail", level: 2 },
+      { id: "sprint-planning", title: "Sprint Planning", level: 3 },
+      { id: "daily-standup", title: "Daily Stand-up (Daily Scrum)", level: 3 },
+      { id: "sprint-review", title: "Sprint Review", level: 3 },
+      { id: "sprint-retrospective", title: "Sprint Retrospective", level: 3 },
+      { id: "backlog-refinement", title: "The Hidden Fifth Ceremony: Backlog Refinement", level: 2 },
+      { id: "why-matters", title: "Why It Matters", level: 2 },
+    ],
+    content: (
+      <div className="space-y-8">
+        <section>
+          <p className="text-gray-300 leading-relaxed mb-4">
+            Agile is often over-complicated by consultants selling certificates. At its core, it is simply a method for managing work that prioritises delivering actual value over writing comprehensive documentation for a product that might never get built.
+          </p>
+          <p className="text-gray-300 leading-relaxed mb-6">
+            Think of it this way: traditional project management is like baking a massive, multi-tier wedding cake and hoping the client likes the flavour when you cut it six months later. Agile is baking one cupcake, letting the client taste it, and adjusting the recipe for the next batch based on their feedback.
+          </p>
+          <p className="text-gray-300 leading-relaxed mb-6">
+            Here is the breakdown of how it works, stripped of the fluff.
+          </p>
+        </section>
+
+        <section id="core-concept">
+          <h2 className="text-3xl font-heading font-bold mb-4 text-white">
+            The Core Concept: Sprints
+          </h2>
+          <p className="text-gray-300 leading-relaxed mb-4">
+            Agile divides work into repeating cycles called Sprints. These are short, time-boxed periods (usually two weeks) where the team focuses on a specific list of tasks.
+          </p>
+          <p className="text-gray-300 leading-relaxed mb-6">
+            Instead of trying to plan the next two years, the team plans the next two weeks. This allows them to adapt quickly if the market changes or the client changes their mind.
+          </p>
+
+          <div className="my-8 rounded-lg overflow-hidden border border-gray-700">
+            <img
+              src="https://cdn.builder.io/api/v1/image/assets%2Fe4ae46bbd81b4b95bef54d66dd9748cc%2F7f77a0638dd04815ae44557e5538348c?format=webp&width=800"
+              alt="Scrum cycle diagram showing the flow from Product Backlog through Sprint Planning, Team Sprint, Daily Scrum Meeting, Sprint Review, and Product Increment"
+              className="w-full h-auto"
+            />
+          </div>
+        </section>
+
+        <section id="the-ceremonies">
+          <h2 className="text-3xl font-heading font-bold mb-4 text-white">
+            The Ceremonies
+          </h2>
+          <p className="text-gray-300 leading-relaxed mb-6">
+            To keep this cycle efficient, Agile relies on four specific meetings, known as Ceremonies. These provide rhythm and prevent the team from getting bogged down in endless, unstructured discussions.
+          </p>
+
+          <p className="text-gray-300 leading-relaxed mb-6">
+            Here is the data on what they are and why they exist:
+          </p>
+
+          <div className="overflow-x-auto mb-6">
+            <table className="w-full text-sm border-collapse">
+              <thead>
+                <tr className="border-b border-gray-700">
+                  <th className="text-left p-3 text-white font-heading font-bold bg-gray-800/50">Ceremony</th>
+                  <th className="text-left p-3 text-white font-heading font-bold bg-gray-800/50">Purpose</th>
+                  <th className="text-left p-3 text-white font-heading font-bold bg-gray-800/50">Duration</th>
+                  <th className="text-left p-3 text-white font-heading font-bold bg-gray-800/50">Who attends?</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr className="border-b border-gray-700 hover:bg-gray-800/30 transition">
+                  <td className="p-3 text-blue-400 font-bold">Sprint Planning</td>
+                  <td className="p-3 text-gray-300">Agreeing on exactly what to build in the next cycle.</td>
+                  <td className="p-3 text-gray-300">2–4 hours</td>
+                  <td className="p-3 text-gray-300">Product Owner, Scrum Master, Dev Team</td>
+                </tr>
+                <tr className="border-b border-gray-700 hover:bg-gray-800/30 transition">
+                  <td className="p-3 text-blue-400 font-bold">Daily Stand-up</td>
+                  <td className="p-3 text-gray-300">A quick sync to flag problems. Not a status report.</td>
+                  <td className="p-3 text-gray-300">15 mins</td>
+                  <td className="p-3 text-gray-300">Scrum Master, Dev Team</td>
+                </tr>
+                <tr className="border-b border-gray-700 hover:bg-gray-800/30 transition">
+                  <td className="p-3 text-blue-400 font-bold">Sprint Review</td>
+                  <td className="p-3 text-gray-300">Showing the finished work to stakeholders.</td>
+                  <td className="p-3 text-gray-300">1–2 hours</td>
+                  <td className="p-3 text-gray-300">Dev Team, Product Owner, Stakeholders</td>
+                </tr>
+                <tr className="hover:bg-gray-800/30 transition">
+                  <td className="p-3 text-blue-400 font-bold">Retrospective</td>
+                  <td className="p-3 text-gray-300">Discussing how to work better next time.</td>
+                  <td className="p-3 text-gray-300">1–2 hours</td>
+                  <td className="p-3 text-gray-300">Scrum Master, Dev Team</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section id="ceremonies-detail">
+          <h2 className="text-3xl font-heading font-bold mb-4 text-white">
+            The Ceremonies in Detail
+          </h2>
+
+          <div className="bg-blue-900/20 border-l-4 border-blue-500 p-6 rounded mb-8">
+            <p className="text-blue-200 font-heading font-bold mb-2">💡 Quick Overview</p>
+            <p className="text-blue-100">
+              These meetings create rhythm and accountability without creating bloat. Each serves a distinct purpose and has a strict time limit to prevent them from becoming unproductive.
+            </p>
+          </div>
+
+          <h3 id="sprint-planning" className="text-2xl font-heading font-bold mb-4 text-white">
+            1. Sprint Planning
+          </h3>
+          <p className="text-gray-300 leading-relaxed mb-4">
+            This kicks off the cycle. The team looks at the Backlog (the master to-do list) and moves the top priority items into the Sprint Backlog (the to-do list for just this cycle). The goal is to leave the room with a clear plan of what will be delivered and how.
+          </p>
+
+          <h3 id="daily-standup" className="text-2xl font-heading font-bold mb-4 text-white">
+            2. Daily Stand-up (Daily Scrum)
+          </h3>
+          <p className="text-gray-300 leading-relaxed mb-4">
+            This is a tactical huddle, not a coffee catch-up. It happens at the same time every day. To keep it efficient, everyone stands up (physically) to encourage brevity. Each person answers three questions:
+          </p>
+          <ul className="list-disc list-inside space-y-2 text-gray-300 mb-6">
+            <li>What did I finish yesterday?</li>
+            <li>What will I do today?</li>
+            <li>Is anything blocking me?</li>
+          </ul>
+
+          <h3 id="sprint-review" className="text-2xl font-heading font-bold mb-4 text-white">
+            3. Sprint Review
+          </h3>
+          <p className="text-gray-300 leading-relaxed mb-6">
+            At the end of the Sprint, the team demonstrates the working software (or product) to the stakeholders. This is about proof, not promises. It ensures the team built what the business actually needed.
+          </p>
+
+          <h3 id="sprint-retrospective" className="text-2xl font-heading font-bold mb-4 text-white">
+            4. Sprint Retrospective
+          </h3>
+          <p className="text-gray-300 leading-relaxed mb-6">
+            This is the most critical meeting for long-term efficiency. The team looks internally at their process. They discuss what went well, what went wrong, and agree on actionable changes to improve the next Sprint. It is about honest feedback, not assigning blame.
+          </p>
+
+          <div className="bg-purple-900/20 border-l-4 border-purple-500 p-6 rounded mb-8">
+            <p className="text-purple-200 font-heading font-bold mb-2">🎯 Pro Tip</p>
+            <p className="text-purple-100">
+              The retrospective is where teams actually improve. Don't skip it or rush it. Even 15 minutes of honest reflection can unlock major productivity gains in the next sprint.
+            </p>
+          </div>
+        </section>
+
+        <section id="backlog-refinement">
+          <h2 className="text-3xl font-heading font-bold mb-4 text-white">
+            The Hidden Fifth Ceremony: Backlog Refinement
+          </h2>
+          <p className="text-gray-300 leading-relaxed mb-6">
+            While not always listed as a "core" ceremony, successful teams do this. It involves reviewing upcoming tasks in the middle of a Sprint to ensure they are clear and ready for the next planning session. It keeps the pipeline clean.
+          </p>
+        </section>
+
+        <section id="why-matters">
+          <h2 className="text-3xl font-heading font-bold mb-4 text-white">
+            Why It Matters
+          </h2>
+          <p className="text-gray-300 leading-relaxed mb-6">
+            The goal of these ceremonies is predictability and transparency. They remove the "black box" effect where developers disappear for months and return with the wrong product. By strictly adhering to these time-boxes, you ensure that problems are caught early and value is delivered consistently.
+          </p>
+
+          <div className="bg-green-900/20 border-l-4 border-green-500 p-6 rounded">
+            <p className="text-green-200 font-heading font-bold mb-2">✅ Key Takeaway</p>
+            <p className="text-green-100">
+              Agile isn't about following rules. It's about building feedback loops into your process so you can adapt faster than your competition. The ceremonies are just the structure that makes this possible.
+            </p>
+          </div>
+        </section>
+      </div>
+    ),
+  },
   "design-systems-scale": {
     id: "1",
     title: "Building Design Systems That Scale",
