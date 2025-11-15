@@ -87,12 +87,10 @@ export default function Blog() {
     const fetchPosts = async () => {
       try {
         setIsLoading(true);
-        const results = await builder
-          .getAll("blog-post", {
-            fields: "data.title,data.slug,data.excerpt,data.publishedDate,data.coverImage",
-            sort: "-data.publishedDate",
-          })
-          .toPromise();
+        const results = await builder.getAll("blog-post", {
+          fields: "data.title,data.slug,data.excerpt,data.publishedDate,data.coverImage",
+          limit: 100,
+        });
 
         const processedPosts: ProcessedPost[] = (results as BlogPost[]).map((post) => ({
           id: post.id,
