@@ -607,6 +607,47 @@ export default function BlogDetail() {
     fetchPost();
   }, [slug]);
 
+  // Fetch related posts
+  useEffect(() => {
+    const fetchRelated = async () => {
+      try {
+        const results = await builder.getAll("blog-post", {
+          fields: "data.title,data.slug,data.publishedDate",
+          limit: 10,
+        });
+
+        const relatedPostsList: ProcessedPost[] = (results as BlogPost[])
+          .filter((p) => p.data.slug !== slug)
+          .slice(0, 2)
+          .map((p) => ({
+            id: p.id,
+            title: p.data.title || "Untitled",
+            slug: p.data.slug || "",
+            publishedDate: p.data.publishedDate || new Date().toISOString(),
+            body: "",
+            coverImage: "",
+            excerpt: "",
+            category: "Blog Post",
+            author: {
+              name: "Kaizen",
+              role: "Web Design & Agile",
+              image: "https://cdn.builder.io/api/v1/image/assets%2Fe4ae46bbd81b4b95bef54d66dd9748cc%2Fbe9c606a991946d9b3a5d47d9cfbf290?format=webp&width=800",
+            },
+            readingTime: 5,
+            tableOfContents: [],
+          }));
+
+        setRelatedPosts(relatedPostsList);
+      } catch (error) {
+        console.error("Failed to fetch related posts:", error);
+      }
+    };
+
+    if (post) {
+      fetchRelated();
+    }
+  }, [post, slug]);
+
   // Update reading progress
   useEffect(() => {
     if (!contentRef.current) return;
