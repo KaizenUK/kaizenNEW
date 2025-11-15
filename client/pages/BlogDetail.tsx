@@ -602,11 +602,11 @@ export default function BlogDetail() {
           const builderPost = results[0] as BlogPostDetail;
           console.log("Post Title:", builderPost.data.title);
           console.log("Post Body Type:", typeof builderPost.data.body);
-          console.log("Post Body Length:", builderPost.data.body?.length);
-          console.log("Post Body First 500 chars:", builderPost.data.body?.substring(0, 500));
+          console.log("Post Body Value:", builderPost.data.body);
           console.log("CoverImage:", builderPost.data.coverImage);
 
-          const bodyContent = builderPost.data.body || "";
+          const bodyContent = processBodyContent(builderPost.data.body);
+          console.log("Processed Body Content (first 500 chars):", bodyContent?.substring(0, 500));
           const extractedHeadings = extractHeadings(bodyContent);
           console.log("Extracted Headings:", extractedHeadings);
 
