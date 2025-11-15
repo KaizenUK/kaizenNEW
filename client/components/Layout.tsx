@@ -274,28 +274,28 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
               )}
               <Link
                 to="/about"
-                className="text-sm font-medium hover:text-kaizen-cyan transition"
+                className="text-sm font-heading font-medium hover:text-kaizen-cyan transition"
                 onClick={() => setMobileMenuOpen(false)}
               >
                 About
               </Link>
               <Link
                 to="/case-studies"
-                className="text-sm font-medium hover:text-kaizen-cyan transition"
+                className="text-sm font-heading font-medium hover:text-kaizen-cyan transition"
                 onClick={() => setMobileMenuOpen(false)}
               >
                 Case Studies
               </Link>
               <Link
                 to="/blog"
-                className="text-sm font-medium hover:text-kaizen-cyan transition"
+                className="text-sm font-heading font-medium hover:text-kaizen-cyan transition"
                 onClick={() => setMobileMenuOpen(false)}
               >
-                Journal
+                Blog
               </Link>
               <Link
                 to="/contact"
-                className="px-6 py-2 rounded-full bg-gradient-to-r from-kaizen-cyan to-kaizen-lime text-white font-medium text-sm hover:opacity-90 transition w-full text-center"
+                className="px-6 py-2 rounded-full bg-gradient-to-r from-kaizen-cyan to-kaizen-lime text-white font-heading font-medium text-sm hover:opacity-90 transition w-full text-center"
                 onClick={() => setMobileMenuOpen(false)}
               >
                 Get a Quote
