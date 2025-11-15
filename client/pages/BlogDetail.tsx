@@ -712,7 +712,7 @@ export default function BlogDetail() {
               to="/blog"
               className="inline-flex items-center gap-2 text-blue-400 hover:text-blue-300 mb-6 font-mono text-sm"
             >
-              <ArrowLeft size={16} /> Back to Journal
+              <ArrowLeft size={16} /> Back to Blog
             </Link>
           </motion.div>
 
