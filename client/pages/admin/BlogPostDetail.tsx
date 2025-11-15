@@ -133,8 +133,20 @@ export default function BlogPostDetail() {
       });
 
       if (!res.ok) {
-        const errorText = await res.text();
-        throw new Error(errorText || "Failed to save changes");
+        let errorMessage = "Failed to save changes";
+        try {
+          const contentType = res.headers.get("content-type");
+          if (contentType && contentType.includes("application/json")) {
+            const errorData = await res.json();
+            errorMessage = errorData.error || errorData.message || errorMessage;
+          } else {
+            errorMessage = await res.text();
+          }
+        } catch (e) {
+          // If we can't parse the error, use the status text
+          errorMessage = res.statusText || errorMessage;
+        }
+        throw new Error(errorMessage);
       }
 
       setSaveSuccess(true);
