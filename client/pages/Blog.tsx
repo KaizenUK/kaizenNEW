@@ -128,12 +128,41 @@ export default function Blog() {
 
   return (
     <Layout>
+      {/* Page Loading Animation */}
+      <AnimatePresence>
+        {isLoading && (
+          <motion.div
+            key="loading"
+            className="fixed inset-0 bg-gray-950 z-50 flex items-center justify-center"
+            initial={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.5 }}
+          >
+            <motion.div
+              animate={{ rotate: 360 }}
+              transition={{ repeat: Infinity, duration: 2, ease: "linear" }}
+              className="w-12 h-12 border-4 border-gray-800 border-t-blue-400 rounded-full"
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* Hero Section */}
-      <section className="bg-gradient-to-br from-gray-950 via-gray-900 to-black text-white py-20 md:py-32 px-4">
+      <motion.section
+        className="bg-gradient-to-br from-gray-950 via-gray-900 to-black text-white py-20 md:py-32 px-4"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.6 }}
+      >
         <div className="container mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             {/* Left: Title + Typing Effect */}
-            <div className="max-w-2xl">
+            <motion.div
+              className="max-w-2xl"
+              initial={{ y: 20, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+            >
               <h1 className="text-5xl md:text-6xl font-heading font-bold mb-6 leading-tight">
                 The Kaizen Journal
               </h1>
@@ -154,19 +183,29 @@ export default function Blog() {
                   Tech
                 </span>
               </div>
-            </div>
+            </motion.div>
 
             {/* Right: Featured Post Card */}
             {featuredPost && (
-              <div className="relative group h-80 rounded-xl overflow-hidden border border-gray-700 hover:border-blue-500/50 transition-all duration-300">
+              <motion.div
+                className="relative group h-80 rounded-xl overflow-hidden border border-gray-700 hover:border-blue-500/50 transition-all duration-300"
+                initial={{ y: 20, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ duration: 0.6, delay: 0.4 }}
+                whileHover={{ y: -8 }}
+              >
                 {/* Glowing border effect */}
                 <div className="absolute inset-0 bg-gradient-to-r from-blue-500/0 via-purple-500/0 to-amber-500/0 group-hover:from-blue-500/20 group-hover:via-purple-500/20 group-hover:to-amber-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
 
                 {/* Image */}
-                <img
+                <motion.img
                   src={featuredPost.image}
                   alt={featuredPost.title}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                  className="w-full h-full object-cover"
+                  initial={{ scale: 1.1 }}
+                  animate={{ scale: 1 }}
+                  transition={{ duration: 0.8 }}
+                  whileHover={{ scale: 1.05 }}
                 />
 
                 {/* Overlay */}
@@ -193,19 +232,24 @@ export default function Blog() {
                     Read <ArrowRight size={16} />
                   </div>
                 </div>
-              </div>
+              </motion.div>
             )}
           </div>
         </div>
-      </section>
+      </motion.section>
 
       {/* Category Filter */}
-      <section className="bg-gray-950 border-b border-gray-800 px-4 py-8">
+      <motion.section
+        className="bg-gray-950 border-b border-gray-800 px-4 py-8"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.6, delay: 0.3 }}
+      >
         <div className="container mx-auto">
           <p className="text-gray-500 text-sm font-mono mb-4">Filter by</p>
           <div className="flex flex-wrap gap-3">
-            {CATEGORIES.map((category) => (
-              <button
+            {CATEGORIES.map((category, index) => (
+              <motion.button
                 key={category}
                 onClick={() => setSelectedCategory(category)}
                 className={`px-4 py-2 rounded-lg font-mono text-xs font-bold tracking-widest transition-all ${
@@ -213,114 +257,165 @@ export default function Blog() {
                     ? "bg-gradient-to-r from-blue-500 to-purple-500 text-white"
                     : "bg-gray-800 text-gray-300 hover:bg-gray-700 border border-gray-700"
                 }`}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4, delay: 0.3 + index * 0.05 }}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
               >
                 {category}
-              </button>
+              </motion.button>
             ))}
           </div>
         </div>
-      </section>
+      </motion.section>
 
       {/* Bento Grid */}
       <section className="bg-gray-950 px-4 py-20">
         <div className="container mx-auto">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {/* Featured Post - spans 2 columns */}
-            {featuredPost && (
-              <Link
-                to={`/blog/${featuredPost.slug}`}
-                className="lg:col-span-2 group relative overflow-hidden rounded-xl border border-gray-700 hover:border-blue-500/50 transition-all duration-300 bg-gray-900 h-80"
-              >
-                {/* Glowing border effect */}
-                <div className="absolute inset-0 bg-gradient-to-r from-blue-500/0 via-purple-500/0 to-amber-500/0 group-hover:from-blue-500/20 group-hover:via-purple-500/20 group-hover:to-amber-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={selectedCategory}
+              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.3 }}
+            >
+              {/* Featured Post - spans 2 columns */}
+              {featuredPost && (
+                <motion.div
+                  layoutId="featured-post"
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.8 }}
+                  transition={{ duration: 0.4 }}
+                  className="lg:col-span-2"
+                >
+                  <Link
+                    to={`/blog/${featuredPost.slug}`}
+                    className="group relative overflow-hidden rounded-xl border border-gray-700 hover:border-blue-500/50 transition-all duration-300 bg-gray-900 h-80 block"
+                  >
+                    {/* Glowing border effect */}
+                    <div className="absolute inset-0 bg-gradient-to-r from-blue-500/0 via-purple-500/0 to-amber-500/0 group-hover:from-blue-500/20 group-hover:via-purple-500/20 group-hover:to-amber-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
 
-                {/* Image */}
-                <img
-                  src={featuredPost.image}
-                  alt={featuredPost.title}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                />
+                    {/* Image */}
+                    <motion.img
+                      src={featuredPost.image}
+                      alt={featuredPost.title}
+                      className="w-full h-full object-cover"
+                      whileHover={{ scale: 1.05 }}
+                      transition={{ duration: 0.3 }}
+                    />
 
-                {/* Overlay */}
-                <div className="absolute inset-0 bg-gradient-to-t from-gray-950 via-gray-950/40 to-transparent" />
+                    {/* Overlay */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-gray-950 via-gray-950/40 to-transparent" />
 
-                {/* Content */}
-                <div className="absolute bottom-0 left-0 right-0 p-6">
-                  <div className="flex items-center gap-3 mb-4">
-                    <span
-                      className={`text-xs font-mono font-bold tracking-widest ${
-                        CATEGORY_COLORS[featuredPost.category] || "text-gray-400"
-                      }`}
-                    >
-                      {featuredPost.category}
-                    </span>
-                    <span className="text-gray-500 text-xs font-mono">
-                      {new Date(featuredPost.publishedDate).toLocaleDateString()}
-                    </span>
-                  </div>
-                  <h3 className="text-2xl font-heading font-bold mb-4 text-white group-hover:text-blue-300 transition line-clamp-2">
-                    {featuredPost.title}
-                  </h3>
-                  <div className="flex items-center gap-2 text-blue-400 font-mono text-sm opacity-0 group-hover:opacity-100 translate-x-0 group-hover:translate-x-2 transition-all">
-                    Read Article <ArrowRight size={16} />
-                  </div>
-                </div>
-              </Link>
-            )}
+                    {/* Content */}
+                    <div className="absolute bottom-0 left-0 right-0 p-6">
+                      <div className="flex items-center gap-3 mb-4">
+                        <span
+                          className={`text-xs font-mono font-bold tracking-widest ${
+                            CATEGORY_COLORS[featuredPost.category] || "text-gray-400"
+                          }`}
+                        >
+                          {featuredPost.category}
+                        </span>
+                        <span className="text-gray-500 text-xs font-mono">
+                          {new Date(featuredPost.publishedDate).toLocaleDateString()}
+                        </span>
+                      </div>
+                      <h3 className="text-2xl font-heading font-bold mb-4 text-white group-hover:text-blue-300 transition line-clamp-2">
+                        {featuredPost.title}
+                      </h3>
+                      <div className="flex items-center gap-2 text-blue-400 font-mono text-sm opacity-0 group-hover:opacity-100 translate-x-0 group-hover:translate-x-2 transition-all">
+                        Read Article <ArrowRight size={16} />
+                      </div>
+                    </div>
+                  </Link>
+                </motion.div>
+              )}
 
-            {/* Grid Posts */}
-            {otherPosts.map((post) => (
-              <Link
-                key={post.id}
-                to={`/blog/${post.slug}`}
-                className="group relative overflow-hidden rounded-xl border border-gray-700 hover:border-blue-500/50 transition-all duration-300 bg-gray-900 h-64 aspect-square"
-              >
-                {/* Glowing border effect */}
-                <div className="absolute inset-0 bg-gradient-to-r from-blue-500/0 via-purple-500/0 to-amber-500/0 group-hover:from-blue-500/20 group-hover:via-purple-500/20 group-hover:to-amber-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
+              {/* Grid Posts */}
+              {otherPosts.map((post, index) => (
+                <motion.div
+                  key={post.id}
+                  layoutId={`post-${post.id}`}
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.8 }}
+                  transition={{ duration: 0.4, delay: index * 0.1 }}
+                >
+                  <Link
+                    to={`/blog/${post.slug}`}
+                    className="group relative overflow-hidden rounded-xl border border-gray-700 hover:border-blue-500/50 transition-all duration-300 bg-gray-900 h-64 aspect-square block"
+                  >
+                    {/* Glowing border effect */}
+                    <div className="absolute inset-0 bg-gradient-to-r from-blue-500/0 via-purple-500/0 to-amber-500/0 group-hover:from-blue-500/20 group-hover:via-purple-500/20 group-hover:to-amber-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
 
-                {/* Image */}
-                <img
-                  src={post.image}
-                  alt={post.title}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                />
+                    {/* Image */}
+                    <motion.img
+                      src={post.image}
+                      alt={post.title}
+                      className="w-full h-full object-cover"
+                      whileHover={{ scale: 1.05 }}
+                      transition={{ duration: 0.3 }}
+                    />
 
-                {/* Overlay */}
-                <div className="absolute inset-0 bg-gradient-to-t from-gray-950 via-transparent to-transparent" />
+                    {/* Overlay */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-gray-950 via-transparent to-transparent" />
 
-                {/* Content */}
-                <div className="absolute bottom-0 left-0 right-0 p-4">
-                  <div className="flex items-center gap-2 mb-3">
-                    <span
-                      className={`text-xs font-mono font-bold tracking-widest ${
-                        CATEGORY_COLORS[post.category] || "text-gray-400"
-                      }`}
-                    >
-                      {post.category.split(" ")[0]}
-                    </span>
-                  </div>
-                  <h3 className="text-sm font-heading font-bold text-white group-hover:text-blue-300 transition line-clamp-2">
-                    {post.title}
-                  </h3>
-                  <p className="text-gray-400 text-xs mt-2 line-clamp-2">{post.excerpt}</p>
-                </div>
-              </Link>
-            ))}
-          </div>
+                    {/* Content */}
+                    <div className="absolute bottom-0 left-0 right-0 p-4">
+                      <div className="flex items-center gap-2 mb-3">
+                        <span
+                          className={`text-xs font-mono font-bold tracking-widest ${
+                            CATEGORY_COLORS[post.category] || "text-gray-400"
+                          }`}
+                        >
+                          {post.category.split(" ")[0]}
+                        </span>
+                      </div>
+                      <h3 className="text-sm font-heading font-bold text-white group-hover:text-blue-300 transition line-clamp-2">
+                        {post.title}
+                      </h3>
+                      <p className="text-gray-400 text-xs mt-2 line-clamp-2">{post.excerpt}</p>
+                    </div>
+                  </Link>
+                </motion.div>
+              ))}
+            </motion.div>
+          </AnimatePresence>
 
           {filteredPosts.length === 0 && (
-            <div className="text-center py-20">
+            <motion.div
+              className="text-center py-20"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+            >
               <Code2 className="w-12 h-12 text-gray-700 mx-auto mb-4" />
               <p className="text-gray-500">No posts in this category yet.</p>
-            </div>
+            </motion.div>
           )}
         </div>
       </section>
 
       {/* CTA Section */}
-      <section className="bg-gray-900 border-t border-gray-800 px-4 py-16">
+      <motion.section
+        className="bg-gray-900 border-t border-gray-800 px-4 py-16"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.6 }}
+      >
         <div className="container mx-auto max-w-2xl">
-          <div className="bg-gray-800/50 border border-gray-700 rounded-lg p-8 font-mono">
+          <motion.div
+            className="bg-gray-800/50 border border-gray-700 rounded-lg p-8 font-mono"
+            initial={{ y: 20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            whileHover={{ scale: 1.02 }}
+          >
             <p className="text-green-400 text-sm mb-4">$ ready_to_sprint();</p>
             <h3 className="text-2xl font-heading font-bold text-white mb-3">
               Ready to sprint? Let's build your MVP.
@@ -334,9 +429,9 @@ export default function Blog() {
             >
               Start Project <ArrowRight size={18} />
             </Link>
-          </div>
+          </motion.div>
         </div>
-      </section>
+      </motion.section>
     </Layout>
   );
 }
