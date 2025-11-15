@@ -193,14 +193,14 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             <div className="container mx-auto px-4 py-4 flex flex-col gap-4">
               <Link
                 to="/"
-                className="text-sm font-medium hover:text-kaizen-cyan transition"
+                className="text-sm font-heading font-medium hover:text-kaizen-cyan transition"
                 onClick={() => setMobileMenuOpen(false)}
               >
                 Home
               </Link>
               <button
                 onClick={() => setServicesOpen(!servicesOpen)}
-                className="text-left text-sm font-medium hover:text-kaizen-cyan transition flex items-center gap-2"
+                className="text-left text-sm font-heading font-medium hover:text-kaizen-cyan transition flex items-center gap-2"
               >
                 Services
                 <ChevronDown
