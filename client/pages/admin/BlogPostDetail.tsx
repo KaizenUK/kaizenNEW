@@ -150,9 +150,10 @@ export default function BlogPostDetail() {
         excerpt: formExcerpt,
         publishedDate: formPublishedDate,
         tags: tagsArray,
+        body: formBody,
       };
 
-      const res = await fetch(`/api/admin/builder/blog-posts/${post.id}`, {
+      const res = await fetch(`/api/admin/builder-blog-posts/${post.id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
