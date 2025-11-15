@@ -441,13 +441,18 @@ function TableOfContents({
   activeId: string;
 }) {
   return (
-    <div className="bg-gray-900 border border-gray-800 rounded-lg p-6">
+    <motion.div
+      className="bg-gray-900 border border-gray-800 rounded-lg p-6"
+      initial={{ opacity: 0, x: -20 }}
+      animate={{ opacity: 1, x: 0 }}
+      transition={{ duration: 0.5, delay: 0.6 }}
+    >
       <p className="text-xs font-mono text-gray-500 font-bold tracking-widest mb-4">
         TABLE OF CONTENTS
       </p>
       <nav className="space-y-2">
         {items.map((item) => (
-          <a
+          <motion.a
             key={item.id}
             href={`#${item.id}`}
             className={`block text-sm transition ${
@@ -455,20 +460,198 @@ function TableOfContents({
                 ? "text-blue-400 font-bold"
                 : "text-gray-400 hover:text-white"
             } ${item.level === 3 ? "ml-4" : ""}`}
+            whileHover={{ x: 4 }}
+            transition={{ duration: 0.2 }}
           >
             {item.title}
-          </a>
+          </motion.a>
         ))}
       </nav>
-    </div>
+    </motion.div>
+  );
+}
+
+interface ImageProps {
+  src: string;
+  alt: string;
+}
+
+function ImageWithPlaceholder({ src, alt }: ImageProps) {
+  const [isLoaded, setIsLoaded] = useState(false);
+
+  return (
+    <motion.div
+      className="relative overflow-hidden rounded-lg bg-gray-800 aspect-video"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.5 }}
+    >
+      {!isLoaded && (
+        <motion.div
+          className="absolute inset-0 bg-gradient-to-r from-gray-800 via-gray-700 to-gray-800"
+          animate={{ backgroundPosition: ["0% 0%", "100% 0%"] }}
+          transition={{ repeat: Infinity, duration: 2 }}
+        />
+      )}
+      <motion.img
+        src={src}
+        alt={alt}
+        className="w-full h-full object-cover"
+        onLoad={() => setIsLoaded(true)}
+        initial={{ scale: 1.1, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        transition={{ duration: 0.8 }}
+      />
+    </motion.div>
   );
 }
 
 export default function BlogDetail() {
   const { slug } = useParams<{ slug: string }>();
+  const [post, setPost] = useState<ProcessedPost | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
   const [activeSection, setActiveSection] = useState("");
+  const { scrollY } = useScroll();
+  const scaleX = useSpring(0, { stiffness: 100, damping: 30 });
+  const contentRef = useRef<HTMLDivElement>(null);
 
-  const post = slug ? BLOG_POSTS_DETAIL[slug] : null;
+  // Fetch post by slug from Builder
+  useEffect(() => {
+    const fetchPost = async () => {
+      if (!slug) {
+        setIsLoading(false);
+        return;
+      }
+
+      try {
+        const results = await builder
+          .getAll("blog-post", {
+            fields: "data.title,data.slug,data.body,data.publishedDate,data.coverImage,data.excerpt",
+            query: { "data.slug": slug },
+          })
+          .toPromise();
+
+        if (results && results.length > 0) {
+          const builderPost = results[0] as BlogPostDetail;
+          const processedPost: ProcessedPost = {
+            id: builderPost.id,
+            title: builderPost.data.title || "Untitled",
+            slug: builderPost.data.slug || slug,
+            publishedDate: builderPost.data.publishedDate || new Date().toISOString(),
+            body: builderPost.data.body || "",
+            coverImage: getImageUrl(builderPost.data.coverImage),
+            excerpt: builderPost.data.excerpt || "",
+            category: "Blog Post",
+            author: {
+              name: "Sarah Chen",
+              role: "Blog Author",
+              image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=128&h=128&fit=crop",
+            },
+            readingTime: calculateReadingTime(builderPost.data.body || ""),
+            tableOfContents: extractHeadings(builderPost.data.body || ""),
+          };
+          setPost(processedPost);
+        } else {
+          // Fallback to legacy posts for development
+          const legacyPost = LEGACY_BLOG_POSTS[slug];
+          if (legacyPost) {
+            const processedPost: ProcessedPost = {
+              id: legacyPost.id,
+              title: legacyPost.data.title || "Untitled",
+              slug: legacyPost.data.slug || slug,
+              publishedDate: legacyPost.data.publishedDate || new Date().toISOString(),
+              body: "",
+              coverImage: getImageUrl(legacyPost.data.coverImage),
+              excerpt: legacyPost.data.excerpt || "",
+              category: "Blog Post",
+              author: {
+                name: "Sarah Chen",
+                role: "Blog Author",
+                image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=128&h=128&fit=crop",
+              },
+              readingTime: 8,
+              tableOfContents: [],
+            };
+            setPost(processedPost);
+          }
+        }
+      } catch (error) {
+        console.error("Failed to fetch post:", error);
+        // Fallback to legacy posts
+        const legacyPost = LEGACY_BLOG_POSTS[slug];
+        if (legacyPost) {
+          const processedPost: ProcessedPost = {
+            id: legacyPost.id,
+            title: legacyPost.data.title || "Untitled",
+            slug: legacyPost.data.slug || slug,
+            publishedDate: legacyPost.data.publishedDate || new Date().toISOString(),
+            body: "",
+            coverImage: getImageUrl(legacyPost.data.coverImage),
+            excerpt: legacyPost.data.excerpt || "",
+            category: "Blog Post",
+            author: {
+              name: "Sarah Chen",
+              role: "Blog Author",
+              image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=128&h=128&fit=crop",
+            },
+            readingTime: 8,
+            tableOfContents: [],
+          };
+          setPost(processedPost);
+        }
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchPost();
+  }, [slug]);
+
+  // Update reading progress
+  useEffect(() => {
+    if (!contentRef.current) return;
+
+    const updateScroll = () => {
+      const element = contentRef.current;
+      if (!element) return;
+
+      const totalHeight = element.scrollHeight - window.innerHeight;
+      const scrollProgress = totalHeight > 0 ? scrollY.get() / totalHeight : 0;
+      scaleX.set(Math.min(scrollProgress, 1));
+    };
+
+    const unsubscribe = scrollY.onChange(updateScroll);
+    return () => unsubscribe();
+  }, [scrollY, scaleX]);
+
+  // IntersectionObserver for TOC
+  useEffect(() => {
+    if (!post || !contentRef.current) return;
+
+    const headings = contentRef.current.querySelectorAll("h2");
+    if (headings.length === 0) {
+      setActiveSection(post.tableOfContents[0]?.id || "");
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const visibleHeadings = entries.filter((entry) => entry.isIntersecting);
+        if (visibleHeadings.length > 0) {
+          const topHeading = visibleHeadings[0];
+          const id = (topHeading.target as HTMLElement).id || post.tableOfContents[0]?.id || "";
+          if (id) setActiveSection(id);
+        }
+      },
+      { threshold: 0.5 }
+    );
+
+    headings.forEach((heading) => {
+      if (heading.id) observer.observe(heading);
+    });
+
+    return () => observer.disconnect();
+  }, [post]);
 
   if (!post) {
     return (
