@@ -62,7 +62,7 @@ export default function AdminLogin() {
           {/* Error Message */}
           {error && (
             <motion.div
-              className="flex items-center gap-3 p-3 bg-red-500/10 border border-red-500/30 rounded-lg text-red-400 text-sm"
+              className="flex items-center gap-3 p-3 bg-red-500/10 border border-red-500/30 rounded-lg text-red-400 text-sm font-body"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
             >
@@ -83,7 +83,7 @@ export default function AdminLogin() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="Enter admin password"
-                className="w-full pl-10 pr-4 py-2.5 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 transition disabled:opacity-50"
+                className="w-full pl-10 pr-4 py-2.5 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 transition disabled:opacity-50 font-body"
                 disabled={isSubmitting}
                 autoFocus
               />
@@ -102,7 +102,7 @@ export default function AdminLogin() {
           </motion.button>
 
           {/* Info */}
-          <p className="text-xs text-gray-500 text-center">
+          <p className="text-xs text-gray-500 text-center font-body">
             This is a simple password-protected area. For production use, proper authentication will be implemented.
           </p>
         </motion.form>
