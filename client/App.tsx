@@ -42,6 +42,7 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <Routes>
+          {/* Public Routes */}
           <Route path="/" element={<Index />} />
           <Route path="/services" element={<Services />} />
           <Route path="/services/web-design" element={<WebDesign />} />
@@ -61,8 +62,35 @@ const App = () => (
           <Route path="/contact" element={<Contact />} />
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
           <Route path="/gdpr-policy" element={<GDPRPolicy />} />
-          <Route path="/admin" element={<BlogAdmin />} />
-          <Route path="/dashboard" element={<BlogAdmin />} />
+
+          {/* Admin Routes */}
+          <Route path="/admin/login" element={<AdminLogin />} />
+          <Route
+            path="/admin"
+            element={
+              <AdminGuard>
+                <AdminDashboard />
+              </AdminGuard>
+            }
+          />
+          <Route
+            path="/admin/blog-posts"
+            element={
+              <AdminGuard>
+                <BlogPostsList />
+              </AdminGuard>
+            }
+          />
+          <Route
+            path="/admin/blog-posts/:id"
+            element={
+              <AdminGuard>
+                <BlogPostDetail />
+              </AdminGuard>
+            }
+          />
+
+          {/* Catch-all */}
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
