@@ -215,100 +215,13 @@ function Author({
 }
 
 function RichTextContent({ html }: { html: string }) {
-  const containerRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (!containerRef.current) return;
-
-    // Parse and rebuild content with proper elements
-    const parser = new DOMParser();
-    const doc = parser.parseFromString(html, "text/html");
-
-    // Process all elements
-    const processElement = (el: Element) => {
-      // Handle images
-      Array.from(el.querySelectorAll("img")).forEach((img) => {
-        const wrapper = document.createElement("div");
-        wrapper.className = "my-6";
-        img.parentNode?.insertBefore(wrapper, img);
-        wrapper.appendChild(img);
-      });
-
-      // Ensure headings have proper structure
-      Array.from(el.querySelectorAll("h1, h2, h3, h4, h5, h6")).forEach((heading) => {
-        heading.classList.add("font-heading", "font-bold");
-        if (heading.tagName.match(/h[123]/)) {
-          heading.classList.add("mt-8", "mb-4", "text-2xl");
-        }
-      });
-
-      // Style paragraphs
-      Array.from(el.querySelectorAll("p")).forEach((p) => {
-        p.classList.add("text-gray-300", "mb-4", "leading-relaxed", "text-base");
-      });
-
-      // Style lists
-      Array.from(el.querySelectorAll("ul, ol")).forEach((list) => {
-        list.classList.add("mb-4", "ml-6");
-        if (list.tagName === "UL") {
-          list.classList.add("list-disc");
-        } else {
-          list.classList.add("list-decimal");
-        }
-      });
-
-      Array.from(el.querySelectorAll("li")).forEach((li) => {
-        li.classList.add("mb-2", "text-gray-300");
-      });
-
-      // Style code blocks
-      Array.from(el.querySelectorAll("pre")).forEach((pre) => {
-        pre.classList.add("bg-gray-900", "border", "border-gray-800", "rounded-lg", "p-4", "mb-4", "overflow-x-auto");
-      });
-
-      Array.from(el.querySelectorAll("code")).forEach((code) => {
-        if (!code.closest("pre")) {
-          code.classList.add("bg-gray-900", "text-amber-300", "px-2", "py-1", "rounded", "text-sm", "font-mono");
-        } else {
-          code.classList.add("text-gray-300", "font-mono", "text-sm");
-        }
-      });
-
-      // Style blockquotes
-      Array.from(el.querySelectorAll("blockquote")).forEach((quote) => {
-        quote.classList.add("border-l-4", "border-blue-400", "pl-4", "mb-4", "italic", "text-gray-400");
-      });
-
-      // Style links
-      Array.from(el.querySelectorAll("a")).forEach((link) => {
-        link.classList.add("text-blue-400", "hover:text-blue-300", "underline", "transition");
-      });
-
-      // Style tables
-      Array.from(el.querySelectorAll("table")).forEach((table) => {
-        table.classList.add("w-full", "border-collapse", "mb-4", "border", "border-gray-800");
-      });
-
-      Array.from(el.querySelectorAll("th, td")).forEach((cell) => {
-        cell.classList.add("border", "border-gray-800", "p-3", "text-left");
-      });
-
-      Array.from(el.querySelectorAll("th")).forEach((th) => {
-        th.classList.add("bg-gray-900", "font-bold", "text-gray-200");
-      });
-    };
-
-    processElement(doc.body);
-    containerRef.current.innerHTML = doc.body.innerHTML;
-  }, [html]);
-
   return (
     <motion.div
-      ref={containerRef}
-      className="max-w-3xl space-y-4"
+      className="max-w-3xl space-y-4 blog-content"
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6, delay: 0.3 }}
+      dangerouslySetInnerHTML={{ __html: html }}
     />
   );
 }
