@@ -2,7 +2,7 @@ import Layout from "@/components/Layout";
 import { Link, useParams } from "react-router-dom";
 import { ArrowLeft, ArrowRight, Copy, Check } from "lucide-react";
 import { useState, useEffect, useRef, useCallback } from "react";
-import { motion, useScroll, useSpring, useInView, AnimatePresence } from "framer-motion";
+import { motion, useSpring, AnimatePresence } from "framer-motion";
 import builder from "@/builder";
 
 interface BlogPostDetail {
