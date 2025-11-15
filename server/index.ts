@@ -25,7 +25,9 @@ export function createServer() {
   app.patch("/api/admin/builder-blog-posts/:id", async (req, res) => {
     try {
       if (!BUILDER_API_KEY) {
-        return res.status(500).json({ error: "Builder API key not configured" });
+        return res
+          .status(500)
+          .json({ error: "Builder API key not configured" });
       }
 
       const { id } = req.params;
@@ -36,23 +38,26 @@ export function createServer() {
       }
 
       // Update the Builder content
-      const response = await fetch(`https://builder.io/api/v1/content/blog-post/${id}`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${BUILDER_API_KEY}`,
-        },
-        body: JSON.stringify({
-          data: {
-            title,
-            slug,
-            excerpt,
-            publishedDate,
-            tags,
-            body,
+      const response = await fetch(
+        `https://builder.io/api/v1/content/blog-post/${id}`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${BUILDER_API_KEY}`,
           },
-        }),
-      });
+          body: JSON.stringify({
+            data: {
+              title,
+              slug,
+              excerpt,
+              publishedDate,
+              tags,
+              body,
+            },
+          }),
+        },
+      );
 
       if (!response.ok) {
         const error = await response.json();

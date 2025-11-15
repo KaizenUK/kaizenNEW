@@ -1,7 +1,14 @@
 import { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { ExternalLink, Edit, ArrowLeft, Save, AlertCircle, CheckCircle } from "lucide-react";
+import {
+  ExternalLink,
+  Edit,
+  ArrowLeft,
+  Save,
+  AlertCircle,
+  CheckCircle,
+} from "lucide-react";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import builder from "@/builder";
@@ -102,14 +109,12 @@ export default function BlogPostDetail() {
           setFormTagsString(
             Array.isArray(loadedPost.data.tags)
               ? loadedPost.data.tags.join(", ")
-              : ""
+              : "",
           );
           setFormBody(loadedPost.data.body || "");
         }
       } catch (err) {
-        setError(
-          err instanceof Error ? err.message : "Failed to fetch post"
-        );
+        setError(err instanceof Error ? err.message : "Failed to fetch post");
       } finally {
         setIsLoading(false);
       }
@@ -183,7 +188,7 @@ export default function BlogPostDetail() {
       setTimeout(() => setSaveSuccess(false), 3000);
     } catch (err) {
       setSaveError(
-        err instanceof Error ? err.message : "Failed to save changes"
+        err instanceof Error ? err.message : "Failed to save changes",
       );
     } finally {
       setIsSaving(false);
@@ -252,11 +257,10 @@ export default function BlogPostDetail() {
         {/* Header */}
         <div className="mb-8 flex items-start justify-between gap-4">
           <div>
-            <h1 className="text-4xl font-heading font-bold mb-2">
-              Edit Post
-            </h1>
+            <h1 className="text-4xl font-heading font-bold mb-2">Edit Post</h1>
             <p className="text-gray-400 font-body">
-              Editing: <span className="font-mono text-blue-400">{formSlug}</span>
+              Editing:{" "}
+              <span className="font-mono text-blue-400">{formSlug}</span>
             </p>
           </div>
           <div className="flex gap-2">
@@ -455,7 +459,8 @@ export default function BlogPostDetail() {
                 />
               </div>
               <p className="text-xs text-gray-500 mt-4 font-body">
-                Edit your post content here. Use headings, formatting, links, and lists as needed.
+                Edit your post content here. Use headings, formatting, links,
+                and lists as needed.
               </p>
             </motion.div>
           </div>
@@ -485,7 +490,9 @@ export default function BlogPostDetail() {
               transition={{ duration: 0.4, delay: 0.2 }}
             >
               <p className="text-xs text-gray-300 font-body">
-                <span className="font-bold font-heading block mb-2">Editable fields:</span>
+                <span className="font-bold font-heading block mb-2">
+                  Editable fields:
+                </span>
                 Title, Slug, Excerpt, Published Date, Tags, and Content
               </p>
             </motion.div>

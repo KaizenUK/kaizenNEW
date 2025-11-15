@@ -44,7 +44,8 @@ interface RelatedPost {
   publishedDate: string;
 }
 
-const DEFAULT_IMAGE = "https://images.unsplash.com/photo-1460925895917-aae19e488e71?w=800&h=600&fit=crop";
+const DEFAULT_IMAGE =
+  "https://images.unsplash.com/photo-1460925895917-aae19e488e71?w=800&h=600&fit=crop";
 
 function extractImageUrl(image: any): string {
   if (!image) return DEFAULT_IMAGE;
@@ -71,7 +72,10 @@ function addIdsToHeadings(html: string): string {
     if (attrs.includes('id="')) return match;
 
     const text = content.replace(/<[^>]*>/g, "").trim();
-    let id = text.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "");
+    let id = text
+      .toLowerCase()
+      .replace(/\s+/g, "-")
+      .replace(/[^a-z0-9-]/g, "");
 
     if (idMap[id]) {
       idMap[id]++;
@@ -86,7 +90,9 @@ function addIdsToHeadings(html: string): string {
   return result;
 }
 
-function extractHeadings(html: string): { id: string; title: string; level: number }[] {
+function extractHeadings(
+  html: string,
+): { id: string; title: string; level: number }[] {
   const headings: { id: string; title: string; level: number }[] = [];
 
   if (!html) {
@@ -104,7 +110,9 @@ function extractHeadings(html: string): { id: string; title: string; level: numb
     }
   }
 
-  return headings.length > 0 ? headings : [{ id: "content", title: "Content", level: 2 }];
+  return headings.length > 0
+    ? headings
+    : [{ id: "content", title: "Content", level: 2 }];
 }
 
 function ImageWithSkeleton({ src, alt }: { src: string; alt: string }) {
@@ -261,11 +269,14 @@ export default function BlogDetail() {
             id: builderPost.id,
             title: builderPost.data.title || "Untitled",
             slug: builderPost.data.slug || slug,
-            publishedDate: builderPost.data.publishedDate || new Date().toISOString(),
+            publishedDate:
+              builderPost.data.publishedDate || new Date().toISOString(),
             body: bodyWithIds,
             coverImage: extractImageUrl(builderPost.data.coverImage),
             excerpt: builderPost.data.excerpt || "",
-            tags: Array.isArray(builderPost.data.tags) ? builderPost.data.tags : [],
+            tags: Array.isArray(builderPost.data.tags)
+              ? builderPost.data.tags
+              : [],
             category: "Blog Post",
             author: {
               name: "Kaizen",
@@ -313,7 +324,8 @@ export default function BlogDetail() {
   // Update reading progress
   useEffect(() => {
     const handleScroll = () => {
-      const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const totalHeight =
+        document.documentElement.scrollHeight - window.innerHeight;
       const scrolled = window.scrollY;
       const progress = totalHeight > 0 ? scrolled / totalHeight : 0;
       const clampedProgress = Math.min(progress, 1);
@@ -340,11 +352,14 @@ export default function BlogDetail() {
         const visibleHeadings = entries.filter((entry) => entry.isIntersecting);
         if (visibleHeadings.length > 0) {
           const topHeading = visibleHeadings[0];
-          const id = (topHeading.target as HTMLElement).id || post.tableOfContents[0]?.id || "";
+          const id =
+            (topHeading.target as HTMLElement).id ||
+            post.tableOfContents[0]?.id ||
+            "";
           if (id) setActiveSection(id);
         }
       },
-      { threshold: 0.3, rootMargin: "-100px 0px -66% 0px" }
+      { threshold: 0.3, rootMargin: "-100px 0px -66% 0px" },
     );
 
     headings.forEach((heading) => {
@@ -372,8 +387,12 @@ export default function BlogDetail() {
     return (
       <Layout>
         <div className="min-h-screen bg-gray-950 text-white flex flex-col items-center justify-center px-4">
-          <h1 className="text-4xl font-heading font-bold mb-4">Post Not Found</h1>
-          <p className="text-gray-400 mb-8">The blog post you're looking for doesn't exist.</p>
+          <h1 className="text-4xl font-heading font-bold mb-4">
+            Post Not Found
+          </h1>
+          <p className="text-gray-400 mb-8">
+            The blog post you're looking for doesn't exist.
+          </p>
           <Link
             to="/blog"
             className="px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-500 text-white font-heading font-bold rounded-lg hover:opacity-90 transition flex items-center gap-2"
@@ -431,7 +450,10 @@ export default function BlogDetail() {
             {/* Left Sidebar - TOC and Author */}
             <div className="lg:col-span-1 order-2 lg:order-1">
               <div className="sticky top-24 space-y-6">
-                <TableOfContents items={post.tableOfContents} activeId={activeSection} />
+                <TableOfContents
+                  items={post.tableOfContents}
+                  activeId={activeSection}
+                />
                 <Author
                   name={post.author.name}
                   role={post.author.role}
@@ -465,7 +487,9 @@ export default function BlogDetail() {
                     animate={{ opacity: 1 }}
                     transition={{ duration: 0.6, delay: 0.4 }}
                   >
-                    <span>{new Date(post.publishedDate).toLocaleDateString()}</span>
+                    <span>
+                      {new Date(post.publishedDate).toLocaleDateString()}
+                    </span>
                     <span>•</span>
                     <span>{post.readingTime} min read</span>
                   </motion.div>
@@ -503,12 +527,15 @@ export default function BlogDetail() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.7 }}
               >
-                <p className="text-green-400 text-sm mb-4">$ ready_to_sprint();</p>
+                <p className="text-green-400 text-sm mb-4">
+                  $ ready_to_sprint();
+                </p>
                 <h3 className="text-2xl font-heading font-bold text-white mb-3">
                   Ready to sprint? Let's build your MVP.
                 </h3>
                 <p className="text-gray-400 text-sm mb-6">
-                  Take your idea from concept to launch with Agile delivery and clear thinking.
+                  Take your idea from concept to launch with Agile delivery and
+                  clear thinking.
                 </p>
                 <Link
                   to="/contact"
@@ -526,7 +553,9 @@ export default function BlogDetail() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.6, delay: 0.8 }}
                 >
-                  <h2 className="text-3xl font-heading font-bold mb-8">More from the Blog</h2>
+                  <h2 className="text-3xl font-heading font-bold mb-8">
+                    More from the Blog
+                  </h2>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     {relatedPosts.map((relatedPost, idx) => (
                       <motion.div
@@ -543,7 +572,9 @@ export default function BlogDetail() {
                             {relatedPost.title}
                           </h4>
                           <p className="text-gray-500 text-sm font-mono">
-                            {new Date(relatedPost.publishedDate).toLocaleDateString()}
+                            {new Date(
+                              relatedPost.publishedDate,
+                            ).toLocaleDateString()}
                           </p>
                         </Link>
                       </motion.div>

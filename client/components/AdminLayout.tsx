@@ -4,7 +4,11 @@ import { Menu, LogOut, FileText, LayoutDashboard } from "lucide-react";
 import { useState } from "react";
 import { useAdminAuth } from "@/hooks/useAdminAuth";
 
-export default function AdminLayout({ children }: { children: React.ReactNode }) {
+export default function AdminLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const location = useLocation();
   const { logout } = useAdminAuth();
@@ -42,7 +46,9 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               alt="Kaizen Web"
               className="h-12 w-auto"
             />
-            {sidebarOpen && <span className="font-heading font-bold text-sm">Admin</span>}
+            {sidebarOpen && (
+              <span className="font-heading font-bold text-sm">Admin</span>
+            )}
           </Link>
         </div>
 
@@ -62,7 +68,9 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                 }`}
               >
                 <Icon size={20} />
-                {sidebarOpen && <span className="font-medium">{item.name}</span>}
+                {sidebarOpen && (
+                  <span className="font-medium">{item.name}</span>
+                )}
               </Link>
             );
           })}
@@ -90,16 +98,12 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           >
             <Menu size={20} />
           </button>
-          <div className="text-sm text-gray-400 font-body">
-            Admin Dashboard
-          </div>
+          <div className="text-sm text-gray-400 font-body">Admin Dashboard</div>
         </div>
 
         {/* Content Area */}
         <div className="flex-1 overflow-auto">
-          <main className="p-6">
-            {children}
-          </main>
+          <main className="p-6">{children}</main>
         </div>
       </div>
     </div>

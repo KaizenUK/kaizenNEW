@@ -20,7 +20,9 @@ export default function AdminDashboard() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
       >
-        <h1 className="text-4xl font-heading font-bold mb-2">Welcome to Admin</h1>
+        <h1 className="text-4xl font-heading font-bold mb-2">
+          Welcome to Admin
+        </h1>
         <p className="text-gray-400 mb-12 font-body">
           Manage your Kaizen web content from here.
         </p>
@@ -44,7 +46,10 @@ export default function AdminDashboard() {
                     <div className="p-3 bg-blue-500/10 rounded-lg group-hover:bg-blue-500/20 transition">
                       <Icon className="text-blue-400" size={24} />
                     </div>
-                    <ArrowRight className="text-gray-600 group-hover:text-blue-400 transition" size={20} />
+                    <ArrowRight
+                      className="text-gray-600 group-hover:text-blue-400 transition"
+                      size={20}
+                    />
                   </div>
                   <h3 className="text-lg font-heading font-bold mb-2 group-hover:text-blue-400 transition">
                     {link.title}
@@ -65,7 +70,9 @@ export default function AdminDashboard() {
         >
           <h3 className="font-heading font-bold mb-2 text-blue-300">Info</h3>
           <p className="text-sm text-gray-300 font-body">
-            You can now edit metadata (title, slug, excerpt, date, tags) directly. For full editing of content and cover images, use "Edit in Builder".
+            You can now edit metadata (title, slug, excerpt, date, tags)
+            directly. For full editing of content and cover images, use "Edit in
+            Builder".
           </p>
         </motion.div>
       </motion.div>

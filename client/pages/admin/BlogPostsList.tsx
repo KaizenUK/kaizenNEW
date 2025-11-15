@@ -60,7 +60,7 @@ export default function BlogPostsList() {
           .sort(
             (a, b) =>
               new Date(b.publishedDate).getTime() -
-              new Date(a.publishedDate).getTime()
+              new Date(a.publishedDate).getTime(),
           );
 
         setPosts(processed);
@@ -74,9 +74,7 @@ export default function BlogPostsList() {
         });
         setAllTags(Array.from(tags).sort());
       } catch (err) {
-        setError(
-          err instanceof Error ? err.message : "Failed to fetch posts"
-        );
+        setError(err instanceof Error ? err.message : "Failed to fetch posts");
       } finally {
         setIsLoading(false);
       }
@@ -95,14 +93,14 @@ export default function BlogPostsList() {
       results = results.filter(
         (post) =>
           post.title.toLowerCase().includes(query) ||
-          post.slug.toLowerCase().includes(query)
+          post.slug.toLowerCase().includes(query),
       );
     }
 
     // Tag filter
     if (selectedTags.length > 0) {
       results = results.filter((post) =>
-        selectedTags.some((tag) => post.tags.includes(tag))
+        selectedTags.some((tag) => post.tags.includes(tag)),
       );
     }
 
@@ -131,10 +129,7 @@ export default function BlogPostsList() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, delay: 0.1 }}
         >
-          <Search
-            className="absolute left-3 top-3 text-gray-500"
-            size={20}
-          />
+          <Search className="absolute left-3 top-3 text-gray-500" size={20} />
           <input
             type="text"
             placeholder="Search by title or slug..."
@@ -152,7 +147,9 @@ export default function BlogPostsList() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4, delay: 0.15 }}
           >
-            <p className="text-sm font-mono text-gray-500 mb-3 font-body">Filter by tags</p>
+            <p className="text-sm font-mono text-gray-500 mb-3 font-body">
+              Filter by tags
+            </p>
             <div className="flex flex-wrap gap-2">
               {allTags.map((tag) => (
                 <button
@@ -161,7 +158,7 @@ export default function BlogPostsList() {
                     setSelectedTags((prev) =>
                       prev.includes(tag)
                         ? prev.filter((t) => t !== tag)
-                        : [...prev, tag]
+                        : [...prev, tag],
                     )
                   }
                   className={`px-3 py-1 rounded-full text-xs font-mono font-bold tracking-widest transition ${
@@ -228,69 +225,71 @@ export default function BlogPostsList() {
                 </tr>
               </thead>
               <tbody>
-                {filteredPosts.filter((post) => post.id).map((post, idx) => (
-                  <motion.tr
-                    key={post.id || idx}
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.3, delay: idx * 0.05 }}
-                    className="border-b border-gray-800 hover:bg-gray-800/30 transition"
-                  >
-                    <td className="p-4">
-                      <Link
-                        to={`/admin/blog-posts/${post.slug}`}
-                        className="font-medium text-blue-400 hover:text-blue-300 transition"
-                      >
-                        {post.title}
-                      </Link>
-                    </td>
-                    <td className="p-4 text-sm text-gray-400 font-mono">
-                      {post.slug}
-                    </td>
-                    <td className="p-4 text-sm text-gray-400">
-                      {new Date(post.publishedDate).toLocaleDateString()}
-                    </td>
-                    <td className="p-4">
-                      <div className="flex gap-1 flex-wrap">
-                        {post.tags.slice(0, 2).map((tag, tagIdx) => (
-                          <span
-                            key={`${tag}-${tagIdx}`}
-                            className="px-2 py-0.5 bg-gray-800 text-gray-300 rounded text-xs font-mono"
+                {filteredPosts
+                  .filter((post) => post.id)
+                  .map((post, idx) => (
+                    <motion.tr
+                      key={post.id || idx}
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.3, delay: idx * 0.05 }}
+                      className="border-b border-gray-800 hover:bg-gray-800/30 transition"
+                    >
+                      <td className="p-4">
+                        <Link
+                          to={`/admin/blog-posts/${post.slug}`}
+                          className="font-medium text-blue-400 hover:text-blue-300 transition"
+                        >
+                          {post.title}
+                        </Link>
+                      </td>
+                      <td className="p-4 text-sm text-gray-400 font-mono">
+                        {post.slug}
+                      </td>
+                      <td className="p-4 text-sm text-gray-400">
+                        {new Date(post.publishedDate).toLocaleDateString()}
+                      </td>
+                      <td className="p-4">
+                        <div className="flex gap-1 flex-wrap">
+                          {post.tags.slice(0, 2).map((tag, tagIdx) => (
+                            <span
+                              key={`${tag}-${tagIdx}`}
+                              className="px-2 py-0.5 bg-gray-800 text-gray-300 rounded text-xs font-mono"
+                            >
+                              {tag}
+                            </span>
+                          ))}
+                          {post.tags.length > 2 && (
+                            <span className="px-2 py-0.5 text-gray-500 text-xs">
+                              +{post.tags.length - 2} more
+                            </span>
+                          )}
+                        </div>
+                      </td>
+                      <td className="p-4">
+                        <div className="flex gap-3">
+                          <a
+                            href={`https://www.kaizenweb.co.uk/blog/${post.slug}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-gray-400 hover:text-blue-400 transition"
+                            title="View live post"
                           >
-                            {tag}
-                          </span>
-                        ))}
-                        {post.tags.length > 2 && (
-                          <span className="px-2 py-0.5 text-gray-500 text-xs">
-                            +{post.tags.length - 2} more
-                          </span>
-                        )}
-                      </div>
-                    </td>
-                    <td className="p-4">
-                      <div className="flex gap-3">
-                        <a
-                          href={`https://www.kaizenweb.co.uk/blog/${post.slug}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-gray-400 hover:text-blue-400 transition"
-                          title="View live post"
-                        >
-                          <ExternalLink size={16} />
-                        </a>
-                        <a
-                          href={getBuilderEditUrl(post.id)}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-gray-400 hover:text-blue-400 transition"
-                          title="Edit in Builder"
-                        >
-                          <Edit size={16} />
-                        </a>
-                      </div>
-                    </td>
-                  </motion.tr>
-                ))}
+                            <ExternalLink size={16} />
+                          </a>
+                          <a
+                            href={getBuilderEditUrl(post.id)}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-gray-400 hover:text-blue-400 transition"
+                            title="Edit in Builder"
+                          >
+                            <Edit size={16} />
+                          </a>
+                        </div>
+                      </td>
+                    </motion.tr>
+                  ))}
               </tbody>
             </table>
 

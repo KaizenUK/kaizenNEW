@@ -103,7 +103,8 @@ export default function AdminLogin() {
 
           {/* Info */}
           <p className="text-xs text-gray-500 text-center font-body">
-            This is a simple password-protected area. For production use, proper authentication will be implemented.
+            This is a simple password-protected area. For production use, proper
+            authentication will be implemented.
           </p>
         </motion.form>
       </motion.div>
