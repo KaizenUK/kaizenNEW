@@ -576,7 +576,8 @@ export default function BlogDetail() {
           }
         }
       } catch (error) {
-        console.error("Failed to fetch post:", error);
+        console.error("Failed to fetch post from Builder:", error);
+        console.log(`Attempting to load legacy post for slug: ${slug}`);
         // Fallback to legacy posts
         const legacyPost = LEGACY_BLOG_POSTS[slug];
         if (legacyPost) {
