@@ -152,8 +152,16 @@ export default function Blog() {
     (post) => selectedTag === "All" || post.tags.includes(selectedTag)
   );
 
+  console.log("🏷️ Selected Tag:", selectedTag);
+  console.log("📊 Total Posts:", posts.length);
+  console.log("📊 Filtered Posts:", filteredPosts.length);
+  console.log("📊 Filtered Posts Details:", filteredPosts.map(p => ({ title: p.title, tags: p.tags })));
+
   const featuredPost = filteredPosts[0];
   const otherPosts = filteredPosts.slice(1);
+
+  console.log("⭐ Featured Post:", featuredPost?.title);
+  console.log("📝 Other Posts Count:", otherPosts.length);
 
   return (
     <Layout>
