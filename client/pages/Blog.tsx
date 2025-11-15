@@ -12,7 +12,8 @@ interface BlogPost {
     slug: string;
     excerpt: string;
     publishedDate: string;
-    coverImage: string | { url: string };
+    coverImage: any;
+    tags: string[];
   };
 }
 
@@ -24,26 +25,29 @@ interface ProcessedPost {
   tags: string[];
   image: string;
   publishedDate: string;
-  featured?: boolean;
 }
 
 const TAG_COLORS: { [key: string]: string } = {
-  "agile": "text-purple-400",
-  "design": "text-blue-400",
-  "seo": "text-amber-400",
-  "dev": "text-green-400",
-  "product": "text-pink-400",
-  "web": "text-cyan-400",
-  "strategy": "text-rose-400",
-  "transformation": "text-indigo-400",
+  agile: "text-purple-400",
+  design: "text-blue-400",
+  seo: "text-amber-400",
+  dev: "text-green-400",
+  product: "text-pink-400",
+  web: "text-cyan-400",
+  strategy: "text-rose-400",
+  transformation: "text-indigo-400",
 };
 
-interface TypingProps {
-  text: string;
-  speed?: number;
+const DEFAULT_IMAGE = "https://images.unsplash.com/photo-1460925895917-aae19e488e71?w=800&h=600&fit=crop";
+
+function extractImageUrl(image: any): string {
+  if (!image) return DEFAULT_IMAGE;
+  if (typeof image === "string") return image;
+  if (typeof image === "object" && image.url) return image.url;
+  return DEFAULT_IMAGE;
 }
 
-function TypingText({ text, speed = 100 }: TypingProps) {
+function TypingText({ text, speed = 100 }: { text: string; speed?: number }) {
   const [displayText, setDisplayText] = useState("");
   const [index, setIndex] = useState(0);
 
@@ -65,29 +69,6 @@ function TypingText({ text, speed = 100 }: TypingProps) {
   );
 }
 
-function getImageUrl(image: string | { url: string } | undefined): string {
-  console.log("🖼️ getImageUrl input:", image, "type:", typeof image);
-
-  if (!image) {
-    console.log("❌ No image provided, using fallback");
-    return "https://images.unsplash.com/photo-1460925895917-aae19e488e71?w=800&h=600&fit=crop";
-  }
-
-  if (typeof image === "string") {
-    console.log("✅ Image is string:", image);
-    return image;
-  }
-
-  if (image && typeof image === "object" && "url" in image) {
-    console.log("✅ Image is object with url:", image.url);
-    return image.url;
-  }
-
-  console.log("⚠️ Image format unrecognized:", image);
-  return "https://images.unsplash.com/photo-1460925895917-aae19e488e71?w=800&h=600&fit=crop";
-}
-
-
 export default function Blog() {
   const [selectedTag, setSelectedTag] = useState("All");
   const [posts, setPosts] = useState<ProcessedPost[]>([]);
@@ -99,51 +80,40 @@ export default function Blog() {
       try {
         setIsLoading(true);
         const results = await builder.getAll("blog-post", {
-          fields: "data.title,data.slug,data.excerpt,data.publishedDate,data.coverImage,data.tags",
+          fields:
+            "data.title,data.slug,data.excerpt,data.publishedDate,data.coverImage,data.tags",
           limit: 100,
         });
 
-        console.log("📚 Blog Posts Fetched:", results);
-
-        const processedPosts: ProcessedPost[] = (results as any[]).map((post) => {
-          const imageUrl = getImageUrl(post.data.coverImage);
-          const tags = Array.isArray(post.data.tags) ? post.data.tags : [];
-          console.log(`📄 Post: ${post.data.title}`);
-          console.log(`   - Tags:`, tags);
-          console.log(`   - CoverImage raw:`, post.data.coverImage);
-          console.log(`   - CoverImage processed:`, imageUrl);
-          return {
+        const processedPosts: ProcessedPost[] = (results as BlogPost[])
+          .map((post) => ({
             id: post.id,
             title: post.data.title || "Untitled",
             slug: post.data.slug || "",
             excerpt: post.data.excerpt || "",
-            tags: tags,
-            image: imageUrl,
+            tags: Array.isArray(post.data.tags) ? post.data.tags : [],
+            image: extractImageUrl(post.data.coverImage),
             publishedDate: post.data.publishedDate || new Date().toISOString(),
-          };
-        });
+          }))
+          .sort(
+            (a, b) =>
+              new Date(b.publishedDate).getTime() -
+              new Date(a.publishedDate).getTime()
+          );
 
-        console.log("✅ Processed Posts Count:", processedPosts.length);
-        console.log("✅ All Posts:", processedPosts.map(p => ({ title: p.title, tags: p.tags })));
-
-        // Extract unique tags from all posts
+        // Extract unique tags
         const uniqueTags = new Set<string>();
-        processedPosts.forEach(post => {
-          post.tags.forEach(tag => {
+        processedPosts.forEach((post) => {
+          post.tags.forEach((tag) => {
             if (tag) uniqueTags.add(tag);
           });
         });
 
-        const sortedTags = ["All", ...Array.from(uniqueTags).sort()];
-        setAllTags(sortedTags);
+        setAllTags(["All", ...Array.from(uniqueTags).sort()]);
         setPosts(processedPosts);
-
-        // Mock 2-second delay for loading effect
-        setTimeout(() => {
-          setIsLoading(false);
-        }, 2000);
       } catch (error) {
-        console.error("Failed to fetch posts:", error);
+        console.error("Failed to fetch blog posts:", error);
+      } finally {
         setIsLoading(false);
       }
     };
@@ -155,16 +125,8 @@ export default function Blog() {
     (post) => selectedTag === "All" || post.tags.includes(selectedTag)
   );
 
-  console.log("🏷️ Selected Tag:", selectedTag);
-  console.log("📊 Total Posts:", posts.length);
-  console.log("📊 Filtered Posts:", filteredPosts.length);
-  console.log("📊 Filtered Posts Details:", filteredPosts.map(p => ({ title: p.title, tags: p.tags })));
-
   const featuredPost = filteredPosts[0];
   const otherPosts = filteredPosts.slice(1);
-
-  console.log("⭐ Featured Post:", featuredPost?.title);
-  console.log("📝 Other Posts Count:", otherPosts.length);
 
   return (
     <Layout>
@@ -234,27 +196,19 @@ export default function Blog() {
                 transition={{ duration: 0.6, delay: 0.4 }}
                 whileHover={{ y: -8 }}
               >
-                {/* Glowing border effect */}
                 <div className="absolute inset-0 bg-gradient-to-r from-blue-500/0 via-purple-500/0 to-amber-500/0 group-hover:from-blue-500/20 group-hover:via-purple-500/20 group-hover:to-amber-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
 
-                {/* Image */}
-                <motion.img
+                <img
                   src={featuredPost.image}
                   alt={featuredPost.title}
                   className="w-full h-full object-cover"
-                  initial={{ scale: 1.1 }}
-                  animate={{ scale: 1 }}
-                  transition={{ duration: 0.8 }}
-                  whileHover={{ scale: 1.05 }}
                 />
 
-                {/* Overlay */}
                 <div className="absolute inset-0 bg-gradient-to-t from-gray-950 via-transparent to-transparent" />
 
-                {/* Content */}
                 <div className="absolute bottom-0 left-0 right-0 p-6">
                   <div className="flex items-center gap-2 mb-3 flex-wrap">
-                    {featuredPost.tags.slice(0, 2).map(tag => (
+                    {featuredPost.tags.slice(0, 2).map((tag) => (
                       <span
                         key={tag}
                         className={`text-xs font-mono font-bold tracking-widest ${
@@ -317,136 +271,129 @@ export default function Blog() {
       <section className="bg-gray-950 px-4 py-20">
         <div className="container mx-auto">
           <AnimatePresence mode="wait">
-            <motion.div
-              key={selectedTag}
-              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.3 }}
-            >
-              {/* Featured Post - spans 2 columns */}
-              {featuredPost && (
-                <motion.div
-                  layoutId="featured-post"
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.8 }}
-                  transition={{ duration: 0.4 }}
-                  className="lg:col-span-2"
-                >
-                  <Link
-                    to={`/blog/${featuredPost.slug}`}
-                    className="group relative overflow-hidden rounded-xl border border-gray-700 hover:border-blue-500/50 transition-all duration-300 bg-gray-900 h-80 block"
+            {filteredPosts.length > 0 ? (
+              <motion.div
+                key={selectedTag}
+                className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.3 }}
+              >
+                {/* Featured Post - spans 2 columns */}
+                {featuredPost && (
+                  <motion.div
+                    key={`featured-${featuredPost.id}`}
+                    layoutId="featured-post"
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.8 }}
+                    transition={{ duration: 0.4 }}
+                    className="lg:col-span-2"
                   >
-                    {/* Glowing border effect */}
-                    <div className="absolute inset-0 bg-gradient-to-r from-blue-500/0 via-purple-500/0 to-amber-500/0 group-hover:from-blue-500/20 group-hover:via-purple-500/20 group-hover:to-amber-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
+                    <Link
+                      to={`/blog/${featuredPost.slug}`}
+                      className="group relative overflow-hidden rounded-xl border border-gray-700 hover:border-blue-500/50 transition-all duration-300 bg-gray-900 h-80 block"
+                    >
+                      <div className="absolute inset-0 bg-gradient-to-r from-blue-500/0 via-purple-500/0 to-amber-500/0 group-hover:from-blue-500/20 group-hover:via-purple-500/20 group-hover:to-amber-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
 
-                    {/* Image */}
-                    <motion.img
-                      src={featuredPost.image}
-                      alt={featuredPost.title}
-                      className="w-full h-full object-cover"
-                      whileHover={{ scale: 1.05 }}
-                      transition={{ duration: 0.3 }}
-                    />
+                      <img
+                        src={featuredPost.image}
+                        alt={featuredPost.title}
+                        className="w-full h-full object-cover"
+                      />
 
-                    {/* Overlay */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-gray-950 via-gray-950/40 to-transparent" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-gray-950 via-gray-950/40 to-transparent" />
 
-                    {/* Content */}
-                    <div className="absolute bottom-0 left-0 right-0 p-6">
-                      <div className="flex items-center gap-3 mb-4 flex-wrap">
-                        {featuredPost.tags.slice(0, 2).map(tag => (
-                          <span
-                            key={tag}
-                            className={`text-xs font-mono font-bold tracking-widest ${
-                              TAG_COLORS[tag.toLowerCase()] || "text-gray-400"
-                            }`}
-                          >
-                            {tag}
+                      <div className="absolute bottom-0 left-0 right-0 p-6">
+                        <div className="flex items-center gap-3 mb-4 flex-wrap">
+                          {featuredPost.tags.slice(0, 2).map((tag) => (
+                            <span
+                              key={tag}
+                              className={`text-xs font-mono font-bold tracking-widest ${
+                                TAG_COLORS[tag.toLowerCase()] || "text-gray-400"
+                              }`}
+                            >
+                              {tag}
+                            </span>
+                          ))}
+                          <span className="text-gray-500 text-xs font-mono ml-auto">
+                            {new Date(
+                              featuredPost.publishedDate
+                            ).toLocaleDateString()}
                           </span>
-                        ))}
-                        <span className="text-gray-500 text-xs font-mono ml-auto">
-                          {new Date(featuredPost.publishedDate).toLocaleDateString()}
-                        </span>
+                        </div>
+                        <h3 className="text-2xl font-heading font-bold mb-4 text-white group-hover:text-blue-300 transition line-clamp-2">
+                          {featuredPost.title}
+                        </h3>
+                        <div className="flex items-center gap-2 text-blue-400 font-mono text-sm opacity-0 group-hover:opacity-100 translate-x-0 group-hover:translate-x-2 transition-all">
+                          Read Article <ArrowRight size={16} />
+                        </div>
                       </div>
-                      <h3 className="text-2xl font-heading font-bold mb-4 text-white group-hover:text-blue-300 transition line-clamp-2">
-                        {featuredPost.title}
-                      </h3>
-                      <div className="flex items-center gap-2 text-blue-400 font-mono text-sm opacity-0 group-hover:opacity-100 translate-x-0 group-hover:translate-x-2 transition-all">
-                        Read Article <ArrowRight size={16} />
-                      </div>
-                    </div>
-                  </Link>
-                </motion.div>
-              )}
+                    </Link>
+                  </motion.div>
+                )}
 
-              {/* Grid Posts */}
-              {otherPosts.map((post, index) => (
-                <motion.div
-                  key={post.id}
-                  layoutId={`post-${post.id}`}
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.8 }}
-                  transition={{ duration: 0.4, delay: index * 0.1 }}
-                >
-                  <Link
-                    to={`/blog/${post.slug}`}
-                    className="group relative overflow-hidden rounded-xl border border-gray-700 hover:border-blue-500/50 transition-all duration-300 bg-gray-900 h-64 aspect-square block"
+                {/* Grid Posts */}
+                {otherPosts.map((post, index) => (
+                  <motion.div
+                    key={post.id}
+                    layoutId={`post-${post.id}`}
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.8 }}
+                    transition={{ duration: 0.4, delay: index * 0.1 }}
                   >
-                    {/* Glowing border effect */}
-                    <div className="absolute inset-0 bg-gradient-to-r from-blue-500/0 via-purple-500/0 to-amber-500/0 group-hover:from-blue-500/20 group-hover:via-purple-500/20 group-hover:to-amber-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
+                    <Link
+                      to={`/blog/${post.slug}`}
+                      className="group relative overflow-hidden rounded-xl border border-gray-700 hover:border-blue-500/50 transition-all duration-300 bg-gray-900 h-64 aspect-square block"
+                    >
+                      <div className="absolute inset-0 bg-gradient-to-r from-blue-500/0 via-purple-500/0 to-amber-500/0 group-hover:from-blue-500/20 group-hover:via-purple-500/20 group-hover:to-amber-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
 
-                    {/* Image */}
-                    <motion.img
-                      src={post.image}
-                      alt={post.title}
-                      className="w-full h-full object-cover"
-                      whileHover={{ scale: 1.05 }}
-                      transition={{ duration: 0.3 }}
-                    />
+                      <img
+                        src={post.image}
+                        alt={post.title}
+                        className="w-full h-full object-cover"
+                      />
 
-                    {/* Overlay */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-gray-950 via-transparent to-transparent" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-gray-950 via-transparent to-transparent" />
 
-                    {/* Content */}
-                    <div className="absolute bottom-0 left-0 right-0 p-4">
-                      <div className="flex items-center gap-2 mb-3 flex-wrap">
-                        {post.tags.slice(0, 1).map(tag => (
-                          <span
-                            key={tag}
-                            className={`text-xs font-mono font-bold tracking-widest ${
-                              TAG_COLORS[tag.toLowerCase()] || "text-gray-400"
-                            }`}
-                          >
-                            {tag}
-                          </span>
-                        ))}
+                      <div className="absolute bottom-0 left-0 right-0 p-4">
+                        <div className="flex items-center gap-2 mb-3 flex-wrap">
+                          {post.tags.slice(0, 1).map((tag) => (
+                            <span
+                              key={tag}
+                              className={`text-xs font-mono font-bold tracking-widest ${
+                                TAG_COLORS[tag.toLowerCase()] || "text-gray-400"
+                              }`}
+                            >
+                              {tag}
+                            </span>
+                          ))}
+                        </div>
+                        <h3 className="text-sm font-heading font-bold text-white group-hover:text-blue-300 transition line-clamp-2">
+                          {post.title}
+                        </h3>
+                        <p className="text-gray-400 text-xs mt-2 line-clamp-2">
+                          {post.excerpt}
+                        </p>
                       </div>
-                      <h3 className="text-sm font-heading font-bold text-white group-hover:text-blue-300 transition line-clamp-2">
-                        {post.title}
-                      </h3>
-                      <p className="text-gray-400 text-xs mt-2 line-clamp-2">{post.excerpt}</p>
-                    </div>
-                  </Link>
-                </motion.div>
-              ))}
-            </motion.div>
+                    </Link>
+                  </motion.div>
+                ))}
+              </motion.div>
+            ) : (
+              <motion.div
+                className="text-center py-20"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+              >
+                <Code2 className="w-12 h-12 text-gray-700 mx-auto mb-4" />
+                <p className="text-gray-500">No posts in this category yet.</p>
+              </motion.div>
+            )}
           </AnimatePresence>
-
-          {filteredPosts.length === 0 && (
-            <motion.div
-              className="text-center py-20"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-            >
-              <Code2 className="w-12 h-12 text-gray-700 mx-auto mb-4" />
-              <p className="text-gray-500">No posts in this category yet.</p>
-            </motion.div>
-          )}
         </div>
       </section>
 
