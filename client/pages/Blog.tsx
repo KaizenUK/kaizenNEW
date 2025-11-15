@@ -2,8 +2,21 @@ import Layout from "@/components/Layout";
 import { Link } from "react-router-dom";
 import { ArrowRight, Code2 } from "lucide-react";
 import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import builder from "@/builder";
 
 interface BlogPost {
+  id: string;
+  data: {
+    title: string;
+    slug: string;
+    excerpt: string;
+    publishedDate: string;
+    coverImage: string | { url: string };
+  };
+}
+
+interface ProcessedPost {
   id: string;
   title: string;
   slug: string;
@@ -13,75 +26,6 @@ interface BlogPost {
   publishedDate: string;
   featured?: boolean;
 }
-
-const BLOG_POSTS: BlogPost[] = [
-  {
-    id: "7",
-    title: "Agile: The No-Fluff Guide to Ceremonies and Sprints",
-    slug: "agile-no-fluff-guide",
-    excerpt: "Agile simplified. Learn the core ceremonies and sprints without the consultant fluff.",
-    category: "Agile Methodology",
-    image: "https://cdn.builder.io/api/v1/image/assets%2Fe4ae46bbd81b4b95bef54d66dd9748cc%2F7f77a0638dd04815ae44557e5538348c?format=webp&width=800",
-    publishedDate: "2024-01-20",
-    featured: true,
-  },
-  {
-    id: "1",
-    title: "Building Design Systems That Scale",
-    slug: "design-systems-scale",
-    excerpt: "How to architect a design system that grows with your product without technical debt.",
-    category: "Design Systems",
-    image: "https://images.unsplash.com/photo-1561070791-2526d30994b5?w=800&h=600&fit=crop",
-    publishedDate: "2024-01-15",
-  },
-  {
-    id: "2",
-    title: "Agile Without the Buzzwords",
-    slug: "agile-without-buzzwords",
-    excerpt: "Practical Agile methodology for small teams building real products.",
-    category: "Agile Methodology",
-    image: "https://images.unsplash.com/photo-1552664730-d307ca884978?w=800&h=600&fit=crop",
-    publishedDate: "2024-01-10",
-  },
-  {
-    id: "3",
-    title: "Local SEO for Liverpool Businesses",
-    slug: "local-seo-liverpool",
-    excerpt: "Ranking for 'near me' searches and local keywords in competitive markets.",
-    category: "Product Strategy",
-    image: "https://images.unsplash.com/photo-1460925895917-aae19e488e71?w=800&h=600&fit=crop",
-    publishedDate: "2024-01-08",
-  },
-  {
-    id: "4",
-    title: "Performance Matters: Why Fast Sites Convert",
-    slug: "performance-converts",
-    excerpt: "The direct relationship between page speed and conversion rates.",
-    category: "Dev Ops",
-    image: "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=800&h=600&fit=crop",
-    publishedDate: "2024-01-05",
-  },
-  {
-    id: "5",
-    title: "Product Thinking for Web Design",
-    slug: "product-thinking-design",
-    excerpt: "Applying product management principles to web design projects.",
-    category: "Product Strategy",
-    image: "https://images.unsplash.com/photo-1552664730-d307ca884978?w=800&h=600&fit=crop",
-    publishedDate: "2024-01-01",
-  },
-  {
-    id: "6",
-    title: "Testing Strategies for Modern Web Apps",
-    slug: "testing-strategies",
-    excerpt: "Unit, integration, and e2e testing without the overhead.",
-    category: "Dev Ops",
-    image: "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=800&h=600&fit=crop",
-    publishedDate: "2023-12-28",
-  },
-];
-
-const CATEGORIES = ["All", "Design Systems", "Agile Methodology", "Product Strategy", "Dev Ops"];
 
 const CATEGORY_COLORS: { [key: string]: string } = {
   "Design Systems": "text-blue-400",
