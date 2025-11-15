@@ -102,27 +102,45 @@ function addIdToHeadings(html: string): string {
 
   if (!html) return html;
 
-  // Add IDs to h2 tags
+  const idCount: { [key: string]: number } = {};
+
+  // Add IDs to h2 tags with uniqueness handling
   let result = html.replace(/<h2([^>]*)>(.*?)<\/h2>/gi, (match, attrs, content) => {
     const text = content.replace(/<[^>]*>/g, "").trim();
-    const id = text.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "");
+    let id = text.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "");
 
-    // Check if id already exists
+    // Check if id already exists in attributes
     if (attrs.includes("id=")) {
       return match;
+    }
+
+    // Make ID unique
+    if (idCount[id]) {
+      idCount[id]++;
+      id = `${id}-${idCount[id]}`;
+    } else {
+      idCount[id] = 1;
     }
 
     return `<h2 id="${id}"${attrs}>${content}</h2>`;
   });
 
-  // Add IDs to h3 tags
+  // Add IDs to h3 tags with uniqueness handling
   result = result.replace(/<h3([^>]*)>(.*?)<\/h3>/gi, (match, attrs, content) => {
     const text = content.replace(/<[^>]*>/g, "").trim();
-    const id = text.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "");
+    let id = text.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "");
 
-    // Check if id already exists
+    // Check if id already exists in attributes
     if (attrs.includes("id=")) {
       return match;
+    }
+
+    // Make ID unique
+    if (idCount[id]) {
+      idCount[id]++;
+      id = `${id}-${idCount[id]}`;
+    } else {
+      idCount[id] = 1;
     }
 
     return `<h3 id="${id}"${attrs}>${content}</h3>`;
