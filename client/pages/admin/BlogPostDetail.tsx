@@ -8,6 +8,22 @@ import builder from "@/builder";
 import { getBuilderEditUrl } from "@/lib/builder-utils";
 import AdminLayout from "@/components/AdminLayout";
 
+// Suppress react-quill findDOMNode warning (known library limitation)
+const originalError = console.error;
+let suppressedWarningCount = 0;
+const suppressQuillWarning = () => {
+  console.error = (...args: any[]) => {
+    if (
+      typeof args[0] === "string" &&
+      args[0].includes("findDOMNode is deprecated")
+    ) {
+      suppressedWarningCount++;
+      return;
+    }
+    originalError(...args);
+  };
+};
+
 // Quill editor configuration
 const quillModules = {
   toolbar: [
