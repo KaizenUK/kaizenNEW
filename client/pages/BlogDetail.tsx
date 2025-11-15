@@ -542,9 +542,9 @@ export default function BlogDetail() {
             excerpt: builderPost.data.excerpt || "",
             category: "Blog Post",
             author: {
-              name: "Sarah Chen",
-              role: "Blog Author",
-              image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=128&h=128&fit=crop",
+              name: "Kaizen",
+              role: "Web Design & Agile",
+              image: "https://cdn.builder.io/api/v1/image/assets%2Fe4ae46bbd81b4b95bef54d66dd9748cc%2Fbe9c606a991946d9b3a5d47d9cfbf290?format=webp&width=800",
             },
             readingTime: calculateReadingTime(builderPost.data.body || ""),
             tableOfContents: extractHeadings(builderPost.data.body || ""),
