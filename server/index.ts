@@ -22,14 +22,14 @@ export function createServer() {
   app.get("/api/demo", handleDemo);
 
   // Admin API route for updating blog posts
-  app.patch("/api/admin/builder/blog-posts/:id", async (req, res) => {
+  app.patch("/api/admin/builder-blog-posts/:id", async (req, res) => {
     try {
       if (!BUILDER_API_KEY) {
         return res.status(500).json({ error: "Builder API key not configured" });
       }
 
       const { id } = req.params;
-      const { title, slug, excerpt, publishedDate, tags } = req.body;
+      const { title, slug, excerpt, publishedDate, tags, body } = req.body;
 
       if (!id) {
         return res.status(400).json({ error: "Post ID is required" });
@@ -49,6 +49,7 @@ export function createServer() {
             excerpt,
             publishedDate,
             tags,
+            body,
           },
         }),
       });
