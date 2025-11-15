@@ -37,7 +37,7 @@ interface BlogPost {
     slug?: string;
     excerpt?: string;
     publishedDate?: string;
-    body?: string;
+    body?: string | undefined;
     tags?: string[];
     coverImage?: any;
   };
