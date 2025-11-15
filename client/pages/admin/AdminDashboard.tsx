@@ -64,8 +64,8 @@ export default function AdminDashboard() {
           transition={{ duration: 0.5, delay: 0.3 }}
         >
           <h3 className="font-heading font-bold mb-2 text-blue-300">Info</h3>
-          <p className="text-sm text-gray-300">
-            This admin interface is read-only for now. To edit content, use the "Edit in Builder" links to open entries in the Builder web app. Proper editing will be added soon.
+          <p className="text-sm text-gray-300 font-body">
+            You can now edit metadata (title, slug, excerpt, date, tags) directly. For full editing of content and cover images, use "Edit in Builder".
           </p>
         </motion.div>
       </motion.div>
