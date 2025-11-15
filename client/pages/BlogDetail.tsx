@@ -653,15 +653,37 @@ export default function BlogDetail() {
     return () => observer.disconnect();
   }, [post]);
 
+  if (isLoading) {
+    return (
+      <Layout>
+        <motion.div
+          className="min-h-screen flex flex-col items-center justify-center bg-gray-950 px-4"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+        >
+          <motion.div
+            animate={{ rotate: 360 }}
+            transition={{ repeat: Infinity, duration: 2, ease: "linear" }}
+            className="w-12 h-12 border-4 border-gray-800 border-t-blue-400 rounded-full"
+          />
+        </motion.div>
+      </Layout>
+    );
+  }
+
   if (!post) {
     return (
       <Layout>
-        <div className="min-h-screen flex flex-col items-center justify-center bg-gray-950 px-4">
+        <motion.div
+          className="min-h-screen flex flex-col items-center justify-center bg-gray-950 px-4"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+        >
           <h1 className="text-4xl font-heading font-bold text-white mb-4">Post not found</h1>
           <Link to="/blog" className="text-blue-400 hover:text-blue-300 flex items-center gap-2">
             <ArrowLeft size={18} /> Back to Journal
           </Link>
-        </div>
+        </motion.div>
       </Layout>
     );
   }
