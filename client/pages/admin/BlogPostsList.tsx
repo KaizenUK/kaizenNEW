@@ -228,7 +228,7 @@ export default function BlogPostsList() {
                 </tr>
               </thead>
               <tbody>
-                {filteredPosts.map((post, idx) => (
+                {filteredPosts.map((post) => (
                   <motion.tr
                     key={post.id}
                     initial={{ opacity: 0, y: 10 }}
