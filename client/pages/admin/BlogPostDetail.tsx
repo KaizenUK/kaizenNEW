@@ -2,9 +2,33 @@ import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { ExternalLink, Edit, ArrowLeft, Save, AlertCircle, CheckCircle } from "lucide-react";
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css";
 import builder from "@/builder";
 import { getBuilderEditUrl } from "@/lib/builder-utils";
 import AdminLayout from "@/components/AdminLayout";
+
+// Quill editor configuration
+const quillModules = {
+  toolbar: [
+    [{ header: [false, 2] }],
+    ["bold", "italic", "underline"],
+    [{ list: "ordered" }, { list: "bullet" }],
+    ["blockquote"],
+    ["link"],
+    ["clean"],
+  ],
+};
+
+const quillFormats = [
+  "header",
+  "bold",
+  "italic",
+  "underline",
+  "list",
+  "blockquote",
+  "link",
+];
 
 interface BlogPost {
   id: string;
