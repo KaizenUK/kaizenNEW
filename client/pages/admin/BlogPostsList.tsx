@@ -209,7 +209,7 @@ export default function BlogPostsList() {
           >
             <table className="w-full">
               <thead className="bg-gray-900/50 border-b border-gray-800">
-                <tr>
+                <tr key="header">
                   <th className="text-left p-4 font-heading font-bold text-gray-300">
                     Title
                   </th>
@@ -228,9 +228,9 @@ export default function BlogPostsList() {
                 </tr>
               </thead>
               <tbody>
-                {filteredPosts.map((post, idx) => (
+                {filteredPosts.filter((post) => post.id).map((post, idx) => (
                   <motion.tr
-                    key={post.id}
+                    key={post.id || idx}
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.3, delay: idx * 0.05 }}
