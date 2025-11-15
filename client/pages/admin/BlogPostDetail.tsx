@@ -58,6 +58,7 @@ export default function BlogPostDetail() {
   const [formExcerpt, setFormExcerpt] = useState("");
   const [formPublishedDate, setFormPublishedDate] = useState("");
   const [formTagsString, setFormTagsString] = useState("");
+  const [formBody, setFormBody] = useState<string>("");
 
   // Save state
   const [isSaving, setIsSaving] = useState(false);
