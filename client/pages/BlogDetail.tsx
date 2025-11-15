@@ -654,8 +654,10 @@ export default function BlogDetail() {
     const handleScroll = () => {
       const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
       const scrolled = window.scrollY;
-      const scrollProgress = totalHeight > 0 ? scrolled / totalHeight : 0;
-      scaleX.set(Math.min(scrollProgress, 1));
+      const progress = totalHeight > 0 ? scrolled / totalHeight : 0;
+      const clampedProgress = Math.min(progress, 1);
+      setScrollProgress(Math.round(clampedProgress * 100));
+      scaleX.set(clampedProgress);
     };
 
     window.addEventListener("scroll", handleScroll, { passive: true });
