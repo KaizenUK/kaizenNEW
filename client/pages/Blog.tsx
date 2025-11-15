@@ -88,15 +88,25 @@ export default function Blog() {
           limit: 100,
         });
 
-        const processedPosts: ProcessedPost[] = (results as any[]).map((post) => ({
-          id: post.id,
-          title: post.data.title || "Untitled",
-          slug: post.data.slug || "",
-          excerpt: post.data.excerpt || "",
-          tags: Array.isArray(post.data.tags) ? post.data.tags : [],
-          image: getImageUrl(post.data.coverImage),
-          publishedDate: post.data.publishedDate || new Date().toISOString(),
-        }));
+        console.log("📚 Blog Posts Fetched:", results);
+
+        const processedPosts: ProcessedPost[] = (results as any[]).map((post) => {
+          const imageUrl = getImageUrl(post.data.coverImage);
+          console.log(`Post: ${post.data.title}`);
+          console.log(`  - coverImage raw:`, post.data.coverImage);
+          console.log(`  - coverImage processed:`, imageUrl);
+          return {
+            id: post.id,
+            title: post.data.title || "Untitled",
+            slug: post.data.slug || "",
+            excerpt: post.data.excerpt || "",
+            tags: Array.isArray(post.data.tags) ? post.data.tags : [],
+            image: imageUrl,
+            publishedDate: post.data.publishedDate || new Date().toISOString(),
+          };
+        });
+
+        console.log("✅ Processed Posts:", processedPosts);
 
         // Extract unique tags from all posts
         const uniqueTags = new Set<string>();
