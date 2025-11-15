@@ -228,7 +228,7 @@ export default function BlogPostsList() {
                 </tr>
               </thead>
               <tbody>
-                {filteredPosts.map((post) => (
+                {filteredPosts.map((post, idx) => (
                   <motion.tr
                     key={post.id}
                     initial={{ opacity: 0, y: 10 }}
@@ -252,9 +252,9 @@ export default function BlogPostsList() {
                     </td>
                     <td className="p-4">
                       <div className="flex gap-1 flex-wrap">
-                        {post.tags.slice(0, 2).map((tag) => (
+                        {post.tags.slice(0, 2).map((tag, tagIdx) => (
                           <span
-                            key={tag}
+                            key={`${tag}-${tagIdx}`}
                             className="px-2 py-0.5 bg-gray-800 text-gray-300 rounded text-xs font-mono"
                           >
                             {tag}
