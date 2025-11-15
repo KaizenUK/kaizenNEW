@@ -524,12 +524,11 @@ export default function BlogDetail() {
       }
 
       try {
-        const results = await builder
-          .getAll("blog-post", {
-            fields: "data.title,data.slug,data.body,data.publishedDate,data.coverImage,data.excerpt",
-            query: { "data.slug": slug },
-          })
-          .toPromise();
+        const results = await builder.getAll("blog-post", {
+          fields: "data.title,data.slug,data.body,data.publishedDate,data.coverImage,data.excerpt",
+          query: { "data.slug": slug },
+          limit: 1,
+        });
 
         if (results && results.length > 0) {
           const builderPost = results[0] as BlogPostDetail;
