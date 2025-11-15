@@ -213,7 +213,7 @@ export default function BlogPostDetail() {
         <div className="mb-6">
           <button
             onClick={() => navigate("/admin/blog-posts")}
-            className="flex items-center gap-2 text-blue-400 hover:text-blue-300 transition"
+            className="flex items-center gap-2 text-blue-400 hover:text-blue-300 transition font-body"
           >
             <ArrowLeft size={18} />
             Back to Posts
