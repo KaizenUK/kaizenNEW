@@ -36,9 +36,24 @@ interface ProcessedPost {
 }
 
 function getImageUrl(image: string | { url: string } | undefined): string {
-  if (!image) return "https://images.unsplash.com/photo-1460925895917-aae19e488e71?w=800&h=600&fit=crop";
-  if (typeof image === "string") return image;
-  if (image && typeof image === "object" && "url" in image) return image.url;
+  console.log("🖼️ getImageUrl input:", image, "type:", typeof image);
+
+  if (!image) {
+    console.log("❌ No image provided, using fallback");
+    return "https://images.unsplash.com/photo-1460925895917-aae19e488e71?w=800&h=600&fit=crop";
+  }
+
+  if (typeof image === "string") {
+    console.log("✅ Image is string:", image);
+    return image;
+  }
+
+  if (image && typeof image === "object" && "url" in image) {
+    console.log("✅ Image is object with url:", image.url);
+    return image.url;
+  }
+
+  console.log("⚠️ Image format unrecognized:", image);
   return "https://images.unsplash.com/photo-1460925895917-aae19e488e71?w=800&h=600&fit=crop";
 }
 
