@@ -101,13 +101,9 @@ export default function BlogPostDetail() {
 
   // Save changes
   const handleSave = async () => {
-    if (!post) {
-      setSaveError("Post data not loaded");
-      return;
-    }
-
-    if (!post.id) {
-      setSaveError(`Post ID not available. Post object: ${JSON.stringify(post)}`);
+    if (!post || !post.id) {
+      setSaveError("Post data not fully loaded. Please refresh and try again.");
+      console.error("Post object:", post);
       return;
     }
 
