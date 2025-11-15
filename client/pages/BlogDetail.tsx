@@ -97,6 +97,40 @@ function processBodyContent(body: any): string {
   return String(body);
 }
 
+function addIdToHeadings(html: string): string {
+  console.log("🏷️ Adding IDs to headings");
+
+  if (!html) return html;
+
+  // Add IDs to h2 tags
+  let result = html.replace(/<h2([^>]*)>(.*?)<\/h2>/gi, (match, attrs, content) => {
+    const text = content.replace(/<[^>]*>/g, "").trim();
+    const id = text.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "");
+
+    // Check if id already exists
+    if (attrs.includes("id=")) {
+      return match;
+    }
+
+    return `<h2 id="${id}"${attrs}>${content}</h2>`;
+  });
+
+  // Add IDs to h3 tags
+  result = result.replace(/<h3([^>]*)>(.*?)<\/h3>/gi, (match, attrs, content) => {
+    const text = content.replace(/<[^>]*>/g, "").trim();
+    const id = text.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "");
+
+    // Check if id already exists
+    if (attrs.includes("id=")) {
+      return match;
+    }
+
+    return `<h3 id="${id}"${attrs}>${content}</h3>`;
+  });
+
+  return result;
+}
+
 function extractHeadings(html: string): { id: string; title: string; level: number }[] {
   const headings: { id: string; title: string; level: number }[] = [];
 
@@ -105,16 +139,15 @@ function extractHeadings(html: string): { id: string; title: string; level: numb
     return [{ id: "content", title: "Content", level: 2 }];
   }
 
-  const h2Regex = /<h2[^>]*>(.*?)<\/h2>/gi;
-  const h3Regex = /<h3[^>]*>(.*?)<\/h3>/gi;
+  const h2Regex = /<h2[^>]*id="([^"]*)"[^>]*>(.*?)<\/h2>/gi;
 
   let match;
   let h2Count = 0;
   while ((match = h2Regex.exec(html)) !== null) {
     h2Count++;
-    const text = match[1].replace(/<[^>]*>/g, "").trim();
+    const id = match[1];
+    const text = match[2].replace(/<[^>]*>/g, "").trim();
     if (text) {
-      const id = text.toLowerCase().replace(/\s+/g, "-");
       headings.push({ id, title: text, level: 2 });
     }
   }
