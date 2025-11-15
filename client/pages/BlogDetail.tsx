@@ -512,7 +512,6 @@ export default function BlogDetail() {
   const [relatedPosts, setRelatedPosts] = useState<ProcessedPost[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [activeSection, setActiveSection] = useState("");
-  const { scrollY } = useScroll();
   const scaleX = useSpring(0, { stiffness: 100, damping: 30 });
   const contentRef = useRef<HTMLDivElement>(null);
 
