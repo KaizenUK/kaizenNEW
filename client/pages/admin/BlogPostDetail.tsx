@@ -416,7 +416,7 @@ export default function BlogPostDetail() {
                     dangerouslySetInnerHTML={{ __html: post.data.body }}
                   />
                 </div>
-                <p className="text-xs text-gray-500 mt-4">
+                <p className="text-xs text-gray-500 mt-4 font-body">
                   To edit the post content and cover image, click "Edit in Builder" above.
                 </p>
               </motion.div>
