@@ -279,7 +279,7 @@ export default function Blog() {
         <div className="container mx-auto">
           <AnimatePresence mode="wait">
             <motion.div
-              key={selectedCategory}
+              key={selectedTag}
               className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
