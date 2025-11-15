@@ -250,14 +250,14 @@ export default function Blog() {
         transition={{ duration: 0.6, delay: 0.3 }}
       >
         <div className="container mx-auto">
-          <p className="text-gray-500 text-sm font-mono mb-4">Filter by</p>
+          <p className="text-gray-500 text-sm font-mono mb-4">Filter by tags</p>
           <div className="flex flex-wrap gap-3">
-            {CATEGORIES.map((category, index) => (
+            {allTags.map((tag, index) => (
               <motion.button
-                key={category}
-                onClick={() => setSelectedCategory(category)}
+                key={tag}
+                onClick={() => setSelectedTag(tag)}
                 className={`px-4 py-2 rounded-lg font-mono text-xs font-bold tracking-widest transition-all ${
-                  selectedCategory === category
+                  selectedTag === tag
                     ? "bg-gradient-to-r from-blue-500 to-purple-500 text-white"
                     : "bg-gray-800 text-gray-300 hover:bg-gray-700 border border-gray-700"
                 }`}
@@ -267,7 +267,7 @@ export default function Blog() {
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
               >
-                {category}
+                {tag}
               </motion.button>
             ))}
           </div>
