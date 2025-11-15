@@ -84,6 +84,11 @@ export default function BlogPostDetail() {
   // Track if form has been modified
   const [isModified, setIsModified] = useState(false);
 
+  // Suppress react-quill deprecation warning on mount
+  useEffect(() => {
+    suppressQuillWarning();
+  }, []);
+
   // Fetch post on mount
   useEffect(() => {
     const fetchPost = async () => {
