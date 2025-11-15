@@ -484,9 +484,9 @@ export default function BlogDetail() {
                     animate={{ opacity: 1 }}
                     transition={{ duration: 0.6, delay: 0.6 }}
                   >
-                    {post.tags.map((tag) => (
+                    {post.tags.map((tag, tagIdx) => (
                       <span
-                        key={tag}
+                        key={`${tag}-${tagIdx}`}
                         className="px-3 py-1 bg-gray-800 text-gray-300 rounded-full text-xs font-mono font-bold tracking-widest"
                       >
                         {tag}
