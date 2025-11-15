@@ -162,7 +162,7 @@ export default function Blog() {
               transition={{ duration: 0.6, delay: 0.2 }}
             >
               <h1 className="text-5xl md:text-6xl font-heading font-bold mb-6 leading-tight">
-                The Kaizen Journal
+                The Kaizen Blog
               </h1>
               <p className="text-xl md:text-2xl font-mono text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-purple-400 to-amber-400 mb-8">
                 <TypingText text="Iterate. Ship. Improve." speed={80} />
