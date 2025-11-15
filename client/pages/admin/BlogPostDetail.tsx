@@ -152,17 +152,6 @@ export default function BlogPostDetail() {
       setSaveSuccess(true);
       setIsModified(false);
 
-      // Re-fetch the post to sync latest data
-      const results = await builder.getAll("blog-post", {
-        query: { "data.slug": slug },
-        limit: 1,
-      });
-
-      if (results && results.length > 0) {
-        const updatedPost = results[0] as BlogPost;
-        setPost(updatedPost);
-      }
-
       // Clear success message after 3 seconds
       setTimeout(() => setSaveSuccess(false), 3000);
     } catch (err) {
