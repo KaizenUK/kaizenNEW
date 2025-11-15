@@ -19,7 +19,7 @@ interface BlogPost {
 }
 
 export default function BlogPostDetail() {
-  const { id } = useParams<{ id: string }>();
+  const { slug } = useParams<{ slug: string }>();
   const navigate = useNavigate();
   const [post, setPost] = useState<BlogPost | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -27,8 +27,8 @@ export default function BlogPostDetail() {
 
   useEffect(() => {
     const fetchPost = async () => {
-      if (!id) {
-        setError("No post ID provided");
+      if (!slug) {
+        setError("No post slug provided");
         setIsLoading(false);
         return;
       }
@@ -37,14 +37,16 @@ export default function BlogPostDetail() {
         setIsLoading(true);
         setError(null);
 
-        const result = await builder.get("blog-post", {
-          query: { _id: id },
-        }).toPromise();
+        const results = await builder.getAll("blog-post", {
+          fields: "data.title,data.slug,data.excerpt,data.publishedDate,data.body,data.tags",
+          query: { "data.slug": slug },
+          limit: 1,
+        });
 
-        if (!result) {
+        if (!results || results.length === 0) {
           setError("Post not found");
         } else {
-          setPost(result as BlogPost);
+          setPost(results[0] as BlogPost);
         }
       } catch (err) {
         setError(
@@ -56,7 +58,7 @@ export default function BlogPostDetail() {
     };
 
     fetchPost();
-  }, [id]);
+  }, [slug]);
 
   if (isLoading) {
     return (
