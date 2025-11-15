@@ -57,6 +57,46 @@ function getImageUrl(image: string | { url: string } | undefined): string {
   return "https://images.unsplash.com/photo-1460925895917-aae19e488e71?w=800&h=600&fit=crop";
 }
 
+function processBodyContent(body: any): string {
+  console.log("🔄 Processing body content, type:", typeof body);
+
+  if (!body) {
+    return "";
+  }
+
+  if (typeof body === "string") {
+    try {
+      // Check if it's a JSON string
+      const parsed = JSON.parse(body);
+      console.log("✅ Body is JSON string, parsed:", parsed);
+      // If it's an object, check for common rich text structures
+      if (typeof parsed === "object" && parsed !== null) {
+        // Handle Builder rich text format (if it exists)
+        if (parsed.html) return parsed.html;
+        if (parsed.content) return JSON.stringify(parsed.content);
+        // Just return the stringified JSON as-is
+        return JSON.stringify(parsed);
+      }
+      return String(parsed);
+    } catch (e) {
+      // Not JSON, treat as plain HTML/text
+      console.log("✅ Body is plain string/HTML");
+      return body;
+    }
+  }
+
+  if (typeof body === "object" && body !== null) {
+    console.log("⚠️ Body is object, attempting to extract content");
+    // Handle various object formats
+    if (body.html) return body.html;
+    if (body.content) return String(body.content);
+    if (body.value) return String(body.value);
+    return JSON.stringify(body);
+  }
+
+  return String(body);
+}
+
 function extractHeadings(html: string): { id: string; title: string; level: number }[] {
   const headings: { id: string; title: string; level: number }[] = [];
 
