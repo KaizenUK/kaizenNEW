@@ -7,21 +7,66 @@ import builder from "@/builder";
 
 interface BlogPostDetail {
   id: string;
+  data: {
+    title: string;
+    slug: string;
+    excerpt?: string;
+    publishedDate: string;
+    body: string;
+    coverImage?: string | { url: string };
+  };
+}
+
+interface ProcessedPost {
+  id: string;
   title: string;
   slug: string;
-  category: string;
   publishedDate: string;
+  body: string;
+  coverImage: string;
+  excerpt?: string;
+  category: string;
   author: {
     name: string;
     role: string;
     image: string;
   };
   readingTime: number;
-  content: React.ReactNode;
   tableOfContents: { id: string; title: string; level: number }[];
 }
 
-const BLOG_POSTS_DETAIL: { [key: string]: BlogPostDetail } = {
+function getImageUrl(image: string | { url: string } | undefined): string {
+  if (!image) return "https://images.unsplash.com/photo-1460925895917-aae19e488e71?w=800&h=600&fit=crop";
+  if (typeof image === "string") return image;
+  if (image && typeof image === "object" && "url" in image) return image.url;
+  return "https://images.unsplash.com/photo-1460925895917-aae19e488e71?w=800&h=600&fit=crop";
+}
+
+function extractHeadings(html: string): { id: string; title: string; level: number }[] {
+  const headings: { id: string; title: string; level: number }[] = [];
+  const h2Regex = /<h2[^>]*>(.*?)<\/h2>/gi;
+  const h3Regex = /<h3[^>]*>(.*?)<\/h3>/gi;
+
+  let match;
+  while ((match = h2Regex.exec(html)) !== null) {
+    const text = match[1].replace(/<[^>]*>/g, "").trim();
+    if (text) {
+      const id = text.toLowerCase().replace(/\s+/g, "-");
+      headings.push({ id, title: text, level: 2 });
+    }
+  }
+
+  return headings.length > 0 ? headings : [{ id: "content", title: "Content", level: 2 }];
+}
+
+function calculateReadingTime(html: string): number {
+  const text = html.replace(/<[^>]*>/g, "");
+  const words = text.split(/\s+/).length;
+  return Math.max(1, Math.ceil(words / 200));
+}
+
+// Fallback blog posts for legacy routes
+const LEGACY_BLOG_POSTS: { [key: string]: BlogPostDetail } = {
   "agile-no-fluff-guide": {
     id: "7",
     title: "Agile: The No-Fluff Guide to Ceremonies and Sprints",
