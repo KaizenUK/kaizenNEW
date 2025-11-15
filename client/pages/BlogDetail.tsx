@@ -650,15 +650,16 @@ export default function BlogDetail() {
 
   // Update reading progress
   useEffect(() => {
-    const updateScroll = () => {
-      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
-      const scrollProgress = docHeight > 0 ? scrollY.get() / docHeight : 0;
+    const handleScroll = () => {
+      const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const scrolled = window.scrollY;
+      const scrollProgress = totalHeight > 0 ? scrolled / totalHeight : 0;
       scaleX.set(Math.min(scrollProgress, 1));
     };
 
-    const unsubscribe = scrollY.onChange(updateScroll);
-    return () => unsubscribe();
-  }, [scrollY, scaleX]);
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [scaleX]);
 
   // IntersectionObserver for TOC
   useEffect(() => {
