@@ -326,7 +326,7 @@ export default function BlogPostDetail() {
                 className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 font-body"
                 placeholder="post-slug"
               />
-              <p className="text-xs text-gray-500 mt-2">
+              <p className="text-xs text-gray-500 mt-2 font-body">
                 Used in the URL: /blog/your-slug-here
               </p>
             </motion.div>
