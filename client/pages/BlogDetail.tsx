@@ -62,7 +62,6 @@ function calculateReadingTime(html: string): number {
 
 function addIdsToHeadings(html: string): string {
   if (!html) return html;
-
   const idMap: { [key: string]: number } = {};
 
   let result = html;
@@ -72,10 +71,7 @@ function addIdsToHeadings(html: string): string {
     if (attrs.includes('id="')) return match;
 
     const text = content.replace(/<[^>]*>/g, "").trim();
-    let id = text
-      .toLowerCase()
-      .replace(/\s+/g, "-")
-      .replace(/[^a-z0-9-]/g, "");
+    let id = text.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "");
 
     if (idMap[id]) {
       idMap[id]++;
@@ -85,26 +81,6 @@ function addIdsToHeadings(html: string): string {
     }
 
     return `<h2 id="${id}"${attrs}>${content}</h2>`;
-  });
-
-  const h3Regex = /<h3([^>]*)>(.*?)<\/h3>/gi;
-  result = result.replace(h3Regex, (match, attrs, content) => {
-    if (attrs.includes('id="')) return match;
-
-    const text = content.replace(/<[^>]*>/g, "").trim();
-    let id = text
-      .toLowerCase()
-      .replace(/\s+/g, "-")
-      .replace(/[^a-z0-9-]/g, "");
-
-    if (idMap[id]) {
-      idMap[id]++;
-      id = `${id}-${idMap[id]}`;
-    } else {
-      idMap[id] = 1;
-    }
-
-    return `<h3 id="${id}"${attrs}>${content}</h3>`;
   });
 
   return result;
@@ -131,6 +107,41 @@ function extractHeadings(html: string): { id: string; title: string; level: numb
   return headings.length > 0 ? headings : [{ id: "content", title: "Content", level: 2 }];
 }
 
+function ImageWithSkeleton({ src, alt }: { src: string; alt: string }) {
+  const [isLoading, setIsLoading] = useState(true);
+  const [hasError, setHasError] = useState(false);
+
+  return (
+    <div className="relative w-full bg-gray-800 rounded-lg overflow-hidden">
+      <AnimatePresence>
+        {isLoading && (
+          <motion.div
+            className="absolute inset-0 bg-gradient-to-r from-gray-800 via-gray-700 to-gray-800 bg-[length:200%_100%]"
+            animate={{ backgroundPosition: ["0% 0%", "200% 0%"] }}
+            transition={{ duration: 2, repeat: Infinity }}
+            exit={{ opacity: 0 }}
+          />
+        )}
+      </AnimatePresence>
+      <img
+        src={src}
+        alt={alt}
+        onLoad={() => setIsLoading(false)}
+        onError={() => {
+          setIsLoading(false);
+          setHasError(true);
+        }}
+        className={`w-full h-auto relative z-10 ${isLoading ? "opacity-0" : "opacity-100"} transition-opacity`}
+      />
+      {hasError && (
+        <div className="absolute inset-0 flex items-center justify-center bg-gray-800 text-gray-500">
+          <span className="text-sm">Image failed to load</span>
+        </div>
+      )}
+    </div>
+  );
+}
+
 function TableOfContents({
   items,
   activeId,
@@ -153,11 +164,11 @@ function TableOfContents({
           <motion.a
             key={item.id}
             href={`#${item.id}`}
-            className={`block text-sm transition ${
+            className={`block text-sm transition py-2 px-3 rounded ${
               activeId === item.id
-                ? "text-blue-400 font-bold"
-                : "text-gray-400 hover:text-white"
-            } ${item.level === 3 ? "ml-4" : ""}`}
+                ? "text-blue-400 font-bold bg-blue-400/10 border-l-2 border-blue-400"
+                : "text-gray-400 hover:text-white hover:bg-gray-800/50"
+            }`}
             whileHover={{ x: 4 }}
             transition={{ duration: 0.2 }}
           >
@@ -200,6 +211,105 @@ function Author({
         </div>
       </div>
     </motion.div>
+  );
+}
+
+function RichTextContent({ html }: { html: string }) {
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!containerRef.current) return;
+
+    // Parse and rebuild content with proper elements
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(html, "text/html");
+
+    // Process all elements
+    const processElement = (el: Element) => {
+      // Handle images
+      Array.from(el.querySelectorAll("img")).forEach((img) => {
+        const wrapper = document.createElement("div");
+        wrapper.className = "my-6";
+        img.parentNode?.insertBefore(wrapper, img);
+        wrapper.appendChild(img);
+      });
+
+      // Ensure headings have proper structure
+      Array.from(el.querySelectorAll("h1, h2, h3, h4, h5, h6")).forEach((heading) => {
+        heading.classList.add("font-heading", "font-bold");
+        if (heading.tagName.match(/h[123]/)) {
+          heading.classList.add("mt-8", "mb-4", "text-2xl");
+        }
+      });
+
+      // Style paragraphs
+      Array.from(el.querySelectorAll("p")).forEach((p) => {
+        p.classList.add("text-gray-300", "mb-4", "leading-relaxed", "text-base");
+      });
+
+      // Style lists
+      Array.from(el.querySelectorAll("ul, ol")).forEach((list) => {
+        list.classList.add("mb-4", "ml-6");
+        if (list.tagName === "UL") {
+          list.classList.add("list-disc");
+        } else {
+          list.classList.add("list-decimal");
+        }
+      });
+
+      Array.from(el.querySelectorAll("li")).forEach((li) => {
+        li.classList.add("mb-2", "text-gray-300");
+      });
+
+      // Style code blocks
+      Array.from(el.querySelectorAll("pre")).forEach((pre) => {
+        pre.classList.add("bg-gray-900", "border", "border-gray-800", "rounded-lg", "p-4", "mb-4", "overflow-x-auto");
+      });
+
+      Array.from(el.querySelectorAll("code")).forEach((code) => {
+        if (!code.closest("pre")) {
+          code.classList.add("bg-gray-900", "text-amber-300", "px-2", "py-1", "rounded", "text-sm", "font-mono");
+        } else {
+          code.classList.add("text-gray-300", "font-mono", "text-sm");
+        }
+      });
+
+      // Style blockquotes
+      Array.from(el.querySelectorAll("blockquote")).forEach((quote) => {
+        quote.classList.add("border-l-4", "border-blue-400", "pl-4", "mb-4", "italic", "text-gray-400");
+      });
+
+      // Style links
+      Array.from(el.querySelectorAll("a")).forEach((link) => {
+        link.classList.add("text-blue-400", "hover:text-blue-300", "underline", "transition");
+      });
+
+      // Style tables
+      Array.from(el.querySelectorAll("table")).forEach((table) => {
+        table.classList.add("w-full", "border-collapse", "mb-4", "border", "border-gray-800");
+      });
+
+      Array.from(el.querySelectorAll("th, td")).forEach((cell) => {
+        cell.classList.add("border", "border-gray-800", "p-3", "text-left");
+      });
+
+      Array.from(el.querySelectorAll("th")).forEach((th) => {
+        th.classList.add("bg-gray-900", "font-bold", "text-gray-200");
+      });
+    };
+
+    processElement(doc.body);
+    containerRef.current.innerHTML = doc.body.innerHTML;
+  }, [html]);
+
+  return (
+    <motion.div
+      ref={containerRef}
+      className="max-w-3xl space-y-4"
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.6, delay: 0.3 }}
+    />
   );
 }
 
@@ -321,7 +431,7 @@ export default function BlogDetail() {
           if (id) setActiveSection(id);
         }
       },
-      { threshold: 0.5 }
+      { threshold: 0.3, rootMargin: "-100px 0px -66% 0px" }
     );
 
     headings.forEach((heading) => {
@@ -365,18 +475,23 @@ export default function BlogDetail() {
 
   return (
     <Layout>
-      {/* Progress Bar */}
-      <motion.div
-        className="fixed top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 to-purple-500 z-50"
-        style={{ scaleX, transformOrigin: "left" }}
-      />
+      {/* Progress Bar with Percentage */}
+      <motion.div className="fixed top-0 left-0 right-0 h-1 z-50 bg-gray-800">
+        <motion.div
+          className="h-full bg-gradient-to-r from-blue-500 via-purple-500 to-blue-400"
+          style={{ scaleX, transformOrigin: "left" }}
+        />
+        <motion.div className="absolute top-2 right-4 text-xs font-mono text-gray-300 bg-gray-900/80 px-2 py-1 rounded">
+          {scrollProgress}%
+        </motion.div>
+      </motion.div>
 
       {/* Hero Image Section */}
       <motion.div
         className="relative h-96 overflow-hidden bg-gray-900"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.6 }}
+        initial={{ scale: 1.1 }}
+        animate={{ scale: 1 }}
+        transition={{ duration: 0.8 }}
       >
         <img
           src={post.coverImage}
@@ -400,8 +515,20 @@ export default function BlogDetail() {
       <section className="bg-gray-950 text-white py-12 px-4">
         <div className="container mx-auto max-w-7xl">
           <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+            {/* Left Sidebar - TOC and Author */}
+            <div className="lg:col-span-1 order-2 lg:order-1">
+              <div className="sticky top-24 space-y-6">
+                <TableOfContents items={post.tableOfContents} activeId={activeSection} />
+                <Author
+                  name={post.author.name}
+                  role={post.author.role}
+                  image={post.author.image}
+                />
+              </div>
+            </div>
+
             {/* Main Content */}
-            <div className="lg:col-span-3">
+            <div className="lg:col-span-3 order-1 lg:order-2">
               <motion.article
                 className="max-w-3xl"
                 initial={{ opacity: 0, y: 20 }}
@@ -410,25 +537,40 @@ export default function BlogDetail() {
               >
                 {/* Header */}
                 <div className="mb-8">
-                  <h1 className="text-5xl font-heading font-bold mb-4">{post.title}</h1>
+                  <motion.h1
+                    className="text-5xl font-heading font-bold mb-4"
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.6, delay: 0.3 }}
+                  >
+                    {post.title}
+                  </motion.h1>
 
-                  <div className="flex items-center gap-6 text-gray-400 font-mono text-sm flex-wrap">
+                  <motion.div
+                    className="flex items-center gap-6 text-gray-400 font-mono text-sm flex-wrap"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 0.6, delay: 0.4 }}
+                  >
                     <span>{new Date(post.publishedDate).toLocaleDateString()}</span>
                     <span>•</span>
                     <span>{post.readingTime} min read</span>
-                  </div>
+                  </motion.div>
                 </div>
 
-                {/* Body Content - with prose styling for HTML */}
-                <div
-                  ref={contentRef}
-                  className="prose prose-invert prose-lg max-w-none mb-12 prose-h2:text-3xl prose-h2:font-heading prose-h2:font-bold prose-h2:mt-8 prose-h2:mb-4 prose-p:text-gray-300 prose-a:text-blue-400 prose-a:hover:text-blue-300 prose-code:text-amber-300 prose-code:bg-gray-900 prose-code:px-2 prose-code:py-1 prose-code:rounded prose-pre:bg-gray-900 prose-pre:border prose-pre:border-gray-800"
-                  dangerouslySetInnerHTML={{ __html: post.body }}
-                />
+                {/* Body Content with proper HTML rendering */}
+                <div ref={contentRef}>
+                  <RichTextContent html={post.body} />
+                </div>
 
                 {/* Tags */}
                 {post.tags.length > 0 && (
-                  <div className="flex gap-3 flex-wrap mb-12 pt-8 border-t border-gray-800">
+                  <motion.div
+                    className="flex gap-3 flex-wrap mb-12 pt-8 border-t border-gray-800"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 0.6, delay: 0.6 }}
+                  >
                     {post.tags.map((tag) => (
                       <span
                         key={tag}
@@ -437,7 +579,7 @@ export default function BlogDetail() {
                         {tag}
                       </span>
                     ))}
-                  </div>
+                  </motion.div>
                 )}
               </motion.article>
 
@@ -446,7 +588,7 @@ export default function BlogDetail() {
                 className="bg-gray-900 border border-gray-800 rounded-lg p-8 my-12"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.4 }}
+                transition={{ duration: 0.6, delay: 0.7 }}
               >
                 <p className="text-green-400 text-sm mb-4">$ ready_to_sprint();</p>
                 <h3 className="text-2xl font-heading font-bold text-white mb-3">
@@ -469,7 +611,7 @@ export default function BlogDetail() {
                   className="py-12"
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.6, delay: 0.5 }}
+                  transition={{ duration: 0.6, delay: 0.8 }}
                 >
                   <h2 className="text-3xl font-heading font-bold mb-8">More from the Blog</h2>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -478,7 +620,7 @@ export default function BlogDetail() {
                         key={relatedPost.id}
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.4, delay: 0.7 + idx * 0.1 }}
+                        transition={{ duration: 0.4, delay: 0.9 + idx * 0.1 }}
                       >
                         <Link
                           to={`/blog/${relatedPost.slug}`}
@@ -496,18 +638,6 @@ export default function BlogDetail() {
                   </div>
                 </motion.section>
               )}
-            </div>
-
-            {/* Sidebar */}
-            <div className="lg:col-span-1">
-              <div className="sticky top-24 space-y-6">
-                <TableOfContents items={post.tableOfContents} activeId={activeSection} />
-                <Author
-                  name={post.author.name}
-                  role={post.author.role}
-                  image={post.author.image}
-                />
-              </div>
             </div>
           </div>
         </div>
