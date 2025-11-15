@@ -32,15 +32,17 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         className="bg-gray-900 border-r border-gray-800 flex flex-col"
       >
         {/* Logo/Brand */}
-        <div className="p-6 border-b border-gray-800">
+        <div className="p-4 border-b border-gray-800">
           <Link
             to="/admin"
-            className="flex items-center gap-3 hover:opacity-80 transition"
+            className="flex items-center gap-2 hover:opacity-80 transition"
           >
-            <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-500 rounded flex items-center justify-center font-bold text-sm">
-              K
-            </div>
-            {sidebarOpen && <span className="font-heading font-bold">Kaizen</span>}
+            <img
+              src="https://cdn.builder.io/api/v1/image/assets%2Fe4ae46bbd81b4b95bef54d66dd9748cc%2F19f6366118ef41298050443945090b5f?format=webp&width=800"
+              alt="Kaizen Web"
+              className="h-12 w-auto"
+            />
+            {sidebarOpen && <span className="font-heading font-bold text-sm">Admin</span>}
           </Link>
         </div>
 
