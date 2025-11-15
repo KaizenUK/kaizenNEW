@@ -509,6 +509,7 @@ function ImageWithPlaceholder({ src, alt }: ImageProps) {
 export default function BlogDetail() {
   const { slug } = useParams<{ slug: string }>();
   const [post, setPost] = useState<ProcessedPost | null>(null);
+  const [relatedPosts, setRelatedPosts] = useState<ProcessedPost[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [activeSection, setActiveSection] = useState("");
   const { scrollY } = useScroll();
