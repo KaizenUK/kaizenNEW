@@ -690,36 +690,73 @@ export default function BlogDetail() {
 
   return (
     <Layout>
+      {/* Reading Progress Bar */}
+      <motion.div
+        className="fixed top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 to-purple-500 z-40 origin-left"
+        style={{ scaleX }}
+      />
+
       {/* Hero */}
-      <section className="bg-gradient-to-br from-gray-950 via-gray-900 to-black text-white py-12 px-4 md:py-20">
+      <motion.section
+        className="bg-gradient-to-br from-gray-950 via-gray-900 to-black text-white py-12 px-4 md:py-20"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.6 }}
+      >
         <div className="container mx-auto max-w-4xl">
-          <Link
-            to="/blog"
-            className="inline-flex items-center gap-2 text-blue-400 hover:text-blue-300 mb-6 font-mono text-sm"
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.4 }}
           >
-            <ArrowLeft size={16} /> Back to Journal
-          </Link>
+            <Link
+              to="/blog"
+              className="inline-flex items-center gap-2 text-blue-400 hover:text-blue-300 mb-6 font-mono text-sm"
+            >
+              <ArrowLeft size={16} /> Back to Journal
+            </Link>
+          </motion.div>
 
           <div className="mb-6">
-            <span className="inline-block px-3 py-1 bg-gray-800 border border-gray-700 rounded text-xs font-mono text-amber-400 font-bold tracking-widest mb-4">
-              {post.category}
-            </span>
+            <motion.span
+              className="inline-block px-3 py-1 bg-gray-800 border border-gray-700 rounded text-xs font-mono text-amber-400 font-bold tracking-widest mb-4"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4, delay: 0.1 }}
+            >
+              Blog Post
+            </motion.span>
           </div>
 
-          <h1 className="text-5xl md:text-6xl font-heading font-bold mb-6 leading-tight">
+          <motion.h1
+            className="text-5xl md:text-6xl font-heading font-bold mb-6 leading-tight"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+          >
             {post.title}
-          </h1>
+          </motion.h1>
 
-          <div className="flex flex-wrap items-center gap-6 text-gray-400 text-sm font-mono">
+          <motion.div
+            className="flex flex-wrap items-center gap-6 text-gray-400 text-sm font-mono"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.6, delay: 0.3 }}
+          >
             <span>{new Date(post.publishedDate).toLocaleDateString()}</span>
             <span>•</span>
             <span>{post.readingTime} min read</span>
-          </div>
+          </motion.div>
         </div>
-      </section>
+      </motion.section>
 
       {/* Content Grid */}
-      <section className="bg-gray-950 px-4 py-16 md:py-20">
+      <motion.section
+        className="bg-gray-950 px-4 py-16 md:py-20"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.6, delay: 0.2 }}
+      >
         <div className="container mx-auto max-w-6xl">
           <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
             {/* Sidebar - TOC (sticky on desktop) */}
@@ -728,7 +765,12 @@ export default function BlogDetail() {
                 <TableOfContents items={post.tableOfContents} activeId={activeSection} />
 
                 {/* Author Card */}
-                <div className="bg-gray-900 border border-gray-800 rounded-lg p-6 mt-6">
+                <motion.div
+                  className="bg-gray-900 border border-gray-800 rounded-lg p-6 mt-6"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: 0.7 }}
+                >
                   <p className="text-xs font-mono text-gray-500 font-bold tracking-widest mb-4">
                     AUTHOR
                   </p>
@@ -741,26 +783,48 @@ export default function BlogDetail() {
                   <p className="text-blue-400 text-xs font-mono font-bold tracking-widest">
                     {post.author.role}
                   </p>
-                </div>
+                </motion.div>
               </div>
             </div>
 
             {/* Main Content */}
             <div className="lg:col-span-3">
-              <div className="prose prose-invert max-w-none text-gray-300">
+              <motion.div
+                ref={contentRef}
+                className="prose prose-invert max-w-none text-gray-300"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.4 }}
+              >
                 <style>{`
-                  .prose h2 { font-size: 1.875rem; font-weight: 700; margin-top: 2rem; margin-bottom: 1rem; }
-                  .prose h3 { font-size: 1.5rem; font-weight: 700; margin-top: 1.5rem; margin-bottom: 0.75rem; }
-                  .prose p { line-height: 1.8; margin-bottom: 1rem; max-width: 65ch; }
-                  .prose ul { margin-bottom: 1.5rem; }
+                  .prose h2 { font-size: 1.875rem; font-weight: 700; margin-top: 2rem; margin-bottom: 1rem; color: white; }
+                  .prose h3 { font-size: 1.5rem; font-weight: 700; margin-top: 1.5rem; margin-bottom: 0.75rem; color: white; }
+                  .prose p { line-height: 1.8; margin-bottom: 1rem; max-width: 65ch; color: rgb(209, 213, 219); }
+                  .prose ul { margin-bottom: 1.5rem; color: rgb(209, 213, 219); }
                   .prose li { margin-bottom: 0.5rem; }
+                  .prose a { color: rgb(96, 165, 250); text-decoration: underline; }
+                  .prose a:hover { color: rgb(147, 197, 253); }
+                  .prose img { border-radius: 0.5rem; margin: 1.5rem 0; max-width: 100%; }
+                  .prose table { width: 100%; border-collapse: collapse; margin: 1.5rem 0; }
+                  .prose th { background-color: rgba(31, 41, 55, 0.5); padding: 0.75rem; border: 1px solid rgba(75, 85, 99, 0.5); color: white; }
+                  .prose td { padding: 0.75rem; border: 1px solid rgba(75, 85, 99, 0.5); }
                 `}</style>
 
-                {post.content}
-              </div>
+                {post.body ? (
+                  <div dangerouslySetInnerHTML={{ __html: post.body }} />
+                ) : (
+                  <p>No content available.</p>
+                )}
+              </motion.div>
 
               {/* CTA */}
-              <div className="bg-gray-800/50 border border-gray-700 rounded-lg p-8 mt-12 font-mono">
+              <motion.div
+                className="bg-gray-800/50 border border-gray-700 rounded-lg p-8 mt-12 font-mono"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.5 }}
+                whileHover={{ scale: 1.02 }}
+              >
                 <p className="text-green-400 text-sm mb-4">$ ready_for_next_project();</p>
                 <h3 className="text-2xl font-heading font-bold text-white mb-3">
                   Ready to build something great?
@@ -774,10 +838,15 @@ export default function BlogDetail() {
                 >
                   Start a Project <ArrowRight size={18} />
                 </Link>
-              </div>
+              </motion.div>
 
               {/* Related Posts */}
-              <div className="mt-16 pt-8 border-t border-gray-800">
+              <motion.div
+                className="mt-16 pt-8 border-t border-gray-800"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.6, delay: 0.6 }}
+              >
                 <h3 className="text-2xl font-heading font-bold text-white mb-6">More from the Journal</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   {[
@@ -792,25 +861,31 @@ export default function BlogDetail() {
                       date: "2024-01-10",
                     },
                   ].map((relatedPost, idx) => (
-                    <Link
+                    <motion.div
                       key={idx}
-                      to={`/blog/${relatedPost.slug}`}
-                      className="group p-4 border border-gray-700 rounded-lg hover:border-blue-500/50 hover:bg-gray-800/50 transition"
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.4, delay: 0.7 + idx * 0.1 }}
                     >
-                      <h4 className="font-heading font-bold text-white group-hover:text-blue-300 transition mb-2">
-                        {relatedPost.title}
-                      </h4>
-                      <p className="text-gray-500 text-sm font-mono">
-                        {new Date(relatedPost.date).toLocaleDateString()}
-                      </p>
-                    </Link>
+                      <Link
+                        to={`/blog/${relatedPost.slug}`}
+                        className="group p-4 border border-gray-700 rounded-lg hover:border-blue-500/50 hover:bg-gray-800/50 transition block"
+                      >
+                        <h4 className="font-heading font-bold text-white group-hover:text-blue-300 transition mb-2">
+                          {relatedPost.title}
+                        </h4>
+                        <p className="text-gray-500 text-sm font-mono">
+                          {new Date(relatedPost.date).toLocaleDateString()}
+                        </p>
+                      </Link>
+                    </motion.div>
                   ))}
                 </div>
-              </div>
+              </motion.div>
             </div>
           </div>
         </div>
-      </section>
+      </motion.section>
     </Layout>
   );
 }
