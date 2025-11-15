@@ -118,7 +118,7 @@ export default function BlogPostsList() {
       >
         <div className="mb-8">
           <h1 className="text-4xl font-heading font-bold mb-2">Blog Posts</h1>
-          <p className="text-gray-400">
+          <p className="text-gray-400 font-body">
             {filteredPosts.length} post{filteredPosts.length !== 1 ? "s" : ""}
             {searchQuery || selectedTags.length > 0 ? " found" : ""}
           </p>
