@@ -152,7 +152,7 @@ export default function BlogPostsList() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4, delay: 0.15 }}
           >
-            <p className="text-sm font-mono text-gray-500 mb-3">Filter by tags</p>
+            <p className="text-sm font-mono text-gray-500 mb-3 font-body">Filter by tags</p>
             <div className="flex flex-wrap gap-2">
               {allTags.map((tag) => (
                 <button
