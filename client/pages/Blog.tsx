@@ -374,14 +374,17 @@ export default function Blog() {
 
                     {/* Content */}
                     <div className="absolute bottom-0 left-0 right-0 p-4">
-                      <div className="flex items-center gap-2 mb-3">
-                        <span
-                          className={`text-xs font-mono font-bold tracking-widest ${
-                            CATEGORY_COLORS[post.category] || "text-gray-400"
-                          }`}
-                        >
-                          {post.category.split(" ")[0]}
-                        </span>
+                      <div className="flex items-center gap-2 mb-3 flex-wrap">
+                        {post.tags.slice(0, 1).map(tag => (
+                          <span
+                            key={tag}
+                            className={`text-xs font-mono font-bold tracking-widest ${
+                              TAG_COLORS[tag.toLowerCase()] || "text-gray-400"
+                            }`}
+                          >
+                            {tag}
+                          </span>
+                        ))}
                       </div>
                       <h3 className="text-sm font-heading font-bold text-white group-hover:text-blue-300 transition line-clamp-2">
                         {post.title}
