@@ -39,15 +39,15 @@ export default function AdminLogin() {
       >
         {/* Logo */}
         <div className="text-center mb-8">
-          <motion.div
-            className="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-500 rounded-lg flex items-center justify-center font-heading font-bold text-3xl mx-auto mb-4"
+          <motion.img
+            src="https://cdn.builder.io/api/v1/image/assets%2Fe4ae46bbd81b4b95bef54d66dd9748cc%2F19f6366118ef41298050443945090b5f?format=webp&width=800"
+            alt="Kaizen Web"
+            className="h-20 w-auto mx-auto mb-6"
             initial={{ scale: 0.8, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ duration: 0.5, delay: 0.2 }}
-          >
-            K
-          </motion.div>
-          <h1 className="text-3xl font-heading font-bold">Kaizen Admin</h1>
+          />
+          <h1 className="text-3xl font-heading font-bold">Admin Login</h1>
           <p className="text-gray-400 mt-2">Manage your content</p>
         </div>
 
