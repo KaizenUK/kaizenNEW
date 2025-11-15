@@ -172,7 +172,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
           <div className="flex items-center gap-4">
             <Link
               to="/contact"
-              className="hidden sm:inline-block px-6 py-2 rounded-full bg-gradient-to-r from-kaizen-cyan to-kaizen-lime text-white font-medium text-sm hover:opacity-90 transition"
+              className="hidden sm:inline-block px-6 py-2 rounded-full bg-gradient-to-r from-kaizen-cyan to-kaizen-lime text-white font-heading font-medium text-sm hover:opacity-90 transition"
             >
               Get a Quote
             </Link>
