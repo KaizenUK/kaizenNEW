@@ -238,7 +238,7 @@ export default function BlogPostsList() {
                   >
                     <td className="p-4">
                       <Link
-                        to={`/admin/blog-posts/${post.id}`}
+                        to={`/admin/blog-posts/${post.slug}`}
                         className="font-medium text-blue-400 hover:text-blue-300 transition"
                       >
                         {post.title}
