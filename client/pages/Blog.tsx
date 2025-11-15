@@ -72,13 +72,6 @@ function getImageUrl(image: string | { url: string } | undefined): string {
   return "https://images.unsplash.com/photo-1460925895917-aae19e488e71?w=800&h=600&fit=crop";
 }
 
-function getCategoryFromTitle(title: string): string {
-  if (title.toLowerCase().includes("agile") || title.toLowerCase().includes("sprint")) return "Agile Methodology";
-  if (title.toLowerCase().includes("design")) return "Design Systems";
-  if (title.toLowerCase().includes("seo") || title.toLowerCase().includes("strategy")) return "Product Strategy";
-  if (title.toLowerCase().includes("performance") || title.toLowerCase().includes("test")) return "Dev Ops";
-  return "Design Systems";
-}
 
 export default function Blog() {
   const [selectedCategory, setSelectedCategory] = useState("All");
