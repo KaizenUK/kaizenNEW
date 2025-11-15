@@ -82,7 +82,7 @@ const App = () => (
             }
           />
           <Route
-            path="/admin/blog-posts/:id"
+            path="/admin/blog-posts/:slug"
             element={
               <AdminGuard>
                 <BlogPostDetail />
