@@ -34,6 +34,8 @@ const CATEGORY_COLORS: { [key: string]: string } = {
   "Dev Ops": "text-green-400",
 };
 
+const CATEGORIES = ["All", "Design Systems", "Agile Methodology", "Product Strategy", "Dev Ops"];
+
 interface TypingProps {
   text: string;
   speed?: number;
@@ -61,15 +63,68 @@ function TypingText({ text, speed = 100 }: TypingProps) {
   );
 }
 
+function getImageUrl(image: string | { url: string } | undefined): string {
+  if (!image) return "https://images.unsplash.com/photo-1460925895917-aae19e488e71?w=800&h=600&fit=crop";
+  if (typeof image === "string") return image;
+  if (image && typeof image === "object" && "url" in image) return image.url;
+  return "https://images.unsplash.com/photo-1460925895917-aae19e488e71?w=800&h=600&fit=crop";
+}
+
+function getCategoryFromTitle(title: string): string {
+  if (title.toLowerCase().includes("agile") || title.toLowerCase().includes("sprint")) return "Agile Methodology";
+  if (title.toLowerCase().includes("design")) return "Design Systems";
+  if (title.toLowerCase().includes("seo") || title.toLowerCase().includes("strategy")) return "Product Strategy";
+  if (title.toLowerCase().includes("performance") || title.toLowerCase().includes("test")) return "Dev Ops";
+  return "Design Systems";
+}
+
 export default function Blog() {
   const [selectedCategory, setSelectedCategory] = useState("All");
+  const [posts, setPosts] = useState<ProcessedPost[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const filteredPosts = BLOG_POSTS.filter(
+  useEffect(() => {
+    const fetchPosts = async () => {
+      try {
+        setIsLoading(true);
+        const results = await builder
+          .getAll("blog-post", {
+            fields: "data.title,data.slug,data.excerpt,data.publishedDate,data.coverImage",
+            sort: "-data.publishedDate",
+          })
+          .toPromise();
+
+        const processedPosts: ProcessedPost[] = (results as BlogPost[]).map((post) => ({
+          id: post.id,
+          title: post.data.title || "Untitled",
+          slug: post.data.slug || "",
+          excerpt: post.data.excerpt || "",
+          category: getCategoryFromTitle(post.data.title),
+          image: getImageUrl(post.data.coverImage),
+          publishedDate: post.data.publishedDate || new Date().toISOString(),
+        }));
+
+        setPosts(processedPosts);
+
+        // Mock 2-second delay for loading effect
+        setTimeout(() => {
+          setIsLoading(false);
+        }, 2000);
+      } catch (error) {
+        console.error("Failed to fetch posts:", error);
+        setIsLoading(false);
+      }
+    };
+
+    fetchPosts();
+  }, []);
+
+  const filteredPosts = posts.filter(
     (post) => selectedCategory === "All" || post.category === selectedCategory
   );
 
-  const featuredPost = filteredPosts.find((p) => p.featured) || filteredPosts[0];
-  const otherPosts = filteredPosts.filter((p) => p.id !== featuredPost?.id);
+  const featuredPost = filteredPosts[0];
+  const otherPosts = filteredPosts.slice(1);
 
   return (
     <Layout>
