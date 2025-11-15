@@ -59,17 +59,27 @@ function getImageUrl(image: string | { url: string } | undefined): string {
 
 function extractHeadings(html: string): { id: string; title: string; level: number }[] {
   const headings: { id: string; title: string; level: number }[] = [];
+
+  if (!html) {
+    console.log("⚠️ extractHeadings: No HTML content provided");
+    return [{ id: "content", title: "Content", level: 2 }];
+  }
+
   const h2Regex = /<h2[^>]*>(.*?)<\/h2>/gi;
   const h3Regex = /<h3[^>]*>(.*?)<\/h3>/gi;
 
   let match;
+  let h2Count = 0;
   while ((match = h2Regex.exec(html)) !== null) {
+    h2Count++;
     const text = match[1].replace(/<[^>]*>/g, "").trim();
     if (text) {
       const id = text.toLowerCase().replace(/\s+/g, "-");
       headings.push({ id, title: text, level: 2 });
     }
   }
+
+  console.log(`📖 extractHeadings found ${h2Count} h2 tags:`, headings);
 
   return headings.length > 0 ? headings : [{ id: "content", title: "Content", level: 2 }];
 }
