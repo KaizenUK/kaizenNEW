@@ -882,47 +882,38 @@ export default function BlogDetail() {
               </motion.div>
 
               {/* Related Posts */}
-              <motion.div
-                className="mt-16 pt-8 border-t border-gray-800"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 0.6, delay: 0.6 }}
-              >
-                <h3 className="text-2xl font-heading font-bold text-white mb-6">More from the Journal</h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  {[
-                    {
-                      title: "Building Design Systems That Scale",
-                      slug: "design-systems-scale",
-                      date: "2024-01-15",
-                    },
-                    {
-                      title: "Agile Without the Buzzwords",
-                      slug: "agile-without-buzzwords",
-                      date: "2024-01-10",
-                    },
-                  ].map((relatedPost, idx) => (
-                    <motion.div
-                      key={idx}
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.4, delay: 0.7 + idx * 0.1 }}
-                    >
-                      <Link
-                        to={`/blog/${relatedPost.slug}`}
-                        className="group p-4 border border-gray-700 rounded-lg hover:border-blue-500/50 hover:bg-gray-800/50 transition block"
+              {relatedPosts.length > 0 && (
+                <motion.div
+                  className="mt-16 pt-8 border-t border-gray-800"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.6, delay: 0.6 }}
+                >
+                  <h3 className="text-2xl font-heading font-bold text-white mb-6">More from the Blog</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {relatedPosts.map((relatedPost, idx) => (
+                      <motion.div
+                        key={relatedPost.id}
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.4, delay: 0.7 + idx * 0.1 }}
                       >
-                        <h4 className="font-heading font-bold text-white group-hover:text-blue-300 transition mb-2">
-                          {relatedPost.title}
-                        </h4>
-                        <p className="text-gray-500 text-sm font-mono">
-                          {new Date(relatedPost.date).toLocaleDateString()}
-                        </p>
-                      </Link>
-                    </motion.div>
-                  ))}
-                </div>
-              </motion.div>
+                        <Link
+                          to={`/blog/${relatedPost.slug}`}
+                          className="group p-4 border border-gray-700 rounded-lg hover:border-blue-500/50 hover:bg-gray-800/50 transition block"
+                        >
+                          <h4 className="font-heading font-bold text-white group-hover:text-blue-300 transition mb-2">
+                            {relatedPost.title}
+                          </h4>
+                          <p className="text-gray-500 text-sm font-mono">
+                            {new Date(relatedPost.publishedDate).toLocaleDateString()}
+                          </p>
+                        </Link>
+                      </motion.div>
+                    ))}
+                  </div>
+                </motion.div>
+              )}
             </div>
           </div>
         </div>
