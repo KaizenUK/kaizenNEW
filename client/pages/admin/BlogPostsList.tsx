@@ -295,7 +295,7 @@ export default function BlogPostsList() {
             </table>
 
             {filteredPosts.length === 0 && (
-              <div className="p-12 text-center text-gray-400">
+              <div className="p-12 text-center text-gray-400 font-body">
                 <p>No posts found</p>
               </div>
             )}
