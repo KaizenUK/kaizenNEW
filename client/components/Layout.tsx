@@ -28,7 +28,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
           <div className="hidden md:flex items-center gap-1">
             <Link
               to="/"
-              className="px-3 py-2 text-sm font-medium hover:text-kaizen-cyan transition rounded-md hover:bg-kaizen-light/50"
+              className="px-3 py-2 text-sm font-heading font-medium hover:text-kaizen-cyan transition rounded-md hover:bg-kaizen-light/50"
             >
               Home
             </Link>
@@ -39,7 +39,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
               onMouseEnter={() => setServicesOpen(true)}
               onMouseLeave={() => setServicesOpen(false)}
             >
-              <button className="px-3 py-2 text-sm font-medium hover:text-kaizen-cyan transition rounded-md hover:bg-kaizen-light/50 flex items-center gap-1">
+              <button className="px-3 py-2 text-sm font-heading font-medium hover:text-kaizen-cyan transition rounded-md hover:bg-kaizen-light/50 flex items-center gap-1">
                 Services
                 <ChevronDown size={16} className={`transition ${servicesOpen ? "rotate-180" : ""}`} />
               </button>
