@@ -640,7 +640,10 @@ export default function BlogDetail() {
 
           const bodyContent = processBodyContent(builderPost.data.body);
           console.log("Processed Body Content (first 500 chars):", bodyContent?.substring(0, 500));
-          const extractedHeadings = extractHeadings(bodyContent);
+
+          // Add IDs to headings for TOC to work
+          const bodyWithIds = addIdToHeadings(bodyContent);
+          const extractedHeadings = extractHeadings(bodyWithIds);
           console.log("Extracted Headings:", extractedHeadings);
 
           const processedPost: ProcessedPost = {
