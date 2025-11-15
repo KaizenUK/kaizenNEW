@@ -226,7 +226,7 @@ export default function BlogPostDetail() {
             <h1 className="text-4xl font-heading font-bold mb-2">
               Edit Post
             </h1>
-            <p className="text-gray-400">
+            <p className="text-gray-400 font-body">
               Editing: <span className="font-mono text-blue-400">{formSlug}</span>
             </p>
           </div>
