@@ -21,20 +21,22 @@ interface ProcessedPost {
   title: string;
   slug: string;
   excerpt: string;
-  category: string;
+  tags: string[];
   image: string;
   publishedDate: string;
   featured?: boolean;
 }
 
-const CATEGORY_COLORS: { [key: string]: string } = {
-  "Design Systems": "text-blue-400",
-  "Agile Methodology": "text-purple-400",
-  "Product Strategy": "text-amber-400",
-  "Dev Ops": "text-green-400",
+const TAG_COLORS: { [key: string]: string } = {
+  "agile": "text-purple-400",
+  "design": "text-blue-400",
+  "seo": "text-amber-400",
+  "dev": "text-green-400",
+  "product": "text-pink-400",
+  "web": "text-cyan-400",
+  "strategy": "text-rose-400",
+  "transformation": "text-indigo-400",
 };
-
-const CATEGORIES = ["All", "Design Systems", "Agile Methodology", "Product Strategy", "Dev Ops"];
 
 interface TypingProps {
   text: string;
