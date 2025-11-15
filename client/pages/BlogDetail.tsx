@@ -651,7 +651,7 @@ export default function BlogDetail() {
             title: builderPost.data.title || "Untitled",
             slug: builderPost.data.slug || slug,
             publishedDate: builderPost.data.publishedDate || new Date().toISOString(),
-            body: bodyContent,
+            body: bodyWithIds,
             coverImage: getImageUrl(builderPost.data.coverImage),
             excerpt: builderPost.data.excerpt || "",
             category: "Blog Post",
