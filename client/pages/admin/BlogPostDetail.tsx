@@ -101,7 +101,7 @@ export default function BlogPostDetail() {
           console.log("Post ID:", loadedPost.id);
           setPost(loadedPost);
 
-          // Initialize form with post data
+          // Initialise form with post data
           setFormTitle(loadedPost.data.title || "");
           setFormSlug(loadedPost.data.slug || "");
           setFormExcerpt(loadedPost.data.excerpt || "");
@@ -158,11 +158,15 @@ export default function BlogPostDetail() {
         body: formBody,
       };
 
-      const res = await fetch(`/api/admin/builder-blog-posts/${post.id}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
+      // IMPORTANT: call the Node API route that actually exists
+      const res = await fetch(
+        `/api/admin/builder/blog-posts/${post.id}`,
+        {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        },
+      );
 
       if (!res.ok) {
         let errorMessage = "Failed to save changes";
@@ -175,7 +179,6 @@ export default function BlogPostDetail() {
             errorMessage = await res.text();
           }
         } catch (e) {
-          // If we can't parse the error, use the status text
           errorMessage = res.statusText || errorMessage;
         }
         throw new Error(errorMessage);

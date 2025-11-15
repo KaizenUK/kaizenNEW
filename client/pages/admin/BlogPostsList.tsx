@@ -42,20 +42,21 @@ export default function BlogPostsList() {
         setIsLoading(true);
         setError(null);
 
+        // Important: don't restrict fields so we keep the top-level `id`
         const results = await builder.getAll("blog-post", {
-          fields:
-            "data.title,data.slug,data.excerpt,data.publishedDate,data.tags",
+          // Removing `fields` so `id` is included in the response
           limit: 100,
         });
 
         const processed: ProcessedPost[] = (results as BlogPost[])
           .map((post) => ({
-            id: post.id,
-            title: post.data.title || "Untitled",
-            slug: post.data.slug || "",
-            excerpt: post.data.excerpt || "",
-            publishedDate: post.data.publishedDate || new Date().toISOString(),
-            tags: Array.isArray(post.data.tags) ? post.data.tags : [],
+            id: (post as any).id || "", // guard in case id is missing
+            title: post.data?.title || "Untitled",
+            slug: post.data?.slug || "",
+            excerpt: post.data?.excerpt || "",
+            publishedDate:
+              post.data?.publishedDate || new Date().toISOString(),
+            tags: Array.isArray(post.data?.tags) ? post.data.tags : [],
           }))
           .sort(
             (a, b) =>
@@ -225,58 +226,57 @@ export default function BlogPostsList() {
                 </tr>
               </thead>
               <tbody>
-                {filteredPosts
-                  .filter((post) => post.id)
-                  .map((post, idx) => (
-                    <motion.tr
-                      key={post.id || idx}
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.3, delay: idx * 0.05 }}
-                      className="border-b border-gray-800 hover:bg-gray-800/30 transition"
-                    >
-                      <td className="p-4">
-                        <Link
-                          to={`/admin/blog-posts/${post.slug}`}
-                          className="font-medium text-blue-400 hover:text-blue-300 transition"
-                        >
-                          {post.title}
-                        </Link>
-                      </td>
-                      <td className="p-4 text-sm text-gray-400 font-mono">
-                        {post.slug}
-                      </td>
-                      <td className="p-4 text-sm text-gray-400">
-                        {new Date(post.publishedDate).toLocaleDateString()}
-                      </td>
-                      <td className="p-4">
-                        <div className="flex gap-1 flex-wrap">
-                          {post.tags.slice(0, 2).map((tag, tagIdx) => (
-                            <span
-                              key={`${tag}-${tagIdx}`}
-                              className="px-2 py-0.5 bg-gray-800 text-gray-300 rounded text-xs font-mono"
-                            >
-                              {tag}
-                            </span>
-                          ))}
-                          {post.tags.length > 2 && (
-                            <span className="px-2 py-0.5 text-gray-500 text-xs">
-                              +{post.tags.length - 2} more
-                            </span>
-                          )}
-                        </div>
-                      </td>
-                      <td className="p-4">
-                        <div className="flex gap-3">
-                          <a
-                            href={`https://www.kaizenweb.co.uk/blog/${post.slug}`}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-gray-400 hover:text-blue-400 transition"
-                            title="View live post"
+                {filteredPosts.map((post, idx) => (
+                  <motion.tr
+                    key={post.id || post.slug || idx}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.3, delay: idx * 0.05 }}
+                    className="border-b border-gray-800 hover:bg-gray-800/30 transition"
+                  >
+                    <td className="p-4">
+                      <Link
+                        to={`/admin/blog-posts/${post.slug}`}
+                        className="font-medium text-blue-400 hover:text-blue-300 transition"
+                      >
+                        {post.title}
+                      </Link>
+                    </td>
+                    <td className="p-4 text-sm text-gray-400 font-mono">
+                      {post.slug}
+                    </td>
+                    <td className="p-4 text-sm text-gray-400">
+                      {new Date(post.publishedDate).toLocaleDateString()}
+                    </td>
+                    <td className="p-4">
+                      <div className="flex gap-1 flex-wrap">
+                        {post.tags.slice(0, 2).map((tag, tagIdx) => (
+                          <span
+                            key={`${tag}-${tagIdx}`}
+                            className="px-2 py-0.5 bg-gray-800 text-gray-300 rounded text-xs font-mono"
                           >
-                            <ExternalLink size={16} />
-                          </a>
+                            {tag}
+                          </span>
+                        ))}
+                        {post.tags.length > 2 && (
+                          <span className="px-2 py-0.5 text-gray-500 text-xs">
+                            +{post.tags.length - 2} more
+                          </span>
+                        )}
+                      </div>
+                    </td>
+                    <td className="p-4">
+                      <div className="flex gap-3">
+                        <a
+                          href={`https://www.kaizenweb.co.uk/blog/${post.slug}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-gray-400 hover:text-blue-400 transition"
+                          title="View live post"
+                        >
+                          <ExternalLink size={16} />
+                        </a>
+                        {post.id && (
                           <a
                             href={getBuilderEditUrl(post.id)}
                             target="_blank"
@@ -286,10 +286,11 @@ export default function BlogPostsList() {
                           >
                             <Edit size={16} />
                           </a>
-                        </div>
-                      </td>
-                    </motion.tr>
-                  ))}
+                        )}
+                      </div>
+                    </td>
+                  </motion.tr>
+                ))}
               </tbody>
             </table>
 
