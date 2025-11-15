@@ -217,15 +217,18 @@ export default function Blog() {
 
                 {/* Content */}
                 <div className="absolute bottom-0 left-0 right-0 p-6">
-                  <div className="flex items-center gap-2 mb-3">
-                    <span
-                      className={`text-xs font-mono font-bold tracking-widest ${
-                        CATEGORY_COLORS[featuredPost.category] || "text-gray-400"
-                      }`}
-                    >
-                      {featuredPost.category}
-                    </span>
-                    <span className="text-gray-500 text-xs font-mono">
+                  <div className="flex items-center gap-2 mb-3 flex-wrap">
+                    {featuredPost.tags.slice(0, 2).map(tag => (
+                      <span
+                        key={tag}
+                        className={`text-xs font-mono font-bold tracking-widest ${
+                          TAG_COLORS[tag.toLowerCase()] || "text-gray-400"
+                        }`}
+                      >
+                        {tag}
+                      </span>
+                    ))}
+                    <span className="text-gray-500 text-xs font-mono ml-auto">
                       {new Date(featuredPost.publishedDate).toLocaleDateString()}
                     </span>
                   </div>
