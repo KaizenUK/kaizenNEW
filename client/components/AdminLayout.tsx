@@ -90,7 +90,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           >
             <Menu size={20} />
           </button>
-          <div className="text-sm text-gray-400">
+          <div className="text-sm text-gray-400 font-body">
             Admin Dashboard
           </div>
         </div>
