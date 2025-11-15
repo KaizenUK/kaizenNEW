@@ -27,6 +27,11 @@ import WebDesignLiverpool from "./pages/WebDesignLiverpool";
 import WebDesignLiverpoolCityCentre from "./pages/WebDesignLiverpoolCityCentre";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import GDPRPolicy from "./pages/GDPRPolicy";
+import AdminGuard from "@/components/AdminGuard";
+import AdminLogin from "./pages/admin/AdminLogin";
+import AdminDashboard from "./pages/admin/AdminDashboard";
+import BlogPostsList from "./pages/admin/BlogPostsList";
+import BlogPostDetail from "./pages/admin/BlogPostDetail";
 
 const queryClient = new QueryClient();
 
