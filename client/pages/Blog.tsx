@@ -74,8 +74,9 @@ function getImageUrl(image: string | { url: string } | undefined): string {
 
 
 export default function Blog() {
-  const [selectedCategory, setSelectedCategory] = useState("All");
+  const [selectedTag, setSelectedTag] = useState("All");
   const [posts, setPosts] = useState<ProcessedPost[]>([]);
+  const [allTags, setAllTags] = useState<string[]>(["All"]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -83,20 +84,30 @@ export default function Blog() {
       try {
         setIsLoading(true);
         const results = await builder.getAll("blog-post", {
-          fields: "data.title,data.slug,data.excerpt,data.publishedDate,data.coverImage",
+          fields: "data.title,data.slug,data.excerpt,data.publishedDate,data.coverImage,data.tags",
           limit: 100,
         });
 
-        const processedPosts: ProcessedPost[] = (results as BlogPost[]).map((post) => ({
+        const processedPosts: ProcessedPost[] = (results as any[]).map((post) => ({
           id: post.id,
           title: post.data.title || "Untitled",
           slug: post.data.slug || "",
           excerpt: post.data.excerpt || "",
-          category: getCategoryFromTitle(post.data.title),
+          tags: Array.isArray(post.data.tags) ? post.data.tags : [],
           image: getImageUrl(post.data.coverImage),
           publishedDate: post.data.publishedDate || new Date().toISOString(),
         }));
 
+        // Extract unique tags from all posts
+        const uniqueTags = new Set<string>();
+        processedPosts.forEach(post => {
+          post.tags.forEach(tag => {
+            if (tag) uniqueTags.add(tag);
+          });
+        });
+
+        const sortedTags = ["All", ...Array.from(uniqueTags).sort()];
+        setAllTags(sortedTags);
         setPosts(processedPosts);
 
         // Mock 2-second delay for loading effect
@@ -113,7 +124,7 @@ export default function Blog() {
   }, []);
 
   const filteredPosts = posts.filter(
-    (post) => selectedCategory === "All" || post.category === selectedCategory
+    (post) => selectedTag === "All" || post.tags.includes(selectedTag)
   );
 
   const featuredPost = filteredPosts[0];
