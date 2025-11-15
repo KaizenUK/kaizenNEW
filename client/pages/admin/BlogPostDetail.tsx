@@ -428,28 +428,36 @@ export default function BlogPostDetail() {
               </p>
             </motion.div>
 
-            {/* Body (Read-only) */}
-            {post.data.body && (
-              <motion.div
-                className="bg-gray-900 border border-gray-800 rounded-lg p-6"
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.4, delay: 0.35 }}
-              >
-                <h3 className="font-heading font-bold mb-3 text-sm text-gray-400 uppercase tracking-widest">
-                  Content (Edit in Builder)
-                </h3>
-                <div className="prose prose-invert max-w-none max-h-64 overflow-y-auto">
-                  <div
-                    className="blog-content"
-                    dangerouslySetInnerHTML={{ __html: post.data.body }}
-                  />
-                </div>
-                <p className="text-xs text-gray-500 mt-4 font-body">
-                  To edit the post content and cover image, click "Edit in Builder" above.
-                </p>
-              </motion.div>
-            )}
+            {/* Body Editor */}
+            <motion.div
+              className="bg-gray-900 border border-gray-800 rounded-lg p-6"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4, delay: 0.35 }}
+            >
+              <label className="block font-heading font-bold mb-3 text-sm text-gray-400 uppercase tracking-widest">
+                Content
+              </label>
+              <div className="bg-gray-800 rounded-lg overflow-hidden border border-gray-700">
+                <ReactQuill
+                  theme="snow"
+                  value={formBody}
+                  onChange={(value) => {
+                    setFormBody(value);
+                    handleFormChange();
+                  }}
+                  modules={quillModules}
+                  formats={quillFormats}
+                  className="bg-gray-800 text-white"
+                  style={{
+                    height: "300px",
+                  }}
+                />
+              </div>
+              <p className="text-xs text-gray-500 mt-4 font-body">
+                Edit your post content here. Use headings, formatting, links, and lists as needed.
+              </p>
+            </motion.div>
           </div>
 
           {/* Sidebar */}
