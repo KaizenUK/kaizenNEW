@@ -650,14 +650,9 @@ export default function BlogDetail() {
 
   // Update reading progress
   useEffect(() => {
-    if (!contentRef.current) return;
-
     const updateScroll = () => {
-      const element = contentRef.current;
-      if (!element) return;
-
-      const totalHeight = element.scrollHeight - window.innerHeight;
-      const scrollProgress = totalHeight > 0 ? scrollY.get() / totalHeight : 0;
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const scrollProgress = docHeight > 0 ? scrollY.get() / docHeight : 0;
       scaleX.set(Math.min(scrollProgress, 1));
     };
 
