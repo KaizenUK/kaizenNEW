@@ -255,7 +255,7 @@ export default function BlogPostDetail() {
         {/* Error Message */}
         {saveError && (
           <motion.div
-            className="mb-6 p-4 bg-red-500/10 border border-red-500/30 rounded-lg text-red-400 flex items-start gap-3"
+            className="mb-6 p-4 bg-red-500/10 border border-red-500/30 rounded-lg text-red-400 flex items-start gap-3 font-body"
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
           >
