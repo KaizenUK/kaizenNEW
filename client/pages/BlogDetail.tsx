@@ -580,22 +580,22 @@ export default function BlogDetail() {
         const legacyPost = LEGACY_BLOG_POSTS[slug];
         if (legacyPost) {
           const processedPost: ProcessedPost = {
-            id: legacyPost.id,
-            title: legacyPost.data.title || "Untitled",
-            slug: legacyPost.data.slug || slug,
-            publishedDate: legacyPost.data.publishedDate || new Date().toISOString(),
-            body: "",
-            coverImage: getImageUrl(legacyPost.data.coverImage),
-            excerpt: legacyPost.data.excerpt || "",
-            category: "Blog Post",
-            author: {
-              name: "Sarah Chen",
-              role: "Blog Author",
-              image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=128&h=128&fit=crop",
-            },
-            readingTime: 8,
-            tableOfContents: [],
-          };
+          id: legacyPost.id,
+          title: legacyPost.data.title || "Untitled",
+          slug: legacyPost.data.slug || slug,
+          publishedDate: legacyPost.data.publishedDate || new Date().toISOString(),
+          body: "",
+          coverImage: getImageUrl(legacyPost.data.coverImage),
+          excerpt: legacyPost.data.excerpt || "",
+          category: "Blog Post",
+          author: {
+            name: "Kaizen",
+            role: "Web Design & Agile",
+            image: "https://cdn.builder.io/api/v1/image/assets%2Fe4ae46bbd81b4b95bef54d66dd9748cc%2Fbe9c606a991946d9b3a5d47d9cfbf290?format=webp&width=800",
+          },
+          readingTime: 8,
+          tableOfContents: [],
+        };
           setPost(processedPost);
         }
       } finally {
