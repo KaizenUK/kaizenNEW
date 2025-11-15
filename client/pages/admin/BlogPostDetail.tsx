@@ -57,7 +57,6 @@ export default function BlogPostDetail() {
         setError(null);
 
         const results = await builder.getAll("blog-post", {
-          fields: "data.title,data.slug,data.excerpt,data.publishedDate,data.body,data.tags,data.coverImage",
           query: { "data.slug": slug },
           limit: 1,
         });
@@ -66,6 +65,8 @@ export default function BlogPostDetail() {
           setError("Post not found");
         } else {
           const loadedPost = results[0] as BlogPost;
+          console.log("Loaded post:", loadedPost);
+          console.log("Post ID:", loadedPost.id);
           setPost(loadedPost);
 
           // Initialize form with post data
