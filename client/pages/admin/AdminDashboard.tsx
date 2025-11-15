@@ -21,7 +21,7 @@ export default function AdminDashboard() {
         transition={{ duration: 0.5 }}
       >
         <h1 className="text-4xl font-heading font-bold mb-2">Welcome to Admin</h1>
-        <p className="text-gray-400 mb-12">
+        <p className="text-gray-400 mb-12 font-body">
           Manage your Kaizen web content from here.
         </p>
 
