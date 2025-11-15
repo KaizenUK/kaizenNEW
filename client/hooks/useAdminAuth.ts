@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 
-const ADMIN_PASSWORD = "admin"; // TODO: Replace with proper authentication later
+const ADMIN_PASSWORD = "10Crompton*Drive!"; // TODO: Replace with proper authentication later
 const AUTH_STORAGE_KEY = "admin_authenticated";
 
 export function useAdminAuth() {
