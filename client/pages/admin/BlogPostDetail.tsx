@@ -104,6 +104,7 @@ export default function BlogPostDetail() {
               ? loadedPost.data.tags.join(", ")
               : ""
           );
+          setFormBody(loadedPost.data.body || "");
         }
       } catch (err) {
         setError(
