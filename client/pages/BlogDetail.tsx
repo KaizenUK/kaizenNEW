@@ -810,11 +810,13 @@ export default function BlogDetail() {
                   <p className="text-xs font-mono text-gray-500 font-bold tracking-widest mb-4">
                     AUTHOR
                   </p>
-                  <img
-                    src={post.author.image}
-                    alt={post.author.name}
-                    className="w-12 h-12 rounded-full mb-4"
-                  />
+                  <div className="bg-gray-100 rounded-lg p-3 mb-4 flex items-center justify-center h-24">
+                    <img
+                      src={post.author.image}
+                      alt={post.author.name}
+                      className="w-full h-full object-contain"
+                    />
+                  </div>
                   <h4 className="font-heading font-bold text-white text-sm">{post.author.name}</h4>
                   <p className="text-blue-400 text-xs font-mono font-bold tracking-widest">
                     {post.author.role}
