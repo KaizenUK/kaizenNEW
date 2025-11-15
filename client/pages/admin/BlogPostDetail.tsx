@@ -486,7 +486,7 @@ export default function BlogPostDetail() {
             >
               <p className="text-xs text-gray-300 font-body">
                 <span className="font-bold font-heading block mb-2">Editable fields:</span>
-                Title, Slug, Excerpt, Published Date, and Tags
+                Title, Slug, Excerpt, Published Date, Tags, and Content
               </p>
             </motion.div>
 
