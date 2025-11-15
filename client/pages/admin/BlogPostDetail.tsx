@@ -447,8 +447,8 @@ export default function BlogPostDetail() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.4, delay: 0.2 }}
             >
-              <p className="text-xs text-gray-300">
-                <span className="font-bold block mb-2">Editable fields:</span>
+              <p className="text-xs text-gray-300 font-body">
+                <span className="font-bold font-heading block mb-2">Editable fields:</span>
                 Title, Slug, Excerpt, Published Date, and Tags
               </p>
             </motion.div>
