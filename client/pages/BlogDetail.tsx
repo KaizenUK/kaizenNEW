@@ -1,6 +1,6 @@
 import Layout from "@/components/Layout";
 import { Link, useParams } from "react-router-dom";
-import { ArrowLeft, ArrowRight, Copy, Check } from "lucide-react";
+import { ArrowLeft, ArrowRight } from "lucide-react";
 import { useState, useEffect, useRef, useCallback } from "react";
 import { motion, useSpring, AnimatePresence } from "framer-motion";
 import builder from "@/builder";
@@ -35,6 +35,13 @@ interface ProcessedPost {
   };
   readingTime: number;
   tableOfContents: { id: string; title: string; level: number }[];
+}
+
+interface RelatedPost {
+  id: string;
+  title: string;
+  slug: string;
+  publishedDate: string;
 }
 
 const DEFAULT_IMAGE = "https://images.unsplash.com/photo-1460925895917-aae19e488e71?w=800&h=600&fit=crop";
@@ -199,10 +206,12 @@ function Author({
 export default function BlogDetail() {
   const { slug } = useParams<{ slug: string }>();
   const [post, setPost] = useState<ProcessedPost | null>(null);
+  const [relatedPosts, setRelatedPosts] = useState<RelatedPost[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [activeId, setActiveId] = useState("content");
-  const [copiedCode, setCopiedCode] = useState<string | null>(null);
+  const [activeSection, setActiveSection] = useState("content");
+  const [scrollProgress, setScrollProgress] = useState(0);
   const contentRef = useRef<HTMLDivElement>(null);
+  const scaleX = useSpring(0, { stiffness: 100, damping: 30 });
 
   useEffect(() => {
     const fetchPost = async () => {
@@ -246,6 +255,24 @@ export default function BlogDetail() {
           };
 
           setPost(processedPost);
+
+          // Fetch related posts
+          const allPosts = await builder.getAll("blog-post", {
+            fields: "data.title,data.slug,data.publishedDate",
+            limit: 10,
+          });
+
+          const filtered = (allPosts as BlogPostDetail[])
+            .filter((p) => p.data.slug !== slug)
+            .slice(0, 2)
+            .map((p) => ({
+              id: p.id,
+              title: p.data.title || "Untitled",
+              slug: p.data.slug || "",
+              publishedDate: p.data.publishedDate || new Date().toISOString(),
+            }));
+
+          setRelatedPosts(filtered);
         } else {
           setPost(null);
         }
@@ -260,35 +287,49 @@ export default function BlogDetail() {
     fetchPost();
   }, [slug]);
 
+  // Update reading progress
   useEffect(() => {
     const handleScroll = () => {
-      if (!contentRef.current) return;
-
-      const headings = contentRef.current.querySelectorAll("h2[id]");
-      let closestId = "content";
-      let closestDistance = Infinity;
-
-      headings.forEach((heading) => {
-        const rect = heading.getBoundingClientRect();
-        const distance = Math.abs(rect.top - 100);
-        if (distance < closestDistance) {
-          closestDistance = distance;
-          closestId = heading.id;
-        }
-      });
-
-      setActiveId(closestId);
+      const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const scrolled = window.scrollY;
+      const progress = totalHeight > 0 ? scrolled / totalHeight : 0;
+      const clampedProgress = Math.min(progress, 1);
+      setScrollProgress(Math.round(clampedProgress * 100));
+      scaleX.set(clampedProgress);
     };
 
-    window.addEventListener("scroll", handleScroll);
+    window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  }, [scaleX]);
 
-  const handleCopyCode = (code: string) => {
-    navigator.clipboard.writeText(code);
-    setCopiedCode(code);
-    setTimeout(() => setCopiedCode(null), 2000);
-  };
+  // IntersectionObserver for TOC
+  useEffect(() => {
+    if (!post || !contentRef.current) return;
+
+    const headings = contentRef.current.querySelectorAll("h2[id]");
+    if (headings.length === 0) {
+      setActiveSection(post.tableOfContents[0]?.id || "");
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const visibleHeadings = entries.filter((entry) => entry.isIntersecting);
+        if (visibleHeadings.length > 0) {
+          const topHeading = visibleHeadings[0];
+          const id = (topHeading.target as HTMLElement).id || post.tableOfContents[0]?.id || "";
+          if (id) setActiveSection(id);
+        }
+      },
+      { threshold: 0.5 }
+    );
+
+    headings.forEach((heading) => {
+      if (heading.id) observer.observe(heading);
+    });
+
+    return () => observer.disconnect();
+  }, [post]);
 
   if (isLoading) {
     return (
@@ -324,6 +365,12 @@ export default function BlogDetail() {
 
   return (
     <Layout>
+      {/* Progress Bar */}
+      <motion.div
+        className="fixed top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 to-purple-500 z-50"
+        style={{ scaleX, transformOrigin: "left" }}
+      />
+
       {/* Hero Image Section */}
       <motion.div
         className="relative h-96 overflow-hidden bg-gray-900"
@@ -372,10 +419,10 @@ export default function BlogDetail() {
                   </div>
                 </div>
 
-                {/* Body Content */}
+                {/* Body Content - with prose styling for HTML */}
                 <div
                   ref={contentRef}
-                  className="prose prose-invert prose-lg max-w-none mb-12"
+                  className="prose prose-invert prose-lg max-w-none mb-12 prose-h2:text-3xl prose-h2:font-heading prose-h2:font-bold prose-h2:mt-8 prose-h2:mb-4 prose-p:text-gray-300 prose-a:text-blue-400 prose-a:hover:text-blue-300 prose-code:text-amber-300 prose-code:bg-gray-900 prose-code:px-2 prose-code:py-1 prose-code:rounded prose-pre:bg-gray-900 prose-pre:border prose-pre:border-gray-800"
                   dangerouslySetInnerHTML={{ __html: post.body }}
                 />
 
@@ -417,36 +464,44 @@ export default function BlogDetail() {
               </motion.section>
 
               {/* More from Blog */}
-              <motion.section
-                className="py-12"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.5 }}
-              >
-                <h2 className="text-3xl font-heading font-bold mb-8">More from the Blog</h2>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                  {/* Placeholder for related posts - would be fetched from Builder */}
-                  <div className="bg-gray-900 border border-gray-800 rounded-lg overflow-hidden hover:border-blue-500/50 transition">
-                    <div className="bg-gray-800 h-40 flex items-center justify-center">
-                      <span className="text-gray-600">No related posts yet</span>
-                    </div>
-                    <div className="p-4">
-                      <h3 className="font-heading font-bold text-white mb-2">
-                        Check back soon
-                      </h3>
-                      <p className="text-gray-400 text-sm">
-                        More articles coming soon...
-                      </p>
-                    </div>
+              {relatedPosts.length > 0 && (
+                <motion.section
+                  className="py-12"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: 0.5 }}
+                >
+                  <h2 className="text-3xl font-heading font-bold mb-8">More from the Blog</h2>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {relatedPosts.map((relatedPost, idx) => (
+                      <motion.div
+                        key={relatedPost.id}
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.4, delay: 0.7 + idx * 0.1 }}
+                      >
+                        <Link
+                          to={`/blog/${relatedPost.slug}`}
+                          className="group p-4 border border-gray-700 rounded-lg hover:border-blue-500/50 hover:bg-gray-800/50 transition block"
+                        >
+                          <h4 className="font-heading font-bold text-white group-hover:text-blue-300 transition mb-2">
+                            {relatedPost.title}
+                          </h4>
+                          <p className="text-gray-500 text-sm font-mono">
+                            {new Date(relatedPost.publishedDate).toLocaleDateString()}
+                          </p>
+                        </Link>
+                      </motion.div>
+                    ))}
                   </div>
-                </div>
-              </motion.section>
+                </motion.section>
+              )}
             </div>
 
             {/* Sidebar */}
             <div className="lg:col-span-1">
               <div className="sticky top-24 space-y-6">
-                <TableOfContents items={post.tableOfContents} activeId={activeId} />
+                <TableOfContents items={post.tableOfContents} activeId={activeSection} />
                 <Author
                   name={post.author.name}
                   role={post.author.role}
