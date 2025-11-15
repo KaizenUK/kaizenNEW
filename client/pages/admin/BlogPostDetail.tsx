@@ -141,7 +141,6 @@ export default function BlogPostDetail() {
 
       // Re-fetch the post to sync latest data
       const results = await builder.getAll("blog-post", {
-        fields: "data.title,data.slug,data.excerpt,data.publishedDate,data.body,data.tags,data.coverImage",
         query: { "data.slug": slug },
         limit: 1,
       });
