@@ -531,14 +531,26 @@ export default function BlogDetail() {
           limit: 1,
         });
 
+        console.log("📝 BlogDetail Fetch Results:", results);
+
         if (results && results.length > 0) {
           const builderPost = results[0] as BlogPostDetail;
+          console.log("Post Title:", builderPost.data.title);
+          console.log("Post Body Type:", typeof builderPost.data.body);
+          console.log("Post Body Length:", builderPost.data.body?.length);
+          console.log("Post Body First 500 chars:", builderPost.data.body?.substring(0, 500));
+          console.log("CoverImage:", builderPost.data.coverImage);
+
+          const bodyContent = builderPost.data.body || "";
+          const extractedHeadings = extractHeadings(bodyContent);
+          console.log("Extracted Headings:", extractedHeadings);
+
           const processedPost: ProcessedPost = {
             id: builderPost.id,
             title: builderPost.data.title || "Untitled",
             slug: builderPost.data.slug || slug,
             publishedDate: builderPost.data.publishedDate || new Date().toISOString(),
-            body: builderPost.data.body || "",
+            body: bodyContent,
             coverImage: getImageUrl(builderPost.data.coverImage),
             excerpt: builderPost.data.excerpt || "",
             category: "Blog Post",
@@ -547,8 +559,8 @@ export default function BlogDetail() {
               role: "Web Design & Agile",
               image: "https://cdn.builder.io/api/v1/image/assets%2Fe4ae46bbd81b4b95bef54d66dd9748cc%2Fbe9c606a991946d9b3a5d47d9cfbf290?format=webp&width=800",
             },
-            readingTime: calculateReadingTime(builderPost.data.body || ""),
-            tableOfContents: extractHeadings(builderPost.data.body || ""),
+            readingTime: calculateReadingTime(bodyContent),
+            tableOfContents: extractedHeadings,
           };
           setPost(processedPost);
         } else {
