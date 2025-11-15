@@ -731,10 +731,15 @@ export default function BlogDetail() {
   return (
     <Layout>
       {/* Reading Progress Bar */}
-      <motion.div
-        className="fixed top-0 left-0 right-0 h-2 bg-gradient-to-r from-blue-500 via-purple-500 to-cyan-500 z-[9999] origin-left"
-        style={{ scaleX }}
-      />
+      <div className="fixed top-0 left-0 right-0 bg-gray-900 border-b border-gray-800 z-[9999] px-4 py-2 flex items-center gap-3">
+        <motion.div
+          className="h-2 bg-gradient-to-r from-blue-500 via-purple-500 to-cyan-500 rounded flex-1 origin-left overflow-hidden"
+          style={{ scaleX }}
+        />
+        <span className="text-white text-xs font-mono font-bold whitespace-nowrap">
+          {scrollProgress}%
+        </span>
+      </div>
 
       {/* Hero */}
       <motion.section
