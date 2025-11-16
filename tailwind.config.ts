@@ -14,8 +14,8 @@ export default {
     },
     extend: {
       fontFamily: {
-        heading: ["Space Grotesk", "system-ui", "sans-serif"],
-        body: ["Inter", "system-ui", "sans-serif"],
+        heading: ["Space Grotesk", "Inter", "system-ui", "sans-serif"],
+        body: ["Space Grotesk", "Inter", "system-ui", "sans-serif"],
       },
       colors: {
         border: "hsl(var(--border))",
@@ -62,12 +62,12 @@ export default {
           ring: "hsl(var(--sidebar-ring))",
         },
         kaizen: {
-          dark: "#0F172A",
-          light: "#F8FAFC",
-          "text-dark": "#1E293B",
-          "text-light": "#F1F5F9",
-          cyan: "#06B6D4",
-          lime: "#84CC16",
+          dark: "rgb(var(--kaizen-dark) / <alpha-value>)",
+          light: "rgb(var(--kaizen-light) / <alpha-value>)",
+          "text-dark": "rgb(var(--kaizen-text-dark) / <alpha-value>)",
+          "text-light": "rgb(var(--kaizen-text-light) / <alpha-value>)",
+          cyan: "rgb(var(--kaizen-cyan) / <alpha-value>)",
+          lime: "rgb(var(--kaizen-lime) / <alpha-value>)",
         },
       },
       borderRadius: {

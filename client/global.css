@@ -42,6 +42,13 @@
 
     --radius: 0.5rem;
 
+    --kaizen-dark: 15 23 42;
+    --kaizen-light: 248 250 252;
+    --kaizen-text-dark: 30 41 59;
+    --kaizen-text-light: 241 245 249;
+    --kaizen-cyan: 6 182 212;
+    --kaizen-lime: 132 204 22;
+
     --sidebar-background: 210 14% 97%;
     --sidebar-foreground: 222 47% 11%;
     --sidebar-primary: 186 100% 42%;
@@ -89,6 +96,13 @@
     --sidebar-accent-foreground: 222 47% 11%;
     --sidebar-border: 222 47% 20%;
     --sidebar-ring: 186 100% 42%;
+
+    --kaizen-dark: 2 6 23;
+    --kaizen-light: 15 23 42;
+    --kaizen-text-dark: 241 245 249;
+    --kaizen-text-light: 226 232 240;
+    --kaizen-cyan: 6 182 212;
+    --kaizen-lime: 132 204 22;
   }
 }
 
@@ -102,7 +116,7 @@
   }
 
   body {
-    @apply bg-background text-foreground font-body;
+    @apply bg-background text-foreground font-body antialiased;
   }
 
   h1,
@@ -112,6 +126,74 @@
   h5,
   h6 {
     @apply font-heading font-bold;
+  }
+
+  /* Ensure Kaizen text tokens stay legible in dark mode */
+  .dark .text-kaizen-text-dark {
+    color: rgb(var(--kaizen-text-light) / 1);
+  }
+
+  .dark .text-kaizen-text-dark\/80 {
+    color: rgb(var(--kaizen-text-light) / 0.8);
+  }
+
+  .dark .text-kaizen-text-dark\/70 {
+    color: rgb(var(--kaizen-text-light) / 0.7);
+  }
+
+  .dark .text-kaizen-text-dark\/60 {
+    color: rgb(var(--kaizen-text-light) / 0.6);
+  }
+
+  .dark .text-kaizen-text-dark\/50 {
+    color: rgb(var(--kaizen-text-light) / 0.5);
+  }
+
+  /* Give white panels a dark-friendly alternative background */
+  .dark .bg-white {
+    background-color: hsl(var(--card));
+  }
+
+  /* Gradient borders for cards so they pop in dark mode */
+  .dark .rounded-2xl.border.border-kaizen-light,
+  .dark .rounded-xl.border.border-kaizen-light,
+  .dark .rounded-lg.border.border-kaizen-light {
+    border-color: transparent !important;
+    background-color: transparent;
+    background-image:
+      linear-gradient(
+        145deg,
+        rgb(var(--kaizen-dark) / 0.94),
+        rgb(var(--kaizen-dark) / 0.88)
+      ),
+      linear-gradient(
+        120deg,
+        rgb(var(--kaizen-cyan) / 0.9),
+        rgb(var(--kaizen-lime) / 0.9)
+      );
+    background-origin: border-box;
+    background-clip: padding-box, border-box;
+    box-shadow: 0 25px 60px rgba(4, 13, 33, 0.55);
+    transition: box-shadow 200ms ease, transform 200ms ease,
+      background-image 200ms ease;
+  }
+
+  .dark .rounded-2xl.border.border-kaizen-light:hover,
+  .dark .rounded-xl.border.border-kaizen-light:hover,
+  .dark .rounded-lg.border.border-kaizen-light:hover {
+    box-shadow: 0 35px 80px rgba(4, 13, 33, 0.65);
+    transform: translateY(-2px);
+    background-image:
+      linear-gradient(
+        145deg,
+        rgb(var(--kaizen-dark) / 0.96),
+        rgb(var(--kaizen-dark) / 0.9)
+      ),
+      linear-gradient(
+        120deg,
+        rgb(var(--kaizen-cyan) / 1),
+        rgb(var(--kaizen-lime) / 1)
+      );
   }
 
   :where(p, span, li, a, button, label, td, th) {

@@ -1,19 +1,126 @@
-import { Link } from "react-router-dom";
-import { Menu, X, ChevronDown } from "lucide-react";
-import { useState } from "react";
+import { Link, useLocation } from "react-router-dom";
+import { Menu, X, ChevronDown, Moon, Sun } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Helmet } from "react-helmet-async";
+import {
+  buildLocalBusinessSchema,
+  getPageMeta,
+  SITE_NAME,
+  SITE_URL,
+  DEFAULT_OG_IMAGE,
+} from "@/lib/seo";
 
 interface LayoutProps {
   children: React.ReactNode;
 }
 
+type ThemeMode = "light" | "dark";
+
+const THEME_STORAGE_KEY = "kaizen-theme";
+
+const getPreferredTheme = (): ThemeMode => {
+  if (typeof window === "undefined") return "light";
+  const savedTheme = window.localStorage.getItem(THEME_STORAGE_KEY);
+  if (savedTheme === "dark" || savedTheme === "light") {
+    return savedTheme;
+  }
+  return window.matchMedia("(prefers-color-scheme: dark)").matches
+    ? "dark"
+    : "light";
+};
+
 const Layout: React.FC<LayoutProps> = ({ children }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [servicesOpen, setServicesOpen] = useState(false);
+  const [theme, setTheme] = useState<ThemeMode>(() => getPreferredTheme());
+  const location = useLocation();
+  const normalizedPath =
+    location.pathname !== "/" && location.pathname.endsWith("/")
+      ? location.pathname.slice(0, -1)
+      : location.pathname;
+  const meta = getPageMeta(normalizedPath);
+  const canonicalUrl =
+    normalizedPath === "/" ? SITE_URL : `${SITE_URL}${normalizedPath}`;
+  const keywords = meta.keywords?.join(", ");
+  const robotsValue = meta.noIndex ? "noindex, nofollow" : "index, follow";
+  const structuredData = buildLocalBusinessSchema(meta.description);
+  const ogImage = meta.image ?? DEFAULT_OG_IMAGE;
+
+  useEffect(() => {
+    if (typeof document === "undefined") return;
+    const root = document.documentElement;
+    if (theme === "dark") {
+      root.classList.add("dark");
+    } else {
+      root.classList.remove("dark");
+    }
+    root.dataset.theme = theme;
+
+    if (typeof window !== "undefined") {
+      window.localStorage.setItem(THEME_STORAGE_KEY, theme);
+    }
+  }, [theme]);
+
+  const toggleTheme = () => {
+    setTheme((prev) => (prev === "light" ? "dark" : "light"));
+  };
+
+  const ThemeToggleButton = ({ showLabel = false }: { showLabel?: boolean }) => (
+    <button
+      type="button"
+      onClick={toggleTheme}
+      aria-pressed={theme === "dark"}
+      aria-label={
+        theme === "dark" ? "Switch to light mode" : "Switch to dark mode"
+      }
+      className="inline-flex min-h-[44px] min-w-[44px] items-center justify-center gap-2 rounded-full border border-kaizen-light/70 bg-kaizen-light/60 px-4 py-2 text-sm font-heading font-medium text-kaizen-text-dark transition hover:border-kaizen-cyan focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-kaizen-cyan dark:bg-kaizen-dark/40 dark:text-kaizen-text-light md:px-3 md:py-2"
+    >
+      {theme === "dark" ? <Sun size={18} /> : <Moon size={18} />}
+      {showLabel && (
+        <span>{theme === "dark" ? "Light mode" : "Dark mode"}</span>
+      )}
+    </button>
+  );
 
   return (
-    <div className="min-h-screen flex flex-col bg-kaizen-light text-kaizen-text-dark">
+    <>
+      <Helmet prioritizeSeoTags>
+        <title>{meta.title}</title>
+        <meta name="description" content={meta.description} />
+        {keywords && <meta name="keywords" content={keywords} />}
+        <meta name="robots" content={robotsValue} />
+        <meta name="googlebot" content={robotsValue} />
+        <meta name="author" content={SITE_NAME} />
+        <meta name="publisher" content={SITE_NAME} />
+        <meta name="geo.region" content="GB-LIV" />
+        <meta name="geo.placename" content="Liverpool" />
+        <meta name="geo.position" content="53.4084;-2.9916" />
+        <meta name="ICBM" content="53.4084, -2.9916" />
+        <link rel="canonical" href={canonicalUrl} />
+        <meta property="og:locale" content="en_GB" />
+        <meta property="og:type" content="website" />
+        <meta property="og:site_name" content={SITE_NAME} />
+        <meta property="og:title" content={meta.title} />
+        <meta property="og:description" content={meta.description} />
+        <meta property="og:url" content={canonicalUrl} />
+        <meta property="og:image" content={ogImage} />
+        <meta
+          property="og:image:alt"
+          content="Kaizen Web - Liverpool web design agency"
+        />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={meta.title} />
+        <meta name="twitter:description" content={meta.description} />
+        <meta name="twitter:image" content={ogImage} />
+        <meta name="twitter:site" content="@kaizenweblpool" />
+        <script type="application/ld+json">
+          {JSON.stringify(structuredData)}
+        </script>
+      </Helmet>
+
+      <div className="min-h-screen flex flex-col bg-background text-foreground transition-colors">
       {/* Header */}
-      <header className="sticky top-0 z-50 bg-white border-b border-kaizen-light">
+      <header className="sticky top-0 z-50 border-b border-border bg-card/95 backdrop-blur transition-colors">
         <nav className="container mx-auto px-4 py-3 flex items-center justify-between">
           {/* Logo */}
           <Link
@@ -52,7 +159,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 
               {/* Mega Menu Panel */}
               {servicesOpen && (
-                <div className="absolute left-0 top-full mt-0 w-screen bg-white border-t border-kaizen-light shadow-lg">
+                <div className="absolute left-0 top-full mt-0 w-screen border-t border-border bg-card shadow-lg transition-colors">
                   <div className="container mx-auto px-4 py-8">
                     <div className="grid grid-cols-3 gap-8">
                       {/* Web Services */}
@@ -178,10 +285,17 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             >
               Blog
             </Link>
+
+            <div className="ml-2">
+              <ThemeToggleButton />
+            </div>
           </div>
 
-          {/* CTA and Mobile Button */}
+          {/* CTA, Theme Toggle, and Mobile Button */}
           <div className="flex items-center gap-4">
+            <div className="md:hidden">
+              <ThemeToggleButton />
+            </div>
             <Link
               to="/contact"
               className="hidden sm:inline-block px-6 py-2 rounded-full bg-gradient-to-r from-kaizen-cyan to-kaizen-lime text-white font-heading font-medium text-sm hover:opacity-90 transition"
@@ -200,8 +314,8 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         </nav>
 
         {/* Mobile Menu */}
-        {mobileMenuOpen && (
-          <div className="md:hidden bg-white border-t border-kaizen-light">
+      {mobileMenuOpen && (
+        <div className="md:hidden border-t border-border bg-card transition-colors">
             <div className="container mx-auto px-4 py-4 flex flex-col gap-4">
               <Link
                 to="/"
@@ -462,6 +576,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         </div>
       </footer>
     </div>
+    </>
   );
 };
 

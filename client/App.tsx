@@ -88,6 +88,27 @@ function AppContent() {
     }
   }, [isAdminRoute]);
 
+  useEffect(() => {
+    if (typeof document === "undefined") return;
+    if (isAdminRoute) {
+      document.documentElement.classList.remove("dark");
+      document.documentElement.dataset.theme = "light";
+      return;
+    }
+
+    const storedTheme =
+      typeof window !== "undefined"
+        ? window.localStorage.getItem("kaizen-theme")
+        : null;
+    if (storedTheme === "dark") {
+      document.documentElement.classList.add("dark");
+      document.documentElement.dataset.theme = "dark";
+    } else {
+      document.documentElement.classList.remove("dark");
+      document.documentElement.dataset.theme = "light";
+    }
+  }, [isAdminRoute]);
+
   return (
     <>
       {/* Only show CrispChatButton on non-admin routes */}
