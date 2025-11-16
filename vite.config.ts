@@ -22,7 +22,30 @@ export default defineConfig(({ mode }) => ({
   build: {
     outDir: "dist/spa",
   },
-  plugins: [react(), expressPlugin()],
+  plugins: [
+    react(),
+    expressPlugin(),
+    sitemap({
+      baseUrl: "https://www.kaizenweb.co.uk",
+      dynamicRoutes: [
+        "/",
+        "/about",
+        "/pledge",
+        "/case-studies",
+        "/blog",
+        "/contact",
+        "/services/web-design-liverpool",
+        "/services/wordpress-web-design",
+        "/services/ecommerce",
+        "/services/local-seo",
+        "/services/digital-transformation",
+        "/agile-coaching",
+        "/contract-product-owner",
+        "/privacy-policy",
+        "/cookie-policy",
+      ],
+    }),
+  ],
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./client"),
