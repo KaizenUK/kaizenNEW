@@ -196,7 +196,6 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 
               {/* Services Mega Menu */}
               <div
-                className="relative"
                 onMouseEnter={() => setServicesOpen(true)}
                 onMouseLeave={() => setServicesOpen(false)}
               >
@@ -214,7 +213,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                   />
                 </button>
 
-                {/* Mega Menu Panel - 2 Column Layout */}
+                {/* Mega Menu Panel - Full Width, 2 Column Layout */}
                 {servicesOpen && (
                   <motion.div
                     initial={{ opacity: 0, y: -10 }}
@@ -223,7 +222,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                     transition={{ duration: 0.2 }}
                     onMouseEnter={() => setServicesOpen(true)}
                     onMouseLeave={() => setServicesOpen(false)}
-                    className="absolute left-0 right-0 top-full z-[45] border-b"
+                    className="fixed left-0 right-0 top-20 z-40 border-b w-screen"
                     style={{
                       backgroundColor:
                         theme === "light"
