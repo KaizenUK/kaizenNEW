@@ -448,6 +448,12 @@ export default function BlogPostDetail() {
                 className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-blue-500/60 focus:border-transparent font-body"
                 placeholder="Short summary of the post"
               />
+              <div className={`mt-2 text-xs font-body ${formExcerpt.length >= 80 && formExcerpt.length <= 180 ? "text-green-400" : "text-yellow-400"}`}>
+                {formExcerpt.length} characters
+                {(formExcerpt.length < 80 || formExcerpt.length > 180) && formExcerpt && (
+                  <p className="mt-1">Descriptions around 80–180 characters are often clearer in search snippets.</p>
+                )}
+              </div>
             </motion.div>
 
             {/* Published Date */}
