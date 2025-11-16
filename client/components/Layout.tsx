@@ -1,8 +1,8 @@
 import { Link, useLocation } from "react-router-dom";
 import { Menu, X, ChevronDown, Moon, Sun, Linkedin } from "lucide-react";
-import { useEffect, useState } from "react";
-import { Helmet } from "react-helmet-async";
-import { motion } from "framer-motion";
+import { useEffect, useRef, useState } from "react";
+import { Helmet } from "react-helmet-Async";
+import { motion, AnimatePresence } from "framer-motion";
 import { useCalendly } from "@/context/CalendlyContext";
 import {
   buildLocalBusinessSchema,
@@ -35,9 +35,11 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [servicesOpen, setServicesOpen] = useState(false);
   const [theme, setTheme] = useState<ThemeMode>(() => getPreferredTheme());
-  const [navTextLight, setNavTextLight] = useState(false);
+  const [textIsDark, setTextIsDark] = useState(true);
   const { openCalendly } = useCalendly();
   const location = useLocation();
+  const detectionZoneRef = useRef<HTMLDivElement>(null);
+
   const normalizedPath =
     location.pathname !== "/" && location.pathname.endsWith("/")
       ? location.pathname.slice(0, -1)
@@ -71,19 +73,53 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     }
   }, [location.pathname]);
 
+  // Detect background color beneath header to adjust text color
   useEffect(() => {
     if (typeof window === "undefined") {
       return;
     }
 
-    const handleScroll = () => {
-      const scrollY = window.scrollY;
-      setNavTextLight(scrollY > 80);
+    const detectBackgroundColor = () => {
+      if (!detectionZoneRef.current) return;
+
+      // Get the element at the position below the header
+      const headerHeight = 80; // approximate header height
+      const elementBelow = document.elementFromPoint(
+        window.innerWidth / 2,
+        headerHeight + 10
+      );
+
+      if (elementBelow) {
+        const computedStyle = window.getComputedStyle(elementBelow);
+        const bgColor = computedStyle.backgroundColor;
+
+        // Check if background is light or dark
+        // Light backgrounds: white, light gray, light colors
+        // Dark backgrounds: dark navy, dark gray, dark colors
+        const isLightBackground =
+          bgColor === "rgba(0, 0, 0, 0)" || // transparent
+          bgColor.includes("rgb(255") || // white or near-white
+          bgColor.includes("rgb(248") || // kaizen-light
+          bgColor.includes("rgb(241") || // light grays
+          bgColor.includes("rgb(242") || // light grays
+          bgColor.includes("rgb(243") || // light grays
+          bgColor.includes("rgb(244") || // light grays
+          bgColor.includes("rgb(245") || // light grays
+          bgColor.includes("rgb(246") || // light grays
+          bgColor.includes("rgb(247"); // light grays
+
+        setTextIsDark(isLightBackground);
+      }
     };
 
-    handleScroll();
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
+    detectBackgroundColor();
+    window.addEventListener("scroll", detectBackgroundColor, { passive: true });
+    window.addEventListener("resize", detectBackgroundColor, { passive: true });
+
+    return () => {
+      window.removeEventListener("scroll", detectBackgroundColor);
+      window.removeEventListener("resize", detectBackgroundColor);
+    };
   }, []);
 
   const toggleTheme = () => {
@@ -150,7 +186,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       <div className="min-h-screen flex flex-col bg-background text-foreground transition-colors">
         {/* Header - Frosted Glass Effect */}
         <header
-          className="sticky top-0 z-50 border-b"
+          className="sticky top-0 z-40 border-b"
           style={{
             backgroundColor:
               theme === "light"
@@ -186,24 +222,25 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
               <Link
                 to="/"
                 className={`px-3 py-2 text-lg font-heading font-medium hover:text-kaizen-cyan transition rounded-md hover:bg-kaizen-light/50 dark:hover:bg-white/5 ${
-                  navTextLight
-                    ? "text-white"
-                    : "text-kaizen-dark dark:text-white"
+                  textIsDark
+                    ? "text-kaizen-dark dark:text-white"
+                    : "text-white dark:text-white"
                 }`}
               >
                 Home
               </Link>
 
-              {/* Services Mega Menu */}
+              {/* Services Mega Menu - Relative Container */}
               <div
+                className="relative"
                 onMouseEnter={() => setServicesOpen(true)}
                 onMouseLeave={() => setServicesOpen(false)}
               >
                 <button
                   className={`px-3 py-2 text-lg font-heading font-medium hover:text-kaizen-cyan transition rounded-md hover:bg-kaizen-light/50 dark:hover:bg-white/5 flex items-center gap-1 ${
-                    navTextLight
-                      ? "text-white"
-                      : "text-kaizen-dark dark:text-white"
+                    textIsDark
+                      ? "text-kaizen-dark dark:text-white"
+                      : "text-white dark:text-white"
                   }`}
                 >
                   Services
@@ -213,118 +250,105 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                   />
                 </button>
 
-                {/* Mega Menu Panel - Full Width, 2 Column Layout */}
-                {servicesOpen && (
-                  <motion.div
-                    initial={{ opacity: 0, y: -10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -10 }}
-                    transition={{ duration: 0.2 }}
-                    onMouseEnter={() => setServicesOpen(true)}
-                    onMouseLeave={() => setServicesOpen(false)}
-                    className="fixed left-0 right-0 top-20 z-40 border-b w-screen"
-                    style={{
-                      backgroundColor:
-                        theme === "light"
-                          ? "rgba(255, 255, 255, 0.95)"
-                          : "rgba(15, 23, 42, 0.95)",
-                      backdropFilter: "blur(20px)",
-                      borderBottomColor: "rgba(255, 255, 255, 0.1)",
-                    }}
-                  >
-                    <div className="container mx-auto px-4 py-12">
-                      <div className="grid grid-cols-2 gap-16">
-                        {/* Column 1: Web & SEO */}
-                        <div>
-                          <p className="text-xs font-mono text-kaizen-text-dark dark:text-white/60 font-bold mb-6 tracking-widest">
-                            WEB & SEO
-                          </p>
-
-                          <div className="mb-8">
-                            <Link
-                              to="/services/web-design-liverpool"
-                              className="block font-heading font-bold text-lg text-kaizen-dark dark:text-white mb-2 hover:text-kaizen-cyan transition"
-                            >
-                              Web Design Liverpool
-                            </Link>
-                          </div>
-
-                          <div className="mb-8">
-                            <Link
-                              to="/services/wordpress-web-design"
-                              className="block font-heading font-bold text-lg text-kaizen-dark dark:text-white mb-2 hover:text-kaizen-cyan transition"
-                            >
-                              WordPress Design
-                            </Link>
-                          </div>
-
-                          <div className="mb-8">
-                            <Link
-                              to="/services/ecommerce"
-                              className="block font-heading font-bold text-lg text-kaizen-dark dark:text-white mb-2 hover:text-kaizen-cyan transition"
-                            >
-                              E-commerce Development
-                            </Link>
-                          </div>
-
+                {/* Mega Menu Panel */}
+                <AnimatePresence>
+                  {servicesOpen && (
+                    <motion.div
+                      initial={{ opacity: 0, y: -5 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -5 }}
+                      transition={{ duration: 0.15 }}
+                      onMouseEnter={() => setServicesOpen(true)}
+                      onMouseLeave={() => setServicesOpen(false)}
+                      className="absolute left-0 top-full mt-0 z-50 min-w-max bg-white dark:bg-slate-900 rounded-lg shadow-xl border border-kaizen-light/20 dark:border-white/10 overflow-hidden"
+                      style={{
+                        backdropFilter: "blur(10px)",
+                      }}
+                    >
+                      <div className="p-8 min-w-[600px]">
+                        <div className="grid grid-cols-2 gap-12">
+                          {/* Column 1: Web & SEO */}
                           <div>
-                            <Link
-                              to="/services/local-seo"
-                              className="block font-heading font-bold text-lg text-kaizen-dark dark:text-white mb-2 hover:text-kaizen-cyan transition"
-                            >
-                              Local SEO
-                            </Link>
+                            <p className="text-xs font-mono text-kaizen-text-dark/60 dark:text-white/60 font-bold mb-6 tracking-widest">
+                              WEB & SEO
+                            </p>
+
+                            <div className="space-y-6">
+                              <Link
+                                to="/services/web-design-liverpool"
+                                className="block font-heading font-bold text-base text-kaizen-dark dark:text-white hover:text-kaizen-cyan dark:hover:text-kaizen-cyan transition"
+                              >
+                                Web Design Liverpool
+                              </Link>
+
+                              <Link
+                                to="/services/wordpress-web-design"
+                                className="block font-heading font-bold text-base text-kaizen-dark dark:text-white hover:text-kaizen-cyan dark:hover:text-kaizen-cyan transition"
+                              >
+                                WordPress Design
+                              </Link>
+
+                              <Link
+                                to="/services/ecommerce"
+                                className="block font-heading font-bold text-base text-kaizen-dark dark:text-white hover:text-kaizen-cyan dark:hover:text-kaizen-cyan transition"
+                              >
+                                E-commerce Development
+                              </Link>
+
+                              <Link
+                                to="/services/local-seo"
+                                className="block font-heading font-bold text-base text-kaizen-dark dark:text-white hover:text-kaizen-cyan dark:hover:text-kaizen-cyan transition"
+                              >
+                                Local SEO
+                              </Link>
+                            </div>
                           </div>
-                        </div>
 
-                        {/* Column 2: Agile & Transformation */}
-                        <div>
-                          <p className="text-xs font-mono text-kaizen-text-dark dark:text-white/60 font-bold mb-6 tracking-widest">
-                            AGILE & TRANSFORMATION
-                          </p>
-
-                          <div className="mb-8">
-                            <Link
-                              to="/services/digital-transformation"
-                              className="block font-heading font-bold text-lg text-kaizen-dark dark:text-white mb-2 hover:text-kaizen-cyan transition"
-                            >
-                              Digital Transformation
-                            </Link>
-                          </div>
-
-                          <div className="mb-8">
-                            <Link
-                              to="/agile-coaching"
-                              className="block font-heading font-bold text-lg text-kaizen-dark dark:text-white mb-2 hover:text-kaizen-cyan transition"
-                            >
-                              Agile Coaching
-                            </Link>
-                          </div>
-
+                          {/* Column 2: Agile & Transformation */}
                           <div>
-                            <Link
-                              to="/contract-product-owner"
-                              className="block font-heading font-bold text-lg text-kaizen-dark dark:text-white mb-2 hover:text-kaizen-cyan transition flex items-center gap-2"
-                            >
-                              Contract Product Owner
-                              <span className="inline-block px-2 py-1 bg-kaizen-cyan/20 text-kaizen-cyan text-xs font-bold rounded">
-                                Founder-Led
-                              </span>
-                            </Link>
+                            <p className="text-xs font-mono text-kaizen-text-dark/60 dark:text-white/60 font-bold mb-6 tracking-widest">
+                              AGILE & TRANSFORMATION
+                            </p>
+
+                            <div className="space-y-6">
+                              <Link
+                                to="/services/digital-transformation"
+                                className="block font-heading font-bold text-base text-kaizen-dark dark:text-white hover:text-kaizen-cyan dark:hover:text-kaizen-cyan transition"
+                              >
+                                Digital Transformation
+                              </Link>
+
+                              <Link
+                                to="/agile-coaching"
+                                className="block font-heading font-bold text-base text-kaizen-dark dark:text-white hover:text-kaizen-cyan dark:hover:text-kaizen-cyan transition"
+                              >
+                                Agile Coaching
+                              </Link>
+
+                              <Link
+                                to="/contract-product-owner"
+                                className="block font-heading font-bold text-base text-kaizen-dark dark:text-white hover:text-kaizen-cyan dark:hover:text-kaizen-cyan transition flex items-center gap-2"
+                              >
+                                Contract Product Owner
+                                <span className="inline-block px-2 py-1 bg-kaizen-cyan/20 text-kaizen-cyan text-xs font-bold rounded">
+                                  Founder-Led
+                                </span>
+                              </Link>
+                            </div>
                           </div>
                         </div>
                       </div>
-                    </div>
-                  </motion.div>
-                )}
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
 
               <Link
                 to="/about"
                 className={`px-3 py-2 text-lg font-heading font-medium hover:text-kaizen-cyan transition rounded-md hover:bg-kaizen-light/50 dark:hover:bg-white/5 ${
-                  navTextLight
-                    ? "text-white"
-                    : "text-kaizen-dark dark:text-white"
+                  textIsDark
+                    ? "text-kaizen-dark dark:text-white"
+                    : "text-white dark:text-white"
                 }`}
               >
                 About
@@ -333,9 +357,9 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
               <Link
                 to="/pledge"
                 className={`px-3 py-2 text-lg font-heading font-medium hover:text-kaizen-cyan transition rounded-md hover:bg-kaizen-light/50 dark:hover:bg-white/5 ${
-                  navTextLight
-                    ? "text-white"
-                    : "text-kaizen-dark dark:text-white"
+                  textIsDark
+                    ? "text-kaizen-dark dark:text-white"
+                    : "text-white dark:text-white"
                 }`}
               >
                 Our Pledge
@@ -344,9 +368,9 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
               <Link
                 to="/case-studies"
                 className={`px-3 py-2 text-lg font-heading font-medium hover:text-kaizen-cyan transition rounded-md hover:bg-kaizen-light/50 dark:hover:bg-white/5 ${
-                  navTextLight
-                    ? "text-white"
-                    : "text-kaizen-dark dark:text-white"
+                  textIsDark
+                    ? "text-kaizen-dark dark:text-white"
+                    : "text-white dark:text-white"
                 }`}
               >
                 Case Studies
@@ -355,9 +379,9 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
               <Link
                 to="/blog"
                 className={`px-3 py-2 text-lg font-heading font-medium hover:text-kaizen-cyan transition rounded-md hover:bg-kaizen-light/50 dark:hover:bg-white/5 ${
-                  navTextLight
-                    ? "text-white"
-                    : "text-kaizen-dark dark:text-white"
+                  textIsDark
+                    ? "text-kaizen-dark dark:text-white"
+                    : "text-white dark:text-white"
                 }`}
               >
                 Blog
@@ -388,7 +412,11 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 
               {/* Mobile Menu Button */}
               <button
-                className="md:hidden text-kaizen-dark dark:text-white"
+                className={`md:hidden font-heading font-bold transition ${
+                  textIsDark
+                    ? "text-kaizen-dark dark:text-white"
+                    : "text-white dark:text-white"
+                }`}
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
                 aria-label="Toggle mobile menu"
               >
@@ -396,6 +424,9 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
               </button>
             </div>
           </nav>
+
+          {/* Detection zone for background color */}
+          <div ref={detectionZoneRef} className="absolute pointer-events-none" />
 
           {/* Mobile Menu */}
           {mobileMenuOpen && (
