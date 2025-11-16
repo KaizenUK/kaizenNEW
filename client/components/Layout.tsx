@@ -157,7 +157,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             borderBottomColor: theme === "light" ? "rgba(255, 255, 255, 0.1)" : "rgba(255, 255, 255, 0.1)",
           }}
         >
-          <nav className="container mx-auto px-4 py-3 flex items-center justify-between">
+          <nav className="container mx-auto px-4 py-3 flex items-center justify-between relative">
             {/* Logo */}
             <Link
               to="/"
@@ -188,9 +188,8 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 
               {/* Services Mega Menu */}
               <div
-                className="relative w-[26rem]"
+                className="relative"
                 onMouseEnter={() => setServicesOpen(true)}
-                onMouseLeave={() => setServicesOpen(false)}
               >
                 <button className={`px-3 py-2 text-lg font-heading font-medium hover:text-kaizen-cyan transition rounded-md hover:bg-kaizen-light/50 dark:hover:bg-white/5 flex items-center gap-1 ${
                   navTextLight ? "text-white" : "text-kaizen-dark dark:text-white"
@@ -209,7 +208,9 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -10 }}
                     transition={{ duration: 0.2 }}
-                    className="absolute left-0 right-0 top-full z-[45] border-b"
+                    onMouseEnter={() => setServicesOpen(true)}
+                    onMouseLeave={() => setServicesOpen(false)}
+                    className="fixed inset-x-0 top-[4.5rem] z-[45] border-b"
                     style={{
                       backgroundColor: theme === "light" ? "rgba(255, 255, 255, 0.95)" : "rgba(15, 23, 42, 0.95)",
                       backdropFilter: "blur(20px)",
