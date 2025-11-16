@@ -107,6 +107,11 @@ const pageMeta: Record<string, Partial<PageMeta>> = {
     description:
       "Learn more about Kaizen Web, a Liverpool-based collective of designers, strategists, and engineers focused on sustainable digital growth.",
   },
+  "/pledge": {
+    title: "Our \"No-BS\" Pledge | Transparent Web Design | Kaizen",
+    description:
+      "Our No-BS Pledge. See our transparent policy on AI, pricing, and our process. No black box, no surprise bills, no excuses.",
+  },
   "/agile-coaching": {
     title: "Agile Coaching for Liverpool Teams | Kaizen Web",
     description:
