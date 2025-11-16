@@ -13,6 +13,7 @@ import WebDesign from "./pages/services/WebDesign";
 import LocalSeo from "./pages/services/LocalSeo";
 import DigitalTransformation from "./pages/services/DigitalTransformation";
 import Ecommerce from "./pages/services/Ecommerce";
+import WordPressWebDesign from "./pages/services/WordPressWebDesign";
 import ContractProductOwner from "./pages/ContractProductOwner";
 import CaseStudies from "./pages/CaseStudies";
 import Blog from "./pages/Blog";
