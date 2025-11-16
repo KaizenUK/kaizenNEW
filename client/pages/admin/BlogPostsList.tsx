@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Search, ExternalLink, Edit, Plus } from "lucide-react";
+import { Search, ExternalLink, Edit, Plus, FileText, Info } from "lucide-react";
 import builder from "@/builder";
 import { getBuilderEditUrl } from "@/lib/builder-utils";
 import AdminLayout from "@/components/AdminLayout";
@@ -15,6 +15,7 @@ interface BlogPost {
     publishedDate: string;
     tags: string[];
   };
+  [key: string]: any; // Allow accessing other fields
 }
 
 interface ProcessedPost {
@@ -24,6 +25,7 @@ interface ProcessedPost {
   excerpt: string;
   publishedDate: string;
   tags: string[];
+  status: string; // "Published", "Draft", or "Unknown"
 }
 
 export default function BlogPostsList() {
@@ -34,6 +36,27 @@ export default function BlogPostsList() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [allTags, setAllTags] = useState<string[]>([]);
+  const [statusFilter, setStatusFilter] = useState<"all" | "published" | "draft">("all");
+
+  // Helper function to derive status from Builder post object
+  const deriveStatus = (post: any): string => {
+    // Check for common status indicators in Builder
+    // Order of precedence: published, query.published, lastPublished, state
+    if (post.published === true) return "Published";
+    if (post.published === false) return "Draft";
+    if (post.query?.published === true) return "Published";
+    if (post.query?.published === false) return "Draft";
+    if (post.lastPublished) return "Published";
+    if (post.state === "published") return "Published";
+    if (post.state === "draft") return "Draft";
+    // Fallback: if publishedDate is in the future, consider it draft
+    if (post.data?.publishedDate) {
+      const pubDate = new Date(post.data.publishedDate);
+      if (pubDate > new Date()) return "Draft";
+      return "Published";
+    }
+    return "Unknown";
+  };
 
   // Fetch posts from Builder
   useEffect(() => {
@@ -48,6 +71,11 @@ export default function BlogPostsList() {
           limit: 100,
         });
 
+        // Log sample for development debugging
+        if (results && results.length > 0) {
+          console.log("[BlogPostsList] Sample Builder blog-post:", results[0]);
+        }
+
         const processed: ProcessedPost[] = (results as BlogPost[])
           .map((post) => ({
             id: (post as any).id || "", // guard in case id is missing
@@ -57,6 +85,7 @@ export default function BlogPostsList() {
             publishedDate:
               post.data?.publishedDate || new Date().toISOString(),
             tags: Array.isArray(post.data?.tags) ? post.data.tags : [],
+            status: deriveStatus(post as any),
           }))
           .sort(
             (a, b) =>
@@ -105,8 +134,16 @@ export default function BlogPostsList() {
       );
     }
 
+    // Status filter
+    if (statusFilter !== "all") {
+      results = results.filter(
+        (post) =>
+          post.status.toLowerCase() === statusFilter.toLowerCase(),
+      );
+    }
+
     setFilteredPosts(results);
-  }, [posts, searchQuery, selectedTags]);
+  }, [posts, searchQuery, selectedTags, statusFilter]);
 
   return (
     <AdminLayout>
