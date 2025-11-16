@@ -530,10 +530,14 @@ export default function BlogDetail() {
                     animate={{ opacity: 1 }}
                     transition={{ duration: 0.6, delay: 0.4 }}
                   >
-                    <span>
-                      {new Date(post.publishedDate).toLocaleDateString()}
-                    </span>
-                    <span>•</span>
+                    {publishedLabel && (
+                      <>
+                        <span>
+                          Published on {publishedLabel}
+                        </span>
+                        <span>•</span>
+                      </>
+                    )}
                     <span>{post.readingTime} min read</span>
                   </motion.div>
                 </div>
