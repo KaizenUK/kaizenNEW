@@ -78,7 +78,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 
     const handleScroll = () => {
       const scrollY = window.scrollY;
-      setNavTextLight(scrollY < 80);
+      setNavTextLight(scrollY > 80);
     };
 
     handleScroll();
