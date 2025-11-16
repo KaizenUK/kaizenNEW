@@ -146,7 +146,7 @@ export default function BlogPostDetail() {
           setFormTitle(loadedPost.data.title || "");
           setFormSlug(loadedPost.data.slug || "");
           setFormExcerpt(loadedPost.data.excerpt || "");
-          setFormPublishedDate(loadedPost.data.publishedDate || "");
+          setPublishedAt(loadedPost.data.publishedDate || "");
           setFormTagsString(
             Array.isArray(loadedPost.data.tags)
               ? loadedPost.data.tags.join(", ")
