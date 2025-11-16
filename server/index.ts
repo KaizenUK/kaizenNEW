@@ -22,7 +22,7 @@ export function createServer() {
   app.get("/api/demo", handleDemo);
 
   // Admin API route for creating blog posts
-  app.post("/api/admin/builder/blog-posts", async (req, res) => {
+  app.post("/api/admin/builder-blog-posts", async (req, res) => {
     try {
       if (!BUILDER_API_KEY) {
         return res
