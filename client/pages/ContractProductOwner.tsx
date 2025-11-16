@@ -3,6 +3,7 @@ import Layout from "@/components/Layout";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Helmet } from "react-helmet-async";
+import { useCalendly } from "@/context/CalendlyContext";
 import {
   ArrowRight,
   ArrowUpRight,
@@ -176,6 +177,8 @@ const FlipCard = ({
 };
 
 export default function ContractProductOwner() {
+  const { openCalendly: openCalendlyFromContext } = useCalendly();
+
   return (
     <Layout>
       <Helmet>
@@ -228,13 +231,13 @@ export default function ContractProductOwner() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 1.0, duration: 0.6 }}
             >
-              <Link
-                to="/contact"
+              <button
+                onClick={openCalendlyFromContext}
                 className="px-8 py-3 rounded-lg bg-gradient-to-r from-kaizen-cyan to-kaizen-lime text-kaizen-dark font-heading font-bold hover:shadow-lg hover:shadow-kaizen-cyan/50 transition inline-flex items-center justify-center gap-2"
               >
                 Book a Call with Sean
                 <ArrowRight size={18} />
-              </Link>
+              </button>
               <button
                 onClick={() => {
                   if (typeof window !== "undefined" && (window as any).$crisp) {
@@ -560,13 +563,13 @@ export default function ContractProductOwner() {
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
           >
-            <Link
-              to="/contact"
+            <button
+              onClick={openCalendlyFromContext}
               className="px-8 py-3 rounded-lg bg-gradient-to-r from-kaizen-cyan to-kaizen-lime text-kaizen-dark font-heading font-bold hover:shadow-lg hover:shadow-kaizen-cyan/50 transition inline-flex items-center justify-center gap-2"
             >
               Book a Call with Sean
               <ArrowRight size={18} />
-            </Link>
+            </button>
             <button
               onClick={() => {
                 if (typeof window !== "undefined" && (window as any).$crisp) {
