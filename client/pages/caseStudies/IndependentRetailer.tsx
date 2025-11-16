@@ -223,6 +223,36 @@ export default function IndependentRetailerCase() {
           </div>
         </div>
       </section>
+
+      {/* Pagination */}
+      <section className="bg-kaizen-light dark:bg-slate-900/50 py-16 px-4 border-t border-kaizen-light dark:border-slate-800">
+        <div className="container mx-auto max-w-5xl">
+          <div className="flex items-center justify-between">
+            <Link
+              to="/case-studies/helen-moore-hairdressing"
+              className="group flex items-center gap-3 text-kaizen-dark dark:text-white hover:text-kaizen-cyan transition"
+            >
+              <span className="group-hover:-translate-x-1 transition">←</span>
+              Previous Case Study
+            </Link>
+
+            <Link
+              to="/case-studies"
+              className="text-kaizen-cyan hover:text-kaizen-dark dark:hover:text-white transition text-sm font-medium"
+            >
+              View All
+            </Link>
+
+            <Link
+              to="/case-studies/as-collections"
+              className="group flex items-center gap-3 text-kaizen-dark dark:text-white hover:text-kaizen-cyan transition"
+            >
+              Next Case Study
+              <span className="group-hover:translate-x-1 transition">→</span>
+            </Link>
+          </div>
+        </div>
+      </section>
     </Layout>
   );
 }
