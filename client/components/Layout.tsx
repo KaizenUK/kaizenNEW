@@ -209,7 +209,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -10 }}
                     transition={{ duration: 0.2 }}
-                    className="fixed left-0 right-0 top-[calc(100%+2px)] z-[45] border-b"
+                    className="absolute left-0 right-0 top-full z-[45] border-b"
                     style={{
                       backgroundColor: theme === "light" ? "rgba(255, 255, 255, 0.95)" : "rgba(15, 23, 42, 0.95)",
                       backdropFilter: "blur(20px)",
