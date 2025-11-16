@@ -154,10 +154,12 @@ export default function BlogPostsList() {
       >
         <div className="mb-8 flex items-start justify-between gap-4">
           <div>
-            <h1 className="text-4xl font-heading font-bold mb-2">Blog Posts</h1>
+            <h1 className="text-4xl font-heading font-bold mb-2 bg-gradient-to-r from-blue-300 to-cyan-300 bg-clip-text text-transparent">
+              Blog Posts
+            </h1>
             <p className="text-gray-400 font-body">
               {filteredPosts.length} post{filteredPosts.length !== 1 ? "s" : ""}
-              {searchQuery || selectedTags.length > 0 ? " found" : ""}
+              {searchQuery || selectedTags.length > 0 || statusFilter !== "all" ? " found" : ""}
             </p>
           </div>
           <Link
@@ -168,6 +170,22 @@ export default function BlogPostsList() {
             New Post
           </Link>
         </div>
+
+        {/* Heads Up Info Box */}
+        <motion.div
+          className="mb-6 bg-blue-500/5 border border-blue-500/20 rounded-lg px-4 py-3 flex gap-3 items-start"
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, delay: 0.05 }}
+        >
+          <Info size={18} className="text-blue-400 flex-shrink-0 mt-0.5" />
+          <div className="text-sm font-body text-gray-300">
+            <p className="font-bold text-blue-300 mb-1">Heads up</p>
+            <p className="text-gray-400">
+              New or updated posts may take a short time to sync between the live site and this admin view.
+            </p>
+          </div>
+        </motion.div>
 
         {/* Search Bar */}
         <motion.div
@@ -182,8 +200,35 @@ export default function BlogPostsList() {
             placeholder="Search by title or slug..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 bg-gray-900 border border-gray-800 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 font-body"
+            className="w-full pl-10 pr-4 py-2 bg-gray-900 border border-gray-800 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500/60 focus:border-transparent font-body"
           />
+        </motion.div>
+
+        {/* Status Filter */}
+        <motion.div
+          className="mb-6"
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, delay: 0.12 }}
+        >
+          <p className="text-sm font-mono text-gray-500 mb-3 font-body">
+            Filter by status
+          </p>
+          <div className="flex flex-wrap gap-2">
+            {(["all", "published", "draft"] as const).map((status) => (
+              <button
+                key={status}
+                onClick={() => setStatusFilter(status)}
+                className={`px-4 py-2 rounded-lg text-sm font-body transition ${
+                  statusFilter === status
+                    ? "bg-blue-500 text-white"
+                    : "bg-gray-800 text-gray-400 hover:bg-gray-700"
+                }`}
+              >
+                {status.charAt(0).toUpperCase() + status.slice(1)}
+              </button>
+            ))}
+          </div>
         </motion.div>
 
         {/* Tag Filter */}
@@ -246,104 +291,124 @@ export default function BlogPostsList() {
         {/* Posts Table */}
         {!isLoading && !error && (
           <motion.div
-            className="overflow-x-auto rounded-lg border border-gray-800"
+            className="overflow-x-auto rounded-2xl border border-gray-800/80 bg-gray-950/80 shadow-xl shadow-black/40 backdrop-blur-sm"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.4, delay: 0.2 }}
           >
-            <table className="w-full">
-              <thead className="bg-gray-900/50 border-b border-gray-800">
-                <tr key="header">
-                  <th className="text-left p-4 font-heading font-bold text-gray-300">
-                    Title
-                  </th>
-                  <th className="text-left p-4 font-heading font-bold text-gray-300">
-                    Slug
-                  </th>
-                  <th className="text-left p-4 font-heading font-bold text-gray-300">
-                    Published
-                  </th>
-                  <th className="text-left p-4 font-heading font-bold text-gray-300">
-                    Tags
-                  </th>
-                  <th className="text-left p-4 font-heading font-bold text-gray-300">
-                    Actions
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {filteredPosts.map((post, idx) => (
-                  <motion.tr
-                    key={post.id || post.slug || idx}
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.3, delay: idx * 0.05 }}
-                    className="border-b border-gray-800 hover:bg-gray-800/30 transition"
-                  >
-                    <td className="p-4">
-                      <Link
-                        to={`/admin/blog-posts/${post.slug}`}
-                        className="font-medium text-blue-400 hover:text-blue-300 transition"
-                      >
-                        {post.title}
-                      </Link>
-                    </td>
-                    <td className="p-4 text-sm text-gray-400 font-mono">
-                      {post.slug}
-                    </td>
-                    <td className="p-4 text-sm text-gray-400">
-                      {new Date(post.publishedDate).toLocaleDateString()}
-                    </td>
-                    <td className="p-4">
-                      <div className="flex gap-1 flex-wrap">
-                        {post.tags.slice(0, 2).map((tag, tagIdx) => (
-                          <span
-                            key={`${tag}-${tagIdx}`}
-                            className="px-2 py-0.5 bg-gray-800 text-gray-300 rounded text-xs font-mono"
-                          >
-                            {tag}
-                          </span>
-                        ))}
-                        {post.tags.length > 2 && (
-                          <span className="px-2 py-0.5 text-gray-500 text-xs">
-                            +{post.tags.length - 2} more
-                          </span>
-                        )}
-                      </div>
-                    </td>
-                    <td className="p-4">
-                      <div className="flex gap-3">
-                        <a
-                          href={`https://www.kaizenweb.co.uk/blog/${post.slug}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-gray-400 hover:text-blue-400 transition"
-                          title="View live post"
+            {filteredPosts.length === 0 ? (
+              <div className="p-16 text-center text-gray-400 font-body">
+                <FileText size={48} className="mx-auto mb-4 text-gray-600" />
+                <p className="text-lg font-medium mb-2">No posts match your filters</p>
+                <p className="text-sm text-gray-500">
+                  Try clearing your search, tags, or status filters to see all posts.
+                </p>
+              </div>
+            ) : (
+              <table className="w-full">
+                <thead className="bg-gray-900/50 border-b border-gray-800">
+                  <tr key="header">
+                    <th className="text-left p-4 font-heading font-bold text-gray-300">
+                      Title
+                    </th>
+                    <th className="text-left p-4 font-heading font-bold text-gray-300">
+                      Slug
+                    </th>
+                    <th className="text-left p-4 font-heading font-bold text-gray-300">
+                      Published
+                    </th>
+                    <th className="text-left p-4 font-heading font-bold text-gray-300">
+                      Status
+                    </th>
+                    <th className="text-left p-4 font-heading font-bold text-gray-300">
+                      Tags
+                    </th>
+                    <th className="text-left p-4 font-heading font-bold text-gray-300">
+                      Actions
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {filteredPosts.map((post, idx) => (
+                    <motion.tr
+                      key={post.id || post.slug || idx}
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.3, delay: idx * 0.05 }}
+                      className="border-b border-gray-800 hover:bg-gray-800/40 transition"
+                    >
+                      <td className="p-4">
+                        <Link
+                          to={`/admin/blog-posts/${post.slug}`}
+                          className="font-medium text-blue-400 hover:text-blue-300 transition"
                         >
-                          <ExternalLink size={16} />
-                        </a>
-                        {post.id && (
+                          {post.title}
+                        </Link>
+                      </td>
+                      <td className="p-4 text-sm text-gray-400 font-mono">
+                        {post.slug}
+                      </td>
+                      <td className="p-4 text-sm text-gray-400">
+                        {new Date(post.publishedDate).toLocaleDateString()}
+                      </td>
+                      <td className="p-4">
+                        <span
+                          className={`px-3 py-1 rounded-full text-xs font-medium transition ${
+                            post.status === "Published"
+                              ? "bg-emerald-500/10 text-emerald-300 border border-emerald-500/30"
+                              : post.status === "Draft"
+                                ? "bg-yellow-500/10 text-yellow-300 border border-yellow-500/30"
+                                : "bg-gray-800 text-gray-300 border border-gray-700"
+                          }`}
+                        >
+                          {post.status}
+                        </span>
+                      </td>
+                      <td className="p-4">
+                        <div className="flex gap-1 flex-wrap">
+                          {post.tags.slice(0, 2).map((tag, tagIdx) => (
+                            <span
+                              key={`${tag}-${tagIdx}`}
+                              className="px-2 py-0.5 bg-gray-800 text-gray-300 rounded text-xs font-mono"
+                            >
+                              {tag}
+                            </span>
+                          ))}
+                          {post.tags.length > 2 && (
+                            <span className="px-2 py-0.5 text-gray-500 text-xs">
+                              +{post.tags.length - 2} more
+                            </span>
+                          )}
+                        </div>
+                      </td>
+                      <td className="p-4">
+                        <div className="flex gap-3">
                           <a
-                            href={getBuilderEditUrl(post.id)}
+                            href={`https://www.kaizenweb.co.uk/blog/${post.slug}`}
                             target="_blank"
                             rel="noopener noreferrer"
                             className="text-gray-400 hover:text-blue-400 transition"
-                            title="Edit in Builder"
+                            title="View live post"
                           >
-                            <Edit size={16} />
+                            <ExternalLink size={16} />
                           </a>
-                        )}
-                      </div>
-                    </td>
-                  </motion.tr>
-                ))}
-              </tbody>
-            </table>
-
-            {filteredPosts.length === 0 && (
-              <div className="p-12 text-center text-gray-400 font-body">
-                <p>No posts found</p>
-              </div>
+                          {post.id && (
+                            <a
+                              href={getBuilderEditUrl(post.id)}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-gray-400 hover:text-blue-400 transition"
+                              title="Edit in Builder"
+                            >
+                              <Edit size={16} />
+                            </a>
+                          )}
+                        </div>
+                      </td>
+                    </motion.tr>
+                  ))}
+                </tbody>
+              </table>
             )}
           </motion.div>
         )}
