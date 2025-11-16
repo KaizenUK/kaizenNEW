@@ -45,6 +45,7 @@ const queryClient = new QueryClient();
 function AppContent() {
   const location = useLocation();
   const isAdminRoute = location.pathname.startsWith("/admin");
+  const { isCalendlyOpen, closeCalendly } = useCalendly();
 
   // Suppress react-quill findDOMNode deprecation warning
   useEffect(() => {
