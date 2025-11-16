@@ -234,8 +234,17 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
               {/* Services Mega Menu - Relative Container */}
               <div
                 className="relative"
-                onMouseEnter={() => setServicesOpen(true)}
-                onMouseLeave={() => setServicesOpen(false)}
+                onMouseEnter={() => {
+                  if (closeTimeoutRef.current) {
+                    clearTimeout(closeTimeoutRef.current);
+                  }
+                  setServicesOpen(true);
+                }}
+                onMouseLeave={() => {
+                  closeTimeoutRef.current = setTimeout(() => {
+                    setServicesOpen(false);
+                  }, 150);
+                }}
               >
                 <button
                   className={`px-3 py-2 text-lg font-heading font-medium hover:text-kaizen-cyan transition rounded-md hover:bg-kaizen-light/50 dark:hover:bg-white/5 flex items-center gap-1 ${
