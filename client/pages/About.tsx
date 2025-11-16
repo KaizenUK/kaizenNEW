@@ -122,14 +122,17 @@ export default function About() {
         </div>
       </section>
 
-      {/* Section 2: Origin Story */}
+      {/* Section 2: Our Story */}
       <section className="py-20 md:py-32 bg-kaizen-light dark:bg-slate-900/50">
         <div className="container mx-auto px-4">
           <ScrollReveal>
             <div className="max-w-3xl mx-auto">
-              <h2 className="text-4xl md:text-5xl font-heading font-bold mb-12 text-kaizen-dark dark:text-white">
-                My Story
+              <h2 className="text-4xl md:text-5xl font-heading font-bold mb-6 text-kaizen-dark dark:text-white">
+                Our Story
               </h2>
+              <h3 className="text-2xl font-heading font-semibold mb-12 text-kaizen-cyan dark:text-kaizen-cyan/80">
+                About Me, the Founder
+              </h3>
 
               <div className="space-y-6 text-lg text-kaizen-text-dark/70 dark:text-white/60 leading-relaxed">
                 <p>
