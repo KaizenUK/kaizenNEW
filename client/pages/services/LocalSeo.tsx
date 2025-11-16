@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Helmet } from "react-helmet-async";
 import { ArrowRight, ArrowUpRight, MapPin, FileText, Star } from "lucide-react";
+import { useCalendly } from "@/context/CalendlyContext";
 
 // Animation variants
 const fadeInUp = {
@@ -107,14 +108,20 @@ const CTAButton = ({
   onClick,
   secondary = false,
   openChat = false,
+  openCalendly: openCalendlyProp = false,
 }: {
   text: string;
   onClick?: () => void;
   secondary?: boolean;
   openChat?: boolean;
+  openCalendly?: boolean;
 }) => {
+  const { openCalendly } = useCalendly();
+
   const handleClick = () => {
-    if (openChat && typeof window !== "undefined") {
+    if (openCalendlyProp) {
+      openCalendly();
+    } else if (openChat && typeof window !== "undefined") {
       if ((window as any).$crisp) {
         (window as any).$crisp.push(["do", "chat:open"]);
       }
@@ -140,6 +147,8 @@ const CTAButton = ({
 };
 
 export default function LocalSeo() {
+  const { openCalendly: openCalendlyFromContext } = useCalendly();
+
   return (
     <Layout>
       <Helmet>
@@ -519,13 +528,13 @@ export default function LocalSeo() {
             transition={{ duration: 0.6 }}
           >
             <CTAButton text="Start a Live Chat" openChat />
-            <Link
-              to="/contact"
+            <button
+              onClick={openCalendlyFromContext}
               className="px-8 py-3 rounded-full border-2 border-kaizen-text-light/30 dark:border-white/20 text-kaizen-text-light dark:text-white/85 font-heading font-bold hover:border-kaizen-cyan dark:hover:border-kaizen-cyan transition inline-flex items-center justify-center gap-2"
             >
               Book Your 15-Minute Call
               <ArrowUpRight size={18} />
-            </Link>
+            </button>
           </motion.div>
         </div>
       </section>
