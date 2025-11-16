@@ -489,7 +489,7 @@ export default function BlogPostDetail() {
               <label className="block font-heading font-bold mb-3 text-sm text-gray-400 uppercase tracking-widest">
                 Content
               </label>
-              <div className="bg-gray-800 rounded-lg overflow-hidden border border-gray-700">
+              <div className="rounded-lg overflow-hidden border border-gray-300">
                 <ReactQuill
                   theme="snow"
                   value={formBody}
@@ -499,16 +499,32 @@ export default function BlogPostDetail() {
                   }}
                   modules={quillModules}
                   formats={quillFormats}
-                  className="bg-gray-800 text-white"
+                  className="quill-editor-light"
                   style={{
                     height: "300px",
                   }}
                 />
               </div>
               <p className="text-xs text-gray-500 mt-4 font-body">
-                Edit your post content here. Use headings, formatting, links,
-                and lists as needed.
+                Write your post content here. Use headings, formatting, links, and lists as needed.
               </p>
+              {/* Word Count & Reading Time */}
+              {formBody && (
+                <div className="mt-4 pt-4 border-t border-gray-700 flex gap-4">
+                  <div className="text-xs text-gray-400 font-body">
+                    <span className="font-bold">Word count:</span> {calculateWordCount(formBody)}
+                  </div>
+                  <div className="text-xs text-gray-400 font-body">
+                    <span className="font-bold">Reading time:</span> {calculateReadingTime(formBody)}–{Math.ceil(calculateReadingTime(formBody) * 1.2)} min
+                  </div>
+                </div>
+              )}
+              {calculateWordCount(formBody) < 150 && formBody && (
+                <div className="mt-3 p-3 bg-yellow-500/10 border border-yellow-500/30 rounded text-yellow-600 text-xs font-body">
+                  <p className="font-bold mb-1">Short post warning</p>
+                  <p>Very short posts may not provide enough depth for readers.</p>
+                </div>
+              )}
             </motion.div>
           </div>
 
