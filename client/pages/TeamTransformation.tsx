@@ -1,8 +1,11 @@
 import Layout from "@/components/Layout";
 import { Link } from "react-router-dom";
 import { ArrowRight, Check } from "lucide-react";
+import { useCalendly } from "@/context/CalendlyContext";
+import Layout from "@/components/Layout";
 
 export default function TeamTransformation() {
+  const { openCalendly: openCalendlyFromContext } = useCalendly();
   return (
     <Layout>
       {/* Hero */}
@@ -86,13 +89,13 @@ export default function TeamTransformation() {
           <p className="text-lg text-kaizen-text-light/80 mb-8 max-w-2xl mx-auto">
             Let's chat about your team's current situation and what transformation could look like.
           </p>
-          <Link
-            to="/contact"
+          <button
+            onClick={openCalendlyFromContext}
             className="inline-flex items-center gap-2 px-8 py-3 rounded-full bg-gradient-to-r from-kaizen-cyan to-kaizen-lime text-kaizen-dark font-heading font-bold hover:opacity-90 transition"
           >
             Schedule Discovery Call
             <ArrowRight size={18} />
-          </Link>
+          </button>
         </div>
       </section>
     </Layout>
