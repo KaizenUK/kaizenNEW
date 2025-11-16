@@ -464,6 +464,88 @@ export default function BlogPostDetail() {
               </div>
             </motion.div>
 
+            {/* SEO Section */}
+            <motion.div
+              className="bg-gray-900/60 border border-gray-800/60 rounded-xl p-6 backdrop-blur-sm"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4, delay: 0.22 }}
+            >
+              <h3 className="font-heading font-bold mb-4 text-sm text-gray-300">
+                SEO
+              </h3>
+
+              {/* SEO Title */}
+              <div className="mb-6">
+                <label className="block font-heading font-bold mb-2 text-xs text-gray-400 uppercase tracking-widest">
+                  SEO Title
+                </label>
+                <input
+                  type="text"
+                  value={formSeoTitle}
+                  onChange={(e) => {
+                    setFormSeoTitle(e.target.value);
+                    handleFormChange();
+                  }}
+                  className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-blue-500/60 focus:border-transparent font-body text-sm"
+                  placeholder="Leave blank to use the main title"
+                />
+                <p className="text-xs text-gray-500 mt-2 font-body">
+                  Used as the &lt;title&gt; tag when a custom value is set. Falls back to the main title if left blank.
+                </p>
+                <div className={`mt-2 text-xs font-body ${formSeoTitle.length > 60 ? "text-yellow-400" : "text-gray-500"}`}>
+                  {formSeoTitle.length} / 60 characters
+                  {formSeoTitle.length > 60 && (
+                    <p className="mt-1">Long titles may be truncated in search results.</p>
+                  )}
+                </div>
+              </div>
+
+              {/* SEO Description */}
+              <div className="mb-6">
+                <label className="block font-heading font-bold mb-2 text-xs text-gray-400 uppercase tracking-widest">
+                  SEO Description
+                </label>
+                <textarea
+                  value={formSeoDescription}
+                  onChange={(e) => {
+                    setFormSeoDescription(e.target.value);
+                    handleFormChange();
+                  }}
+                  rows={3}
+                  className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-blue-500/60 focus:border-transparent font-body text-sm"
+                  placeholder="Leave blank to use the excerpt or auto-generate from content"
+                />
+                <p className="text-xs text-gray-500 mt-2 font-body">
+                  Used as the meta description when set. Falls back to the excerpt or a snippet of content if left blank.
+                </p>
+                <div className={`mt-2 text-xs font-body ${formSeoDescription.length >= 80 && formSeoDescription.length <= 180 ? "text-green-400" : "text-yellow-400"}`}>
+                  {formSeoDescription.length} characters
+                  {(formSeoDescription.length < 80 || formSeoDescription.length > 180) && formSeoDescription && (
+                    <p className="mt-1">Descriptions around 80–180 characters tend to read better in search results.</p>
+                  )}
+                </div>
+              </div>
+
+              {/* Search Preview */}
+              <div className="mt-6 pt-6 border-t border-gray-700">
+                <p className="text-xs font-mono text-gray-500 font-bold tracking-widest mb-3">
+                  SEARCH PREVIEW
+                </p>
+                <div className="bg-gray-800/50 rounded-lg p-4 border border-gray-700/50">
+                  <p className="text-blue-400 hover:underline text-sm font-body mb-1 break-words">
+                    {formSeoTitle || formTitle || "Your page title"}
+                  </p>
+                  <p className="text-green-600 font-mono text-xs mb-2 break-words">
+                    https://www.kaizenweb.co.uk/blog/{formSlug || "your-slug-here"}
+                  </p>
+                  <p className="text-gray-400 text-sm font-body line-clamp-2">
+                    {formSeoDescription || formExcerpt || "Your page description will appear here"}
+                  </p>
+                </div>
+              </div>
+            </motion.div>
+
             {/* Published Date */}
             <motion.div
               className="bg-gray-900/60 border border-gray-800/60 rounded-xl p-6 backdrop-blur-sm"
