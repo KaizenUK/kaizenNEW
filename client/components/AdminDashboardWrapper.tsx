@@ -1,7 +1,5 @@
 import { useState, useEffect } from "react";
 import AdminDashboard from "@/pages/admin/AdminDashboard";
-import AdminLayout from "@/components/AdminLayout";
-import { CrispProvider } from "@/context/CrispContext";
 
 export default function AdminDashboardWrapper() {
   const [crispUnread, setCrispUnread] = useState<number | null>(null);
@@ -51,12 +49,10 @@ export default function AdminDashboardWrapper() {
   }, []);
 
   return (
-    <CrispProvider crispUnread={crispUnread} crispOpen={crispOpen} crispLatest={crispLatest}>
-      <AdminDashboard
-        crispUnread={crispUnread}
-        crispOpen={crispOpen}
-        crispLatest={crispLatest}
-      />
-    </CrispProvider>
+    <AdminDashboard
+      crispUnread={crispUnread}
+      crispOpen={crispOpen}
+      crispLatest={crispLatest}
+    />
   );
 }
