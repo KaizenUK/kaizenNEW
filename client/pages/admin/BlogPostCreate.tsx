@@ -187,6 +187,16 @@ export default function BlogPostCreate() {
     }
   };
 
+  // Derive date and time values from publishedAt
+  const publishedDateValue =
+    publishedAt && publishedAt.includes("T")
+      ? publishedAt.slice(0, 10)
+      : "";
+  const publishedTimeValue =
+    publishedAt && publishedAt.includes("T")
+      ? publishedAt.slice(11, 16)
+      : "";
+
   return (
     <AdminLayout>
       <motion.div
