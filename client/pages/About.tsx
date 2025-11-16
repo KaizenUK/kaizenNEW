@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Helmet } from "react-helmet-async";
 import { ArrowRight, ArrowUpRight, Lightbulb, Heart, Users } from "lucide-react";
+import AnimatedJapaneseSymbols from "@/components/AnimatedJapaneseSymbols";
 
 // Animation variants
 const fadeInUp = {
