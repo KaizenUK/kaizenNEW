@@ -1,7 +1,9 @@
 import { Link, useLocation } from "react-router-dom";
-import { Menu, X, ChevronDown, Moon, Sun } from "lucide-react";
+import { Menu, X, ChevronDown, Moon, Sun, Linkedin } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
+import { motion } from "framer-motion";
+import { useCalendly } from "@/context/CalendlyContext";
 import {
   buildLocalBusinessSchema,
   getPageMeta,
@@ -33,6 +35,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [servicesOpen, setServicesOpen] = useState(false);
   const [theme, setTheme] = useState<ThemeMode>(() => getPreferredTheme());
+  const { openCalendly } = useCalendly();
   const location = useLocation();
   const normalizedPath =
     location.pathname !== "/" && location.pathname.endsWith("/")
@@ -61,7 +64,6 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     }
   }, [theme]);
 
-  // Scroll to top on route change
   useEffect(() => {
     if (typeof window !== "undefined") {
       window.scrollTo(0, 0);
@@ -130,21 +132,26 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       </Helmet>
 
       <div className="min-h-screen flex flex-col bg-background text-foreground transition-colors">
-        {/* Header */}
-        <header className="sticky top-0 z-50 border-b border-border bg-card/95 backdrop-blur transition-colors">
+        {/* Header - Frosted Glass Effect */}
+        <header
+          className="sticky top-0 z-50 border-b"
+          style={{
+            backgroundColor: theme === "light" ? "rgba(255, 255, 255, 0.05)" : "rgba(15, 23, 42, 0.05)",
+            backdropFilter: "blur(10px)",
+            borderBottomColor: theme === "light" ? "rgba(255, 255, 255, 0.1)" : "rgba(255, 255, 255, 0.1)",
+          }}
+        >
           <nav className="container mx-auto px-4 py-3 flex items-center justify-between">
             {/* Logo */}
             <Link
               to="/"
               className="flex items-center gap-3 hover:opacity-80 transition flex-shrink-0"
             >
-              {/* Light mode logo */}
               <img
                 src="https://cdn.builder.io/api/v1/image/assets%2Fe4ae46bbd81b4b95bef54d66dd9748cc%2F19f6366118ef41298050443945090b5f?format=webp&width=800"
                 alt="Kaizen Web"
                 className="h-28 w-auto block dark:hidden"
               />
-              {/* Dark mode logo (attached asset) */}
               <img
                 src="https://cdn.builder.io/api/v1/image/assets%2Fe4ae46bbd81b4b95bef54d66dd9748cc%2F715c7d8a24dc4f2ca2fb16b61ba3dd19?format=webp&width=800"
                 alt="Kaizen Web - dark"
@@ -156,7 +163,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             <div className="hidden md:flex items-center gap-1">
               <Link
                 to="/"
-                className="px-3 py-2 text-lg font-heading font-medium hover:text-kaizen-cyan transition rounded-md hover:bg-kaizen-light/50"
+                className="px-3 py-2 text-lg font-heading font-medium hover:text-kaizen-cyan transition rounded-md hover:bg-kaizen-light/50 dark:hover:bg-white/5"
               >
                 Home
               </Link>
@@ -167,7 +174,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                 onMouseEnter={() => setServicesOpen(true)}
                 onMouseLeave={() => setServicesOpen(false)}
               >
-                <button className="px-3 py-2 text-lg font-heading font-medium hover:text-kaizen-cyan transition rounded-md hover:bg-kaizen-light/50 flex items-center gap-1">
+                <button className="px-3 py-2 text-lg font-heading font-medium hover:text-kaizen-cyan transition rounded-md hover:bg-kaizen-light/50 dark:hover:bg-white/5 flex items-center gap-1">
                   Services
                   <ChevronDown
                     size={16}
@@ -175,145 +182,131 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                   />
                 </button>
 
-                {/* Mega Menu Panel */}
+                {/* Mega Menu Panel - 2 Column Layout */}
                 {servicesOpen && (
-                  <div className="absolute left-0 top-full mt-0 w-screen border-t border-border bg-card shadow-lg transition-colors">
+                  <motion.div
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    transition={{ duration: 0.2 }}
+                    className="absolute left-0 top-full mt-0 w-screen border-t"
+                    style={{
+                      backgroundColor: theme === "light" ? "rgba(255, 255, 255, 0.05)" : "rgba(15, 23, 42, 0.05)",
+                      backdropFilter: "blur(10px)",
+                      borderTopColor: "rgba(255, 255, 255, 0.1)",
+                    }}
+                  >
                     <div className="container mx-auto px-4 py-8">
-                      <div className="grid grid-cols-3 gap-8">
-                        {/* Web Services */}
+                      <div className="grid grid-cols-2 gap-16">
+                        {/* Column 1: Web & SEO */}
                         <div>
-                          <p className="text-xs font-mono text-kaizen-text-dark/50 font-bold mb-4 tracking-widest">
-                            WEB & DESIGN
+                          <p className="text-xs font-mono text-kaizen-text-dark dark:text-white/60 font-bold mb-6 tracking-widest">
+                            WEB & SEO
                           </p>
 
-                          <div className="mb-6">
+                          <div className="mb-8">
                             <Link
-                              to="/services/web-design"
-                              className="block font-heading font-bold text-lg mb-2 hover:text-kaizen-cyan transition"
+                              to="/services/web-design-liverpool"
+                              className="block font-heading font-bold text-lg text-kaizen-dark dark:text-white mb-2 hover:text-kaizen-cyan transition"
                             >
-                              Web Design
+                              Web Design Liverpool
                             </Link>
-                            <ul className="space-y-1 text-xs text-kaizen-text-dark/70 ml-0">
-                              <li>Fast, modern websites</li>
-                              <li>Mobile-first design</li>
-                              <li>SEO-ready structure</li>
-                            </ul>
+                          </div>
+
+                          <div className="mb-8">
+                            <Link
+                              to="/services/wordpress-web-design"
+                              className="block font-heading font-bold text-lg text-kaizen-dark dark:text-white mb-2 hover:text-kaizen-cyan transition"
+                            >
+                              WordPress Design
+                            </Link>
+                          </div>
+
+                          <div className="mb-8">
+                            <Link
+                              to="/services/ecommerce"
+                              className="block font-heading font-bold text-lg text-kaizen-dark dark:text-white mb-2 hover:text-kaizen-cyan transition"
+                            >
+                              E-commerce Development
+                            </Link>
                           </div>
 
                           <div>
                             <Link
                               to="/services/local-seo"
-                              className="block font-heading font-bold text-lg mb-2 hover:text-kaizen-cyan transition"
+                              className="block font-heading font-bold text-lg text-kaizen-dark dark:text-white mb-2 hover:text-kaizen-cyan transition"
                             >
                               Local SEO
                             </Link>
-                            <ul className="space-y-1 text-xs text-kaizen-text-dark/70">
-                              <li>Google Business Profile</li>
-                              <li>Local search ranking</li>
-                              <li>Review strategy</li>
-                            </ul>
                           </div>
                         </div>
 
-                        {/* E-commerce & Transformation */}
+                        {/* Column 2: Agile & Transformation */}
                         <div>
-                          <p className="text-xs font-mono text-kaizen-text-dark/50 font-bold mb-4 tracking-widest">
-                            OPERATIONS
+                          <p className="text-xs font-mono text-kaizen-text-dark dark:text-white/60 font-bold mb-6 tracking-widest">
+                            AGILE & TRANSFORMATION
                           </p>
 
-                          <div className="mb-6">
-                            <Link
-                              to="/services/ecommerce"
-                              className="block font-heading font-bold text-lg mb-2 hover:text-kaizen-cyan transition"
-                            >
-                              E-commerce
-                            </Link>
-                            <ul className="space-y-1 text-xs text-kaizen-text-dark/70">
-                              <li>Online stores</li>
-                              <li>Payment integration</li>
-                              <li>Conversion optimized</li>
-                            </ul>
-                          </div>
-
-                          <div>
+                          <div className="mb-8">
                             <Link
                               to="/services/digital-transformation"
-                              className="block font-heading font-bold text-lg mb-2 hover:text-kaizen-cyan transition"
+                              className="block font-heading font-bold text-lg text-kaizen-dark dark:text-white mb-2 hover:text-kaizen-cyan transition"
                             >
                               Digital Transformation
                             </Link>
-                            <ul className="space-y-1 text-xs text-kaizen-text-dark/70">
-                              <li>Workflow automation</li>
-                              <li>Process optimization</li>
-                              <li>Back-office systems</li>
-                            </ul>
                           </div>
-                        </div>
 
-                        {/* Team & Product */}
-                        <div>
-                          <p className="text-xs font-mono text-kaizen-text-dark/50 font-bold mb-4 tracking-widest">
-                            TEAMS & PRODUCT
-                          </p>
-
-                          <div className="mb-6">
+                          <div className="mb-8">
                             <Link
                               to="/agile-coaching"
-                              className="block font-heading font-bold text-lg mb-2 hover:text-kaizen-cyan transition"
+                              className="block font-heading font-bold text-lg text-kaizen-dark dark:text-white mb-2 hover:text-kaizen-cyan transition"
                             >
                               Agile Coaching
                             </Link>
-                            <ul className="space-y-1 text-xs text-kaizen-text-dark/70">
-                              <li>Team training</li>
-                              <li>Sprint coaching</li>
-                              <li>Process review</li>
-                            </ul>
                           </div>
 
                           <div>
                             <Link
                               to="/contract-product-owner"
-                              className="block font-heading font-bold text-lg mb-2 hover:text-kaizen-cyan transition"
+                              className="block font-heading font-bold text-lg text-kaizen-dark dark:text-white mb-2 hover:text-kaizen-cyan transition flex items-center gap-2"
                             >
                               Contract Product Owner
+                              <span className="inline-block px-2 py-1 bg-kaizen-cyan/20 text-kaizen-cyan text-xs font-bold rounded">
+                                Founder-Led
+                              </span>
                             </Link>
-                            <ul className="space-y-1 text-xs text-kaizen-text-dark/70">
-                              <li>Strategic roadmap</li>
-                              <li>Hands-on leadership</li>
-                              <li>High-stakes delivery</li>
-                            </ul>
                           </div>
                         </div>
                       </div>
                     </div>
-                  </div>
+                  </motion.div>
                 )}
               </div>
 
               <Link
                 to="/about"
-                className="px-3 py-2 text-lg font-heading font-medium text-kaizen-dark dark:text-white hover:text-kaizen-cyan dark:hover:text-kaizen-cyan transition"
+                className="px-3 py-2 text-lg font-heading font-medium text-kaizen-dark dark:text-white hover:text-kaizen-cyan dark:hover:text-kaizen-cyan transition rounded-md hover:bg-kaizen-light/50 dark:hover:bg-white/5"
               >
                 About
               </Link>
 
               <Link
                 to="/pledge"
-                className="px-3 py-2 text-lg font-heading font-medium text-kaizen-dark dark:text-white hover:text-kaizen-cyan dark:hover:text-kaizen-cyan transition"
+                className="px-3 py-2 text-lg font-heading font-medium text-kaizen-dark dark:text-white hover:text-kaizen-cyan dark:hover:text-kaizen-cyan transition rounded-md hover:bg-kaizen-light/50 dark:hover:bg-white/5"
               >
                 Our Pledge
               </Link>
 
               <Link
                 to="/case-studies"
-                className="px-3 py-2 text-lg font-heading font-medium text-kaizen-dark dark:text-white hover:text-kaizen-cyan dark:hover:text-kaizen-cyan transition"
+                className="px-3 py-2 text-lg font-heading font-medium text-kaizen-dark dark:text-white hover:text-kaizen-cyan dark:hover:text-kaizen-cyan transition rounded-md hover:bg-kaizen-light/50 dark:hover:bg-white/5"
               >
                 Case Studies
               </Link>
 
               <Link
                 to="/blog"
-                className="px-3 py-2 text-lg font-heading font-medium text-kaizen-dark dark:text-white hover:text-kaizen-cyan dark:hover:text-kaizen-cyan transition"
+                className="px-3 py-2 text-lg font-heading font-medium text-kaizen-dark dark:text-white hover:text-kaizen-cyan dark:hover:text-kaizen-cyan transition rounded-md hover:bg-kaizen-light/50 dark:hover:bg-white/5"
               >
                 Blog
               </Link>
@@ -321,24 +314,31 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 
             {/* CTA, Theme Toggle, and Mobile Button */}
             <div className="flex items-center gap-4">
-              {/* Desktop theme toggle */}
               <div className="hidden md:block">
                 <ThemeToggleButton />
               </div>
               <div className="md:hidden">
                 <ThemeToggleButton />
               </div>
-              <Link
-                to="/contact"
-                className="hidden sm:inline-block px-6 py-2 rounded-full bg-gradient-to-r from-kaizen-cyan to-kaizen-lime text-white font-heading font-medium text-lg hover:opacity-90 transition"
+
+              {/* Animated CTA Button */}
+              <motion.button
+                onClick={openCalendly}
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.6, ease: "easeOut" }}
+                whileHover={{ scale: 1.05 }}
+                className="hidden sm:inline-block px-6 py-2 rounded-full bg-gradient-to-r from-kaizen-cyan to-kaizen-lime text-kaizen-dark font-heading font-bold text-lg relative overflow-hidden group transition"
               >
-                Get a Quote
-              </Link>
+                <span className="relative z-10">Book a 15-Min Call</span>
+                <div className="absolute inset-0 bg-gradient-to-r from-kaizen-lime to-kaizen-cyan opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+              </motion.button>
 
               {/* Mobile Menu Button */}
               <button
-                className="md:hidden"
+                className="md:hidden text-kaizen-dark dark:text-white"
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                aria-label="Toggle mobile menu"
               >
                 {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
               </button>
@@ -347,18 +347,19 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 
           {/* Mobile Menu */}
           {mobileMenuOpen && (
-            <div className="md:hidden border-t border-border bg-card transition-colors">
-              <div className="container mx-auto px-4 py-4 flex flex-col gap-4">
+            <div className="md:hidden border-t border-kaizen-light/20 dark:border-white/10 bg-kaizen-light/50 dark:bg-slate-900/50 backdrop-blur-sm">
+              <div className="container mx-auto px-4 py-4 space-y-2">
                 <Link
                   to="/"
-                  className="text-lg font-heading font-medium hover:text-kaizen-cyan transition"
+                  className="block px-3 py-2 text-lg font-heading font-medium hover:text-kaizen-cyan transition rounded-md hover:bg-kaizen-light"
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   Home
                 </Link>
+
                 <button
                   onClick={() => setServicesOpen(!servicesOpen)}
-                  className="text-left text-lg font-heading font-medium hover:text-kaizen-cyan transition flex items-center gap-2"
+                  className="w-full text-left px-3 py-2 text-lg font-heading font-medium hover:text-kaizen-cyan transition rounded-md hover:bg-kaizen-light flex items-center gap-2"
                 >
                   Services
                   <ChevronDown
@@ -366,10 +367,11 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                     className={`transition ${servicesOpen ? "rotate-180" : ""}`}
                   />
                 </button>
+
                 {servicesOpen && (
                   <div className="ml-4 space-y-2 border-l border-kaizen-light pl-4">
                     <Link
-                      to="/services/web-design"
+                      to="/services/web-design-liverpool"
                       className="block text-lg text-kaizen-text-dark/70 hover:text-kaizen-cyan transition"
                       onClick={() => {
                         setMobileMenuOpen(false);
@@ -430,41 +432,48 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                     </Link>
                   </div>
                 )}
+
                 <Link
                   to="/about"
-                  className="text-lg font-heading font-medium hover:text-kaizen-cyan transition"
+                  className="block px-3 py-2 text-lg font-heading font-medium hover:text-kaizen-cyan transition rounded-md hover:bg-kaizen-light"
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   About
                 </Link>
+
                 <Link
                   to="/pledge"
-                  className="text-lg font-heading font-medium hover:text-kaizen-cyan transition"
+                  className="block px-3 py-2 text-lg font-heading font-medium hover:text-kaizen-cyan transition rounded-md hover:bg-kaizen-light"
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   Our Pledge
                 </Link>
+
                 <Link
                   to="/case-studies"
-                  className="text-lg font-heading font-medium hover:text-kaizen-cyan transition"
+                  className="block px-3 py-2 text-lg font-heading font-medium hover:text-kaizen-cyan transition rounded-md hover:bg-kaizen-light"
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   Case Studies
                 </Link>
+
                 <Link
                   to="/blog"
-                  className="text-lg font-heading font-medium hover:text-kaizen-cyan transition"
+                  className="block px-3 py-2 text-lg font-heading font-medium hover:text-kaizen-cyan transition rounded-md hover:bg-kaizen-light"
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   Blog
                 </Link>
-                <Link
-                  to="/contact"
-                  className="px-6 py-2 rounded-full bg-gradient-to-r from-kaizen-cyan to-kaizen-lime text-white font-heading font-medium text-sm hover:opacity-90 transition w-full text-center"
-                  onClick={() => setMobileMenuOpen(false)}
+
+                <button
+                  onClick={() => {
+                    openCalendly();
+                    setMobileMenuOpen(false);
+                  }}
+                  className="w-full mt-4 px-6 py-2 rounded-full bg-gradient-to-r from-kaizen-cyan to-kaizen-lime text-kaizen-dark font-heading font-bold text-lg hover:opacity-90 transition"
                 >
-                  Get a Quote
-                </Link>
+                  Book a 15-Min Call
+                </button>
               </div>
             </div>
           )}
@@ -475,78 +484,56 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 
         {/* Footer */}
         <footer className="bg-kaizen-dark text-kaizen-text-light border-t border-kaizen-text-dark/10">
-          <div className="container mx-auto px-4 py-12">
-            <div className="grid grid-cols-1 md:grid-cols-5 gap-8 mb-8">
-              {/* Brand */}
+          <div className="container mx-auto px-4 py-16">
+            {/* 3-Column Layout */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-12">
+              {/* Column 1: Brand & USP */}
               <div>
                 <img
                   src="https://cdn.builder.io/api/v1/image/assets%2Fe4ae46bbd81b4b95bef54d66dd9748cc%2F6ca2caa53229445d9a63b2ab64bfede4?format=webp&width=800"
                   alt="Kaizen Web"
-                  className="h-16 w-auto mb-4"
+                  className="h-16 w-auto mb-6"
                 />
-                <p className="text-sm text-kaizen-text-light/80">
-                  Web design and digital transformation for Liverpool
-                  businesses.
+                <p className="text-lg text-kaizen-text-light/80 mb-6 leading-relaxed">
+                  A Liverpool web design & digital transformation agency. We're an expert-led team built on transparency, performance, and real-world results.
                 </p>
+                <div className="flex gap-4">
+                  <a
+                    href="https://linkedin.com"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-kaizen-text-light/60 hover:text-kaizen-cyan transition"
+                    aria-label="LinkedIn"
+                  >
+                    <Linkedin size={20} />
+                  </a>
+                </div>
               </div>
 
-              {/* Services */}
+              {/* Column 2: Company Navigation */}
               <div>
-                <h4 className="font-heading font-bold text-sm mb-4">
-                  Services
-                </h4>
-                <ul className="space-y-2 text-sm">
-                  <li>
-                    <Link
-                      to="/services"
-                      className="hover:text-kaizen-cyan transition"
-                    >
-                      All Services
-                    </Link>
-                  </li>
-                  <li>
-                    <Link
-                      to="/services/web-design"
-                      className="hover:text-kaizen-cyan transition"
-                    >
-                      Web Design
-                    </Link>
-                  </li>
-                  <li>
-                    <Link
-                      to="/services/local-seo"
-                      className="hover:text-kaizen-cyan transition"
-                    >
-                      Local SEO
-                    </Link>
-                  </li>
-                  <li>
-                    <Link
-                      to="/agile-coaching"
-                      className="hover:text-kaizen-cyan transition"
-                    >
-                      Agile Coaching
-                    </Link>
-                  </li>
-                </ul>
-              </div>
-
-              {/* Company */}
-              <div>
-                <h4 className="font-heading font-bold text-sm mb-4">Company</h4>
-                <ul className="space-y-2 text-sm">
+                <h4 className="font-heading font-bold text-lg mb-6">Company</h4>
+                <ul className="space-y-3">
                   <li>
                     <Link
                       to="/about"
-                      className="hover:text-kaizen-cyan transition"
+                      className="text-kaizen-text-light/80 hover:text-kaizen-cyan transition"
                     >
                       About
                     </Link>
                   </li>
                   <li>
                     <Link
+                      to="/pledge"
+                      className="text-kaizen-text-light/80 hover:text-kaizen-cyan transition"
+                    >
+                      Our "No-BS" Pledge
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
                       to="/case-studies"
-                      className="hover:text-kaizen-cyan transition"
+                      className="text-kaizen-text-light/80 hover:text-kaizen-cyan transition"
                     >
                       Case Studies
                     </Link>
@@ -554,15 +541,15 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                   <li>
                     <Link
                       to="/blog"
-                      className="hover:text-kaizen-cyan transition"
+                      className="text-kaizen-text-light/80 hover:text-kaizen-cyan transition"
                     >
-                      Journal
+                      Blog
                     </Link>
                   </li>
                   <li>
                     <Link
                       to="/contact"
-                      className="hover:text-kaizen-cyan transition"
+                      className="text-kaizen-text-light/80 hover:text-kaizen-cyan transition"
                     >
                       Contact
                     </Link>
@@ -570,58 +557,79 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                 </ul>
               </div>
 
-              {/* Legal */}
+              {/* Column 3: Services */}
               <div>
-                <h4 className="font-heading font-bold text-sm mb-4">Legal</h4>
-                <ul className="space-y-2 text-sm">
+                <h4 className="font-heading font-bold text-lg mb-6">Services</h4>
+                <ul className="space-y-3">
                   <li>
                     <Link
-                      to="/privacy-policy"
-                      className="hover:text-kaizen-cyan transition"
+                      to="/services/web-design-liverpool"
+                      className="text-kaizen-text-light/80 hover:text-kaizen-cyan transition"
                     >
-                      Privacy Policy
+                      Web Design Liverpool
                     </Link>
                   </li>
                   <li>
                     <Link
-                      to="/cookie-policy"
-                      className="hover:text-kaizen-cyan transition"
+                      to="/services/local-seo"
+                      className="text-kaizen-text-light/80 hover:text-kaizen-cyan transition"
                     >
-                      Cookie Policy
+                      Local SEO
                     </Link>
                   </li>
                   <li>
                     <Link
-                      to="/gdpr-policy"
-                      className="hover:text-kaizen-cyan transition"
+                      to="/services/ecommerce"
+                      className="text-kaizen-text-light/80 hover:text-kaizen-cyan transition"
                     >
-                      GDPR Policy
+                      E-commerce
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      to="/agile-coaching"
+                      className="text-kaizen-text-light/80 hover:text-kaizen-cyan transition"
+                    >
+                      Agile Coaching
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      to="/contract-product-owner"
+                      className="text-kaizen-text-light/80 hover:text-kaizen-cyan transition"
+                    >
+                      Contract Product Owner
                     </Link>
                   </li>
                 </ul>
               </div>
-
-              {/* Contact */}
-              <div>
-                <h4 className="font-heading font-bold text-sm mb-4">
-                  Get in Touch
-                </h4>
-                <p className="text-sm text-kaizen-text-light/80 mb-2">
-                  Liverpool, UK
-                </p>
-                <Link
-                  to="/contact"
-                  className="inline-block px-4 py-2 rounded-full bg-gradient-to-r from-kaizen-cyan to-kaizen-lime text-kaizen-dark font-medium text-sm hover:opacity-90 transition"
-                >
-                  Request a Quote
-                </Link>
-              </div>
             </div>
 
+            {/* Sub-Footer */}
             <div className="border-t border-kaizen-text-dark/10 pt-8">
-              <p className="text-sm text-kaizen-text-light/60 text-center">
-                © {new Date().getFullYear()} Kaizen Web. All rights reserved.
-              </p>
+              <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+                <p className="text-sm text-kaizen-text-light/60">
+                  © {new Date().getFullYear()} Kaizen Web. All rights reserved.
+                </p>
+                <p className="text-sm text-kaizen-text-light/60">
+                  Liverpool & Wirral, UK
+                </p>
+                <div className="flex gap-6">
+                  <Link
+                    to="/privacy-policy"
+                    className="text-sm text-kaizen-text-light/60 hover:text-kaizen-cyan transition"
+                  >
+                    Privacy Policy
+                  </Link>
+                  <span className="text-kaizen-text-light/30">|</span>
+                  <Link
+                    to="/cookie-policy"
+                    className="text-sm text-kaizen-text-light/60 hover:text-kaizen-cyan transition"
+                  >
+                    Cookie Policy
+                  </Link>
+                </div>
+              </div>
             </div>
           </div>
         </footer>
