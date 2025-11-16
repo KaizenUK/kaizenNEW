@@ -549,7 +549,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                 <img
                   src="https://cdn.builder.io/api/v1/image/assets%2Fe4ae46bbd81b4b95bef54d66dd9748cc%2F6ca2caa53229445d9a63b2ab64bfede4?format=webp&width=800"
                   alt="Kaizen Web"
-                  className="h-16 w-auto mb-6"
+                  className="h-32 w-auto mb-6"
                 />
                 <p className="text-lg text-kaizen-text-light/80 mb-6 leading-relaxed">
                   A Liverpool web design & digital transformation agency. We're an expert-led team built on transparency, performance, and real-world results.
