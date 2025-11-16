@@ -1,6 +1,6 @@
 import { Link, useLocation } from "react-router-dom";
 import { Menu, X, ChevronDown, Moon, Sun, Linkedin } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { motion } from "framer-motion";
 import { useCalendly } from "@/context/CalendlyContext";
@@ -38,6 +38,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   const [navTextLight, setNavTextLight] = useState(false);
   const { openCalendly } = useCalendly();
   const location = useLocation();
+  const headerRef = useRef<HTMLElement | null>(null);
   const normalizedPath =
     location.pathname !== "/" && location.pathname.endsWith("/")
       ? location.pathname.slice(0, -1)
@@ -72,19 +73,81 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   }, [location.pathname]);
 
   useEffect(() => {
+    updateNavTone();
+  }, [location.pathname, updateNavTone]);
+
+  const getEffectiveBackgroundColor = useCallback(
+    (element: Element | null): string | null => {
+      if (typeof window === "undefined") return null;
+
+      let current: Element | null = element;
+      while (current && current !== document.documentElement) {
+        const style = window.getComputedStyle(current);
+        const background = style.backgroundColor;
+        if (background && background !== "rgba(0, 0, 0, 0)" && background !== "transparent") {
+          return background;
+        }
+        current = current.parentElement;
+      }
+
+      return theme === "dark" ? "rgb(15, 23, 42)" : "rgb(255, 255, 255)";
+    },
+    [theme]
+  );
+
+  const updateNavTone = useCallback(() => {
+    if (typeof window === "undefined") return;
+
+    const header = headerRef.current;
+    if (!header) return;
+
+    const rect = header.getBoundingClientRect();
+    const sampleX = rect.left + rect.width / 2;
+    const sampleY = rect.bottom + 1;
+    const elementBelow = document.elementFromPoint(sampleX, sampleY);
+    const backgroundColor = getEffectiveBackgroundColor(elementBelow);
+
+    if (!backgroundColor) return;
+
+    const rgbMatch = backgroundColor.match(/rgba?\(([^)]+)\)/);
+    if (!rgbMatch) return;
+
+    const [r, g, b] = rgbMatch[1]
+      .split(",")
+      .slice(0, 3)
+      .map((value) => parseFloat(value.trim()));
+
+    const brightness = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+    setNavTextLight(brightness < 0.55);
+  }, [getEffectiveBackgroundColor]);
+
+  useEffect(() => {
     if (typeof window === "undefined") {
       return;
     }
 
+    let rafId: number | null = null;
+
     const handleScroll = () => {
-      const scrollY = window.scrollY;
-      setNavTextLight(scrollY > 80);
+      if (rafId !== null) return;
+      rafId = window.requestAnimationFrame(() => {
+        updateNavTone();
+        rafId = null;
+      });
     };
 
-    handleScroll();
+    updateNavTone();
     window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+    window.addEventListener("resize", handleScroll);
+
+    return () => {
+      if (rafId !== null) {
+        window.cancelAnimationFrame(rafId);
+      }
+      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("resize", handleScroll);
+    };
+  }, [updateNavTone]);
 
   const toggleTheme = () => {
     setTheme((prev) => (prev === "light" ? "dark" : "light"));
@@ -150,6 +213,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       <div className="min-h-screen flex flex-col bg-background text-foreground transition-colors">
         {/* Header - Frosted Glass Effect */}
         <header
+          ref={headerRef}
           className="sticky top-0 z-50 border-b"
           style={{
             backgroundColor:
@@ -196,8 +260,9 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 
               {/* Services Mega Menu */}
               <div
-                className="relative"
+                className="group"
                 onMouseEnter={() => setServicesOpen(true)}
+                onMouseLeave={() => setServicesOpen(false)}
               >
                 <button
                   className={`px-3 py-2 text-lg font-heading font-medium hover:text-kaizen-cyan transition rounded-md hover:bg-kaizen-light/50 dark:hover:bg-white/5 flex items-center gap-1 ${
@@ -222,7 +287,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                     transition={{ duration: 0.2 }}
                     onMouseEnter={() => setServicesOpen(true)}
                     onMouseLeave={() => setServicesOpen(false)}
-                    className="fixed inset-x-0 top-[4.5rem] z-[45] border-b"
+                    className="absolute left-1/2 top-[calc(100%+12px)] z-[45] w-[min(1100px,calc(100vw-2rem))] -translate-x-1/2 rounded-2xl border border-kaizen-light/40 shadow-2xl"
                     style={{
                       backgroundColor:
                         theme === "light"
