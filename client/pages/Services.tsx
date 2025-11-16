@@ -42,9 +42,9 @@ export default function Services() {
     },
     {
       icon: Briefcase,
-      title: "Product Owner Services",
-      description: "Contract product ownership without the full-time hire. Strategic guidance and hands-on delivery.",
-      link: "/product-owner",
+      title: "Contract Product Owner",
+      description: "Senior Product Owner with 10+ years of experience. I deliver complex projects on time, on budget.",
+      link: "/contract-product-owner",
     },
   ];
 
