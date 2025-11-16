@@ -287,6 +287,20 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             </div>
 
             <Link
+              to="/about"
+              className="px-3 py-2 text-lg font-heading font-medium hover:text-kaizen-cyan transition rounded-md hover:bg-kaizen-light/50"
+            >
+              About
+            </Link>
+
+            <Link
+              to="/pledge"
+              className="px-3 py-2 text-lg font-heading font-medium hover:text-kaizen-cyan transition rounded-md hover:bg-kaizen-light/50"
+            >
+              Our Pledge
+            </Link>
+
+            <Link
               to="/case-studies"
               className="px-3 py-2 text-lg font-heading font-medium hover:text-kaizen-cyan transition rounded-md hover:bg-kaizen-light/50"
             >
