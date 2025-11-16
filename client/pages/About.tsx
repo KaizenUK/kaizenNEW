@@ -98,7 +98,7 @@ export default function About() {
               transition={{ delay: 0.3, duration: 0.8 }}
             >
               <p><strong>We</strong> are Kaizen.</p>
-              <p><strong>We</strong>'ve spent over a decade in the high-stakes global tech industry, and we built this agency to do things differently. No buzzwords, no chaotic projects, no excuses. This is our story.</p>
+              <p>We've spent over a decade in the high-stakes global tech industry, and we built this agency to do things differently. No buzzwords, no chaotic projects, no excuses. This is our story.</p>
             </motion.div>
 
             {/* CTA */}
