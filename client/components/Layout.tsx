@@ -288,24 +288,25 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 
             <Link
               to="/blog"
-              className="px-3 py-2 text-base font-heading font-medium hover:text-kaizen-cyan transition rounded-md hover:bg-kaizen-light/50"
+              className="px-3 py-2 text-lg font-heading font-medium hover:text-kaizen-cyan transition rounded-md hover:bg-kaizen-light/50"
             >
               Blog
             </Link>
 
-            <div className="ml-2">
-              <ThemeToggleButton />
-            </div>
           </div>
 
           {/* CTA, Theme Toggle, and Mobile Button */}
           <div className="flex items-center gap-4">
+            {/* Desktop theme toggle */}
+            <div className="hidden md:block">
+              <ThemeToggleButton />
+            </div>
             <div className="md:hidden">
               <ThemeToggleButton />
             </div>
             <Link
               to="/contact"
-              className="hidden sm:inline-block px-6 py-2 rounded-full bg-gradient-to-r from-kaizen-cyan to-kaizen-lime text-white font-heading font-medium text-base hover:opacity-90 transition"
+              className="hidden sm:inline-block px-6 py-2 rounded-full bg-gradient-to-r from-kaizen-cyan to-kaizen-lime text-white font-heading font-medium text-lg hover:opacity-90 transition"
             >
               Get a Quote
             </Link>
