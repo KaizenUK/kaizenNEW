@@ -173,7 +173,9 @@
     background-origin: border-box;
     background-clip: padding-box, border-box;
     box-shadow: 0 25px 60px rgba(4, 13, 33, 0.55);
-    transition: box-shadow 200ms ease, transform 200ms ease,
+    transition:
+      box-shadow 200ms ease,
+      transform 200ms ease,
       background-image 200ms ease;
   }
 

@@ -183,7 +183,9 @@ const CodeRainHero = () => {
           <motion.h1
             className="text-5xl md:text-6xl lg:text-7xl font-heading font-bold mb-8 leading-tight"
             initial={{ opacity: 0, y: 40 }}
-            animate={phase === "rain" ? { opacity: 0, y: 40 } : { opacity: 1, y: 0 }}
+            animate={
+              phase === "rain" ? { opacity: 0, y: 40 } : { opacity: 1, y: 0 }
+            }
             transition={{ duration: 0.6, ease: "easeOut" }}
           >
             {title.split("").map((char, index) => (
@@ -224,9 +226,9 @@ const CodeRainHero = () => {
           >
             <p>
               We build high-performance websites for Liverpool &amp; Wirral
-              businesses. Our sites are fast, clean-coded, and delivered with
-              an Agile process that means you launch on time, without the
-              typical agency headaches.
+              businesses. Our sites are fast, clean-coded, and delivered with an
+              Agile process that means you launch on time, without the typical
+              agency headaches.
             </p>
           </motion.div>
 
@@ -335,7 +337,9 @@ export default function Home() {
                 </h2>
 
                 <p className="text-lg md:text-xl text-kaizen-text-light/80 dark:text-white/70 mb-6 leading-relaxed">
-                  We are a Liverpool studio working with businesses across the North West – from high-street independents in Wirral to professional services firms in the city centre.
+                  We are a Liverpool studio working with businesses across the
+                  North West – from high-street independents in Wirral to
+                  professional services firms in the city centre.
                 </p>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -344,7 +348,8 @@ export default function Home() {
                       Local-first thinking
                     </p>
                     <p className="text-sm text-white/70">
-                      Clear calls-to-action, local SEO baked in, and content that actually sounds like you.
+                      Clear calls-to-action, local SEO baked in, and content
+                      that actually sounds like you.
                     </p>
                   </div>
                   <div className="p-4 rounded-xl bg-white/5 border border-white/10">
@@ -352,7 +357,8 @@ export default function Home() {
                       Built for growth
                     </p>
                     <p className="text-sm text-white/70">
-                      Fast, secure builds that can scale from a one-person practice to a growing team.
+                      Fast, secure builds that can scale from a one-person
+                      practice to a growing team.
                     </p>
                   </div>
                 </div>
@@ -368,12 +374,21 @@ export default function Home() {
                       A site built for real people
                     </h3>
                     <p className="text-base text-white/75 mb-6">
-                      We design around how your customers actually find, read, and contact you – not how a theme looks in a demo.
+                      We design around how your customers actually find, read,
+                      and contact you – not how a theme looks in a demo.
                     </p>
                     <ul className="space-y-3 text-white/80 text-sm">
-                      <li>Layouts that work on busy thumbs, not just big monitors.</li>
-                      <li>Copy and structure tuned for local search and real enquiries.</li>
-                      <li>Measured, iterative improvements instead of one big risky relaunch.</li>
+                      <li>
+                        Layouts that work on busy thumbs, not just big monitors.
+                      </li>
+                      <li>
+                        Copy and structure tuned for local search and real
+                        enquiries.
+                      </li>
+                      <li>
+                        Measured, iterative improvements instead of one big
+                        risky relaunch.
+                      </li>
                     </ul>
                   </div>
                 </div>

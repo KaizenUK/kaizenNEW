@@ -152,9 +152,15 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         <header
           className="sticky top-0 z-50 border-b"
           style={{
-            backgroundColor: theme === "light" ? "rgba(255, 255, 255, 0.05)" : "rgba(15, 23, 42, 0.05)",
+            backgroundColor:
+              theme === "light"
+                ? "rgba(255, 255, 255, 0.05)"
+                : "rgba(15, 23, 42, 0.05)",
             backdropFilter: "blur(10px)",
-            borderBottomColor: theme === "light" ? "rgba(255, 255, 255, 0.1)" : "rgba(255, 255, 255, 0.1)",
+            borderBottomColor:
+              theme === "light"
+                ? "rgba(255, 255, 255, 0.1)"
+                : "rgba(255, 255, 255, 0.1)",
           }}
         >
           <nav className="container mx-auto px-4 py-3 flex items-center justify-between relative">
@@ -180,7 +186,9 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
               <Link
                 to="/"
                 className={`px-3 py-2 text-lg font-heading font-medium hover:text-kaizen-cyan transition rounded-md hover:bg-kaizen-light/50 dark:hover:bg-white/5 ${
-                  navTextLight ? "text-white" : "text-kaizen-dark dark:text-white"
+                  navTextLight
+                    ? "text-white"
+                    : "text-kaizen-dark dark:text-white"
                 }`}
               >
                 Home
@@ -191,9 +199,13 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                 className="relative"
                 onMouseEnter={() => setServicesOpen(true)}
               >
-                <button className={`px-3 py-2 text-lg font-heading font-medium hover:text-kaizen-cyan transition rounded-md hover:bg-kaizen-light/50 dark:hover:bg-white/5 flex items-center gap-1 ${
-                  navTextLight ? "text-white" : "text-kaizen-dark dark:text-white"
-                }`}>
+                <button
+                  className={`px-3 py-2 text-lg font-heading font-medium hover:text-kaizen-cyan transition rounded-md hover:bg-kaizen-light/50 dark:hover:bg-white/5 flex items-center gap-1 ${
+                    navTextLight
+                      ? "text-white"
+                      : "text-kaizen-dark dark:text-white"
+                  }`}
+                >
                   Services
                   <ChevronDown
                     size={16}
@@ -212,7 +224,10 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                     onMouseLeave={() => setServicesOpen(false)}
                     className="fixed inset-x-0 top-[4.5rem] z-[45] border-b"
                     style={{
-                      backgroundColor: theme === "light" ? "rgba(255, 255, 255, 0.95)" : "rgba(15, 23, 42, 0.95)",
+                      backgroundColor:
+                        theme === "light"
+                          ? "rgba(255, 255, 255, 0.95)"
+                          : "rgba(15, 23, 42, 0.95)",
                       backdropFilter: "blur(20px)",
                       borderBottomColor: "rgba(255, 255, 255, 0.1)",
                     }}
@@ -307,7 +322,9 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
               <Link
                 to="/about"
                 className={`px-3 py-2 text-lg font-heading font-medium hover:text-kaizen-cyan transition rounded-md hover:bg-kaizen-light/50 dark:hover:bg-white/5 ${
-                  navTextLight ? "text-white" : "text-kaizen-dark dark:text-white"
+                  navTextLight
+                    ? "text-white"
+                    : "text-kaizen-dark dark:text-white"
                 }`}
               >
                 About
@@ -316,7 +333,9 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
               <Link
                 to="/pledge"
                 className={`px-3 py-2 text-lg font-heading font-medium hover:text-kaizen-cyan transition rounded-md hover:bg-kaizen-light/50 dark:hover:bg-white/5 ${
-                  navTextLight ? "text-white" : "text-kaizen-dark dark:text-white"
+                  navTextLight
+                    ? "text-white"
+                    : "text-kaizen-dark dark:text-white"
                 }`}
               >
                 Our Pledge
@@ -325,7 +344,9 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
               <Link
                 to="/case-studies"
                 className={`px-3 py-2 text-lg font-heading font-medium hover:text-kaizen-cyan transition rounded-md hover:bg-kaizen-light/50 dark:hover:bg-white/5 ${
-                  navTextLight ? "text-white" : "text-kaizen-dark dark:text-white"
+                  navTextLight
+                    ? "text-white"
+                    : "text-kaizen-dark dark:text-white"
                 }`}
               >
                 Case Studies
@@ -334,7 +355,9 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
               <Link
                 to="/blog"
                 className={`px-3 py-2 text-lg font-heading font-medium hover:text-kaizen-cyan transition rounded-md hover:bg-kaizen-light/50 dark:hover:bg-white/5 ${
-                  navTextLight ? "text-white" : "text-kaizen-dark dark:text-white"
+                  navTextLight
+                    ? "text-white"
+                    : "text-kaizen-dark dark:text-white"
                 }`}
               >
                 Blog
@@ -524,7 +547,9 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                   className="h-32 w-auto mb-6"
                 />
                 <p className="text-lg text-kaizen-text-light/80 mb-6 leading-relaxed">
-                  A Liverpool web design & digital transformation agency. We're an expert-led team built on transparency, performance, and real-world results.
+                  A Liverpool web design & digital transformation agency. We're
+                  an expert-led team built on transparency, performance, and
+                  real-world results.
                 </p>
                 <div className="flex gap-4">
                   <a
@@ -588,7 +613,9 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 
               {/* Column 3: Services */}
               <div>
-                <h4 className="font-heading font-bold text-lg mb-6">Services</h4>
+                <h4 className="font-heading font-bold text-lg mb-6">
+                  Services
+                </h4>
                 <ul className="space-y-3">
                   <li>
                     <Link
