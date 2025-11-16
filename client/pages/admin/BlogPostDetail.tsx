@@ -124,7 +124,7 @@ export default function BlogPostDetail() {
   const handleFormChange = () => setIsModified(true);
 
   // Load post data
-  React.useEffect(() => {
+  useEffect(() => {
     const fetchPost = async () => {
       if (!slug) {
         setIsLoading(false);
