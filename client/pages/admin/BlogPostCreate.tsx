@@ -134,6 +134,8 @@ export default function BlogPostCreate() {
         publishedDate: formPublishedDate,
         tags: tagsArray,
         body: formBody,
+        seoTitle: formSeoTitle,
+        seoDescription: formSeoDescription,
       };
 
       const res = await fetch("/api/admin/builder/blog-posts", {
