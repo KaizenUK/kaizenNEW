@@ -91,7 +91,7 @@ export function createServer() {
       }
 
       const { id } = req.params;
-      const { title, slug, excerpt, publishedDate, tags, body } = req.body;
+      const { title, slug, excerpt, publishedDate, tags, body, seoTitle, seoDescription } = req.body;
 
       if (!id) {
         return res.status(400).json({ error: "Post ID is required" });
@@ -114,6 +114,8 @@ export function createServer() {
               publishedDate,
               tags,
               body,
+              seoTitle,
+              seoDescription,
             },
           }),
         },
