@@ -11,8 +11,33 @@ export default function AdminLayout({
   children: React.ReactNode;
 }) {
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [crispUnread, setCrispUnread] = useState<number | null>(null);
   const location = useLocation();
   const { logout } = useAdminAuth();
+
+  // Fetch Crisp unread count
+  useEffect(() => {
+    let cancelled = false;
+
+    const loadCrispUnread = async () => {
+      try {
+        const res = await fetch("/api/admin/crisp/summary");
+        if (!res.ok) return;
+        const json = await res.json();
+        if (!cancelled && typeof json.unreadCount === "number") {
+          setCrispUnread(json.unreadCount);
+        }
+      } catch {
+        // Silently ignore errors - leave crispUnread as null
+      }
+    };
+
+    loadCrispUnread();
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   const navItems = [
     { name: "Dashboard", href: "/admin", icon: LayoutDashboard, external: false },
