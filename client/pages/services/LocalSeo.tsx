@@ -187,17 +187,18 @@ export default function LocalSeo() {
               </motion.div>
             </div>
 
-            {/* Subtle abstract map graphic on the right */}
+            {/* Google Search Hero Image on the right */}
             <motion.div
               className="hidden md:flex items-center justify-center"
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: 0.4, duration: 0.8 }}
             >
-              <div className="w-full h-96 bg-gradient-to-br from-kaizen-cyan/20 dark:from-kaizen-cyan/10 to-kaizen-lime/20 dark:to-kaizen-lime/10 rounded-2xl border border-kaizen-cyan/30 dark:border-kaizen-cyan/20 flex items-center justify-center">
-                <MapPin
-                  size={120}
-                  className="text-kaizen-cyan/40 dark:text-kaizen-cyan/20"
+              <div className="w-full h-96 rounded-2xl border border-kaizen-cyan/30 dark:border-kaizen-cyan/20 overflow-hidden">
+                <img
+                  src="https://cdn.builder.io/api/v1/image/assets%2Fe4ae46bbd81b4b95bef54d66dd9748cc%2F2bcd66303b6e425ab616ce3ad62975b8?format=webp&width=800"
+                  alt="Google search results for local business"
+                  className="w-full h-full object-cover"
                 />
               </div>
             </motion.div>
