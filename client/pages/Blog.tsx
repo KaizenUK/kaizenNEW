@@ -213,7 +213,7 @@ export default function Blog() {
                   <div className="flex items-center gap-2 mb-3 flex-wrap">
                     {featuredPost.tags.slice(0, 2).map((tag, tagIndex) => (
                       <span
-                        key={`hero-tag-${tagIndex}`}
+                        key={`hero-tag-${tag}-${tagIndex}`}
                         className={`text-xs font-mono font-bold tracking-widest ${
                           TAG_COLORS[tag.toLowerCase()] || "text-gray-400"
                         }`}
@@ -250,9 +250,9 @@ export default function Blog() {
         <div className="container mx-auto">
           <p className="text-gray-500 text-sm font-mono mb-4">Filter by tags</p>
           <div className="flex flex-wrap gap-3">
-            {allTags.map((tag, index) => (
+            {allTags.map((tag) => (
               <motion.button
-                key={`tag-${index}`}
+                key={`tag-chip-${tag}`}
                 onClick={() => setSelectedTag(tag)}
                 className={`px-4 py-2 rounded-lg font-mono text-xs font-bold tracking-widest transition-all ${
                   selectedTag === tag
@@ -261,7 +261,7 @@ export default function Blog() {
                 }`}
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.4, delay: 0.3 + index * 0.05 }}
+                transition={{ duration: 0.4, delay: 0.3 }}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
               >
@@ -316,7 +316,7 @@ export default function Blog() {
                             .slice(0, 2)
                             .map((tag, tagIndex) => (
                               <span
-                                key={`grid-featured-tag-${tagIndex}`}
+                                key={`grid-featured-tag-${tag}-${tagIndex}`}
                                 className={`text-xs font-mono font-bold tracking-widest ${
                                   TAG_COLORS[tag.toLowerCase()] ||
                                   "text-gray-400"
@@ -345,7 +345,7 @@ export default function Blog() {
                 {/* Grid Posts */}
                 {otherPosts.map((post, index) => (
                   <motion.div
-                    key={post.id}
+                    key={post.id || `post-fallback-${index}`}
                     layoutId={`post-${post.id}`}
                     initial={{ opacity: 0, scale: 0.8 }}
                     animate={{ opacity: 1, scale: 1 }}
