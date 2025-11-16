@@ -213,7 +213,7 @@ export default function Blog() {
                   <div className="flex items-center gap-2 mb-3 flex-wrap">
                     {featuredPost.tags.slice(0, 2).map((tag, tagIndex) => (
                       <span
-                        key={`${tag}-${tagIndex}`}
+                        key={`hero-tag-${tagIndex}`}
                         className={`text-xs font-mono font-bold tracking-widest ${
                           TAG_COLORS[tag.toLowerCase()] || "text-gray-400"
                         }`}
@@ -316,7 +316,7 @@ export default function Blog() {
                             .slice(0, 2)
                             .map((tag, tagIndex) => (
                               <span
-                                key={`${tag}-${tagIndex}`}
+                                key={`grid-featured-tag-${tagIndex}`}
                                 className={`text-xs font-mono font-bold tracking-widest ${
                                   TAG_COLORS[tag.toLowerCase()] ||
                                   "text-gray-400"
@@ -370,7 +370,7 @@ export default function Blog() {
                         <div className="flex items-center gap-2 mb-3 flex-wrap">
                           {post.tags.slice(0, 1).map((tag, tagIndex) => (
                             <span
-                              key={`${tag}-${tagIndex}`}
+                              key={`grid-post-tag-${post.id}-${tagIndex}`}
                               className={`text-xs font-mono font-bold tracking-widest ${
                                 TAG_COLORS[tag.toLowerCase()] || "text-gray-400"
                               }`}
