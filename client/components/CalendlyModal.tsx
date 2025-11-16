@@ -1,6 +1,5 @@
 import { useEffect, useRef } from "react";
-import { Dialog, DialogContent, DialogPortal, DialogOverlay } from "@/components/ui/dialog";
-import { X } from "lucide-react";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 
 interface CalendlyModalProps {
   isOpen: boolean;
@@ -34,29 +33,11 @@ export function CalendlyModal({ isOpen, onClose }: CalendlyModalProps) {
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogPortal>
-        <DialogOverlay className="fixed inset-0 z-50 bg-black/50 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0" />
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-          <div
-            className="relative w-full max-w-lg bg-white dark:bg-slate-900 rounded-lg shadow-lg"
-            onClick={(e) => e.stopPropagation()}
-          >
-            {/* Close Button */}
-            <button
-              onClick={onClose}
-              className="absolute top-4 right-4 z-10 p-2 rounded-md hover:bg-gray-100 dark:hover:bg-slate-800 transition-colors"
-              aria-label="Close modal"
-            >
-              <X className="h-5 w-5 text-gray-600 dark:text-gray-400" />
-            </button>
-
-            {/* Calendly Widget */}
-            <div className="p-6 pt-12">
-              <div className="calendly-inline-widget" data-url="https://calendly.com/sean-kaizenweb/30-minute-meeting-clone" style={{ minWidth: "320px", height: "700px" }} />
-            </div>
-          </div>
+      <DialogContent className="w-full max-w-lg p-0 border-0 overflow-hidden">
+        <div className="p-6">
+          <div className="calendly-inline-widget" data-url="https://calendly.com/sean-kaizenweb/30-minute-meeting-clone" style={{ minWidth: "320px", height: "700px" }} />
         </div>
-      </DialogPortal>
+      </DialogContent>
     </Dialog>
   );
 }
