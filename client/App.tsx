@@ -41,6 +41,24 @@ function AppContent() {
   const location = useLocation();
   const isAdminRoute = location.pathname.startsWith("/admin");
 
+  // Suppress react-quill findDOMNode deprecation warning
+  useEffect(() => {
+    const originalError = console.error;
+    console.error = (...args: any[]) => {
+      if (
+        args[0]?.includes?.("findDOMNode") &&
+        args[0]?.includes?.("deprecated")
+      ) {
+        return;
+      }
+      originalError(...args);
+    };
+
+    return () => {
+      console.error = originalError;
+    };
+  }, []);
+
   // Hide/show Crisp widget based on route
   useEffect(() => {
     if (typeof window !== "undefined" && (window as any).$crisp) {
