@@ -270,7 +270,7 @@ export default function About() {
               </h2>
 
               <p className="text-lg md:text-xl text-kaizen-text-dark/70 dark:text-white/60 leading-relaxed">
-                Kaizen is run by me (Sean) and my husband, Kiko. When we're not running projects, gaming on the PS5, or producing music, you'll find us being dragged around the Wirral by our 5-year-old Border Collie, Rikki.
+                Kaizen is run by Sean—a local lad—and his husband, Kiko. When we're not running projects, gaming on the PS5, or producing music, you'll find us being dragged around the Wirral by our 5-year-old Border Collie, Rikki.
               </p>
             </div>
           </ScrollReveal>
