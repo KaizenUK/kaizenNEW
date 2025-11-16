@@ -474,7 +474,7 @@ export default function BlogPostDetail() {
             <motion.button
               onClick={handleSave}
               disabled={isSaving || !isModified}
-              className="w-full py-3 bg-gradient-to-r from-blue-500 to-purple-500 text-white font-heading font-bold rounded-lg hover:opacity-90 transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+              className="w-full py-3 bg-gradient-to-r from-blue-500 to-purple-500 text-white font-heading font-bold rounded-xl hover:opacity-90 transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-lg shadow-blue-500/20"
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.4, delay: 0.1 }}
@@ -487,7 +487,7 @@ export default function BlogPostDetail() {
 
             {/* Info */}
             <motion.div
-              className="bg-blue-500/10 border border-blue-500/30 rounded-lg p-6"
+              className="bg-blue-500/10 border border-blue-500/30 rounded-xl p-6 backdrop-blur-sm"
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.4, delay: 0.2 }}
