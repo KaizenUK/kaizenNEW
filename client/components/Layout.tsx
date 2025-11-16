@@ -188,7 +188,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 
               {/* Services Mega Menu */}
               <div
-                className="relative"
+                className="relative w-[26rem]"
                 onMouseEnter={() => setServicesOpen(true)}
                 onMouseLeave={() => setServicesOpen(false)}
               >
