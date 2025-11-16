@@ -143,9 +143,9 @@ const pageMeta: Record<string, Partial<PageMeta>> = {
       "Studio based near the Baltic Triangle helping city centre retailers, hospitality, and creative businesses modernise their sites.",
   },
   "/case-studies": {
-    title: "Liverpool Web Design Case Studies | Kaizen Web",
+    title: "Case Studies | Liverpool Web Design Results | Kaizen",
     description:
-      "Results from Kaizen Web projects across property, legal, trades, and hospitality sectors in Liverpool.",
+      "Proof, not promises. See our real, 'no-BS' case studies for Liverpool & Wirral businesses. We deliver results.",
   },
   "/blog": {
     title: "Kaizen Web Journal | Liverpool Web Design Tips",
