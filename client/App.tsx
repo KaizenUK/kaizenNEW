@@ -88,7 +88,7 @@ function AppContent() {
           path="/admin"
           element={
             <AdminGuard>
-              <AdminDashboard />
+              <AdminDashboardWrapper />
             </AdminGuard>
           }
         />
