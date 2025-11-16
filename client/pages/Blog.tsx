@@ -208,9 +208,9 @@ export default function Blog() {
 
                 <div className="absolute bottom-0 left-0 right-0 p-6">
                   <div className="flex items-center gap-2 mb-3 flex-wrap">
-                    {featuredPost.tags.slice(0, 2).map((tag) => (
+                    {featuredPost.tags.slice(0, 2).map((tag, tagIndex) => (
                       <span
-                        key={tag}
+                        key={`${tag}-${tagIndex}`}
                         className={`text-xs font-mono font-bold tracking-widest ${
                           TAG_COLORS[tag.toLowerCase()] || "text-gray-400"
                         }`}
@@ -307,9 +307,9 @@ export default function Blog() {
 
                       <div className="absolute bottom-0 left-0 right-0 p-6">
                         <div className="flex items-center gap-3 mb-4 flex-wrap">
-                          {featuredPost.tags.slice(0, 2).map((tag) => (
+                          {featuredPost.tags.slice(0, 2).map((tag, tagIndex) => (
                             <span
-                              key={tag}
+                              key={`${tag}-${tagIndex}`}
                               className={`text-xs font-mono font-bold tracking-widest ${
                                 TAG_COLORS[tag.toLowerCase()] || "text-gray-400"
                               }`}
@@ -360,9 +360,9 @@ export default function Blog() {
 
                       <div className="absolute bottom-0 left-0 right-0 p-4">
                         <div className="flex items-center gap-2 mb-3 flex-wrap">
-                          {post.tags.slice(0, 1).map((tag) => (
+                          {post.tags.slice(0, 1).map((tag, tagIndex) => (
                             <span
-                              key={tag}
+                              key={`${tag}-${tagIndex}`}
                               className={`text-xs font-mono font-bold tracking-widest ${
                                 TAG_COLORS[tag.toLowerCase()] || "text-gray-400"
                               }`}
