@@ -86,7 +86,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       const headerHeight = 80; // approximate header height
       const elementBelow = document.elementFromPoint(
         window.innerWidth / 2,
-        headerHeight + 10
+        headerHeight + 10,
       );
 
       if (elementBelow) {
@@ -426,7 +426,10 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
           </nav>
 
           {/* Detection zone for background color */}
-          <div ref={detectionZoneRef} className="absolute pointer-events-none" />
+          <div
+            ref={detectionZoneRef}
+            className="absolute pointer-events-none"
+          />
 
           {/* Mobile Menu */}
           {mobileMenuOpen && (
