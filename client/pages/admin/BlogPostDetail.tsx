@@ -206,6 +206,8 @@ export default function BlogPostDetail() {
         publishedDate: formPublishedDate,
         tags: tagsArray,
         body: formBody,
+        seoTitle: formSeoTitle,
+        seoDescription: formSeoDescription,
       };
 
       // IMPORTANT: call the Node API route that actually exists
