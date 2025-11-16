@@ -106,14 +106,28 @@ const CTAButton = ({
   text,
   onClick,
   secondary = false,
+  openChat = false,
 }: {
   text: string;
   onClick?: () => void;
   secondary?: boolean;
+  openChat?: boolean;
 }) => {
+  const handleClick = () => {
+    if (openChat && typeof window !== "undefined") {
+      // Open Crisp Chat
+      if ((window as any).$crisp) {
+        (window as any).$crisp.push(["do", "chat:open"]);
+      }
+    }
+    if (onClick) {
+      onClick();
+    }
+  };
+
   return (
     <button
-      onClick={onClick}
+      onClick={handleClick}
       className={`px-8 py-3 rounded-full font-heading font-bold inline-flex items-center justify-center gap-2 transition ${
         secondary
           ? "border-2 border-kaizen-cyan text-kaizen-cyan hover:bg-kaizen-cyan/10 dark:border-kaizen-cyan/70 dark:text-kaizen-cyan/70 dark:hover:bg-kaizen-cyan/5"
@@ -124,7 +138,7 @@ const CTAButton = ({
       <ArrowRight size={18} />
     </button>
   );
-};
+}
 
 export default function Home() {
   return (
@@ -150,9 +164,10 @@ export default function Home() {
               transition={{ delay: 0.6, duration: 0.6 }}
             >
               <p>
-                We build high-performance websites for businesses in Liverpool &
-                Wirral. We focus on clean code, fast load times, and a
-                straightforward, Agile process that gets you launched on time.
+                We build high-performance websites for Liverpool &amp; Wirral
+                businesses. Our sites are fast, clean-coded, and delivered with
+                an Agile process that means you launch on time, without the
+                typical agency headaches.
               </p>
             </motion.div>
 
@@ -162,7 +177,7 @@ export default function Home() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.8, duration: 0.6 }}
             >
-              <CTAButton text="Start a Chat" />
+              <CTAButton text="Start a Chat" openChat />
               <Link
                 to="/case-studies"
                 className="px-8 py-3 rounded-full border-2 border-kaizen-text-light/30 dark:border-white/20 text-kaizen-text-light dark:text-white/85 font-heading font-bold hover:border-kaizen-cyan dark:hover:border-kaizen-cyan transition inline-flex items-center justify-center gap-2"
@@ -449,7 +464,7 @@ export default function Home() {
         <div className="container mx-auto px-4">
           <ScrollReveal>
             <h2 className="text-4xl md:text-5xl font-heading font-bold mb-16 text-kaizen-text-light dark:text-white text-center">
-              The Kaizen Way
+              How We Work
             </h2>
           </ScrollReveal>
 
@@ -507,7 +522,7 @@ export default function Home() {
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
           >
-            <CTAButton text="Start a Live Chat" />
+            <CTAButton text="Start a Live Chat" openChat />
             <Link
               to="/contact"
               className="px-8 py-3 rounded-full border-2 border-kaizen-dark dark:border-white/20 text-kaizen-dark dark:text-white/85 font-heading font-bold hover:border-kaizen-cyan dark:hover:border-kaizen-cyan transition inline-flex items-center justify-center gap-2"
