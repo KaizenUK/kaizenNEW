@@ -6,6 +6,12 @@ import {
   Save,
   AlertCircle,
   CheckCircle,
+  Home,
+  List,
+  FileText,
+  ExternalLink,
+  Edit,
+  AlertTriangle,
 } from "lucide-react";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
