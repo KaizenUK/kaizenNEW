@@ -30,7 +30,7 @@ export function createServer() {
           .json({ error: "Builder API key not configured" });
       }
 
-      const { title, slug, excerpt, publishedDate, tags, body } = req.body;
+      const { title, slug, excerpt, publishedDate, tags, body, seoTitle, seoDescription } = req.body;
 
       // Basic validation
       if (!title && !slug) {
@@ -57,6 +57,8 @@ export function createServer() {
                 publishedDate || new Date().toISOString().split("T")[0],
               tags: Array.isArray(tags) ? tags : [],
               body: body || "",
+              seoTitle: seoTitle || "",
+              seoDescription: seoDescription || "",
             },
           }),
         },
