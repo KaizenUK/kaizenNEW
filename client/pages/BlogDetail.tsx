@@ -55,6 +55,15 @@ function extractImageUrl(image: any): string {
   return DEFAULT_IMAGE;
 }
 
+function generateDescriptionFromBody(html: string): string {
+  if (!html) return "";
+  const text = html.replace(/<[^>]*>/g, "").trim();
+  if (text.length <= 160) return text;
+  const truncated = text.substring(0, 160);
+  const lastSpace = truncated.lastIndexOf(" ");
+  return lastSpace > 0 ? truncated.substring(0, lastSpace) + "..." : truncated + "...";
+}
+
 function calculateReadingTime(html: string): number {
   if (!html) return 0;
   const textContent = html.replace(/<[^>]*>/g, "");
