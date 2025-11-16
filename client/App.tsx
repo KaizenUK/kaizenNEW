@@ -40,6 +40,19 @@ function AppContent() {
   const location = useLocation();
   const isAdminRoute = location.pathname.startsWith("/admin");
 
+  // Hide/show Crisp widget based on route
+  useEffect(() => {
+    if (typeof window !== "undefined" && window.$crisp) {
+      if (isAdminRoute) {
+        // Hide Crisp on admin routes
+        window.$crisp.push(["do", "chat:hide"]);
+      } else {
+        // Show Crisp on public routes
+        window.$crisp.push(["do", "chat:show"]);
+      }
+    }
+  }, [isAdminRoute]);
+
   return (
     <>
       {/* Only show CrispChatButton on non-admin routes */}
