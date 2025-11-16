@@ -1,6 +1,5 @@
-import React from "react";
-import ReactQuill from "react-quill";
-import "react-quill/dist/quill.snow.css";
+import React, { Suspense } from "react";
+import dynamic from "next/dynamic";
 
 interface QuillEditorProps {
   value: string;
@@ -11,6 +10,17 @@ interface QuillEditorProps {
   style?: React.CSSProperties;
 }
 
+const ReactQuillComponent = dynamic(
+  async () => {
+    const { default: ReactQuill } = await import("react-quill");
+    return ReactQuill;
+  },
+  {
+    ssr: false,
+    loading: () => <div className="h-80 bg-gray-800 rounded-lg animate-pulse" />,
+  }
+);
+
 const QuillEditor: React.FC<QuillEditorProps> = ({
   value,
   onChange,
@@ -20,15 +30,17 @@ const QuillEditor: React.FC<QuillEditorProps> = ({
   style,
 }) => {
   return (
-    <ReactQuill
-      theme="snow"
-      value={value}
-      onChange={onChange}
-      modules={modules}
-      formats={formats}
-      className={className}
-      style={style}
-    />
+    <Suspense fallback={<div className="h-80 bg-gray-800 rounded-lg animate-pulse" />}>
+      <ReactQuillComponent
+        theme="snow"
+        value={value}
+        onChange={onChange}
+        modules={modules}
+        formats={formats}
+        className={className}
+        style={style}
+      />
+    </Suspense>
   );
 };
 
