@@ -318,46 +318,64 @@ export default function Home() {
       </section>
 
       {/* Section 3: Local Trust Block (Asymmetrical) */}
-      <section className="py-20 md:py-32 bg-kaizen-dark dark:bg-gradient-to-b dark:from-slate-900 dark:to-slate-950 text-kaizen-text-light dark:text-white/85">
-        <div className="container mx-auto px-4">
+      <section className="relative py-20 md:py-32 bg-slate-950 text-kaizen-text-light dark:text-white/85 overflow-hidden">
+        <div className="pointer-events-none absolute inset-x-0 -top-24 h-48 bg-gradient-to-b from-transparent via-kaizen-dark/40 to-transparent" />
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-kaizen-dark via-slate-950 to-transparent" />
+
+        <div className="relative container mx-auto px-4">
           <ScrollReveal>
-            <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-start">
-              <div className="md:col-span-7">
-                <h2 className="text-4xl md:text-5xl font-heading font-bold mb-8 text-kaizen-text-light dark:text-white">
+            <div className="grid grid-cols-1 md:grid-cols-12 gap-10 items-stretch">
+              <div className="md:col-span-7 flex flex-col justify-center">
+                <p className="text-xs font-mono tracking-[0.25em] text-kaizen-cyan mb-4 uppercase">
+                  LIVERPOOL & WIRRAL · NORTH WEST
+                </p>
+
+                <h2 className="text-4xl md:text-5xl font-heading font-bold mb-6 text-kaizen-text-light dark:text-white">
                   Your Local Partner for Liverpool & Wirral
                 </h2>
 
-                <div className="space-y-6 text-xl text-kaizen-text-light/80 dark:text-white/70 leading-relaxed">
-                  <p>
-                    We are based in Liverpool and work with businesses across the
-                    North West. We understand the local market, from high-street
-                    independents to established professional services.
-                  </p>
-                  <p>
-                    Whether you need your first proper website or a complete
-                    rebuild of something that no longer reflects your business,
-                    we focus on performance, clarity, and results.
-                  </p>
+                <p className="text-lg md:text-xl text-kaizen-text-light/80 dark:text-white/70 mb-6 leading-relaxed">
+                  We are a Liverpool studio working with businesses across the North West – from high-street independents in Wirral to professional services firms in the city centre.
+                </p>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="p-4 rounded-xl bg-white/5 border border-white/10">
+                    <p className="text-sm font-heading text-white mb-1">
+                      Local-first thinking
+                    </p>
+                    <p className="text-sm text-white/70">
+                      Clear calls-to-action, local SEO baked in, and content that actually sounds like you.
+                    </p>
+                  </div>
+                  <div className="p-4 rounded-xl bg-white/5 border border-white/10">
+                    <p className="text-sm font-heading text-white mb-1">
+                      Built for growth
+                    </p>
+                    <p className="text-sm text-white/70">
+                      Fast, secure builds that can scale from a one-person practice to a growing team.
+                    </p>
+                  </div>
                 </div>
               </div>
 
               <div className="md:col-span-5">
-                <div className="p-8 bg-white/5 border border-white/10 rounded-2xl shadow-xl backdrop-blur">
-                  <h3 className="text-2xl font-heading font-bold mb-4 text-white">
-                    A site built for the real world
-                  </h3>
-                  <ul className="space-y-3 text-white/80 text-base">
-                    <li>
-                      Fast, search-friendly builds that load quickly on mobile.
-                    </li>
-                    <li>
-                      Clear layouts that make it easy for visitors to take
-                      action.
-                    </li>
-                    <li>
-                      Straight-talking communication and Agile delivery.
-                    </li>
-                  </ul>
+                <div className="relative h-full p-8 rounded-2xl border border-white/10 bg-gradient-to-br from-kaizen-dark via-slate-900 to-black shadow-2xl overflow-hidden">
+                  <div className="pointer-events-none absolute -top-24 -right-24 h-48 w-48 rounded-full bg-kaizen-cyan/20 blur-3xl" />
+                  <div className="pointer-events-none absolute -bottom-32 -left-20 h-48 w-48 rounded-full bg-kaizen-lime/20 blur-3xl" />
+
+                  <div className="relative">
+                    <h3 className="text-2xl font-heading font-bold mb-4 text-white">
+                      A site built for real people
+                    </h3>
+                    <p className="text-base text-white/75 mb-6">
+                      We design around how your customers actually find, read, and contact you – not how a theme looks in a demo.
+                    </p>
+                    <ul className="space-y-3 text-white/80 text-sm">
+                      <li>Layouts that work on busy thumbs, not just big monitors.</li>
+                      <li>Copy and structure tuned for local search and real enquiries.</li>
+                      <li>Measured, iterative improvements instead of one big risky relaunch.</li>
+                    </ul>
+                  </div>
                 </div>
               </div>
             </div>
