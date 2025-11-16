@@ -160,6 +160,8 @@ export default function BlogPostDetail() {
               : "",
           );
           setFormBody(loadedPost.data.body || "");
+          setFormSeoTitle(loadedPost.data.seoTitle || "");
+          setFormSeoDescription(loadedPost.data.seoDescription || "");
         }
       } catch (err) {
         setError(err instanceof Error ? err.message : "Failed to fetch post");
