@@ -1,92 +1,168 @@
 import Layout from "@/components/Layout";
+import { motion } from "framer-motion";
+import { Helmet } from "react-helmet-async";
+
+const fadeInUp = {
+  hidden: { opacity: 0, y: 20 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.6, ease: "easeOut" },
+  },
+};
 
 export default function PrivacyPolicy() {
   return (
     <Layout>
-      <div className="bg-white py-20 md:py-32 px-4">
-        <div className="container mx-auto max-w-3xl">
-          <h1 className="text-4xl md:text-5xl font-heading font-bold mb-4">Privacy Policy</h1>
-          <p className="text-kaizen-text-dark/60 mb-12">Last updated: January 2024</p>
+      <Helmet>
+        <title>Privacy Policy | Kaizen</title>
+        <meta
+          name="description"
+          content="Our privacy policy explains how we collect and use your data. We're transparent about what we do and don't do with your information."
+        />
+      </Helmet>
 
-          <div className="prose prose-lg max-w-none space-y-8 text-kaizen-text-dark/80">
-            <section>
-              <h2 className="text-2xl font-heading font-bold mb-4">1. Introduction</h2>
-              <p>
-                Kaizen Web ("we", "us", "our", or "Company") respects the privacy of our users ("user" or "you"). This Privacy Policy explains how we collect, use, disclose, and otherwise handle your information when you visit our website, kaizenweb.co.uk (the "Site"), and use our services.
+      {/* Hero Section */}
+      <section className="bg-gradient-to-br from-kaizen-dark via-slate-900 to-kaizen-dark dark:from-slate-950 dark:via-slate-900 dark:to-black text-white py-16 md:py-24">
+        <div className="container mx-auto px-4">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="max-w-3xl mx-auto text-center"
+          >
+            <h1 className="text-5xl md:text-6xl font-heading font-bold mb-6">Privacy Policy</h1>
+            <p className="text-xl text-white/70">
+              We're required to have this. You have a right to know what's happening with your data. Here's the simple, "no-jargon" version.
+            </p>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Content Section */}
+      <section className="bg-white dark:bg-slate-950 py-20 md:py-32">
+        <div className="container mx-auto px-4">
+          <div className="max-w-3xl mx-auto space-y-12">
+            {/* Core Philosophy */}
+            <motion.div
+              variants={fadeInUp}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, margin: "-100px" }}
+            >
+              <h2 className="text-3xl md:text-4xl font-heading font-bold mb-6 text-kaizen-dark dark:text-white">
+                Our Core Philosophy
+              </h2>
+              <p className="text-lg text-kaizen-text-dark/70 dark:text-white/70 leading-relaxed">
+                Our business is built on trust. We have no interest in selling your data or sending you spam. This policy explains what little data we do collect and why we need it to run our business.
               </p>
-            </section>
+            </motion.div>
 
-            <section>
-              <h2 className="text-2xl font-heading font-bold mb-4">2. Information We Collect</h2>
-              <p>We may collect information about you in various ways, including:</p>
-              <ul className="list-disc list-inside space-y-2 ml-4">
-                <li><strong>Information you provide directly:</strong> When you contact us, request a quote, or submit a form, we collect information such as your name, email address, phone number, company name, and the details of your inquiry.</li>
-                <li><strong>Usage data:</strong> We automatically collect information about how you interact with our Site, including pages visited, time spent on pages, links clicked, and other analytics data.</li>
-                <li><strong>Cookies:</strong> We use cookies and similar tracking technologies to improve your experience and understand how the Site is used.</li>
-              </ul>
-            </section>
+            {/* What Data We Collect */}
+            <motion.div
+              variants={fadeInUp}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, margin: "-100px" }}
+            >
+              <h2 className="text-3xl md:text-4xl font-heading font-bold mb-6 text-kaizen-dark dark:text-white">
+                What Data We Collect & Why
+              </h2>
 
-            <section>
-              <h2 className="text-2xl font-heading font-bold mb-4">3. How We Use Your Information</h2>
-              <p>We use the information we collect to:</p>
-              <ul className="list-disc list-inside space-y-2 ml-4">
-                <li>Respond to your inquiries and provide the services you request</li>
-                <li>Send promotional communications (with your consent)</li>
-                <li>Improve and optimize our Site and services</li>
-                <li>Comply with legal obligations</li>
-                <li>Prevent fraudulent transactions and other illegal activities</li>
-              </ul>
-            </section>
+              <div className="space-y-6">
+                <div>
+                  <h3 className="text-xl font-heading font-bold mb-3 text-kaizen-dark dark:text-white">
+                    Data You Give Us Directly
+                  </h3>
+                  <p className="text-lg text-kaizen-text-dark/70 dark:text-white/70 leading-relaxed">
+                    When you use our live chat, you may provide your name or email. When you book a call via Calendly, you provide your name, email, and any other info you put in the form. We use this data <span className="italic">only</span> to communicate with you for that specific conversation or meeting.
+                  </p>
+                </div>
 
-            <section>
-              <h2 className="text-2xl font-heading font-bold mb-4">4. Data Protection</h2>
-              <p>
-                We implement appropriate technical and organizational measures to protect your personal information against unauthorized access, alteration, disclosure, or destruction. However, no method of transmission over the internet or method of electronic storage is 100% secure.
-              </p>
-            </section>
+                <div>
+                  <h3 className="text-xl font-heading font-bold mb-3 text-kaizen-dark dark:text-white">
+                    Data We Collect Automatically
+                  </h3>
+                  <p className="text-lg text-kaizen-text-dark/70 dark:text-white/70 mb-4 leading-relaxed">
+                    Like most websites, we use a few tools that collect non-personal data. This includes:
+                  </p>
 
-            <section>
-              <h2 className="text-2xl font-heading font-bold mb-4">5. Your Rights</h2>
-              <p>
-                Under the UK GDPR and Data Protection Act 2018, you have rights regarding your personal data, including the right to access, rectify, or delete your information. To exercise these rights, please contact us using the details below.
-              </p>
-            </section>
+                  <div className="space-y-3 ml-4">
+                    <div>
+                      <h4 className="font-heading font-bold text-kaizen-dark dark:text-white mb-1">
+                        Essential Cookies
+                      </h4>
+                      <p className="text-kaizen-text-dark/70 dark:text-white/70 leading-relaxed">
+                        Our platform (Builder.io) and tools (Calendly, our chat widget) use cookies to function. For example, a cookie is used to remember your chat history or to make the booking process work.
+                      </p>
+                    </div>
 
-            <section>
-              <h2 className="text-2xl font-heading font-bold mb-4">6. Third-Party Services</h2>
-              <p>
-                Our Site may contain links to third-party websites. We are not responsible for the privacy practices of other sites. We encourage you to review the privacy policies of any third-party services before providing your information.
-              </p>
-            </section>
-
-            <section>
-              <h2 className="text-2xl font-heading font-bold mb-4">7. Cookies</h2>
-              <p>
-                We use cookies to enhance your browsing experience. You can control cookie settings through your browser preferences. Please note that disabling cookies may affect the functionality of our Site.
-              </p>
-            </section>
-
-            <section>
-              <h2 className="text-2xl font-heading font-bold mb-4">8. Changes to This Policy</h2>
-              <p>
-                We may update this Privacy Policy periodically to reflect changes in our practices or applicable law. We will notify you of any material changes by updating the "Last Updated" date at the top of this page.
-              </p>
-            </section>
-
-            <section>
-              <h2 className="text-2xl font-heading font-bold mb-4">9. Contact Us</h2>
-              <p>
-                If you have questions about this Privacy Policy or our privacy practices, please contact us at:
-              </p>
-              <div className="bg-kaizen-light p-6 rounded-lg mt-4">
-                <p className="font-bold mb-2">Kaizen Web</p>
-                <p>Liverpool, UK</p>
-                <p>Email: contact@kaizenweb.co.uk</p>
+                    <div>
+                      <h4 className="font-heading font-bold text-kaizen-dark dark:text-white mb-1">
+                        Analytics Cookies
+                      </h4>
+                      <p className="text-kaizen-text-dark/70 dark:text-white/70 leading-relaxed">
+                        We use a standard analytics tool (like Google Analytics) to see how visitors use our site (e.g., what pages are popular). This data is anonymised and helps us improve the site (that's the 'Kaizen' part).
+                      </p>
+                    </div>
+                  </div>
+                </div>
               </div>
-            </section>
+            </motion.div>
+
+            {/* What We Will Never Do */}
+            <motion.div
+              variants={fadeInUp}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, margin: "-100px" }}
+            >
+              <h2 className="text-3xl md:text-4xl font-heading font-bold mb-6 text-kaizen-dark dark:text-white">
+                What We Will <span className="italic">Never</span> Do
+              </h2>
+
+              <ul className="space-y-3">
+                <li className="flex gap-4 text-lg text-kaizen-text-dark/70 dark:text-white/70 leading-relaxed">
+                  <span className="text-kaizen-cyan font-bold flex-shrink-0">•</span>
+                  <span>We will <span className="font-bold">never</span> sell your data to any third party.</span>
+                </li>
+                <li className="flex gap-4 text-lg text-kaizen-text-dark/70 dark:text-white/70 leading-relaxed">
+                  <span className="text-kaizen-cyan font-bold flex-shrink-0">•</span>
+                  <span>We will <span className="font-bold">never</span> send you marketing spam you didn't ask for.</span>
+                </li>
+              </ul>
+            </motion.div>
+
+            {/* Your Rights (GDPR) */}
+            <motion.div
+              variants={fadeInUp}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, margin: "-100px" }}
+            >
+              <h2 className="text-3xl md:text-4xl font-heading font-bold mb-6 text-kaizen-dark dark:text-white">
+                Your Rights (GDPR)
+              </h2>
+              <p className="text-lg text-kaizen-text-dark/70 dark:text-white/70 leading-relaxed mb-4">
+                You are in control. You have the right to request to see the data we hold about you, and the right to request that we delete it. If you want to do either, just ask us on the live chat or email us at <span className="font-bold">privacy@kaizenweb.co.uk</span>. We'll sort it out immediately.
+              </p>
+            </motion.div>
+
+            {/* Cookie Policy Link */}
+            <motion.div
+              variants={fadeInUp}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, margin: "-100px" }}
+              className="border-t border-kaizen-text-dark/10 dark:border-white/10 pt-8"
+            >
+              <p className="text-lg text-kaizen-text-dark/70 dark:text-white/70">
+                For more details about the cookies we use, please see our <a href="/cookie-policy" className="text-kaizen-cyan hover:underline font-bold">Cookie Policy</a>.
+              </p>
+            </motion.div>
           </div>
         </div>
-      </div>
+      </section>
     </Layout>
   );
 }
