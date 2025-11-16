@@ -288,28 +288,28 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 
             <Link
               to="/about"
-              className="px-3 py-2 text-lg font-heading font-medium hover:text-kaizen-cyan transition rounded-md hover:bg-kaizen-light/50"
+              className="px-3 py-2 text-lg font-heading font-medium text-kaizen-dark dark:text-white hover:text-kaizen-cyan dark:hover:text-kaizen-cyan transition"
             >
               About
             </Link>
 
             <Link
               to="/pledge"
-              className="px-3 py-2 text-lg font-heading font-medium hover:text-kaizen-cyan transition rounded-md hover:bg-kaizen-light/50"
+              className="px-3 py-2 text-lg font-heading font-medium text-kaizen-dark dark:text-white hover:text-kaizen-cyan dark:hover:text-kaizen-cyan transition"
             >
               Our Pledge
             </Link>
 
             <Link
               to="/case-studies"
-              className="px-3 py-2 text-lg font-heading font-medium hover:text-kaizen-cyan transition rounded-md hover:bg-kaizen-light/50"
+              className="px-3 py-2 text-lg font-heading font-medium text-kaizen-dark dark:text-white hover:text-kaizen-cyan dark:hover:text-kaizen-cyan transition"
             >
               Case Studies
             </Link>
 
             <Link
               to="/blog"
-              className="px-3 py-2 text-lg font-heading font-medium hover:text-kaizen-cyan transition rounded-md hover:bg-kaizen-light/50"
+              className="px-3 py-2 text-lg font-heading font-medium text-kaizen-dark dark:text-white hover:text-kaizen-cyan dark:hover:text-kaizen-cyan transition"
             >
               Blog
             </Link>
