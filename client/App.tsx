@@ -48,8 +48,11 @@ function AppContent() {
 
     const isFindDOMNodeWarning = (args: any[]) => {
       // Check all args for the pattern
-      const fullMessage = args.map(arg => String(arg)).join(" ");
-      return fullMessage.includes("findDOMNode") && fullMessage.includes("deprecated");
+      const fullMessage = args.map((arg) => String(arg)).join(" ");
+      return (
+        fullMessage.includes("findDOMNode") &&
+        fullMessage.includes("deprecated")
+      );
     };
 
     console.error = (...args: any[]) => {
