@@ -58,16 +58,31 @@ export default function AdminLayout({
         <nav className="flex-1 p-4 space-y-2">
           {navItems.map((item) => {
             const Icon = item.icon;
-            const active = isActive(item.href);
-            return (
+            const active = !item.external && isActive(item.href);
+            const baseClasses = `flex items-center gap-3 px-4 py-3 rounded-lg transition font-body ${
+              active
+                ? "bg-blue-500/20 text-blue-400 border border-blue-500/30"
+                : "text-gray-400 hover:text-white hover:bg-gray-800/50 hover:scale-105"
+            }`;
+
+            return item.external ? (
+              <a
+                key={item.href}
+                href={item.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={baseClasses}
+              >
+                <Icon size={20} />
+                {sidebarOpen && (
+                  <span className="font-medium">{item.name}</span>
+                )}
+              </a>
+            ) : (
               <Link
                 key={item.href}
                 to={item.href}
-                className={`flex items-center gap-3 px-4 py-3 rounded-lg transition font-body ${
-                  active
-                    ? "bg-blue-500/20 text-blue-400 border border-blue-500/30"
-                    : "text-gray-400 hover:text-white hover:bg-gray-800/50 hover:scale-105"
-                }`}
+                className={baseClasses}
               >
                 <Icon size={20} />
                 {sidebarOpen && (
