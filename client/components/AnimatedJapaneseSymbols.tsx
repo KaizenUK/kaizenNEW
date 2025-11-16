@@ -80,7 +80,7 @@ export default function AnimatedJapaneseSymbols() {
             {symbol.romaji}
           </motion.p>
           <motion.p
-            className="text-xs md:text-sm font-medium text-kaizen-dark dark:text-gray-800 text-center"
+            className="text-xs md:text-sm font-medium text-kaizen-dark dark:text-white text-center"
             variants={romajiVariants}
           >
             {symbol.meaning}
