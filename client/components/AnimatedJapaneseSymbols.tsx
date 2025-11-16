@@ -60,7 +60,7 @@ export default function AnimatedJapaneseSymbols() {
       {symbols.map((symbol, index) => (
         <motion.div
           key={index}
-          className="flex flex-col items-center gap-3"
+          className="flex flex-col items-center gap-2"
           variants={symbolVariants}
         >
           <motion.div
@@ -78,6 +78,12 @@ export default function AnimatedJapaneseSymbols() {
             variants={romajiVariants}
           >
             {symbol.romaji}
+          </motion.p>
+          <motion.p
+            className="text-xs md:text-sm font-medium text-kaizen-dark dark:text-gray-800 text-center"
+            variants={romajiVariants}
+          >
+            {symbol.meaning}
           </motion.p>
         </motion.div>
       ))}
