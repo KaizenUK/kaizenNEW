@@ -24,8 +24,6 @@ import About from "./pages/About";
 import AgileCoaching from "./pages/AgileCoaching";
 import ProductOwner from "./pages/ProductOwner";
 import TeamTransformation from "./pages/TeamTransformation";
-import WebDesignLiverpool from "./pages/WebDesignLiverpool";
-import WebDesignLiverpoolCityCentre from "./pages/WebDesignLiverpoolCityCentre";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import GDPRPolicy from "./pages/GDPRPolicy";
 import AdminGuard from "@/components/AdminGuard";
@@ -119,7 +117,7 @@ function AppContent() {
         {/* Public Routes */}
         <Route path="/" element={<Index />} />
         <Route path="/services" element={<Services />} />
-        <Route path="/services/web-design" element={<WebDesign />} />
+        <Route path="/services/web-design-liverpool" element={<WebDesign />} />
         <Route path="/services/local-seo" element={<LocalSeo />} />
         <Route
           path="/services/digital-transformation"
@@ -134,11 +132,6 @@ function AppContent() {
         <Route path="/agile-coaching" element={<AgileCoaching />} />
         <Route path="/product-owner" element={<ProductOwner />} />
         <Route path="/team-transformation" element={<TeamTransformation />} />
-        <Route path="/web-design-liverpool" element={<WebDesignLiverpool />} />
-        <Route
-          path="/web-design-liverpool-city-centre"
-          element={<WebDesignLiverpoolCityCentre />}
-        />
         <Route path="/case-studies" element={<CaseStudies />} />
         <Route path="/blog" element={<Blog />} />
         <Route path="/blog/:slug" element={<BlogDetail />} />
