@@ -1,7 +1,7 @@
 import { Link, useLocation } from "react-router-dom";
 import { Menu, X, ChevronDown, Moon, Sun, Linkedin } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
-import { Helmet } from "react-helmet-Async";
+import { Helmet } from "react-helmet-async";
 import { motion, AnimatePresence } from "framer-motion";
 import { useCalendly } from "@/context/CalendlyContext";
 import {
