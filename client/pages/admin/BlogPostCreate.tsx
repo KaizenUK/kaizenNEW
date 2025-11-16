@@ -80,7 +80,7 @@ export default function BlogPostCreate() {
   const [formTitle, setFormTitle] = useState("");
   const [formSlug, setFormSlug] = useState("");
   const [formExcerpt, setFormExcerpt] = useState("");
-  const [formPublishedDate, setFormPublishedDate] = useState(getTodayDateString());
+  const [publishedAt, setPublishedAt] = useState<string>("");
   const [formTagsString, setFormTagsString] = useState("");
   const [formBody, setFormBody] = useState<string>("");
   const [formSeoTitle, setFormSeoTitle] = useState("");
