@@ -61,6 +61,13 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     }
   }, [theme]);
 
+  // Scroll to top on route change
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      window.scrollTo(0, 0);
+    }
+  }, [location.pathname]);
+
   const toggleTheme = () => {
     setTheme((prev) => (prev === "light" ? "dark" : "light"));
   };
