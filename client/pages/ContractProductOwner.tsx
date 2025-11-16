@@ -72,44 +72,6 @@ const ScrollReveal = ({
   );
 };
 
-// CTA Button component
-const CTAButton = ({
-  text,
-  onClick,
-  secondary = false,
-  openChat = false,
-}: {
-  text: string;
-  onClick?: () => void;
-  secondary?: boolean;
-  openChat?: boolean;
-}) => {
-  const handleClick = () => {
-    if (openChat && typeof window !== "undefined") {
-      if ((window as any).$crisp) {
-        (window as any).$crisp.push(["do", "chat:open"]);
-      }
-    }
-    if (onClick) {
-      onClick();
-    }
-  };
-
-  return (
-    <button
-      onClick={handleClick}
-      className={`px-8 py-3 rounded-lg font-heading font-bold inline-flex items-center justify-center gap-2 transition ${
-        secondary
-          ? "border-2 border-kaizen-cyan text-kaizen-cyan hover:bg-kaizen-cyan/10 dark:border-kaizen-cyan/70 dark:text-kaizen-cyan/70 dark:hover:bg-kaizen-cyan/5"
-          : "bg-gradient-to-r from-kaizen-cyan to-kaizen-lime text-kaizen-dark hover:shadow-lg hover:shadow-kaizen-cyan/50"
-      }`}
-    >
-      {text}
-      <ArrowRight size={18} />
-    </button>
-  );
-};
-
 export default function ContractProductOwner() {
   return (
     <Layout>
