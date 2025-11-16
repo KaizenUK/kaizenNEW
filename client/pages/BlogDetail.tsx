@@ -415,8 +415,27 @@ export default function BlogDetail() {
     );
   }
 
+  const seoTitle = post?.data?.seoTitle || post?.title || "Blog Post";
+  const seoDescription = post?.data?.seoDescription || post?.excerpt || (post?.body ? generateDescriptionFromBody(post.body) : "");
+  const pageUrl = `https://www.kaizenweb.co.uk/blog/${post?.slug || ""}`;
+  const coverImageUrl = post?.coverImage || DEFAULT_IMAGE;
+
   return (
     <Layout>
+      <Helmet>
+        <title>{seoTitle} | Kaizen</title>
+        <meta name="description" content={seoDescription} />
+        <meta property="og:title" content={seoTitle} />
+        <meta property="og:description" content={seoDescription} />
+        <meta property="og:type" content="article" />
+        <meta property="og:url" content={pageUrl} />
+        <meta property="og:image" content={coverImageUrl} />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={seoTitle} />
+        <meta name="twitter:description" content={seoDescription} />
+        <meta name="twitter:image" content={coverImageUrl} />
+      </Helmet>
+
       {/* Progress Bar with Percentage */}
       <motion.div className="fixed top-0 left-0 right-0 h-1 z-50 bg-gray-800">
         <motion.div
