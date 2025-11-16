@@ -157,6 +157,7 @@ function AppContent() {
         <Route path="/blog/:slug" element={<BlogDetail />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+        <Route path="/cookie-policy" element={<CookiePolicy />} />
         <Route path="/gdpr-policy" element={<GDPRPolicy />} />
 
         {/* Admin Routes */}
