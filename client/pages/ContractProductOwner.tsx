@@ -10,6 +10,8 @@ import {
   Users,
   Zap,
   BookOpen,
+  Rocket,
+  CheckCircle,
 } from "lucide-react";
 
 // Animation variants
@@ -76,10 +78,10 @@ export default function ContractProductOwner() {
   return (
     <Layout>
       <Helmet>
-        <title>Senior Contract Product Owner Liverpool | A Kaizen Founder Service</title>
+        <title>Sean McDonnell | Contract Product Owner Liverpool | Kaizen</title>
         <meta
           name="description"
-          content="Our founder, Sean McDonnell, provides expert Contract Product Owner services in Liverpool to de-risk complex projects. Stop chaos, guarantee delivery."
+          content="Sean McDonnell, a Liverpool-based Senior Product Owner with 10+ years' experience in iGaming & high-stakes platform migration. I deliver complex projects, on time."
         />
       </Helmet>
 
@@ -115,7 +117,7 @@ export default function ContractProductOwner() {
               animate={{ opacity: 1 }}
               transition={{ delay: 0.8, duration: 0.8 }}
             >
-              I'm <strong>Sean McDonnell</strong>, founder of Kaizen. While <strong>we</strong> are a full-service agency, this is <strong>my</strong> specialist service. I step in personally to take full responsibility for your complex project, manage your team, and guarantee delivery. No excuses.
+              I'm <strong>Sean McDonnell</strong>, founder of Kaizen. While <strong>we</strong> are a full-service agency, this is <strong>my</strong> specialist service. I step in personally to take full responsibility for your complex project, manage your team, and <strong>drive it relentlessly to delivery.</strong> No excuses.
             </motion.p>
 
             {/* CTAs */}
@@ -183,7 +185,7 @@ export default function ContractProductOwner() {
           </ScrollReveal>
 
           <motion.div
-            className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl"
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8"
             variants={staggerContainer}
             initial="hidden"
             whileInView="visible"
@@ -207,6 +209,12 @@ export default function ContractProductOwner() {
                 title: "Driving Real Transformation",
                 proof: "I don't just manage projects; I fix processes. I've led digital transformations at firms like SMD Credit Solutions and implemented new Agile workflows.",
                 matters: "I don't just deliver your project; I leave your team and workflow more efficient than I found them.",
+              },
+              {
+                icon: Rocket,
+                title: "Building Products From Scratch",
+                proof: "At LeoVegas, I built the company's first multilingual player support platform from the ground up, creating a vital feedback loop that channelled player insights directly to the dev team.",
+                matters: "I know how to take a simple idea, listen to users, and turn it into a fully functional, value-driving product.",
               },
             ].map((card, index) => (
               <motion.div
@@ -243,7 +251,107 @@ export default function ContractProductOwner() {
         </div>
       </section>
 
-      {/* Section 4: When to Hire Me */}
+      {/* Section 4: How I Work */}
+      <section className="py-20 md:py-32 bg-white dark:bg-slate-950">
+        <div className="container mx-auto px-4">
+          <ScrollReveal>
+            <h2 className="text-4xl md:text-5xl font-heading font-bold mb-16 text-kaizen-dark dark:text-white text-center">
+              How I Work: My "Fix & Deliver" Process
+            </h2>
+          </ScrollReveal>
+
+          <div className="max-w-3xl mx-auto space-y-8">
+            {[
+              {
+                step: "01",
+                title: "Audit & Align",
+                copy: "I join your team, audit the entire project, and interview stakeholders. We establish a single, clear \"to-do\" list (the backlog) and get everyone aligned.",
+              },
+              {
+                step: "02",
+                title: "Prioritise & Manage",
+                copy: "I ruthlessly prioritise the work based on business value. I run the weekly \"sprints,\" clear roadblocks for the team, and shield them from distractions.",
+              },
+              {
+                step: "03",
+                title: "Deliver & Report",
+                copy: "I manage the release process and provide you with a simple, \"no-jargon\" report every week. You see constant, predictable progress.",
+              },
+            ].map((item, index) => (
+              <motion.div
+                key={index}
+                className="flex gap-8 md:gap-12 items-start"
+                initial={{ opacity: 0, x: -30 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true, margin: "-100px" }}
+                transition={{ delay: index * 0.15, duration: 0.6 }}
+              >
+                {/* Step number */}
+                <div className="flex-shrink-0">
+                  <div className="w-16 h-16 bg-gradient-to-br from-kaizen-cyan to-kaizen-lime rounded-full flex items-center justify-center">
+                    <span className="text-kaizen-dark font-heading font-black text-xl">
+                      {item.step}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Content */}
+                <div className="flex-grow pt-2">
+                  <h3 className="text-2xl md:text-3xl font-heading font-bold mb-4 text-kaizen-dark dark:text-white">
+                    {item.title}
+                  </h3>
+                  <p className="text-lg text-kaizen-text-dark/70 dark:text-white/60 leading-relaxed">
+                    {item.copy}
+                  </p>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Section 5: Professional Accreditations */}
+      <section className="py-20 md:py-32 bg-kaizen-light dark:bg-slate-900/50">
+        <div className="container mx-auto px-4">
+          <ScrollReveal>
+            <h2 className="text-4xl md:text-5xl font-heading font-bold mb-16 text-kaizen-dark dark:text-white text-center">
+              Professional Accreditations
+            </h2>
+          </ScrollReveal>
+
+          <motion.div
+            className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto"
+            variants={staggerContainer}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-100px" }}
+          >
+            {[
+              { title: "PRINCE2 Certified" },
+              { title: "Project Management Institute (PMI) Member" },
+              { title: "HubSpot Certified" },
+            ].map((item, index) => (
+              <motion.div
+                key={index}
+                variants={fadeInUp}
+                className="text-center"
+              >
+                <div className="mb-6 p-4 w-16 h-16 bg-gradient-to-br from-kaizen-cyan/20 to-kaizen-lime/20 dark:from-kaizen-cyan/10 dark:to-kaizen-lime/10 rounded-xl flex items-center justify-center mx-auto">
+                  <CheckCircle
+                    className="text-kaizen-cyan dark:text-kaizen-cyan/70"
+                    size={32}
+                  />
+                </div>
+                <p className="text-xl font-heading font-bold text-kaizen-dark dark:text-white">
+                  {item.title}
+                </p>
+              </motion.div>
+            ))}
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Section 6: When to Hire Me */}
       <section className="py-20 md:py-32 bg-kaizen-light dark:bg-slate-900/50">
         <div className="container mx-auto px-4">
           <ScrollReveal>
@@ -290,7 +398,7 @@ export default function ContractProductOwner() {
         </div>
       </section>
 
-      {/* Section 5: Internal Links (Cross-Sell) */}
+      {/* Section 7: How This Fits With Kaizen (Internal Links) */}
       <section className="py-20 md:py-32 bg-white dark:bg-slate-950">
         <div className="container mx-auto px-4">
           <ScrollReveal>
@@ -349,7 +457,7 @@ export default function ContractProductOwner() {
         </div>
       </section>
 
-      {/* Section 6: Final CTA */}
+      {/* Section 8: Final Call to Action */}
       <section className="py-20 md:py-32 bg-kaizen-dark dark:bg-gradient-to-b dark:from-slate-900 dark:to-slate-950 text-kaizen-text-light dark:text-white/85">
         <div className="container mx-auto px-4 text-center">
           <ScrollReveal>
