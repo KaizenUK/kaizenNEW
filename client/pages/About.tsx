@@ -80,46 +80,53 @@ export default function About() {
       {/* Section 1: Hero - Manifesto Style */}
       <section className="min-h-screen bg-white dark:bg-slate-950 flex items-center py-20">
         <div className="container mx-auto px-4">
-          <div className="max-w-4xl">
-            {/* Main H1 */}
-            <motion.h1
-              className="text-5xl md:text-6xl lg:text-7xl font-heading font-black mb-8 leading-tight text-kaizen-dark dark:text-white"
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, ease: "easeOut" }}
-            >
-              We're not another faceless agency.
-            </motion.h1>
-
-            {/* Sub-headline */}
-            <motion.div
-              className="text-lg md:text-xl text-kaizen-text-dark/70 dark:text-white/70 leading-relaxed mb-8 max-w-3xl space-y-4"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.3, duration: 0.8 }}
-            >
-              <p><strong>We</strong> are Kaizen.</p>
-              <p>We've spent over a decade in the high-stakes global tech industry, and we built this agency to do things differently. No buzzwords, no chaotic projects, no excuses. This is our story.</p>
-            </motion.div>
-
-            {/* CTA */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.5, duration: 0.6 }}
-            >
-              <button
-                onClick={() => {
-                  if (typeof window !== "undefined" && (window as any).$crisp) {
-                    (window as any).$crisp.push(["do", "chat:open"]);
-                  }
-                }}
-                className="px-8 py-3 rounded-lg bg-gradient-to-r from-kaizen-cyan to-kaizen-lime text-kaizen-dark font-heading font-bold hover:shadow-lg hover:shadow-kaizen-cyan/50 transition inline-flex items-center justify-center gap-2"
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
+            <div className="max-w-2xl">
+              {/* Main H1 */}
+              <motion.h1
+                className="text-5xl md:text-6xl lg:text-7xl font-heading font-black mb-8 leading-tight text-kaizen-dark dark:text-white"
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, ease: "easeOut" }}
               >
-                Start a Chat
-                <ArrowRight size={18} />
-              </button>
-            </motion.div>
+                We're not another faceless agency.
+              </motion.h1>
+
+              {/* Sub-headline */}
+              <motion.div
+                className="text-lg md:text-xl text-kaizen-text-dark/70 dark:text-white/70 leading-relaxed mb-8 space-y-4"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.3, duration: 0.8 }}
+              >
+                <p><strong>We</strong> are Kaizen.</p>
+                <p>We've spent over a decade in the high-stakes global tech industry, and we built this agency to do things differently. No buzzwords, no chaotic projects, no excuses. This is our story.</p>
+              </motion.div>
+
+              {/* CTA */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.5, duration: 0.6 }}
+              >
+                <button
+                  onClick={() => {
+                    if (typeof window !== "undefined" && (window as any).$crisp) {
+                      (window as any).$crisp.push(["do", "chat:open"]);
+                    }
+                  }}
+                  className="px-8 py-3 rounded-lg bg-gradient-to-r from-kaizen-cyan to-kaizen-lime text-kaizen-dark font-heading font-bold hover:shadow-lg hover:shadow-kaizen-cyan/50 transition inline-flex items-center justify-center gap-2"
+                >
+                  Start a Chat
+                  <ArrowRight size={18} />
+                </button>
+              </motion.div>
+            </div>
+
+            {/* Animated Japanese Symbols */}
+            <div className="hidden lg:flex justify-center lg:justify-end">
+              <AnimatedJapaneseSymbols />
+            </div>
           </div>
         </div>
       </section>
