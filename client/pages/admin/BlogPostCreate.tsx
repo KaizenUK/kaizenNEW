@@ -58,6 +58,20 @@ function getTodayDateString(): string {
   return `${year}-${month}-${day}`;
 }
 
+// Helper functions for content analysis
+function calculateReadingTime(html: string): number {
+  if (!html) return 0;
+  const text = html.replace(/<[^>]*>/g, "");
+  const words = text.trim().split(/\s+/).length;
+  return Math.ceil(words / 200);
+}
+
+function calculateWordCount(html: string): number {
+  if (!html) return 0;
+  const text = html.replace(/<[^>]*>/g, "");
+  return text.trim().split(/\s+/).filter(word => word.length > 0).length;
+}
+
 export default function BlogPostCreate() {
   const navigate = useNavigate();
 
