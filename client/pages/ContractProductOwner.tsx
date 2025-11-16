@@ -74,78 +74,95 @@ const ScrollReveal = ({
   );
 };
 
+// Context for managing which card is flipped
+const FlipCardContext = React.createContext<{
+  flippedId: string | null;
+  setFlippedId: (id: string | null) => void;
+} | null>(null);
+
 // Flip Card Component
 const FlipCard = ({
+  id,
   icon: Icon,
   title,
   proof,
   matters,
 }: {
+  id: string;
   icon: any;
   title: string;
   proof: string;
   matters: string;
 }) => {
-  const [isFlipped, setIsFlipped] = useState(false);
+  const context = React.useContext(FlipCardContext);
+  if (!context) throw new Error("FlipCard must be used within FlipCardProvider");
+
+  const { flippedId, setFlippedId } = context;
+  const isFlipped = flippedId === id;
+
+  const handleClick = () => {
+    setFlippedId(isFlipped ? null : id);
+  };
 
   return (
     <motion.div
       variants={fadeInUp}
-      onClick={() => setIsFlipped(!isFlipped)}
-      className="h-auto cursor-pointer"
+      onClick={handleClick}
+      className="h-full cursor-pointer"
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
     >
-      <div className="relative w-full min-h-[32rem] rounded-2xl border border-kaizen-light dark:border-slate-800/50 overflow-hidden">
+      <motion.div
+        className="relative w-full h-80 rounded-2xl border border-kaizen-light dark:border-slate-800/50 overflow-hidden"
+        animate={{ rotateY: isFlipped ? 180 : 0 }}
+        transition={{ duration: 0.6, ease: "easeInOut" }}
+        style={{ transformStyle: "preserve-3d" } as any}
+      >
         {/* Front Side */}
-        <motion.div
-          className="w-full h-full p-8 bg-kaizen-light dark:bg-slate-900/50 rounded-2xl flex flex-col justify-start"
-          animate={{ opacity: isFlipped ? 0 : 1 }}
-          transition={{ duration: 0.4 }}
-          style={{ pointerEvents: isFlipped ? "none" : "auto" }}
+        <div
+          className="absolute w-full h-full p-8 bg-kaizen-light dark:bg-slate-900/50 rounded-2xl flex flex-col justify-start"
+          style={{ backfaceVisibility: "hidden" } as any}
         >
           <div className="mb-6 p-4 w-16 h-16 bg-gradient-to-br from-kaizen-cyan/20 to-kaizen-lime/20 dark:from-kaizen-cyan/10 dark:to-kaizen-lime/10 rounded-xl flex items-center justify-center">
             <Icon className="text-kaizen-cyan dark:text-kaizen-cyan/70" size={32} />
           </div>
-          <h3 className="text-2xl font-heading font-bold mb-6 text-kaizen-dark dark:text-white">
+          <h3 className="text-xl font-heading font-bold mb-4 text-kaizen-dark dark:text-white line-clamp-2">
             {title}
           </h3>
-          <div className="mb-8">
+          <div className="mb-6 flex-grow overflow-hidden">
             <p className="text-sm font-semibold text-kaizen-cyan dark:text-kaizen-cyan/80 mb-2 uppercase tracking-wide">
               Proof
             </p>
-            <p className="text-sm text-kaizen-text-dark/70 dark:text-white/60 leading-relaxed">
+            <p className="text-sm text-kaizen-text-dark/70 dark:text-white/60 leading-relaxed line-clamp-4">
               {proof}
             </p>
           </div>
-          <div className="mt-auto pt-6 border-t border-kaizen-cyan/20 dark:border-kaizen-cyan/10">
+          <div className="pt-4 border-t border-kaizen-cyan/20 dark:border-kaizen-cyan/10">
             <p className="text-xs text-kaizen-cyan/60 dark:text-kaizen-cyan/50 font-medium">
               ✨ Click to see why this matters
             </p>
           </div>
-        </motion.div>
+        </div>
 
         {/* Back Side */}
-        <motion.div
-          className="absolute inset-0 w-full h-full p-8 bg-gradient-to-br from-kaizen-cyan to-kaizen-lime rounded-2xl flex flex-col justify-start"
-          animate={{ opacity: isFlipped ? 1 : 0 }}
-          transition={{ duration: 0.4 }}
-          style={{ pointerEvents: isFlipped ? "auto" : "none" }}
+        <div
+          className="absolute w-full h-full p-8 bg-gradient-to-br from-kaizen-cyan to-kaizen-lime rounded-2xl flex flex-col justify-start"
+          style={{ backfaceVisibility: "hidden", transform: "rotateY(180deg)" } as any}
         >
-          <h3 className="text-2xl font-heading font-bold mb-6 text-kaizen-dark">
+          <h3 className="text-xl font-heading font-bold mb-4 text-kaizen-dark line-clamp-2">
             Why This Matters for You
           </h3>
-          <p className="text-base text-kaizen-dark/95 leading-relaxed font-medium mb-8">
+          <p className="text-sm text-kaizen-dark/95 leading-relaxed font-medium mb-6 flex-grow overflow-hidden line-clamp-6">
             {matters}
           </p>
-          <div className="mt-auto pt-6 border-t border-kaizen-dark/20">
+          <div className="pt-4 border-t border-kaizen-dark/20">
             <p className="text-xs text-kaizen-dark/60 font-medium">
               ✨ Click to go back
             </p>
           </div>
-        </motion.div>
-      </div>
+        </div>
+      </motion.div>
     </motion.div>
   );
 };
