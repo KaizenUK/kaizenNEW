@@ -90,11 +90,11 @@ export default function BlogPostCreate() {
   const [hasUserEditedSlug, setHasUserEditedSlug] = useState(false);
 
   // Initialize publishedAt to current time on mount
-  React.useEffect(() => {
+  useEffect(() => {
     if (!publishedAt) {
       setPublishedAt(new Date().toISOString());
     }
-  }, []);
+  }, [publishedAt]);
 
   // Save state
   const [isSaving, setIsSaving] = useState(false);
