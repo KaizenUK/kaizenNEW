@@ -46,20 +46,21 @@ function AppContent() {
     const originalError = console.error;
     const originalWarn = console.warn;
 
-    const isFindDOMNodeWarning = (arg: any) => {
-      const str = String(arg);
-      return str.includes("findDOMNode") && str.includes("deprecated");
+    const isFindDOMNodeWarning = (args: any[]) => {
+      // Check all args for the pattern
+      const fullMessage = args.map(arg => String(arg)).join(" ");
+      return fullMessage.includes("findDOMNode") && fullMessage.includes("deprecated");
     };
 
     console.error = (...args: any[]) => {
-      if (args.some(isFindDOMNodeWarning)) {
+      if (isFindDOMNodeWarning(args)) {
         return;
       }
       originalError(...args);
     };
 
     console.warn = (...args: any[]) => {
-      if (args.some(isFindDOMNodeWarning)) {
+      if (isFindDOMNodeWarning(args)) {
         return;
       }
       originalWarn(...args);
