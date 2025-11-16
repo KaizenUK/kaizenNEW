@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
+import { X } from "lucide-react";
 
 interface CalendlyModalProps {
   isOpen: boolean;
@@ -23,10 +23,40 @@ export function CalendlyModal({ isOpen, onClose }: CalendlyModalProps) {
     }
   }, []);
 
+  useEffect(() => {
+    if (isOpen && typeof window !== "undefined") {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "unset";
+    }
+
+    return () => {
+      document.body.style.overflow = "unset";
+    };
+  }, [isOpen]);
+
+  if (!isOpen) return null;
+
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="w-full max-w-lg p-0 border-0 overflow-hidden">
-        <DialogTitle className="sr-only">Book a Meeting</DialogTitle>
+    <div className="fixed inset-0 z-50 flex items-center justify-center">
+      {/* Backdrop */}
+      <div
+        className="absolute inset-0 bg-black/50"
+        onClick={onClose}
+      />
+
+      {/* Modal */}
+      <div className="relative z-50 w-full max-w-lg bg-white dark:bg-slate-900 rounded-lg shadow-2xl mx-4">
+        {/* Close Button */}
+        <button
+          onClick={onClose}
+          className="absolute top-4 right-4 z-10 p-2 rounded-md hover:bg-gray-100 dark:hover:bg-slate-800 transition-colors"
+          aria-label="Close modal"
+        >
+          <X className="h-5 w-5 text-gray-600 dark:text-gray-400" />
+        </button>
+
+        {/* Calendly Widget */}
         <div className="p-6">
           <div
             className="calendly-inline-widget"
@@ -34,7 +64,7 @@ export function CalendlyModal({ isOpen, onClose }: CalendlyModalProps) {
             style={{ minWidth: "320px", height: "700px" }}
           />
         </div>
-      </DialogContent>
-    </Dialog>
+      </div>
+    </div>
   );
 }
