@@ -91,6 +91,8 @@ interface BlogPost {
     body?: string | undefined;
     tags?: string[];
     coverImage?: any;
+    seoTitle?: string;
+    seoDescription?: string;
   };
 }
 
