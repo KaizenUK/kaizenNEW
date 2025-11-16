@@ -7,6 +7,8 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { HelmetProvider } from "react-helmet-async";
 import { useEffect } from "react";
+import { CalendlyProvider, useCalendly } from "@/context/CalendlyContext";
+import { CalendlyModal } from "@/components/CalendlyModal";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import WebDesign from "./pages/services/WebDesign";
