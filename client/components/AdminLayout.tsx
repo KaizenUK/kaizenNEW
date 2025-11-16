@@ -7,7 +7,7 @@ import { useAdminAuth } from "@/hooks/useAdminAuth";
 import { CrispProvider } from "@/context/CrispContext";
 
 interface AdminLayoutProps {
-  children: React.ReactNode;
+  children: React.ReactNode | ((props: { crispUnread: number | null; crispOpen: number | null; crispLatest: string | null }) => React.ReactNode);
 }
 
 export default function AdminLayout({
