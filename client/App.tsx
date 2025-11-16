@@ -30,7 +30,7 @@ import PrivacyPolicy from "./pages/PrivacyPolicy";
 import GDPRPolicy from "./pages/GDPRPolicy";
 import AdminGuard from "@/components/AdminGuard";
 import AdminLogin from "./pages/admin/AdminLogin";
-import AdminDashboard from "./pages/admin/AdminDashboard";
+import AdminDashboardWrapper from "@/components/AdminDashboardWrapper";
 import BlogPostsList from "./pages/admin/BlogPostsList";
 import BlogPostCreate from "./pages/admin/BlogPostCreate";
 import BlogPostDetail from "./pages/admin/BlogPostDetail";
