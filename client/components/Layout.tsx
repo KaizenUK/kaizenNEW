@@ -1,7 +1,6 @@
 import { Link, useLocation } from "react-router-dom";
 import { Menu, X, ChevronDown, Moon, Sun } from "lucide-react";
 import { useEffect, useState } from "react";
-import { Link, useLocation } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import {
   buildLocalBusinessSchema,
