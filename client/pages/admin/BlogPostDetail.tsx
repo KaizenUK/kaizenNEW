@@ -417,9 +417,15 @@ export default function BlogPostDetail() {
                 className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-blue-500/60 focus:border-transparent font-body"
                 placeholder="post-slug"
               />
-              <p className="text-xs text-gray-500 mt-2 font-body">
-                Used in the URL: /blog/your-slug-here
+              <p className="text-xs text-gray-500 mt-2 font-body font-mono">
+                URL: https://www.kaizenweb.co.uk/blog/<span className="text-gray-300">{formSlug || "your-slug-here"}</span>
               </p>
+              {formSlug && !/^[a-z0-9-]+$/.test(formSlug) && (
+                <div className="mt-3 p-3 bg-yellow-500/10 border border-yellow-500/30 rounded text-yellow-600 text-xs font-body">
+                  <p className="font-bold mb-1">Slug format warning</p>
+                  <p>For best results, use lowercase letters, numbers, and hyphens only (no spaces).</p>
+                </div>
+              )}
             </motion.div>
 
             {/* Excerpt */}
