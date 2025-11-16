@@ -349,7 +349,13 @@ export default function BlogPostsList() {
                         {post.slug}
                       </td>
                       <td className="p-4 text-sm text-gray-400">
-                        {new Date(post.publishedDate).toLocaleDateString()}
+                        {post.publishedDate
+                          ? new Date(post.publishedDate).toLocaleDateString("en-GB", {
+                              day: "2-digit",
+                              month: "short",
+                              year: "numeric",
+                            })
+                          : "—"}
                       </td>
                       <td className="p-4">
                         <span
