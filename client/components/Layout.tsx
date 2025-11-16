@@ -261,15 +261,15 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 
                         <div>
                           <Link
-                            to="/product-owner"
+                            to="/contract-product-owner"
                             className="block font-heading font-bold text-lg mb-2 hover:text-kaizen-cyan transition"
                           >
-                            Product Owner
+                            Contract Product Owner
                           </Link>
                           <ul className="space-y-1 text-xs text-kaizen-text-dark/70">
                             <li>Strategic roadmap</li>
                             <li>Hands-on leadership</li>
-                            <li>No full-time hire</li>
+                            <li>High-stakes delivery</li>
                           </ul>
                         </div>
                       </div>
