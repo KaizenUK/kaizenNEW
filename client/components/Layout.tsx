@@ -39,6 +39,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   const { openCalendly } = useCalendly();
   const location = useLocation();
   const detectionZoneRef = useRef<HTMLDivElement>(null);
+  const closeTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const normalizedPath =
     location.pathname !== "/" && location.pathname.endsWith("/")
