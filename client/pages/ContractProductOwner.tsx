@@ -92,13 +92,13 @@ const FlipCard = ({
     <motion.div
       variants={fadeInUp}
       onClick={() => setIsFlipped(!isFlipped)}
-      className="h-full cursor-pointer"
+      className="h-auto cursor-pointer"
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
     >
       <motion.div
-        className="relative w-full h-80 rounded-2xl border border-kaizen-light dark:border-slate-800/50 overflow-hidden"
+        className="relative w-full min-h-[28rem] rounded-2xl border border-kaizen-light dark:border-slate-800/50 overflow-hidden"
         animate={{ rotateY: isFlipped ? 180 : 0 }}
         transition={{ duration: 0.6 }}
         style={{ transformStyle: "preserve-3d" }}
