@@ -51,27 +51,6 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   const structuredData = buildLocalBusinessSchema(meta.description);
   const ogImage = meta.image ?? DEFAULT_OG_IMAGE;
 
-  useEffect(() => {
-    if (typeof document === "undefined") return;
-    const root = document.documentElement;
-    if (theme === "dark") {
-      root.classList.add("dark");
-    } else {
-      root.classList.remove("dark");
-    }
-    root.dataset.theme = theme;
-
-    if (typeof window !== "undefined") {
-      window.localStorage.setItem(THEME_STORAGE_KEY, theme);
-    }
-  }, [theme]);
-
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      window.scrollTo(0, 0);
-    }
-  }, [location.pathname]);
-
   const getEffectiveBackgroundColor = useCallback(
     (element: Element | null): string | null => {
       if (typeof window === "undefined") return null;
@@ -122,6 +101,27 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     const brightness = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
     setNavTextLight(brightness < 0.55);
   }, [getEffectiveBackgroundColor]);
+
+  useEffect(() => {
+    if (typeof document === "undefined") return;
+    const root = document.documentElement;
+    if (theme === "dark") {
+      root.classList.add("dark");
+    } else {
+      root.classList.remove("dark");
+    }
+    root.dataset.theme = theme;
+
+    if (typeof window !== "undefined") {
+      window.localStorage.setItem(THEME_STORAGE_KEY, theme);
+    }
+  }, [theme]);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      window.scrollTo(0, 0);
+    }
+  }, [location.pathname]);
 
   useEffect(() => {
     updateNavTone();
