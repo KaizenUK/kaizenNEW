@@ -269,56 +269,62 @@ export default function ContractProductOwner() {
       </section>
 
       {/* Section 3: Real-World Experience */}
-      <section className="py-20 md:py-32 bg-white dark:bg-slate-950">
-        <div className="container mx-auto px-4">
-          <ScrollReveal>
-            <h2 className="text-4xl md:text-5xl font-heading font-bold mb-16 text-kaizen-dark dark:text-white">
-              My Experience, Your Peace of Mind
-            </h2>
-          </ScrollReveal>
+      <FlipCardProvider>
+        <section className="py-20 md:py-32 bg-white dark:bg-slate-950">
+          <div className="container mx-auto px-4">
+            <ScrollReveal>
+              <h2 className="text-4xl md:text-5xl font-heading font-bold mb-16 text-kaizen-dark dark:text-white">
+                My Experience, Your Peace of Mind
+              </h2>
+            </ScrollReveal>
 
-          <div className="max-w-4xl mx-auto text-center mb-8">
-            <p className="text-lg text-kaizen-text-dark/70 dark:text-white/60">Click any card to open it and see why this experience matters to your project.</p>
+            <div className="max-w-4xl mx-auto text-center mb-8">
+              <p className="text-lg text-kaizen-text-dark/70 dark:text-white/60">Click any card to open it and see why this experience matters to your project.</p>
+            </div>
+
+            <motion.div
+              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8"
+              variants={staggerContainer}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, margin: "-100px" }}
+            >
+              {[
+                {
+                  id: "card-1",
+                  icon: Briefcase,
+                  title: "High-Stakes Platform Delivery",
+                  proof: "I've owned product strategy for platforms handling over £150m in revenue and millions of transactions, including a zero-downtime legacy migration at Playtech.",
+                  matters: "I know how to de-risk your most critical projects. I am not intimidated by complexity.",
+                },
+                {
+                  id: "card-2",
+                  icon: Users,
+                  title: "Managing Complex Teams & Suppliers",
+                  proof: "At High 5 Games, I was the central PO coordinating workflows between art, music, dev, and B2B clients like MGM and FanDuel.",
+                  matters: "I save you from managing chaotic suppliers. I become the single point of contact that forces everyone to align.",
+                },
+                {
+                  id: "card-3",
+                  icon: Zap,
+                  title: "Driving Real Transformation",
+                  proof: "I don't just manage projects; I fix processes. I've led digital transformations at firms like SMD Credit Solutions and implemented new Agile workflows.",
+                  matters: "I don't just deliver your project; I leave your team and workflow more efficient than I found them.",
+                },
+                {
+                  id: "card-4",
+                  icon: Rocket,
+                  title: "Building Products From Scratch",
+                  proof: "At LeoVegas, I built the company's first multilingual player support platform from the ground up, creating a vital feedback loop that channelled player insights directly to the dev team.",
+                  matters: "I know how to take a simple idea, listen to users, and turn it into a fully functional, value-driving product.",
+                },
+              ].map((card) => (
+                <FlipCard key={card.id} {...card} />
+              ))}
+            </motion.div>
           </div>
-
-          <motion.div
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8"
-            variants={staggerContainer}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-100px" }}
-          >
-            {[
-              {
-                icon: Briefcase,
-                title: "High-Stakes Platform Delivery",
-                proof: "I've owned product strategy for platforms handling over £150m in revenue and millions of transactions, including a zero-downtime legacy migration at Playtech.",
-                matters: "I know how to de-risk your most critical projects. I am not intimidated by complexity.",
-              },
-              {
-                icon: Users,
-                title: "Managing Complex Teams & Suppliers",
-                proof: "At High 5 Games, I was the central PO coordinating workflows between art, music, dev, and B2B clients like MGM and FanDuel.",
-                matters: "I save you from managing chaotic suppliers. I become the single point of contact that forces everyone to align.",
-              },
-              {
-                icon: Zap,
-                title: "Driving Real Transformation",
-                proof: "I don't just manage projects; I fix processes. I've led digital transformations at firms like SMD Credit Solutions and implemented new Agile workflows.",
-                matters: "I don't just deliver your project; I leave your team and workflow more efficient than I found them.",
-              },
-              {
-                icon: Rocket,
-                title: "Building Products From Scratch",
-                proof: "At LeoVegas, I built the company's first multilingual player support platform from the ground up, creating a vital feedback loop that channelled player insights directly to the dev team.",
-                matters: "I know how to take a simple idea, listen to users, and turn it into a fully functional, value-driving product.",
-              },
-            ].map((card, index) => (
-              <FlipCard key={index} {...card} />
-            ))}
-          </motion.div>
-        </div>
-      </section>
+        </section>
+      </FlipCardProvider>
 
       {/* Section 4: How I Work */}
       <section className="py-20 md:py-32 bg-white dark:bg-slate-950">
