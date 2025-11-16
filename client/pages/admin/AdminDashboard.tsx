@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { FileText, ArrowRight, MessageCircle } from "lucide-react";
+import AdminLayout from "@/components/AdminLayout";
 
 interface DashboardProps {
   crispUnread: number | null;
@@ -8,7 +9,7 @@ interface DashboardProps {
   crispLatest: string | null;
 }
 
-export default function AdminDashboard({
+function DashboardContent({
   crispUnread,
   crispOpen,
   crispLatest,
