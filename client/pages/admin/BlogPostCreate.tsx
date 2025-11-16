@@ -525,19 +525,54 @@ export default function BlogPostCreate() {
                 Post settings
               </h3>
 
-              {/* Published Date */}
+              {/* Published Date & Time */}
               <div className="mb-6">
                 <label className="block font-heading font-bold mb-2 text-xs text-gray-400 uppercase tracking-widest">
                   Published Date
                 </label>
                 <input
                   type="date"
-                  value={formPublishedDate}
-                  onChange={(e) => setFormPublishedDate(e.target.value)}
+                  value={publishedDateValue}
+                  onChange={(e) => {
+                    const datePart = e.target.value;
+                    if (!datePart) {
+                      setPublishedAt("");
+                    } else {
+                      const timePart =
+                        publishedTimeValue || new Date().toISOString().slice(11, 16);
+                      const iso = new Date(`${datePart}T${timePart}:00`).toISOString();
+                      setPublishedAt(iso);
+                    }
+                  }}
+                  className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-blue-500/60 focus:border-transparent font-body text-sm"
+                />
+              </div>
+
+              <div className="mb-6">
+                <label className="block font-heading font-bold mb-2 text-xs text-gray-400 uppercase tracking-widest">
+                  Published Time
+                </label>
+                <input
+                  type="time"
+                  value={publishedTimeValue}
+                  onChange={(e) => {
+                    const timePart = e.target.value;
+                    if (!timePart) {
+                      if (publishedDateValue) {
+                        const iso = new Date(`${publishedDateValue}T00:00:00`).toISOString();
+                        setPublishedAt(iso);
+                      }
+                    } else {
+                      const datePart =
+                        publishedDateValue || new Date().toISOString().slice(0, 10);
+                      const iso = new Date(`${datePart}T${timePart}:00`).toISOString();
+                      setPublishedAt(iso);
+                    }
+                  }}
                   className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-blue-500/60 focus:border-transparent font-body text-sm"
                 />
                 <p className="text-xs text-gray-500 mt-2 font-body">
-                  Shown on the site as the published date (does not control actual publish/unpublish in Builder).
+                  Stored as a full date &amp; time and used on the public blog page.
                 </p>
               </div>
 
