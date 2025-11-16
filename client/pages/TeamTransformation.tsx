@@ -2,7 +2,6 @@ import Layout from "@/components/Layout";
 import { Link } from "react-router-dom";
 import { ArrowRight, Check } from "lucide-react";
 import { useCalendly } from "@/context/CalendlyContext";
-import Layout from "@/components/Layout";
 
 export default function TeamTransformation() {
   const { openCalendly: openCalendlyFromContext } = useCalendly();
