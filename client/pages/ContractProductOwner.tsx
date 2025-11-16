@@ -134,7 +134,7 @@ const FlipCard = ({
         {/* Back Side */}
         <motion.div
           className="absolute w-full h-full p-8 bg-gradient-to-br from-kaizen-cyan to-kaizen-lime rounded-2xl flex flex-col justify-start"
-          animate={{ opacity: isFlipped ? 1 : 0, rotateY: 180 }}
+          animate={{ opacity: isFlipped ? 1 : 0 }}
           transition={{ duration: 0.3 }}
           style={{ backfaceVisibility: "hidden" }}
         >
@@ -280,7 +280,7 @@ export default function ContractProductOwner() {
               {
                 icon: Briefcase,
                 title: "High-Stakes Platform Delivery",
-                proof: "I've owned product strategy for platforms handling over £150m in revenue and millions of transactions, including a zero-downtime legacy migration at Playtech.",
+                proof: "I've owned product strategy for platforms handling over ��150m in revenue and millions of transactions, including a zero-downtime legacy migration at Playtech.",
                 matters: "I know how to de-risk your most critical projects. I am not intimidated by complexity.",
               },
               {
