@@ -15,6 +15,15 @@ import builder from "@/builder";
 import { getBuilderEditUrl } from "@/lib/builder-utils";
 import AdminLayout from "@/components/AdminLayout";
 
+type BuilderCoverImage =
+  | string
+  | {
+      image?: string;
+      src?: string;
+      url?: string;
+    }
+  | null;
+
 interface BlogPost {
   id: string;
   data: {
@@ -23,9 +32,13 @@ interface BlogPost {
     excerpt?: string;
     publishedDate?: string;
     tags?: string[];
-    coverImage?: any;
+    coverImage?: BuilderCoverImage;
   };
-  [key: string]: any; // Allow accessing other Builder fields (state, published, etc.)
+  published?: boolean;
+  query?: { published?: boolean };
+  lastPublished?: string;
+  state?: string;
+  [key: string]: unknown; // Allow accessing other Builder fields (state, published, etc.)
 }
 
 interface ProcessedPost {
@@ -40,7 +53,7 @@ interface ProcessedPost {
 }
 
 // Helper to derive status from Builder object
-const deriveStatus = (post: any): string => {
+const deriveStatus = (post: BlogPost): string => {
   if (post.published === true) return "Published";
   if (post.published === false) return "Draft";
   if (post.query?.published === true) return "Published";
@@ -81,15 +94,15 @@ export default function BlogPostsList() {
         setError(null);
 
         // Keep full objects so we retain id and status-ish fields
-        const results = await builder.getAll("blog-post", {
+        const results = (await builder.getAll("blog-post", {
           limit: 100,
-        });
+        })) as BlogPost[];
 
         if (results && results.length > 0) {
           console.log("[BlogPostsList] Sample blog-post:", results[0]);
         }
 
-        const processed: ProcessedPost[] = (results as BlogPost[])
+        const processed: ProcessedPost[] = results
           .map((post) => {
             const rawCover = post.data?.coverImage;
             let coverImageUrl: string | null = null;
@@ -99,20 +112,21 @@ export default function BlogPostsList() {
             } else if (rawCover && typeof rawCover === "object") {
               // Common Builder shapes: { image: "…" } or { src: "…" }
               coverImageUrl =
-                (rawCover.image as string | undefined) ||
-                (rawCover.src as string | undefined) ||
+                rawCover.image ||
+                rawCover.src ||
+                rawCover.url ||
                 null;
             }
 
             return {
-              id: (post as any).id || "",
+              id: post.id || "",
               title: post.data?.title || "Untitled",
               slug: post.data?.slug || "",
               excerpt: post.data?.excerpt || "",
               publishedDate:
                 post.data?.publishedDate || new Date().toISOString(),
               tags: Array.isArray(post.data?.tags) ? post.data.tags : [],
-              status: deriveStatus(post as any),
+              status: deriveStatus(post),
               coverImageUrl,
             };
           })

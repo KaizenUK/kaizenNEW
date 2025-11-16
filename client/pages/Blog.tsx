@@ -1,9 +1,12 @@
-import Layout from "@/components/Layout";
-import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
 import { ArrowRight, Code2 } from "lucide-react";
-import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { Link } from "react-router-dom";
+
 import builder from "@/builder";
+import Layout from "@/components/Layout";
+
+type CoverImage = string | { url?: string } | null;
 
 interface BlogPost {
   id: string;
@@ -12,8 +15,8 @@ interface BlogPost {
     slug: string;
     excerpt: string;
     publishedDate: string;
-    coverImage: any;
-    tags: string[];
+    coverImage: CoverImage;
+    tags?: string[];
   };
 }
 
@@ -27,7 +30,7 @@ interface ProcessedPost {
   publishedDate: string;
 }
 
-const TAG_COLORS: { [key: string]: string } = {
+const TAG_COLORS: Record<string, string> = {
   agile: "text-purple-400",
   design: "text-blue-400",
   seo: "text-amber-400",
@@ -41,14 +44,19 @@ const TAG_COLORS: { [key: string]: string } = {
 const DEFAULT_IMAGE =
   "https://images.unsplash.com/photo-1460925895917-aae19e488e71?w=800&h=600&fit=crop";
 
-function extractImageUrl(image: any): string {
+function extractImageUrl(image: CoverImage): string {
   if (!image) return DEFAULT_IMAGE;
   if (typeof image === "string") return image;
   if (typeof image === "object" && image.url) return image.url;
   return DEFAULT_IMAGE;
 }
 
-function TypingText({ text, speed = 100 }: { text: string; speed?: number }) {
+interface TypingTextProps {
+  text: string;
+  speed?: number;
+}
+
+function TypingText({ text, speed = 100 }: TypingTextProps) {
   const [displayText, setDisplayText] = useState("");
   const [index, setIndex] = useState(0);
 

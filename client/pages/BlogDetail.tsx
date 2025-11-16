@@ -1,10 +1,14 @@
-import Layout from "@/components/Layout";
-import { Link, useParams } from "react-router-dom";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { AnimatePresence, motion, useSpring } from "framer-motion";
 import { ArrowLeft, ArrowRight } from "lucide-react";
-import { useState, useEffect, useRef, useCallback } from "react";
-import { motion, useSpring, AnimatePresence } from "framer-motion";
+import { Link, useParams } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
+
 import builder from "@/builder";
+import Layout from "@/components/Layout";
+
+type CoverImage = string | { url?: string } | null;
+type TableOfContentsItem = { id: string; title: string; level: number };
 
 interface BlogPostDetail {
   id: string;
@@ -14,9 +18,13 @@ interface BlogPostDetail {
     excerpt?: string;
     publishedDate: string;
     body: string;
-    coverImage?: any;
+    coverImage?: CoverImage;
     tags?: string[];
   };
+  published?: boolean;
+  query?: { published?: boolean };
+  lastPublished?: string;
+  state?: string;
 }
 
 interface ProcessedPost {
@@ -35,7 +43,7 @@ interface ProcessedPost {
     image: string;
   };
   readingTime: number;
-  tableOfContents: { id: string; title: string; level: number }[];
+  tableOfContents: TableOfContentsItem[];
 }
 
 interface RelatedPost {
@@ -48,7 +56,7 @@ interface RelatedPost {
 const DEFAULT_IMAGE =
   "https://images.unsplash.com/photo-1460925895917-aae19e488e71?w=800&h=600&fit=crop";
 
-function extractImageUrl(image: any): string {
+function extractImageUrl(image: CoverImage): string {
   if (!image) return DEFAULT_IMAGE;
   if (typeof image === "string") return image;
   if (typeof image === "object" && image.url) return image.url;
@@ -75,7 +83,7 @@ function calculateReadingTime(html: string): number {
 
 function addIdsToHeadings(html: string): string {
   if (!html) return html;
-  const idMap: { [key: string]: number } = {};
+  const idMap: Record<string, number> = {};
 
   let result = html;
 
@@ -102,10 +110,8 @@ function addIdsToHeadings(html: string): string {
   return result;
 }
 
-function extractHeadings(
-  html: string,
-): { id: string; title: string; level: number }[] {
-  const headings: { id: string; title: string; level: number }[] = [];
+function extractHeadings(html: string): TableOfContentsItem[] {
+  const headings: TableOfContentsItem[] = [];
 
   if (!html) {
     return [{ id: "content", title: "Content", level: 2 }];
@@ -127,7 +133,12 @@ function extractHeadings(
     : [{ id: "content", title: "Content", level: 2 }];
 }
 
-function ImageWithSkeleton({ src, alt }: { src: string; alt: string }) {
+interface ImageWithSkeletonProps {
+  src: string;
+  alt: string;
+}
+
+function ImageWithSkeleton({ src, alt }: ImageWithSkeletonProps) {
   const [isLoading, setIsLoading] = useState(true);
   const [hasError, setHasError] = useState(false);
 
@@ -162,13 +173,12 @@ function ImageWithSkeleton({ src, alt }: { src: string; alt: string }) {
   );
 }
 
-function TableOfContents({
-  items,
-  activeId,
-}: {
-  items: { id: string; title: string; level: number }[];
+interface TableOfContentsProps {
+  items: TableOfContentsItem[];
   activeId: string;
-}) {
+}
+
+function TableOfContents({ items, activeId }: TableOfContentsProps) {
   return (
     <motion.div
       className="bg-gray-900 border border-gray-800 rounded-lg p-6"
@@ -200,15 +210,13 @@ function TableOfContents({
   );
 }
 
-function Author({
-  name,
-  role,
-  image,
-}: {
+interface AuthorProps {
   name: string;
   role: string;
   image: string;
-}) {
+}
+
+function Author({ name, role, image }: AuthorProps) {
   return (
     <motion.div
       className="bg-gray-900 border border-gray-800 rounded-lg p-6"
@@ -234,7 +242,11 @@ function Author({
   );
 }
 
-function RichTextContent({ html }: { html: string }) {
+interface RichTextContentProps {
+  html: string;
+}
+
+function RichTextContent({ html }: RichTextContentProps) {
   return (
     <motion.div
       className="max-w-3xl space-y-4 blog-content"
