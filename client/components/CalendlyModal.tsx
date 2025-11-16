@@ -15,20 +15,33 @@ export function CalendlyModal({ isOpen, onClose }: CalendlyModalProps) {
     // Only load the script once on client-side
     if (typeof window === "undefined" || typeof document === "undefined") return;
 
-    // Check if script already exists
-    const existingScript = document.querySelector(
-      'script[src="https://assets.calendly.com/assets/external/widget.js"]'
-    );
+    const loadAndInitializeCalendly = () => {
+      // Check if script already exists
+      const existingScript = document.querySelector(
+        'script[src="https://assets.calendly.com/assets/external/widget.js"]'
+      );
 
-    if (!existingScript && !scriptLoaded.current) {
-      const script = document.createElement("script");
-      script.src = "https://assets.calendly.com/assets/external/widget.js";
-      script.async = true;
-      script.onload = () => {
-        scriptLoaded.current = true;
-      };
-      document.head.appendChild(script);
-    }
+      if (!existingScript && !scriptLoaded.current) {
+        const script = document.createElement("script");
+        script.src = "https://assets.calendly.com/assets/external/widget.js";
+        script.async = true;
+        script.onload = () => {
+          scriptLoaded.current = true;
+          // Initialize Calendly after script loads
+          if ((window as any).Calendly) {
+            (window as any).Calendly.initBadgeElement();
+          }
+        };
+        document.head.appendChild(script);
+      } else if (scriptLoaded.current && (window as any).Calendly) {
+        // Script already loaded, reinitialize widgets
+        (window as any).Calendly.initBadgeElement();
+      }
+    };
+
+    // Use a small delay to ensure DOM is ready
+    const timeoutId = setTimeout(loadAndInitializeCalendly, 100);
+    return () => clearTimeout(timeoutId);
   }, [isOpen]);
 
   return (
