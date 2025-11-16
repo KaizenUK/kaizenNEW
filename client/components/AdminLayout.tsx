@@ -33,19 +33,22 @@ export default function AdminLayout({
       <motion.aside
         animate={{ width: sidebarOpen ? 256 : 80 }}
         transition={{ duration: 0.3 }}
-        className="bg-gray-900 border-r border-gray-800 flex flex-col"
+        className="bg-gradient-to-b from-gray-900 to-gray-950 border-r border-gray-800 flex flex-col"
       >
         {/* Logo/Brand */}
-        <div className="p-4 border-b border-gray-800">
+        <div className="p-4 border-b border-gray-800/50">
           <Link
             to="/admin"
-            className="flex items-center gap-2 hover:opacity-80 transition"
+            className="flex items-center gap-3 hover:opacity-80 transition"
           >
             <img
               src="https://cdn.builder.io/api/v1/image/assets%2Fe4ae46bbd81b4b95bef54d66dd9748cc%2F6ca2caa53229445d9a63b2ab64bfede4?format=webp&width=800"
               alt="Kaizen Web"
               className="h-12 w-auto"
             />
+            {sidebarOpen && (
+              <span className="text-xs font-heading font-bold text-gray-400 uppercase tracking-wider">Admin</span>
+            )}
           </Link>
         </div>
 
@@ -61,7 +64,7 @@ export default function AdminLayout({
                 className={`flex items-center gap-3 px-4 py-3 rounded-lg transition font-body ${
                   active
                     ? "bg-blue-500/20 text-blue-400 border border-blue-500/30"
-                    : "text-gray-400 hover:text-white hover:bg-gray-800/50"
+                    : "text-gray-400 hover:text-white hover:bg-gray-800/50 hover:scale-105"
                 }`}
               >
                 <Icon size={20} />
