@@ -6,12 +6,10 @@ import { Helmet } from "react-helmet-async";
 import {
   ArrowRight,
   ArrowUpRight,
-  ShoppingCart,
-  Zap,
-  Smartphone,
   Lock,
   Package,
   TrendingUp,
+  Zap,
 } from "lucide-react";
 
 // Animation variants
@@ -153,20 +151,21 @@ export default function Ecommerce() {
     <Layout>
       <Helmet>
         <title>
-          E-commerce Development Liverpool | Headless & WooCommerce | Kaizen
+          E-commerce Development Liverpool | Fast Headless & WooCommerce | Kaizen
         </title>
         <meta
           name="description"
-          content="We build e-commerce websites for Liverpool & Wirral. We offer high-speed Headless e-commerce and powerful, user-friendly WooCommerce/WordPress stores."
+          content="We build high-performance e-commerce websites for Liverpool & Wirral. Stop losing sales to a slow site. We build fast, custom, headless e-commerce stores."
         />
       </Helmet>
 
-      {/* Section 1: Hero */}
+      {/* Section 1: Hero - 50/50 Split Layout */}
       <section className="min-h-screen bg-kaizen-dark dark:bg-gradient-to-b dark:from-slate-900 dark:to-slate-950 text-kaizen-text-light dark:text-white/85 flex items-center py-20">
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+            {/* Left: Text Content */}
             <div className="max-w-2xl">
-              <AnimatedH1 text="E-commerce That Converts." />
+              <AnimatedH1 text="E-commerce That Sells." />
 
               <motion.div
                 className="space-y-6 mb-12 text-xl text-kaizen-text-light/80 dark:text-white/70 leading-relaxed"
@@ -175,9 +174,10 @@ export default function Ecommerce() {
                 transition={{ delay: 0.6, duration: 0.6 }}
               >
                 <p>
-                  We build e-commerce platforms for Liverpool & Wirral
-                  businesses. From lightning-fast Headless stores to powerful,
-                  easy-to-manage WordPress & WooCommerce sites.
+                  Most e-commerce sites are slow, clunky, and lose sales. We
+                  build high-performance stores for Liverpool & Wirral
+                  businesses—whether it's a lightning-fast Headless build or a
+                  powerful, easy-to-manage WordPress site.
                 </p>
               </motion.div>
 
@@ -198,31 +198,56 @@ export default function Ecommerce() {
               </motion.div>
             </div>
 
-            {/* Hero image on the right */}
+            {/* Right: Abstract Visual */}
             <motion.div
               className="hidden md:flex items-center justify-center"
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: 0.4, duration: 0.8 }}
             >
-              <div className="w-full h-96 rounded-2xl border border-kaizen-cyan/30 dark:border-kaizen-cyan/20 overflow-hidden">
-                <img
-                  src="https://cdn.builder.io/api/v1/image/assets%2Fe4ae46bbd81b4b95bef54d66dd9748cc%2F2d489d81daa54d3dacb3edd616859055?format=webp&width=800"
-                  alt="High-performance e-commerce development"
-                  className="w-full h-full object-cover"
-                />
+              <div className="w-full h-96 rounded-2xl border border-kaizen-cyan/30 dark:border-kaizen-cyan/20 overflow-hidden bg-gradient-to-br from-kaizen-cyan/10 dark:from-kaizen-cyan/5 via-kaizen-lime/5 dark:via-kaizen-lime/3 to-kaizen-cyan/10 dark:to-kaizen-cyan/5 flex items-center justify-center">
+                <div className="relative w-full h-full">
+                  {/* Abstract wireframe design */}
+                  <motion.div
+                    className="absolute inset-0 opacity-20"
+                    animate={{
+                      backgroundPosition: ["0% 0%", "100% 100%"],
+                    }}
+                    transition={{
+                      duration: 20,
+                      repeat: Infinity,
+                      ease: "linear",
+                    }}
+                    style={{
+                      background:
+                        "linear-gradient(45deg, rgba(0,255,200,0.3) 0%, rgba(0,255,200,0) 50%, rgba(0,255,200,0.3) 100%)",
+                      backgroundSize: "200% 200%",
+                    }}
+                  />
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <div className="space-y-4">
+                      <Zap
+                        size={64}
+                        className="text-kaizen-cyan/40 dark:text-kaizen-cyan/20 mx-auto"
+                      />
+                      <p className="text-kaizen-text-dark/30 dark:text-white/20 font-heading font-bold text-sm text-center max-w-xs">
+                        Lightning-Fast Performance
+                      </p>
+                    </div>
+                  </div>
+                </div>
               </div>
             </motion.div>
           </div>
         </div>
       </section>
 
-      {/* Section 2: The Right Tool for the Job (Your USP) */}
+      {/* Section 2: Our E-commerce Expertise */}
       <section className="py-20 md:py-32 bg-white dark:bg-slate-950">
         <div className="container mx-auto px-4">
           <ScrollReveal>
             <h2 className="text-4xl md:text-5xl font-heading font-bold mb-16 text-kaizen-dark dark:text-white text-center">
-              The Right E-commerce Platform for You
+              Our E-commerce Expertise
             </h2>
           </ScrollReveal>
 
@@ -238,16 +263,14 @@ export default function Ecommerce() {
                 title: "Headless E-commerce",
                 subtitle: "(For Ultimate Performance)",
                 copy: "We use a modern React/Vite frontend with a backend like Shopify. This is the fastest possible solution, giving you a huge SEO advantage and a friction-free user experience.",
-                bestFor:
-                  "Ambitious brands, high-traffic stores, and unique user experiences.",
+                bestFor: "Ambitious brands who need unbeatable speed and a unique, custom-branded experience.",
                 icon: Zap,
               },
               {
                 title: "WordPress + WooCommerce",
                 subtitle: "(For Ultimate Control)",
                 copy: "The world's most popular platform for a reason. Get a powerful, secure store built on a platform you already know how to use. Easy content management, endless plugins.",
-                bestFor:
-                  "Businesses who want to manage their own content, products, and plugins with total familiarity.",
+                bestFor: "Businesses who want total control to manage their own content, products, and plugins.",
                 icon: TrendingUp,
               },
             ].map((item, index) => (
@@ -279,6 +302,23 @@ export default function Ecommerce() {
                 </div>
               </motion.div>
             ))}
+          </motion.div>
+
+          {/* Shopify Support Note */}
+          <motion.div
+            className="mt-12 p-8 bg-gradient-to-r from-kaizen-cyan/10 to-kaizen-lime/10 dark:from-kaizen-cyan/5 dark:to-kaizen-lime/5 rounded-2xl border border-kaizen-cyan/20 dark:border-kaizen-cyan/10 text-center max-w-2xl mx-auto"
+            variants={fadeInUp}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-100px" }}
+          >
+            <p className="text-lg text-kaizen-text-dark/70 dark:text-white/60">
+              We also offer expert assistance with{" "}
+              <span className="font-bold text-kaizen-dark dark:text-white">
+                installing and configuring Shopify stores
+              </span>
+              , including theme selection and customization.
+            </p>
           </motion.div>
         </div>
       </section>
@@ -339,7 +379,7 @@ export default function Ecommerce() {
         </div>
       </section>
 
-      {/* Section 4: Local Proof (Plausible & Generic) */}
+      {/* Section 4: Local Proof (Honest & Believable) */}
       <section className="py-20 md:py-32 bg-white dark:bg-slate-950">
         <div className="container mx-auto px-4">
           <ScrollReveal>
@@ -386,23 +426,27 @@ export default function Ecommerce() {
 
               <div>
                 <h4 className="text-2xl font-heading font-bold mb-4 text-kaizen-dark dark:text-white">
-                  The Result
+                  The Outcome
                 </h4>
-                <p className="text-lg text-kaizen-text-dark/70 dark:text-white/60 leading-relaxed mb-6">
-                  3x faster checkout, 50% increase in mobile conversions, and
-                  the site now handles peak season traffic with zero downtime.
+                <p className="text-lg text-kaizen-text-dark/70 dark:text-white/60 leading-relaxed">
+                  The new site now handles peak season traffic with zero
+                  downtime, and the improved mobile experience has led to a
+                  clear, measurable increase in online sales.
                 </p>
               </div>
             </div>
 
             <div className="bg-gradient-to-br from-kaizen-cyan/20 dark:from-kaizen-cyan/10 to-kaizen-lime/20 dark:to-kaizen-lime/10 rounded-2xl border border-kaizen-cyan/30 dark:border-kaizen-cyan/20 p-8 h-96 flex items-center justify-center">
-              <div className="text-center">
-                <ShoppingCart
+              <div className="text-center space-y-4">
+                <TrendingUp
                   size={64}
-                  className="text-kaizen-cyan/40 mb-4 mx-auto"
+                  className="text-kaizen-cyan/40 dark:text-kaizen-cyan/20 mx-auto"
                 />
-                <p className="text-kaizen-text-dark/60 dark:text-white/50 font-heading font-bold text-xl">
-                  50% Increase in Mobile Conversions
+                <p className="text-kaizen-text-dark/60 dark:text-white/50 font-heading font-bold text-lg">
+                  Improved Mobile Experience
+                </p>
+                <p className="text-kaizen-text-dark/50 dark:text-white/40 text-sm">
+                  Measurable increase in online sales
                 </p>
               </div>
             </div>
@@ -459,12 +503,12 @@ export default function Ecommerce() {
         </div>
       </section>
 
-      {/* Section 6: Final Call to Action (CTA) */}
+      {/* Section 6: Final Call to Action */}
       <section className="py-20 md:py-32 bg-kaizen-dark dark:bg-gradient-to-b dark:from-slate-900 dark:to-slate-950 text-kaizen-text-light dark:text-white/85">
         <div className="container mx-auto px-4 text-center">
           <ScrollReveal>
             <h2 className="text-4xl md:text-5xl font-heading font-bold mb-8 text-kaizen-text-light dark:text-white">
-              Ready to Build Your E-commerce Site?
+              Stop Losing Sales to a Slow Site.
             </h2>
             <p className="text-xl text-kaizen-text-light/80 dark:text-white/70 mb-12 max-w-2xl mx-auto leading-relaxed">
               Let's talk about the right platform for your business. Chat with
