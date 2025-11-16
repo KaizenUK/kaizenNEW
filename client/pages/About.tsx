@@ -181,12 +181,12 @@ export default function About() {
               {
                 icon: Lightbulb,
                 title: "Kaizen (改善)",
-                copy: "It's not just a cool word. In Japanese, it means 'continuous improvement.' I believe in it because I've lived it. There is always a better way to build a website or run a project. We are obsessed with finding it.",
+                copy: "It's not just a cool word. In Japanese, it means 'continuous improvement.' We believe in it because we've lived it. There is always a better way to build a website or run a project. We are obsessed with finding it.",
               },
               {
                 icon: Heart,
                 title: '"Love What You Do"',
-                copy: "I'm wired to be a perfectionist. My 'superpower' is a hyperfocus on things I'm interested in—like your project. I'm a tech sponge. I'll work all night to get a small detail right, because I genuinely love this work.",
+                copy: "We're wired to be perfectionists. Our 'superpower' is a hyperfocus on things we're interested in—like your project. We're tech sponges. We'll work all night to get a small detail right, because we genuinely love this work.",
               },
               {
                 icon: Users,
