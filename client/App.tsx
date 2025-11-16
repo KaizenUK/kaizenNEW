@@ -124,6 +124,7 @@ function AppContent() {
       {/* {!isAdminRoute && <CrispChatButton />} */}
 
       {!isAdminRoute && <CalendlyModal isOpen={isCalendlyOpen} onClose={closeCalendly} />}
+      {!isAdminRoute && <CookieBanner />}
 
       <Routes>
         {/* Public Routes */}
