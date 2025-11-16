@@ -4,6 +4,7 @@ import { Menu, LogOut, FileText, LayoutDashboard, ExternalLink, MessageCircle } 
 import { useState, useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 import { useAdminAuth } from "@/hooks/useAdminAuth";
+import { CrispProvider } from "@/context/CrispContext";
 
 interface AdminLayoutProps {
   children: React.ReactNode;
