@@ -1,5 +1,4 @@
 import { Link, useLocation } from "react-router-dom";
-import { Link, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Menu, LogOut, FileText, LayoutDashboard, ExternalLink, MessageCircle } from "lucide-react";
 import { useState, useEffect } from "react";
