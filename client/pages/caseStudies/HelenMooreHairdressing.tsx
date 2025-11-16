@@ -158,10 +158,10 @@ export default function HelenMooreHairdressingCase() {
               transition={{ duration: 0.6 }}
             >
               <h2 className="text-4xl md:text-5xl font-heading font-bold mb-6 text-kaizen-dark dark:text-white">
-                The Result: #1 Rankings and a Full Calendar
+                The Result: High Rankings and a Full Calendar
               </h2>
               <p className="text-lg text-kaizen-text-dark/70 dark:text-white/70 leading-relaxed">
-                Helen Moore Hairdressing now ranks #1 on Google for her key local search terms. The online booking system has dramatically reduced her admin, and clients love the new, easy-to-use site. She's gone from invisible to the most dominant online salon in her area.
+                Helen Moore Hairdressing now ranks highly on Google for her key local search terms. The online booking system has dramatically reduced her admin, and clients love the new, easy-to-use site. She's gone from invisible to a dominant online presence in her area.
               </p>
             </motion.div>
           </div>
