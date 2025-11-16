@@ -137,7 +137,12 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     const handleScroll = () => {
       if (rafId !== null) return;
       rafId = window.requestAnimationFrame(() => {
-        updateNavTone();
+        if (headerRef.current) {
+          updateNavTone();
+        } else {
+          const scrollY = window.scrollY;
+          setNavTextLight(scrollY < 80);
+        }
         rafId = null;
       });
     };
