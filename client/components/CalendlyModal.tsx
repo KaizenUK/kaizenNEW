@@ -7,6 +7,7 @@ interface CalendlyModalProps {
 }
 
 let calendlyScriptPromise: Promise<void> | null = null;
+const CALENDLY_URL = "https://calendly.com/sean-kaizenweb/30-minute-meeting-clone";
 
 function loadCalendlyScript(): Promise<void> {
   if (typeof window === "undefined" || typeof document === "undefined") {
@@ -121,8 +122,9 @@ export function CalendlyModal({ isOpen, onClose }: CalendlyModalProps) {
 
         container.innerHTML = "";
 
+        container.setAttribute("data-url", CALENDLY_URL);
         calendly.initInlineWidget({
-          url: "https://calendly.com/sean-kaizenweb/30-minute-meeting-clone",
+          url: CALENDLY_URL,
           parentElement: container,
           prefill: {},
           utm: {},
@@ -156,7 +158,7 @@ export function CalendlyModal({ isOpen, onClose }: CalendlyModalProps) {
           <div
             ref={containerRef}
             className="calendly-inline-widget w-full"
-            data-url="https://calendly.com/sean-kaizenweb/30-minute-meeting-clone"
+            data-url={CALENDLY_URL}
             style={{ minWidth: "320px", height: "700px" }}
           />
         </div>
