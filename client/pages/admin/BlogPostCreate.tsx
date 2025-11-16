@@ -329,8 +329,7 @@ export default function BlogPostCreate() {
                 Content
               </label>
               <div className="rounded-lg overflow-hidden border border-gray-300">
-                <ReactQuill
-                  theme="snow"
+                <QuillEditor
                   value={formBody}
                   onChange={setFormBody}
                   modules={quillModules}
