@@ -148,6 +148,8 @@ const CTAButton = ({
 }
 
 export default function Home() {
+  const { openCalendly: openCalendlyFromContext } = useCalendly();
+
   return (
     <Layout>
       <Helmet>
