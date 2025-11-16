@@ -265,6 +265,10 @@ export default function ContractProductOwner() {
             </h2>
           </ScrollReveal>
 
+          <div className="max-w-4xl mx-auto text-center mb-8">
+            <p className="text-lg text-kaizen-text-dark/70 dark:text-white/60">Click any card to open it and see why this experience matters to your project.</p>
+          </div>
+
           <motion.div
             className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8"
             variants={staggerContainer}
