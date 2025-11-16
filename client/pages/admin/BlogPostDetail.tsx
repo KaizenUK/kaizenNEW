@@ -189,7 +189,7 @@ export default function BlogPostDetail() {
         title: formTitle,
         slug: formSlug,
         excerpt: formExcerpt,
-        publishedDate: formPublishedDate,
+        publishedDate: publishedAt,
         tags: tagsArray,
         body: formBody,
         seoTitle: formSeoTitle,
