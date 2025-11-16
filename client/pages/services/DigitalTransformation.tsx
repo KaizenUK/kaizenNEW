@@ -127,6 +127,8 @@ function KineticTypography() {
 }
 
 export default function DigitalTransformation() {
+  const { openCalendly } = useCalendly();
+
   return (
     <Layout>
       <Helmet>
