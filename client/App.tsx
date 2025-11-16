@@ -135,6 +135,7 @@ function AppContent() {
           element={<ContractProductOwner />}
         />
         <Route path="/about" element={<About />} />
+        <Route path="/pledge" element={<Pledge />} />
         <Route path="/agile-coaching" element={<AgileCoaching />} />
         <Route path="/product-owner" element={<ProductOwner />} />
         <Route path="/team-transformation" element={<TeamTransformation />} />
