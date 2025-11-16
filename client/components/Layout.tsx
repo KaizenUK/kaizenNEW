@@ -182,6 +182,30 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         <script type="application/ld+json">
           {JSON.stringify(structuredData)}
         </script>
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "LocalBusiness",
+            "name": "Kaizen",
+            "url": "https://www.kaizenweb.co.uk",
+            "logo": "https://cdn.builder.io/api/v1/image/assets%2Fe4ae46bbd81b4b95bef54d66dd9748cc%2F19f6366118ef41298050443945090b5f?format=webp&width=800",
+            "address": {
+              "@type": "PostalAddress",
+              "addressLocality": "Liverpool",
+              "addressRegion": "Merseyside",
+              "addressCountry": "GB"
+            },
+            "contactPoint": {
+              "@type": "ContactPoint",
+              "contactType": "Customer Support",
+              "email": "hello@kaizenweb.co.uk",
+              "areaServed": ["Liverpool", "Wirral"]
+            },
+            "sameAs": [
+              "https://www.linkedin.com/company/kaizen-web"
+            ]
+          })}
+        </script>
       </Helmet>
 
       <div className="min-h-screen flex flex-col bg-background text-foreground transition-colors">
