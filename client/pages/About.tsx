@@ -91,14 +91,15 @@ export default function About() {
             </motion.h1>
 
             {/* Sub-headline */}
-            <motion.p
-              className="text-lg md:text-xl text-kaizen-text-dark/70 dark:text-white/70 leading-relaxed mb-8 max-w-3xl"
+            <motion.div
+              className="text-lg md:text-xl text-kaizen-text-dark/70 dark:text-white/70 leading-relaxed mb-8 max-w-3xl space-y-4"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.3, duration: 0.8 }}
             >
-              We are Kaizen. I'm <strong>Sean McDonnell</strong>, the founder. I've spent over a decade in the high-stakes global tech industry, and I built this agency to do things differently. No buzzwords, no chaotic projects, no excuses. This is our story.
-            </motion.p>
+              <p><strong>We</strong> are Kaizen.</p>
+              <p><strong>We</strong>'ve spent over a decade in the high-stakes global tech industry, and we built this agency to do things differently. No buzzwords, no chaotic projects, no excuses. This is our story.</p>
+            </motion.div>
 
             {/* CTA */}
             <motion.div
@@ -140,7 +141,7 @@ export default function About() {
                 </p>
 
                 <p>
-                  For over a decade, I've been deep in the high-stakes, chaotic world of the global tech industry. I've lived and worked in Canada, Malta (where I met my husband, Kiko), Spain, Bulgaria, and Romania, managing massive projects for iGaming and FinTech giants. I've also seen how unstable that world is—I was made redundant three times in two years. That's the nature of the beast.
+                  For over a decade, I've been deep in the high-stakes, chaotic world of the global tech industry. I've lived and worked in Canada, Ireland, Malta (where I met my husband, Kiko), Spain, Bulgaria, and Romania, managing massive projects for iGaming and FinTech giants. I've also seen how unstable that world is—I was made redundant three times in two years. That's the nature of the beast.
                 </p>
 
                 <p>
