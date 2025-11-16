@@ -10,6 +10,7 @@ import { useEffect } from "react";
 import { CalendlyProvider, useCalendly } from "@/context/CalendlyContext";
 import { CalendlyModal } from "@/components/CalendlyModal";
 import { CookieBanner } from "@/components/CookieBanner";
+import { RouteChangeTracker } from "@/components/RouteChangeTracker";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import WebDesign from "./pages/services/WebDesign";
