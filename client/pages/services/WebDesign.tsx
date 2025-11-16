@@ -414,7 +414,7 @@ export default function WebDesign() {
               {
                 title: "Agile Coaching",
                 copy: "Our process is Agile. We can also train your team to be.",
-                link: "/services/agile-coaching",
+                link: "/agile-coaching",
               },
             ].map((service, index) => (
               <motion.div key={index} variants={fadeInUp}>

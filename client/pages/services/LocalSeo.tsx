@@ -471,9 +471,9 @@ export default function LocalSeo() {
                 link: "/services/web-design-liverpool",
               },
               {
-                title: "Digital Strategy",
-                copy: "Need help managing your digital operations? We can help you streamline your workflow.",
-                link: "/services/agile-coaching",
+                title: "Agile Coaching",
+                copy: "Our SEO process is Agile. We can also train your in-house team to streamline their workflow.",
+                link: "/agile-coaching",
               },
             ].map((card, index) => (
               <motion.div key={index} variants={fadeInUp}>

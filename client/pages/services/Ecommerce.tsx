@@ -435,7 +435,7 @@ export default function Ecommerce() {
               {
                 title: "Agile Coaching",
                 copy: "Managing a complex e-commerce team or project? We can streamline your workflow.",
-                link: "/services/agile-coaching",
+                link: "/agile-coaching",
               },
             ].map((card, index) => (
               <motion.div key={index} variants={fadeInUp}>
