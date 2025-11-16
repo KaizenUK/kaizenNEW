@@ -907,5 +907,3 @@ export default function BlogPostDetail() {
     </AdminLayout>
   );
 }
-
-import React from "react";
