@@ -1,10 +1,208 @@
-import PlaceholderPage from "@/components/PlaceholderPage";
+import { Link } from "react-router-dom";
+import Layout from "@/components/Layout";
+import { motion } from "framer-motion";
+import { Helmet } from "react-helmet-async";
+import { ArrowRight } from "lucide-react";
+
+const caseStudies = [
+  {
+    id: "as-collections",
+    client: "A.S Collections",
+    summary: "A complete, modern redesign for a Liverpool debt recovery firm that needed to build trust and authority.",
+    services: ["Web Design", "Content Strategy", "WordPress"],
+    slug: "as-collections",
+  },
+  {
+    id: "helen-moore-hairdressing",
+    client: "Helen Moore Hairdressing",
+    summary: "A 0-to-1 build for a Wirral-based salon, resulting in #1 local rankings and a 24/7 online booking system.",
+    services: ["Web Design", "Local SEO", "Booking System"],
+    slug: "helen-moore-hairdressing",
+  },
+  {
+    id: "independent-retailer",
+    client: "Independent Retailer, Liverpool",
+    summary: "A high-performance headless e-commerce build to fix a slow, clunky site and boost mobile conversions.",
+    services: ["E-commerce", "Headless (React)", "Performance"],
+    slug: "independent-retailer",
+  },
+];
+
+const fadeInUp = {
+  hidden: { opacity: 0, y: 20 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.6, ease: "easeOut" },
+  },
+};
+
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1,
+      delayChildren: 0.2,
+    },
+  },
+};
 
 export default function CaseStudies() {
   return (
-    <PlaceholderPage 
-      title="Case Studies"
-      description="See examples of websites we've built and the outcomes we've delivered for Liverpool businesses. Each project focused on clear, measurable results."
-    />
+    <Layout>
+      <Helmet>
+        <title>Case Studies | Liverpool Web Design Results | Kaizen</title>
+        <meta
+          name="description"
+          content="Proof, not promises. See our real, 'no-BS' case studies for Liverpool & Wirral businesses. We deliver results."
+        />
+      </Helmet>
+
+      {/* Section 1: Hero */}
+      <section className="min-h-screen bg-white dark:bg-slate-950 flex items-center py-20 px-4">
+        <div className="container mx-auto max-w-4xl">
+          <motion.h1
+            className="text-5xl md:text-6xl lg:text-7xl font-heading font-black mb-8 leading-tight text-kaizen-dark dark:text-white"
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, ease: "easeOut" }}
+          >
+            Proof, Not Promises.
+          </motion.h1>
+
+          <motion.p
+            className="text-xl md:text-2xl text-kaizen-text-dark/70 dark:text-white/70 leading-relaxed max-w-3xl"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.2, duration: 0.8 }}
+          >
+            We're not just another agency that talks a good game. Here's a look at the real-world, "no-BS" results we've delivered for local businesses.
+          </motion.p>
+        </div>
+      </section>
+
+      {/* Section 2: Case Studies List */}
+      <section className="bg-kaizen-light dark:bg-slate-900/50 py-20 px-4">
+        <div className="container mx-auto max-w-5xl">
+          <motion.h2
+            className="text-4xl md:text-5xl font-heading font-bold mb-16 text-kaizen-dark dark:text-white"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-100px" }}
+            transition={{ duration: 0.6 }}
+          >
+            Our Work
+          </motion.h2>
+
+          <motion.ul
+            className="space-y-0"
+            variants={containerVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-100px" }}
+          >
+            {caseStudies.map((study, index) => (
+              <motion.li key={study.id} variants={fadeInUp}>
+                <Link
+                  to={`/case-studies/${study.slug}`}
+                  className="group block border-b border-kaizen-light dark:border-slate-800 py-12 px-8 transition hover:bg-white dark:hover:bg-slate-950/50"
+                >
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+                    {/* Left Column - Client & Summary */}
+                    <div>
+                      <h3 className="text-3xl md:text-4xl font-heading font-bold mb-4 text-kaizen-dark dark:text-white group-hover:text-kaizen-cyan transition">
+                        {study.client}
+                      </h3>
+                      <p className="text-lg text-kaizen-text-dark/70 dark:text-white/70 leading-relaxed">
+                        {study.summary}
+                      </p>
+                    </div>
+
+                    {/* Right Column - Services */}
+                    <div className="flex flex-col justify-between h-full">
+                      <div>
+                        <p className="text-xs font-mono text-kaizen-text-dark/50 dark:text-white/50 font-bold mb-4 tracking-widest">
+                          SERVICES PROVIDED
+                        </p>
+                        <div className="flex flex-wrap gap-3">
+                          {study.services.map((service) => (
+                            <span
+                              key={service}
+                              className="inline-block px-4 py-2 bg-white dark:bg-slate-800/50 rounded-full text-sm font-medium text-kaizen-dark dark:text-white border border-kaizen-light dark:border-slate-700 group-hover:border-kaizen-cyan dark:group-hover:border-kaizen-cyan/50 transition"
+                            >
+                              {service}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* Arrow indicator */}
+                      <div className="mt-6 flex items-center gap-2 text-kaizen-cyan font-medium group-hover:gap-3 transition">
+                        Read Case Study
+                        <ArrowRight size={18} className="group-hover:translate-x-1 transition" />
+                      </div>
+                    </div>
+                  </div>
+                </Link>
+              </motion.li>
+            ))}
+          </motion.ul>
+        </div>
+      </section>
+
+      {/* Section 3: Final CTA */}
+      <section className="bg-kaizen-dark dark:bg-gradient-to-b dark:from-slate-900 dark:to-slate-950 text-white py-20 md:py-32 px-4">
+        <div className="container mx-auto max-w-3xl text-center">
+          <motion.h2
+            className="text-4xl md:text-5xl lg:text-6xl font-heading font-black mb-8"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+          >
+            Ready to Be Our Next Case Study?
+          </motion.h2>
+
+          <motion.p
+            className="text-xl text-white/80 mb-12 leading-relaxed"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.1 }}
+          >
+            Let's talk about the results we can get for you.
+          </motion.p>
+
+          <motion.div
+            className="flex flex-col sm:flex-row gap-6 justify-center items-center"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+          >
+            <button
+              onClick={() => {
+                if (typeof window !== "undefined" && (window as any).$crisp) {
+                  (window as any).$crisp.push(["do", "chat:open"]);
+                }
+              }}
+              className="px-8 py-3 rounded-lg bg-gradient-to-r from-kaizen-cyan to-kaizen-lime text-kaizen-dark font-heading font-bold hover:shadow-lg hover:shadow-kaizen-cyan/50 transition inline-flex items-center justify-center gap-2"
+            >
+              Start a Live Chat
+              <ArrowRight size={18} />
+            </button>
+
+            <a
+              href="#"
+              className="px-8 py-3 rounded-lg border-2 border-white/30 text-white font-heading font-bold hover:border-kaizen-cyan hover:text-kaizen-cyan transition inline-flex items-center justify-center gap-2"
+            >
+              Book a 15-Minute Call
+              <ArrowRight size={18} />
+            </a>
+          </motion.div>
+        </div>
+      </section>
+    </Layout>
   );
 }
