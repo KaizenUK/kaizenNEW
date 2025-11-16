@@ -148,3 +148,15 @@ function DashboardContent({
     </motion.div>
   );
 }
+
+export default function AdminDashboard({
+  crispUnread,
+  crispOpen,
+  crispLatest,
+}: DashboardProps) {
+  return (
+    <AdminLayout>
+      <DashboardContent crispUnread={crispUnread} crispOpen={crispOpen} crispLatest={crispLatest} />
+    </AdminLayout>
+  );
+}
