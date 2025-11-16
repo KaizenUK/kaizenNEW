@@ -314,7 +314,11 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
           <div className="grid grid-cols-1 md:grid-cols-5 gap-8 mb-8">
             {/* Brand */}
             <div>
-              <h3 className="font-heading font-bold text-lg mb-4">Kaizen Web</h3>
+              <img
+                src="https://cdn.builder.io/api/v1/image/assets%2Fe4ae46bbd81b4b95bef54d66dd9748cc%2F5d25cea933a34d2db65194ce09c75c1b?format=webp&width=800"
+                alt="Kaizen Web"
+                className="h-16 w-auto mb-4"
+              />
               <p className="text-sm text-kaizen-text-light/80">
                 Web design and digital transformation for Liverpool businesses.
               </p>
