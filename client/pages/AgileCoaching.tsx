@@ -1,98 +1,414 @@
+import { useEffect, useState } from "react";
 import Layout from "@/components/Layout";
 import { Link } from "react-router-dom";
-import { ArrowRight, Check } from "lucide-react";
+import { motion } from "framer-motion";
+import { Helmet } from "react-helmet-async";
+import {
+  ArrowRight,
+  ArrowUpRight,
+  AlertCircle,
+  Users,
+  DollarSign,
+  CheckCircle,
+  BookOpen,
+} from "lucide-react";
+
+// Animation variants
+const fadeInUp = {
+  hidden: { opacity: 0, y: 20 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.6, ease: "easeOut" },
+  },
+};
+
+const staggerContainer = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1,
+      delayChildren: 0.2,
+    },
+  },
+};
+
+// Scroll-triggered fade-in component
+const ScrollReveal = ({
+  children,
+  delay = 0,
+}: {
+  children: React.ReactNode;
+  delay?: number;
+}) => {
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting) {
+        setIsVisible(true);
+        observer.unobserve(entry.target);
+      }
+    });
+
+    const element = document.getElementById(`scroll-reveal-${delay}`);
+    if (element) {
+      observer.observe(element);
+    }
+
+    return () => observer.disconnect();
+  }, [delay]);
+
+  return (
+    <motion.div
+      id={`scroll-reveal-${delay}`}
+      variants={fadeInUp}
+      initial="hidden"
+      animate={isVisible ? "visible" : "hidden"}
+      transition={{ delay: delay * 0.1 }}
+    >
+      {children}
+    </motion.div>
+  );
+};
+
+// CTA Button component
+const CTAButton = ({
+  text,
+  onClick,
+  secondary = false,
+  openChat = false,
+}: {
+  text: string;
+  onClick?: () => void;
+  secondary?: boolean;
+  openChat?: boolean;
+}) => {
+  const handleClick = () => {
+    if (openChat && typeof window !== "undefined") {
+      if ((window as any).$crisp) {
+        (window as any).$crisp.push(["do", "chat:open"]);
+      }
+    }
+    if (onClick) {
+      onClick();
+    }
+  };
+
+  return (
+    <button
+      onClick={handleClick}
+      className={`px-8 py-3 rounded-lg font-heading font-bold inline-flex items-center justify-center gap-2 transition ${
+        secondary
+          ? "border-2 border-kaizen-cyan text-kaizen-cyan hover:bg-kaizen-cyan/10 dark:border-kaizen-cyan/70 dark:text-kaizen-cyan/70 dark:hover:bg-kaizen-cyan/5"
+          : "bg-gradient-to-r from-kaizen-cyan to-kaizen-lime text-kaizen-dark hover:shadow-lg hover:shadow-kaizen-cyan/50"
+      }`}
+    >
+      {text}
+      <ArrowRight size={18} />
+    </button>
+  );
+};
 
 export default function AgileCoaching() {
   return (
     <Layout>
-      {/* Hero */}
-      <section className="bg-kaizen-dark text-kaizen-text-light py-20 md:py-32">
+      <Helmet>
+        <title>Agile Coaching for Liverpool Businesses | Kaizen</title>
+        <meta
+          name="description"
+          content="Stop wasting time on chaotic projects. We offer practical Agile coaching in Liverpool to help your team work smarter, faster, and more efficiently. No jargon."
+        />
+      </Helmet>
+
+      {/* Section 1: Hero - Typography as Graphic */}
+      <section className="min-h-screen bg-white dark:bg-slate-950 flex items-center py-20">
         <div className="container mx-auto px-4">
-          <div className="max-w-3xl">
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-heading font-bold mb-6 leading-tight">
-              Agile Coaching
+          <div className="max-w-4xl">
+            {/* Main H1 - Staggered word reveal */}
+            <h1 className="text-6xl md:text-7xl lg:text-8xl font-heading font-black mb-12 leading-tight text-kaizen-dark dark:text-white">
+              {["Stop.", "Wasting.", "Time."].map((word, index) => (
+                <motion.span
+                  key={index}
+                  className="block"
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{
+                    delay: index * 0.15,
+                    duration: 0.5,
+                    ease: "easeOut",
+                  }}
+                >
+                  {word}
+                </motion.span>
+              ))}
             </h1>
 
-            <div className="space-y-4 mb-8 text-lg text-kaizen-text-light/80">
-              <p>
-                Your team knows how to build things. But do you know how to build them fast? Agile methodology helps you ship features quicker, get feedback sooner, and waste less time in meetings.
-              </p>
-              <p>
-                We'll teach your team Agile practices that actually work. Not the buzzwords – the practices. Sprints, standups, retros, and continuous delivery.
-              </p>
-            </div>
+            {/* Sub-headline */}
+            <motion.p
+              className="text-xl md:text-2xl text-kaizen-text-dark/70 dark:text-white/70 leading-relaxed mb-12 max-w-2xl"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.6, duration: 0.8 }}
+            >
+              We help Liverpool & Wirral businesses fix their chaotic workflows. We use practical Agile coaching to get your team focused, your projects on track, and your work done faster. No jargon, just results.
+            </motion.p>
 
-            <div className="space-y-3 mb-12">
-              <div className="flex gap-3 items-start">
-                <Check className="text-kaizen-lime flex-shrink-0 mt-1" size={20} />
-                <span className="text-lg">Faster delivery cycles</span>
-              </div>
-              <div className="flex gap-3 items-start">
-                <Check className="text-kaizen-lime flex-shrink-0 mt-1" size={20} />
-                <span className="text-lg">Better team communication</span>
-              </div>
-              <div className="flex gap-3 items-start">
-                <Check className="text-kaizen-lime flex-shrink-0 mt-1" size={20} />
-                <span className="text-lg">Less waste, clearer priorities</span>
-              </div>
-              <div className="flex gap-3 items-start">
-                <Check className="text-kaizen-lime flex-shrink-0 mt-1" size={20} />
-                <span className="text-lg">Respond to change faster</span>
-              </div>
-            </div>
+            {/* CTAs */}
+            <motion.div
+              className="flex flex-col sm:flex-row gap-4"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.8, duration: 0.6 }}
+            >
+              <CTAButton text="Start a Chat" openChat />
+              <Link
+                to="/contact"
+                className="px-8 py-3 rounded-lg border-2 border-kaizen-cyan text-kaizen-cyan dark:text-kaizen-cyan/70 font-heading font-bold hover:bg-kaizen-cyan/10 dark:hover:bg-kaizen-cyan/5 transition inline-flex items-center justify-center gap-2"
+              >
+                Book a No-Pressure Call
+                <ArrowUpRight size={18} />
+              </Link>
+            </motion.div>
           </div>
         </div>
       </section>
 
-      {/* What We Offer */}
-      <section className="py-20 md:py-32 bg-white">
+      {/* Section 2: What "Agile Coaching" Actually Means */}
+      <section className="py-20 md:py-32 bg-kaizen-light dark:bg-slate-900/50">
         <div className="container mx-auto px-4">
-          <h2 className="text-3xl md:text-4xl font-heading font-bold mb-12">What We Offer</h2>
+          <ScrollReveal>
+            <div className="max-w-3xl">
+              <h2 className="text-4xl md:text-5xl font-heading font-bold mb-8 text-kaizen-dark dark:text-white">
+                What "Agile Coaching" Actually Means
+              </h2>
+              <p className="text-xl text-kaizen-text-dark/70 dark:text-white/60 leading-relaxed mb-12">
+                "Agile" is just a word for working smarter. It means breaking huge, scary projects into small, manageable pieces. It means clear communication, no one is guessing what to do, and you see progress every single week, not just at the end.
+              </p>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl">
+              <div>
+                <h3 className="text-2xl font-heading font-bold mb-4 text-kaizen-dark dark:text-white">
+                  Who is this for?
+                </h3>
+                <p className="text-lg text-kaizen-text-dark/70 dark:text-white/60 leading-relaxed">
+                  This is for any business owner who is frustrated by team confusion, projects that drag on forever, or a workflow that feels stuck.
+                </p>
+              </div>
+            </div>
+          </ScrollReveal>
+        </div>
+      </section>
+
+      {/* Section 3: Pain Points - Does This Sound Familiar? */}
+      <section className="py-20 md:py-32 bg-white dark:bg-slate-950">
+        <div className="container mx-auto px-4">
+          <ScrollReveal>
+            <h2 className="text-4xl md:text-5xl font-heading font-bold mb-16 text-kaizen-dark dark:text-white text-center">
+              Does This Sound Familiar?
+            </h2>
+          </ScrollReveal>
+
+          <motion.div
+            className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto"
+            variants={staggerContainer}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-100px" }}
+          >
             {[
               {
-                title: "Team Training",
-                description: "Hands-on workshops where your team learns Agile practices in a safe environment.",
+                icon: AlertCircle,
+                title: "Missed Deadlines",
+                copy: "Projects start strong but fizzle out, and the launch date keeps slipping. No one is 100% sure who is responsible for what.",
               },
               {
-                title: "Sprint Coaching",
-                description: "We embed with your team during sprints to help them establish good habits.",
+                icon: Users,
+                title: "Team Confusion",
+                copy: "Your team is busy, but not productive. They're working in silos, communication is poor, and small tasks turn into huge problems.",
               },
               {
-                title: "Process Review",
-                description: "We audit your current process and recommend improvements based on what we see.",
+                icon: DollarSign,
+                title: "Wasted Budget",
+                copy: "You're spending time and money, but not seeing results. You're not sure if your team is working on the *right* things.",
+              },
+            ].map((pain, index) => (
+              <motion.div
+                key={index}
+                variants={fadeInUp}
+                className="p-8 bg-kaizen-light dark:bg-slate-900/50 rounded-2xl border border-kaizen-light dark:border-slate-800/50 hover:border-kaizen-cyan dark:hover:border-kaizen-cyan/50 transition"
+              >
+                <div className="mb-6 p-4 w-16 h-16 bg-gradient-to-br from-kaizen-cyan/20 to-kaizen-lime/20 dark:from-kaizen-cyan/10 dark:to-kaizen-lime/10 rounded-xl flex items-center justify-center">
+                  <pain.icon
+                    className="text-kaizen-cyan dark:text-kaizen-cyan/70"
+                    size={32}
+                  />
+                </div>
+                <h3 className="text-2xl font-heading font-bold mb-4 text-kaizen-dark dark:text-white">
+                  {pain.title}
+                </h3>
+                <p className="text-lg text-kaizen-text-dark/70 dark:text-white/60 leading-relaxed">
+                  {pain.copy}
+                </p>
+              </motion.div>
+            ))}
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Section 4: Our Simple 3-Step Process */}
+      <section className="py-20 md:py-32 bg-kaizen-light dark:bg-slate-900/50">
+        <div className="container mx-auto px-4">
+          <ScrollReveal>
+            <h2 className="text-4xl md:text-5xl font-heading font-bold mb-16 text-kaizen-dark dark:text-white text-center">
+              Our Simple 3-Step Process
+            </h2>
+          </ScrollReveal>
+
+          <div className="max-w-3xl mx-auto space-y-8">
+            {[
+              {
+                step: "01",
+                title: "Audit",
+                copy: "We sit with your team. We listen. We map out your current workflow, from idea to delivery, and find the real bottlenecks.",
               },
               {
-                title: "Retrospectives",
-                description: "We facilitate retros that lead to real change, not just talk.",
+                step: "02",
+                title: "Workshop",
+                copy: "We run a hands-on workshop (no boring PowerPoints) to introduce a simpler, Agile-based system. We give your team the tools to manage their own work.",
               },
-            ].map((offer, idx) => (
-              <div key={idx} className="p-8 bg-kaizen-light rounded-2xl border border-kaizen-light">
-                <h3 className="text-lg font-heading font-bold mb-3">{offer.title}</h3>
-                <p className="text-kaizen-text-dark/70">{offer.description}</p>
-              </div>
+              {
+                step: "03",
+                title: "Implement & Support",
+                copy: "We don't just hand you a report. We work with you for the first few weeks, helping you run your first \"sprints\" and making sure the new process sticks.",
+              },
+            ].map((item, index) => (
+              <motion.div
+                key={index}
+                className="flex gap-8 md:gap-12 items-start"
+                initial={{ opacity: 0, x: -30 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true, margin: "-100px" }}
+                transition={{ delay: index * 0.15, duration: 0.6 }}
+              >
+                {/* Step number */}
+                <div className="flex-shrink-0">
+                  <div className="w-16 h-16 bg-gradient-to-br from-kaizen-cyan to-kaizen-lime rounded-full flex items-center justify-center">
+                    <span className="text-kaizen-dark font-heading font-black text-xl">
+                      {item.step}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Content */}
+                <div className="flex-grow pt-2">
+                  <h3 className="text-2xl md:text-3xl font-heading font-bold mb-4 text-kaizen-dark dark:text-white">
+                    {item.title}
+                  </h3>
+                  <p className="text-lg text-kaizen-text-dark/70 dark:text-white/60 leading-relaxed">
+                    {item.copy}
+                  </p>
+                </div>
+              </motion.div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* CTA */}
-      <section className="py-20 md:py-32 bg-kaizen-dark text-kaizen-text-light">
-        <div className="container mx-auto px-4 text-center">
-          <h2 className="text-3xl md:text-4xl font-heading font-bold mb-6">
-            Ready to improve how your team delivers?
-          </h2>
-          <p className="text-lg text-kaizen-text-light/80 mb-8 max-w-2xl mx-auto">
-            Let's talk about your team's challenges and how Agile coaching can help.
-          </p>
-          <Link
-            to="/contact"
-            className="inline-flex items-center gap-2 px-8 py-3 rounded-full bg-gradient-to-r from-kaizen-cyan to-kaizen-lime text-kaizen-dark font-heading font-bold hover:opacity-90 transition"
+      {/* Section 5: Agile is in Our DNA */}
+      <section className="py-20 md:py-32 bg-white dark:bg-slate-950">
+        <div className="container mx-auto px-4">
+          <ScrollReveal>
+            <h2 className="text-4xl md:text-5xl font-heading font-bold mb-16 text-kaizen-dark dark:text-white text-center">
+              Agile is in Our DNA
+            </h2>
+          </ScrollReveal>
+
+          <motion.div
+            className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto"
+            variants={staggerContainer}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-100px" }}
           >
-            Schedule a Chat
-            <ArrowRight size={18} />
-          </Link>
+            {[
+              {
+                icon: CheckCircle,
+                title: "Our Web Design Process",
+                copy: "We use this *exact* Agile method to build our websites. It's how we launch on time, every time.",
+                link: "/services/web-design-liverpool",
+                linkText: "Explore Web Design",
+              },
+              {
+                icon: Users,
+                title: "Need Someone to Run it?",
+                copy: "If you're too busy to run the new process, you can hire one of our expert Contract Product Owners.",
+                link: "/services/contract-product-owner",
+                linkText: "Explore Product Ownership",
+              },
+              {
+                icon: BookOpen,
+                title: "Our Agile Insights",
+                copy: "We post regular, \"no-BS\" articles about practical Agile tips for real businesses. Read our blog to see how we think.",
+                link: "/blog",
+                linkText: "Read the Blog",
+              },
+            ].map((item, index) => (
+              <motion.div key={index} variants={fadeInUp}>
+                <Link
+                  to={item.link}
+                  className="block p-8 bg-kaizen-light dark:bg-slate-900/50 rounded-2xl border border-kaizen-light dark:border-slate-800/50 hover:border-kaizen-cyan dark:hover:border-kaizen-cyan/50 transition group h-full"
+                >
+                  <div className="mb-6 p-4 w-16 h-16 bg-gradient-to-br from-kaizen-cyan/20 to-kaizen-lime/20 dark:from-kaizen-cyan/10 dark:to-kaizen-lime/10 rounded-xl flex items-center justify-center">
+                    <item.icon
+                      className="text-kaizen-cyan dark:text-kaizen-cyan/70 group-hover:scale-110 transition"
+                      size={32}
+                    />
+                  </div>
+                  <h3 className="text-2xl font-heading font-bold mb-4 text-kaizen-dark dark:text-white group-hover:text-kaizen-cyan transition">
+                    {item.title}
+                  </h3>
+                  <p className="text-lg text-kaizen-text-dark/70 dark:text-white/60 leading-relaxed mb-6">
+                    {item.copy}
+                  </p>
+                  <div className="text-kaizen-cyan font-medium flex items-center gap-2 hover:gap-3 transition">
+                    {item.linkText} <ArrowUpRight size={18} />
+                  </div>
+                </Link>
+              </motion.div>
+            ))}
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Section 6: Final CTA */}
+      <section className="py-20 md:py-32 bg-kaizen-dark dark:bg-gradient-to-b dark:from-slate-900 dark:to-slate-950 text-kaizen-text-light dark:text-white/85">
+        <div className="container mx-auto px-4 text-center">
+          <ScrollReveal>
+            <h2 className="text-4xl md:text-5xl font-heading font-bold mb-8 text-kaizen-text-light dark:text-white">
+              Stop Running in Circles.
+            </h2>
+            <p className="text-xl text-kaizen-text-light/80 dark:text-white/70 mb-12 max-w-2xl mx-auto leading-relaxed">
+              Let's fix your workflow. Book a 15-minute, no-pressure call to see if we can help.
+            </p>
+          </ScrollReveal>
+
+          <motion.div
+            className="flex flex-col sm:flex-row gap-6 justify-center"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+          >
+            <CTAButton text="Start a Live Chat" openChat />
+            <Link
+              to="/contact"
+              className="px-8 py-3 rounded-lg border-2 border-kaizen-text-light/30 dark:border-white/20 text-kaizen-text-light dark:text-white/85 font-heading font-bold hover:border-kaizen-cyan dark:hover:border-kaizen-cyan transition inline-flex items-center justify-center gap-2"
+            >
+              Book Your 15-Minute Call
+              <ArrowUpRight size={18} />
+            </Link>
+          </motion.div>
         </div>
       </section>
     </Layout>
