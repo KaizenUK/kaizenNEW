@@ -7,23 +7,32 @@ const GA_ID = "G-64FS0N0FR2";
 export function RouteChangeTracker() {
   const location = useLocation();
   const [initialized, setInitialized] = useState(false);
+  const isAdminRoute = location.pathname.startsWith("/admin");
 
   useEffect(() => {
-    if (process.env.NODE_ENV === "production") {
-      ReactGA.initialize(GA_ID);
-      setInitialized(true);
+    if (
+      initialized ||
+      process.env.NODE_ENV !== "production" ||
+      isAdminRoute
+    ) {
+      return;
     }
-  }, []);
+
+    ReactGA.initialize(GA_ID);
+    setInitialized(true);
+  }, [initialized, isAdminRoute]);
 
   useEffect(() => {
-    if (initialized) {
-      ReactGA.send({
-        hitType: "pageview",
-        page: location.pathname + location.search,
-        title: document.title,
-      });
+    if (!initialized || isAdminRoute) {
+      return;
     }
-  }, [initialized, location]);
+
+    ReactGA.send({
+      hitType: "pageview",
+      page: location.pathname + location.search,
+      title: document.title,
+    });
+  }, [initialized, isAdminRoute, location]);
 
   return null;
 }
