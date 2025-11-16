@@ -229,12 +229,11 @@ export default function WordPressWebDesign() {
                     ease: "easeInOut",
                   }}
                 />
-                <div className="absolute inset-0 flex items-center justify-center rounded-2xl">
-                  <Settings
-                    size={120}
-                    className="text-kaizen-cyan/20 dark:text-kaizen-cyan/10"
-                  />
-                </div>
+                <img
+                  src="https://cdn.builder.io/api/v1/image/assets%2Fe4ae46bbd81b4b95bef54d66dd9748cc%2Fa18f81c064614dceb4a9d1fcb2c9f64b?format=webp&width=800"
+                  alt="WordPress block editor interface for easy content management"
+                  className="w-full h-full object-cover rounded-2xl"
+                />
               </div>
             </motion.div>
           </div>
