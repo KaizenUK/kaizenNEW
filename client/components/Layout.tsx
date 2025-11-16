@@ -72,10 +72,6 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     }
   }, [location.pathname]);
 
-  useEffect(() => {
-    updateNavTone();
-  }, [location.pathname, updateNavTone]);
-
   const getEffectiveBackgroundColor = useCallback(
     (element: Element | null): string | null => {
       if (typeof window === "undefined") return null;
@@ -104,7 +100,13 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     const rect = header.getBoundingClientRect();
     const sampleX = rect.left + rect.width / 2;
     const sampleY = rect.bottom + 1;
+    if (!document.documentElement.contains(header)) return;
+
+    // Temporarily ignore the header so we can sample the element underneath it
+    const previousPointerEvents = header.style.pointerEvents;
+    header.style.pointerEvents = "none";
     const elementBelow = document.elementFromPoint(sampleX, sampleY);
+    header.style.pointerEvents = previousPointerEvents;
     const backgroundColor = getEffectiveBackgroundColor(elementBelow);
 
     if (!backgroundColor) return;
@@ -120,6 +122,10 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     const brightness = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
     setNavTextLight(brightness < 0.55);
   }, [getEffectiveBackgroundColor]);
+
+  useEffect(() => {
+    updateNavTone();
+  }, [location.pathname, updateNavTone]);
 
   useEffect(() => {
     if (typeof window === "undefined") {
@@ -287,7 +293,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                     transition={{ duration: 0.2 }}
                     onMouseEnter={() => setServicesOpen(true)}
                     onMouseLeave={() => setServicesOpen(false)}
-                    className="absolute left-1/2 top-[calc(100%+12px)] z-[45] w-[min(1100px,calc(100vw-2rem))] -translate-x-1/2 rounded-2xl border border-kaizen-light/40 shadow-2xl"
+                    className="absolute left-1/2 top-full z-[45] mt-3 w-[min(1100px,calc(100vw-2rem))] -translate-x-1/2 rounded-2xl border border-kaizen-light/40 shadow-2xl"
                     style={{
                       backgroundColor:
                         theme === "light"
