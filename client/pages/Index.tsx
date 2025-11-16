@@ -358,7 +358,7 @@ export default function Home() {
               {
                 title: "Agile Coaching",
                 copy: "Our web design process is built on Agile principles. We also offer this as a standalone service to coach and improve your in-house teams.",
-                link: "/services/agile-coaching",
+                link: "/agile-coaching",
                 linkText: "Explore Agile Coaching",
               },
               {
