@@ -214,7 +214,7 @@ export default function Home() {
                 copy: "For solicitors, accountants, and consultants. We build credible sites that showcase your expertise and generate qualified enquiries.",
               },
               {
-                title: "Trades &amp; Home Services",
+                title: "Trades & Home Services",
                 copy: "For builders, plumbers, and local services. We get you found in local search and make it easy for mobile users to book your services.",
               },
               {
