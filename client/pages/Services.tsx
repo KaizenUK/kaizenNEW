@@ -11,6 +11,12 @@ export default function Services() {
       link: "/services/web-design-liverpool",
     },
     {
+      icon: Code2,
+      title: "WordPress Web Design",
+      description: "Custom, fast, and secure WordPress sites built the right way. No bloat, just performance.",
+      link: "/services/wordpress-web-design",
+    },
+    {
       icon: TrendingUp,
       title: "Local SEO",
       description: "Help local customers find you through search. Optimize your Google Business Profile and local visibility.",
