@@ -125,12 +125,19 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
           {/* Logo */}
           <Link
             to="/"
-            className="flex items-center gap-2 hover:opacity-80 transition flex-shrink-0"
+            className="flex items-center gap-3 hover:opacity-80 transition flex-shrink-0"
           >
+            {/* Light mode logo */}
             <img
               src="https://cdn.builder.io/api/v1/image/assets%2Fe4ae46bbd81b4b95bef54d66dd9748cc%2F19f6366118ef41298050443945090b5f?format=webp&width=800"
               alt="Kaizen Web"
-              className="h-20 w-auto"
+              className="h-28 w-auto block dark:hidden"
+            />
+            {/* Dark mode logo (attached asset) */}
+            <img
+              src="https://cdn.builder.io/api/v1/image/assets%2Fe4ae46bbd81b4b95bef54d66dd9748cc%2F715c7d8a24dc4f2ca2fb16b61ba3dd19?format=webp&width=800"
+              alt="Kaizen Web - dark"
+              className="h-28 w-auto hidden dark:block"
             />
           </Link>
 
@@ -138,7 +145,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
           <div className="hidden md:flex items-center gap-1">
             <Link
               to="/"
-              className="px-3 py-2 text-sm font-heading font-medium hover:text-kaizen-cyan transition rounded-md hover:bg-kaizen-light/50"
+              className="px-3 py-2 text-base font-heading font-medium hover:text-kaizen-cyan transition rounded-md hover:bg-kaizen-light/50"
             >
               Home
             </Link>
@@ -149,7 +156,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
               onMouseEnter={() => setServicesOpen(true)}
               onMouseLeave={() => setServicesOpen(false)}
             >
-              <button className="px-3 py-2 text-sm font-heading font-medium hover:text-kaizen-cyan transition rounded-md hover:bg-kaizen-light/50 flex items-center gap-1">
+              <button className="px-3 py-2 text-base font-heading font-medium hover:text-kaizen-cyan transition rounded-md hover:bg-kaizen-light/50 flex items-center gap-1">
                 Services
                 <ChevronDown
                   size={16}
@@ -171,7 +178,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                         <div className="mb-6">
                           <Link
                             to="/services/web-design"
-                            className="block font-heading font-bold text-sm mb-2 hover:text-kaizen-cyan transition"
+                            className="block font-heading font-bold text-base mb-2 hover:text-kaizen-cyan transition"
                           >
                             Web Design
                           </Link>
@@ -185,7 +192,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                         <div>
                           <Link
                             to="/services/local-seo"
-                            className="block font-heading font-bold text-sm mb-2 hover:text-kaizen-cyan transition"
+                            className="block font-heading font-bold text-base mb-2 hover:text-kaizen-cyan transition"
                           >
                             Local SEO
                           </Link>
@@ -206,7 +213,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                         <div className="mb-6">
                           <Link
                             to="/services/ecommerce"
-                            className="block font-heading font-bold text-sm mb-2 hover:text-kaizen-cyan transition"
+                            className="block font-heading font-bold text-base mb-2 hover:text-kaizen-cyan transition"
                           >
                             E-commerce
                           </Link>
@@ -220,7 +227,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                         <div>
                           <Link
                             to="/services/digital-transformation"
-                            className="block font-heading font-bold text-sm mb-2 hover:text-kaizen-cyan transition"
+                            className="block font-heading font-bold text-base mb-2 hover:text-kaizen-cyan transition"
                           >
                             Digital Transformation
                           </Link>
@@ -241,7 +248,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                         <div className="mb-6">
                           <Link
                             to="/agile-coaching"
-                            className="block font-heading font-bold text-sm mb-2 hover:text-kaizen-cyan transition"
+                            className="block font-heading font-bold text-base mb-2 hover:text-kaizen-cyan transition"
                           >
                             Agile Coaching
                           </Link>
@@ -255,7 +262,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                         <div>
                           <Link
                             to="/product-owner"
-                            className="block font-heading font-bold text-sm mb-2 hover:text-kaizen-cyan transition"
+                            className="block font-heading font-bold text-base mb-2 hover:text-kaizen-cyan transition"
                           >
                             Product Owner
                           </Link>
@@ -274,14 +281,14 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 
             <Link
               to="/case-studies"
-              className="px-3 py-2 text-sm font-heading font-medium hover:text-kaizen-cyan transition rounded-md hover:bg-kaizen-light/50"
+              className="px-3 py-2 text-base font-heading font-medium hover:text-kaizen-cyan transition rounded-md hover:bg-kaizen-light/50"
             >
               Case Studies
             </Link>
 
             <Link
               to="/blog"
-              className="px-3 py-2 text-sm font-heading font-medium hover:text-kaizen-cyan transition rounded-md hover:bg-kaizen-light/50"
+              className="px-3 py-2 text-base font-heading font-medium hover:text-kaizen-cyan transition rounded-md hover:bg-kaizen-light/50"
             >
               Blog
             </Link>
@@ -298,7 +305,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             </div>
             <Link
               to="/contact"
-              className="hidden sm:inline-block px-6 py-2 rounded-full bg-gradient-to-r from-kaizen-cyan to-kaizen-lime text-white font-heading font-medium text-sm hover:opacity-90 transition"
+              className="hidden sm:inline-block px-6 py-2 rounded-full bg-gradient-to-r from-kaizen-cyan to-kaizen-lime text-white font-heading font-medium text-base hover:opacity-90 transition"
             >
               Get a Quote
             </Link>
@@ -319,14 +326,14 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             <div className="container mx-auto px-4 py-4 flex flex-col gap-4">
               <Link
                 to="/"
-                className="text-sm font-heading font-medium hover:text-kaizen-cyan transition"
+                className="text-base font-heading font-medium hover:text-kaizen-cyan transition"
                 onClick={() => setMobileMenuOpen(false)}
               >
                 Home
               </Link>
               <button
                 onClick={() => setServicesOpen(!servicesOpen)}
-                className="text-left text-sm font-heading font-medium hover:text-kaizen-cyan transition flex items-center gap-2"
+                className="text-left text-base font-heading font-medium hover:text-kaizen-cyan transition flex items-center gap-2"
               >
                 Services
                 <ChevronDown
@@ -338,7 +345,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                 <div className="ml-4 space-y-2 border-l border-kaizen-light pl-4">
                   <Link
                     to="/services/web-design"
-                    className="block text-sm text-kaizen-text-dark/70 hover:text-kaizen-cyan transition"
+                    className="block text-base text-kaizen-text-dark/70 hover:text-kaizen-cyan transition"
                     onClick={() => {
                       setMobileMenuOpen(false);
                       setServicesOpen(false);
@@ -400,21 +407,21 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
               )}
               <Link
                 to="/about"
-                className="text-sm font-heading font-medium hover:text-kaizen-cyan transition"
+                className="text-base font-heading font-medium hover:text-kaizen-cyan transition"
                 onClick={() => setMobileMenuOpen(false)}
               >
                 About
               </Link>
               <Link
                 to="/case-studies"
-                className="text-sm font-heading font-medium hover:text-kaizen-cyan transition"
+                className="text-base font-heading font-medium hover:text-kaizen-cyan transition"
                 onClick={() => setMobileMenuOpen(false)}
               >
                 Case Studies
               </Link>
               <Link
                 to="/blog"
-                className="text-sm font-heading font-medium hover:text-kaizen-cyan transition"
+                className="text-base font-heading font-medium hover:text-kaizen-cyan transition"
                 onClick={() => setMobileMenuOpen(false)}
               >
                 Blog
