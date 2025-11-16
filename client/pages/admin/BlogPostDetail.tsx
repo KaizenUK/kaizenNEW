@@ -553,35 +553,215 @@ export default function BlogPostDetail() {
 
           {/* Sidebar */}
           <div className="space-y-6">
-            {/* Save Button */}
-            <motion.button
-              onClick={handleSave}
-              disabled={isSaving || !isModified}
-              className="w-full py-3 bg-gradient-to-r from-blue-500 to-purple-500 text-white font-heading font-bold rounded-xl hover:opacity-90 transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-lg shadow-blue-500/20"
+            {/* Status Badge */}
+            {post && (
+              <motion.div
+                className="bg-gray-900/60 border border-gray-800/60 rounded-xl p-6 backdrop-blur-sm"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4, delay: 0.05 }}
+              >
+                <p className="text-xs text-gray-500 mb-2 font-mono">STATUS</p>
+                {(() => {
+                  const status = deriveStatus(post as any);
+                  const statusColor =
+                    status === "Published"
+                      ? "bg-emerald-500/10 text-emerald-300 border-emerald-500/30"
+                      : status === "Draft"
+                        ? "bg-yellow-500/10 text-yellow-300 border-yellow-500/30"
+                        : "bg-gray-800 text-gray-300 border-gray-700";
+                  return (
+                    <span className={`inline-block px-3 py-1 rounded-full text-xs font-bold border ${statusColor}`}>
+                      {status}
+                    </span>
+                  );
+                })()}
+              </motion.div>
+            )}
+
+            {/* Save Card */}
+            <motion.div
+              className="bg-gradient-to-br from-blue-500/20 to-purple-500/20 border border-blue-500/30 rounded-xl p-6 backdrop-blur-sm shadow-lg shadow-blue-500/10"
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.4, delay: 0.1 }}
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
             >
-              <Save size={18} />
-              {isSaving ? "Saving..." : "Save Changes"}
-            </motion.button>
+              <motion.button
+                onClick={handleSave}
+                disabled={isSaving || !isModified}
+                className="w-full py-3 bg-gradient-to-r from-blue-500 to-purple-500 text-white font-heading font-bold rounded-lg hover:opacity-90 transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+              >
+                <Save size={18} />
+                {isSaving ? "Saving..." : "Save Changes"}
+              </motion.button>
+              <p className="text-xs text-gray-400 mt-3 font-body">
+                {isModified ? "You have unsaved changes. Remember to publish in Builder if required." : "All changes saved"}
+              </p>
+            </motion.div>
 
-            {/* Info */}
+            {/* SEO & Content Checklist */}
+            {(() => {
+              const tagsArray = formTagsString
+                .split(",")
+                .map((tag) => tag.trim())
+                .filter((tag) => tag.length > 0);
+
+              const wordCount = calculateWordCount(formBody);
+              const slugValid = /^[a-z0-9-]+$/.test(formSlug) && formSlug.length > 0;
+              const excerptOK = formExcerpt.length >= 80 && formExcerpt.length <= 180;
+              const contentOK = wordCount >= 300;
+              const tagsOK = tagsArray.length > 0;
+              const titleOK = formTitle.trim().length > 0;
+
+              return (
+                <motion.div
+                  className="bg-gray-900/60 border border-gray-800/60 rounded-xl p-6 backdrop-blur-sm"
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.4, delay: 0.15 }}
+                >
+                  <h3 className="font-heading font-bold mb-4 text-sm text-gray-300">
+                    SEO & Content Checklist
+                  </h3>
+                  <div className="space-y-3">
+                    <div className="flex items-center gap-3">
+                      {titleOK ? (
+                        <CheckCircle size={16} className="text-emerald-400 flex-shrink-0" />
+                      ) : (
+                        <AlertTriangle size={16} className="text-yellow-400 flex-shrink-0" />
+                      )}
+                      <span className="text-xs text-gray-300 font-body">Title set</span>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      {slugValid ? (
+                        <CheckCircle size={16} className="text-emerald-400 flex-shrink-0" />
+                      ) : (
+                        <AlertTriangle size={16} className="text-yellow-400 flex-shrink-0" />
+                      )}
+                      <span className="text-xs text-gray-300 font-body">Slug looks clean</span>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      {excerptOK ? (
+                        <CheckCircle size={16} className="text-emerald-400 flex-shrink-0" />
+                      ) : (
+                        <AlertTriangle size={16} className="text-yellow-400 flex-shrink-0" />
+                      )}
+                      <span className="text-xs text-gray-300 font-body">Excerpt length OK</span>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      {contentOK ? (
+                        <CheckCircle size={16} className="text-emerald-400 flex-shrink-0" />
+                      ) : (
+                        <AlertTriangle size={16} className="text-yellow-400 flex-shrink-0" />
+                      )}
+                      <span className="text-xs text-gray-300 font-body">Enough content ({wordCount} words)</span>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      {tagsOK ? (
+                        <CheckCircle size={16} className="text-emerald-400 flex-shrink-0" />
+                      ) : (
+                        <AlertTriangle size={16} className="text-yellow-400 flex-shrink-0" />
+                      )}
+                      <span className="text-xs text-gray-300 font-body">Tags added</span>
+                    </div>
+                  </div>
+                </motion.div>
+              );
+            })()}
+
+            {/* Quick Links */}
             <motion.div
-              className="bg-blue-500/10 border border-blue-500/30 rounded-xl p-6 backdrop-blur-sm"
+              className="bg-gray-900/60 border border-gray-800/60 rounded-xl p-6 backdrop-blur-sm"
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.4, delay: 0.2 }}
             >
-              <p className="text-xs text-gray-300 font-body">
-                <span className="font-bold font-heading block mb-2">
-                  Editable fields:
-                </span>
-                Title, Slug, Excerpt, Published Date, Tags, and Content
-              </p>
+              <h3 className="font-heading font-bold mb-4 text-sm text-gray-300">
+                Quick links
+              </h3>
+              <div className="space-y-2">
+                <a
+                  href="https://www.kaizenweb.co.uk/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-gray-800/50 transition text-gray-300 hover:text-blue-400 text-xs font-body"
+                >
+                  <Home size={14} />
+                  Go to Kaizen homepage
+                </a>
+                <a
+                  href="https://www.kaizenweb.co.uk/blog"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-gray-800/50 transition text-gray-300 hover:text-blue-400 text-xs font-body"
+                >
+                  <List size={14} />
+                  View blog index
+                </a>
+                {formSlug && (
+                  <a
+                    href={`https://www.kaizenweb.co.uk/blog/${formSlug}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-gray-800/50 transition text-gray-300 hover:text-blue-400 text-xs font-body"
+                  >
+                    <ExternalLink size={14} />
+                    View this post on site
+                  </a>
+                )}
+                {post && (
+                  <a
+                    href={getBuilderEditUrl(post.id)}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-gray-800/50 transition text-gray-300 hover:text-blue-400 text-xs font-body"
+                  >
+                    <Edit size={14} />
+                    Edit in Builder
+                  </a>
+                )}
+              </div>
             </motion.div>
+
+            {/* Post Insights */}
+            {(() => {
+              const tagsArray = formTagsString
+                .split(",")
+                .map((tag) => tag.trim())
+                .filter((tag) => tag.length > 0);
+              const wordCount = calculateWordCount(formBody);
+              const readingTime = calculateReadingTime(formBody);
+              const status = deriveStatus(post as any);
+
+              return (
+                <motion.div
+                  className="bg-gray-900/60 border border-gray-800/60 rounded-xl p-6 backdrop-blur-sm"
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.4, delay: 0.25 }}
+                >
+                  <h3 className="font-heading font-bold mb-4 text-sm text-gray-300">
+                    Post insights
+                  </h3>
+                  <div className="space-y-2">
+                    <p className="text-xs text-gray-400 font-body">
+                      <span className="text-gray-300 font-bold">Word count:</span> {wordCount}
+                    </p>
+                    <p className="text-xs text-gray-400 font-body">
+                      <span className="text-gray-300 font-bold">Reading time:</span> {readingTime}–{Math.ceil(readingTime * 1.2)} min
+                    </p>
+                    <p className="text-xs text-gray-400 font-body">
+                      <span className="text-gray-300 font-bold">Tags:</span> {tagsArray.length}
+                    </p>
+                    <p className="text-xs text-gray-400 font-body">
+                      <span className="text-gray-300 font-bold">Status:</span> {status}
+                    </p>
+                  </div>
+                </motion.div>
+              );
+            })()}
 
             {/* Post ID */}
             <motion.div
@@ -594,7 +774,7 @@ export default function BlogPostDetail() {
                 Post ID
               </h3>
               <p className="text-gray-300 font-mono text-xs break-all">
-                {post.id}
+                {post?.id}
               </p>
             </motion.div>
           </div>
