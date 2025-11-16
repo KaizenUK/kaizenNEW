@@ -8,6 +8,7 @@ import {
   ArrowUpRight,
   Lock,
   Zap,
+  Settings,
   Check,
 } from "lucide-react";
 
