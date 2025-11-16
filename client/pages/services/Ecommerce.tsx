@@ -353,26 +353,15 @@ export default function Ecommerce() {
             whileInView="visible"
             viewport={{ once: true, margin: "-100px" }}
           >
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-0 items-stretch bg-gradient-to-br from-slate-800 via-slate-800 to-slate-900 dark:from-slate-950 dark:via-slate-950 dark:to-black rounded-3xl overflow-hidden border border-slate-700/50 dark:border-slate-800">
-              {/* Image on the left */}
-              <div className="hidden md:block relative h-80 overflow-hidden">
-                <img
-                  src="https://cdn.builder.io/api/v1/image/assets%2Fe4ae46bbd81b4b95bef54d66dd9748cc%2F85912ce9f05a4f7cb336598a47962b01?format=webp&width=800"
-                  alt="Delivery professional delivering online store products to customer"
-                  className="w-full h-full object-cover"
-                />
-              </div>
-              {/* Content on the right */}
-              <div className="p-8 md:p-12 flex flex-col justify-center">
-                <h3 className="text-3xl md:text-4xl font-heading font-bold mb-6 text-white leading-tight">
-                  Shopify Expertise
-                </h3>
-                <p className="text-lg text-slate-300/90 leading-relaxed mb-6">
-                  We also offer expert assistance with installing and configuring Shopify stores, including theme selection and customisation. From initial setup to ongoing optimisation, we ensure your store is built for conversions.
-                </p>
-                <div className="flex flex-col sm:flex-row gap-4">
-                  <CTAButton text="Explore Shopify Services" openChat />
-                </div>
+            <div className="bg-gradient-to-br from-slate-800 via-slate-800 to-slate-900 dark:from-slate-950 dark:via-slate-950 dark:to-black rounded-3xl overflow-hidden border border-slate-700/50 dark:border-slate-800 p-8 md:p-12">
+              <h3 className="text-3xl md:text-4xl font-heading font-bold mb-6 text-white leading-tight">
+                Shopify Expertise
+              </h3>
+              <p className="text-lg text-slate-300/90 leading-relaxed mb-6 max-w-2xl">
+                We also offer expert assistance with installing and configuring Shopify stores, including theme selection and customisation. From initial setup to ongoing optimisation, we ensure your store is built for conversions.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-4">
+                <CTAButton text="Explore Shopify Services" openChat />
               </div>
             </div>
           </motion.div>
