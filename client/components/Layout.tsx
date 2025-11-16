@@ -268,8 +268,17 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: -5 }}
                       transition={{ duration: 0.15 }}
-                      onMouseEnter={() => setServicesOpen(true)}
-                      onMouseLeave={() => setServicesOpen(false)}
+                      onMouseEnter={() => {
+                        if (closeTimeoutRef.current) {
+                          clearTimeout(closeTimeoutRef.current);
+                        }
+                        setServicesOpen(true);
+                      }}
+                      onMouseLeave={() => {
+                        closeTimeoutRef.current = setTimeout(() => {
+                          setServicesOpen(false);
+                        }, 150);
+                      }}
                       className="absolute left-0 top-full mt-0 z-50 min-w-max bg-white dark:bg-slate-900 rounded-lg shadow-xl border border-kaizen-light/20 dark:border-white/10 overflow-hidden"
                       style={{
                         backdropFilter: "blur(10px)",
