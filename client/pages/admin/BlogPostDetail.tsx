@@ -236,6 +236,16 @@ export default function BlogPostDetail() {
     }
   };
 
+  // Derive date and time values from publishedAt
+  const publishedDateValue =
+    publishedAt && publishedAt.includes("T")
+      ? publishedAt.slice(0, 10)
+      : "";
+  const publishedTimeValue =
+    publishedAt && publishedAt.includes("T")
+      ? publishedAt.slice(11, 16)
+      : "";
+
   // Loading state
   if (isLoading) {
     return (
