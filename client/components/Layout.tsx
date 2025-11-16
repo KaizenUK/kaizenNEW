@@ -334,28 +334,36 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 
               <Link
                 to="/about"
-                className="px-3 py-2 text-lg font-heading font-medium text-kaizen-dark dark:text-white hover:text-kaizen-cyan dark:hover:text-kaizen-cyan transition rounded-md hover:bg-kaizen-light/50 dark:hover:bg-white/5"
+                className={`px-3 py-2 text-lg font-heading font-medium hover:text-kaizen-cyan transition rounded-md hover:bg-kaizen-light/50 dark:hover:bg-white/5 ${
+                  navTextLight ? "text-white" : "text-kaizen-dark dark:text-white"
+                }`}
               >
                 About
               </Link>
 
               <Link
                 to="/pledge"
-                className="px-3 py-2 text-lg font-heading font-medium text-kaizen-dark dark:text-white hover:text-kaizen-cyan dark:hover:text-kaizen-cyan transition rounded-md hover:bg-kaizen-light/50 dark:hover:bg-white/5"
+                className={`px-3 py-2 text-lg font-heading font-medium hover:text-kaizen-cyan transition rounded-md hover:bg-kaizen-light/50 dark:hover:bg-white/5 ${
+                  navTextLight ? "text-white" : "text-kaizen-dark dark:text-white"
+                }`}
               >
                 Our Pledge
               </Link>
 
               <Link
                 to="/case-studies"
-                className="px-3 py-2 text-lg font-heading font-medium text-kaizen-dark dark:text-white hover:text-kaizen-cyan dark:hover:text-kaizen-cyan transition rounded-md hover:bg-kaizen-light/50 dark:hover:bg-white/5"
+                className={`px-3 py-2 text-lg font-heading font-medium hover:text-kaizen-cyan transition rounded-md hover:bg-kaizen-light/50 dark:hover:bg-white/5 ${
+                  navTextLight ? "text-white" : "text-kaizen-dark dark:text-white"
+                }`}
               >
                 Case Studies
               </Link>
 
               <Link
                 to="/blog"
-                className="px-3 py-2 text-lg font-heading font-medium text-kaizen-dark dark:text-white hover:text-kaizen-cyan dark:hover:text-kaizen-cyan transition rounded-md hover:bg-kaizen-light/50 dark:hover:bg-white/5"
+                className={`px-3 py-2 text-lg font-heading font-medium hover:text-kaizen-cyan transition rounded-md hover:bg-kaizen-light/50 dark:hover:bg-white/5 ${
+                  navTextLight ? "text-white" : "text-kaizen-dark dark:text-white"
+                }`}
               >
                 Blog
               </Link>
