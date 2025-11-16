@@ -173,11 +173,7 @@ export default function DigitalTransformation() {
               transition={{ delay: 2.2, duration: 0.6 }}
             >
               <button
-                onClick={() => {
-                  if (typeof window !== "undefined" && (window as any).$crisp) {
-                    (window as any).$crisp.push(["do", "chat:open"]);
-                  }
-                }}
+                onClick={openCalendly}
                 className="px-8 py-3 rounded-lg bg-gradient-to-r from-kaizen-cyan to-kaizen-lime text-kaizen-dark font-heading font-bold hover:shadow-lg hover:shadow-kaizen-cyan/50 transition inline-flex items-center justify-center gap-2"
               >
                 Book a Process Audit
