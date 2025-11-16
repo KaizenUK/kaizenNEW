@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import AdminDashboard from "@/pages/admin/AdminDashboard";
+import AdminLayout from "@/components/AdminLayout";
 import { CrispProvider } from "@/context/CrispContext";
 
 export default function AdminDashboardWrapper() {
