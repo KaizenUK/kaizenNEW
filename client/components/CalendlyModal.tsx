@@ -18,7 +18,7 @@ function loadCalendlyScript(): Promise<void> {
   }
 
   const existingScript = document.querySelector<HTMLScriptElement>(
-    'script[src="https://assets.calendly.com/assets/external/widget.js"]'
+    'script[src="https://assets.calendly.com/assets/external/widget.js"]',
   );
 
   if (existingScript) {
@@ -29,7 +29,9 @@ function loadCalendlyScript(): Promise<void> {
       }
 
       existingScript.addEventListener("load", () => resolve());
-      existingScript.addEventListener("error", () => reject(new Error("Failed to load Calendly script")));
+      existingScript.addEventListener("error", () =>
+        reject(new Error("Failed to load Calendly script")),
+      );
     });
 
     return calendlyScriptPromise;
@@ -98,7 +100,11 @@ export function CalendlyModal({ isOpen, onClose }: CalendlyModalProps) {
         const calendly = (window as any).Calendly;
         const container = containerRef.current;
 
-        if (!container || !calendly || typeof calendly.initInlineWidget !== "function") {
+        if (
+          !container ||
+          !calendly ||
+          typeof calendly.initInlineWidget !== "function"
+        ) {
           return;
         }
 
@@ -124,10 +130,7 @@ export function CalendlyModal({ isOpen, onClose }: CalendlyModalProps) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
-      <div
-        className="absolute inset-0 bg-black/50"
-        onClick={onClose}
-      />
+      <div className="absolute inset-0 bg-black/50" onClick={onClose} />
 
       <div className="relative z-50 w-full max-w-3xl bg-white dark:bg-slate-900 rounded-lg shadow-2xl mx-4 flex flex-col">
         <button

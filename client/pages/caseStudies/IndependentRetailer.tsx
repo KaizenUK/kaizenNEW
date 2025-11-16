@@ -54,7 +54,8 @@ export default function IndependentRetailerCase() {
             </h1>
 
             <p className="text-xl md:text-2xl text-white/80 leading-relaxed max-w-3xl">
-              A high-performance headless e-commerce build to fix a slow, clunky site and boost mobile conversions.
+              A high-performance headless e-commerce build to fix a slow, clunky
+              site and boost mobile conversions.
             </p>
           </motion.div>
         </div>
@@ -64,30 +65,50 @@ export default function IndependentRetailerCase() {
       <section className="bg-white dark:bg-slate-950 py-16 px-4 border-b border-kaizen-light dark:border-slate-800">
         <div className="container mx-auto max-w-6xl">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12">
-            <motion.div variants={fadeInUp} initial="hidden" whileInView="visible" viewport={{ once: true }}>
+            <motion.div
+              variants={fadeInUp}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true }}
+            >
               <h3 className="text-sm font-mono font-bold text-kaizen-cyan uppercase tracking-widest mb-4">
                 The Problem
               </h3>
               <p className="text-lg text-kaizen-text-dark dark:text-white/80 leading-relaxed">
-                A slow, clunky e-commerce platform that was hemorrhaging customers on mobile. Page load times were over 5 seconds, and conversion rates were abysmal.
+                A slow, clunky e-commerce platform that was hemorrhaging
+                customers on mobile. Page load times were over 5 seconds, and
+                conversion rates were abysmal.
               </p>
             </motion.div>
 
-            <motion.div variants={fadeInUp} initial="hidden" whileInView="visible" viewport={{ once: true, delay: 0.1 }}>
+            <motion.div
+              variants={fadeInUp}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, delay: 0.1 }}
+            >
               <h3 className="text-sm font-mono font-bold text-kaizen-cyan uppercase tracking-widest mb-4">
                 The Solution
               </h3>
               <p className="text-lg text-kaizen-text-dark dark:text-white/80 leading-relaxed">
-                A modern, headless e-commerce build using React on the frontend with optimized inventory management and lightning-fast performance.
+                A modern, headless e-commerce build using React on the frontend
+                with optimized inventory management and lightning-fast
+                performance.
               </p>
             </motion.div>
 
-            <motion.div variants={fadeInUp} initial="hidden" whileInView="visible" viewport={{ once: true, delay: 0.2 }}>
+            <motion.div
+              variants={fadeInUp}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, delay: 0.2 }}
+            >
               <h3 className="text-sm font-mono font-bold text-kaizen-cyan uppercase tracking-widest mb-4">
                 Services Provided
               </h3>
               <p className="text-lg text-kaizen-text-dark dark:text-white/80 leading-relaxed">
-                E-commerce Architecture, Headless (React), Performance Optimization
+                E-commerce Architecture, Headless (React), Performance
+                Optimization
               </p>
             </motion.div>
           </div>
@@ -109,7 +130,11 @@ export default function IndependentRetailerCase() {
                 The Challenge: A Slow Platform Losing Sales
               </h2>
               <p className="text-lg text-kaizen-text-dark/70 dark:text-white/70 leading-relaxed">
-                This independent retailer had built their business with heart and expertise, but their e-commerce platform was a technical liability. The site was bloated, slow, and frankly terrible on mobile. Customers were abandoning carts at alarming rates, and the retailer was losing revenue by the day.
+                This independent retailer had built their business with heart
+                and expertise, but their e-commerce platform was a technical
+                liability. The site was bloated, slow, and frankly terrible on
+                mobile. Customers were abandoning carts at alarming rates, and
+                the retailer was losing revenue by the day.
               </p>
             </motion.div>
 
@@ -124,19 +149,36 @@ export default function IndependentRetailerCase() {
                 The Solution: Headless, Modern, and Fast
               </h2>
               <p className="text-lg text-kaizen-text-dark/70 dark:text-white/70 leading-relaxed mb-8">
-                We rebuilt the entire e-commerce platform from the ground up using a modern headless architecture. This isn't about flashy features—it's about getting out of the way and letting the product shine.
+                We rebuilt the entire e-commerce platform from the ground up
+                using a modern headless architecture. This isn't about flashy
+                features—it's about getting out of the way and letting the
+                product shine.
               </p>
 
               <ul className="space-y-4">
                 {[
-                  { title: "Lightning-Fast Performance", desc: "Page load times dropped from 5+ seconds to under 1 second. This isn't just better UX; it directly impacts conversion rates." },
-                  { title: "Mobile-First Design", desc: "60% of traffic is mobile. We built this site mobile-first, ensuring every customer gets a flawless experience on their phone." },
-                  { title: "Scalable Architecture", desc: "As the business grows, the platform grows with it. No more 'outgrowing' the technology." },
-                  { title: "Real-Time Inventory", desc: "Customers always see accurate stock levels. No more overselling or angry customers." },
+                  {
+                    title: "Lightning-Fast Performance",
+                    desc: "Page load times dropped from 5+ seconds to under 1 second. This isn't just better UX; it directly impacts conversion rates.",
+                  },
+                  {
+                    title: "Mobile-First Design",
+                    desc: "60% of traffic is mobile. We built this site mobile-first, ensuring every customer gets a flawless experience on their phone.",
+                  },
+                  {
+                    title: "Scalable Architecture",
+                    desc: "As the business grows, the platform grows with it. No more 'outgrowing' the technology.",
+                  },
+                  {
+                    title: "Real-Time Inventory",
+                    desc: "Customers always see accurate stock levels. No more overselling or angry customers.",
+                  },
                 ].map((item, index) => (
                   <li key={index} className="flex gap-4">
                     <div className="flex-shrink-0 w-6 h-6 rounded-full bg-kaizen-cyan/20 flex items-center justify-center mt-1">
-                      <span className="text-kaizen-cyan text-xs font-bold">✓</span>
+                      <span className="text-kaizen-cyan text-xs font-bold">
+                        ✓
+                      </span>
                     </div>
                     <div>
                       <h4 className="font-heading font-bold text-kaizen-dark dark:text-white mb-1">
@@ -162,7 +204,10 @@ export default function IndependentRetailerCase() {
                 The Result: A Platform Built to Convert
               </h2>
               <p className="text-lg text-kaizen-text-dark/70 dark:text-white/70 leading-relaxed">
-                The new e-commerce platform is fast, reliable, and built for growth. Mobile conversions have skyrocketed, cart abandonment is down, and the retailer can now focus on what matters: growing their business, not managing their tech.
+                The new e-commerce platform is fast, reliable, and built for
+                growth. Mobile conversions have skyrocketed, cart abandonment is
+                down, and the retailer can now focus on what matters: growing
+                their business, not managing their tech.
               </p>
             </motion.div>
           </div>
@@ -215,7 +260,10 @@ export default function IndependentRetailerCase() {
                   </p>
                   <div className="text-kaizen-cyan font-medium flex items-center gap-2 group-hover:gap-3 transition">
                     Learn More
-                    <ArrowUpRight size={18} className="group-hover:translate-y-[-2px] group-hover:translate-x-[2px] transition" />
+                    <ArrowUpRight
+                      size={18}
+                      className="group-hover:translate-y-[-2px] group-hover:translate-x-[2px] transition"
+                    />
                   </div>
                 </Link>
               </motion.div>

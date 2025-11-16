@@ -54,7 +54,8 @@ export default function HelenMooreHairdressingCase() {
             </h1>
 
             <p className="text-xl md:text-2xl text-white/80 leading-relaxed max-w-3xl">
-              A 0-to-1 build: taking a top-rated Wirral salon from "no website" to a fully booked, high-end online brand.
+              A 0-to-1 build: taking a top-rated Wirral salon from "no website"
+              to a fully booked, high-end online brand.
             </p>
           </motion.div>
         </div>
@@ -64,25 +65,43 @@ export default function HelenMooreHairdressingCase() {
       <section className="bg-white dark:bg-slate-950 py-16 px-4 border-b border-kaizen-light dark:border-slate-800">
         <div className="container mx-auto max-w-6xl">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12">
-            <motion.div variants={fadeInUp} initial="hidden" whileInView="visible" viewport={{ once: true }}>
+            <motion.div
+              variants={fadeInUp}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true }}
+            >
               <h3 className="text-sm font-mono font-bold text-kaizen-cyan uppercase tracking-widest mb-4">
                 The Problem
               </h3>
               <p className="text-lg text-kaizen-text-dark dark:text-white/80 leading-relaxed">
-                A top-rated salon that was completely invisible online. All bookings were manual (via phone), and they had no way to showcase their premium brand.
+                A top-rated salon that was completely invisible online. All
+                bookings were manual (via phone), and they had no way to
+                showcase their premium brand.
               </p>
             </motion.div>
 
-            <motion.div variants={fadeInUp} initial="hidden" whileInView="visible" viewport={{ once: true, delay: 0.1 }}>
+            <motion.div
+              variants={fadeInUp}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, delay: 0.1 }}
+            >
               <h3 className="text-sm font-mono font-bold text-kaizen-cyan uppercase tracking-widest mb-4">
                 The Solution
               </h3>
               <p className="text-lg text-kaizen-text-dark dark:text-white/80 leading-relaxed">
-                A high-end, "boutique" website with a 24/7 online booking system and a full Local SEO build-out.
+                A high-end, "boutique" website with a 24/7 online booking system
+                and a full Local SEO build-out.
               </p>
             </motion.div>
 
-            <motion.div variants={fadeInUp} initial="hidden" whileInView="visible" viewport={{ once: true, delay: 0.2 }}>
+            <motion.div
+              variants={fadeInUp}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, delay: 0.2 }}
+            >
               <h3 className="text-sm font-mono font-bold text-kaizen-cyan uppercase tracking-widest mb-4">
                 Services Provided
               </h3>
@@ -109,7 +128,11 @@ export default function HelenMooreHairdressingCase() {
                 The Challenge: A Top Salon With No Online Presence
               </h2>
               <p className="text-lg text-kaizen-text-dark/70 dark:text-white/70 leading-relaxed">
-                Helen Moore is one of the top-rated salons in Wallasey Village, but they had zero online presence. They were losing clients to competitors who were on Google Maps, and all their time was spent manually answering the phone to manage bookings. They needed a site that matched their high-end, boutique brand.
+                Helen Moore is one of the top-rated salons in Wallasey Village,
+                but they had zero online presence. They were losing clients to
+                competitors who were on Google Maps, and all their time was
+                spent manually answering the phone to manage bookings. They
+                needed a site that matched their high-end, boutique brand.
               </p>
             </motion.div>
 
@@ -129,13 +152,24 @@ export default function HelenMooreHairdressingCase() {
 
               <ul className="space-y-4">
                 {[
-                  { title: '"Boutique" Design', desc: "We created a classy, elegant, and simple design that feels premium and matches the salon's real-world atmosphere." },
-                  { title: "24/7 Online Booking", desc: "We integrated a full-featured booking system. Clients can now see availability, choose their service, and book online anytime, from any device." },
-                  { title: "Dominant Local SEO", desc: "We built the site from the ground up for Local SEO, targeting 'Hairdresser Wallasey' and 'Salon Wirral.'" },
+                  {
+                    title: '"Boutique" Design',
+                    desc: "We created a classy, elegant, and simple design that feels premium and matches the salon's real-world atmosphere.",
+                  },
+                  {
+                    title: "24/7 Online Booking",
+                    desc: "We integrated a full-featured booking system. Clients can now see availability, choose their service, and book online anytime, from any device.",
+                  },
+                  {
+                    title: "Dominant Local SEO",
+                    desc: "We built the site from the ground up for Local SEO, targeting 'Hairdresser Wallasey' and 'Salon Wirral.'",
+                  },
                 ].map((item, index) => (
                   <li key={index} className="flex gap-4">
                     <div className="flex-shrink-0 w-6 h-6 rounded-full bg-kaizen-cyan/20 flex items-center justify-center mt-1">
-                      <span className="text-kaizen-cyan text-xs font-bold">✓</span>
+                      <span className="text-kaizen-cyan text-xs font-bold">
+                        ✓
+                      </span>
                     </div>
                     <div>
                       <h4 className="font-heading font-bold text-kaizen-dark dark:text-white mb-1">
@@ -161,7 +195,11 @@ export default function HelenMooreHairdressingCase() {
                 The Result: High Rankings and a Full Calendar
               </h2>
               <p className="text-lg text-kaizen-text-dark/70 dark:text-white/70 leading-relaxed">
-                Helen Moore Hairdressing now ranks highly on Google for her key local search terms. The online booking system has dramatically reduced her admin, and clients love the new, easy-to-use site. She's gone from invisible to a dominant online presence in her area.
+                Helen Moore Hairdressing now ranks highly on Google for her key
+                local search terms. The online booking system has dramatically
+                reduced her admin, and clients love the new, easy-to-use site.
+                She's gone from invisible to a dominant online presence in her
+                area.
               </p>
             </motion.div>
           </div>
@@ -214,7 +252,10 @@ export default function HelenMooreHairdressingCase() {
                   </p>
                   <div className="text-kaizen-cyan font-medium flex items-center gap-2 group-hover:gap-3 transition">
                     Learn More
-                    <ArrowUpRight size={18} className="group-hover:translate-y-[-2px] group-hover:translate-x-[2px] transition" />
+                    <ArrowUpRight
+                      size={18}
+                      className="group-hover:translate-y-[-2px] group-hover:translate-x-[2px] transition"
+                    />
                   </div>
                 </Link>
               </motion.div>

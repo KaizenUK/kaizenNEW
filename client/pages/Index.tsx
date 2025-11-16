@@ -145,7 +145,7 @@ const CTAButton = ({
       <ArrowRight size={18} />
     </button>
   );
-}
+};
 
 export default function Home() {
   const { openCalendly: openCalendlyFromContext } = useCalendly();
@@ -272,7 +272,11 @@ export default function Home() {
                 </div>
 
                 <div className="mt-8">
-                  <CTAButton text="Book a 15-Minute Discovery Call" secondary openCalendly />
+                  <CTAButton
+                    text="Book a 15-Minute Discovery Call"
+                    secondary
+                    openCalendly
+                  />
                 </div>
               </div>
 
@@ -424,7 +428,8 @@ export default function Home() {
               {
                 client: "A.S Collections",
                 industry: "Professional Services – Liverpool",
-                problem: "Their previous site was dated, performed poorly on mobile, and failed to build trust in the competitive commercial debt recovery sector.",
+                problem:
+                  "Their previous site was dated, performed poorly on mobile, and failed to build trust in the competitive commercial debt recovery sector.",
                 outcome:
                   "A complete, modern redesign. The new site is fast, authoritative, and projects the high level of professionalism their Liverpool clients expect.",
                 link: "https://ascollections.co.uk",
@@ -433,7 +438,8 @@ export default function Home() {
               {
                 client: "Helen Moore Hairdressing",
                 industry: "Boutique Salon – Wirral",
-                problem: "A top-rated salon in Wallasey Village with no website, missing out on online discovery and relying on phone-only bookings.",
+                problem:
+                  "A top-rated salon in Wallasey Village with no website, missing out on online discovery and relying on phone-only bookings.",
                 outcome:
                   "We designed a classy, boutique-style website that captures her brand perfectly. It now ranks for local searches and includes a 24/7 online booking system.",
                 link: "https://helenmoorehairdressing.co.uk",

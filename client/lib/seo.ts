@@ -77,7 +77,8 @@ const pageMeta: Record<string, Partial<PageMeta>> = {
     ],
   },
   "/services/digital-transformation": {
-    title: "Digital Transformation Liverpool | Business Process Automation | Kaizen",
+    title:
+      "Digital Transformation Liverpool | Business Process Automation | Kaizen",
     description:
       "We help Liverpool & Wirral businesses stop working in chaos. We automate manual tasks, fix inefficient workflows, and get your systems talking. No-BS.",
   },
@@ -108,7 +109,7 @@ const pageMeta: Record<string, Partial<PageMeta>> = {
       "Learn more about Kaizen Web, a Liverpool-based collective of designers, strategists, and engineers focused on sustainable digital growth.",
   },
   "/pledge": {
-    title: "Our \"No-BS\" Pledge | Transparent Web Design | Kaizen",
+    title: 'Our "No-BS" Pledge | Transparent Web Design | Kaizen',
     description:
       "Our No-BS Pledge. See our transparent policy on AI, pricing, and our process. No black box, no surprise bills, no excuses.",
   },
@@ -253,13 +254,7 @@ export const buildLocalBusinessSchema = (description: string) => ({
   openingHoursSpecification: [
     {
       "@type": "OpeningHoursSpecification",
-      dayOfWeek: [
-        "Monday",
-        "Tuesday",
-        "Wednesday",
-        "Thursday",
-        "Friday",
-      ],
+      dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
       opens: "09:00",
       closes: "18:00",
     },

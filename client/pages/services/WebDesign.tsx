@@ -3,7 +3,13 @@ import Layout from "@/components/Layout";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Helmet } from "react-helmet-async";
-import { ArrowRight, ArrowUpRight, Zap, Smartphone, Settings } from "lucide-react";
+import {
+  ArrowRight,
+  ArrowUpRight,
+  Zap,
+  Smartphone,
+  Settings,
+} from "lucide-react";
 import { useCalendly } from "@/context/CalendlyContext";
 
 // Animation variants
@@ -172,9 +178,10 @@ export default function WebDesign() {
               transition={{ delay: 0.6, duration: 0.6 }}
             >
               <p>
-                A website is not just a digital brochure. It's a high-performance
-                asset designed to get you leads. We build websites in Liverpool
-                that are fast, secure, and built on a modern technical stack.
+                A website is not just a digital brochure. It's a
+                high-performance asset designed to get you leads. We build
+                websites in Liverpool that are fast, secure, and built on a
+                modern technical stack.
               </p>
             </motion.div>
 
@@ -238,7 +245,10 @@ export default function WebDesign() {
                 className="p-8 bg-kaizen-light dark:bg-slate-900/50 rounded-2xl border border-kaizen-light dark:border-slate-800/50 hover:border-kaizen-cyan dark:hover:border-kaizen-cyan/50 transition"
               >
                 <div className="mb-6 p-4 w-16 h-16 bg-gradient-to-br from-kaizen-cyan/20 to-kaizen-lime/20 dark:from-kaizen-cyan/10 dark:to-kaizen-lime/10 rounded-xl flex items-center justify-center">
-                  <item.icon className="text-kaizen-cyan dark:text-kaizen-cyan/70" size={32} />
+                  <item.icon
+                    className="text-kaizen-cyan dark:text-kaizen-cyan/70"
+                    size={32}
+                  />
                 </div>
                 <h3 className="text-2xl font-heading font-bold mb-4 text-kaizen-dark dark:text-white">
                   {item.title}
@@ -324,7 +334,8 @@ export default function WebDesign() {
               Real Results for Liverpool & Wirral
             </h2>
             <p className="text-xl text-kaizen-text-dark/70 dark:text-white/60 text-center max-w-2xl mx-auto mb-16">
-              We help local businesses get more enquiries, rank higher, and grow online.
+              We help local businesses get more enquiries, rank higher, and grow
+              online.
             </p>
           </ScrollReveal>
 
@@ -339,7 +350,8 @@ export default function WebDesign() {
               {
                 client: "A.S Collections",
                 industry: "Professional Services – Liverpool",
-                problem: "Their previous site was dated, performed poorly on mobile, and failed to build trust in the competitive commercial debt recovery sector.",
+                problem:
+                  "Their previous site was dated, performed poorly on mobile, and failed to build trust in the competitive commercial debt recovery sector.",
                 outcome:
                   "A complete, modern redesign. The new site is fast, authoritative, and projects the high level of professionalism their Liverpool clients expect.",
                 link: "https://ascollections.co.uk",
@@ -348,7 +360,8 @@ export default function WebDesign() {
               {
                 client: "Helen Moore Hairdressing",
                 industry: "Boutique Salon – Wirral",
-                problem: "A top-rated salon in Wallasey Village with no website, missing out on online discovery and relying on phone-only bookings.",
+                problem:
+                  "A top-rated salon in Wallasey Village with no website, missing out on online discovery and relying on phone-only bookings.",
                 outcome:
                   "We designed a classy, boutique-style website that captures her brand perfectly. It now ranks for local searches and includes a 24/7 online booking system.",
                 link: "https://helenmoorehairdressing.co.uk",

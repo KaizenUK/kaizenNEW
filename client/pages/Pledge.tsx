@@ -97,7 +97,7 @@ We don't build cheap, 'quick-fix' sites. We are a premium, expert-led agency for
 
 export default function Pledge() {
   const { openCalendly: openCalendlyFromContext } = useCalendly();
-  const heroH1 = "> Our \"No-BS\" Pledge.";
+  const heroH1 = '> Our "No-BS" Pledge.';
   const displayedText = useTyping(heroH1, 40);
   const { activeSection, sectionsRef } = useStickySection();
   const [cursorVisible, setCursorVisible] = useState(true);
@@ -112,9 +112,7 @@ export default function Pledge() {
   return (
     <Layout>
       <Helmet>
-        <title>
-          Our "No-BS" Pledge | Transparent Web Design | Kaizen
-        </title>
+        <title>Our "No-BS" Pledge | Transparent Web Design | Kaizen</title>
         <meta
           name="description"
           content="Our No-BS Pledge. See our transparent policy on AI, pricing, and our process. No black box, no surprise bills, no excuses."
@@ -126,7 +124,9 @@ export default function Pledge() {
         <div className="max-w-3xl w-full">
           <div className="font-mono text-kaizen-cyan text-4xl md:text-6xl font-bold leading-tight">
             <span>{displayedText}</span>
-            <span className={`${cursorVisible ? "opacity-100" : "opacity-0"} transition-opacity`}>
+            <span
+              className={`${cursorVisible ? "opacity-100" : "opacity-0"} transition-opacity`}
+            >
               _
             </span>
           </div>
@@ -134,10 +134,15 @@ export default function Pledge() {
           <motion.div
             className="mt-12 space-y-3 font-mono text-sm md:text-base text-gray-400"
             initial={{ opacity: 0, y: 20 }}
-            animate={displayedText.length === heroH1.length ? { opacity: 1, y: 0 } : {}}
+            animate={
+              displayedText.length === heroH1.length ? { opacity: 1, y: 0 } : {}
+            }
             transition={{ delay: 0.5, duration: 0.8 }}
           >
-            <p>// This page exists because you deserve to know exactly how we work.</p>
+            <p>
+              // This page exists because you deserve to know exactly how we
+              work.
+            </p>
             <p>// No marketing jargon. No black box. No surprise bills.</p>
             <p>// This is our pledge to you—a fully transparent partnership.</p>
           </motion.div>
@@ -221,7 +226,8 @@ export default function Pledge() {
             viewport={{ once: true }}
             transition={{ duration: 0.6, delay: 0.1 }}
           >
-            Now that you know exactly how we work, let's talk about your project.
+            Now that you know exactly how we work, let's talk about your
+            project.
           </motion.p>
 
           <motion.div

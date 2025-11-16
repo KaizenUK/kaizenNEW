@@ -9,21 +9,24 @@ const caseStudies = [
   {
     id: "as-collections",
     client: "A.S Collections",
-    summary: "A complete, modern redesign for a Liverpool debt recovery firm that needed to build trust and authority.",
+    summary:
+      "A complete, modern redesign for a Liverpool debt recovery firm that needed to build trust and authority.",
     services: ["Web Design", "Content Strategy", "WordPress"],
     slug: "as-collections",
   },
   {
     id: "helen-moore-hairdressing",
     client: "Helen Moore Hairdressing",
-    summary: "A 0-to-1 build for a Wirral-based salon, resulting in high local rankings and a 24/7 online booking system.",
+    summary:
+      "A 0-to-1 build for a Wirral-based salon, resulting in high local rankings and a 24/7 online booking system.",
     services: ["Web Design", "Local SEO", "Booking System"],
     slug: "helen-moore-hairdressing",
   },
   {
     id: "independent-retailer",
     client: "Independent Retailer, Liverpool",
-    summary: "A high-performance headless e-commerce build to fix a slow, clunky site and boost mobile conversions.",
+    summary:
+      "A high-performance headless e-commerce build to fix a slow, clunky site and boost mobile conversions.",
     services: ["E-commerce", "Headless (React)", "Performance"],
     slug: "independent-retailer",
   },
@@ -80,7 +83,10 @@ export default function CaseStudies() {
             animate={{ opacity: 1 }}
             transition={{ delay: 0.2, duration: 0.8 }}
           >
-            We are not a high-volume, "churn and burn" agency. We're an expert-led partner. We take on fewer clients so we can apply our full, obsessive focus to each one. Here's a deep dive into our process.
+            We are not a high-volume, "churn and burn" agency. We're an
+            expert-led partner. We take on fewer clients so we can apply our
+            full, obsessive focus to each one. Here's a deep dive into our
+            process.
           </motion.p>
         </div>
       </section>
@@ -143,7 +149,10 @@ export default function CaseStudies() {
                       {/* Arrow indicator */}
                       <div className="mt-6 flex items-center gap-2 text-kaizen-cyan font-medium group-hover:gap-3 transition">
                         Read Case Study
-                        <ArrowRight size={18} className="group-hover:translate-x-1 transition" />
+                        <ArrowRight
+                          size={18}
+                          className="group-hover:translate-x-1 transition"
+                        />
                       </div>
                     </div>
                   </div>

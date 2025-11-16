@@ -160,7 +160,8 @@ export default function Ecommerce() {
     <Layout>
       <Helmet>
         <title>
-          E-commerce Development Liverpool | Fast Headless & WooCommerce | Kaizen
+          E-commerce Development Liverpool | Fast Headless & WooCommerce |
+          Kaizen
         </title>
         <meta
           name="description"
@@ -203,7 +204,9 @@ export default function Ecommerce() {
               animate={{ opacity: 1 }}
               transition={{ delay: 0.6, duration: 0.8 }}
             >
-              Stop losing sales to slow sites. We build lightning-fast Headless e-commerce stores, or powerful, easy-to-manage WordPress & WooCommerce platforms for Liverpool & Wirral businesses.
+              Stop losing sales to slow sites. We build lightning-fast Headless
+              e-commerce stores, or powerful, easy-to-manage WordPress &
+              WooCommerce platforms for Liverpool & Wirral businesses.
             </motion.p>
 
             <motion.div
@@ -313,14 +316,16 @@ export default function Ecommerce() {
                 title: "Headless E-commerce",
                 subtitle: "(For Ultimate Performance)",
                 copy: "We use a modern React/Vite frontend with a backend like Shopify. This is the fastest possible solution, giving you a huge SEO advantage and a friction-free user experience.",
-                bestFor: "Ambitious brands who need unbeatable speed and a unique, custom-branded experience.",
+                bestFor:
+                  "Ambitious brands who need unbeatable speed and a unique, custom-branded experience.",
                 icon: Zap,
               },
               {
                 title: "WordPress + WooCommerce",
                 subtitle: "(For Ultimate Control)",
                 copy: "The world's most popular platform for a reason. Get a powerful, secure store built on a platform you already know how to use. Easy content management, endless plugins.",
-                bestFor: "Businesses who want total control to manage their own content, products, and plugins.",
+                bestFor:
+                  "Businesses who want total control to manage their own content, products, and plugins.",
                 icon: TrendingUp,
               },
             ].map((item, index) => (
@@ -367,7 +372,10 @@ export default function Ecommerce() {
                 Shopify Expertise
               </h3>
               <p className="text-lg text-slate-300/90 leading-relaxed mb-6 max-w-2xl">
-                We also offer expert assistance with installing and configuring Shopify stores, including theme selection and customisation. From initial setup to ongoing optimisation, we ensure your store is built for conversions.
+                We also offer expert assistance with installing and configuring
+                Shopify stores, including theme selection and customisation.
+                From initial setup to ongoing optimisation, we ensure your store
+                is built for conversions.
               </p>
               <div className="flex flex-col sm:flex-row gap-4">
                 <CTAButton text="Explore Shopify Services" openChat />

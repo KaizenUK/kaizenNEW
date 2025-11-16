@@ -49,7 +49,10 @@ export function CookieBanner() {
       analytics: false,
     };
     setConsent(minimalConsent);
-    localStorage.setItem("kaizen-cookie-consent", JSON.stringify(minimalConsent));
+    localStorage.setItem(
+      "kaizen-cookie-consent",
+      JSON.stringify(minimalConsent),
+    );
     setIsOpen(false);
     setShowSettings(false);
   };
@@ -99,7 +102,11 @@ export function CookieBanner() {
                   We Value Your Privacy
                 </h3>
                 <p className="text-sm md:text-base text-kaizen-text-dark/70 dark:text-white/70 leading-relaxed">
-                  We use a few cookies to run this site and help us improve. We use <span className="font-bold">Strictly Necessary</span> cookies to make the site work. We'd also like to use <span className="font-bold">Analytics</span> cookies to see how the site is used. You can choose what to accept.
+                  We use a few cookies to run this site and help us improve. We
+                  use <span className="font-bold">Strictly Necessary</span>{" "}
+                  cookies to make the site work. We'd also like to use{" "}
+                  <span className="font-bold">Analytics</span> cookies to see
+                  how the site is used. You can choose what to accept.
                 </p>
               </div>
 

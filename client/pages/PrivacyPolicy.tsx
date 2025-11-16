@@ -31,9 +31,12 @@ export default function PrivacyPolicy() {
             transition={{ duration: 0.6 }}
             className="max-w-3xl mx-auto text-center"
           >
-            <h1 className="text-5xl md:text-6xl font-heading font-bold mb-6">Privacy Policy</h1>
+            <h1 className="text-5xl md:text-6xl font-heading font-bold mb-6">
+              Privacy Policy
+            </h1>
             <p className="text-xl text-white/70">
-              We're required to have this. You have a right to know what's happening with your data. Here's the simple, "no-jargon" version.
+              We're required to have this. You have a right to know what's
+              happening with your data. Here's the simple, "no-jargon" version.
             </p>
           </motion.div>
         </div>
@@ -54,7 +57,9 @@ export default function PrivacyPolicy() {
                 Our Core Philosophy
               </h2>
               <p className="text-lg text-kaizen-text-dark/70 dark:text-white/70 leading-relaxed">
-                Our business is built on trust. We have no interest in selling your data or sending you spam. This policy explains what little data we do collect and why we need it to run our business.
+                Our business is built on trust. We have no interest in selling
+                your data or sending you spam. This policy explains what little
+                data we do collect and why we need it to run our business.
               </p>
             </motion.div>
 
@@ -75,7 +80,12 @@ export default function PrivacyPolicy() {
                     Data You Give Us Directly
                   </h3>
                   <p className="text-lg text-kaizen-text-dark/70 dark:text-white/70 leading-relaxed">
-                    When you use our live chat, you may provide your name or email. When you book a call via Calendly, you provide your name, email, and any other info you put in the form. We use this data <span className="italic">only</span> to communicate with you for that specific conversation or meeting.
+                    When you use our live chat, you may provide your name or
+                    email. When you book a call via Calendly, you provide your
+                    name, email, and any other info you put in the form. We use
+                    this data <span className="italic">only</span> to
+                    communicate with you for that specific conversation or
+                    meeting.
                   </p>
                 </div>
 
@@ -84,7 +94,8 @@ export default function PrivacyPolicy() {
                     Data We Collect Automatically
                   </h3>
                   <p className="text-lg text-kaizen-text-dark/70 dark:text-white/70 mb-4 leading-relaxed">
-                    Like most websites, we use a few tools that collect non-personal data. This includes:
+                    Like most websites, we use a few tools that collect
+                    non-personal data. This includes:
                   </p>
 
                   <div className="space-y-3 ml-4">
@@ -93,7 +104,10 @@ export default function PrivacyPolicy() {
                         Essential Cookies
                       </h4>
                       <p className="text-kaizen-text-dark/70 dark:text-white/70 leading-relaxed">
-                        Our platform (Builder.io) and tools (Calendly, our chat widget) use cookies to function. For example, a cookie is used to remember your chat history or to make the booking process work.
+                        Our platform (Builder.io) and tools (Calendly, our chat
+                        widget) use cookies to function. For example, a cookie
+                        is used to remember your chat history or to make the
+                        booking process work.
                       </p>
                     </div>
 
@@ -102,7 +116,10 @@ export default function PrivacyPolicy() {
                         Analytics Cookies
                       </h4>
                       <p className="text-kaizen-text-dark/70 dark:text-white/70 leading-relaxed">
-                        We use a standard analytics tool (like Google Analytics) to see how visitors use our site (e.g., what pages are popular). This data is anonymised and helps us improve the site (that's the 'Kaizen' part).
+                        We use a standard analytics tool (like Google Analytics)
+                        to see how visitors use our site (e.g., what pages are
+                        popular). This data is anonymised and helps us improve
+                        the site (that's the 'Kaizen' part).
                       </p>
                     </div>
                   </div>
@@ -123,12 +140,22 @@ export default function PrivacyPolicy() {
 
               <ul className="space-y-3">
                 <li className="flex gap-4 text-lg text-kaizen-text-dark/70 dark:text-white/70 leading-relaxed">
-                  <span className="text-kaizen-cyan font-bold flex-shrink-0">•</span>
-                  <span>We will <span className="font-bold">never</span> sell your data to any third party.</span>
+                  <span className="text-kaizen-cyan font-bold flex-shrink-0">
+                    •
+                  </span>
+                  <span>
+                    We will <span className="font-bold">never</span> sell your
+                    data to any third party.
+                  </span>
                 </li>
                 <li className="flex gap-4 text-lg text-kaizen-text-dark/70 dark:text-white/70 leading-relaxed">
-                  <span className="text-kaizen-cyan font-bold flex-shrink-0">•</span>
-                  <span>We will <span className="font-bold">never</span> send you marketing spam you didn't ask for.</span>
+                  <span className="text-kaizen-cyan font-bold flex-shrink-0">
+                    •
+                  </span>
+                  <span>
+                    We will <span className="font-bold">never</span> send you
+                    marketing spam you didn't ask for.
+                  </span>
                 </li>
               </ul>
             </motion.div>
@@ -144,7 +171,12 @@ export default function PrivacyPolicy() {
                 Your Rights (GDPR)
               </h2>
               <p className="text-lg text-kaizen-text-dark/70 dark:text-white/70 leading-relaxed mb-4">
-                You are in control. You have the right to request to see the data we hold about you, and the right to request that we delete it. If you want to do either, just ask us on the live chat or email us at <span className="font-bold">privacy@kaizenweb.co.uk</span>. We'll sort it out immediately.
+                You are in control. You have the right to request to see the
+                data we hold about you, and the right to request that we delete
+                it. If you want to do either, just ask us on the live chat or
+                email us at{" "}
+                <span className="font-bold">privacy@kaizenweb.co.uk</span>.
+                We'll sort it out immediately.
               </p>
             </motion.div>
 
@@ -157,7 +189,14 @@ export default function PrivacyPolicy() {
               className="border-t border-kaizen-text-dark/10 dark:border-white/10 pt-8"
             >
               <p className="text-lg text-kaizen-text-dark/70 dark:text-white/70">
-                For more details about the cookies we use, please see our <a href="/cookie-policy" className="text-kaizen-cyan hover:underline font-bold">Cookie Policy</a>.
+                For more details about the cookies we use, please see our{" "}
+                <a
+                  href="/cookie-policy"
+                  className="text-kaizen-cyan hover:underline font-bold"
+                >
+                  Cookie Policy
+                </a>
+                .
               </p>
             </motion.div>
           </div>

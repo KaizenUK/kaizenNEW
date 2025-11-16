@@ -1,49 +1,63 @@
 import Layout from "@/components/Layout";
 import { Link } from "react-router-dom";
-import { ArrowRight, Code2, TrendingUp, Zap, Users, Briefcase } from "lucide-react";
+import {
+  ArrowRight,
+  Code2,
+  TrendingUp,
+  Zap,
+  Users,
+  Briefcase,
+} from "lucide-react";
 
 export default function Services() {
   const services = [
     {
       icon: Code2,
       title: "Web Design Liverpool",
-      description: "Fast, modern websites that generate leads and help your business grow online.",
+      description:
+        "Fast, modern websites that generate leads and help your business grow online.",
       link: "/services/web-design-liverpool",
     },
     {
       icon: Code2,
       title: "WordPress Web Design",
-      description: "Custom, fast, and secure WordPress sites built the right way. No bloat, just performance.",
+      description:
+        "Custom, fast, and secure WordPress sites built the right way. No bloat, just performance.",
       link: "/services/wordpress-web-design",
     },
     {
       icon: TrendingUp,
       title: "Local SEO",
-      description: "Help local customers find you through search. Optimize your Google Business Profile and local visibility.",
+      description:
+        "Help local customers find you through search. Optimize your Google Business Profile and local visibility.",
       link: "/services/local-seo",
     },
     {
       icon: Zap,
       title: "E-commerce Development",
-      description: "Sell online with a store that's easy to manage and optimized to convert.",
+      description:
+        "Sell online with a store that's easy to manage and optimized to convert.",
       link: "/services/ecommerce",
     },
     {
       icon: Briefcase,
       title: "Digital Transformation",
-      description: "Join up your website with back-office processes. Automate workflows, improve systems.",
+      description:
+        "Join up your website with back-office processes. Automate workflows, improve systems.",
       link: "/services/digital-transformation",
     },
     {
       icon: Users,
       title: "Agile Coaching",
-      description: "Help your team adopt Agile methodology. Improve delivery, reduce waste, ship faster.",
+      description:
+        "Help your team adopt Agile methodology. Improve delivery, reduce waste, ship faster.",
       link: "/agile-coaching",
     },
     {
       icon: Briefcase,
       title: "Contract Product Owner",
-      description: "Senior Product Owner with 10+ years of experience. I deliver complex projects on time, on budget.",
+      description:
+        "Senior Product Owner with 10+ years of experience. I deliver complex projects on time, on budget.",
       link: "/contract-product-owner",
     },
   ];
@@ -58,7 +72,9 @@ export default function Services() {
               Our Services
             </h1>
             <p className="text-lg text-kaizen-text-light/80 mb-8">
-              We help Liverpool businesses build better digital products. From web design to Agile coaching, we bring clarity and expertise to every project.
+              We help Liverpool businesses build better digital products. From
+              web design to Agile coaching, we bring clarity and expertise to
+              every project.
             </p>
           </div>
         </div>
@@ -82,7 +98,9 @@ export default function Services() {
                   <h3 className="text-xl font-heading font-bold mb-4 group-hover:text-kaizen-cyan transition">
                     {service.title}
                   </h3>
-                  <p className="text-kaizen-text-dark/70 mb-6">{service.description}</p>
+                  <p className="text-kaizen-text-dark/70 mb-6">
+                    {service.description}
+                  </p>
                   <div className="flex items-center gap-2 text-kaizen-cyan font-medium text-sm">
                     Learn More <ArrowRight size={16} />
                   </div>
@@ -100,7 +118,8 @@ export default function Services() {
             Not sure which service you need?
           </h2>
           <p className="text-lg text-kaizen-text-light/80 mb-8 max-w-2xl mx-auto">
-            Let's chat. We'll assess your project and recommend the right approach.
+            Let's chat. We'll assess your project and recommend the right
+            approach.
           </p>
           <Link
             to="/contact"

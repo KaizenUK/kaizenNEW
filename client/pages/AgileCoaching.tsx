@@ -161,7 +161,10 @@ export default function AgileCoaching() {
               animate={{ opacity: 1 }}
               transition={{ delay: 0.6, duration: 0.8 }}
             >
-              We help Liverpool & Wirral businesses fix their chaotic workflows. We use practical Agile coaching to get your team focused, your projects on track, and your work done faster. No jargon, just results.
+              We help Liverpool & Wirral businesses fix their chaotic workflows.
+              We use practical Agile coaching to get your team focused, your
+              projects on track, and your work done faster. No jargon, just
+              results.
             </motion.p>
 
             {/* CTAs */}
@@ -193,7 +196,10 @@ export default function AgileCoaching() {
                 What "Agile Coaching" Actually Means
               </h2>
               <p className="text-xl text-kaizen-text-dark/70 dark:text-white/60 leading-relaxed mb-12">
-                "Agile" is just a word for working smarter. It means breaking huge, scary projects into small, manageable pieces. It means clear communication, no one is guessing what to do, and you see progress every single week, not just at the end.
+                "Agile" is just a word for working smarter. It means breaking
+                huge, scary projects into small, manageable pieces. It means
+                clear communication, no one is guessing what to do, and you see
+                progress every single week, not just at the end.
               </p>
 
               <div>
@@ -201,7 +207,9 @@ export default function AgileCoaching() {
                   Who is this for?
                 </h3>
                 <p className="text-lg text-kaizen-text-dark/70 dark:text-white/60 leading-relaxed">
-                  This is for any business owner who is frustrated by team confusion, projects that drag on forever, or a workflow that feels stuck.
+                  This is for any business owner who is frustrated by team
+                  confusion, projects that drag on forever, or a workflow that
+                  feels stuck.
                 </p>
               </div>
             </div>
@@ -289,7 +297,7 @@ export default function AgileCoaching() {
               {
                 step: "03",
                 title: "Implement & Support",
-                copy: "We don't just hand you a report. We work with you for the first few weeks, helping you run your first \"sprints\" and making sure the new process sticks.",
+                copy: 'We don\'t just hand you a report. We work with you for the first few weeks, helping you run your first "sprints" and making sure the new process sticks.',
               },
             ].map((item, index) => (
               <motion.div
@@ -358,7 +366,7 @@ export default function AgileCoaching() {
               {
                 icon: BookOpen,
                 title: "Our Agile Insights",
-                copy: "We post regular, \"no-BS\" articles about practical Agile tips for real businesses. Read our blog to see how we think.",
+                copy: 'We post regular, "no-BS" articles about practical Agile tips for real businesses. Read our blog to see how we think.',
                 link: "/blog",
                 linkText: "Read the Blog",
               },
@@ -398,7 +406,8 @@ export default function AgileCoaching() {
               Stop Running in Circles.
             </h2>
             <p className="text-xl text-kaizen-text-light/80 dark:text-white/70 mb-12 max-w-2xl mx-auto leading-relaxed">
-              Let's fix your workflow. Book a 15-minute, no-pressure call to see if we can help.
+              Let's fix your workflow. Book a 15-minute, no-pressure call to see
+              if we can help.
             </p>
           </ScrollReveal>
 

@@ -47,7 +47,9 @@ export default function Contact() {
               </h1>
 
               <p className="text-xl text-white/70 mb-12 leading-relaxed">
-                We've made it easy. You won't find a form to fill out, and your email won't end up in a sales funnel. We just have two simple, no-pressure options.
+                We've made it easy. You won't find a form to fill out, and your
+                email won't end up in a sales funnel. We just have two simple,
+                no-pressure options.
               </p>
             </motion.div>
 
@@ -62,10 +64,13 @@ export default function Contact() {
               <div className="p-8 bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl hover:border-kaizen-cyan/30 transition">
                 <div className="flex items-start gap-4 mb-6">
                   <MessageCircle className="w-8 h-8 text-kaizen-cyan flex-shrink-0 mt-1" />
-                  <h2 className="text-3xl font-heading font-bold text-white">Want to chat now?</h2>
+                  <h2 className="text-3xl font-heading font-bold text-white">
+                    Want to chat now?
+                  </h2>
                 </div>
                 <p className="text-lg text-white/70 leading-relaxed">
-                  Got a quick question? We're available on live chat. Click the icon in the bottom corner to start a conversation.
+                  Got a quick question? We're available on live chat. Click the
+                  icon in the bottom corner to start a conversation.
                 </p>
               </div>
 
@@ -73,10 +78,13 @@ export default function Contact() {
               <div className="p-8 bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl hover:border-kaizen-cyan/30 transition">
                 <div className="flex items-start gap-4 mb-6">
                   <Calendar className="w-8 h-8 text-kaizen-cyan flex-shrink-0 mt-1" />
-                  <h2 className="text-3xl font-heading font-bold text-white">Prefer to schedule?</h2>
+                  <h2 className="text-3xl font-heading font-bold text-white">
+                    Prefer to schedule?
+                  </h2>
                 </div>
                 <p className="text-lg text-white/70 leading-relaxed">
-                  Skip the email tennis. Book a 15-minute, no-pressure discovery call directly in our calendar. Pick a time that works for you.
+                  Skip the email tennis. Book a 15-minute, no-pressure discovery
+                  call directly in our calendar. Pick a time that works for you.
                 </p>
               </div>
             </motion.div>
@@ -114,7 +122,10 @@ export default function Contact() {
             </h2>
 
             <p className="text-lg md:text-xl text-kaizen-text-dark/70 dark:text-white/70 leading-relaxed">
-              This is not a high-pressure sales pitch. It's a 15-minute chat to see if we're a good fit. We'll listen to your problem, you can ask us anything, and we'll tell you <span className="italic">if</span> we can help. Simple.
+              This is not a high-pressure sales pitch. It's a 15-minute chat to
+              see if we're a good fit. We'll listen to your problem, you can ask
+              us anything, and we'll tell you <span className="italic">if</span>{" "}
+              we can help. Simple.
             </p>
           </motion.div>
         </div>

@@ -31,7 +31,9 @@ export default function CookiePolicy() {
             transition={{ duration: 0.6 }}
             className="max-w-3xl mx-auto text-center"
           >
-            <h1 className="text-5xl md:text-6xl font-heading font-bold mb-6">Cookie Policy</h1>
+            <h1 className="text-5xl md:text-6xl font-heading font-bold mb-6">
+              Cookie Policy
+            </h1>
             <p className="text-xl text-white/70">
               A simple, clear list of the cookies this site uses and why.
             </p>
@@ -54,7 +56,9 @@ export default function CookiePolicy() {
                 What is a Cookie?
               </h2>
               <p className="text-lg text-kaizen-text-dark/70 dark:text-white/70 leading-relaxed">
-                A cookie is a tiny text file stored on your browser. It helps a website remember you. We use them to make the site work, not to track you personally across the internet.
+                A cookie is a tiny text file stored on your browser. It helps a
+                website remember you. We use them to make the site work, not to
+                track you personally across the internet.
               </p>
             </motion.div>
 
@@ -75,7 +79,9 @@ export default function CookiePolicy() {
                     Strictly Necessary Cookies
                   </h3>
                   <p className="text-kaizen-text-dark/70 dark:text-white/70 leading-relaxed">
-                    These are essential for the site to function. They are used by our platform (Builder.io) to serve pages, and to remember your cookie consent choice. You cannot turn these off.
+                    These are essential for the site to function. They are used
+                    by our platform (Builder.io) to serve pages, and to remember
+                    your cookie consent choice. You cannot turn these off.
                   </p>
                 </div>
 
@@ -84,7 +90,11 @@ export default function CookiePolicy() {
                     Functional Cookies
                   </h3>
                   <p className="text-kaizen-text-dark/70 dark:text-white/70 mb-3 leading-relaxed">
-                    These cookies make your experience better. For example, our <span className="font-bold">Chat Widget</span> uses a cookie to remember your conversation, and <span className="font-bold">Calendly</span> uses cookies to make the booking process work.
+                    These cookies make your experience better. For example, our{" "}
+                    <span className="font-bold">Chat Widget</span> uses a cookie
+                    to remember your conversation, and{" "}
+                    <span className="font-bold">Calendly</span> uses cookies to
+                    make the booking process work.
                   </p>
                 </div>
 
@@ -93,7 +103,10 @@ export default function CookiePolicy() {
                     Analytics Cookies
                   </h3>
                   <p className="text-kaizen-text-dark/70 dark:text-white/70 leading-relaxed">
-                    We use an analytics tool to understand how visitors use our site (like which pages are most popular). This data is anonymous and helps us improve our website. These will <span className="italic">only</span> run if you accept them.
+                    We use an analytics tool to understand how visitors use our
+                    site (like which pages are most popular). This data is
+                    anonymous and helps us improve our website. These will{" "}
+                    <span className="italic">only</span> run if you accept them.
                   </p>
                 </div>
               </div>
@@ -110,7 +123,10 @@ export default function CookiePolicy() {
                 How to Manage Your Consent
               </h2>
               <p className="text-lg text-kaizen-text-dark/70 dark:text-white/70 leading-relaxed">
-                You can change your cookie preferences at any time by clicking the "Manage Cookies" link, which will always be visible at the bottom of our site. You can also block or delete cookies at any time by changing your browser settings.
+                You can change your cookie preferences at any time by clicking
+                the "Manage Cookies" link, which will always be visible at the
+                bottom of our site. You can also block or delete cookies at any
+                time by changing your browser settings.
               </p>
             </motion.div>
 
@@ -123,7 +139,14 @@ export default function CookiePolicy() {
               className="border-t border-kaizen-text-dark/10 dark:border-white/10 pt-8"
             >
               <p className="text-lg text-kaizen-text-dark/70 dark:text-white/70">
-                For more information about how we use your data, please see our <a href="/privacy-policy" className="text-kaizen-cyan hover:underline font-bold">Privacy Policy</a>.
+                For more information about how we use your data, please see our{" "}
+                <a
+                  href="/privacy-policy"
+                  className="text-kaizen-cyan hover:underline font-bold"
+                >
+                  Privacy Policy
+                </a>
+                .
               </p>
             </motion.div>
           </div>

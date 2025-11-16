@@ -123,7 +123,9 @@ function AppContent() {
       {/* When CrispChatButton is added, uncomment the line below: */}
       {/* {!isAdminRoute && <CrispChatButton />} */}
 
-      {!isAdminRoute && <CalendlyModal isOpen={isCalendlyOpen} onClose={closeCalendly} />}
+      {!isAdminRoute && (
+        <CalendlyModal isOpen={isCalendlyOpen} onClose={closeCalendly} />
+      )}
       {!isAdminRoute && <CookieBanner />}
 
       <Routes>
@@ -151,9 +153,18 @@ function AppContent() {
         <Route path="/product-owner" element={<ProductOwner />} />
         <Route path="/team-transformation" element={<TeamTransformation />} />
         <Route path="/case-studies" element={<CaseStudies />} />
-        <Route path="/case-studies/as-collections" element={<AsCollectionsCase />} />
-        <Route path="/case-studies/helen-moore-hairdressing" element={<HelenMooreHairdressingCase />} />
-        <Route path="/case-studies/independent-retailer" element={<IndependentRetailerCase />} />
+        <Route
+          path="/case-studies/as-collections"
+          element={<AsCollectionsCase />}
+        />
+        <Route
+          path="/case-studies/helen-moore-hairdressing"
+          element={<HelenMooreHairdressingCase />}
+        />
+        <Route
+          path="/case-studies/independent-retailer"
+          element={<IndependentRetailerCase />}
+        />
         <Route path="/blog" element={<Blog />} />
         <Route path="/blog/:slug" element={<BlogDetail />} />
         <Route path="/contact" element={<Contact />} />

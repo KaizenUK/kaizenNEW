@@ -107,7 +107,8 @@ const FlipCard = ({
   matters: string;
 }) => {
   const context = React.useContext(FlipCardContext);
-  if (!context) throw new Error("FlipCard must be used within FlipCardProvider");
+  if (!context)
+    throw new Error("FlipCard must be used within FlipCardProvider");
 
   const { flippedId, setFlippedId } = context;
   const isFlipped = flippedId === id;
@@ -129,11 +130,17 @@ const FlipCard = ({
         {/* Front Side */}
         <motion.div
           className="absolute inset-0 w-full h-full p-6 bg-kaizen-light dark:bg-slate-900/50 flex flex-col"
-          animate={{ opacity: isFlipped ? 0 : 1, pointerEvents: isFlipped ? "none" : "auto" }}
+          animate={{
+            opacity: isFlipped ? 0 : 1,
+            pointerEvents: isFlipped ? "none" : "auto",
+          }}
           transition={{ duration: 0.5 }}
         >
           <div className="mb-3 p-3 w-14 h-14 bg-gradient-to-br from-kaizen-cyan/20 to-kaizen-lime/20 dark:from-kaizen-cyan/10 dark:to-kaizen-lime/10 rounded-lg flex items-center justify-center">
-            <Icon className="text-kaizen-cyan dark:text-kaizen-cyan/70" size={28} />
+            <Icon
+              className="text-kaizen-cyan dark:text-kaizen-cyan/70"
+              size={28}
+            />
           </div>
           <h3 className="text-base font-heading font-bold mb-2 text-kaizen-dark dark:text-white leading-snug">
             {title}
@@ -156,7 +163,10 @@ const FlipCard = ({
         {/* Back Side */}
         <motion.div
           className="absolute inset-0 w-full h-full p-6 bg-gradient-to-br from-kaizen-cyan to-kaizen-lime flex flex-col"
-          animate={{ opacity: isFlipped ? 1 : 0, pointerEvents: isFlipped ? "auto" : "none" }}
+          animate={{
+            opacity: isFlipped ? 1 : 0,
+            pointerEvents: isFlipped ? "auto" : "none",
+          }}
           transition={{ duration: 0.5 }}
         >
           <h3 className="text-base font-heading font-bold mb-2 text-kaizen-dark leading-snug">
@@ -182,7 +192,9 @@ export default function ContractProductOwner() {
   return (
     <Layout>
       <Helmet>
-        <title>Sean McDonnell | Contract Product Owner Liverpool | Kaizen</title>
+        <title>
+          Sean McDonnell | Contract Product Owner Liverpool | Kaizen
+        </title>
         <meta
           name="description"
           content="Sean McDonnell, a Liverpool-based Senior Product Owner with 10+ years' experience in iGaming & high-stakes platform migration. I deliver complex projects, on time."
@@ -210,7 +222,7 @@ export default function ContractProductOwner() {
                   >
                     {word}
                   </motion.span>
-                )
+                ),
               )}
             </h1>
 
@@ -221,7 +233,12 @@ export default function ContractProductOwner() {
               animate={{ opacity: 1 }}
               transition={{ delay: 0.8, duration: 0.8 }}
             >
-              I'm <strong>Sean McDonnell</strong>, founder of Kaizen. While <strong>we</strong> are a full-service agency, this is <strong>my</strong> specialist service. I step in personally to take full responsibility for your complex project, manage your team, and <strong>drive it relentlessly to delivery.</strong> No excuses.
+              I'm <strong>Sean McDonnell</strong>, founder of Kaizen. While{" "}
+              <strong>we</strong> are a full-service agency, this is{" "}
+              <strong>my</strong> specialist service. I step in personally to
+              take full responsibility for your complex project, manage your
+              team, and <strong>drive it relentlessly to delivery.</strong> No
+              excuses.
             </motion.p>
 
             {/* CTAs */}
@@ -263,7 +280,11 @@ export default function ContractProductOwner() {
                 Why Your Project is Failing (And How I Fix It)
               </h2>
               <p className="text-lg md:text-xl text-kaizen-text-dark/70 dark:text-white/60 leading-relaxed mb-8">
-                Most projects fail from a lack of a single, empowered owner. Not a "project manager" who just shuffles tasks, but one person who has the authority to make decisions, protect your budget, and act as the single, expert link between your business goals and your technical team.
+                Most projects fail from a lack of a single, empowered owner. Not
+                a "project manager" who just shuffles tasks, but one person who
+                has the authority to make decisions, protect your budget, and
+                act as the single, expert link between your business goals and
+                your technical team.
               </p>
 
               <div>
@@ -271,7 +292,9 @@ export default function ContractProductOwner() {
                   My job is to:
                 </h3>
                 <p className="text-lg text-kaizen-text-dark/70 dark:text-white/60 leading-relaxed">
-                  Act as your expert representative, de-risk your investment, and ensure what you <em>ask for</em> is what gets <em>built</em>.
+                  Act as your expert representative, de-risk your investment,
+                  and ensure what you <em>ask for</em> is what gets{" "}
+                  <em>built</em>.
                 </p>
               </div>
             </div>
@@ -290,7 +313,10 @@ export default function ContractProductOwner() {
             </ScrollReveal>
 
             <div className="max-w-4xl mx-auto text-center mb-8">
-              <p className="text-lg text-kaizen-text-dark/70 dark:text-white/60">Click any card to open it and see why this experience matters to your project.</p>
+              <p className="text-lg text-kaizen-text-dark/70 dark:text-white/60">
+                Click any card to open it and see why this experience matters to
+                your project.
+              </p>
             </div>
 
             <motion.div
@@ -305,29 +331,37 @@ export default function ContractProductOwner() {
                   id: "card-1",
                   icon: Briefcase,
                   title: "High-Stakes Platform Delivery",
-                  proof: "I've owned product strategy for platforms handling over £150m in revenue and millions of transactions, including a zero-downtime legacy migration at Playtech.",
-                  matters: "I know how to de-risk your most critical projects. I am not intimidated by complexity.",
+                  proof:
+                    "I've owned product strategy for platforms handling over £150m in revenue and millions of transactions, including a zero-downtime legacy migration at Playtech.",
+                  matters:
+                    "I know how to de-risk your most critical projects. I am not intimidated by complexity.",
                 },
                 {
                   id: "card-2",
                   icon: Users,
                   title: "Managing Complex Teams & Suppliers",
-                  proof: "At High 5 Games, I was the central PO coordinating workflows between art, music, dev, and B2B clients like MGM and FanDuel.",
-                  matters: "I save you from managing chaotic suppliers. I become the single point of contact that forces everyone to align.",
+                  proof:
+                    "At High 5 Games, I was the central PO coordinating workflows between art, music, dev, and B2B clients like MGM and FanDuel.",
+                  matters:
+                    "I save you from managing chaotic suppliers. I become the single point of contact that forces everyone to align.",
                 },
                 {
                   id: "card-3",
                   icon: Zap,
                   title: "Driving Real Transformation",
-                  proof: "I don't just manage projects; I fix processes. I've led digital transformations at firms like SMD Credit Solutions and implemented new Agile workflows.",
-                  matters: "I don't just deliver your project; I leave your team and workflow more efficient than I found them.",
+                  proof:
+                    "I don't just manage projects; I fix processes. I've led digital transformations at firms like SMD Credit Solutions and implemented new Agile workflows.",
+                  matters:
+                    "I don't just deliver your project; I leave your team and workflow more efficient than I found them.",
                 },
                 {
                   id: "card-4",
                   icon: Rocket,
                   title: "Building Products From Scratch",
-                  proof: "At LeoVegas, I built the company's first multilingual player support platform from the ground up, creating a vital feedback loop that channelled player insights directly to the dev team.",
-                  matters: "I know how to take a simple idea, listen to users, and turn it into a fully functional, value-driving product.",
+                  proof:
+                    "At LeoVegas, I built the company's first multilingual player support platform from the ground up, creating a vital feedback loop that channelled player insights directly to the dev team.",
+                  matters:
+                    "I know how to take a simple idea, listen to users, and turn it into a fully functional, value-driving product.",
                 },
               ].map((card) => (
                 <FlipCard key={card.id} {...card} />
@@ -351,17 +385,17 @@ export default function ContractProductOwner() {
               {
                 step: "01",
                 title: "Audit & Align",
-                copy: "I join your team, audit the entire project, and interview stakeholders. We establish a single, clear \"to-do\" list (the backlog) and get everyone aligned.",
+                copy: 'I join your team, audit the entire project, and interview stakeholders. We establish a single, clear "to-do" list (the backlog) and get everyone aligned.',
               },
               {
                 step: "02",
                 title: "Prioritise & Manage",
-                copy: "I ruthlessly prioritise the work based on business value. I run the weekly \"sprints,\" clear roadblocks for the team, and shield them from distractions.",
+                copy: 'I ruthlessly prioritise the work based on business value. I run the weekly "sprints," clear roadblocks for the team, and shield them from distractions.',
               },
               {
                 step: "03",
                 title: "Deliver & Report",
-                copy: "I manage the release process and provide you with a simple, \"no-jargon\" report every week. You see constant, predictable progress.",
+                copy: 'I manage the release process and provide you with a simple, "no-jargon" report every week. You see constant, predictable progress.',
               },
             ].map((item, index) => (
               <motion.div
@@ -552,7 +586,8 @@ export default function ContractProductOwner() {
               Get Your Project Delivered. No Excuses.
             </h2>
             <p className="text-xl text-kaizen-text-light/80 dark:text-white/70 mb-12 max-w-2xl mx-auto leading-relaxed">
-              Let's talk about your project. Book a 15-minute, confidential call with me, Sean, to see how I can help.
+              Let's talk about your project. Book a 15-minute, confidential call
+              with me, Sean, to see how I can help.
             </p>
           </ScrollReveal>
 

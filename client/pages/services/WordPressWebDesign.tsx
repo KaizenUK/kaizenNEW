@@ -123,7 +123,9 @@ export default function WordPressWebDesign() {
   return (
     <Layout>
       <Helmet>
-        <title>WordPress Web Design Liverpool | Fast, Secure WP Sites | Kaizen</title>
+        <title>
+          WordPress Web Design Liverpool | Fast, Secure WP Sites | Kaizen
+        </title>
         <meta
           name="description"
           content="We build custom WordPress websites for Liverpool & Wirral. Get the power and familiarity of WordPress, built the right way: fast, secure, and with no bloat."
@@ -162,7 +164,8 @@ export default function WordPressWebDesign() {
             ease: "easeInOut",
           }}
           style={{
-            background: "radial-gradient(circle, rgba(0,255,200,0.5) 0%, transparent 70%)",
+            background:
+              "radial-gradient(circle, rgba(0,255,200,0.5) 0%, transparent 70%)",
           }}
         />
 
@@ -176,21 +179,23 @@ export default function WordPressWebDesign() {
               transition={{ duration: 0.9, ease: "easeOut" }}
             >
               <motion.h1 className="text-4xl md:text-5xl lg:text-6xl font-heading font-black mb-6 leading-tight text-kaizen-dark dark:text-white">
-                {["WordPress", "Web Design", "Liverpool."].map((word, index) => (
-                  <motion.span
-                    key={index}
-                    className="block"
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{
-                      delay: 0.3 + index * 0.15,
-                      duration: 0.6,
-                      ease: "easeOut",
-                    }}
-                  >
-                    {word}
-                  </motion.span>
-                ))}
+                {["WordPress", "Web Design", "Liverpool."].map(
+                  (word, index) => (
+                    <motion.span
+                      key={index}
+                      className="block"
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{
+                        delay: 0.3 + index * 0.15,
+                        duration: 0.6,
+                        ease: "easeOut",
+                      }}
+                    >
+                      {word}
+                    </motion.span>
+                  ),
+                )}
               </motion.h1>
 
               <motion.p
@@ -199,7 +204,10 @@ export default function WordPressWebDesign() {
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.8, duration: 0.8 }}
               >
-                Get the platform you know and love, built the right way. We build fast, secure, and easy-to-manage WordPress websites for Liverpool & Wirral businesses. No clunky themes, no bloat—just performance.
+                Get the platform you know and love, built the right way. We
+                build fast, secure, and easy-to-manage WordPress websites for
+                Liverpool & Wirral businesses. No clunky themes, no bloat—just
+                performance.
               </motion.p>
 
               <motion.div
@@ -257,7 +265,11 @@ export default function WordPressWebDesign() {
               A WordPress Site Doesn't Have to Be Slow.
             </h2>
             <p className="text-xl text-kaizen-text-dark/70 dark:text-white/60 leading-relaxed max-w-3xl">
-              The problem isn't WordPress; it's the way most agencies build on it. They use cheap, bloated themes and dozens of clunky plugins that break your site and kill your page speed. We're different. We build custom, clean WordPress sites from the ground up, giving you a fast, secure foundation.
+              The problem isn't WordPress; it's the way most agencies build on
+              it. They use cheap, bloated themes and dozens of clunky plugins
+              that break your site and kill your page speed. We're different. We
+              build custom, clean WordPress sites from the ground up, giving you
+              a fast, secure foundation.
             </p>
           </ScrollReveal>
         </div>
@@ -414,7 +426,9 @@ export default function WordPressWebDesign() {
                 Need a Headless Build?
               </h3>
               <p className="text-lg text-kaizen-text-dark/70 dark:text-white/60 leading-relaxed mb-6">
-                WordPress is perfect for most businesses. But for ambitious brands needing unbeatable speed and a fully custom app-like experience, we also offer high-performance Headless builds.
+                WordPress is perfect for most businesses. But for ambitious
+                brands needing unbeatable speed and a fully custom app-like
+                experience, we also offer high-performance Headless builds.
               </p>
               <div className="text-kaizen-cyan font-medium flex items-center gap-2 hover:gap-3 transition">
                 Explore Headless Web Design <ArrowUpRight size={20} />
@@ -432,7 +446,8 @@ export default function WordPressWebDesign() {
               Get a WordPress Site You Can Rely On.
             </h2>
             <p className="text-xl text-kaizen-text-light/80 dark:text-white/70 mb-12 max-w-2xl mx-auto leading-relaxed">
-              Let's talk about building a fast, secure WordPress site for your Liverpool business. Chat with us or book a no-pressure call.
+              Let's talk about building a fast, secure WordPress site for your
+              Liverpool business. Chat with us or book a no-pressure call.
             </p>
           </ScrollReveal>
 

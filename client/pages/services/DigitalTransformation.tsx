@@ -78,21 +78,23 @@ function KineticTypography() {
               transition={{ delay: 0.5, duration: 0.3 }}
             >
               <div className="flex items-center gap-1">
-                {["I", "n", "t", "e", "g", "r", "a", "t", "e", "d"].map((letter, index) => (
-                  <motion.span
-                    key={index}
-                    className="text-kaizen-lime"
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{
-                      delay: 0.5 + index * 0.08,
-                      duration: 0.4,
-                      ease: "easeOut",
-                    }}
-                  >
-                    {letter}
-                  </motion.span>
-                ))}
+                {["I", "n", "t", "e", "g", "r", "a", "t", "e", "d"].map(
+                  (letter, index) => (
+                    <motion.span
+                      key={index}
+                      className="text-kaizen-lime"
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{
+                        delay: 0.5 + index * 0.08,
+                        duration: 0.4,
+                        ease: "easeOut",
+                      }}
+                    >
+                      {letter}
+                    </motion.span>
+                  ),
+                )}
               </div>
             </motion.div>
           </div>
@@ -132,7 +134,10 @@ export default function DigitalTransformation() {
   return (
     <Layout>
       <Helmet>
-        <title>Digital Transformation Liverpool | Business Process Automation | Kaizen</title>
+        <title>
+          Digital Transformation Liverpool | Business Process Automation |
+          Kaizen
+        </title>
         <meta
           name="description"
           content="We help Liverpool & Wirral businesses stop working in chaos. We automate manual tasks, fix inefficient workflows, and get your systems talking."
@@ -162,7 +167,10 @@ export default function DigitalTransformation() {
               </h2>
 
               <p className="text-xl md:text-2xl text-kaizen-text-dark/70 dark:text-white/70 leading-relaxed max-w-3xl">
-                You don't need "digital transformation." You need to get your systems talking to each other. We find your bottlenecks, automate your manual tasks, and build simple, efficient workflows.
+                You don't need "digital transformation." You need to get your
+                systems talking to each other. We find your bottlenecks,
+                automate your manual tasks, and build simple, efficient
+                workflows.
               </p>
             </div>
 
@@ -220,7 +228,7 @@ export default function DigitalTransformation() {
             {[
               {
                 title: "Offline Businesses",
-                desc: "You're a successful business (e.g., a trade, a consultant) running on paper, spreadsheets, and a mobile phone. You have no \"online system.\" We build your first one, connecting a new website to a simple, automated workflow.",
+                desc: 'You\'re a successful business (e.g., a trade, a consultant) running on paper, spreadsheets, and a mobile phone. You have no "online system." We build your first one, connecting a new website to a simple, automated workflow.',
               },
               {
                 title: "Online (But Chaotic) Businesses",
@@ -266,7 +274,7 @@ export default function DigitalTransformation() {
           >
             {[
               {
-                title: "You Do \"Copy-Paste\" Work",
+                title: 'You Do "Copy-Paste" Work',
                 desc: "Your team manually copies customer data from an email into a spreadsheet, a CRM, or a Word doc.",
               },
               {
@@ -314,7 +322,14 @@ export default function DigitalTransformation() {
 
             <p className="text-lg text-kaizen-text-dark/70 dark:text-white/70 leading-relaxed space-y-4">
               <span>
-                This expertise is at the core of Kaizen. <strong>Our founder, Sean,</strong> led a full digital and operational transformation at <strong>SMD Credit Solutions</strong> in Liverpool. <strong>He</strong> found the inefficiencies, rebuilt the internal workflows, and implemented simple, low-code solutions. <strong>We</strong> now apply this same "fix-and-build" logic to all our clients' businesses.
+                This expertise is at the core of Kaizen.{" "}
+                <strong>Our founder, Sean,</strong> led a full digital and
+                operational transformation at{" "}
+                <strong>SMD Credit Solutions</strong> in Liverpool.{" "}
+                <strong>He</strong> found the inefficiencies, rebuilt the
+                internal workflows, and implemented simple, low-code solutions.{" "}
+                <strong>We</strong> now apply this same "fix-and-build" logic to
+                all our clients' businesses.
               </span>
             </p>
           </motion.div>
@@ -430,7 +445,10 @@ export default function DigitalTransformation() {
                   </p>
                   <div className="text-kaizen-cyan font-medium flex items-center gap-2 group-hover:gap-3 transition">
                     {card.linkText}
-                    <ArrowRight size={18} className="group-hover:translate-x-1 transition" />
+                    <ArrowRight
+                      size={18}
+                      className="group-hover:translate-x-1 transition"
+                    />
                   </div>
                 </Link>
               </motion.div>
@@ -459,7 +477,8 @@ export default function DigitalTransformation() {
             viewport={{ once: true }}
             transition={{ duration: 0.6, delay: 0.1 }}
           >
-            Let's find and fix the chaos in your business. Book a free, no-pressure call to audit your process.
+            Let's find and fix the chaos in your business. Book a free,
+            no-pressure call to audit your process.
           </motion.p>
 
           <motion.div

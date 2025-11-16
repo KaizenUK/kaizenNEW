@@ -3,7 +3,13 @@ import Layout from "@/components/Layout";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Helmet } from "react-helmet-async";
-import { ArrowRight, ArrowUpRight, Lightbulb, Heart, Users } from "lucide-react";
+import {
+  ArrowRight,
+  ArrowUpRight,
+  Lightbulb,
+  Heart,
+  Users,
+} from "lucide-react";
 import AnimatedJapaneseSymbols from "@/components/AnimatedJapaneseSymbols";
 
 // Animation variants
@@ -99,8 +105,15 @@ export default function About() {
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.3, duration: 0.8 }}
               >
-                <p><strong>We</strong> are Kaizen.</p>
-                <p>We've spent over a decade in the high-stakes global tech industry, and we built this agency to do things differently. No buzzwords, no chaotic projects, no excuses. This is our story.</p>
+                <p>
+                  <strong>We</strong> are Kaizen.
+                </p>
+                <p>
+                  We've spent over a decade in the high-stakes global tech
+                  industry, and we built this agency to do things differently.
+                  No buzzwords, no chaotic projects, no excuses. This is our
+                  story.
+                </p>
               </motion.div>
 
               {/* CTA */}
@@ -111,7 +124,10 @@ export default function About() {
               >
                 <button
                   onClick={() => {
-                    if (typeof window !== "undefined" && (window as any).$crisp) {
+                    if (
+                      typeof window !== "undefined" &&
+                      (window as any).$crisp
+                    ) {
                       (window as any).$crisp.push(["do", "chat:open"]);
                     }
                   }}
@@ -145,15 +161,26 @@ export default function About() {
 
               <div className="space-y-6 text-lg text-kaizen-text-dark/70 dark:text-white/60 leading-relaxed">
                 <p>
-                  I'm Sean McDonnell, the founder of Kaizen. I'm not a typical agency owner.
+                  I'm Sean McDonnell, the founder of Kaizen. I'm not a typical
+                  agency owner.
                 </p>
 
                 <p>
-                  For over a decade, I've been deep in the high-stakes, chaotic world of the global tech industry. I've lived and worked in Canada, Ireland, Malta (where I met my husband, Kiko), Spain, Bulgaria, and Romania, managing massive projects for iGaming and FinTech giants. I've also seen how unstable that world is—I was made redundant three times in two years. That's the nature of the beast.
+                  For over a decade, I've been deep in the high-stakes, chaotic
+                  world of the global tech industry. I've lived and worked in
+                  Canada, Ireland, Malta (where I met my husband, Kiko), Spain,
+                  Bulgaria, and Romania, managing massive projects for iGaming
+                  and FinTech giants. I've also seen how unstable that world
+                  is—I was made redundant three times in two years. That's the
+                  nature of the beast.
                 </p>
 
                 <p>
-                  That kind of experience forces you to be resilient, and frankly, it made me want to build something better and more stable, right here at home. I set up Kaizen because I love what I do, and I'm exceptionally good at it. I needed to build something I could depend on.
+                  That kind of experience forces you to be resilient, and
+                  frankly, it made me want to build something better and more
+                  stable, right here at home. I set up Kaizen because I love
+                  what I do, and I'm exceptionally good at it. I needed to build
+                  something I could depend on.
                 </p>
               </div>
             </div>
@@ -270,7 +297,10 @@ export default function About() {
               </h2>
 
               <p className="text-lg md:text-xl text-kaizen-text-dark/70 dark:text-white/60 leading-relaxed">
-                Kaizen is run by Sean—a local lad—and his husband, Kiko. When we're not running projects, gaming on the PS5, or producing music, you'll find us being dragged around the Wirral by our 5-year-old Border Collie, Rikki.
+                Kaizen is run by Sean—a local lad—and his husband, Kiko. When
+                we're not running projects, gaming on the PS5, or producing
+                music, you'll find us being dragged around the Wirral by our
+                5-year-old Border Collie, Rikki.
               </p>
             </div>
           </ScrollReveal>

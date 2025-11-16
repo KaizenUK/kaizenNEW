@@ -286,12 +286,12 @@ export default function LocalSeo() {
               {
                 icon: MapPin,
                 title: "Google Business Profile",
-                copy: "Your new homepage. We optimise your profile to ensure you appear in the \"Map Pack\" (the top 3 results) for searches like \"near me\" or \"in Liverpool\".",
+                copy: 'Your new homepage. We optimise your profile to ensure you appear in the "Map Pack" (the top 3 results) for searches like "near me" or "in Liverpool".',
               },
               {
                 icon: FileText,
                 title: "Location-Specific Content",
-                copy: "We build landing pages that target specific areas (e.g., \"Wirral\", \"South Liverpool\", \"City Centre\") to capture traffic from every corner of the region.",
+                copy: 'We build landing pages that target specific areas (e.g., "Wirral", "South Liverpool", "City Centre") to capture traffic from every corner of the region.',
               },
               {
                 icon: Star,
@@ -305,7 +305,10 @@ export default function LocalSeo() {
                 className="p-8 bg-white dark:bg-slate-950 rounded-2xl border border-kaizen-light dark:border-slate-800/50 hover:border-kaizen-cyan dark:hover:border-kaizen-cyan/50 transition"
               >
                 <div className="mb-6 p-4 w-16 h-16 bg-gradient-to-br from-kaizen-cyan/20 to-kaizen-lime/20 dark:from-kaizen-cyan/10 dark:to-kaizen-lime/10 rounded-xl flex items-center justify-center">
-                  <item.icon className="text-kaizen-cyan dark:text-kaizen-cyan/70" size={32} />
+                  <item.icon
+                    className="text-kaizen-cyan dark:text-kaizen-cyan/70"
+                    size={32}
+                  />
                 </div>
                 <h3 className="text-2xl font-heading font-bold mb-4 text-kaizen-dark dark:text-white">
                   {item.title}

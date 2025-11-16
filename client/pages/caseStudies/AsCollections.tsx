@@ -54,7 +54,8 @@ export default function AsCollectionsCase() {
             </h1>
 
             <p className="text-xl md:text-2xl text-white/80 leading-relaxed max-w-3xl">
-              Transforming a dated website into a high-trust, authoritative platform for a leading Liverpool debt recovery firm.
+              Transforming a dated website into a high-trust, authoritative
+              platform for a leading Liverpool debt recovery firm.
             </p>
           </motion.div>
         </div>
@@ -64,25 +65,42 @@ export default function AsCollectionsCase() {
       <section className="bg-white dark:bg-slate-950 py-16 px-4 border-b border-kaizen-light dark:border-slate-800">
         <div className="container mx-auto max-w-6xl">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12">
-            <motion.div variants={fadeInUp} initial="hidden" whileInView="visible" viewport={{ once: true }}>
+            <motion.div
+              variants={fadeInUp}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true }}
+            >
               <h3 className="text-sm font-mono font-bold text-kaizen-cyan uppercase tracking-widest mb-4">
                 The Problem
               </h3>
               <p className="text-lg text-kaizen-text-dark dark:text-white/80 leading-relaxed">
-                Dated, untrustworthy site that was failing to convert on mobile and didn't reflect the firm's authority.
+                Dated, untrustworthy site that was failing to convert on mobile
+                and didn't reflect the firm's authority.
               </p>
             </motion.div>
 
-            <motion.div variants={fadeInUp} initial="hidden" whileInView="visible" viewport={{ once: true, delay: 0.1 }}>
+            <motion.div
+              variants={fadeInUp}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, delay: 0.1 }}
+            >
               <h3 className="text-sm font-mono font-bold text-kaizen-cyan uppercase tracking-widest mb-4">
                 The Solution
               </h3>
               <p className="text-lg text-kaizen-text-dark dark:text-white/80 leading-relaxed">
-                A 100% custom, "no-BS" WordPress redesign focused on transparency, clarity, and building instant trust.
+                A 100% custom, "no-BS" WordPress redesign focused on
+                transparency, clarity, and building instant trust.
               </p>
             </motion.div>
 
-            <motion.div variants={fadeInUp} initial="hidden" whileInView="visible" viewport={{ once: true, delay: 0.2 }}>
+            <motion.div
+              variants={fadeInUp}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, delay: 0.2 }}
+            >
               <h3 className="text-sm font-mono font-bold text-kaizen-cyan uppercase tracking-widest mb-4">
                 Services Provided
               </h3>
@@ -109,7 +127,11 @@ export default function AsCollectionsCase() {
                 The Challenge: A Site That Didn't Build Trust
               </h2>
               <p className="text-lg text-kaizen-text-dark/70 dark:text-white/70 leading-relaxed">
-                A.S Collections is a leader in commercial debt recovery, but their old website was letting them down. It was a "boxy," old-fashioned design that performed poorly on mobile. For a business built on trust and professionalism, their digital presence was a major weak point.
+                A.S Collections is a leader in commercial debt recovery, but
+                their old website was letting them down. It was a "boxy,"
+                old-fashioned design that performed poorly on mobile. For a
+                business built on trust and professionalism, their digital
+                presence was a major weak point.
               </p>
             </motion.div>
 
@@ -124,19 +146,36 @@ export default function AsCollectionsCase() {
                 The Solution: Transparency and Authority
               </h2>
               <p className="text-lg text-kaizen-text-dark/70 dark:text-white/70 leading-relaxed mb-8">
-                We threw out the old site and started from scratch. We designed and built a clean, modern, "no-BS" platform that positions A.S Collections as the clear, professional choice. We focused on what a potential client <em>actually</em> needs:
+                We threw out the old site and started from scratch. We designed
+                and built a clean, modern, "no-BS" platform that positions A.S
+                Collections as the clear, professional choice. We focused on
+                what a potential client <em>actually</em> needs:
               </p>
 
               <ul className="space-y-4">
                 {[
-                  { title: "A Crystal-Clear Process", desc: "We mapped out their exact 'Letter Before Action' and 'Legal' process, so clients know exactly what to expect." },
-                  { title: '"No-BS" Transparent Pricing', desc: "We built a clear, public pricing table. This is a massive trust signal in an industry that's often vague." },
-                  { title: "Obvious Trust Signals", desc: "We prominently featured their 'No Win, No Fee' policy, '85%+ Success Rate,' and '115+ 5-Star Reviews.'" },
-                  { title: "A Frictionless CTA", desc: "The 'Instruct Us Now' form is simple, clear, and takes 2 minutes to fill out." },
+                  {
+                    title: "A Crystal-Clear Process",
+                    desc: "We mapped out their exact 'Letter Before Action' and 'Legal' process, so clients know exactly what to expect.",
+                  },
+                  {
+                    title: '"No-BS" Transparent Pricing',
+                    desc: "We built a clear, public pricing table. This is a massive trust signal in an industry that's often vague.",
+                  },
+                  {
+                    title: "Obvious Trust Signals",
+                    desc: "We prominently featured their 'No Win, No Fee' policy, '85%+ Success Rate,' and '115+ 5-Star Reviews.'",
+                  },
+                  {
+                    title: "A Frictionless CTA",
+                    desc: "The 'Instruct Us Now' form is simple, clear, and takes 2 minutes to fill out.",
+                  },
                 ].map((item, index) => (
                   <li key={index} className="flex gap-4">
                     <div className="flex-shrink-0 w-6 h-6 rounded-full bg-kaizen-cyan/20 flex items-center justify-center mt-1">
-                      <span className="text-kaizen-cyan text-xs font-bold">✓</span>
+                      <span className="text-kaizen-cyan text-xs font-bold">
+                        ✓
+                      </span>
                     </div>
                     <div>
                       <h4 className="font-heading font-bold text-kaizen-dark dark:text-white mb-1">
@@ -162,7 +201,10 @@ export default function AsCollectionsCase() {
                 The Result: A Digital Front Door That Converts
               </h2>
               <p className="text-lg text-kaizen-text-dark/70 dark:text-white/70 leading-relaxed">
-                The new A.S Collections site is now a fast, mobile-first, authoritative platform that perfectly matches their professional reputation. It's a "no-BS" tool that builds trust and funnels new clients directly into their "Instruct Us Now" form.
+                The new A.S Collections site is now a fast, mobile-first,
+                authoritative platform that perfectly matches their professional
+                reputation. It's a "no-BS" tool that builds trust and funnels
+                new clients directly into their "Instruct Us Now" form.
               </p>
             </motion.div>
           </div>
@@ -215,7 +257,10 @@ export default function AsCollectionsCase() {
                   </p>
                   <div className="text-kaizen-cyan font-medium flex items-center gap-2 group-hover:gap-3 transition">
                     Learn More
-                    <ArrowUpRight size={18} className="group-hover:translate-y-[-2px] group-hover:translate-x-[2px] transition" />
+                    <ArrowUpRight
+                      size={18}
+                      className="group-hover:translate-y-[-2px] group-hover:translate-x-[2px] transition"
+                    />
                   </div>
                 </Link>
               </motion.div>

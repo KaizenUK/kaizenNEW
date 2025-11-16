@@ -6,7 +6,9 @@ interface CalendlyContextValue {
   closeCalendly: () => void;
 }
 
-export const CalendlyContext = createContext<CalendlyContextValue | undefined>(undefined);
+export const CalendlyContext = createContext<CalendlyContextValue | undefined>(
+  undefined,
+);
 
 export function CalendlyProvider({ children }: { children: ReactNode }) {
   const [isCalendlyOpen, setIsCalendlyOpen] = useState(false);
@@ -15,7 +17,9 @@ export function CalendlyProvider({ children }: { children: ReactNode }) {
   const closeCalendly = () => setIsCalendlyOpen(false);
 
   return (
-    <CalendlyContext.Provider value={{ isCalendlyOpen, openCalendly, closeCalendly }}>
+    <CalendlyContext.Provider
+      value={{ isCalendlyOpen, openCalendly, closeCalendly }}
+    >
       {children}
     </CalendlyContext.Provider>
   );
