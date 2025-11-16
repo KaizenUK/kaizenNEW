@@ -438,7 +438,8 @@ export default function BlogPostDetail() {
                 Content
               </label>
               <div className="rounded-lg overflow-hidden border border-gray-300">
-                <QuillEditor
+                <ReactQuill
+                  theme="snow"
                   value={formBody}
                   onChange={(value) => {
                     setFormBody(value);
