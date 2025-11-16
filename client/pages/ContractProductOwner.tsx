@@ -124,56 +124,53 @@ const FlipCard = ({
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
     >
-      <motion.div
-        className="relative w-full h-80 rounded-2xl border border-kaizen-light dark:border-slate-800/50 overflow-hidden"
-        animate={{ rotateY: isFlipped ? 180 : 0 }}
-        transition={{ duration: 0.6, ease: "easeInOut" }}
-        style={{ transformStyle: "preserve-3d" } as any}
-      >
+      <div className="relative w-full h-80 rounded-2xl border border-kaizen-light dark:border-slate-800/50 overflow-hidden bg-kaizen-light dark:bg-slate-900/50">
         {/* Front Side */}
-        <div
+        <motion.div
           className="absolute w-full h-full p-8 bg-kaizen-light dark:bg-slate-900/50 rounded-2xl flex flex-col justify-start"
-          style={{ backfaceVisibility: "hidden" } as any}
+          animate={{ opacity: isFlipped ? 0 : 1, pointerEvents: isFlipped ? "none" : "auto" }}
+          transition={{ duration: 0.5 }}
         >
-          <div className="mb-6 p-4 w-16 h-16 bg-gradient-to-br from-kaizen-cyan/20 to-kaizen-lime/20 dark:from-kaizen-cyan/10 dark:to-kaizen-lime/10 rounded-xl flex items-center justify-center">
+          <div className="mb-4 p-4 w-16 h-16 bg-gradient-to-br from-kaizen-cyan/20 to-kaizen-lime/20 dark:from-kaizen-cyan/10 dark:to-kaizen-lime/10 rounded-xl flex items-center justify-center">
             <Icon className="text-kaizen-cyan dark:text-kaizen-cyan/70" size={32} />
           </div>
-          <h3 className="text-xl font-heading font-bold mb-4 text-kaizen-dark dark:text-white line-clamp-2">
+          <h3 className="text-lg font-heading font-bold mb-3 text-kaizen-dark dark:text-white">
             {title}
           </h3>
-          <div className="mb-6 flex-grow overflow-hidden">
-            <p className="text-sm font-semibold text-kaizen-cyan dark:text-kaizen-cyan/80 mb-2 uppercase tracking-wide">
+          <div className="mb-4 flex-grow">
+            <p className="text-xs font-semibold text-kaizen-cyan dark:text-kaizen-cyan/80 mb-2 uppercase tracking-wide">
               Proof
             </p>
-            <p className="text-sm text-kaizen-text-dark/70 dark:text-white/60 leading-relaxed line-clamp-4">
+            <p className="text-sm text-kaizen-text-dark/70 dark:text-white/60 leading-relaxed">
               {proof}
             </p>
           </div>
-          <div className="pt-4 border-t border-kaizen-cyan/20 dark:border-kaizen-cyan/10">
+          <div className="pt-3 border-t border-kaizen-cyan/20 dark:border-kaizen-cyan/10">
             <p className="text-xs text-kaizen-cyan/60 dark:text-kaizen-cyan/50 font-medium">
-              ✨ Click to see why this matters
+              ✨ Click to flip
             </p>
           </div>
-        </div>
+        </motion.div>
 
         {/* Back Side */}
-        <div
+        <motion.div
           className="absolute w-full h-full p-8 bg-gradient-to-br from-kaizen-cyan to-kaizen-lime rounded-2xl flex flex-col justify-start"
-          style={{ backfaceVisibility: "hidden", transform: "rotateY(180deg)" } as any}
+          animate={{ opacity: isFlipped ? 1 : 0, pointerEvents: isFlipped ? "auto" : "none" }}
+          transition={{ duration: 0.5 }}
         >
-          <h3 className="text-xl font-heading font-bold mb-4 text-kaizen-dark line-clamp-2">
-            Why This Matters for You
+          <h3 className="text-lg font-heading font-bold mb-3 text-kaizen-dark">
+            Why It Matters
           </h3>
-          <p className="text-sm text-kaizen-dark/95 leading-relaxed font-medium mb-6 flex-grow overflow-hidden line-clamp-6">
+          <p className="text-sm text-kaizen-dark/95 leading-relaxed font-medium mb-4 flex-grow">
             {matters}
           </p>
-          <div className="pt-4 border-t border-kaizen-dark/20">
+          <div className="pt-3 border-t border-kaizen-dark/20">
             <p className="text-xs text-kaizen-dark/60 font-medium">
-              ✨ Click to go back
+              ✨ Click to close
             </p>
           </div>
-        </div>
-      </motion.div>
+        </motion.div>
+      </div>
     </motion.div>
   );
 };
