@@ -322,7 +322,7 @@ export default function BlogPostDetail() {
           <div className="col-span-2 space-y-6">
             {/* Title */}
             <motion.div
-              className="bg-gray-900 border border-gray-800 rounded-lg p-6"
+              className="bg-gray-900/60 border border-gray-800/60 rounded-xl p-6 backdrop-blur-sm"
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.4, delay: 0.1 }}
@@ -344,7 +344,7 @@ export default function BlogPostDetail() {
 
             {/* Slug */}
             <motion.div
-              className="bg-gray-900 border border-gray-800 rounded-lg p-6"
+              className="bg-gray-900/60 border border-gray-800/60 rounded-xl p-6 backdrop-blur-sm"
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.4, delay: 0.15 }}
@@ -369,7 +369,7 @@ export default function BlogPostDetail() {
 
             {/* Excerpt */}
             <motion.div
-              className="bg-gray-900 border border-gray-800 rounded-lg p-6"
+              className="bg-gray-900/60 border border-gray-800/60 rounded-xl p-6 backdrop-blur-sm"
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.4, delay: 0.2 }}
@@ -391,7 +391,7 @@ export default function BlogPostDetail() {
 
             {/* Published Date */}
             <motion.div
-              className="bg-gray-900 border border-gray-800 rounded-lg p-6"
+              className="bg-gray-900/60 border border-gray-800/60 rounded-xl p-6 backdrop-blur-sm"
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.4, delay: 0.25 }}
@@ -412,7 +412,7 @@ export default function BlogPostDetail() {
 
             {/* Tags */}
             <motion.div
-              className="bg-gray-900 border border-gray-800 rounded-lg p-6"
+              className="bg-gray-900/60 border border-gray-800/60 rounded-xl p-6 backdrop-blur-sm"
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.4, delay: 0.3 }}
@@ -437,7 +437,7 @@ export default function BlogPostDetail() {
 
             {/* Body Editor */}
             <motion.div
-              className="bg-gray-900 border border-gray-800 rounded-lg p-6"
+              className="bg-gray-900/60 border border-gray-800/60 rounded-xl p-6 backdrop-blur-sm"
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.4, delay: 0.35 }}
@@ -502,7 +502,7 @@ export default function BlogPostDetail() {
 
             {/* Post ID */}
             <motion.div
-              className="bg-gray-900 border border-gray-800 rounded-lg p-6"
+              className="bg-gray-900/60 border border-gray-800/60 rounded-xl p-6 backdrop-blur-sm"
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.4, delay: 0.3 }}
