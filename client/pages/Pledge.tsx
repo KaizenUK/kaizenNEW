@@ -243,13 +243,13 @@ export default function Pledge() {
               <ArrowRight size={18} />
             </button>
 
-            <a
-              href="#"
+            <button
+              onClick={openCalendlyFromContext}
               className="px-8 py-3 rounded-lg border-2 border-white/30 text-white font-heading font-bold hover:border-kaizen-cyan hover:text-kaizen-cyan transition inline-flex items-center justify-center gap-2"
             >
               Book a 15-Minute Call
               <ArrowRight size={18} />
-            </a>
+            </button>
           </motion.div>
         </div>
       </section>
