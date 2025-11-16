@@ -82,6 +82,8 @@ export default function BlogPostCreate() {
   const [formPublishedDate, setFormPublishedDate] = useState(getTodayDateString());
   const [formTagsString, setFormTagsString] = useState("");
   const [formBody, setFormBody] = useState<string>("");
+  const [formSeoTitle, setFormSeoTitle] = useState("");
+  const [formSeoDescription, setFormSeoDescription] = useState("");
 
   // Auto-slug generation tracking
   const [hasUserEditedSlug, setHasUserEditedSlug] = useState(false);
