@@ -121,6 +121,8 @@ function AppContent() {
       {/* When CrispChatButton is added, uncomment the line below: */}
       {/* {!isAdminRoute && <CrispChatButton />} */}
 
+      {!isAdminRoute && <CalendlyModal isOpen={isCalendlyOpen} onClose={closeCalendly} />}
+
       <Routes>
         {/* Public Routes */}
         <Route path="/" element={<Index />} />
