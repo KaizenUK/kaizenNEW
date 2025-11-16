@@ -97,18 +97,13 @@ const FlipCard = ({
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
     >
-      <motion.div
-        className="relative w-full min-h-[32rem] rounded-2xl border border-kaizen-light dark:border-slate-800/50 overflow-hidden"
-        animate={{ rotateY: isFlipped ? 180 : 0 }}
-        transition={{ duration: 0.6 }}
-        style={{ transformStyle: "preserve-3d" }}
-      >
+      <div className="relative w-full min-h-[32rem] rounded-2xl border border-kaizen-light dark:border-slate-800/50 overflow-hidden">
         {/* Front Side */}
         <motion.div
-          className="absolute w-full h-full p-8 bg-kaizen-light dark:bg-slate-900/50 rounded-2xl flex flex-col justify-start"
+          className="w-full h-full p-8 bg-kaizen-light dark:bg-slate-900/50 rounded-2xl flex flex-col justify-start"
           animate={{ opacity: isFlipped ? 0 : 1 }}
-          transition={{ duration: 0.3 }}
-          style={{ backfaceVisibility: "hidden" }}
+          transition={{ duration: 0.4 }}
+          style={{ pointerEvents: isFlipped ? "none" : "auto" }}
         >
           <div className="mb-6 p-4 w-16 h-16 bg-gradient-to-br from-kaizen-cyan/20 to-kaizen-lime/20 dark:from-kaizen-cyan/10 dark:to-kaizen-lime/10 rounded-xl flex items-center justify-center">
             <Icon className="text-kaizen-cyan dark:text-kaizen-cyan/70" size={32} />
@@ -133,10 +128,10 @@ const FlipCard = ({
 
         {/* Back Side */}
         <motion.div
-          className="absolute w-full h-full p-8 bg-gradient-to-br from-kaizen-cyan to-kaizen-lime rounded-2xl flex flex-col justify-start"
+          className="absolute inset-0 w-full h-full p-8 bg-gradient-to-br from-kaizen-cyan to-kaizen-lime rounded-2xl flex flex-col justify-start"
           animate={{ opacity: isFlipped ? 1 : 0 }}
-          transition={{ duration: 0.3 }}
-          style={{ backfaceVisibility: "hidden" }}
+          transition={{ duration: 0.4 }}
+          style={{ pointerEvents: isFlipped ? "auto" : "none" }}
         >
           <h3 className="text-2xl font-heading font-bold mb-6 text-kaizen-dark">
             Why This Matters for You
@@ -150,7 +145,7 @@ const FlipCard = ({
             </p>
           </div>
         </motion.div>
-      </motion.div>
+      </div>
     </motion.div>
   );
 };
@@ -280,7 +275,7 @@ export default function ContractProductOwner() {
               {
                 icon: Briefcase,
                 title: "High-Stakes Platform Delivery",
-                proof: "I've owned product strategy for platforms handling over ��150m in revenue and millions of transactions, including a zero-downtime legacy migration at Playtech.",
+                proof: "I've owned product strategy for platforms handling over £150m in revenue and millions of transactions, including a zero-downtime legacy migration at Playtech.",
                 matters: "I know how to de-risk your most critical projects. I am not intimidated by complexity.",
               },
               {
@@ -409,7 +404,7 @@ export default function ContractProductOwner() {
       </section>
 
       {/* Section 6: When to Hire Me */}
-      <section className="py-20 md:py-32 bg-kaizen-light dark:bg-slate-900/50">
+      <section className="py-20 md:py-32 bg-white dark:bg-slate-950">
         <div className="container mx-auto px-4">
           <ScrollReveal>
             <h2 className="text-4xl md:text-5xl font-heading font-bold mb-16 text-kaizen-dark dark:text-white text-center">
@@ -441,7 +436,7 @@ export default function ContractProductOwner() {
               <motion.div
                 key={index}
                 variants={fadeInUp}
-                className="p-8 bg-white dark:bg-slate-950 rounded-2xl border border-kaizen-light dark:border-slate-800/50 hover:border-kaizen-cyan dark:hover:border-kaizen-cyan/50 transition"
+                className="p-8 bg-kaizen-light dark:bg-slate-900/50 rounded-2xl border border-kaizen-light dark:border-slate-800/50 hover:border-kaizen-cyan dark:hover:border-kaizen-cyan/50 transition"
               >
                 <h3 className="text-2xl font-heading font-bold mb-4 text-kaizen-dark dark:text-white">
                   {item.title}
@@ -455,8 +450,8 @@ export default function ContractProductOwner() {
         </div>
       </section>
 
-      {/* Section 7: How This Fits With Kaizen (Internal Links) */}
-      <section className="py-20 md:py-32 bg-white dark:bg-slate-950">
+      {/* Section 7: How This Fits With Kaizen */}
+      <section className="py-20 md:py-32 bg-kaizen-light dark:bg-slate-900/50">
         <div className="container mx-auto px-4">
           <ScrollReveal>
             <h2 className="text-4xl md:text-5xl font-heading font-bold mb-16 text-kaizen-dark dark:text-white text-center">
@@ -490,7 +485,8 @@ export default function ContractProductOwner() {
               <motion.div key={index} variants={fadeInUp}>
                 <Link
                   to={item.link}
-                  className="block p-8 bg-kaizen-light dark:bg-slate-900/50 rounded-2xl border border-kaizen-light dark:border-slate-800/50 hover:border-kaizen-cyan dark:hover:border-kaizen-cyan/50 transition group h-full"
+                  onClick={() => window.scrollTo(0, 0)}
+                  className="block p-8 bg-white dark:bg-slate-950 rounded-2xl border border-kaizen-light dark:border-slate-800/50 hover:border-kaizen-cyan dark:hover:border-kaizen-cyan/50 transition group h-full"
                 >
                   <div className="mb-6 p-4 w-16 h-16 bg-gradient-to-br from-kaizen-cyan/20 to-kaizen-lime/20 dark:from-kaizen-cyan/10 dark:to-kaizen-lime/10 rounded-xl flex items-center justify-center">
                     <item.icon
