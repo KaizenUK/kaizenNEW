@@ -283,10 +283,10 @@ export default function About() {
           >
             {[
               {
-                title: "My Professional CV",
-                copy: "Want the full, high-stakes career history? See my 10+ years of experience as a Senior Product Owner.",
+                title: "How We De-Risk Your Project",
+                copy: "Want to see the expert, \"no-BS\" process we use to run projects? It's based on my 10+ years of delivering high-stakes platforms, and it's how we ensure your project is delivered without the chaos.",
                 link: "/contract-product-owner",
-                linkText: "See My Experience",
+                linkText: "See Our Process",
               },
               {
                 title: 'Our "No-BS" Pledge',
@@ -298,6 +298,7 @@ export default function About() {
               <motion.div key={index} variants={fadeInUp}>
                 <Link
                   to={item.link}
+                  onClick={() => window.scrollTo(0, 0)}
                   className="block p-8 bg-white dark:bg-slate-950 rounded-2xl border border-kaizen-light dark:border-slate-800/50 hover:border-kaizen-cyan dark:hover:border-kaizen-cyan/50 transition group h-full"
                 >
                   <h3 className="text-2xl font-heading font-bold mb-4 text-kaizen-dark dark:text-white group-hover:text-kaizen-cyan transition">
