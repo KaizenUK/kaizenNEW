@@ -3,6 +3,7 @@ import Layout from "@/components/Layout";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Helmet } from "react-helmet-async";
+import { useCalendly } from "@/context/CalendlyContext";
 import {
   ArrowRight,
   ArrowUpRight,
@@ -114,14 +115,20 @@ const CTAButton = ({
   onClick,
   secondary = false,
   openChat = false,
+  openCalendly: openCalendlyProp = false,
 }: {
   text: string;
   onClick?: () => void;
   secondary?: boolean;
   openChat?: boolean;
+  openCalendly?: boolean;
 }) => {
+  const { openCalendly } = useCalendly();
+
   const handleClick = () => {
-    if (openChat && typeof window !== "undefined") {
+    if (openCalendlyProp) {
+      openCalendly();
+    } else if (openChat && typeof window !== "undefined") {
       if ((window as any).$crisp) {
         (window as any).$crisp.push(["do", "chat:open"]);
       }
@@ -147,6 +154,8 @@ const CTAButton = ({
 };
 
 export default function Ecommerce() {
+  const { openCalendly: openCalendlyFromContext } = useCalendly();
+
   return (
     <Layout>
       <Helmet>
@@ -215,13 +224,13 @@ export default function Ecommerce() {
                 <ArrowRight size={18} />
               </button>
 
-              <Link
-                to="/contact"
+              <button
+                onClick={openCalendlyFromContext}
                 className="px-6 py-3 rounded-lg border border-slate-400/50 text-slate-300 font-heading font-bold hover:border-kaizen-cyan hover:text-kaizen-cyan transition-colors inline-flex items-center justify-center gap-2"
               >
                 Book a Call
                 <ArrowUpRight size={18} />
-              </Link>
+              </button>
             </motion.div>
           </div>
         </div>
@@ -569,13 +578,13 @@ export default function Ecommerce() {
             transition={{ duration: 0.6 }}
           >
             <CTAButton text="Start a Live Chat" openChat />
-            <Link
-              to="/contact"
+            <button
+              onClick={openCalendlyFromContext}
               className="px-8 py-3 rounded-full border-2 border-kaizen-text-light/30 dark:border-white/20 text-kaizen-text-light dark:text-white/85 font-heading font-bold hover:border-kaizen-cyan dark:hover:border-kaizen-cyan transition inline-flex items-center justify-center gap-2"
             >
               Book Your 15-Minute Call
               <ArrowUpRight size={18} />
-            </Link>
+            </button>
           </motion.div>
         </div>
       </section>
