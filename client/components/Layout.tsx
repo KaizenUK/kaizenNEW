@@ -208,7 +208,9 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             <div className="hidden md:flex items-center gap-1">
               <Link
                 to="/"
-                className="px-3 py-2 text-lg font-heading font-medium hover:text-kaizen-cyan transition rounded-md hover:bg-kaizen-light/50 dark:hover:bg-white/5"
+                className={`px-3 py-2 text-lg font-heading font-medium hover:text-kaizen-cyan transition rounded-md hover:bg-kaizen-light/50 dark:hover:bg-white/5 ${
+                  navTextLight ? "text-white" : "text-kaizen-dark dark:text-white"
+                }`}
               >
                 Home
               </Link>
