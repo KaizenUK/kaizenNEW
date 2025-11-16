@@ -31,27 +31,29 @@ const useStickySection = () => {
   const sectionsRef = useRef<(HTMLDivElement | null)[]>([]);
 
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            const index = sectionsRef.current.indexOf(
-              entry.target as HTMLDivElement
-            );
-            if (index !== -1) {
-              setActiveSection(index);
-            }
-          }
-        });
-      },
-      { threshold: 0.5 }
-    );
+    const handleScroll = () => {
+      const viewportCenter = window.innerHeight / 2;
+      let closestIndex = 0;
+      let closestDistance = Infinity;
 
-    sectionsRef.current.forEach((section) => {
-      if (section) observer.observe(section);
-    });
+      sectionsRef.current.forEach((section, index) => {
+        if (!section) return;
 
-    return () => observer.disconnect();
+        const rect = section.getBoundingClientRect();
+        const sectionCenter = rect.top + rect.height / 2;
+        const distance = Math.abs(sectionCenter - viewportCenter);
+
+        if (distance < closestDistance) {
+          closestDistance = distance;
+          closestIndex = index;
+        }
+      });
+
+      setActiveSection(closestIndex);
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   return { activeSection, sectionsRef };
