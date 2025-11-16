@@ -1,7 +1,8 @@
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
-import { FileText, ArrowRight } from "lucide-react";
+import { FileText, ArrowRight, MessageCircle } from "lucide-react";
 import AdminLayout from "@/components/AdminLayout";
+import { useCrisp } from "@/context/CrispContext";
 
 export default function AdminDashboard() {
   const quickLinks = [
