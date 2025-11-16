@@ -560,7 +560,7 @@ export default function BlogDetail() {
                   >
                     {post.tags.map((tag, tagIdx) => (
                       <span
-                        key={`${tag}-${tagIdx}`}
+                        key={`post-tag-${post.id}-${tagIdx}`}
                         className="px-3 py-1 bg-gray-800 text-gray-300 rounded-full text-xs font-mono font-bold tracking-widest"
                       >
                         {tag}
