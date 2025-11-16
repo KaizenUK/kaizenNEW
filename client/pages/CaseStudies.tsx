@@ -3,6 +3,7 @@ import Layout from "@/components/Layout";
 import { motion } from "framer-motion";
 import { Helmet } from "react-helmet-async";
 import { ArrowRight } from "lucide-react";
+import { useCalendly } from "@/context/CalendlyContext";
 
 const caseStudies = [
   {
@@ -49,6 +50,8 @@ const containerVariants = {
 };
 
 export default function CaseStudies() {
+  const { openCalendly: openCalendlyFromContext } = useCalendly();
+
   return (
     <Layout>
       <Helmet>
@@ -192,12 +195,12 @@ export default function CaseStudies() {
               Start a Live Chat
             </button>
 
-            <a
-              href="#"
+            <button
+              onClick={openCalendlyFromContext}
               className="px-8 py-3 rounded-lg border-2 border-white/30 text-white font-heading font-bold hover:border-kaizen-cyan hover:text-kaizen-cyan transition"
             >
               Book a 15-Minute Call
-            </a>
+            </button>
           </motion.div>
         </div>
       </section>
