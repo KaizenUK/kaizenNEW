@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { Helmet } from "react-helmet-async";
 import { ArrowRight, ArrowUpRight } from "lucide-react";
 import Layout from "@/components/Layout";
+import { useCalendly } from "@/context/CalendlyContext";
 
 // Animation variants
 const fadeInUp = {
