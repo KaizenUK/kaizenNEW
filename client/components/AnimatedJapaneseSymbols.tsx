@@ -2,8 +2,8 @@ import { motion } from "framer-motion";
 
 export default function AnimatedJapaneseSymbols() {
   const symbols = [
-    { kanji: "改", romaji: "Kai" },
-    { kanji: "善", romaji: "Zen" },
+    { kanji: "改", romaji: "Kai", meaning: "Change / Improvement" },
+    { kanji: "善", romaji: "Zen", meaning: "Good / Better" },
   ];
 
   const containerVariants = {
