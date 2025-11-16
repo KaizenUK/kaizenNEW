@@ -35,6 +35,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [servicesOpen, setServicesOpen] = useState(false);
   const [theme, setTheme] = useState<ThemeMode>(() => getPreferredTheme());
+  const [navTextLight, setNavTextLight] = useState(false);
   const { openCalendly } = useCalendly();
   const location = useLocation();
   const normalizedPath =
