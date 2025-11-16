@@ -609,7 +609,7 @@ export default function BlogDetail() {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     {relatedPosts.map((relatedPost, idx) => (
                       <motion.div
-                        key={relatedPost.id}
+                        key={relatedPost.id || `related-post-fallback-${idx}`}
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.4, delay: 0.9 + idx * 0.1 }}
