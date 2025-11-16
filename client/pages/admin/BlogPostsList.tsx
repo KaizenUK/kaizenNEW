@@ -1,7 +1,16 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Search, ExternalLink, Edit, Plus, FileText, Info } from "lucide-react";
+import {
+  Search,
+  ExternalLink,
+  Edit,
+  Plus,
+  FileText,
+  Info,
+  ImageOff,
+  AlertTriangle,
+} from "lucide-react";
 import builder from "@/builder";
 import { getBuilderEditUrl } from "@/lib/builder-utils";
 import AdminLayout from "@/components/AdminLayout";
@@ -9,13 +18,14 @@ import AdminLayout from "@/components/AdminLayout";
 interface BlogPost {
   id: string;
   data: {
-    title: string;
-    slug: string;
-    excerpt: string;
-    publishedDate: string;
-    tags: string[];
+    title?: string;
+    slug?: string;
+    excerpt?: string;
+    publishedDate?: string;
+    tags?: string[];
+    coverImage?: any;
   };
-  [key: string]: any; // Allow accessing other fields
+  [key: string]: any; // Allow accessing other Builder fields (state, published, etc.)
 }
 
 interface ProcessedPost {
@@ -26,7 +36,26 @@ interface ProcessedPost {
   publishedDate: string;
   tags: string[];
   status: string; // "Published", "Draft", or "Unknown"
+  coverImageUrl: string | null;
 }
+
+// Helper to derive status from Builder object
+const deriveStatus = (post: any): string => {
+  if (post.published === true) return "Published";
+  if (post.published === false) return "Draft";
+  if (post.query?.published === true) return "Published";
+  if (post.query?.published === false) return "Draft";
+  if (post.lastPublished) return "Published";
+  if (post.state === "published") return "Published";
+  if (post.state === "draft") return "Draft";
+
+  if (post.data?.publishedDate) {
+    const pubDate = new Date(post.data.publishedDate);
+    if (pubDate > new Date()) return "Draft";
+    return "Published";
+  }
+  return "Unknown";
+};
 
 export default function BlogPostsList() {
   const [posts, setPosts] = useState<ProcessedPost[]>([]);
@@ -36,29 +65,13 @@ export default function BlogPostsList() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [allTags, setAllTags] = useState<string[]>([]);
-  const [statusFilter, setStatusFilter] = useState<
-    "all" | "published" | "draft"
-  >("all");
+  const [statusFilter, setStatusFilter] = useState<"all" | "published" | "draft">(
+    "all",
+  );
 
-  // Helper function to derive status from Builder post object
-  const deriveStatus = (post: any): string => {
-    // Check for common status indicators in Builder
-    // Order of precedence: published, query.published, lastPublished, state
-    if (post.published === true) return "Published";
-    if (post.published === false) return "Draft";
-    if (post.query?.published === true) return "Published";
-    if (post.query?.published === false) return "Draft";
-    if (post.lastPublished) return "Published";
-    if (post.state === "published") return "Published";
-    if (post.state === "draft") return "Draft";
-    // Fallback: if publishedDate is in the future, consider it draft
-    if (post.data?.publishedDate) {
-      const pubDate = new Date(post.data.publishedDate);
-      if (pubDate > new Date()) return "Draft";
-      return "Published";
-    }
-    return "Unknown";
-  };
+  // Pagination state
+  const [pageSize, setPageSize] = useState<number>(10);
+  const [currentPage, setCurrentPage] = useState<number>(1);
 
   // Fetch posts from Builder
   useEffect(() => {
@@ -67,27 +80,42 @@ export default function BlogPostsList() {
         setIsLoading(true);
         setError(null);
 
-        // Important: don't restrict fields so we keep the top-level `id`
+        // Keep full objects so we retain id and status-ish fields
         const results = await builder.getAll("blog-post", {
-          // Removing `fields` so `id` is included in the response
           limit: 100,
         });
 
-        // Log sample for development debugging
         if (results && results.length > 0) {
-          console.log("[BlogPostsList] Sample Builder blog-post:", results[0]);
+          console.log("[BlogPostsList] Sample blog-post:", results[0]);
         }
 
         const processed: ProcessedPost[] = (results as BlogPost[])
-          .map((post) => ({
-            id: (post as any).id || "", // guard in case id is missing
-            title: post.data?.title || "Untitled",
-            slug: post.data?.slug || "",
-            excerpt: post.data?.excerpt || "",
-            publishedDate: post.data?.publishedDate || new Date().toISOString(),
-            tags: Array.isArray(post.data?.tags) ? post.data.tags : [],
-            status: deriveStatus(post as any),
-          }))
+          .map((post) => {
+            const rawCover = post.data?.coverImage;
+            let coverImageUrl: string | null = null;
+
+            if (typeof rawCover === "string") {
+              coverImageUrl = rawCover;
+            } else if (rawCover && typeof rawCover === "object") {
+              // Common Builder shapes: { image: "…" } or { src: "…" }
+              coverImageUrl =
+                (rawCover.image as string | undefined) ||
+                (rawCover.src as string | undefined) ||
+                null;
+            }
+
+            return {
+              id: (post as any).id || "",
+              title: post.data?.title || "Untitled",
+              slug: post.data?.slug || "",
+              excerpt: post.data?.excerpt || "",
+              publishedDate:
+                post.data?.publishedDate || new Date().toISOString(),
+              tags: Array.isArray(post.data?.tags) ? post.data.tags : [],
+              status: deriveStatus(post as any),
+              coverImageUrl,
+            };
+          })
           .sort(
             (a, b) =>
               new Date(b.publishedDate).getTime() -
@@ -114,11 +142,10 @@ export default function BlogPostsList() {
     fetchPosts();
   }, []);
 
-  // Filter posts
+  // Apply search / tag / status filters
   useEffect(() => {
     let results = posts;
 
-    // Search filter
     if (searchQuery.trim()) {
       const query = searchQuery.toLowerCase();
       results = results.filter(
@@ -128,14 +155,12 @@ export default function BlogPostsList() {
       );
     }
 
-    // Tag filter
     if (selectedTags.length > 0) {
       results = results.filter((post) =>
         selectedTags.some((tag) => post.tags.includes(tag)),
       );
     }
 
-    // Status filter
     if (statusFilter !== "all") {
       results = results.filter(
         (post) => post.status.toLowerCase() === statusFilter.toLowerCase(),
@@ -143,7 +168,29 @@ export default function BlogPostsList() {
     }
 
     setFilteredPosts(results);
+    setCurrentPage(1); // reset when filters change
   }, [posts, searchQuery, selectedTags, statusFilter]);
+
+  // Pagination calculations
+  const totalItems = filteredPosts.length;
+  const totalPages = Math.max(1, Math.ceil(totalItems / pageSize));
+  const safeCurrentPage = Math.min(currentPage, totalPages);
+  const startIndex = (safeCurrentPage - 1) * pageSize;
+  const endIndex = Math.min(startIndex + pageSize, totalItems);
+  const paginatedPosts = filteredPosts.slice(startIndex, endIndex);
+
+  const handleChangePageSize = (value: number) => {
+    setPageSize(value);
+    setCurrentPage(1);
+  };
+
+  const handlePrevPage = () => {
+    setCurrentPage((prev) => Math.max(1, prev - 1));
+  };
+
+  const handleNextPage = () => {
+    setCurrentPage((prev) => Math.min(totalPages, prev + 1));
+  };
 
   return (
     <AdminLayout>
@@ -158,7 +205,8 @@ export default function BlogPostsList() {
               Blog Posts
             </h1>
             <p className="text-gray-400 font-body">
-              {filteredPosts.length} post{filteredPosts.length !== 1 ? "s" : ""}
+              {filteredPosts.length} post
+              {filteredPosts.length !== 1 ? "s" : ""}
               {searchQuery || selectedTags.length > 0 || statusFilter !== "all"
                 ? " found"
                 : ""}
@@ -291,141 +339,251 @@ export default function BlogPostsList() {
           </motion.div>
         )}
 
-        {/* Posts Table */}
+        {/* Posts Table + Pagination */}
         {!isLoading && !error && (
-          <motion.div
-            className="overflow-x-auto rounded-2xl border border-gray-800/80 bg-gray-950/80 shadow-xl shadow-black/40 backdrop-blur-sm"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.4, delay: 0.2 }}
-          >
-            {filteredPosts.length === 0 ? (
-              <div className="p-16 text-center text-gray-400 font-body">
-                <FileText size={48} className="mx-auto mb-4 text-gray-600" />
-                <p className="text-lg font-medium mb-2">
-                  No posts match your filters
-                </p>
-                <p className="text-sm text-gray-500">
-                  Try clearing your search, tags, or status filters to see all
-                  posts.
-                </p>
-              </div>
-            ) : (
-              <table className="w-full">
-                <thead className="bg-gray-900/50 border-b border-gray-800">
-                  <tr key="header">
-                    <th className="text-left p-4 font-heading font-bold text-gray-300">
-                      Title
-                    </th>
-                    <th className="text-left p-4 font-heading font-bold text-gray-300">
-                      Slug
-                    </th>
-                    <th className="text-left p-4 font-heading font-bold text-gray-300">
-                      Published
-                    </th>
-                    <th className="text-left p-4 font-heading font-bold text-gray-300">
-                      Status
-                    </th>
-                    <th className="text-left p-4 font-heading font-bold text-gray-300">
-                      Tags
-                    </th>
-                    <th className="text-left p-4 font-heading font-bold text-gray-300">
-                      Actions
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {filteredPosts.map((post, idx) => (
-                    <motion.tr
-                      key={post.id || post.slug || idx}
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.3, delay: idx * 0.05 }}
-                      className="border-b border-gray-800 hover:bg-gray-800/40 transition"
-                    >
-                      <td className="p-4">
-                        <Link
-                          to={`/admin/blog-posts/${post.slug}`}
-                          className="font-medium text-blue-400 hover:text-blue-300 transition"
+          <>
+            <motion.div
+              className="overflow-x-auto rounded-2xl border border-gray-800/80 bg-gray-950/80 shadow-xl shadow-black/40 backdrop-blur-sm"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.4, delay: 0.2 }}
+            >
+              {filteredPosts.length === 0 ? (
+                <div className="p-16 text-center text-gray-400 font-body">
+                  <FileText size={48} className="mx-auto mb-4 text-gray-600" />
+                  <p className="text-lg font-medium mb-2">
+                    No posts match your filters
+                  </p>
+                  <p className="text-sm text-gray-500">
+                    Try clearing your search, tags, or status filters to see all
+                    posts.
+                  </p>
+                </div>
+              ) : (
+                <table className="w-full">
+                  <thead className="bg-gray-900/50 border-b border-gray-800">
+                    <tr key="header">
+                      <th className="text-left p-4 font-heading font-bold text-gray-300">
+                        Title
+                      </th>
+                      <th className="text-left p-4 font-heading font-bold text-gray-300">
+                        Cover
+                      </th>
+                      <th className="text-left p-4 font-heading font-bold text-gray-300">
+                        Slug
+                      </th>
+                      <th className="text-left p-4 font-heading font-bold text-gray-300">
+                        Published
+                      </th>
+                      <th className="text-left p-4 font-heading font-bold text-gray-300">
+                        Status
+                      </th>
+                      <th className="text-left p-4 font-heading font-bold text-gray-300">
+                        Tags
+                      </th>
+                      <th className="text-left p-4 font-heading font-bold text-gray-300">
+                        Actions
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {paginatedPosts.map((post, idx) => {
+                      const hasCover = !!post.coverImageUrl;
+
+                      return (
+                        <motion.tr
+                          key={post.id || post.slug || idx}
+                          initial={{ opacity: 0, y: 10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ duration: 0.3, delay: idx * 0.05 }}
+                          className="border-b border-gray-800 hover:bg-gray-800/40 transition"
                         >
-                          {post.title}
-                        </Link>
-                      </td>
-                      <td className="p-4 text-sm text-gray-400 font-mono">
-                        {post.slug}
-                      </td>
-                      <td className="p-4 text-sm text-gray-400">
-                        {post.publishedDate
-                          ? new Date(post.publishedDate).toLocaleDateString(
-                              "en-GB",
-                              {
-                                day: "2-digit",
-                                month: "short",
-                                year: "numeric",
-                              },
-                            )
-                          : "—"}
-                      </td>
-                      <td className="p-4">
-                        <span
-                          className={`px-3 py-1 rounded-full text-xs font-medium transition ${
-                            post.status === "Published"
-                              ? "bg-emerald-500/10 text-emerald-300 border border-emerald-500/30"
-                              : post.status === "Draft"
-                                ? "bg-yellow-500/10 text-yellow-300 border border-yellow-500/30"
-                                : "bg-gray-800 text-gray-300 border border-gray-700"
-                          }`}
-                        >
-                          {post.status}
-                        </span>
-                      </td>
-                      <td className="p-4">
-                        <div className="flex gap-1 flex-wrap">
-                          {post.tags.slice(0, 2).map((tag, tagIdx) => (
+                          {/* Title */}
+                          <td className="p-4">
+                            <Link
+                              to={`/admin/blog-posts/${post.slug}`}
+                              className="font-medium text-blue-400 hover:text-blue-300 transition"
+                            >
+                              {post.title}
+                            </Link>
+                          </td>
+
+                          {/* Cover */}
+                          <td className="p-4">
+                            {hasCover ? (
+                              <div className="flex items-center gap-2">
+                                <div className="h-10 w-16 rounded-md overflow-hidden border border-gray-700 bg-gray-900 flex items-center justify-center">
+                                  <img
+                                    src={post.coverImageUrl || ""}
+                                    alt=""
+                                    className="h-full w-full object-cover"
+                                  />
+                                </div>
+                                <span className="text-xs text-gray-400 font-body">
+                                  Set
+                                </span>
+                              </div>
+                            ) : (
+                              <div className="flex flex-col gap-1">
+                                <div className="inline-flex items-center gap-1 text-xs text-amber-300 font-body">
+                                  <AlertTriangle size={14} />
+                                  <span>No cover image</span>
+                                </div>
+                                {post.id && (
+                                  <a
+                                    href={getBuilderEditUrl(post.id)}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="inline-flex items-center gap-1 text-[11px] text-blue-400 hover:text-blue-300 font-body"
+                                  >
+                                    <ImageOff size={12} />
+                                    <span>Fix in Builder</span>
+                                  </a>
+                                )}
+                              </div>
+                            )}
+                          </td>
+
+                          {/* Slug */}
+                          <td className="p-4 text-sm text-gray-400 font-mono">
+                            {post.slug}
+                          </td>
+
+                          {/* Published date */}
+                          <td className="p-4 text-sm text-gray-400">
+                            {post.publishedDate
+                              ? new Date(
+                                  post.publishedDate,
+                                ).toLocaleDateString("en-GB", {
+                                  day: "2-digit",
+                                  month: "short",
+                                  year: "numeric",
+                                })
+                              : "—"}
+                          </td>
+
+                          {/* Status */}
+                          <td className="p-4">
                             <span
-                              key={`${tag}-${tagIdx}`}
-                              className="px-2 py-0.5 bg-gray-800 text-gray-300 rounded text-xs font-mono"
+                              className={`px-3 py-1 rounded-full text-xs font-medium transition ${
+                                post.status === "Published"
+                                  ? "bg-emerald-500/10 text-emerald-300 border border-emerald-500/30"
+                                  : post.status === "Draft"
+                                    ? "bg-yellow-500/10 text-yellow-300 border border-yellow-500/30"
+                                    : "bg-gray-800 text-gray-300 border border-gray-700"
+                              }`}
                             >
-                              {tag}
+                              {post.status}
                             </span>
-                          ))}
-                          {post.tags.length > 2 && (
-                            <span className="px-2 py-0.5 text-gray-500 text-xs">
-                              +{post.tags.length - 2} more
-                            </span>
-                          )}
-                        </div>
-                      </td>
-                      <td className="p-4">
-                        <div className="flex gap-3">
-                          <a
-                            href={`https://www.kaizenweb.co.uk/blog/${post.slug}`}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-gray-400 hover:text-blue-400 transition"
-                            title="View live post"
-                          >
-                            <ExternalLink size={16} />
-                          </a>
-                          {post.id && (
-                            <a
-                              href={getBuilderEditUrl(post.id)}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="text-gray-400 hover:text-blue-400 transition"
-                              title="Edit in Builder"
-                            >
-                              <Edit size={16} />
-                            </a>
-                          )}
-                        </div>
-                      </td>
-                    </motion.tr>
-                  ))}
-                </tbody>
-              </table>
+                          </td>
+
+                          {/* Tags */}
+                          <td className="p-4">
+                            <div className="flex gap-1 flex-wrap">
+                              {post.tags.slice(0, 2).map((tag, tagIdx) => (
+                                <span
+                                  key={`${tag}-${tagIdx}`}
+                                  className="px-2 py-0.5 bg-gray-800 text-gray-300 rounded text-xs font-mono"
+                                >
+                                  {tag}
+                                </span>
+                              ))}
+                              {post.tags.length > 2 && (
+                                <span className="px-2 py-0.5 text-gray-500 text-xs">
+                                  +{post.tags.length - 2} more
+                                </span>
+                              )}
+                            </div>
+                          </td>
+
+                          {/* Actions */}
+                          <td className="p-4">
+                            <div className="flex gap-3">
+                              <a
+                                href={`https://www.kaizenweb.co.uk/blog/${post.slug}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-gray-400 hover:text-blue-400 transition"
+                                title="View live post"
+                              >
+                                <ExternalLink size={16} />
+                              </a>
+                              {post.id && (
+                                <a
+                                  href={getBuilderEditUrl(post.id)}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="text-gray-400 hover:text-blue-400 transition"
+                                  title="Edit in Builder"
+                                >
+                                  <Edit size={16} />
+                                </a>
+                              )}
+                            </div>
+                          </td>
+                        </motion.tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              )}
+            </motion.div>
+
+            {/* Pagination controls */}
+            {filteredPosts.length > 0 && (
+              <div className="mt-4 flex flex-col gap-3 md:flex-row md:items-center md:justify-between text-sm font-body text-gray-400">
+                <div className="flex items-center gap-3">
+                  <span>
+                    Showing{" "}
+                    <span className="text-gray-200">
+                      {totalItems === 0 ? 0 : startIndex + 1}–{endIndex}
+                    </span>{" "}
+                    of <span className="text-gray-200">{totalItems}</span>{" "}
+                    posts
+                  </span>
+                  <span className="hidden md:inline">•</span>
+                  <div className="flex items-center gap-2">
+                    <span>Rows per page</span>
+                    <select
+                      value={pageSize}
+                      onChange={(e) =>
+                        handleChangePageSize(Number(e.target.value))
+                      }
+                      className="bg-gray-900 border border-gray-700 rounded px-2 py-1 text-xs text-gray-200"
+                    >
+                      <option value={10}>10</option>
+                      <option value={25}>25</option>
+                      <option value={50}>50</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-3 justify-end">
+                  <span>
+                    Page{" "}
+                    <span className="text-gray-200">{safeCurrentPage}</span> of{" "}
+                    <span className="text-gray-200">{totalPages}</span>
+                  </span>
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={handlePrevPage}
+                      disabled={safeCurrentPage <= 1}
+                      className="px-3 py-1 rounded border border-gray-700 bg-gray-900 hover:bg-gray-800 disabled:opacity-40 disabled:cursor-not-allowed"
+                    >
+                      Previous
+                    </button>
+                    <button
+                      onClick={handleNextPage}
+                      disabled={safeCurrentPage >= totalPages}
+                      className="px-3 py-1 rounded border border-gray-700 bg-gray-900 hover:bg-gray-800 disabled:opacity-40 disabled:cursor-not-allowed"
+                    >
+                      Next
+                    </button>
+                  </div>
+                </div>
+              </div>
             )}
-          </motion.div>
+          </>
         )}
       </motion.div>
     </AdminLayout>
