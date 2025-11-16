@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 
 interface CalendlyModalProps {
   isOpen: boolean;
@@ -34,6 +34,7 @@ export function CalendlyModal({ isOpen, onClose }: CalendlyModalProps) {
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="w-full max-w-lg p-0 border-0 overflow-hidden">
+        <DialogTitle className="sr-only">Book a Meeting</DialogTitle>
         <div className="p-6">
           <div className="calendly-inline-widget" data-url="https://calendly.com/sean-kaizenweb/30-minute-meeting-clone" style={{ minWidth: "320px", height: "700px" }} />
         </div>
