@@ -80,6 +80,17 @@ const FlipCardContext = React.createContext<{
   setFlippedId: (id: string | null) => void;
 } | null>(null);
 
+// Provider for Flip Cards
+const FlipCardProvider = ({ children }: { children: React.ReactNode }) => {
+  const [flippedId, setFlippedId] = useState<string | null>(null);
+
+  return (
+    <FlipCardContext.Provider value={{ flippedId, setFlippedId }}>
+      {children}
+    </FlipCardContext.Provider>
+  );
+};
+
 // Flip Card Component
 const FlipCard = ({
   id,
