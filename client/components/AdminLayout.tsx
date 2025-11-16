@@ -197,13 +197,15 @@ export default function AdminLayout({
         </div>
 
         {/* Content Area */}
-        <div className="flex-1 overflow-auto">
-          <main className="p-6">
-            <CrispProvider crispUnread={crispUnread} crispOpen={crispOpen} crispLatest={crispLatest}>
-              {children}
-            </CrispProvider>
-          </main>
-        </div>
+        <CrispProvider crispUnread={crispUnread} crispOpen={crispOpen} crispLatest={crispLatest}>
+          <div className="flex-1 overflow-auto">
+            <main className="p-6">
+              {typeof children === "function"
+                ? children({ crispUnread, crispOpen, crispLatest })
+                : children}
+            </main>
+          </div>
+        </CrispProvider>
       </div>
     </div>
     </>
