@@ -301,7 +301,7 @@ export default function Home() {
               {
                 title: "Web Design Liverpool",
                 copy: "High-performance, mobile-first websites. Built on a modern stack, designed to convert.",
-                link: "/services/web-design",
+                link: "/services/web-design-liverpool",
               },
               {
                 title: "E-commerce Development",
