@@ -86,6 +86,17 @@ const pageMeta: Record<string, Partial<PageMeta>> = {
     description:
       "Shopify and headless ecommerce builds designed in Liverpool with UX research, CRO, and lifecycle marketing baked in from day one.",
   },
+  "/services/wordpress-web-design": {
+    title: "WordPress Web Design Liverpool | Fast, Secure WP Sites | Kaizen",
+    description:
+      "We build custom WordPress websites for Liverpool & Wirral. Get the power and familiarity of WordPress, built the right way: fast, secure, and with no bloat.",
+    keywords: [
+      "WordPress web design Liverpool",
+      "Custom WordPress sites",
+      "Fast WordPress development",
+      "Liverpool WordPress agency",
+    ],
+  },
   "/contract-product-owner": {
     title: "Contract Product Owner Liverpool | Kaizen Web",
     description:
