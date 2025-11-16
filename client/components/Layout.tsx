@@ -395,14 +395,14 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                     Agile Coaching
                   </Link>
                   <Link
-                    to="/product-owner"
+                    to="/contract-product-owner"
                     className="block text-sm text-kaizen-text-dark/70 hover:text-kaizen-cyan transition"
                     onClick={() => {
                       setMobileMenuOpen(false);
                       setServicesOpen(false);
                     }}
                   >
-                    Product Owner
+                    Contract Product Owner
                   </Link>
                 </div>
               )}
