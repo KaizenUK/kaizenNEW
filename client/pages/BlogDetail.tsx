@@ -619,9 +619,13 @@ export default function BlogDetail() {
                             {relatedPost.title}
                           </h4>
                           <p className="text-gray-500 text-sm font-mono">
-                            {new Date(
-                              relatedPost.publishedDate,
-                            ).toLocaleDateString()}
+                            {relatedPost.publishedDate
+                              ? new Date(relatedPost.publishedDate).toLocaleDateString("en-GB", {
+                                  day: "2-digit",
+                                  month: "short",
+                                  year: "numeric",
+                                })
+                              : "—"}
                           </p>
                         </Link>
                       </motion.div>
