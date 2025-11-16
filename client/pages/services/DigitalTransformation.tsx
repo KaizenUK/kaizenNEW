@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import Layout from "@/components/Layout";
 import { motion } from "framer-motion";
 import { Helmet } from "react-helmet-async";
-import { ArrowRight, Mail, Globe, BarChart3, FileText, CheckCircle } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const fadeInUp = {
@@ -25,135 +25,101 @@ const containerVariants = {
   },
 };
 
-// Animated Process Diagram
-function ProcessDiagram() {
-  const [showAfter, setShowAfter] = useState(false);
+// Kinetic Typography Animation
+function KineticTypography() {
+  const [typedText, setTypedText] = useState("");
+  const automatedText = "Automated";
 
   useEffect(() => {
-    const timer = setTimeout(() => setShowAfter(true), 1000);
-    return () => clearTimeout(timer);
+    let index = 0;
+    const timer = setInterval(() => {
+      if (index < automatedText.length) {
+        setTypedText(automatedText.substring(0, index + 1));
+        index++;
+      } else {
+        clearInterval(timer);
+      }
+    }, 100);
+
+    return () => clearInterval(timer);
   }, []);
 
   return (
-    <div className="relative h-full flex items-center justify-center">
-      {/* Before State */}
-      {!showAfter && (
-        <motion.div
-          className="absolute inset-0 flex items-center justify-center"
-          initial={{ opacity: 1 }}
-          animate={{ opacity: 0 }}
-          transition={{ delay: 1.5, duration: 0.6 }}
-        >
-          <div className="space-y-8 w-full px-8">
-            <div className="flex items-center justify-around gap-4">
-              <motion.div
-                initial={{ y: 0 }}
-                animate={{ y: [0, -10, 0] }}
-                transition={{ duration: 2, repeat: Infinity }}
-                className="flex flex-col items-center gap-2"
+    <div className="space-y-8 mb-12">
+      {/* Animated Words */}
+      <div className="text-6xl md:text-7xl lg:text-8xl font-heading font-black leading-tight">
+        {/* Automated - Typing */}
+        <div className="h-24 md:h-32 lg:h-40 flex items-center">
+          <motion.span
+            className="text-kaizen-cyan"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.3 }}
+          >
+            {typedText}
+            {typedText.length < automatedText.length && (
+              <motion.span
+                animate={{ opacity: [1, 0] }}
+                transition={{ duration: 0.5, repeat: Infinity }}
               >
-                <Mail size={32} className="text-kaizen-cyan" />
-                <p className="text-xs text-center font-mono">Email</p>
-              </motion.div>
+                _
+              </motion.span>
+            )}
+          </motion.span>
+        </div>
 
-              <motion.div
-                initial={{ opacity: 0.5 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 1, repeat: Infinity }}
-                className="text-gray-400"
-              >
-                ↺
-              </motion.div>
-
-              <motion.div
-                initial={{ y: 0 }}
-                animate={{ y: [0, 10, 0] }}
-                transition={{ duration: 2, repeat: Infinity }}
-                className="flex flex-col items-center gap-2"
-              >
-                <FileText size={32} className="text-kaizen-cyan" />
-                <p className="text-xs text-center font-mono">Spreadsheet</p>
-              </motion.div>
-
-              <motion.div
-                initial={{ opacity: 0.5 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 1, repeat: Infinity }}
-                className="text-gray-400"
-              >
-                ↺
-              </motion.div>
-
-              <motion.div
-                initial={{ y: 0 }}
-                animate={{ y: [0, -10, 0] }}
-                transition={{ duration: 2, repeat: Infinity }}
-                className="flex flex-col items-center gap-2"
-              >
-                <Globe size={32} className="text-kaizen-cyan" />
-                <p className="text-xs text-center font-mono">Website</p>
-              </motion.div>
-            </div>
-
-            <div className="flex justify-center opacity-50">
-              <p className="text-sm text-center text-gray-400 font-mono">tangled • manual • chaotic</p>
-            </div>
-          </div>
-        </motion.div>
-      )}
-
-      {/* After State */}
-      {showAfter && (
-        <motion.div
-          className="absolute inset-0 flex items-center justify-center"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.6 }}
-        >
-          <div className="w-full px-8">
+        {/* Integrated - Linking Letters */}
+        {typedText === automatedText && (
+          <div className="h-24 md:h-32 lg:h-40 flex items-center overflow-hidden">
             <motion.div
-              initial={{ scaleX: 0 }}
-              animate={{ scaleX: 1 }}
-              transition={{ duration: 0.8, ease: "easeOut" }}
-              className="origin-left"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.5, duration: 0.3 }}
             >
-              <div className="flex items-center justify-between gap-4">
-                <div className="flex flex-col items-center gap-2">
-                  <CheckCircle size={32} className="text-kaizen-lime" />
-                  <p className="text-xs text-center font-mono">Automated</p>
-                </div>
-
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 0.4 }}
-                  className="flex-grow h-1 bg-gradient-to-r from-kaizen-cyan to-kaizen-lime"
-                />
-
-                <div className="flex flex-col items-center gap-2">
-                  <CheckCircle size={32} className="text-kaizen-lime" />
-                  <p className="text-xs text-center font-mono">Integrated</p>
-                </div>
-
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 0.4 }}
-                  className="flex-grow h-1 bg-gradient-to-r from-kaizen-cyan to-kaizen-lime"
-                />
-
-                <div className="flex flex-col items-center gap-2">
-                  <CheckCircle size={32} className="text-kaizen-lime" />
-                  <p className="text-xs text-center font-mono">Flowing</p>
-                </div>
+              <div className="flex items-center gap-1">
+                {["I", "n", "t", "e", "g", "r", "a", "t", "e", "d"].map((letter, index) => (
+                  <motion.span
+                    key={index}
+                    className="text-kaizen-lime"
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{
+                      delay: 0.5 + index * 0.08,
+                      duration: 0.4,
+                      ease: "easeOut",
+                    }}
+                  >
+                    {letter}
+                  </motion.span>
+                ))}
               </div>
             </motion.div>
-
-            <div className="flex justify-center mt-8 opacity-75">
-              <p className="text-sm text-center text-kaizen-lime font-mono">clean • efficient • smart</p>
-            </div>
           </div>
-        </motion.div>
+        )}
+
+        {/* Flowing - Sliding/Fading */}
+        {typedText === automatedText && (
+          <motion.div
+            className="h-24 md:h-32 lg:h-40 flex items-center"
+            initial={{ opacity: 0, x: 40 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 1.3, duration: 0.6, ease: "easeOut" }}
+          >
+            <span className="text-kaizen-cyan">Flowing</span>
+          </motion.div>
+        )}
+      </div>
+
+      {/* Tagline */}
+      {typedText === automatedText && (
+        <motion.p
+          className="text-lg md:text-xl text-kaizen-text-dark/60 dark:text-white/60 font-mono tracking-wider"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 1.5, duration: 0.6 }}
+        >
+          clean • efficient • smart
+        </motion.p>
       )}
     </div>
   );
@@ -166,96 +132,115 @@ export default function DigitalTransformation() {
         <title>Digital Transformation Liverpool | Business Process Automation | Kaizen</title>
         <meta
           name="description"
-          content="We help Liverpool & Wirral businesses stop working in chaos. We automate manual tasks, fix inefficient workflows, and get your systems talking. No-BS."
+          content="We help Liverpool & Wirral businesses stop working in chaos. We automate manual tasks, fix inefficient workflows, and get your systems talking."
         />
       </Helmet>
 
-      {/* Section 1: Hero - Split Screen */}
+      {/* Section 1: Hero - Kinetic Typography */}
       <section className="min-h-screen bg-white dark:bg-slate-950 flex items-center py-20 px-4">
-        <div className="container mx-auto max-w-7xl">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            {/* Left Side - Text */}
-            <motion.div
-              initial={{ opacity: 0, x: -30 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.6, ease: "easeOut" }}
-            >
-              <h1 className="text-5xl md:text-6xl lg:text-7xl font-heading font-black mb-8 leading-tight text-kaizen-dark dark:text-white">
-                Stop working in chaos.
-              </h1>
+        <div className="container mx-auto max-w-4xl">
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.6 }}
+          >
+            <KineticTypography />
+          </motion.div>
 
-              <p className="text-xl md:text-2xl text-kaizen-text-dark/70 dark:text-white/70 leading-relaxed mb-12">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 2, duration: 0.6 }}
+            className="space-y-8 mt-16"
+          >
+            <div>
+              <h2 className="text-4xl md:text-5xl font-heading font-black mb-6 text-kaizen-dark dark:text-white">
+                Stop working in chaos.
+              </h2>
+
+              <p className="text-xl md:text-2xl text-kaizen-text-dark/70 dark:text-white/70 leading-relaxed max-w-3xl">
                 You don't need "digital transformation." You need to get your systems talking to each other. We find your bottlenecks, automate your manual tasks, and build simple, efficient workflows.
               </p>
+            </div>
 
-              <motion.div
-                className="flex flex-col sm:flex-row gap-4"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.2, duration: 0.6 }}
-              >
-                <button
-                  onClick={() => {
-                    if (typeof window !== "undefined" && (window as any).$crisp) {
-                      (window as any).$crisp.push(["do", "chat:open"]);
-                    }
-                  }}
-                  className="px-8 py-3 rounded-lg bg-gradient-to-r from-kaizen-cyan to-kaizen-lime text-kaizen-dark font-heading font-bold hover:shadow-lg hover:shadow-kaizen-cyan/50 transition inline-flex items-center justify-center gap-2"
-                >
-                  Book a Process Audit
-                  <ArrowRight size={18} />
-                </button>
-
-                <a
-                  href="#"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    if (typeof window !== "undefined" && (window as any).$crisp) {
-                      (window as any).$crisp.push(["do", "chat:open"]);
-                    }
-                  }}
-                  className="px-8 py-3 rounded-lg border-2 border-kaizen-cyan text-kaizen-cyan font-heading font-bold hover:bg-kaizen-cyan/10 transition"
-                >
-                  Start a Chat
-                </a>
-              </motion.div>
-            </motion.div>
-
-            {/* Right Side - Animated Diagram */}
             <motion.div
-              initial={{ opacity: 0, x: 30 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.6, ease: "easeOut", delay: 0.1 }}
-              className="h-96 lg:h-full min-h-[400px] bg-kaizen-light dark:bg-slate-900/50 rounded-2xl p-12 flex items-center justify-center"
+              className="flex flex-col sm:flex-row gap-4 pt-4"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 2.2, duration: 0.6 }}
             >
-              <ProcessDiagram />
+              <button
+                onClick={() => {
+                  if (typeof window !== "undefined" && (window as any).$crisp) {
+                    (window as any).$crisp.push(["do", "chat:open"]);
+                  }
+                }}
+                className="px-8 py-3 rounded-lg bg-gradient-to-r from-kaizen-cyan to-kaizen-lime text-kaizen-dark font-heading font-bold hover:shadow-lg hover:shadow-kaizen-cyan/50 transition inline-flex items-center justify-center gap-2"
+              >
+                Book a Process Audit
+                <ArrowRight size={18} />
+              </button>
+
+              <a
+                href="#"
+                onClick={(e) => {
+                  e.preventDefault();
+                  if (typeof window !== "undefined" && (window as any).$crisp) {
+                    (window as any).$crisp.push(["do", "chat:open"]);
+                  }
+                }}
+                className="px-8 py-3 rounded-lg border-2 border-kaizen-cyan text-kaizen-cyan font-heading font-bold hover:bg-kaizen-cyan/10 transition"
+              >
+                Start a Chat
+              </a>
             </motion.div>
-          </div>
+          </motion.div>
         </div>
       </section>
 
-      {/* Section 2: No-BS Translation */}
+      {/* Section 2: Who Is This For? */}
       <section className="bg-kaizen-light dark:bg-slate-900/50 py-24 px-4">
-        <div className="container mx-auto max-w-4xl">
-          <motion.div
+        <div className="container mx-auto max-w-6xl">
+          <motion.h2
+            className="text-4xl md:text-5xl font-heading font-bold mb-16 text-kaizen-dark dark:text-white"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-100px" }}
             transition={{ duration: 0.6 }}
           >
-            <h2 className="text-4xl md:text-5xl font-heading font-bold mb-8 text-kaizen-dark dark:text-white">
-              What is "Digital Transformation"? (The "No-BS" Version)
-            </h2>
+            Who We Help
+          </motion.h2>
 
-            <div className="text-xl text-kaizen-text-dark/70 dark:text-white/70 leading-relaxed space-y-6">
-              <p>
-                It's a scary corporate term for something simple: <strong>fixing what's broken.</strong>
-              </p>
-
-              <p>
-                It's about getting rid of the spreadsheets, paper forms, and manual 'copy-paste' data entry that waste your time. It's about connecting your website enquiry form directly to your job list, or your sales system to your invoicing. We find the gaps and build the bridges so your work just... flows.
-              </p>
-            </div>
+          <motion.div
+            className="grid grid-cols-1 md:grid-cols-2 gap-8"
+            variants={containerVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-100px" }}
+          >
+            {[
+              {
+                title: "Offline Businesses",
+                desc: "You're a successful business (e.g., a trade, a consultant) running on paper, spreadsheets, and a mobile phone. You have no \"online system.\" We build your first one, connecting a new website to a simple, automated workflow.",
+              },
+              {
+                title: "Online (But Chaotic) Businesses",
+                desc: "You're already online, but it's a mess. Your systems don't talk, you're drowning in admin, and you copy-paste data all day. We find the gaps, fix the chaos, and get your systems flowing.",
+              },
+            ].map((item, index) => (
+              <motion.div
+                key={index}
+                variants={fadeInUp}
+                className="p-8 bg-white dark:bg-slate-950 rounded-2xl border border-kaizen-light dark:border-slate-800"
+              >
+                <h3 className="text-2xl font-heading font-bold mb-4 text-kaizen-dark dark:text-white">
+                  {item.title}
+                </h3>
+                <p className="text-lg text-kaizen-text-dark/70 dark:text-white/70 leading-relaxed">
+                  {item.desc}
+                </p>
+              </motion.div>
+            ))}
           </motion.div>
         </div>
       </section>
@@ -321,15 +306,17 @@ export default function DigitalTransformation() {
             transition={{ duration: 0.6 }}
           >
             <h2 className="text-4xl md:text-5xl font-heading font-bold mb-8 text-kaizen-dark dark:text-white">
-              This is What I Do
+              This is Our Expertise
             </h2>
 
             <h3 className="text-2xl font-heading font-semibold mb-6 text-kaizen-cyan">
               Real-World Proof: Fixing a Liverpool Firm
             </h3>
 
-            <p className="text-lg text-kaizen-text-dark/70 dark:text-white/70 leading-relaxed">
-              As a founder, this is my expertise. At <strong>SMD Credit Solutions</strong> in Liverpool, I led a full digital and operational transformation. I found the inefficiencies, rebuilt the internal workflows from the ground up, and implemented simple, low-code solutions to improve service delivery. We can apply this same "fix-and-build" logic to your business.
+            <p className="text-lg text-kaizen-text-dark/70 dark:text-white/70 leading-relaxed space-y-4">
+              <span>
+                This expertise is at the core of Kaizen. <strong>Our founder, Sean,</strong> led a full digital and operational transformation at <strong>SMD Credit Solutions</strong> in Liverpool. <strong>He</strong> found the inefficiencies, rebuilt the internal workflows, and implemented simple, low-code solutions. <strong>We</strong> now apply this same "fix-and-build" logic to all our clients' businesses.
+              </span>
             </p>
           </motion.div>
         </div>
