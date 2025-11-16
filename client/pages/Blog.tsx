@@ -252,7 +252,7 @@ export default function Blog() {
           <div className="flex flex-wrap gap-3">
             {allTags.map((tag, index) => (
               <motion.button
-                key={tag}
+                key={`tag-${index}`}
                 onClick={() => setSelectedTag(tag)}
                 className={`px-4 py-2 rounded-lg font-mono text-xs font-bold tracking-widest transition-all ${
                   selectedTag === tag
