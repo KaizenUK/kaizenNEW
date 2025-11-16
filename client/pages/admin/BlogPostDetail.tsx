@@ -103,14 +103,14 @@ export default function BlogPostDetail() {
   const location = useLocation();
 
   // Form state
-  const [formTitle, setFormTitle] = React.useState("");
-  const [formSlug, setFormSlug] = React.useState("");
-  const [formExcerpt, setFormExcerpt] = React.useState("");
-  const [publishedAt, setPublishedAt] = React.useState<string>("");
-  const [formTagsString, setFormTagsString] = React.useState("");
-  const [formBody, setFormBody] = React.useState<string>("");
-  const [formSeoTitle, setFormSeoTitle] = React.useState("");
-  const [formSeoDescription, setFormSeoDescription] = React.useState("");
+  const [formTitle, setFormTitle] = useState("");
+  const [formSlug, setFormSlug] = useState("");
+  const [formExcerpt, setFormExcerpt] = useState("");
+  const [publishedAt, setPublishedAt] = useState<string>("");
+  const [formTagsString, setFormTagsString] = useState("");
+  const [formBody, setFormBody] = useState<string>("");
+  const [formSeoTitle, setFormSeoTitle] = useState("");
+  const [formSeoDescription, setFormSeoDescription] = useState("");
 
   // UI state
   const [post, setPost] = React.useState<BlogPost | null>(null);
