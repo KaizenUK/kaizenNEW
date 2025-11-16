@@ -159,204 +159,128 @@ export default function Ecommerce() {
         />
       </Helmet>
 
-      {/* Section 1: Hero - Asymmetrical, Image-Dominant, Edgy */}
-      <section className="min-h-screen relative bg-gradient-to-br from-slate-950 via-kaizen-dark to-slate-900 dark:from-black dark:via-slate-950 dark:to-slate-900 overflow-hidden flex items-center py-20">
-        {/* Animated background elements */}
-        <motion.div
-          className="absolute top-0 right-0 w-96 h-96 rounded-full opacity-10"
-          animate={{
-            scale: [1, 1.2, 1],
-            rotate: [0, 90, 180],
-          }}
-          transition={{
-            duration: 20,
-            repeat: Infinity,
-            ease: "easeInOut",
-          }}
-          style={{
-            background: "radial-gradient(circle, rgba(0,255,200,0.5) 0%, transparent 70%)",
-          }}
-        />
-
-        <motion.div
-          className="absolute bottom-0 left-1/4 w-80 h-80 rounded-full opacity-5"
-          animate={{
-            y: [0, 50, 0],
-            x: [0, -30, 0],
-          }}
-          transition={{
-            duration: 15,
-            repeat: Infinity,
-            ease: "easeInOut",
-          }}
-          style={{
-            background: "radial-gradient(circle, rgba(0,255,200,0.5) 0%, transparent 70%)",
-          }}
-        />
-
-        <div className="container mx-auto px-4 relative z-10">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-4 items-center min-h-[600px]">
-            {/* Left: Text Content (30-40%) - Stacked first on mobile */}
-            <div className="md:col-span-1 order-2 md:order-1 flex flex-col justify-center">
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8 }}
-              >
-                <h1 className="text-5xl md:text-6xl lg:text-7xl font-heading font-black mb-8 leading-tight text-white dark:text-white">
-                  {["E-commerce", "That", "Sells."].map((word, index) => (
-                    <motion.span
-                      key={index}
-                      className="inline-block mr-3 md:mr-4"
-                      initial={{ opacity: 0, y: 30 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{
-                        delay: index * 0.15,
-                        duration: 0.6,
-                        ease: "easeOut",
-                      }}
-                    >
-                      {word}
-                    </motion.span>
-                  ))}
-                </h1>
-              </motion.div>
-
-              <motion.p
-                className="text-lg md:text-xl text-slate-300/90 dark:text-white/75 leading-relaxed mb-10 max-w-md"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.5, duration: 0.8 }}
-              >
-                Stop losing sales to slow sites. We build lightning-fast Headless e-commerce stores, or powerful, easy-to-manage WordPress & WooCommerce platforms for Liverpool & Wirral businesses.
-              </motion.p>
-
-              <motion.div
-                className="flex flex-col sm:flex-row gap-4"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.7, duration: 0.6 }}
-              >
-                <button
-                  onClick={() => {
-                    if (typeof window !== "undefined" && (window as any).$crisp) {
-                      (window as any).$crisp.push(["do", "chat:open"]);
-                    }
-                  }}
-                  className="group px-8 py-4 rounded-full bg-gradient-to-r from-kaizen-cyan to-kaizen-lime text-kaizen-dark dark:text-slate-950 font-heading font-bold inline-flex items-center justify-center gap-2 transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-kaizen-cyan/50"
-                >
-                  Start a Chat
-                  <motion.div
-                    animate={{ x: [0, 5, 0] }}
+      {/* Section 1: Hero - Diagonal Skewed Split */}
+      <section className="relative min-h-screen bg-kaizen-dark dark:bg-slate-950 overflow-hidden flex items-center">
+        {/* Text Side (Left/Top) */}
+        <div className="absolute inset-0 md:relative md:w-1/2 flex items-center justify-center md:justify-start z-10 p-8 md:p-12">
+          <div className="max-w-lg">
+            <motion.div
+              initial={{ opacity: 0, x: -50 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.8, ease: "easeOut" }}
+            >
+              <h1 className="text-5xl md:text-6xl lg:text-7xl font-heading font-black mb-6 leading-tight text-white">
+                {["E-commerce", "That", "Sells."].map((word, index) => (
+                  <motion.span
+                    key={index}
+                    className="block"
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
                     transition={{
-                      duration: 1.5,
-                      repeat: Infinity,
-                      delay: 0.3,
+                      delay: index * 0.2,
+                      duration: 0.6,
+                      ease: "easeOut",
                     }}
                   >
-                    <ArrowRight size={20} />
-                  </motion.div>
-                </button>
+                    {word}
+                  </motion.span>
+                ))}
+              </h1>
+            </motion.div>
 
-                <Link
-                  to="/contact"
-                  className="group px-8 py-4 rounded-full border-2 border-slate-400/50 dark:border-white/30 text-white dark:text-white/85 font-heading font-bold hover:border-kaizen-cyan dark:hover:border-kaizen-cyan transition-all duration-300 inline-flex items-center justify-center gap-2"
-                >
-                  Book a 15-Minute Call
-                  <motion.div
-                    className="group-hover:translate-x-1 transition-transform"
-                    animate={{ y: [0, -3, 0] }}
-                    transition={{
-                      duration: 1.5,
-                      repeat: Infinity,
-                      delay: 0.3,
-                    }}
-                  >
-                    <ArrowUpRight size={18} />
-                  </motion.div>
-                </Link>
-              </motion.div>
-            </div>
+            <motion.p
+              className="text-lg text-slate-300/90 leading-relaxed mb-8"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.6, duration: 0.8 }}
+            >
+              Stop losing sales to slow sites. We build lightning-fast Headless e-commerce stores, or powerful, easy-to-manage WordPress & WooCommerce platforms for Liverpool & Wirral businesses.
+            </motion.p>
 
-            {/* Right: Image (60-70%) - Asymmetrical, Tilted, Dynamic */}
-            <div className="md:col-span-2 order-1 md:order-2 relative h-96 md:h-[600px]">
-              <motion.div
-                className="relative w-full h-full"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 0.8 }}
+            <motion.div
+              className="flex flex-col sm:flex-row gap-4"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.8, duration: 0.6 }}
+            >
+              <button
+                onClick={() => {
+                  if (typeof window !== "undefined" && (window as any).$crisp) {
+                    (window as any).$crisp.push(["do", "chat:open"]);
+                  }
+                }}
+                className="px-6 py-3 rounded-lg bg-gradient-to-r from-kaizen-cyan to-kaizen-lime text-slate-900 font-heading font-bold inline-flex items-center justify-center gap-2 transition-all hover:shadow-lg hover:shadow-kaizen-cyan/50"
               >
-                {/* Background shape behind image */}
-                <motion.div
-                  className="absolute inset-0 bg-gradient-to-br from-kaizen-cyan/20 to-kaizen-lime/10 dark:from-kaizen-cyan/10 dark:to-kaizen-lime/5 rounded-3xl md:rounded-none md:rounded-l-3xl"
-                  animate={{
-                    rotateZ: [-2, 2, -2],
-                  }}
-                  transition={{
-                    duration: 6,
-                    repeat: Infinity,
-                    ease: "easeInOut",
-                  }}
-                />
+                Start a Chat
+                <ArrowRight size={18} />
+              </button>
 
-                {/* Main image - tilted, layered entrance */}
-                <motion.div
-                  className="absolute inset-0 rounded-3xl md:rounded-none md:rounded-l-3xl overflow-hidden"
-                  initial={{
-                    opacity: 0,
-                    y: 100,
-                    rotateZ: -8,
-                    scale: 0.95
-                  }}
-                  animate={{
-                    opacity: 1,
-                    y: 0,
-                    rotateZ: 0,
-                    scale: 1
-                  }}
-                  transition={{
-                    delay: 0.3,
-                    duration: 1,
-                    ease: "easeOut",
-                  }}
-                >
-                  <img
-                    src="https://cdn.builder.io/api/v1/image/assets%2Fe4ae46bbd81b4b95bef54d66dd9748cc%2F85912ce9f05a4f7cb336598a47962b01?format=webp&width=800"
-                    alt="Delivery professional delivering online store products from e-commerce platform"
-                    className="w-full h-full object-cover"
-                  />
-                </motion.div>
-
-                {/* Overlay shape - accent element */}
-                <motion.div
-                  className="absolute -top-8 -right-8 w-32 h-32 bg-kaizen-lime/30 dark:bg-kaizen-lime/10 rounded-full blur-3xl"
-                  animate={{
-                    scale: [1, 1.3, 1],
-                    opacity: [0.5, 0.2, 0.5],
-                  }}
-                  transition={{
-                    duration: 8,
-                    repeat: Infinity,
-                    ease: "easeInOut",
-                  }}
-                />
-
-                {/* Accent border/glow */}
-                <motion.div
-                  className="absolute inset-0 rounded-3xl md:rounded-none md:rounded-l-3xl border-2 border-kaizen-cyan/50 dark:border-kaizen-cyan/30 pointer-events-none"
-                  animate={{
-                    opacity: [0.5, 1, 0.5],
-                  }}
-                  transition={{
-                    duration: 3,
-                    repeat: Infinity,
-                    ease: "easeInOut",
-                  }}
-                />
-              </motion.div>
-            </div>
+              <Link
+                to="/contact"
+                className="px-6 py-3 rounded-lg border border-slate-400/50 text-slate-300 font-heading font-bold hover:border-kaizen-cyan hover:text-kaizen-cyan transition-colors inline-flex items-center justify-center gap-2"
+              >
+                Book a Call
+                <ArrowUpRight size={18} />
+              </Link>
+            </motion.div>
           </div>
         </div>
+
+        {/* Image Side (Right/Bottom) - Diagonal Skew */}
+        <motion.div
+          className="absolute inset-0 md:relative md:w-1/2 h-full"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.8 }}
+        >
+          {/* Skewed background shape */}
+          <div className="absolute inset-0 bg-gradient-to-br from-kaizen-cyan/15 to-kaizen-lime/10 dark:from-kaizen-cyan/10 dark:to-kaizen-lime/5 transform md:skew-x-12" />
+
+          {/* Main image with diagonal clip */}
+          <motion.img
+            src="https://cdn.builder.io/api/v1/image/assets%2Fe4ae46bbd81b4b95bef54d66dd9748cc%2F85912ce9f05a4f7cb336598a47962b01?format=webp&width=800"
+            alt="Delivery professional delivering online store products from e-commerce platform"
+            className="w-full h-full object-cover"
+            style={{
+              clipPath: "polygon(0 0, 100% 0, 85% 100%, 0 100%)",
+            }}
+            initial={{ x: 100, opacity: 0 }}
+            animate={{ x: 0, opacity: 1 }}
+            transition={{ delay: 0.2, duration: 0.9, ease: "easeOut" }}
+          />
+
+          {/* Accent overlay */}
+          <motion.div
+            className="absolute top-0 right-0 w-48 h-48 bg-kaizen-cyan/20 dark:bg-kaizen-cyan/10 rounded-full blur-3xl"
+            animate={{
+              scale: [1, 1.2, 1],
+              opacity: [0.3, 0.5, 0.3],
+            }}
+            transition={{
+              duration: 8,
+              repeat: Infinity,
+              ease: "easeInOut",
+            }}
+          />
+        </motion.div>
+
+        {/* Diagonal divider line */}
+        <motion.div
+          className="hidden md:block absolute top-0 bottom-0 w-1 bg-gradient-to-b from-kaizen-cyan via-kaizen-lime to-transparent"
+          style={{
+            left: "50%",
+            transform: "skewX(-12deg)",
+            opacity: 0.3,
+          }}
+          animate={{
+            opacity: [0.2, 0.4, 0.2],
+          }}
+          transition={{
+            duration: 4,
+            repeat: Infinity,
+            ease: "easeInOut",
+          }}
+        />
       </section>
 
       {/* Section 2: Our E-commerce Expertise */}
