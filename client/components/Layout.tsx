@@ -334,7 +334,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
               </Link>
               <button
                 onClick={() => setServicesOpen(!servicesOpen)}
-                className="text-left text-base font-heading font-medium hover:text-kaizen-cyan transition flex items-center gap-2"
+                className="text-left text-lg font-heading font-medium hover:text-kaizen-cyan transition flex items-center gap-2"
               >
                 Services
                 <ChevronDown
