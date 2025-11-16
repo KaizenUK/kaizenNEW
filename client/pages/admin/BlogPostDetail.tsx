@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { useParams, useNavigate, useLocation } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
   ExternalLink,
@@ -20,6 +20,15 @@ import "react-quill/dist/quill.snow.css";
 import builder from "@/builder";
 import { getBuilderEditUrl } from "@/lib/builder-utils";
 import AdminLayout from "@/components/AdminLayout";
+
+type BuilderCoverImage =
+  | string
+  | {
+      image?: string;
+      src?: string;
+      url?: string;
+    }
+  | null;
 
 // Quill editor configuration
 const quillModules = {
@@ -44,7 +53,7 @@ const quillFormats = [
 ];
 
 // Helper functions
-function deriveStatus(post: any): string {
+function deriveStatus(post: BlogPost): string {
   if (post.published === true) return "Published";
   if (post.published === false) return "Draft";
   if (post.query?.published === true) return "Published";
@@ -94,10 +103,14 @@ interface BlogPost {
     publishedDate?: string;
     body?: string | undefined;
     tags?: string[];
-    coverImage?: any;
+    coverImage?: BuilderCoverImage;
     seoTitle?: string;
     seoDescription?: string;
   };
+  published?: boolean;
+  query?: { published?: boolean };
+  lastPublished?: string;
+  state?: string;
 }
 
 export default function BlogPostDetail() {
@@ -135,15 +148,15 @@ export default function BlogPostDetail() {
       }
 
       try {
-        const results = await builder.getAll("blog-post", {
+        const results = (await builder.getAll("blog-post", {
           fields:
             "data.title,data.slug,data.body,data.publishedDate,data.excerpt,data.tags,data.seoTitle,data.seoDescription",
           query: { "data.slug": slug },
           limit: 1,
-        });
+        })) as BlogPost[];
 
         if (results && results.length > 0) {
-          const loadedPost = results[0] as BlogPost;
+          const loadedPost = results[0];
           setPost(loadedPost);
 
           // Initialise form with post data
@@ -284,7 +297,7 @@ export default function BlogPostDetail() {
     );
   }
 
-  const status = deriveStatus(post as any);
+  const status = deriveStatus(post);
   const statusColor =
     status === "Published"
       ? "bg-emerald-500/10 text-emerald-300 border-emerald-500/30"
