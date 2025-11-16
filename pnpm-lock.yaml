@@ -243,6 +243,9 @@ importers:
       vite:
         specifier: ^7.1.2
         version: 7.1.2(@types/node@24.2.1)(jiti@1.21.7)(tsx@4.20.3)(yaml@2.8.1)
+      vite-plugin-sitemap:
+        specifier: ^0.8.2
+        version: 0.8.2
       vitest:
         specifier: ^3.2.4
         version: 3.2.4(@types/node@24.2.1)(jiti@1.21.7)(tsx@4.20.3)(yaml@2.8.1)
@@ -3176,6 +3179,9 @@ packages:
     resolution: {integrity: sha512-EbKSKh+bh1E1IFxeO0pg1n4dvoOTt0UDiXMd/qn++r98+jPO1xtJilvXldeuQ8giIB5IkpjCgMleHMNEsGH6pg==}
     engines: {node: ^18.0.0 || ^20.0.0 || >=22.0.0}
     hasBin: true
+
+  vite-plugin-sitemap@0.8.2:
+    resolution: {integrity: sha512-bqIw6NVOXg6je81lzX8Lm0vjf8/QSAp8di8fYQzZ3ZdVicOm8+6idBGALJiy1R1FiXNIK8rgORO6HBqXyHW+iQ==}
 
   vite@7.1.2:
     resolution: {integrity: sha512-J0SQBPlQiEXAF7tajiH+rUooJPo0l8KQgyg4/aMunNtrOa7bwuZJsJbDWzeljqQpgftxuq5yNJxQ91O9ts29UQ==}
@@ -6328,6 +6334,8 @@ snapshots:
       - terser
       - tsx
       - yaml
+
+  vite-plugin-sitemap@0.8.2: {}
 
   vite@7.1.2(@types/node@24.2.1)(jiti@1.21.7)(tsx@4.20.3)(yaml@2.8.1):
     dependencies:
