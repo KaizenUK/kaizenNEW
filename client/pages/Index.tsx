@@ -218,7 +218,7 @@ export default function Home() {
                 copy: "For builders, plumbers, and local services. We get you found in local search and make it easy for mobile users to book your services.",
               },
               {
-                title: "E-commerce &amp; Retail",
+                title: "E-commerce & Retail",
                 copy: "For independent shops and online brands. We build fast, secure online stores that make your products simple to find and buy.",
               },
             ].map((card, index) => (
@@ -246,7 +246,7 @@ export default function Home() {
             <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-start">
               <div className="md:col-span-7">
                 <h2 className="text-4xl md:text-5xl font-heading font-bold mb-8 text-kaizen-text-light dark:text-white">
-                  Your Local Partner for Liverpool &amp; Wirral
+                  Your Local Partner for Liverpool & Wirral
                 </h2>
 
                 <div className="space-y-6 text-xl text-kaizen-text-light/80 dark:text-white/70 leading-relaxed">
@@ -268,7 +268,11 @@ export default function Home() {
               </div>
 
               <div className="md:col-span-5 hidden md:flex items-center justify-center">
-                <div className="w-full h-64 bg-gradient-to-br from-kaizen-cyan/20 dark:from-kaizen-cyan/10 to-kaizen-lime/20 dark:to-kaizen-lime/10 rounded-2xl border border-kaizen-cyan/30 dark:border-kaizen-cyan/20"></div>
+                <img
+                  src="https://cdn.builder.io/api/v1/image/assets%2Fe4ae46bbd81b4b95bef54d66dd9748cc%2Ff80c883df71a4ab0864ee72919124712?format=webp&width=800"
+                  alt="Liverpool waterfront skyline featuring historic architecture and docks"
+                  className="w-full h-auto rounded-2xl object-cover shadow-lg"
+                />
               </div>
             </div>
           </ScrollReveal>
@@ -409,24 +413,33 @@ export default function Home() {
           >
             {[
               {
+                client: "A.S Collections",
                 industry: "Professional Services – Liverpool",
-                problem: "Outdated site was failing to generate quality leads.",
+                problem: "Their previous site was dated, performed poorly on mobile, and failed to build trust in the competitive commercial debt recovery sector.",
                 outcome:
-                  "Launched a new, authoritative site. Result: a 40% rise in qualified enquiries.",
+                  "A complete, modern redesign. The new site is fast, authoritative, and projects the high level of professionalism their Liverpool clients expect.",
+                link: "https://ascollections.co.uk",
+                linkText: "View Live Site",
               },
               {
-                industry: "Home Services – Wirral",
-                problem: "Invisible in local search; reliant on word-of-mouth.",
+                client: "Helen Moore Hairdressing",
+                industry: "Boutique Salon – Wirral",
+                problem: "A top-rated salon in Wallasey Village with no website, missing out on online discovery and relying on phone-only bookings.",
                 outcome:
-                  "Secured top-3 rankings on Google Business Profile. Result: a new, consistent lead source.",
+                  "We designed a classy, boutique-style website that captures her brand perfectly. It now ranks for local searches and includes a 24/7 online booking system.",
+                link: "https://helenmoorehairdressing.co.uk",
+                linkText: "View Live Site",
               },
             ].map((study, index) => (
               <motion.div
                 key={index}
                 variants={fadeInUp}
-                className="p-8 bg-kaizen-light dark:bg-slate-900/50 rounded-2xl border border-kaizen-light dark:border-slate-800/50"
+                className="p-8 bg-kaizen-light dark:bg-slate-900/50 rounded-2xl border border-kaizen-light dark:border-slate-800/50 hover:border-kaizen-cyan dark:hover:border-kaizen-cyan/50 transition"
               >
-                <div className="text-sm font-bold text-kaizen-cyan dark:text-kaizen-cyan/70 uppercase tracking-wide mb-4">
+                <div className="text-sm font-bold text-kaizen-cyan dark:text-kaizen-cyan/70 uppercase tracking-wide mb-2">
+                  {study.client}
+                </div>
+                <div className="text-xs font-medium text-kaizen-text-dark/60 dark:text-white/50 uppercase tracking-wide mb-4">
                   {study.industry}
                 </div>
                 <h3 className="text-xl font-heading font-bold mb-4 text-kaizen-dark dark:text-white">
@@ -438,9 +451,18 @@ export default function Home() {
                 <h3 className="text-xl font-heading font-bold mb-4 text-kaizen-dark dark:text-white">
                   The Outcome
                 </h3>
-                <p className="text-kaizen-text-dark/70 dark:text-white/60 leading-relaxed">
+                <p className="text-kaizen-text-dark/70 dark:text-white/60 mb-6 leading-relaxed">
                   {study.outcome}
                 </p>
+                <a
+                  href={study.link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-kaizen-cyan dark:text-kaizen-cyan/70 font-medium flex items-center gap-2 hover:gap-3 transition"
+                >
+                  {study.linkText}
+                  <ArrowUpRight size={16} />
+                </a>
               </motion.div>
             ))}
           </motion.div>
@@ -477,7 +499,7 @@ export default function Home() {
           >
             {[
               {
-                title: "Direct &amp; Transparent",
+                title: "Direct & Transparent",
                 copy: "Our Agile process means you see progress in real-time. We have regular check-ins, launch on time, and adapt to changes without derailing the project.",
               },
               {
@@ -485,7 +507,7 @@ export default function Home() {
                 copy: "We build sites on modern platforms that are easy for you to manage. We provide the training so you're not reliant on a developer for every small change.",
               },
               {
-                title: "Local &amp; Technical Experts",
+                title: "Local & Technical Experts",
                 copy: "We live and work here. We understand the Liverpool and Wirral market, but we're also expert-level developers. You get both: local service and world-class code.",
               },
             ].map((item, index) => (
