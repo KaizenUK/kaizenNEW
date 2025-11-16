@@ -77,9 +77,9 @@ const pageMeta: Record<string, Partial<PageMeta>> = {
     ],
   },
   "/services/digital-transformation": {
-    title: "Digital Transformation Consultants Liverpool | Kaizen Web",
+    title: "Digital Transformation Liverpool | Business Process Automation | Kaizen",
     description:
-      "Product and process consulting for Liverpool teams needing faster delivery cycles, lean experimentation, and pragmatic automation.",
+      "We help Liverpool & Wirral businesses stop working in chaos. We automate manual tasks, fix inefficient workflows, and get your systems talking. No-BS.",
   },
   "/services/ecommerce": {
     title: "Liverpool Ecommerce Website Design | Kaizen Web",
