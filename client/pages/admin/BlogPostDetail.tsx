@@ -112,6 +112,8 @@ export default function BlogPostDetail() {
   const [formPublishedDate, setFormPublishedDate] = useState("");
   const [formTagsString, setFormTagsString] = useState("");
   const [formBody, setFormBody] = useState<string>("");
+  const [formSeoTitle, setFormSeoTitle] = useState("");
+  const [formSeoDescription, setFormSeoDescription] = useState("");
 
   // Save state
   const [isSaving, setIsSaving] = useState(false);
