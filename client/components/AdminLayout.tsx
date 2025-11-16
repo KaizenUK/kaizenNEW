@@ -55,7 +55,12 @@ export default function AdminLayout({
   };
 
   return (
-    <div className="flex h-screen bg-gray-950 text-white">
+    <>
+      <Helmet>
+        <title>Kaizen Admin</title>
+        <meta name="robots" content="noindex,nofollow" />
+      </Helmet>
+      <div className="flex h-screen bg-gray-950 text-white">
       {/* Sidebar */}
       <motion.aside
         animate={{ width: sidebarOpen ? 256 : 80 }}
@@ -101,6 +106,11 @@ export default function AdminLayout({
                 <Icon size={20} />
                 {sidebarOpen && (
                   <span className="font-medium">{item.name}</span>
+                )}
+                {item.name === "Crisp inbox" && typeof crispUnread === "number" && crispUnread > 0 && (
+                  <span className="ml-auto inline-flex items-center rounded-full bg-red-500/20 text-red-300 text-xs px-2 py-0.5">
+                    {crispUnread}
+                  </span>
                 )}
               </a>
             ) : (
@@ -158,5 +168,6 @@ export default function AdminLayout({
         </div>
       </div>
     </div>
+    </>
   );
 }
