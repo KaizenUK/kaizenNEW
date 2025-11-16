@@ -337,7 +337,7 @@ export default function BlogPostDetail() {
                   setFormTitle(e.target.value);
                   handleFormChange();
                 }}
-                className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 font-body"
+                className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-blue-500/60 focus:border-transparent font-body"
                 placeholder="Post title"
               />
             </motion.div>
@@ -359,7 +359,7 @@ export default function BlogPostDetail() {
                   setFormSlug(e.target.value);
                   handleFormChange();
                 }}
-                className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 font-body"
+                className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-blue-500/60 focus:border-transparent font-body"
                 placeholder="post-slug"
               />
               <p className="text-xs text-gray-500 mt-2 font-body">
@@ -384,7 +384,7 @@ export default function BlogPostDetail() {
                   handleFormChange();
                 }}
                 rows={3}
-                className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 font-body"
+                className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-blue-500/60 focus:border-transparent font-body"
                 placeholder="Short summary of the post"
               />
             </motion.div>
@@ -406,7 +406,7 @@ export default function BlogPostDetail() {
                   setFormPublishedDate(e.target.value);
                   handleFormChange();
                 }}
-                className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 font-body"
+                className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-blue-500/60 focus:border-transparent font-body"
               />
             </motion.div>
 
@@ -427,7 +427,7 @@ export default function BlogPostDetail() {
                   setFormTagsString(e.target.value);
                   handleFormChange();
                 }}
-                className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 font-body"
+                className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-blue-500/60 focus:border-transparent font-body"
                 placeholder="Separate tags with commas (e.g., design, web, agile)"
               />
               <p className="text-xs text-gray-500 mt-2 font-body">
