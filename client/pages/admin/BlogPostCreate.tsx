@@ -237,7 +237,7 @@ export default function BlogPostCreate() {
           <div className="col-span-2 space-y-6">
             {/* Title */}
             <motion.div
-              className="bg-gray-900 border border-gray-800 rounded-lg p-6"
+              className="bg-gray-900/60 border border-gray-800/60 rounded-xl p-6 backdrop-blur-sm"
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.4, delay: 0.1 }}
@@ -249,14 +249,20 @@ export default function BlogPostCreate() {
                 type="text"
                 value={formTitle}
                 onChange={(e) => handleTitleChange(e.target.value)}
-                className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 font-body"
+                className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-blue-500/60 focus:border-transparent font-body"
                 placeholder="Post title"
               />
+              <div className={`mt-2 text-xs font-body ${formTitle.length > 60 ? "text-yellow-400" : "text-gray-500"}`}>
+                {formTitle.length} / 60 characters
+                {formTitle.length > 60 && (
+                  <p className="mt-1">Long titles may be truncated in search results.</p>
+                )}
+              </div>
             </motion.div>
 
             {/* Slug */}
             <motion.div
-              className="bg-gray-900 border border-gray-800 rounded-lg p-6"
+              className="bg-gray-900/60 border border-gray-800/60 rounded-xl p-6 backdrop-blur-sm"
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.4, delay: 0.15 }}
@@ -268,17 +274,23 @@ export default function BlogPostCreate() {
                 type="text"
                 value={formSlug}
                 onChange={(e) => handleSlugChange(e.target.value)}
-                className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 font-body"
+                className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-blue-500/60 focus:border-transparent font-body"
                 placeholder="post-slug"
               />
-              <p className="text-xs text-gray-500 mt-2 font-body">
-                Used in the URL: /blog/your-slug-here
+              <p className="text-xs text-gray-500 mt-2 font-body font-mono">
+                URL: https://www.kaizenweb.co.uk/blog/<span className="text-gray-300">{formSlug || "your-slug-here"}</span>
               </p>
+              {formSlug && !/^[a-z0-9-]+$/.test(formSlug) && (
+                <div className="mt-3 p-3 bg-yellow-500/10 border border-yellow-500/30 rounded text-yellow-600 text-xs font-body">
+                  <p className="font-bold mb-1">Slug format warning</p>
+                  <p>For best results, use lowercase letters, numbers, and hyphens only (no spaces).</p>
+                </div>
+              )}
             </motion.div>
 
             {/* Excerpt */}
             <motion.div
-              className="bg-gray-900 border border-gray-800 rounded-lg p-6"
+              className="bg-gray-900/60 border border-gray-800/60 rounded-xl p-6 backdrop-blur-sm"
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.4, delay: 0.2 }}
@@ -290,14 +302,96 @@ export default function BlogPostCreate() {
                 value={formExcerpt}
                 onChange={(e) => setFormExcerpt(e.target.value)}
                 rows={3}
-                className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 font-body"
+                className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-blue-500/60 focus:border-transparent font-body"
                 placeholder="Short summary of the post"
               />
+              <div className={`mt-2 text-xs font-body ${formExcerpt.length >= 80 && formExcerpt.length <= 180 ? "text-green-400" : "text-yellow-400"}`}>
+                {formExcerpt.length} characters
+                {(formExcerpt.length < 80 || formExcerpt.length > 180) && formExcerpt && (
+                  <p className="mt-1">Descriptions around 80–180 characters are often clearer in search snippets.</p>
+                )}
+              </div>
+            </motion.div>
+
+            {/* SEO Section */}
+            <motion.div
+              className="bg-gray-900/60 border border-gray-800/60 rounded-xl p-6 backdrop-blur-sm"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4, delay: 0.22 }}
+            >
+              <h3 className="font-heading font-bold mb-4 text-sm text-gray-300">
+                SEO
+              </h3>
+
+              {/* SEO Title */}
+              <div className="mb-6">
+                <label className="block font-heading font-bold mb-2 text-xs text-gray-400 uppercase tracking-widest">
+                  SEO Title
+                </label>
+                <input
+                  type="text"
+                  value={formSeoTitle}
+                  onChange={(e) => setFormSeoTitle(e.target.value)}
+                  className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-blue-500/60 focus:border-transparent font-body text-sm"
+                  placeholder="Leave blank to use the main title"
+                />
+                <p className="text-xs text-gray-500 mt-2 font-body">
+                  Used as the &lt;title&gt; tag when a custom value is set. Falls back to the main title if left blank.
+                </p>
+                <div className={`mt-2 text-xs font-body ${formSeoTitle.length > 60 ? "text-yellow-400" : "text-gray-500"}`}>
+                  {formSeoTitle.length} / 60 characters
+                  {formSeoTitle.length > 60 && (
+                    <p className="mt-1">Long titles may be truncated in search results.</p>
+                  )}
+                </div>
+              </div>
+
+              {/* SEO Description */}
+              <div className="mb-6">
+                <label className="block font-heading font-bold mb-2 text-xs text-gray-400 uppercase tracking-widest">
+                  SEO Description
+                </label>
+                <textarea
+                  value={formSeoDescription}
+                  onChange={(e) => setFormSeoDescription(e.target.value)}
+                  rows={3}
+                  className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-blue-500/60 focus:border-transparent font-body text-sm"
+                  placeholder="Leave blank to use the excerpt or auto-generate from content"
+                />
+                <p className="text-xs text-gray-500 mt-2 font-body">
+                  Used as the meta description when set. Falls back to the excerpt or a snippet of content if left blank.
+                </p>
+                <div className={`mt-2 text-xs font-body ${formSeoDescription.length >= 80 && formSeoDescription.length <= 180 ? "text-green-400" : "text-yellow-400"}`}>
+                  {formSeoDescription.length} characters
+                  {(formSeoDescription.length < 80 || formSeoDescription.length > 180) && formSeoDescription && (
+                    <p className="mt-1">Descriptions around 80–180 characters tend to read better in search results.</p>
+                  )}
+                </div>
+              </div>
+
+              {/* Search Preview */}
+              <div className="mt-6 pt-6 border-t border-gray-700">
+                <p className="text-xs font-mono text-gray-500 font-bold tracking-widest mb-3">
+                  SEARCH PREVIEW
+                </p>
+                <div className="bg-gray-800/50 rounded-lg p-4 border border-gray-700/50">
+                  <p className="text-blue-400 hover:underline text-sm font-body mb-1 break-words">
+                    {formSeoTitle || formTitle || "Your page title"}
+                  </p>
+                  <p className="text-green-600 font-mono text-xs mb-2 break-words">
+                    https://www.kaizenweb.co.uk/blog/{formSlug || "your-slug-here"}
+                  </p>
+                  <p className="text-gray-400 text-sm font-body line-clamp-2">
+                    {formSeoDescription || formExcerpt || "Your page description will appear here"}
+                  </p>
+                </div>
+              </div>
             </motion.div>
 
             {/* Published Date */}
             <motion.div
-              className="bg-gray-900 border border-gray-800 rounded-lg p-6"
+              className="bg-gray-900/60 border border-gray-800/60 rounded-xl p-6 backdrop-blur-sm"
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.4, delay: 0.25 }}
@@ -309,13 +403,13 @@ export default function BlogPostCreate() {
                 type="date"
                 value={formPublishedDate}
                 onChange={(e) => setFormPublishedDate(e.target.value)}
-                className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 font-body"
+                className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-blue-500/60 focus:border-transparent font-body"
               />
             </motion.div>
 
             {/* Tags */}
             <motion.div
-              className="bg-gray-900 border border-gray-800 rounded-lg p-6"
+              className="bg-gray-900/60 border border-gray-800/60 rounded-xl p-6 backdrop-blur-sm"
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.4, delay: 0.3 }}
@@ -327,7 +421,7 @@ export default function BlogPostCreate() {
                 type="text"
                 value={formTagsString}
                 onChange={(e) => setFormTagsString(e.target.value)}
-                className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 font-body"
+                className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-blue-500/60 focus:border-transparent font-body"
                 placeholder="Separate tags with commas (e.g., design, web, agile)"
               />
               <p className="text-xs text-gray-500 mt-2 font-body">
@@ -337,7 +431,7 @@ export default function BlogPostCreate() {
 
             {/* Body Editor */}
             <motion.div
-              className="bg-gray-900 border border-gray-800 rounded-lg p-6"
+              className="bg-gray-900/60 border border-gray-800/60 rounded-xl p-6 backdrop-blur-sm"
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.4, delay: 0.35 }}
@@ -345,14 +439,14 @@ export default function BlogPostCreate() {
               <label className="block font-heading font-bold mb-3 text-sm text-gray-400 uppercase tracking-widest">
                 Content
               </label>
-              <div className="bg-gray-800 rounded-lg overflow-hidden border border-gray-700">
+              <div className="rounded-lg overflow-hidden border border-gray-300">
                 <ReactQuill
                   theme="snow"
                   value={formBody}
                   onChange={setFormBody}
                   modules={quillModules}
                   formats={quillFormats}
-                  className="bg-gray-800 text-white"
+                  className="quill-editor-light"
                   style={{
                     height: "300px",
                   }}
@@ -361,38 +455,196 @@ export default function BlogPostCreate() {
               <p className="text-xs text-gray-500 mt-4 font-body">
                 Write your post content here. Use headings, formatting, links, and lists as needed.
               </p>
+              {/* Word Count & Reading Time */}
+              {formBody && (
+                <div className="mt-4 pt-4 border-t border-gray-700 flex gap-4">
+                  <div className="text-xs text-gray-400 font-body">
+                    <span className="font-bold">Word count:</span> {calculateWordCount(formBody)}
+                  </div>
+                  <div className="text-xs text-gray-400 font-body">
+                    <span className="font-bold">Reading time:</span> {calculateReadingTime(formBody)}–{Math.ceil(calculateReadingTime(formBody) * 1.2)} min
+                  </div>
+                </div>
+              )}
+              {calculateWordCount(formBody) < 150 && formBody && (
+                <div className="mt-3 p-3 bg-yellow-500/10 border border-yellow-500/30 rounded text-yellow-600 text-xs font-body">
+                  <p className="font-bold mb-1">Short post warning</p>
+                  <p>Very short posts may not provide enough depth for readers.</p>
+                </div>
+              )}
             </motion.div>
           </div>
 
           {/* Sidebar */}
           <div className="space-y-6">
-            {/* Create Button */}
-            <motion.button
-              onClick={handleSave}
-              disabled={isSaving}
-              className="w-full py-3 bg-gradient-to-r from-blue-500 to-purple-500 text-white font-heading font-bold rounded-lg hover:opacity-90 transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+            {/* Save Card */}
+            <motion.div
+              className="bg-gradient-to-br from-blue-500/20 to-purple-500/20 border border-blue-500/30 rounded-xl p-6 backdrop-blur-sm shadow-lg shadow-blue-500/10"
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.4, delay: 0.1 }}
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
             >
-              <Save size={18} />
-              {isSaving ? "Creating..." : "Create Post"}
-            </motion.button>
+              <motion.button
+                onClick={handleSave}
+                disabled={isSaving}
+                className="w-full py-3 bg-gradient-to-r from-blue-500 to-purple-500 text-white font-heading font-bold rounded-lg hover:opacity-90 transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+              >
+                <Save size={18} />
+                {isSaving ? "Creating..." : "Create Post"}
+              </motion.button>
+              <p className="text-xs text-gray-400 mt-3 font-body">
+                This will create a new blog post entry in your Builder Publish space. After creation, you'll be able to edit it further.
+              </p>
+            </motion.div>
 
-            {/* Info */}
+            {/* SEO & Content Checklist */}
+            {(() => {
+              const tagsArray = formTagsString
+                .split(",")
+                .map((tag) => tag.trim())
+                .filter((tag) => tag.length > 0);
+
+              const wordCount = calculateWordCount(formBody);
+              const slugValid = /^[a-z0-9-]+$/.test(formSlug) && formSlug.length > 0;
+              const excerptOK = formExcerpt.length >= 80 && formExcerpt.length <= 180;
+              const contentOK = wordCount >= 300;
+              const tagsOK = tagsArray.length > 0;
+              const titleOK = formTitle.trim().length > 0;
+
+              return (
+                <motion.div
+                  className="bg-gray-900/60 border border-gray-800/60 rounded-xl p-6 backdrop-blur-sm"
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.4, delay: 0.15 }}
+                >
+                  <h3 className="font-heading font-bold mb-4 text-sm text-gray-300">
+                    SEO & Content Checklist
+                  </h3>
+                  <div className="space-y-3">
+                    <div className="flex items-center gap-3">
+                      {titleOK ? (
+                        <CheckCircle size={16} className="text-emerald-400 flex-shrink-0" />
+                      ) : (
+                        <AlertTriangle size={16} className="text-yellow-400 flex-shrink-0" />
+                      )}
+                      <span className="text-xs text-gray-300 font-body">Title set</span>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      {slugValid ? (
+                        <CheckCircle size={16} className="text-emerald-400 flex-shrink-0" />
+                      ) : (
+                        <AlertTriangle size={16} className="text-yellow-400 flex-shrink-0" />
+                      )}
+                      <span className="text-xs text-gray-300 font-body">Slug looks clean</span>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      {excerptOK ? (
+                        <CheckCircle size={16} className="text-emerald-400 flex-shrink-0" />
+                      ) : (
+                        <AlertTriangle size={16} className="text-yellow-400 flex-shrink-0" />
+                      )}
+                      <span className="text-xs text-gray-300 font-body">Excerpt length OK</span>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      {contentOK ? (
+                        <CheckCircle size={16} className="text-emerald-400 flex-shrink-0" />
+                      ) : (
+                        <AlertTriangle size={16} className="text-yellow-400 flex-shrink-0" />
+                      )}
+                      <span className="text-xs text-gray-300 font-body">Enough content ({wordCount} words)</span>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      {tagsOK ? (
+                        <CheckCircle size={16} className="text-emerald-400 flex-shrink-0" />
+                      ) : (
+                        <AlertTriangle size={16} className="text-yellow-400 flex-shrink-0" />
+                      )}
+                      <span className="text-xs text-gray-300 font-body">Tags added</span>
+                    </div>
+                  </div>
+                </motion.div>
+              );
+            })()}
+
+            {/* Quick Links */}
             <motion.div
-              className="bg-blue-500/10 border border-blue-500/30 rounded-lg p-6"
+              className="bg-gray-900/60 border border-gray-800/60 rounded-xl p-6 backdrop-blur-sm"
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.4, delay: 0.2 }}
             >
-              <p className="text-xs text-gray-300 font-body">
-                <span className="font-bold font-heading block mb-2">Create Mode</span>
-                This will create a new blog post entry in your Builder Publish space. After creation, you'll be able to edit it further.
-              </p>
+              <h3 className="font-heading font-bold mb-4 text-sm text-gray-300">
+                Quick links
+              </h3>
+              <div className="space-y-2">
+                <a
+                  href="https://www.kaizenweb.co.uk/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-gray-800/50 transition text-gray-300 hover:text-blue-400 text-xs font-body"
+                >
+                  <Home size={14} />
+                  Go to Kaizen homepage
+                </a>
+                <a
+                  href="https://www.kaizenweb.co.uk/blog"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-gray-800/50 transition text-gray-300 hover:text-blue-400 text-xs font-body"
+                >
+                  <List size={14} />
+                  View blog index
+                </a>
+                {formSlug && (
+                  <a
+                    href={`https://www.kaizenweb.co.uk/blog/${formSlug}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-gray-800/50 transition text-gray-300 hover:text-blue-400 text-xs font-body"
+                  >
+                    <ExternalLink size={14} />
+                    View this post on site
+                  </a>
+                )}
+              </div>
             </motion.div>
+
+            {/* Post Insights */}
+            {(() => {
+              const tagsArray = formTagsString
+                .split(",")
+                .map((tag) => tag.trim())
+                .filter((tag) => tag.length > 0);
+              const wordCount = calculateWordCount(formBody);
+              const readingTime = calculateReadingTime(formBody);
+
+              return (
+                <motion.div
+                  className="bg-gray-900/60 border border-gray-800/60 rounded-xl p-6 backdrop-blur-sm"
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.4, delay: 0.25 }}
+                >
+                  <h3 className="font-heading font-bold mb-4 text-sm text-gray-300">
+                    Post insights
+                  </h3>
+                  <div className="space-y-2">
+                    <p className="text-xs text-gray-400 font-body">
+                      <span className="text-gray-300 font-bold">Word count:</span> {wordCount}
+                    </p>
+                    <p className="text-xs text-gray-400 font-body">
+                      <span className="text-gray-300 font-bold">Reading time:</span> {readingTime}–{Math.ceil(readingTime * 1.2)} min
+                    </p>
+                    <p className="text-xs text-gray-400 font-body">
+                      <span className="text-gray-300 font-bold">Tags:</span> {tagsArray.length}
+                    </p>
+                  </div>
+                </motion.div>
+              );
+            })()}
           </div>
         </div>
       </motion.div>
