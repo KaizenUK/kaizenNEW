@@ -126,6 +126,10 @@ function AppContent() {
         />
         <Route path="/services/ecommerce" element={<Ecommerce />} />
         <Route
+          path="/services/wordpress-web-design"
+          element={<WordPressWebDesign />}
+        />
+        <Route
           path="/contract-product-owner"
           element={<ContractProductOwner />}
         />
