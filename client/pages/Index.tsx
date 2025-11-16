@@ -270,7 +270,7 @@ export default function Home() {
                 </div>
 
                 <div className="mt-8">
-                  <CTAButton text="Book a 15-Minute Discovery Call" secondary />
+                  <CTAButton text="Book a 15-Minute Discovery Call" secondary openCalendly />
                 </div>
               </div>
 
