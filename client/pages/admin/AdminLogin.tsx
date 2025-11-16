@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Lock, AlertCircle } from "lucide-react";
+import { Helmet } from "react-helmet-async";
 import { useAdminAuth } from "@/hooks/useAdminAuth";
 
 export default function AdminLogin() {
@@ -31,6 +32,10 @@ export default function AdminLogin() {
 
   return (
     <div className="min-h-screen bg-gray-950 text-white flex items-center justify-center px-4">
+      <Helmet>
+        <title>Admin Login | Kaizen Web</title>
+        <meta name="robots" content="noindex,nofollow" />
+      </Helmet>
       <motion.div
         className="w-full max-w-md"
         initial={{ opacity: 0, y: 20 }}

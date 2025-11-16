@@ -98,10 +98,6 @@ export default function BlogPostsList() {
           limit: 100,
         })) as BlogPost[];
 
-        if (results && results.length > 0) {
-          console.log("[BlogPostsList] Sample blog-post:", results[0]);
-        }
-
         const processed: ProcessedPost[] = results
           .map((post) => {
             const rawCover = post.data?.coverImage;
