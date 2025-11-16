@@ -555,10 +555,7 @@ export default function Home() {
           >
             <CTAButton text="Start a Live Chat" openChat />
             <button
-              onClick={() => {
-                const { openCalendly } = useCalendly?.() || {};
-                openCalendly?.();
-              }}
+              onClick={openCalendlyFromContext}
               className="px-8 py-3 rounded-full border-2 border-kaizen-dark dark:border-white/20 text-kaizen-dark dark:text-white/85 font-heading font-bold hover:border-kaizen-cyan dark:hover:border-kaizen-cyan transition inline-flex items-center justify-center gap-2"
             >
               Book Your 15-Minute Call
