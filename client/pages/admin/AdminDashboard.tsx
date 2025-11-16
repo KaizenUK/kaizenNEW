@@ -1,12 +1,18 @@
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { FileText, ArrowRight, MessageCircle } from "lucide-react";
-import AdminLayout from "@/components/AdminLayout";
-import { useCrisp } from "@/context/CrispContext";
 
-function DashboardContent() {
-  const { crispUnread, crispOpen, crispLatest } = useCrisp();
+interface DashboardProps {
+  crispUnread: number | null;
+  crispOpen: number | null;
+  crispLatest: string | null;
+}
 
+export default function AdminDashboard({
+  crispUnread,
+  crispOpen,
+  crispLatest,
+}: DashboardProps) {
   const quickLinks = [
     {
       title: "Blog Posts",
@@ -139,13 +145,5 @@ function DashboardContent() {
         </p>
       </motion.div>
     </motion.div>
-  );
-}
-
-export default function AdminDashboard() {
-  return (
-    <AdminLayout>
-      <DashboardContent />
-    </AdminLayout>
   );
 }
