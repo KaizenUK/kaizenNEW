@@ -113,13 +113,13 @@ export default function BlogPostDetail() {
   const [formSeoDescription, setFormSeoDescription] = useState("");
 
   // UI state
-  const [post, setPost] = React.useState<BlogPost | null>(null);
-  const [isLoading, setIsLoading] = React.useState(true);
-  const [error, setError] = React.useState<string | null>(null);
-  const [isSaving, setIsSaving] = React.useState(false);
-  const [saveError, setSaveError] = React.useState<string | null>(null);
-  const [saveSuccess, setSaveSuccess] = React.useState(false);
-  const [isModified, setIsModified] = React.useState(false);
+  const [post, setPost] = useState<BlogPost | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [isSaving, setIsSaving] = useState(false);
+  const [saveError, setSaveError] = useState<string | null>(null);
+  const [saveSuccess, setSaveSuccess] = useState(false);
+  const [isModified, setIsModified] = useState(false);
 
   const handleFormChange = () => setIsModified(true);
 
