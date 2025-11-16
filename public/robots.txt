@@ -11,4 +11,7 @@ User-agent: facebookexternalhit
 Allow: /
 
 User-agent: *
+Disallow: /admin
+Disallow: /admin/
+Disallow: /admin/*
 Allow: /
