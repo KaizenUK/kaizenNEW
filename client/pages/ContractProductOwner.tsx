@@ -76,10 +76,10 @@ export default function ContractProductOwner() {
   return (
     <Layout>
       <Helmet>
-        <title>Sean McDonnell | Contract Product Owner Liverpool | Kaizen</title>
+        <title>Senior Contract Product Owner Liverpool | A Kaizen Founder Service</title>
         <meta
           name="description"
-          content="Sean McDonnell, a Liverpool-based Senior Product Owner with 10+ years' experience in iGaming & high-stakes platform migration. I deliver complex projects, on time."
+          content="Our founder, Sean McDonnell, provides expert Contract Product Owner services in Liverpool to de-risk complex projects. Stop chaos, guarantee delivery."
         />
       </Helmet>
 
@@ -89,7 +89,7 @@ export default function ContractProductOwner() {
           <div className="max-w-4xl">
             {/* Main H1 - Staggered word reveal */}
             <h1 className="text-5xl md:text-6xl lg:text-7xl font-heading font-black mb-12 leading-tight text-kaizen-dark dark:text-white">
-              {["Your", "£100k", "project", "needs", "one", "owner."].map(
+              {["Your", "project", "needs", "one", "owner."].map(
                 (word, index) => (
                   <motion.span
                     key={index}
@@ -115,7 +115,7 @@ export default function ContractProductOwner() {
               animate={{ opacity: 1 }}
               transition={{ delay: 0.8, duration: 0.8 }}
             >
-              I'm <strong>Sean McDonnell</strong>, a Senior Product Owner with over a decade of experience, acting as the expert link between your business goals and your technical team. I take full responsibility for complex projects and see them through to delivery. No excuses.
+              I'm <strong>Sean McDonnell</strong>, founder of Kaizen. While <strong>we</strong> are a full-service agency, this is <strong>my</strong> specialist service. I step in personally to take full responsibility for your complex project, manage your team, and guarantee delivery. No excuses.
             </motion.p>
 
             {/* CTAs */}
@@ -154,18 +154,18 @@ export default function ContractProductOwner() {
           <ScrollReveal>
             <div className="max-w-3xl">
               <h2 className="text-4xl md:text-5xl font-heading font-bold mb-8 text-kaizen-dark dark:text-white">
-                What a "Product Owner" Actually Does
+                Why Your Project is Failing (And How I Fix It)
               </h2>
               <p className="text-lg md:text-xl text-kaizen-text-dark/70 dark:text-white/60 leading-relaxed mb-8">
-                A Product Owner is not just a "project manager." They are the one person with the authority to make decisions. They protect your budget, they ruthlessly prioritise the "to-do" list (the backlog), and they are the single, expert link between your commercial goals and your technical, art, and compliance teams.
+                Most projects fail from a lack of a single, empowered owner. Not a "project manager" who just shuffles tasks, but one person who has the authority to make decisions, protect your budget, and act as the single, expert link between your business goals and your technical team.
               </p>
 
               <div>
                 <h3 className="text-2xl font-heading font-bold mb-4 text-kaizen-dark dark:text-white">
-                  In short:
+                  My job is to:
                 </h3>
                 <p className="text-lg text-kaizen-text-dark/70 dark:text-white/60 leading-relaxed">
-                  I act as your expert representative, ensuring what you <em>ask for</em> is what gets <em>built</em>.
+                  Act as your expert representative, de-risk your investment, and ensure what you <em>ask for</em> is what gets <em>built</em>.
                 </p>
               </div>
             </div>
@@ -193,17 +193,20 @@ export default function ContractProductOwner() {
               {
                 icon: Briefcase,
                 title: "High-Stakes Platform Delivery",
-                copy: "I've owned product strategy for platforms handling over £150m in revenue and millions of transactions. I am comfortable managing high-stakes, zero-downtime projects, like the core legacy platform migration I managed at Playtech.",
+                proof: "I've owned product strategy for platforms handling over £150m in revenue and millions of transactions, including a zero-downtime legacy migration at Playtech.",
+                matters: "I know how to de-risk your most critical projects. I am not intimidated by complexity.",
               },
               {
                 icon: Users,
-                title: "Managing Complex Teams",
-                copy: "I act as the central hub. At High 5 Games, I was the central PO for new titles, coordinating workflows between art, music, dev, and B2B clients like MGM and FanDuel.",
+                title: "Managing Complex Teams & Suppliers",
+                proof: "At High 5 Games, I was the central PO coordinating workflows between art, music, dev, and B2B clients like MGM and FanDuel.",
+                matters: "I save you from managing chaotic suppliers. I become the single point of contact that forces everyone to align.",
               },
               {
                 icon: Zap,
-                title: "Driving Transformation",
-                copy: "I don't just manage projects; I fix processes. I've led full digital transformations at firms like SMD Credit Solutions and implemented new Agile workflows that became company models.",
+                title: "Driving Real Transformation",
+                proof: "I don't just manage projects; I fix processes. I've led digital transformations at firms like SMD Credit Solutions and implemented new Agile workflows.",
+                matters: "I don't just deliver your project; I leave your team and workflow more efficient than I found them.",
               },
             ].map((card, index) => (
               <motion.div
@@ -220,9 +223,20 @@ export default function ContractProductOwner() {
                 <h3 className="text-2xl font-heading font-bold mb-4 text-kaizen-dark dark:text-white">
                   {card.title}
                 </h3>
-                <p className="text-lg text-kaizen-text-dark/70 dark:text-white/60 leading-relaxed">
-                  {card.copy}
-                </p>
+                <div className="space-y-4">
+                  <div>
+                    <p className="text-sm font-semibold text-kaizen-cyan dark:text-kaizen-cyan/80 mb-2 uppercase tracking-wide">Proof</p>
+                    <p className="text-lg text-kaizen-text-dark/70 dark:text-white/60 leading-relaxed">
+                      {card.proof}
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-sm font-semibold text-kaizen-lime dark:text-kaizen-lime/80 mb-2 uppercase tracking-wide">Why this matters for you</p>
+                    <p className="text-lg text-kaizen-text-dark/70 dark:text-white/60 leading-relaxed">
+                      {card.matters}
+                    </p>
+                  </div>
+                </div>
               </motion.div>
             ))}
           </motion.div>
@@ -281,7 +295,7 @@ export default function ContractProductOwner() {
         <div className="container mx-auto px-4">
           <ScrollReveal>
             <h2 className="text-4xl md:text-5xl font-heading font-bold mb-16 text-kaizen-dark dark:text-white text-center">
-              My Core Expertise
+              How This Fits With Kaizen
             </h2>
           </ScrollReveal>
 
@@ -296,14 +310,14 @@ export default function ContractProductOwner() {
               {
                 icon: Users,
                 title: "Agile Coaching",
-                copy: "I've implemented Agile workflows that became company models. If you want to train your own team, I can coach them.",
+                copy: "I've implemented Agile workflows that became company models. If you want us to train your own team, we can coach them.",
                 link: "/agile-coaching",
                 linkText: "Explore Agile Coaching",
               },
               {
                 icon: BookOpen,
-                title: "Web Design Projects",
-                copy: "This is the same expert process I use to manage all of our web design and development projects.",
+                title: "Our Web Design Projects",
+                copy: "This is the same expert process we use to manage all of our web design and development projects.",
                 link: "/services/web-design-liverpool",
                 linkText: "Explore Web Design",
               },
