@@ -156,6 +156,7 @@ export function CalendlyModal({ isOpen, onClose }: CalendlyModalProps) {
           <div
             ref={containerRef}
             className="calendly-inline-widget w-full"
+            data-url="https://calendly.com/sean-kaizenweb/30-minute-meeting-clone"
             style={{ minWidth: "320px", height: "700px" }}
           />
         </div>
