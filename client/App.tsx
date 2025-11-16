@@ -5,7 +5,7 @@ import { createRoot } from "react-dom/client";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { HelmetProvider } from "react-helmet-async";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
@@ -37,6 +37,81 @@ import BlogPostDetail from "./pages/admin/BlogPostDetail";
 
 const queryClient = new QueryClient();
 
+function AppContent() {
+  const location = useLocation();
+  const isAdminRoute = location.pathname.startsWith("/admin");
+
+  return (
+    <>
+      {/* Only show CrispChatButton on non-admin routes */}
+      {/* When CrispChatButton is added, uncomment the line below: */}
+      {/* {!isAdminRoute && <CrispChatButton />} */}
+
+      <Routes>
+        {/* Public Routes */}
+        <Route path="/" element={<Index />} />
+        <Route path="/services" element={<Services />} />
+        <Route path="/services/web-design" element={<WebDesign />} />
+        <Route path="/services/local-seo" element={<LocalSeo />} />
+        <Route path="/services/digital-transformation" element={<DigitalTransformation />} />
+        <Route path="/services/ecommerce" element={<Ecommerce />} />
+        <Route path="/contract-product-owner" element={<ContractProductOwner />} />
+        <Route path="/about" element={<About />} />
+        <Route path="/agile-coaching" element={<AgileCoaching />} />
+        <Route path="/product-owner" element={<ProductOwner />} />
+        <Route path="/team-transformation" element={<TeamTransformation />} />
+        <Route path="/web-design-liverpool" element={<WebDesignLiverpool />} />
+        <Route path="/web-design-liverpool-city-centre" element={<WebDesignLiverpoolCityCentre />} />
+        <Route path="/case-studies" element={<CaseStudies />} />
+        <Route path="/blog" element={<Blog />} />
+        <Route path="/blog/:slug" element={<BlogDetail />} />
+        <Route path="/contact" element={<Contact />} />
+        <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+        <Route path="/gdpr-policy" element={<GDPRPolicy />} />
+
+        {/* Admin Routes */}
+        <Route path="/admin/login" element={<AdminLogin />} />
+        <Route
+          path="/admin"
+          element={
+            <AdminGuard>
+              <AdminDashboard />
+            </AdminGuard>
+          }
+        />
+        <Route
+          path="/admin/blog-posts"
+          element={
+            <AdminGuard>
+              <BlogPostsList />
+            </AdminGuard>
+          }
+        />
+        <Route
+          path="/admin/blog-posts/new"
+          element={
+            <AdminGuard>
+              <BlogPostCreate />
+            </AdminGuard>
+          }
+        />
+        <Route
+          path="/admin/blog-posts/:slug"
+          element={
+            <AdminGuard>
+              <BlogPostDetail />
+            </AdminGuard>
+          }
+        />
+
+        {/* Catch-all */}
+        {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+        <Route path="*" element={<NotFound />} />
+      </Routes>
+    </>
+  );
+}
+
 const App = () => (
   <HelmetProvider>
     <QueryClientProvider client={queryClient}>
@@ -44,67 +119,7 @@ const App = () => (
         <Toaster />
         <Sonner />
         <BrowserRouter>
-          <Routes>
-          {/* Public Routes */}
-          <Route path="/" element={<Index />} />
-          <Route path="/services" element={<Services />} />
-          <Route path="/services/web-design" element={<WebDesign />} />
-          <Route path="/services/local-seo" element={<LocalSeo />} />
-          <Route path="/services/digital-transformation" element={<DigitalTransformation />} />
-          <Route path="/services/ecommerce" element={<Ecommerce />} />
-          <Route path="/contract-product-owner" element={<ContractProductOwner />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/agile-coaching" element={<AgileCoaching />} />
-          <Route path="/product-owner" element={<ProductOwner />} />
-          <Route path="/team-transformation" element={<TeamTransformation />} />
-          <Route path="/web-design-liverpool" element={<WebDesignLiverpool />} />
-          <Route path="/web-design-liverpool-city-centre" element={<WebDesignLiverpoolCityCentre />} />
-          <Route path="/case-studies" element={<CaseStudies />} />
-          <Route path="/blog" element={<Blog />} />
-          <Route path="/blog/:slug" element={<BlogDetail />} />
-          <Route path="/contact" element={<Contact />} />
-          <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-          <Route path="/gdpr-policy" element={<GDPRPolicy />} />
-
-          {/* Admin Routes */}
-          <Route path="/admin/login" element={<AdminLogin />} />
-          <Route
-            path="/admin"
-            element={
-              <AdminGuard>
-                <AdminDashboard />
-              </AdminGuard>
-            }
-          />
-          <Route
-            path="/admin/blog-posts"
-            element={
-              <AdminGuard>
-                <BlogPostsList />
-              </AdminGuard>
-            }
-          />
-          <Route
-            path="/admin/blog-posts/new"
-            element={
-              <AdminGuard>
-                <BlogPostCreate />
-              </AdminGuard>
-            }
-          />
-          <Route
-            path="/admin/blog-posts/:slug"
-            element={
-              <AdminGuard>
-                <BlogPostDetail />
-              </AdminGuard>
-            }
-          />
-
-          {/* Catch-all */}
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-          <Route path="*" element={<NotFound />} />
-          </Routes>
+          <AppContent />
         </BrowserRouter>
       </TooltipProvider>
     </QueryClientProvider>
