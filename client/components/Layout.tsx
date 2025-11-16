@@ -219,7 +219,9 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                 onMouseEnter={() => setServicesOpen(true)}
                 onMouseLeave={() => setServicesOpen(false)}
               >
-                <button className="px-3 py-2 text-lg font-heading font-medium hover:text-kaizen-cyan transition rounded-md hover:bg-kaizen-light/50 dark:hover:bg-white/5 flex items-center gap-1">
+                <button className={`px-3 py-2 text-lg font-heading font-medium hover:text-kaizen-cyan transition rounded-md hover:bg-kaizen-light/50 dark:hover:bg-white/5 flex items-center gap-1 ${
+                  navTextLight ? "text-white" : "text-kaizen-dark dark:text-white"
+                }`}>
                   Services
                   <ChevronDown
                     size={16}
@@ -234,14 +236,14 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -10 }}
                     transition={{ duration: 0.2 }}
-                    className="absolute left-0 top-full mt-0 w-screen border-t"
+                    className="fixed left-0 right-0 top-[calc(100%+2px)] z-[45] border-b"
                     style={{
-                      backgroundColor: theme === "light" ? "rgba(255, 255, 255, 0.05)" : "rgba(15, 23, 42, 0.05)",
-                      backdropFilter: "blur(10px)",
-                      borderTopColor: "rgba(255, 255, 255, 0.1)",
+                      backgroundColor: theme === "light" ? "rgba(255, 255, 255, 0.95)" : "rgba(15, 23, 42, 0.95)",
+                      backdropFilter: "blur(20px)",
+                      borderBottomColor: "rgba(255, 255, 255, 0.1)",
                     }}
                   >
-                    <div className="container mx-auto px-4 py-8">
+                    <div className="container mx-auto px-4 py-12">
                       <div className="grid grid-cols-2 gap-16">
                         {/* Column 1: Web & SEO */}
                         <div>
