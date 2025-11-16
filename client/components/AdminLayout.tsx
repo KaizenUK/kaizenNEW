@@ -5,34 +5,56 @@ import { useState, useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 import { useAdminAuth } from "@/hooks/useAdminAuth";
 
+interface AdminLayoutProps {
+  children: React.ReactNode;
+}
+
 export default function AdminLayout({
   children,
-}: {
-  children: React.ReactNode;
-}) {
+}: AdminLayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [crispUnread, setCrispUnread] = useState<number | null>(null);
+  const [crispOpen, setCrispOpen] = useState<number | null>(null);
+  const [crispLatest, setCrispLatest] = useState<string | null>(null);
   const location = useLocation();
   const { logout } = useAdminAuth();
 
-  // Fetch Crisp unread count
+  // Fetch Crisp summary data
   useEffect(() => {
     let cancelled = false;
 
-    const loadCrispUnread = async () => {
+    const loadCrispData = async () => {
       try {
         const res = await fetch("/api/admin/crisp/summary");
         if (!res.ok) return;
         const json = await res.json();
-        if (!cancelled && typeof json.unreadCount === "number") {
+        if (cancelled || !json || json.ok !== true) return;
+
+        if (typeof json.unreadCount === "number") {
           setCrispUnread(json.unreadCount);
         }
+        if (typeof json.openConversations === "number") {
+          setCrispOpen(json.openConversations);
+        }
+
+        // Derive latest message snippet from raw.data[0]
+        const data = json.raw && Array.isArray(json.raw.data) ? json.raw.data : null;
+        if (data && data.length > 0) {
+          const first = data[0];
+          const excerpt =
+            first?.preview_message?.excerpt ||
+            first?.last_message ||
+            null;
+          if (typeof excerpt === "string" && excerpt.length > 0) {
+            setCrispLatest(excerpt);
+          }
+        }
       } catch {
-        // Silently ignore errors - leave crispUnread as null
+        // Silently ignore errors - leave Crisp items as null
       }
     };
 
-    loadCrispUnread();
+    loadCrispData();
 
     return () => {
       cancelled = true;
@@ -61,8 +83,8 @@ export default function AdminLayout({
         <meta name="robots" content="noindex,nofollow" />
       </Helmet>
       <div className="flex h-screen bg-gray-950 text-white">
-      {/* Sidebar */}
-      <motion.aside
+        {/* Sidebar */}
+        <motion.aside
         animate={{ width: sidebarOpen ? 256 : 80 }}
         transition={{ duration: 0.3 }}
         className="bg-gradient-to-b from-gray-900 to-gray-950 border-r border-gray-800 flex flex-col"
@@ -105,12 +127,23 @@ export default function AdminLayout({
               >
                 <Icon size={20} />
                 {sidebarOpen && (
-                  <span className="font-medium">{item.name}</span>
-                )}
-                {item.name === "Crisp inbox" && typeof crispUnread === "number" && crispUnread > 0 && (
-                  <span className="ml-auto inline-flex items-center rounded-full bg-red-500/20 text-red-300 text-xs px-2 py-0.5">
-                    {crispUnread}
-                  </span>
+                  <>
+                    <span className="font-medium">{item.name}</span>
+                    {item.name === "Crisp inbox" && (typeof crispOpen === "number" || typeof crispUnread === "number") && (
+                      <div className="ml-auto flex items-center gap-1">
+                        {typeof crispOpen === "number" && crispOpen > 0 && (
+                          <span className="inline-flex items-center rounded-full bg-slate-800 text-slate-200 text-[11px] px-2 py-0.5">
+                            Open: {crispOpen}
+                          </span>
+                        )}
+                        {typeof crispUnread === "number" && crispUnread > 0 && (
+                          <span className="inline-flex items-center rounded-full bg-red-500/80 text-white text-[11px] px-2 py-0.5">
+                            {crispUnread}
+                          </span>
+                        )}
+                      </div>
+                    )}
+                  </>
                 )}
               </a>
             ) : (
