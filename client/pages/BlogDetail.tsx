@@ -180,9 +180,9 @@ function TableOfContents({
         TABLE OF CONTENTS
       </p>
       <nav className="space-y-2">
-        {items.map((item) => (
+        {items.map((item, index) => (
           <motion.a
-            key={item.id}
+            key={`${item.id}-${index}`}
             href={`#${item.id}`}
             className={`block text-sm transition py-2 px-3 rounded ${
               activeId === item.id
