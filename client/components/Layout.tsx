@@ -78,7 +78,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 
     const handleScroll = () => {
       const scrollY = window.scrollY;
-      setNavTextLight(scrollY > 80);
+      setNavTextLight(scrollY < 80);
     };
 
     handleScroll();
@@ -198,6 +198,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
               <div
                 className="relative"
                 onMouseEnter={() => setServicesOpen(true)}
+                onMouseLeave={() => setServicesOpen(false)}
               >
                 <button
                   className={`px-3 py-2 text-lg font-heading font-medium hover:text-kaizen-cyan transition rounded-md hover:bg-kaizen-light/50 dark:hover:bg-white/5 flex items-center gap-1 ${
@@ -222,7 +223,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                     transition={{ duration: 0.2 }}
                     onMouseEnter={() => setServicesOpen(true)}
                     onMouseLeave={() => setServicesOpen(false)}
-                    className="fixed inset-x-0 top-[4.5rem] z-[45] border-b"
+                    className="absolute left-0 right-0 top-full z-[45] border-b"
                     style={{
                       backgroundColor:
                         theme === "light"
