@@ -3,6 +3,7 @@ import { Link, useParams } from "react-router-dom";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { useState, useEffect, useRef, useCallback } from "react";
 import { motion, useSpring, AnimatePresence } from "framer-motion";
+import { Helmet } from "react-helmet-async";
 import builder from "@/builder";
 
 interface BlogPostDetail {
