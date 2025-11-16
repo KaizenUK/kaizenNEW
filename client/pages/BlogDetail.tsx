@@ -61,7 +61,9 @@ function generateDescriptionFromBody(html: string): string {
   if (text.length <= 160) return text;
   const truncated = text.substring(0, 160);
   const lastSpace = truncated.lastIndexOf(" ");
-  return lastSpace > 0 ? truncated.substring(0, lastSpace) + "..." : truncated + "...";
+  return lastSpace > 0
+    ? truncated.substring(0, lastSpace) + "..."
+    : truncated + "...";
 }
 
 function calculateReadingTime(html: string): number {
@@ -416,7 +418,10 @@ export default function BlogDetail() {
   }
 
   const seoTitle = post?.data?.seoTitle || post?.title || "Blog Post";
-  const seoDescription = post?.data?.seoDescription || post?.excerpt || (post?.body ? generateDescriptionFromBody(post.body) : "");
+  const seoDescription =
+    post?.data?.seoDescription ||
+    post?.excerpt ||
+    (post?.body ? generateDescriptionFromBody(post.body) : "");
   const pageUrl = `https://www.kaizenweb.co.uk/blog/${post?.slug || ""}`;
   const coverImageUrl = post?.coverImage || DEFAULT_IMAGE;
 
@@ -532,9 +537,7 @@ export default function BlogDetail() {
                   >
                     {publishedLabel && (
                       <>
-                        <span>
-                          Published on {publishedLabel}
-                        </span>
+                        <span>Published on {publishedLabel}</span>
                         <span>•</span>
                       </>
                     )}
@@ -620,7 +623,9 @@ export default function BlogDetail() {
                           </h4>
                           <p className="text-gray-500 text-sm font-mono">
                             {relatedPost.publishedDate
-                              ? new Date(relatedPost.publishedDate).toLocaleDateString("en-GB", {
+                              ? new Date(
+                                  relatedPost.publishedDate,
+                                ).toLocaleDateString("en-GB", {
                                   day: "2-digit",
                                   month: "short",
                                   year: "numeric",

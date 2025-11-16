@@ -38,7 +38,8 @@ const TAG_COLORS: { [key: string]: string } = {
   transformation: "text-indigo-400",
 };
 
-const DEFAULT_IMAGE = "https://images.unsplash.com/photo-1460925895917-aae19e488e71?w=800&h=600&fit=crop";
+const DEFAULT_IMAGE =
+  "https://images.unsplash.com/photo-1460925895917-aae19e488e71?w=800&h=600&fit=crop";
 
 function extractImageUrl(image: any): string {
   if (!image) return DEFAULT_IMAGE;
@@ -98,7 +99,7 @@ export default function Blog() {
           .sort(
             (a, b) =>
               new Date(b.publishedDate).getTime() -
-              new Date(a.publishedDate).getTime()
+              new Date(a.publishedDate).getTime(),
           );
 
         // Extract unique tags
@@ -122,7 +123,7 @@ export default function Blog() {
   }, []);
 
   const filteredPosts = posts.filter(
-    (post) => selectedTag === "All" || post.tags.includes(selectedTag)
+    (post) => selectedTag === "All" || post.tags.includes(selectedTag),
   );
 
   const featuredPost = filteredPosts[0];
@@ -172,7 +173,9 @@ export default function Blog() {
                 <TypingText text="Iterate. Ship. Improve." speed={80} />
               </p>
               <p className="text-lg text-gray-300 mb-8 leading-relaxed">
-                Deep dives into web design, Agile methodology, and building products that matter. We write about what we actually do, not what sounds good.
+                Deep dives into web design, Agile methodology, and building
+                products that matter. We write about what we actually do, not
+                what sounds good.
               </p>
               <div className="flex gap-4">
                 <span className="inline-block px-3 py-1 bg-gray-800 border border-gray-700 rounded text-xs font-mono text-gray-300">
@@ -219,7 +222,9 @@ export default function Blog() {
                       </span>
                     ))}
                     <span className="text-gray-500 text-xs font-mono ml-auto">
-                      {new Date(featuredPost.publishedDate).toLocaleDateString()}
+                      {new Date(
+                        featuredPost.publishedDate,
+                      ).toLocaleDateString()}
                     </span>
                   </div>
                   <h3 className="text-xl font-heading font-bold mb-3 text-white group-hover:text-blue-300 transition">
@@ -307,19 +312,22 @@ export default function Blog() {
 
                       <div className="absolute bottom-0 left-0 right-0 p-6">
                         <div className="flex items-center gap-3 mb-4 flex-wrap">
-                          {featuredPost.tags.slice(0, 2).map((tag, tagIndex) => (
-                            <span
-                              key={`${tag}-${tagIndex}`}
-                              className={`text-xs font-mono font-bold tracking-widest ${
-                                TAG_COLORS[tag.toLowerCase()] || "text-gray-400"
-                              }`}
-                            >
-                              {tag}
-                            </span>
-                          ))}
+                          {featuredPost.tags
+                            .slice(0, 2)
+                            .map((tag, tagIndex) => (
+                              <span
+                                key={`${tag}-${tagIndex}`}
+                                className={`text-xs font-mono font-bold tracking-widest ${
+                                  TAG_COLORS[tag.toLowerCase()] ||
+                                  "text-gray-400"
+                                }`}
+                              >
+                                {tag}
+                              </span>
+                            ))}
                           <span className="text-gray-500 text-xs font-mono ml-auto">
                             {new Date(
-                              featuredPost.publishedDate
+                              featuredPost.publishedDate,
                             ).toLocaleDateString()}
                           </span>
                         </div>
@@ -417,7 +425,8 @@ export default function Blog() {
               Ready to sprint? Let's build your MVP.
             </h3>
             <p className="text-gray-400 text-sm mb-6">
-              Take your idea from concept to launch with Agile delivery and clear thinking.
+              Take your idea from concept to launch with Agile delivery and
+              clear thinking.
             </p>
             <Link
               to="/contact"

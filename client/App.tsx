@@ -66,15 +66,24 @@ function AppContent() {
         <Route path="/services" element={<Services />} />
         <Route path="/services/web-design" element={<WebDesign />} />
         <Route path="/services/local-seo" element={<LocalSeo />} />
-        <Route path="/services/digital-transformation" element={<DigitalTransformation />} />
+        <Route
+          path="/services/digital-transformation"
+          element={<DigitalTransformation />}
+        />
         <Route path="/services/ecommerce" element={<Ecommerce />} />
-        <Route path="/contract-product-owner" element={<ContractProductOwner />} />
+        <Route
+          path="/contract-product-owner"
+          element={<ContractProductOwner />}
+        />
         <Route path="/about" element={<About />} />
         <Route path="/agile-coaching" element={<AgileCoaching />} />
         <Route path="/product-owner" element={<ProductOwner />} />
         <Route path="/team-transformation" element={<TeamTransformation />} />
         <Route path="/web-design-liverpool" element={<WebDesignLiverpool />} />
-        <Route path="/web-design-liverpool-city-centre" element={<WebDesignLiverpoolCityCentre />} />
+        <Route
+          path="/web-design-liverpool-city-centre"
+          element={<WebDesignLiverpoolCityCentre />}
+        />
         <Route path="/case-studies" element={<CaseStudies />} />
         <Route path="/blog" element={<Blog />} />
         <Route path="/blog/:slug" element={<BlogDetail />} />

@@ -79,7 +79,10 @@ function calculateReadingTime(html: string): number {
 function calculateWordCount(html: string): number {
   if (!html) return 0;
   const text = html.replace(/<[^>]*>/g, "");
-  return text.trim().split(/\s+/).filter(word => word.length > 0).length;
+  return text
+    .trim()
+    .split(/\s+/)
+    .filter((word) => word.length > 0).length;
 }
 
 interface BlogPost {
@@ -198,14 +201,11 @@ export default function BlogPostDetail() {
       };
 
       // IMPORTANT: call the Node API route that actually exists
-      const res = await fetch(
-        `/api/admin/builder/blog-posts/${post.id}`,
-        {
-          method: "PATCH",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload),
-        },
-      );
+      const res = await fetch(`/api/admin/builder/blog-posts/${post.id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
 
       if (!res.ok) {
         let errorMessage = "Failed to save changes";
@@ -239,13 +239,9 @@ export default function BlogPostDetail() {
 
   // Derive date and time values from publishedAt
   const publishedDateValue =
-    publishedAt && publishedAt.includes("T")
-      ? publishedAt.slice(0, 10)
-      : "";
+    publishedAt && publishedAt.includes("T") ? publishedAt.slice(0, 10) : "";
   const publishedTimeValue =
-    publishedAt && publishedAt.includes("T")
-      ? publishedAt.slice(11, 16)
-      : "";
+    publishedAt && publishedAt.includes("T") ? publishedAt.slice(11, 16) : "";
 
   // Loading state
   if (isLoading) {
@@ -382,10 +378,14 @@ export default function BlogPostDetail() {
                 className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-blue-500/60 focus:border-transparent font-body"
                 placeholder="Post title"
               />
-              <div className={`mt-2 text-xs font-body ${formTitle.length > 60 ? "text-yellow-400" : "text-gray-500"}`}>
+              <div
+                className={`mt-2 text-xs font-body ${formTitle.length > 60 ? "text-yellow-400" : "text-gray-500"}`}
+              >
                 {formTitle.length} / 60 characters
                 {formTitle.length > 60 && (
-                  <p className="mt-1">Long titles may be truncated in search results.</p>
+                  <p className="mt-1">
+                    Long titles may be truncated in search results.
+                  </p>
                 )}
               </div>
             </motion.div>
@@ -411,12 +411,18 @@ export default function BlogPostDetail() {
                 placeholder="post-slug"
               />
               <p className="text-xs text-gray-500 mt-2 font-body font-mono">
-                URL: https://www.kaizenweb.co.uk/blog/<span className="text-gray-300">{formSlug || "your-slug-here"}</span>
+                URL: https://www.kaizenweb.co.uk/blog/
+                <span className="text-gray-300">
+                  {formSlug || "your-slug-here"}
+                </span>
               </p>
               {formSlug && !/^[a-z0-9-]+$/.test(formSlug) && (
                 <div className="mt-3 p-3 bg-yellow-500/10 border border-yellow-500/30 rounded text-yellow-600 text-xs font-body">
                   <p className="font-bold mb-1">Slug format warning</p>
-                  <p>For best results, use lowercase letters, numbers, and hyphens only (no spaces).</p>
+                  <p>
+                    For best results, use lowercase letters, numbers, and
+                    hyphens only (no spaces).
+                  </p>
                 </div>
               )}
             </motion.div>
@@ -448,23 +454,29 @@ export default function BlogPostDetail() {
                 />
               </div>
               <p className="text-xs text-gray-500 mt-4 font-body">
-                Write your post content here. Use headings, formatting, links, and lists as needed.
+                Write your post content here. Use headings, formatting, links,
+                and lists as needed.
               </p>
               {/* Word Count & Reading Time */}
               {formBody && (
                 <div className="mt-4 pt-4 border-t border-gray-700 flex gap-4">
                   <div className="text-xs text-gray-400 font-body">
-                    <span className="font-bold">Word count:</span> {calculateWordCount(formBody)}
+                    <span className="font-bold">Word count:</span>{" "}
+                    {calculateWordCount(formBody)}
                   </div>
                   <div className="text-xs text-gray-400 font-body">
-                    <span className="font-bold">Reading time:</span> {calculateReadingTime(formBody)}–{Math.ceil(calculateReadingTime(formBody) * 1.2)} min
+                    <span className="font-bold">Reading time:</span>{" "}
+                    {calculateReadingTime(formBody)}–
+                    {Math.ceil(calculateReadingTime(formBody) * 1.2)} min
                   </div>
                 </div>
               )}
               {calculateWordCount(formBody) < 150 && formBody && (
                 <div className="mt-3 p-3 bg-yellow-500/10 border border-yellow-500/30 rounded text-yellow-600 text-xs font-body">
                   <p className="font-bold mb-1">Short post warning</p>
-                  <p>Very short posts may not provide enough depth for readers.</p>
+                  <p>
+                    Very short posts may not provide enough depth for readers.
+                  </p>
                 </div>
               )}
             </motion.div>
@@ -489,11 +501,17 @@ export default function BlogPostDetail() {
                 className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-blue-500/60 focus:border-transparent font-body"
                 placeholder="Short summary of the post"
               />
-              <div className={`mt-2 text-xs font-body ${formExcerpt.length >= 80 && formExcerpt.length <= 180 ? "text-green-400" : "text-yellow-400"}`}>
+              <div
+                className={`mt-2 text-xs font-body ${formExcerpt.length >= 80 && formExcerpt.length <= 180 ? "text-green-400" : "text-yellow-400"}`}
+              >
                 {formExcerpt.length} characters
-                {(formExcerpt.length < 80 || formExcerpt.length > 180) && formExcerpt && (
-                  <p className="mt-1">Descriptions around 80–180 characters are often clearer in search snippets.</p>
-                )}
+                {(formExcerpt.length < 80 || formExcerpt.length > 180) &&
+                  formExcerpt && (
+                    <p className="mt-1">
+                      Descriptions around 80–180 characters are often clearer in
+                      search snippets.
+                    </p>
+                  )}
               </div>
             </motion.div>
 
@@ -524,12 +542,17 @@ export default function BlogPostDetail() {
                   placeholder="Leave blank to use the main title"
                 />
                 <p className="text-xs text-gray-500 mt-2 font-body">
-                  Used as the &lt;title&gt; tag when a custom value is set. Falls back to the main title if left blank.
+                  Used as the &lt;title&gt; tag when a custom value is set.
+                  Falls back to the main title if left blank.
                 </p>
-                <div className={`mt-2 text-xs font-body ${formSeoTitle.length > 60 ? "text-yellow-400" : "text-gray-500"}`}>
+                <div
+                  className={`mt-2 text-xs font-body ${formSeoTitle.length > 60 ? "text-yellow-400" : "text-gray-500"}`}
+                >
                   {formSeoTitle.length} / 60 characters
                   {formSeoTitle.length > 60 && (
-                    <p className="mt-1">Long titles may be truncated in search results.</p>
+                    <p className="mt-1">
+                      Long titles may be truncated in search results.
+                    </p>
                   )}
                 </div>
               </div>
@@ -550,13 +573,21 @@ export default function BlogPostDetail() {
                   placeholder="Leave blank to use the excerpt or auto-generate from content"
                 />
                 <p className="text-xs text-gray-500 mt-2 font-body">
-                  Used as the meta description when set. Falls back to the excerpt or a snippet of content if left blank.
+                  Used as the meta description when set. Falls back to the
+                  excerpt or a snippet of content if left blank.
                 </p>
-                <div className={`mt-2 text-xs font-body ${formSeoDescription.length >= 80 && formSeoDescription.length <= 180 ? "text-green-400" : "text-yellow-400"}`}>
+                <div
+                  className={`mt-2 text-xs font-body ${formSeoDescription.length >= 80 && formSeoDescription.length <= 180 ? "text-green-400" : "text-yellow-400"}`}
+                >
                   {formSeoDescription.length} characters
-                  {(formSeoDescription.length < 80 || formSeoDescription.length > 180) && formSeoDescription && (
-                    <p className="mt-1">Descriptions around 80–180 characters tend to read better in search results.</p>
-                  )}
+                  {(formSeoDescription.length < 80 ||
+                    formSeoDescription.length > 180) &&
+                    formSeoDescription && (
+                      <p className="mt-1">
+                        Descriptions around 80–180 characters tend to read
+                        better in search results.
+                      </p>
+                    )}
                 </div>
               </div>
 
@@ -570,10 +601,13 @@ export default function BlogPostDetail() {
                     {formSeoTitle || formTitle || "Your page title"}
                   </p>
                   <p className="text-green-600 font-mono text-xs mb-2 break-words">
-                    https://www.kaizenweb.co.uk/blog/{formSlug || "your-slug-here"}
+                    https://www.kaizenweb.co.uk/blog/
+                    {formSlug || "your-slug-here"}
                   </p>
                   <p className="text-gray-400 text-sm font-body line-clamp-2">
-                    {formSeoDescription || formExcerpt || "Your page description will appear here"}
+                    {formSeoDescription ||
+                      formExcerpt ||
+                      "Your page description will appear here"}
                   </p>
                 </div>
               </div>
@@ -591,8 +625,12 @@ export default function BlogPostDetail() {
             >
               {/* Status */}
               <div className="mb-4 pb-4 border-b border-blue-500/20">
-                <p className="text-xs text-gray-500 mb-2 font-mono uppercase tracking-widest">Status</p>
-                <span className={`inline-block px-3 py-1 rounded-full text-xs font-bold border ${statusColor}`}>
+                <p className="text-xs text-gray-500 mb-2 font-mono uppercase tracking-widest">
+                  Status
+                </p>
+                <span
+                  className={`inline-block px-3 py-1 rounded-full text-xs font-bold border ${statusColor}`}
+                >
                   {status}
                 </span>
               </div>
@@ -611,7 +649,11 @@ export default function BlogPostDetail() {
                 </motion.button>
 
                 <a
-                  href={formSlug ? `https://www.kaizenweb.co.uk/blog/${formSlug}?preview=1` : undefined}
+                  href={
+                    formSlug
+                      ? `https://www.kaizenweb.co.uk/blog/${formSlug}?preview=1`
+                      : undefined
+                  }
                   target={formSlug ? "_blank" : undefined}
                   rel={formSlug ? "noopener noreferrer" : undefined}
                   onClick={(e) => !formSlug && e.preventDefault()}
@@ -666,8 +708,11 @@ export default function BlogPostDetail() {
                       setPublishedAt("");
                     } else {
                       const timePart =
-                        publishedTimeValue || new Date().toISOString().slice(11, 16);
-                      const iso = new Date(`${datePart}T${timePart}:00`).toISOString();
+                        publishedTimeValue ||
+                        new Date().toISOString().slice(11, 16);
+                      const iso = new Date(
+                        `${datePart}T${timePart}:00`,
+                      ).toISOString();
                       setPublishedAt(iso);
                     }
                     handleFormChange();
@@ -687,13 +732,18 @@ export default function BlogPostDetail() {
                     const timePart = e.target.value;
                     if (!timePart) {
                       if (publishedDateValue) {
-                        const iso = new Date(`${publishedDateValue}T00:00:00`).toISOString();
+                        const iso = new Date(
+                          `${publishedDateValue}T00:00:00`,
+                        ).toISOString();
                         setPublishedAt(iso);
                       }
                     } else {
                       const datePart =
-                        publishedDateValue || new Date().toISOString().slice(0, 10);
-                      const iso = new Date(`${datePart}T${timePart}:00`).toISOString();
+                        publishedDateValue ||
+                        new Date().toISOString().slice(0, 10);
+                      const iso = new Date(
+                        `${datePart}T${timePart}:00`,
+                      ).toISOString();
                       setPublishedAt(iso);
                     }
                     handleFormChange();
@@ -701,7 +751,8 @@ export default function BlogPostDetail() {
                   className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-blue-500/60 focus:border-transparent font-body text-sm"
                 />
                 <p className="text-xs text-gray-500 mt-2 font-body">
-                  Stored as a full date &amp; time and used on the public blog page.
+                  Stored as a full date &amp; time and used on the public blog
+                  page.
                 </p>
               </div>
 
@@ -734,8 +785,10 @@ export default function BlogPostDetail() {
                 .filter((tag) => tag.length > 0);
 
               const wordCount = calculateWordCount(formBody);
-              const slugValid = /^[a-z0-9-]+$/.test(formSlug) && formSlug.length > 0;
-              const excerptOK = formExcerpt.length >= 80 && formExcerpt.length <= 180;
+              const slugValid =
+                /^[a-z0-9-]+$/.test(formSlug) && formSlug.length > 0;
+              const excerptOK =
+                formExcerpt.length >= 80 && formExcerpt.length <= 180;
               const contentOK = wordCount >= 300;
               const tagsOK = tagsArray.length > 0;
               const titleOK = formTitle.trim().length > 0;
@@ -753,43 +806,83 @@ export default function BlogPostDetail() {
                   <div className="space-y-3">
                     <div className="flex items-center gap-3">
                       {titleOK ? (
-                        <CheckCircle size={16} className="text-emerald-400 flex-shrink-0" />
+                        <CheckCircle
+                          size={16}
+                          className="text-emerald-400 flex-shrink-0"
+                        />
                       ) : (
-                        <AlertTriangle size={16} className="text-yellow-400 flex-shrink-0" />
+                        <AlertTriangle
+                          size={16}
+                          className="text-yellow-400 flex-shrink-0"
+                        />
                       )}
-                      <span className="text-sm text-gray-300 font-body">Title set</span>
+                      <span className="text-sm text-gray-300 font-body">
+                        Title set
+                      </span>
                     </div>
                     <div className="flex items-center gap-3">
                       {slugValid ? (
-                        <CheckCircle size={16} className="text-emerald-400 flex-shrink-0" />
+                        <CheckCircle
+                          size={16}
+                          className="text-emerald-400 flex-shrink-0"
+                        />
                       ) : (
-                        <AlertTriangle size={16} className="text-yellow-400 flex-shrink-0" />
+                        <AlertTriangle
+                          size={16}
+                          className="text-yellow-400 flex-shrink-0"
+                        />
                       )}
-                      <span className="text-sm text-gray-300 font-body">Slug looks clean</span>
+                      <span className="text-sm text-gray-300 font-body">
+                        Slug looks clean
+                      </span>
                     </div>
                     <div className="flex items-center gap-3">
                       {excerptOK ? (
-                        <CheckCircle size={16} className="text-emerald-400 flex-shrink-0" />
+                        <CheckCircle
+                          size={16}
+                          className="text-emerald-400 flex-shrink-0"
+                        />
                       ) : (
-                        <AlertTriangle size={16} className="text-yellow-400 flex-shrink-0" />
+                        <AlertTriangle
+                          size={16}
+                          className="text-yellow-400 flex-shrink-0"
+                        />
                       )}
-                      <span className="text-sm text-gray-300 font-body">Excerpt length OK</span>
+                      <span className="text-sm text-gray-300 font-body">
+                        Excerpt length OK
+                      </span>
                     </div>
                     <div className="flex items-center gap-3">
                       {contentOK ? (
-                        <CheckCircle size={16} className="text-emerald-400 flex-shrink-0" />
+                        <CheckCircle
+                          size={16}
+                          className="text-emerald-400 flex-shrink-0"
+                        />
                       ) : (
-                        <AlertTriangle size={16} className="text-yellow-400 flex-shrink-0" />
+                        <AlertTriangle
+                          size={16}
+                          className="text-yellow-400 flex-shrink-0"
+                        />
                       )}
-                      <span className="text-sm text-gray-300 font-body">Enough content ({wordCount} words)</span>
+                      <span className="text-sm text-gray-300 font-body">
+                        Enough content ({wordCount} words)
+                      </span>
                     </div>
                     <div className="flex items-center gap-3">
                       {tagsOK ? (
-                        <CheckCircle size={16} className="text-emerald-400 flex-shrink-0" />
+                        <CheckCircle
+                          size={16}
+                          className="text-emerald-400 flex-shrink-0"
+                        />
                       ) : (
-                        <AlertTriangle size={16} className="text-yellow-400 flex-shrink-0" />
+                        <AlertTriangle
+                          size={16}
+                          className="text-yellow-400 flex-shrink-0"
+                        />
                       )}
-                      <span className="text-sm text-gray-300 font-body">Tags added</span>
+                      <span className="text-sm text-gray-300 font-body">
+                        Tags added
+                      </span>
                     </div>
                   </div>
                 </motion.div>
@@ -871,16 +964,24 @@ export default function BlogPostDetail() {
                   </h3>
                   <div className="space-y-2">
                     <p className="text-sm text-gray-400 font-body">
-                      <span className="text-gray-300 font-bold">Word count:</span> {wordCount}
+                      <span className="text-gray-300 font-bold">
+                        Word count:
+                      </span>{" "}
+                      {wordCount}
                     </p>
                     <p className="text-sm text-gray-400 font-body">
-                      <span className="text-gray-300 font-bold">Reading time:</span> {readingTime}–{Math.ceil(readingTime * 1.2)} min
+                      <span className="text-gray-300 font-bold">
+                        Reading time:
+                      </span>{" "}
+                      {readingTime}–{Math.ceil(readingTime * 1.2)} min
                     </p>
                     <p className="text-sm text-gray-400 font-body">
-                      <span className="text-gray-300 font-bold">Tags:</span> {tagsArray.length}
+                      <span className="text-gray-300 font-bold">Tags:</span>{" "}
+                      {tagsArray.length}
                     </p>
                     <p className="text-sm text-gray-400 font-body">
-                      <span className="text-gray-300 font-bold">Status:</span> {status}
+                      <span className="text-gray-300 font-bold">Status:</span>{" "}
+                      {status}
                     </p>
                   </div>
                 </motion.div>

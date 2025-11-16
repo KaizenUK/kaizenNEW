@@ -30,7 +30,16 @@ export function createServer() {
           .json({ error: "Builder API key not configured" });
       }
 
-      const { title, slug, excerpt, publishedDate, tags, body, seoTitle, seoDescription } = req.body;
+      const {
+        title,
+        slug,
+        excerpt,
+        publishedDate,
+        tags,
+        body,
+        seoTitle,
+        seoDescription,
+      } = req.body;
 
       // Basic validation
       if (!title && !slug) {
@@ -91,7 +100,16 @@ export function createServer() {
       }
 
       const { id } = req.params;
-      const { title, slug, excerpt, publishedDate, tags, body, seoTitle, seoDescription } = req.body;
+      const {
+        title,
+        slug,
+        excerpt,
+        publishedDate,
+        tags,
+        body,
+        seoTitle,
+        seoDescription,
+      } = req.body;
 
       if (!id) {
         return res.status(400).json({ error: "Post ID is required" });

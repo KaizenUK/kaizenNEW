@@ -25,13 +25,12 @@ export default function AdminDashboardWrapper() {
         }
 
         // Derive latest message snippet from raw.data[0]
-        const data = json.raw && Array.isArray(json.raw.data) ? json.raw.data : null;
+        const data =
+          json.raw && Array.isArray(json.raw.data) ? json.raw.data : null;
         if (data && data.length > 0) {
           const first = data[0];
           const excerpt =
-            first?.preview_message?.excerpt ||
-            first?.last_message ||
-            null;
+            first?.preview_message?.excerpt || first?.last_message || null;
           if (typeof excerpt === "string" && excerpt.length > 0) {
             setCrispLatest(excerpt);
           }

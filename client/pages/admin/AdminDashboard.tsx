@@ -35,9 +35,7 @@ function DashboardContent({
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
     >
-      <h1 className="text-4xl font-heading font-bold mb-2">
-        Welcome to Admin
-      </h1>
+      <h1 className="text-4xl font-heading font-bold mb-2">Welcome to Admin</h1>
       <p className="text-gray-400 mb-12 font-body">
         Manage your Kaizen web content from here.
       </p>
@@ -91,18 +89,23 @@ function DashboardContent({
 
           {/* Counters */}
           <div className="space-y-2 mb-4 text-sm text-gray-300 font-body">
-            {(typeof crispOpen === "number" || typeof crispUnread === "number") ? (
+            {typeof crispOpen === "number" ||
+            typeof crispUnread === "number" ? (
               <>
                 {typeof crispOpen === "number" && (
                   <p>
-                    <span className="font-semibold text-slate-200">{crispOpen}</span> open{" "}
-                    {crispOpen === 1 ? "conversation" : "conversations"}
+                    <span className="font-semibold text-slate-200">
+                      {crispOpen}
+                    </span>{" "}
+                    open {crispOpen === 1 ? "conversation" : "conversations"}
                   </p>
                 )}
                 {typeof crispUnread === "number" && (
                   <p>
-                    <span className="font-semibold text-red-300">{crispUnread}</span> unread operator{" "}
-                    {crispUnread === 1 ? "message" : "messages"}
+                    <span className="font-semibold text-red-300">
+                      {crispUnread}
+                    </span>{" "}
+                    unread operator {crispUnread === 1 ? "message" : "messages"}
                   </p>
                 )}
               </>
@@ -114,8 +117,12 @@ function DashboardContent({
           {/* Latest Message */}
           {crispLatest && (
             <div className="mb-4 p-3 bg-gray-800/50 rounded border border-gray-700/50">
-              <p className="text-xs text-gray-500 font-mono mb-1">Latest message:</p>
-              <p className="text-sm text-gray-300 font-body italic">"{truncateMessage(crispLatest)}"</p>
+              <p className="text-xs text-gray-500 font-mono mb-1">
+                Latest message:
+              </p>
+              <p className="text-sm text-gray-300 font-body italic">
+                "{truncateMessage(crispLatest)}"
+              </p>
             </div>
           )}
 
@@ -140,9 +147,8 @@ function DashboardContent({
       >
         <h3 className="font-heading font-bold mb-2 text-blue-300">Info</h3>
         <p className="text-sm text-gray-300 font-body">
-          You can now edit metadata (title, slug, excerpt, date, tags)
-          directly. For full editing of content and cover images, use "Edit in
-          Builder".
+          You can now edit metadata (title, slug, excerpt, date, tags) directly.
+          For full editing of content and cover images, use "Edit in Builder".
         </p>
       </motion.div>
     </motion.div>
@@ -156,7 +162,11 @@ export default function AdminDashboard({
 }: DashboardProps) {
   return (
     <AdminLayout>
-      <DashboardContent crispUnread={crispUnread} crispOpen={crispOpen} crispLatest={crispLatest} />
+      <DashboardContent
+        crispUnread={crispUnread}
+        crispOpen={crispOpen}
+        crispLatest={crispLatest}
+      />
     </AdminLayout>
   );
 }

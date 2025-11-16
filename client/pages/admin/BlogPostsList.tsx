@@ -36,7 +36,9 @@ export default function BlogPostsList() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [allTags, setAllTags] = useState<string[]>([]);
-  const [statusFilter, setStatusFilter] = useState<"all" | "published" | "draft">("all");
+  const [statusFilter, setStatusFilter] = useState<
+    "all" | "published" | "draft"
+  >("all");
 
   // Helper function to derive status from Builder post object
   const deriveStatus = (post: any): string => {
@@ -82,8 +84,7 @@ export default function BlogPostsList() {
             title: post.data?.title || "Untitled",
             slug: post.data?.slug || "",
             excerpt: post.data?.excerpt || "",
-            publishedDate:
-              post.data?.publishedDate || new Date().toISOString(),
+            publishedDate: post.data?.publishedDate || new Date().toISOString(),
             tags: Array.isArray(post.data?.tags) ? post.data.tags : [],
             status: deriveStatus(post as any),
           }))
@@ -137,8 +138,7 @@ export default function BlogPostsList() {
     // Status filter
     if (statusFilter !== "all") {
       results = results.filter(
-        (post) =>
-          post.status.toLowerCase() === statusFilter.toLowerCase(),
+        (post) => post.status.toLowerCase() === statusFilter.toLowerCase(),
       );
     }
 
@@ -159,7 +159,9 @@ export default function BlogPostsList() {
             </h1>
             <p className="text-gray-400 font-body">
               {filteredPosts.length} post{filteredPosts.length !== 1 ? "s" : ""}
-              {searchQuery || selectedTags.length > 0 || statusFilter !== "all" ? " found" : ""}
+              {searchQuery || selectedTags.length > 0 || statusFilter !== "all"
+                ? " found"
+                : ""}
             </p>
           </div>
           <Link
@@ -182,7 +184,8 @@ export default function BlogPostsList() {
           <div className="text-sm font-body text-gray-300">
             <p className="font-bold text-blue-300 mb-1">Heads up</p>
             <p className="text-gray-400">
-              New or updated posts may take a short time to sync between the live site and this admin view.
+              New or updated posts may take a short time to sync between the
+              live site and this admin view.
             </p>
           </div>
         </motion.div>
@@ -299,9 +302,12 @@ export default function BlogPostsList() {
             {filteredPosts.length === 0 ? (
               <div className="p-16 text-center text-gray-400 font-body">
                 <FileText size={48} className="mx-auto mb-4 text-gray-600" />
-                <p className="text-lg font-medium mb-2">No posts match your filters</p>
+                <p className="text-lg font-medium mb-2">
+                  No posts match your filters
+                </p>
                 <p className="text-sm text-gray-500">
-                  Try clearing your search, tags, or status filters to see all posts.
+                  Try clearing your search, tags, or status filters to see all
+                  posts.
                 </p>
               </div>
             ) : (
@@ -350,11 +356,14 @@ export default function BlogPostsList() {
                       </td>
                       <td className="p-4 text-sm text-gray-400">
                         {post.publishedDate
-                          ? new Date(post.publishedDate).toLocaleDateString("en-GB", {
-                              day: "2-digit",
-                              month: "short",
-                              year: "numeric",
-                            })
+                          ? new Date(post.publishedDate).toLocaleDateString(
+                              "en-GB",
+                              {
+                                day: "2-digit",
+                                month: "short",
+                                year: "numeric",
+                              },
+                            )
                           : "—"}
                       </td>
                       <td className="p-4">
