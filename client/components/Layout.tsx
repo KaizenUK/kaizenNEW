@@ -145,7 +145,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
           <div className="hidden md:flex items-center gap-1">
             <Link
               to="/"
-              className="px-3 py-2 text-base font-heading font-medium hover:text-kaizen-cyan transition rounded-md hover:bg-kaizen-light/50"
+              className="px-3 py-2 text-lg font-heading font-medium hover:text-kaizen-cyan transition rounded-md hover:bg-kaizen-light/50"
             >
               Home
             </Link>
@@ -178,7 +178,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                         <div className="mb-6">
                           <Link
                             to="/services/web-design"
-                            className="block font-heading font-bold text-base mb-2 hover:text-kaizen-cyan transition"
+                            className="block font-heading font-bold text-lg mb-2 hover:text-kaizen-cyan transition"
                           >
                             Web Design
                           </Link>
@@ -192,7 +192,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                         <div>
                           <Link
                             to="/services/local-seo"
-                            className="block font-heading font-bold text-base mb-2 hover:text-kaizen-cyan transition"
+                            className="block font-heading font-bold text-lg mb-2 hover:text-kaizen-cyan transition"
                           >
                             Local SEO
                           </Link>
@@ -213,7 +213,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                         <div className="mb-6">
                           <Link
                             to="/services/ecommerce"
-                            className="block font-heading font-bold text-base mb-2 hover:text-kaizen-cyan transition"
+                            className="block font-heading font-bold text-lg mb-2 hover:text-kaizen-cyan transition"
                           >
                             E-commerce
                           </Link>
@@ -227,7 +227,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                         <div>
                           <Link
                             to="/services/digital-transformation"
-                            className="block font-heading font-bold text-base mb-2 hover:text-kaizen-cyan transition"
+                            className="block font-heading font-bold text-lg mb-2 hover:text-kaizen-cyan transition"
                           >
                             Digital Transformation
                           </Link>
@@ -248,7 +248,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                         <div className="mb-6">
                           <Link
                             to="/agile-coaching"
-                            className="block font-heading font-bold text-base mb-2 hover:text-kaizen-cyan transition"
+                            className="block font-heading font-bold text-lg mb-2 hover:text-kaizen-cyan transition"
                           >
                             Agile Coaching
                           </Link>
@@ -262,7 +262,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                         <div>
                           <Link
                             to="/product-owner"
-                            className="block font-heading font-bold text-base mb-2 hover:text-kaizen-cyan transition"
+                            className="block font-heading font-bold text-lg mb-2 hover:text-kaizen-cyan transition"
                           >
                             Product Owner
                           </Link>
@@ -281,7 +281,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 
             <Link
               to="/case-studies"
-              className="px-3 py-2 text-base font-heading font-medium hover:text-kaizen-cyan transition rounded-md hover:bg-kaizen-light/50"
+              className="px-3 py-2 text-lg font-heading font-medium hover:text-kaizen-cyan transition rounded-md hover:bg-kaizen-light/50"
             >
               Case Studies
             </Link>
@@ -327,7 +327,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             <div className="container mx-auto px-4 py-4 flex flex-col gap-4">
               <Link
                 to="/"
-                className="text-base font-heading font-medium hover:text-kaizen-cyan transition"
+                className="text-lg font-heading font-medium hover:text-kaizen-cyan transition"
                 onClick={() => setMobileMenuOpen(false)}
               >
                 Home
@@ -346,7 +346,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                 <div className="ml-4 space-y-2 border-l border-kaizen-light pl-4">
                   <Link
                     to="/services/web-design"
-                    className="block text-base text-kaizen-text-dark/70 hover:text-kaizen-cyan transition"
+                    className="block text-lg text-kaizen-text-dark/70 hover:text-kaizen-cyan transition"
                     onClick={() => {
                       setMobileMenuOpen(false);
                       setServicesOpen(false);
@@ -408,21 +408,21 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
               )}
               <Link
                 to="/about"
-                className="text-base font-heading font-medium hover:text-kaizen-cyan transition"
+                className="text-lg font-heading font-medium hover:text-kaizen-cyan transition"
                 onClick={() => setMobileMenuOpen(false)}
               >
                 About
               </Link>
               <Link
                 to="/case-studies"
-                className="text-base font-heading font-medium hover:text-kaizen-cyan transition"
+                className="text-lg font-heading font-medium hover:text-kaizen-cyan transition"
                 onClick={() => setMobileMenuOpen(false)}
               >
                 Case Studies
               </Link>
               <Link
                 to="/blog"
-                className="text-base font-heading font-medium hover:text-kaizen-cyan transition"
+                className="text-lg font-heading font-medium hover:text-kaizen-cyan transition"
                 onClick={() => setMobileMenuOpen(false)}
               >
                 Blog
