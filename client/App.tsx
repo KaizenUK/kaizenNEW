@@ -33,6 +33,7 @@ import HelenMooreHairdressingCase from "./pages/caseStudies/HelenMooreHairdressi
 import IndependentRetailerCase from "./pages/caseStudies/IndependentRetailer";
 import TeamTransformation from "./pages/TeamTransformation";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
+import CookiePolicy from "./pages/CookiePolicy";
 import GDPRPolicy from "./pages/GDPRPolicy";
 import AdminGuard from "@/components/AdminGuard";
 import AdminLogin from "./pages/admin/AdminLogin";
