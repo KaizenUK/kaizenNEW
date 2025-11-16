@@ -31,6 +31,7 @@ import AdminGuard from "@/components/AdminGuard";
 import AdminLogin from "./pages/admin/AdminLogin";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import BlogPostsList from "./pages/admin/BlogPostsList";
+import BlogPostCreate from "./pages/admin/BlogPostCreate";
 import BlogPostDetail from "./pages/admin/BlogPostDetail";
 
 const queryClient = new QueryClient();
@@ -78,6 +79,14 @@ const App = () => (
             element={
               <AdminGuard>
                 <BlogPostsList />
+              </AdminGuard>
+            }
+          />
+          <Route
+            path="/admin/blog-posts/new"
+            element={
+              <AdminGuard>
+                <BlogPostCreate />
               </AdminGuard>
             }
           />
