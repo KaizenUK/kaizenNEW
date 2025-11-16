@@ -15,7 +15,8 @@ import {
   Link as LinkIcon,
   Eye,
 } from "lucide-react";
-import QuillEditor from "@/components/QuillEditor";
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css";
 import builder from "@/builder";
 import { getBuilderEditUrl } from "@/lib/builder-utils";
 import AdminLayout from "@/components/AdminLayout";
