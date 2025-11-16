@@ -8,6 +8,11 @@ import {
   Save,
   AlertCircle,
   CheckCircle,
+  Home,
+  List,
+  FileText,
+  AlertTriangle,
+  Link as LinkIcon,
 } from "lucide-react";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
@@ -36,6 +41,45 @@ const quillFormats = [
   "blockquote",
   "link",
 ];
+
+// Helper functions
+function deriveStatus(post: any): string {
+  if (post.published === true) return "Published";
+  if (post.published === false) return "Draft";
+  if (post.query?.published === true) return "Published";
+  if (post.query?.published === false) return "Draft";
+  if (post.lastPublished) return "Published";
+  if (post.state === "published") return "Published";
+  if (post.state === "draft") return "Draft";
+  if (post.data?.publishedDate) {
+    const pubDate = new Date(post.data.publishedDate);
+    if (pubDate > new Date()) return "Draft";
+    return "Published";
+  }
+  return "Unknown";
+}
+
+function slugify(text: string): string {
+  return text
+    .toLowerCase()
+    .trim()
+    .replace(/\s+/g, "-")
+    .replace(/[^a-z0-9-]/g, "")
+    .replace(/-+/g, "-");
+}
+
+function calculateReadingTime(html: string): number {
+  if (!html) return 0;
+  const text = html.replace(/<[^>]*>/g, "");
+  const words = text.trim().split(/\s+/).length;
+  return Math.ceil(words / 200);
+}
+
+function calculateWordCount(html: string): number {
+  if (!html) return 0;
+  const text = html.replace(/<[^>]*>/g, "");
+  return text.trim().split(/\s+/).filter(word => word.length > 0).length;
+}
 
 interface BlogPost {
   id: string;
