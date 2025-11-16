@@ -1,8 +1,8 @@
 import { Link, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Menu, LogOut, FileText, LayoutDashboard, ExternalLink, MessageCircle } from "lucide-react";
-import { useState } from "react";
-import { useLocation, Link } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { Helmet } from "react-helmet-async";
 import { useAdminAuth } from "@/hooks/useAdminAuth";
 
 export default function AdminLayout({
