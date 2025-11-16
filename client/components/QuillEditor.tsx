@@ -1,4 +1,5 @@
-import React, { Suspense, lazy } from "react";
+import React from "react";
+import type ReactQuillType from "react-quill";
 import "react-quill/dist/quill.snow.css";
 
 interface QuillEditorProps {
@@ -10,11 +11,15 @@ interface QuillEditorProps {
   style?: React.CSSProperties;
 }
 
-const ReactQuillComponent = lazy(() => import("react-quill"));
+let ReactQuillComponent: typeof ReactQuillType | null = null;
 
-const LoadingFallback = () => (
-  <div className="h-80 bg-gray-800 rounded-lg animate-pulse" />
-);
+const loadQuill = async () => {
+  if (!ReactQuillComponent) {
+    const module = await import("react-quill");
+    ReactQuillComponent = module.default;
+  }
+  return ReactQuillComponent;
+};
 
 const QuillEditor: React.FC<QuillEditorProps> = ({
   value,
@@ -24,18 +29,30 @@ const QuillEditor: React.FC<QuillEditorProps> = ({
   className,
   style,
 }) => {
+  const [isLoaded, setIsLoaded] = React.useState(false);
+  const [RQ, setRQ] = React.useState<typeof ReactQuillType | null>(null);
+
+  React.useEffect(() => {
+    loadQuill().then((component) => {
+      setRQ(component);
+      setIsLoaded(true);
+    });
+  }, []);
+
+  if (!isLoaded || !RQ) {
+    return <div className="h-80 bg-gray-800 rounded-lg animate-pulse" />;
+  }
+
   return (
-    <Suspense fallback={<LoadingFallback />}>
-      <ReactQuillComponent
-        theme="snow"
-        value={value}
-        onChange={onChange}
-        modules={modules}
-        formats={formats}
-        className={className}
-        style={style}
-      />
-    </Suspense>
+    <RQ
+      theme="snow"
+      value={value}
+      onChange={onChange}
+      modules={modules}
+      formats={formats}
+      className={className}
+      style={style}
+    />
   );
 };
 
