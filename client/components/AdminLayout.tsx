@@ -15,8 +15,9 @@ export default function AdminLayout({
   const { logout } = useAdminAuth();
 
   const navItems = [
-    { name: "Dashboard", href: "/admin", icon: LayoutDashboard },
-    { name: "Blog Posts", href: "/admin/blog-posts", icon: FileText },
+    { name: "Dashboard", href: "/admin", icon: LayoutDashboard, external: false },
+    { name: "Blog Posts", href: "/admin/blog-posts", icon: FileText, external: false },
+    { name: "Crisp inbox", href: "https://app.crisp.chat/website/9d827b35-3e4e-494f-8c0b-72d233fc92bb/inbox/", icon: MessageCircle, external: true },
   ];
 
   const isActive = (href: string) => location.pathname === href;
