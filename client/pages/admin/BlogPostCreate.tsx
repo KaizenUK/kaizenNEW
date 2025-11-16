@@ -89,6 +89,13 @@ export default function BlogPostCreate() {
   // Auto-slug generation tracking
   const [hasUserEditedSlug, setHasUserEditedSlug] = useState(false);
 
+  // Initialize publishedAt to current time on mount
+  React.useEffect(() => {
+    if (!publishedAt) {
+      setPublishedAt(new Date().toISOString());
+    }
+  }, []);
+
   // Save state
   const [isSaving, setIsSaving] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
