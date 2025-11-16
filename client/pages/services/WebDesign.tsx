@@ -315,7 +315,7 @@ export default function WebDesign() {
               Real Results for Liverpool & Wirral
             </h2>
             <p className="text-xl text-kaizen-text-dark/70 dark:text-white/60 text-center max-w-2xl mx-auto mb-16">
-              We've helped dozens of local businesses get more enquiries, rank higher, and grow online.
+              We help local businesses get more enquiries, rank higher, and grow online.
             </p>
           </ScrollReveal>
 
