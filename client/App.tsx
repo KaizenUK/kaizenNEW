@@ -43,13 +43,13 @@ function AppContent() {
 
   // Hide/show Crisp widget based on route
   useEffect(() => {
-    if (typeof window !== "undefined" && window.$crisp) {
+    if (typeof window !== "undefined" && (window as any).$crisp) {
       if (isAdminRoute) {
         // Hide Crisp on admin routes
-        window.$crisp.push(["do", "chat:hide"]);
+        (window as any).$crisp.push(["do", "chat:hide"]);
       } else {
         // Show Crisp on public routes
-        window.$crisp.push(["do", "chat:show"]);
+        (window as any).$crisp.push(["do", "chat:show"]);
       }
     }
   }, [isAdminRoute]);
