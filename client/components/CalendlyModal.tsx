@@ -17,6 +17,17 @@ function loadCalendlyScript(): Promise<void> {
     return calendlyScriptPromise;
   }
 
+  const existingStylesheet = document.querySelector<HTMLLinkElement>(
+    'link[href="https://assets.calendly.com/assets/external/widget.css"]',
+  );
+
+  if (!existingStylesheet) {
+    const link = document.createElement("link");
+    link.rel = "stylesheet";
+    link.href = "https://assets.calendly.com/assets/external/widget.css";
+    document.head.appendChild(link);
+  }
+
   const existingScript = document.querySelector<HTMLScriptElement>(
     'script[src="https://assets.calendly.com/assets/external/widget.js"]',
   );
