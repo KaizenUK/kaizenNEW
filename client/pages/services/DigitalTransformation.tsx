@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { Helmet } from "react-helmet-async";
 import { ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useCalendly } from "@/context/CalendlyContext";
 
 const fadeInUp = {
   hidden: { opacity: 0, y: 20 },
