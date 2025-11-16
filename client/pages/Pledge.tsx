@@ -96,6 +96,7 @@ We don't build cheap, 'quick-fix' sites. We are a premium, expert-led agency for
 ];
 
 export default function Pledge() {
+  const { openCalendly: openCalendlyFromContext } = useCalendly();
   const heroH1 = "> Our \"No-BS\" Pledge.";
   const displayedText = useTyping(heroH1, 40);
   const { activeSection, sectionsRef } = useStickySection();
