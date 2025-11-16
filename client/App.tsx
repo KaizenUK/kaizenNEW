@@ -44,10 +44,24 @@ import BlogPostDetail from "./pages/admin/BlogPostDetail";
 
 const queryClient = new QueryClient();
 
-function AppContent() {
+function ModalsAndBanner() {
   const location = useLocation();
   const isAdminRoute = location.pathname.startsWith("/admin");
   const { isCalendlyOpen, closeCalendly } = useCalendly();
+
+  return (
+    <>
+      {!isAdminRoute && (
+        <CalendlyModal isOpen={isCalendlyOpen} onClose={closeCalendly} />
+      )}
+      {!isAdminRoute && <CookieBanner />}
+    </>
+  );
+}
+
+function AppContent() {
+  const location = useLocation();
+  const isAdminRoute = location.pathname.startsWith("/admin");
 
   // Suppress react-quill findDOMNode deprecation warning
   useEffect(() => {
@@ -119,14 +133,7 @@ function AppContent() {
 
   return (
     <>
-      {/* Only show CrispChatButton on non-admin routes */}
-      {/* When CrispChatButton is added, uncomment the line below: */}
-      {/* {!isAdminRoute && <CrispChatButton />} */}
-
-      {!isAdminRoute && (
-        <CalendlyModal isOpen={isCalendlyOpen} onClose={closeCalendly} />
-      )}
-      {!isAdminRoute && <CookieBanner />}
+      <ModalsAndBanner />
 
       <Routes>
         {/* Public Routes */}
