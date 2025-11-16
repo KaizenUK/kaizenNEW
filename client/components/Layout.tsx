@@ -578,6 +578,14 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                 </li>
                 <li>
                   <Link
+                    to="/cookie-policy"
+                    className="hover:text-kaizen-cyan transition"
+                  >
+                    Cookie Policy
+                  </Link>
+                </li>
+                <li>
+                  <Link
                     to="/gdpr-policy"
                     className="hover:text-kaizen-cyan transition"
                   >
