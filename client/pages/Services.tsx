@@ -8,7 +8,7 @@ export default function Services() {
       icon: Code2,
       title: "Web Design Liverpool",
       description: "Fast, modern websites that generate leads and help your business grow online.",
-      link: "/services/web-design",
+      link: "/services/web-design-liverpool",
     },
     {
       icon: TrendingUp,
