@@ -22,6 +22,7 @@ import Contact from "./pages/Contact";
 import BlogAdmin from "./pages/BlogAdmin";
 import Services from "./pages/Services";
 import About from "./pages/About";
+import Pledge from "./pages/Pledge";
 import AgileCoaching from "./pages/AgileCoaching";
 import ProductOwner from "./pages/ProductOwner";
 import TeamTransformation from "./pages/TeamTransformation";
