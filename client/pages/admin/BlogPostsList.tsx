@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Search, ExternalLink, Edit } from "lucide-react";
+import { Search, ExternalLink, Edit, Plus } from "lucide-react";
 import builder from "@/builder";
 import { getBuilderEditUrl } from "@/lib/builder-utils";
 import AdminLayout from "@/components/AdminLayout";
@@ -115,12 +115,21 @@ export default function BlogPostsList() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
       >
-        <div className="mb-8">
-          <h1 className="text-4xl font-heading font-bold mb-2">Blog Posts</h1>
-          <p className="text-gray-400 font-body">
-            {filteredPosts.length} post{filteredPosts.length !== 1 ? "s" : ""}
-            {searchQuery || selectedTags.length > 0 ? " found" : ""}
-          </p>
+        <div className="mb-8 flex items-start justify-between gap-4">
+          <div>
+            <h1 className="text-4xl font-heading font-bold mb-2">Blog Posts</h1>
+            <p className="text-gray-400 font-body">
+              {filteredPosts.length} post{filteredPosts.length !== 1 ? "s" : ""}
+              {searchQuery || selectedTags.length > 0 ? " found" : ""}
+            </p>
+          </div>
+          <Link
+            to="/admin/blog-posts/new"
+            className="px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-500 text-white font-heading font-bold rounded-lg hover:opacity-90 transition flex items-center gap-2 whitespace-nowrap"
+          >
+            <Plus size={20} />
+            New Post
+          </Link>
         </div>
 
         {/* Search Bar */}
