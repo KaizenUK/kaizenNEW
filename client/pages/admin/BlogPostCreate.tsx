@@ -14,8 +14,7 @@ import {
   AlertTriangle,
   Eye,
 } from "lucide-react";
-import ReactQuill from "react-quill";
-import "react-quill/dist/quill.snow.css";
+import QuillEditor from "@/components/QuillEditor";
 import AdminLayout from "@/components/AdminLayout";
 
 // Quill editor configuration (same as BlogPostDetail)
