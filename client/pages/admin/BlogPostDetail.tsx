@@ -378,12 +378,23 @@ export default function BlogPostDetail() {
                 type="text"
                 value={formTitle}
                 onChange={(e) => {
-                  setFormTitle(e.target.value);
+                  const newTitle = e.target.value;
+                  setFormTitle(newTitle);
                   handleFormChange();
+                  // Auto-generate slug if it's empty
+                  if (!formSlug && newTitle) {
+                    setFormSlug(slugify(newTitle));
+                  }
                 }}
                 className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-blue-500/60 focus:border-transparent font-body"
                 placeholder="Post title"
               />
+              <div className={`mt-2 text-xs font-body ${formTitle.length > 60 ? "text-yellow-400" : "text-gray-500"}`}>
+                {formTitle.length} / 60 characters
+                {formTitle.length > 60 && (
+                  <p className="mt-1">Long titles may be truncated in search results.</p>
+                )}
+              </div>
             </motion.div>
 
             {/* Slug */}
