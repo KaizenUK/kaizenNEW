@@ -1,6 +1,6 @@
 import { Link, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Menu, LogOut, FileText, LayoutDashboard } from "lucide-react";
+import { Menu, LogOut, FileText, LayoutDashboard, ExternalLink } from "lucide-react";
 import { useState } from "react";
 import { useAdminAuth } from "@/hooks/useAdminAuth";
 
@@ -99,6 +99,15 @@ export default function AdminLayout({
             <Menu size={20} />
           </button>
           <div className="text-sm text-gray-400 font-body">Admin Dashboard</div>
+          <a
+            href="https://www.kaizenweb.co.uk/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="px-4 py-2 bg-gray-800 hover:bg-gray-700 rounded-lg transition text-gray-300 hover:text-blue-400 text-sm font-body flex items-center gap-2"
+          >
+            View site
+            <ExternalLink size={16} />
+          </a>
         </div>
 
         {/* Content Area */}
