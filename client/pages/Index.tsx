@@ -552,13 +552,16 @@ export default function Home() {
             transition={{ duration: 0.6 }}
           >
             <CTAButton text="Start a Live Chat" openChat />
-            <Link
-              to="/contact"
+            <button
+              onClick={() => {
+                const { openCalendly } = useCalendly?.() || {};
+                openCalendly?.();
+              }}
               className="px-8 py-3 rounded-full border-2 border-kaizen-dark dark:border-white/20 text-kaizen-dark dark:text-white/85 font-heading font-bold hover:border-kaizen-cyan dark:hover:border-kaizen-cyan transition inline-flex items-center justify-center gap-2"
             >
               Book Your 15-Minute Call
               <ArrowUpRight size={18} />
-            </Link>
+            </button>
           </motion.div>
         </div>
       </section>
