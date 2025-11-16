@@ -42,13 +42,10 @@ export default function AdminLayout({
             className="flex items-center gap-2 hover:opacity-80 transition"
           >
             <img
-              src="https://cdn.builder.io/api/v1/image/assets%2Fe4ae46bbd81b4b95bef54d66dd9748cc%2F19f6366118ef41298050443945090b5f?format=webp&width=800"
+              src="https://cdn.builder.io/api/v1/image/assets%2Fe4ae46bbd81b4b95bef54d66dd9748cc%2F5d25cea933a34d2db65194ce09c75c1b?format=webp&width=800"
               alt="Kaizen Web"
               className="h-12 w-auto"
             />
-            {sidebarOpen && (
-              <span className="font-heading font-bold text-sm">Admin</span>
-            )}
           </Link>
         </div>
 
