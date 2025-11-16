@@ -71,6 +71,50 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     }
   }, [location.pathname]);
 
+  useEffect(() => {
+    if (typeof window === "undefined" || typeof document === "undefined") {
+      return;
+    }
+
+    const handleScroll = () => {
+      const header = document.querySelector("header");
+      if (!header) return;
+
+      const headerRect = header.getBoundingClientRect();
+      const headerBottom = headerRect.bottom;
+      const scrollY = window.scrollY;
+
+      // Check if scrolled down and over dark area
+      if (scrollY > 50) {
+        // Check the background color at scroll position
+        const element = document.elementFromPoint(
+          window.innerWidth / 2,
+          headerBottom + 10
+        );
+
+        if (element) {
+          const computedStyle = window.getComputedStyle(element);
+          const bgColor = computedStyle.backgroundColor;
+
+          // Simple check: if background is dark, use light text
+          const isDarkBg =
+            bgColor === "rgb(15, 23, 42)" ||
+            bgColor === "rgba(15, 23, 42, 1)" ||
+            bgColor.includes("rgb(") &&
+            bgColor.includes("0") &&
+            bgColor.includes("23");
+
+          setNavTextLight(isDarkBg);
+        }
+      } else {
+        setNavTextLight(false);
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   const toggleTheme = () => {
     setTheme((prev) => (prev === "light" ? "dark" : "light"));
   };
