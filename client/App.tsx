@@ -44,18 +44,30 @@ function AppContent() {
   // Suppress react-quill findDOMNode deprecation warning
   useEffect(() => {
     const originalError = console.error;
+    const originalWarn = console.warn;
+
+    const isFindDOMNodeWarning = (arg: any) => {
+      const str = String(arg);
+      return str.includes("findDOMNode") && str.includes("deprecated");
+    };
+
     console.error = (...args: any[]) => {
-      if (
-        args[0]?.includes?.("findDOMNode") &&
-        args[0]?.includes?.("deprecated")
-      ) {
+      if (args.some(isFindDOMNodeWarning)) {
         return;
       }
       originalError(...args);
     };
 
+    console.warn = (...args: any[]) => {
+      if (args.some(isFindDOMNodeWarning)) {
+        return;
+      }
+      originalWarn(...args);
+    };
+
     return () => {
       console.error = originalError;
+      console.warn = originalWarn;
     };
   }, []);
 
