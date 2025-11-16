@@ -5,51 +5,80 @@ interface CalendlyModalProps {
   onClose: () => void;
 }
 
-let scriptLoaded = false;
+let calendlyScriptPromise: Promise<void> | null = null;
+
+function loadCalendlyScript(): Promise<void> {
+  if (typeof window === "undefined" || typeof document === "undefined") {
+    return Promise.resolve();
+  }
+
+  if (calendlyScriptPromise) {
+    return calendlyScriptPromise;
+  }
+
+  const existingScript = document.querySelector<HTMLScriptElement>(
+    'script[src="https://assets.calendly.com/assets/external/widget.js"]',
+  );
+
+  if (existingScript) {
+    calendlyScriptPromise = new Promise((resolve, reject) => {
+      if ((window as any).Calendly) {
+        resolve();
+        return;
+      }
+
+      existingScript.addEventListener("load", () => resolve());
+      existingScript.addEventListener("error", () =>
+        reject(new Error("Failed to load Calendly script")),
+      );
+    });
+
+    return calendlyScriptPromise;
+  }
+
+  calendlyScriptPromise = new Promise((resolve, reject) => {
+    const script = document.createElement("script");
+    script.src = "https://assets.calendly.com/assets/external/widget.js";
+    script.async = true;
+    script.onload = () => resolve();
+    script.onerror = () => reject(new Error("Failed to load Calendly script"));
+    document.head.appendChild(script);
+  });
+
+  return calendlyScriptPromise;
+}
 
 export function CalendlyModal({ isOpen, onClose }: CalendlyModalProps) {
   useEffect(() => {
-    if (typeof window === "undefined" || typeof document === "undefined") {
-      return;
-    }
+    if (!isOpen) return;
 
-    if (!scriptLoaded) {
-      const existingScript = document.querySelector(
-        'script[src="https://assets.calendly.com/assets/external/widget.js"]'
-      );
+    let cancelled = false;
 
-      if (!existingScript) {
-        const script = document.createElement("script");
-        script.src = "https://assets.calendly.com/assets/external/widget.js";
-        script.async = true;
-        document.head.appendChild(script);
-      }
+    loadCalendlyScript()
+      .then(() => {
+        if (cancelled || typeof window === "undefined") return;
 
-      scriptLoaded = true;
-    }
-  }, []);
+        const calendly = (window as any).Calendly;
+        if (!calendly || typeof calendly.initPopupWidget !== "function") {
+          return;
+        }
 
-  useEffect(() => {
-    if (typeof window === "undefined") {
-      return;
-    }
-
-    const calendly = (window as any).Calendly;
-    if (!calendly) {
-      return;
-    }
-
-    if (isOpen) {
-      calendly.showPopupWidget("https://calendly.com/sean-kaizenweb/30-minute-meeting-clone");
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "unset";
-    }
+        calendly.initPopupWidget({
+          url: "https://calendly.com/sean-kaizenweb/30-minute-meeting-clone",
+        });
+      })
+      .catch(() => {
+        // Swallow errors to avoid breaking the app if Calendly is unavailable
+      })
+      .finally(() => {
+        // Reset the open state so the site never "freezes"
+        onClose();
+      });
 
     return () => {
-      document.body.style.overflow = "unset";
+      cancelled = true;
     };
-  }, [isOpen]);
+  }, [isOpen, onClose]);
 
   return null;
 }
