@@ -420,6 +420,20 @@ export default function BlogDetail() {
   const pageUrl = `https://www.kaizenweb.co.uk/blog/${post?.slug || ""}`;
   const coverImageUrl = post?.coverImage || DEFAULT_IMAGE;
 
+  // Derive friendly published date + time label
+  const publishedRaw = post?.publishedDate;
+  const publishedDate = publishedRaw ? new Date(publishedRaw) : null;
+  const publishedLabel = publishedDate
+    ? publishedDate.toLocaleString("en-GB", {
+        day: "2-digit",
+        month: "long",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: true,
+      })
+    : null;
+
   return (
     <Layout>
       <Helmet>
