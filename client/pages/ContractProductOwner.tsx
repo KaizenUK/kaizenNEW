@@ -98,14 +98,14 @@ const FlipCard = ({
       viewport={{ once: true }}
     >
       <motion.div
-        className="relative w-full min-h-[28rem] rounded-2xl border border-kaizen-light dark:border-slate-800/50 overflow-hidden"
+        className="relative w-full min-h-[32rem] rounded-2xl border border-kaizen-light dark:border-slate-800/50 overflow-hidden"
         animate={{ rotateY: isFlipped ? 180 : 0 }}
         transition={{ duration: 0.6 }}
         style={{ transformStyle: "preserve-3d" }}
       >
         {/* Front Side */}
         <motion.div
-          className="absolute w-full h-full p-8 bg-kaizen-light dark:bg-slate-900/50 rounded-2xl flex flex-col justify-between"
+          className="absolute w-full h-full p-8 bg-kaizen-light dark:bg-slate-900/50 rounded-2xl flex flex-col justify-start"
           animate={{ opacity: isFlipped ? 0 : 1 }}
           transition={{ duration: 0.3 }}
           style={{ backfaceVisibility: "hidden" }}
@@ -113,42 +113,42 @@ const FlipCard = ({
           <div className="mb-6 p-4 w-16 h-16 bg-gradient-to-br from-kaizen-cyan/20 to-kaizen-lime/20 dark:from-kaizen-cyan/10 dark:to-kaizen-lime/10 rounded-xl flex items-center justify-center">
             <Icon className="text-kaizen-cyan dark:text-kaizen-cyan/70" size={32} />
           </div>
-          <div>
-            <h3 className="text-2xl font-heading font-bold mb-4 text-kaizen-dark dark:text-white">
-              {title}
-            </h3>
-            <div>
-              <p className="text-sm font-semibold text-kaizen-cyan dark:text-kaizen-cyan/80 mb-2 uppercase tracking-wide">
-                Proof
-              </p>
-              <p className="text-base text-kaizen-text-dark/70 dark:text-white/60 leading-relaxed">
-                {proof}
-              </p>
-            </div>
+          <h3 className="text-2xl font-heading font-bold mb-6 text-kaizen-dark dark:text-white">
+            {title}
+          </h3>
+          <div className="mb-8">
+            <p className="text-sm font-semibold text-kaizen-cyan dark:text-kaizen-cyan/80 mb-2 uppercase tracking-wide">
+              Proof
+            </p>
+            <p className="text-sm text-kaizen-text-dark/70 dark:text-white/60 leading-relaxed">
+              {proof}
+            </p>
           </div>
-          <p className="text-xs text-kaizen-cyan/60 dark:text-kaizen-cyan/50 font-medium mt-6">
-            ✨ Click to see why this matters
-          </p>
+          <div className="mt-auto pt-6 border-t border-kaizen-cyan/20 dark:border-kaizen-cyan/10">
+            <p className="text-xs text-kaizen-cyan/60 dark:text-kaizen-cyan/50 font-medium">
+              ✨ Click to see why this matters
+            </p>
+          </div>
         </motion.div>
 
         {/* Back Side */}
         <motion.div
-          className="absolute w-full h-full p-8 bg-gradient-to-br from-kaizen-cyan to-kaizen-lime rounded-2xl flex flex-col justify-between"
+          className="absolute w-full h-full p-8 bg-gradient-to-br from-kaizen-cyan to-kaizen-lime rounded-2xl flex flex-col justify-start"
           animate={{ opacity: isFlipped ? 1 : 0, rotateY: 180 }}
           transition={{ duration: 0.3 }}
           style={{ backfaceVisibility: "hidden" }}
         >
-          <div>
-            <h3 className="text-2xl font-heading font-bold mb-4 text-kaizen-dark">
-              Why This Matters for You
-            </h3>
-            <p className="text-lg text-kaizen-dark/90 leading-relaxed font-medium">
-              {matters}
+          <h3 className="text-2xl font-heading font-bold mb-6 text-kaizen-dark">
+            Why This Matters for You
+          </h3>
+          <p className="text-base text-kaizen-dark/95 leading-relaxed font-medium mb-8">
+            {matters}
+          </p>
+          <div className="mt-auto pt-6 border-t border-kaizen-dark/20">
+            <p className="text-xs text-kaizen-dark/60 font-medium">
+              ✨ Click to go back
             </p>
           </div>
-          <p className="text-xs text-kaizen-dark/60 font-medium">
-            ✨ Click to go back
-          </p>
         </motion.div>
       </motion.div>
     </motion.div>
