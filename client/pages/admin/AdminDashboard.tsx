@@ -5,6 +5,8 @@ import AdminLayout from "@/components/AdminLayout";
 import { useCrisp } from "@/context/CrispContext";
 
 export default function AdminDashboard() {
+  const { crispUnread, crispOpen, crispLatest } = useCrisp();
+
   const quickLinks = [
     {
       title: "Blog Posts",
@@ -13,6 +15,12 @@ export default function AdminDashboard() {
       href: "/admin/blog-posts",
     },
   ];
+
+  // Helper to truncate latest message
+  const truncateMessage = (msg: string, maxLength: number = 80): string => {
+    if (msg.length <= maxLength) return msg;
+    return msg.substring(0, maxLength) + "...";
+  };
 
   return (
     <AdminLayout>
