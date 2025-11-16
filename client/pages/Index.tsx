@@ -108,14 +108,20 @@ const CTAButton = ({
   onClick,
   secondary = false,
   openChat = false,
+  openCalendly: openCalendlyProp = false,
 }: {
   text: string;
   onClick?: () => void;
   secondary?: boolean;
   openChat?: boolean;
+  openCalendly?: boolean;
 }) => {
+  const { openCalendly } = useCalendly();
+
   const handleClick = () => {
-    if (openChat && typeof window !== "undefined") {
+    if (openCalendlyProp) {
+      openCalendly();
+    } else if (openChat && typeof window !== "undefined") {
       // Open Crisp Chat
       if ((window as any).$crisp) {
         (window as any).$crisp.push(["do", "chat:open"]);
