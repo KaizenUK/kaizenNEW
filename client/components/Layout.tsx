@@ -435,6 +435,13 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                 About
               </Link>
               <Link
+                to="/pledge"
+                className="text-lg font-heading font-medium hover:text-kaizen-cyan transition"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Our Pledge
+              </Link>
+              <Link
                 to="/case-studies"
                 className="text-lg font-heading font-medium hover:text-kaizen-cyan transition"
                 onClick={() => setMobileMenuOpen(false)}
