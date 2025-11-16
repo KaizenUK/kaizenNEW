@@ -74,6 +74,87 @@ const ScrollReveal = ({
   );
 };
 
+// Flip Card Component
+const FlipCard = ({
+  icon: Icon,
+  title,
+  proof,
+  matters,
+}: {
+  icon: any;
+  title: string;
+  proof: string;
+  matters: string;
+}) => {
+  const [isFlipped, setIsFlipped] = useState(false);
+
+  return (
+    <motion.div
+      variants={fadeInUp}
+      onClick={() => setIsFlipped(!isFlipped)}
+      className="h-full cursor-pointer"
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+    >
+      <motion.div
+        className="relative w-full h-80 rounded-2xl border border-kaizen-light dark:border-slate-800/50 overflow-hidden"
+        animate={{ rotateY: isFlipped ? 180 : 0 }}
+        transition={{ duration: 0.6 }}
+        style={{ transformStyle: "preserve-3d" }}
+      >
+        {/* Front Side */}
+        <motion.div
+          className="absolute w-full h-full p-8 bg-kaizen-light dark:bg-slate-900/50 rounded-2xl flex flex-col justify-between"
+          animate={{ opacity: isFlipped ? 0 : 1 }}
+          transition={{ duration: 0.3 }}
+          style={{ backfaceVisibility: "hidden" }}
+        >
+          <div className="mb-6 p-4 w-16 h-16 bg-gradient-to-br from-kaizen-cyan/20 to-kaizen-lime/20 dark:from-kaizen-cyan/10 dark:to-kaizen-lime/10 rounded-xl flex items-center justify-center">
+            <Icon className="text-kaizen-cyan dark:text-kaizen-cyan/70" size={32} />
+          </div>
+          <div>
+            <h3 className="text-2xl font-heading font-bold mb-4 text-kaizen-dark dark:text-white">
+              {title}
+            </h3>
+            <div>
+              <p className="text-sm font-semibold text-kaizen-cyan dark:text-kaizen-cyan/80 mb-2 uppercase tracking-wide">
+                Proof
+              </p>
+              <p className="text-base text-kaizen-text-dark/70 dark:text-white/60 leading-relaxed">
+                {proof}
+              </p>
+            </div>
+          </div>
+          <p className="text-xs text-kaizen-cyan/60 dark:text-kaizen-cyan/50 font-medium mt-6">
+            ✨ Click to see why this matters
+          </p>
+        </motion.div>
+
+        {/* Back Side */}
+        <motion.div
+          className="absolute w-full h-full p-8 bg-gradient-to-br from-kaizen-cyan to-kaizen-lime rounded-2xl flex flex-col justify-between"
+          animate={{ opacity: isFlipped ? 1 : 0, rotateY: 180 }}
+          transition={{ duration: 0.3 }}
+          style={{ backfaceVisibility: "hidden" }}
+        >
+          <div>
+            <h3 className="text-2xl font-heading font-bold mb-4 text-kaizen-dark">
+              Why This Matters for You
+            </h3>
+            <p className="text-lg text-kaizen-dark/90 leading-relaxed font-medium">
+              {matters}
+            </p>
+          </div>
+          <p className="text-xs text-kaizen-dark/60 font-medium">
+            ✨ Click to go back
+          </p>
+        </motion.div>
+      </motion.div>
+    </motion.div>
+  );
+};
+
 export default function ContractProductOwner() {
   return (
     <Layout>
@@ -217,35 +298,7 @@ export default function ContractProductOwner() {
                 matters: "I know how to take a simple idea, listen to users, and turn it into a fully functional, value-driving product.",
               },
             ].map((card, index) => (
-              <motion.div
-                key={index}
-                variants={fadeInUp}
-                className="p-8 bg-kaizen-light dark:bg-slate-900/50 rounded-2xl border border-kaizen-light dark:border-slate-800/50 hover:border-kaizen-cyan dark:hover:border-kaizen-cyan/50 transition"
-              >
-                <div className="mb-6 p-4 w-16 h-16 bg-gradient-to-br from-kaizen-cyan/20 to-kaizen-lime/20 dark:from-kaizen-cyan/10 dark:to-kaizen-lime/10 rounded-xl flex items-center justify-center">
-                  <card.icon
-                    className="text-kaizen-cyan dark:text-kaizen-cyan/70"
-                    size={32}
-                  />
-                </div>
-                <h3 className="text-2xl font-heading font-bold mb-4 text-kaizen-dark dark:text-white">
-                  {card.title}
-                </h3>
-                <div className="space-y-4">
-                  <div>
-                    <p className="text-sm font-semibold text-kaizen-cyan dark:text-kaizen-cyan/80 mb-2 uppercase tracking-wide">Proof</p>
-                    <p className="text-lg text-kaizen-text-dark/70 dark:text-white/60 leading-relaxed">
-                      {card.proof}
-                    </p>
-                  </div>
-                  <div>
-                    <p className="text-sm font-semibold text-kaizen-lime dark:text-kaizen-lime/80 mb-2 uppercase tracking-wide">Why this matters for you</p>
-                    <p className="text-lg text-kaizen-text-dark/70 dark:text-white/60 leading-relaxed">
-                      {card.matters}
-                    </p>
-                  </div>
-                </div>
-              </motion.div>
+              <FlipCard key={index} {...card} />
             ))}
           </motion.div>
         </div>
