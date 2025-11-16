@@ -114,7 +114,7 @@ export default function BlogPostCreate() {
         body: formBody,
       };
 
-      const res = await fetch("/api/admin/builder-blog-posts", {
+      const res = await fetch("/api/admin/builder/blog-posts", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
