@@ -234,6 +234,9 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         <meta property="og:type" content="website" />
         <meta property="og:site_name" content={SITE_NAME} />
         <meta property="og:title" content={meta.title} />
+        {shouldRenderDescription && (
+          <meta property="og:description" content={meta.description} />
+        )}
         <meta property="og:url" content={canonicalUrl} />
         <meta property="og:image" content={ogImage} />
         <meta
