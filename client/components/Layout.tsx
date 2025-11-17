@@ -215,6 +215,12 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     <>
       <Helmet key={`seo-${normalizedPath}`} prioritizeSeoTags>
         <title>{meta.title}</title>
+        {shouldRenderDescription && (
+          <meta name="description" content={meta.description} />
+        )}
+        {shouldRenderDescription && keywords && (
+          <meta name="keywords" content={keywords} />
+        )}
         <meta name="robots" content={robotsValue} />
         <meta name="googlebot" content={robotsValue} />
         <meta name="author" content={SITE_NAME} />
