@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Helmet } from "react-helmet-async";
 import { ArrowRight, ArrowUpRight } from "lucide-react";
 import Layout from "@/components/Layout";
 import { useCalendly } from "@/context/CalendlyContext";
@@ -259,14 +258,6 @@ export default function Home() {
 
   return (
     <Layout>
-      <Helmet>
-        <title>Web Design Liverpool | Kaizen – Agile Web Development</title>
-        <meta
-          name="description"
-          content="Kaizen is a Liverpool web design agency. We build fast, high-performance websites and offer Agile coaching to improve your team's workflow. No-BS, just results."
-        />
-      </Helmet>
-
       {/* Section 1: Hero */}
       <CodeRainHero />
 

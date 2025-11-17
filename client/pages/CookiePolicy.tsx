@@ -1,6 +1,5 @@
 import Layout from "@/components/Layout";
 import { motion } from "framer-motion";
-import { Helmet } from "react-helmet-async";
 
 const fadeInUp = {
   hidden: { opacity: 0, y: 20 },
@@ -14,14 +13,6 @@ const fadeInUp = {
 export default function CookiePolicy() {
   return (
     <Layout>
-      <Helmet>
-        <title>Cookie Policy | Kaizen</title>
-        <meta
-          name="description"
-          content="A clear explanation of the cookies we use and why. We're transparent about how we use cookies on our website."
-        />
-      </Helmet>
-
       {/* Hero Section */}
       <section className="bg-gradient-to-br from-kaizen-dark via-slate-900 to-kaizen-dark dark:from-slate-950 dark:via-slate-900 dark:to-black text-white py-16 md:py-24">
         <div className="container mx-auto px-4">

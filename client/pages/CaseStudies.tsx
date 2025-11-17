@@ -1,7 +1,6 @@
 import { Link } from "react-router-dom";
 import Layout from "@/components/Layout";
 import { motion } from "framer-motion";
-import { Helmet } from "react-helmet-async";
 import { ArrowRight } from "lucide-react";
 import { useCalendly } from "@/context/CalendlyContext";
 
@@ -57,14 +56,6 @@ export default function CaseStudies() {
 
   return (
     <Layout>
-      <Helmet>
-        <title>Case Studies | Liverpool Web Design Results | Kaizen</title>
-        <meta
-          name="description"
-          content="Proof, not promises. See our 'no-BS' case studies for Liverpool & Wirral businesses."
-        />
-      </Helmet>
-
       {/* Section 1: Hero */}
       <section className="min-h-screen bg-white dark:bg-slate-950 flex items-center py-20 px-4">
         <div className="container mx-auto max-w-4xl">

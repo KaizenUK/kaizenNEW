@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import Layout from "@/components/Layout";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Helmet } from "react-helmet-async";
 import { ArrowRight, ArrowUpRight, MapPin, FileText, Star } from "lucide-react";
 import { useCalendly } from "@/context/CalendlyContext";
 
@@ -151,14 +150,6 @@ export default function LocalSeo() {
 
   return (
     <Layout>
-      <Helmet>
-        <title>Local SEO Services Liverpool & Wirral | Kaizen</title>
-        <meta
-          name="description"
-          content="Invisible in local search? We help Liverpool & Wirral businesses dominate the Google Map Pack and get found by local customers. No jargon, just rankings."
-        />
-      </Helmet>
-
       {/* Section 1: Hero */}
       <section className="min-h-screen bg-kaizen-dark dark:bg-gradient-to-b dark:from-slate-900 dark:to-slate-950 text-kaizen-text-light dark:text-white/85 flex items-center py-20">
         <div className="container mx-auto px-4">

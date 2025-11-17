@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import Layout from "@/components/Layout";
 import { motion } from "framer-motion";
-import { Helmet } from "react-helmet-async";
 import { ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useCalendly } from "@/context/CalendlyContext";
@@ -133,17 +132,6 @@ export default function DigitalTransformation() {
 
   return (
     <Layout>
-      <Helmet>
-        <title>
-          Digital Transformation Liverpool | Business Process Automation |
-          Kaizen
-        </title>
-        <meta
-          name="description"
-          content="We help Liverpool & Wirral businesses stop working in chaos. We automate manual tasks, fix inefficient workflows, and get your systems talking."
-        />
-      </Helmet>
-
       {/* Section 1: Hero - Kinetic Typography */}
       <section className="min-h-screen bg-white dark:bg-slate-950 flex items-center py-20 px-4">
         <div className="container mx-auto max-w-4xl">

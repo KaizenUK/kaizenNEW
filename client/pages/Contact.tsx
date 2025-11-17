@@ -1,6 +1,5 @@
 import Layout from "@/components/Layout";
 import { motion } from "framer-motion";
-import { Helmet } from "react-helmet-async";
 import { MessageCircle, Calendar } from "lucide-react";
 import { useCalendly } from "@/context/CalendlyContext";
 
@@ -24,14 +23,6 @@ export default function Contact() {
 
   return (
     <Layout>
-      <Helmet>
-        <title>Contact Kaizen | Web Design & Agile Coaching Liverpool</title>
-        <meta
-          name="description"
-          content="Get in touch with Kaizen. Choose live chat or book a 15-minute discovery call. No forms, no sales funnel. Just a straightforward conversation."
-        />
-      </Helmet>
-
       {/* Hero Section */}
       <section className="min-h-screen bg-gradient-to-br from-kaizen-dark via-slate-900 to-kaizen-dark dark:from-slate-950 dark:via-slate-900 dark:to-black text-white flex items-center py-20">
         <div className="container mx-auto px-4">

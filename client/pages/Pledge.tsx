@@ -1,7 +1,6 @@
 import { useEffect, useState, useRef } from "react";
 import Layout from "@/components/Layout";
 import { motion } from "framer-motion";
-import { Helmet } from "react-helmet-async";
 import { ArrowRight } from "lucide-react";
 import { useCalendly } from "@/context/CalendlyContext";
 
@@ -111,14 +110,6 @@ export default function Pledge() {
 
   return (
     <Layout>
-      <Helmet>
-        <title>Our "No-BS" Pledge | Transparent Web Design | Kaizen</title>
-        <meta
-          name="description"
-          content="Our No-BS Pledge. See our transparent policy on AI, pricing, and our process. No black box, no surprise bills, no excuses."
-        />
-      </Helmet>
-
       {/* Section 1: Hero - Code Commit Style */}
       <section className="min-h-screen bg-slate-900 dark:bg-slate-950 flex items-center justify-center py-20 px-4">
         <div className="max-w-3xl w-full">

@@ -199,7 +199,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 
   return (
     <>
-      <Helmet prioritizeSeoTags>
+      <Helmet key={`seo-${normalizedPath}`} prioritizeSeoTags>
         <title>{meta.title}</title>
         <meta name="description" content={meta.description} />
         {keywords && <meta name="keywords" content={keywords} />}
@@ -334,9 +334,10 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                     if (event.key === "ArrowDown") {
                       event.preventDefault();
                       openServicesMenu();
-                      const firstLink = servicesMenuRef.current?.querySelector<HTMLAnchorElement>(
-                        "#services-menu a",
-                      );
+                      const firstLink =
+                        servicesMenuRef.current?.querySelector<HTMLAnchorElement>(
+                          "#services-menu a",
+                        );
                       firstLink?.focus();
                     }
                   }}

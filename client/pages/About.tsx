@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import Layout from "@/components/Layout";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Helmet } from "react-helmet-async";
 import {
   ArrowRight,
   ArrowUpRight,
@@ -75,14 +74,6 @@ const ScrollReveal = ({
 export default function About() {
   return (
     <Layout>
-      <Helmet>
-        <title>About Kaizen | Liverpool Web Design & Agile Experts</title>
-        <meta
-          name="description"
-          content="We're not another faceless agency. Meet Sean, our founder—a local, world-class tech expert who is relentlessly focused on getting you results."
-        />
-      </Helmet>
-
       {/* Section 1: Hero - Manifesto Style */}
       <section className="min-h-screen bg-white dark:bg-slate-950 flex items-center py-20">
         <div className="container mx-auto px-4">
