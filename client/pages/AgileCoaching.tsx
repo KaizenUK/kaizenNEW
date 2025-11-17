@@ -123,14 +123,6 @@ export default function AgileCoaching() {
 
   return (
     <Layout>
-      <Helmet>
-        <title>Agile Coaching for Liverpool Businesses | Kaizen</title>
-        <meta
-          name="description"
-          content="Stop wasting time on chaotic projects. We offer practical Agile coaching in Liverpool to help your team work smarter, faster, and more efficiently. No jargon."
-        />
-      </Helmet>
-
       {/* Section 1: Hero - Typography as Graphic */}
       <section className="min-h-screen bg-white dark:bg-slate-950 flex items-center py-20">
         <div className="container mx-auto px-4">
