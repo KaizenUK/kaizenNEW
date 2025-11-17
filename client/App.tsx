@@ -180,7 +180,8 @@ function AppContent() {
         <Route path="/cookie-policy" element={<CookiePolicy />} />
         <Route path="/gdpr-policy" element={<GDPRPolicy />} />
 
-        {/* Admin Routes */}
+        {/* Admin routes removed from public routing. These components remain in the repo but are intentionally not registered here to prevent public access. Re-enable by restoring the routes below if needed. */}
+        {/*
         <Route path="/admin/login" element={<AdminLogin />} />
         <Route
           path="/admin"
@@ -214,6 +215,7 @@ function AppContent() {
             </AdminGuard>
           }
         />
+        */}
 
         {/* Catch-all */}
         {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
