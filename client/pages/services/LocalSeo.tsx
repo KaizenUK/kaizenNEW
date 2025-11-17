@@ -151,14 +151,6 @@ export default function LocalSeo() {
 
   return (
     <Layout>
-      <Helmet>
-        <title>Local SEO Services Liverpool & Wirral | Kaizen</title>
-        <meta
-          name="description"
-          content="Invisible in local search? We help Liverpool & Wirral businesses dominate the Google Map Pack and get found by local customers. No jargon, just rankings."
-        />
-      </Helmet>
-
       {/* Section 1: Hero */}
       <section className="min-h-screen bg-kaizen-dark dark:bg-gradient-to-b dark:from-slate-900 dark:to-slate-950 text-kaizen-text-light dark:text-white/85 flex items-center py-20">
         <div className="container mx-auto px-4">
