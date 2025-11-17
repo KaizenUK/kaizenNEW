@@ -122,16 +122,6 @@ export default function WordPressWebDesign() {
 
   return (
     <Layout>
-      <Helmet>
-        <title>
-          WordPress Web Design Liverpool | Fast, Secure WP Sites | Kaizen
-        </title>
-        <meta
-          name="description"
-          content="We build custom WordPress websites for Liverpool & Wirral. Get the power and familiarity of WordPress, built the right way: fast, secure, and with no bloat."
-        />
-      </Helmet>
-
       {/* Section 1: Hero - Layered Card & Reveal Style */}
       <section className="relative min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 dark:from-slate-950 dark:via-slate-900 dark:to-black overflow-hidden flex items-center py-20">
         {/* Background visual - abstract WordPress editor aesthetic */}
