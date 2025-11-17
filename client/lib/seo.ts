@@ -200,11 +200,7 @@ const pageMeta: Record<string, Partial<PageMeta>> = {
     title: "Contact | Kaizen | Liverpool Web Design",
     description:
       "Let's talk. Chat with us live, or book a 15-minute, no-pressure discovery call directly in our calendar.",
-    keywords: [
-      "contact kaizen",
-      "book a call",
-      "liverpool web design contact",
-    ],
+    keywords: ["contact kaizen", "book a call", "liverpool web design contact"],
   },
   "/blog": {
     title: "Blog | Kaizen | Web Design & Agile Insights",
@@ -233,24 +229,14 @@ const pageMeta: Record<string, Partial<PageMeta>> = {
     description:
       'Our simple, "no-jargon" privacy policy. We explain what data we collect (like chat and analytics) and how we keep it safe.',
     noIndex: true,
-    keywords: [
-      "privacy policy",
-      "gdpr",
-      "kaizen privacy",
-      "cookie policy",
-    ],
+    keywords: ["privacy policy", "gdpr", "kaizen privacy", "cookie policy"],
   },
   "/cookie-policy": {
     title: "Cookie Policy | Kaizen",
     description:
       "A simple, clear list of the cookies this site uses for chat, analytics, and booking, and why we use them.",
     noIndex: true,
-    keywords: [
-      "cookie policy",
-      "cookie notice",
-      "gdpr",
-      "analytics cookies",
-    ],
+    keywords: ["cookie policy", "cookie notice", "gdpr", "analytics cookies"],
   },
   "/gdpr-policy": {
     title: "GDPR Policy | Kaizen Web Liverpool",
