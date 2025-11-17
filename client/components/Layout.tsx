@@ -245,6 +245,9 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content={meta.title} />
+        {shouldRenderDescription && (
+          <meta name="twitter:description" content={meta.description} />
+        )}
         <meta name="twitter:image" content={ogImage} />
         <meta name="twitter:site" content="@kaizenweblpool" />
         <script type="application/ld+json">
