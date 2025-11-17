@@ -200,49 +200,51 @@ export default function Blog() {
 
             {/* Right: Featured Post Card */}
             {featuredPost && (
-              <motion.div
-                className="relative group h-80 rounded-xl overflow-hidden border border-gray-700 hover:border-blue-500/50 transition-all duration-300"
-                initial={{ y: 20, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                transition={{ duration: 0.6, delay: 0.4 }}
-                whileHover={{ y: -8 }}
-              >
-                <div className="absolute inset-0 bg-gradient-to-r from-blue-500/0 via-purple-500/0 to-amber-500/0 group-hover:from-blue-500/20 group-hover:via-purple-500/20 group-hover:to-amber-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
+              <Link to={`/blog/${featuredPost.slug}`} className="block h-80">
+                <motion.div
+                  className="relative group h-80 rounded-xl overflow-hidden border border-gray-700 hover:border-blue-500/50 transition-all duration-300"
+                  initial={{ y: 20, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  transition={{ duration: 0.6, delay: 0.4 }}
+                  whileHover={{ y: -8 }}
+                >
+                  <div className="absolute inset-0 bg-gradient-to-r from-blue-500/0 via-purple-500/0 to-amber-500/0 group-hover:from-blue-500/20 group-hover:via-purple-500/20 group-hover:to-amber-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
 
-                <img
-                  src={featuredPost.image}
-                  alt={featuredPost.title}
-                  className="w-full h-full object-cover"
-                />
+                  <img
+                    src={featuredPost.image}
+                    alt={featuredPost.title}
+                    className="w-full h-full object-cover"
+                  />
 
-                <div className="absolute inset-0 bg-gradient-to-t from-gray-950 via-transparent to-transparent" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-gray-950 via-transparent to-transparent" />
 
-                <div className="absolute bottom-0 left-0 right-0 p-6">
-                  <div className="flex items-center gap-2 mb-3 flex-wrap">
-                    {featuredPost.tags.slice(0, 2).map((tag, tagIndex) => (
-                      <span
-                        key={`hero-tag-${tag}-${tagIndex}`}
-                        className={`text-xs font-mono font-bold tracking-widest ${
-                          TAG_COLORS[tag.toLowerCase()] || "text-gray-400"
-                        }`}
-                      >
-                        {tag}
+                  <div className="absolute bottom-0 left-0 right-0 p-6">
+                    <div className="flex items-center gap-2 mb-3 flex-wrap">
+                      {featuredPost.tags.slice(0, 2).map((tag, tagIndex) => (
+                        <span
+                          key={`hero-tag-${tag}-${tagIndex}`}
+                          className={`text-xs font-mono font-bold tracking-widest ${
+                            TAG_COLORS[tag.toLowerCase()] || "text-gray-400"
+                          }`}
+                        >
+                          {tag}
+                        </span>
+                      ))}
+                      <span className="text-gray-500 text-xs font-mono ml-auto">
+                        {new Date(
+                          featuredPost.publishedDate,
+                        ).toLocaleDateString()}
                       </span>
-                    ))}
-                    <span className="text-gray-500 text-xs font-mono ml-auto">
-                      {new Date(
-                        featuredPost.publishedDate,
-                      ).toLocaleDateString()}
-                    </span>
+                    </div>
+                    <h3 className="text-xl font-heading font-bold mb-3 text-white group-hover:text-blue-300 transition">
+                      {featuredPost.title}
+                    </h3>
+                    <div className="flex items-center gap-2 text-blue-400 font-mono text-sm opacity-0 group-hover:opacity-100 translate-x-0 group-hover:translate-x-1 transition-all">
+                      Read <ArrowRight size={16} />
+                    </div>
                   </div>
-                  <h3 className="text-xl font-heading font-bold mb-3 text-white group-hover:text-blue-300 transition">
-                    {featuredPost.title}
-                  </h3>
-                  <div className="flex items-center gap-2 text-blue-400 font-mono text-sm opacity-0 group-hover:opacity-100 translate-x-0 group-hover:translate-x-1 transition-all">
-                    Read <ArrowRight size={16} />
-                  </div>
-                </div>
-              </motion.div>
+                </motion.div>
+              </Link>
             )}
           </div>
         </div>
