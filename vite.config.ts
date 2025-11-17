@@ -2,7 +2,8 @@ import { defineConfig, Plugin } from "vite";
 import react from "@vitejs/plugin-react-swc";
 import path from "path";
 import { createServer } from "./server";
-import sitemap from "vite-plugin-sitemap";
+// Sitemap generation is handled by WordPress/Yoast under /cms. Disabled vite-plugin-sitemap to avoid shipping a second sitemap from the React app.
+// import sitemap from "vite-plugin-sitemap";
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
