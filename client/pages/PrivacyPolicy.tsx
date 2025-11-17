@@ -1,6 +1,5 @@
 import Layout from "@/components/Layout";
 import { motion } from "framer-motion";
-import { Helmet } from "react-helmet-async";
 
 const fadeInUp = {
   hidden: { opacity: 0, y: 20 },
