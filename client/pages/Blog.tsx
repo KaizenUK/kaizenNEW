@@ -86,7 +86,7 @@ export default function Blog() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const fetchPosts = async () => {
+    const loadPosts = async () => {
       try {
         setIsLoading(true);
         // Use WordPress as the source of truth
