@@ -75,14 +75,6 @@ const ScrollReveal = ({
 export default function About() {
   return (
     <Layout>
-      <Helmet>
-        <title>About Kaizen | Liverpool Web Design & Agile Experts</title>
-        <meta
-          name="description"
-          content="We're not another faceless agency. Meet Sean, our founder—a local, world-class tech expert who is relentlessly focused on getting you results."
-        />
-      </Helmet>
-
       {/* Section 1: Hero - Manifesto Style */}
       <section className="min-h-screen bg-white dark:bg-slate-950 flex items-center py-20">
         <div className="container mx-auto px-4">
