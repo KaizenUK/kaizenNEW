@@ -1,7 +1,6 @@
 import { Link } from "react-router-dom";
 import Layout from "@/components/Layout";
 import { motion } from "framer-motion";
-import { Helmet } from "react-helmet-async";
 import { ArrowRight } from "lucide-react";
 import { useCalendly } from "@/context/CalendlyContext";
 
