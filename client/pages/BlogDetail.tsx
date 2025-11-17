@@ -286,7 +286,10 @@ export default function BlogDetail() {
         }
 
         const bodyContent = wpPost.content?.rendered || "";
-        const bodyWithIds = addIdsToHeadings(bodyContent);
+        // Basic sanitization: remove script tags and inline event handlers
+        const sanitizedRaw = bodyContent.replace(/<script[\s\S]*?>[\s\S]*?<\/script>/gi, "");
+        const withoutOnHandlers = sanitizedRaw.replace(/ on\w+="[^"]*"/gi, "");
+        const bodyWithIds = addIdsToHeadings(withoutOnHandlers);
         const headings = extractHeadings(bodyWithIds);
 
         const coverImage =
