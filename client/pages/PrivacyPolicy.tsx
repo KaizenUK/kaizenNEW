@@ -14,14 +14,6 @@ const fadeInUp = {
 export default function PrivacyPolicy() {
   return (
     <Layout>
-      <Helmet>
-        <title>Privacy Policy | Kaizen</title>
-        <meta
-          name="description"
-          content="Our privacy policy explains how we collect and use your data. We're transparent about what we do and don't do with your information."
-        />
-      </Helmet>
-
       {/* Hero Section */}
       <section className="bg-gradient-to-br from-kaizen-dark via-slate-900 to-kaizen-dark dark:from-slate-950 dark:via-slate-900 dark:to-black text-white py-16 md:py-24">
         <div className="container mx-auto px-4">
