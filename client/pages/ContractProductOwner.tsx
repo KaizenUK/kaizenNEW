@@ -191,16 +191,6 @@ export default function ContractProductOwner() {
 
   return (
     <Layout>
-      <Helmet>
-        <title>
-          Sean McDonnell | Contract Product Owner Liverpool | Kaizen
-        </title>
-        <meta
-          name="description"
-          content="Sean McDonnell, a Liverpool-based Senior Product Owner with 10+ years' experience in iGaming & high-stakes platform migration. I deliver complex projects, on time."
-        />
-      </Helmet>
-
       {/* Section 1: Hero - Bold Typography */}
       <section className="min-h-screen bg-white dark:bg-slate-950 flex items-center py-20">
         <div className="container mx-auto px-4">
