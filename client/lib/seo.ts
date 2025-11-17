@@ -20,9 +20,9 @@ export const BUSINESS_ADDRESS = {
 export const DEFAULT_OG_IMAGE = `${SITE_URL}/og-image.jpg`;
 
 const defaultMeta: PageMeta = {
-  title: "Kaizen Web | Liverpool Web Design & Local SEO Agency",
+  title: "Web Design Liverpool | Kaizen – Agile Web Development",
   description:
-    "Kaizen Web is a Liverpool-based web design studio helping Merseyside businesses launch faster websites, smarter digital products, and measurable SEO campaigns.",
+    "Kaizen is a Liverpool web design agency. We build fast, high-performance websites and offer Agile coaching to improve your team's workflow. No-BS, just results.",
   keywords: [
     "Kaizen Web",
     "Liverpool web design agency",
@@ -35,88 +35,114 @@ const defaultMeta: PageMeta = {
 
 const pageMeta: Record<string, Partial<PageMeta>> = {
   "/": {
-    title: "Kaizen Web | Liverpool Web Design & Growth Partner",
+    title: "Web Design Liverpool | Kaizen – Agile Web Development",
     description:
-      "Liverpool web design agency delivering fast sites, conversion copy, and ongoing optimisation for ambitious businesses across the city and wider Merseyside.",
-    keywords: [
-      "Liverpool web design",
-      "Liverpool website agency",
-      "Kaizen Web",
-      "Merseyside digital agency",
-      "Baltic Triangle web studio",
-    ],
+      "Kaizen is a Liverpool web design agency. We build fast, high-performance websites and offer Agile coaching to improve your team's workflow. No-BS, just results.",
   },
   "/services": {
     title: "Digital Services for Liverpool SMEs | Kaizen Web",
     description:
       "Explore Kaizen Web services covering website design, UX, ecommerce, local SEO, and agile consulting tailored to Liverpool startups and established SMEs.",
-    keywords: [
-      "Liverpool digital services",
-      "Liverpool UX agency",
-      "Liverpool ecommerce developers",
-    ],
   },
-  "/services/web-design": {
-    title: "Liverpool Web Design Services | Kaizen Web",
+  "/services/web-design-liverpool": {
+    title: "High-Performance Web Design Liverpool | Kaizen",
     description:
-      "Bespoke Liverpool web design packages focused on speed, accessibility, and conversions with hosting, care plans, and continuous optimisation.",
-    keywords: [
-      "Liverpool WordPress agency",
-      "Liverpool web design packages",
-      "Liverpool website redesign",
-    ],
+      "Need web design in Liverpool? We build fast, high-performance websites using a modern stack and a straightforward Agile process. Get more leads, not more headaches.",
+  },
+  "/web-design-liverpool": {
+    title: "High-Performance Web Design Liverpool | Kaizen",
+    description:
+      "Need web design in Liverpool? We build fast, high-performance websites using a modern stack and a straightforward Agile process. Get more leads, not more headaches.",
   },
   "/services/local-seo": {
-    title: "Liverpool Local SEO Agency | Kaizen Web",
+    title: "Local SEO Services Liverpool & Wirral | Kaizen",
     description:
-      "Boost search visibility across Liverpool postcodes with structured data, GBP optimisation, and content sprints run by Kaizen Web's local SEO specialists.",
-    keywords: [
-      "Liverpool local SEO",
-      "Liverpool Google Business Profile",
-      "Liverpool SEO experts",
-    ],
-  },
-  "/services/digital-transformation": {
-    title:
-      "Digital Transformation Liverpool | Business Process Automation | Kaizen",
-    description:
-      "We help Liverpool & Wirral businesses stop working in chaos. We automate manual tasks, fix inefficient workflows, and get your systems talking. No-BS.",
+      "Invisible in local search? We help Liverpool & Wirral businesses dominate the Google Map Pack and get found by local customers. No jargon, just rankings.",
   },
   "/services/ecommerce": {
-    title: "Liverpool Ecommerce Website Design | Kaizen Web",
+    title:
+      "E-commerce Development Liverpool | Fast Headless & WooCommerce | Kaizen",
     description:
-      "Shopify and headless ecommerce builds designed in Liverpool with UX research, CRO, and lifecycle marketing baked in from day one.",
+      "We build high-performance e-commerce websites for Liverpool & Wirral. Stop losing sales to a slow site. We build fast, custom, headless e-commerce stores.",
   },
   "/services/wordpress-web-design": {
     title: "WordPress Web Design Liverpool | Fast, Secure WP Sites | Kaizen",
     description:
       "We build custom WordPress websites for Liverpool & Wirral. Get the power and familiarity of WordPress, built the right way: fast, secure, and with no bloat.",
-    keywords: [
-      "WordPress web design Liverpool",
-      "Custom WordPress sites",
-      "Fast WordPress development",
-      "Liverpool WordPress agency",
-    ],
+  },
+  "/services/digital-transformation": {
+    title:
+      "Digital Transformation Liverpool | Business Process Automation | Kaizen",
+    description:
+      "We help Liverpool & Wirral businesses stop working in chaos. We automate manual tasks, fix inefficient workflows, and get your systems talking.",
+  },
+  "/services/agile-coaching": {
+    title: "Agile Coaching for Liverpool Businesses | Kaizen",
+    description:
+      "Stop wasting time on chaotic projects. We offer practical Agile coaching in Liverpool to help your team work smarter, faster, and more efficiently. No jargon.",
+  },
+  "/agile-coaching": {
+    title: "Agile Coaching for Liverpool Businesses | Kaizen",
+    description:
+      "Stop wasting time on chaotic projects. We offer practical Agile coaching in Liverpool to help your team work smarter, faster, and more efficiently. No jargon.",
+  },
+  "/services/contract-product-owner": {
+    title: "Sean McDonnell | Contract Product Owner Liverpool | Kaizen",
+    description:
+      "Sean McDonnell, a Liverpool-based Senior Product Owner with 10+ years' experience in iGaming & high-stakes platform migration. I deliver complex projects, on time.",
   },
   "/contract-product-owner": {
-    title: "Contract Product Owner Liverpool | Kaizen Web",
+    title: "Sean McDonnell | Contract Product Owner Liverpool | Kaizen",
     description:
-      "Certified product owners supporting Liverpool tech squads with discovery workshops, prioritisation, and stakeholder coaching.",
+      "Sean McDonnell, a Liverpool-based Senior Product Owner with 10+ years' experience in iGaming & high-stakes platform migration. I deliver complex projects, on time.",
   },
   "/about": {
-    title: "About Kaizen Web | Liverpool Web Studio",
+    title: "About Kaizen | Liverpool Web Design & Agile Experts",
     description:
-      "Learn more about Kaizen Web, a Liverpool-based collective of designers, strategists, and engineers focused on sustainable digital growth.",
+      "We're not another faceless agency. Meet Sean, our founder—a local, world-class tech expert who is relentlessly focused on getting you results.",
   },
   "/pledge": {
     title: 'Our "No-BS" Pledge | Transparent Web Design | Kaizen',
     description:
-      "Our No-BS Pledge. See our transparent policy on AI, pricing, and our process. No black box, no surprise bills, no excuses.",
+      'Our "No-BS" Pledge. See our transparent policy on AI, pricing, and our process. No black box, no surprise bills, no excuses.',
   },
-  "/agile-coaching": {
-    title: "Agile Coaching for Liverpool Teams | Kaizen Web",
+  "/case-studies": {
+    title: "Case Studies | Liverpool Web Design Results | Kaizen",
     description:
-      "Agile and delivery coaching so Liverpool engineering, marketing, and leadership teams can experiment confidently.",
+      "Proof, not promises. See our \"no-BS\" case studies for Liverpool & Wirral businesses. We deliver results.",
+  },
+  "/contact": {
+    title: "Contact | Kaizen | Liverpool Web Design",
+    description:
+      "Let's talk. Chat with us live, or book a 15-minute, no-pressure discovery call directly in our calendar.",
+  },
+  "/blog": {
+    title: "Blog | Kaizen | Web Design & Agile Insights",
+    description:
+      "Practical insights on web design, local SEO, and Agile project management for Liverpool & Wirral businesses.",
+  },
+  "/blog/new-kaizen-website-relaunch": {
+    title: "More Than a Refresh: Why We Rebuilt the Kaizen Website",
+    description:
+      "We didn't just refresh our site; we tore it down to the studs. Here's why we rebuilt the Kaizen website from the ground up for speed, security, and you.",
+  },
+  "/privacy-policy": {
+    title: "Privacy Policy | Kaizen",
+    description:
+      "Our simple, \"no-jargon\" privacy policy. We explain what data we collect (like chat and analytics) and how we keep it safe.",
+    noIndex: true,
+  },
+  "/cookie-policy": {
+    title: "Cookie Policy | Kaizen",
+    description:
+      "A simple, clear list of the cookies this site uses for chat, analytics, and booking, and why we use them.",
+    noIndex: true,
+  },
+  "/gdpr-policy": {
+    title: "GDPR Policy | Kaizen Web Liverpool",
+    description:
+      "Kaizen Web's GDPR commitments covering hosting, analytics, and customer data in the UK.",
+    noIndex: true,
   },
   "/product-owner": {
     title: "Fractional Product Owner Liverpool | Kaizen Web",
@@ -127,48 +153,6 @@ const pageMeta: Record<string, Partial<PageMeta>> = {
     title: "Team Transformation & Delivery Coaching Liverpool | Kaizen Web",
     description:
       "Bridge strategy and execution with Kaizen Web's delivery coaching programmes tailored to Liverpool organisations.",
-  },
-  "/web-design-liverpool": {
-    title: "Liverpool Web Design Agency | Kaizen Web",
-    description:
-      "Deep-dive into our Liverpool web design process, packages, and proof showing how Kaizen Web turns clicks into local customers.",
-    keywords: [
-      "Liverpool city centre web design",
-      "Liverpool website consultants",
-      "Kaizen Web Liverpool",
-    ],
-  },
-  "/web-design-liverpool-city-centre": {
-    title: "Web Design Liverpool City Centre | Kaizen Web",
-    description:
-      "Studio based near the Baltic Triangle helping city centre retailers, hospitality, and creative businesses modernise their sites.",
-  },
-  "/case-studies": {
-    title: "Case Studies | Liverpool Web Design Results | Kaizen",
-    description:
-      "Proof, not promises. See our real, 'no-BS' case studies for Liverpool & Wirral businesses. We deliver results.",
-  },
-  "/blog": {
-    title: "Kaizen Web Journal | Liverpool Web Design Tips",
-    description:
-      "Guides on UX, performance, SEO, and agile delivery from a Liverpool web design team.",
-  },
-  "/contact": {
-    title: "Contact Kaizen Web | Book a Liverpool Web Design Call",
-    description:
-      "Discuss your next Liverpool website, SEO campaign, or product sprint with Kaizen Web. Same-week discovery calls available.",
-  },
-  "/privacy-policy": {
-    title: "Privacy Policy | Kaizen Web Liverpool",
-    description:
-      "Understand how Kaizen Web collects, uses, and protects data for clients and subscribers.",
-    noIndex: true,
-  },
-  "/gdpr-policy": {
-    title: "GDPR Policy | Kaizen Web Liverpool",
-    description:
-      "Kaizen Web's GDPR commitments covering hosting, analytics, and customer data in the UK.",
-    noIndex: true,
   },
 };
 
