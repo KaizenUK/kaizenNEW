@@ -4,6 +4,7 @@ import { ArrowRight, Code2 } from "lucide-react";
 import { Link } from "react-router-dom";
 
 import builder from "@/builder";
+import { fetchPosts } from "../../src/api/wordpress";
 import Layout from "@/components/Layout";
 
 type CoverImage = string | { url?: string } | null;
@@ -85,25 +86,52 @@ export default function Blog() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const fetchPosts = async () => {
+    const loadPosts = async () => {
       try {
         setIsLoading(true);
-        const results = await builder.getAll("blog-post", {
-          fields:
-            "data.title,data.slug,data.excerpt,data.publishedDate,data.coverImage,data.tags",
-          limit: 100,
-        });
+        // Use WordPress as the source of truth
+        const results = await fetchPosts();
 
-        const processedPosts: ProcessedPost[] = (results as BlogPost[])
-          .map((post) => ({
-            id: post.id,
-            title: post.data.title || "Untitled",
-            slug: post.data.slug || "",
-            excerpt: post.data.excerpt || "",
-            tags: Array.isArray(post.data.tags) ? post.data.tags : [],
-            image: extractImageUrl(post.data.coverImage),
-            publishedDate: post.data.publishedDate || new Date().toISOString(),
-          }))
+        const processedPosts: ProcessedPost[] = (results || [])
+          .map((post) => {
+            const coverImage =
+              post._embedded &&
+              post._embedded["wp:featuredmedia"] &&
+              post._embedded["wp:featuredmedia"][0]
+                ? post._embedded["wp:featuredmedia"][0].source_url
+                : DEFAULT_IMAGE;
+
+            const excerptText = post.excerpt?.rendered
+              ? post.excerpt.rendered.replace(/<[^>]*>/g, "").trim()
+              : "";
+
+            const tags: string[] = [];
+
+            // Attempt to extract tags from _embedded terms if present
+            try {
+              const terms = post._embedded?.["wp:term"];
+              if (Array.isArray(terms)) {
+                // terms is array of taxonomy arrays
+                terms.forEach((tax: any[]) => {
+                  tax.forEach((t) => {
+                    if (t && t.name) tags.push(t.name);
+                  });
+                });
+              }
+            } catch (e) {
+              // ignore
+            }
+
+            return {
+              id: String(post.id),
+              title: post.title?.rendered || "Untitled",
+              slug: post.slug || "",
+              excerpt: excerptText,
+              tags,
+              image: coverImage,
+              publishedDate: post.date || new Date().toISOString(),
+            };
+          })
           .sort(
             (a, b) =>
               new Date(b.publishedDate).getTime() -
@@ -113,7 +141,7 @@ export default function Blog() {
         // Extract unique tags
         const uniqueTags = new Set<string>();
         processedPosts.forEach((post) => {
-          post.tags.forEach((tag) => {
+          (post.tags || []).forEach((tag) => {
             if (tag) uniqueTags.add(tag);
           });
         });
@@ -127,7 +155,7 @@ export default function Blog() {
       }
     };
 
-    fetchPosts();
+    loadPosts();
   }, []);
 
   const filteredPosts = posts.filter(
