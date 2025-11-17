@@ -158,17 +158,6 @@ export default function Ecommerce() {
 
   return (
     <Layout>
-      <Helmet>
-        <title>
-          E-commerce Development Liverpool | Fast Headless & WooCommerce |
-          Kaizen
-        </title>
-        <meta
-          name="description"
-          content="We build high-performance e-commerce websites for Liverpool & Wirral. Stop losing sales to a slow site. We build fast, custom, headless e-commerce stores."
-        />
-      </Helmet>
-
       {/* Section 1: Hero - Diagonal Skewed Split */}
       <section className="relative min-h-screen bg-kaizen-dark dark:bg-slate-950 overflow-hidden flex items-center">
         {/* Text Side (Left/Top) */}
