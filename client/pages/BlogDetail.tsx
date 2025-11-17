@@ -6,6 +6,8 @@ import { Helmet } from "react-helmet-async";
 
 import builder from "@/builder";
 import Layout from "@/components/Layout";
+import { fetchPostBySlug } from "../../src/api/wordpress";
+import { SeoFromYoast } from "@/components/SeoFromYoast";
 
 type CoverImage = string | { url?: string } | null;
 type TableOfContentsItem = { id: string; title: string; level: number };
@@ -276,63 +278,63 @@ export default function BlogDetail() {
       }
 
       try {
-        const results = await builder.getAll("blog-post", {
-          fields:
-            "data.title,data.slug,data.body,data.publishedDate,data.coverImage,data.excerpt,data.tags",
-          query: { "data.slug": slug },
-          limit: 1,
-        });
+        const wpPost = await fetchPostBySlug(slug);
+        if (!wpPost) {
+          setPost(null);
+          setIsLoading(false);
+          return;
+        }
 
-        if (results && results.length > 0) {
-          const builderPost = results[0] as BlogPostDetail;
-          const bodyContent = builderPost.data.body || "";
-          const bodyWithIds = addIdsToHeadings(bodyContent);
-          const headings = extractHeadings(bodyWithIds);
+        const bodyContent = wpPost.content?.rendered || "";
+        const bodyWithIds = addIdsToHeadings(bodyContent);
+        const headings = extractHeadings(bodyWithIds);
 
-          const processedPost: ProcessedPost = {
-            id: builderPost.id,
-            title: builderPost.data.title || "Untitled",
-            slug: builderPost.data.slug || slug,
-            publishedDate:
-              builderPost.data.publishedDate || new Date().toISOString(),
-            body: bodyWithIds,
-            coverImage: extractImageUrl(builderPost.data.coverImage),
-            excerpt: builderPost.data.excerpt || "",
-            tags: Array.isArray(builderPost.data.tags)
-              ? builderPost.data.tags
-              : [],
-            category: "Blog Post",
-            author: {
-              name: "Kaizen",
-              role: "Web Design & Agile",
-              image:
-                "https://cdn.builder.io/api/v1/image/assets%2Fe4ae46bbd81b4b95bef54d66dd9748cc%2Fbe9c606a991946d9b3a5d47d9cfbf290?format=webp&width=800",
-            },
-            readingTime: calculateReadingTime(bodyContent),
-            tableOfContents: headings,
-          };
+        const coverImage =
+          wpPost._embedded && wpPost._embedded['wp:featuredmedia'] && wpPost._embedded['wp:featuredmedia'][0]
+            ? wpPost._embedded['wp:featuredmedia'][0].source_url
+            : DEFAULT_IMAGE;
 
-          setPost(processedPost);
+        const processedPost: ProcessedPost = {
+          id: String(wpPost.id),
+          title: wpPost.title?.rendered || "Untitled",
+          slug: wpPost.slug || slug,
+          publishedDate: wpPost.date || new Date().toISOString(),
+          body: bodyWithIds,
+          coverImage: coverImage,
+          excerpt: wpPost.excerpt?.rendered || "",
+          tags: [],
+          category: "Blog Post",
+          author: {
+            name: "Kaizen",
+            role: "Web Design & Agile",
+            image:
+              "https://cdn.builder.io/api/v1/image/assets%2Fe4ae46bbd81b4b95bef54d66dd9748cc%2Fbe9c606a991946d9b3a5d47d9cfbf290?format=webp&width=800",
+          },
+          readingTime: calculateReadingTime(bodyContent),
+          tableOfContents: headings,
+          // Attach yoast for SEO usage
+          // @ts-ignore
+          yoast_head_json: wpPost.yoast_head_json,
+        } as any;
 
-          // Fetch related posts
-          const allPosts = await builder.getAll("blog-post", {
-            fields: "data.title,data.slug,data.publishedDate",
-            limit: 10,
-          });
+        setPost(processedPost);
 
-          const filtered = (allPosts as BlogPostDetail[])
-            .filter((p) => p.data.slug !== slug)
+        // Related posts: fetch a couple of recent posts and exclude current
+        try {
+          const allWp = await fetchPosts();
+          const filtered = (allWp || [])
+            .filter((p) => p.slug !== slug)
             .slice(0, 2)
             .map((p) => ({
-              id: p.id,
-              title: p.data.title || "Untitled",
-              slug: p.data.slug || "",
-              publishedDate: p.data.publishedDate || new Date().toISOString(),
+              id: String(p.id),
+              title: p.title?.rendered || "Untitled",
+              slug: p.slug || "",
+              publishedDate: p.date || new Date().toISOString(),
             }));
 
           setRelatedPosts(filtered);
-        } else {
-          setPost(null);
+        } catch (e) {
+          setRelatedPosts([]);
         }
       } catch (error) {
         console.error("Failed to fetch blog post:", error);
@@ -429,11 +431,13 @@ export default function BlogDetail() {
     );
   }
 
-  const seoTitle = post?.data?.seoTitle || post?.title || "Blog Post";
+  // SEO: derive from Yoast if available, otherwise fallback
+  // @ts-ignore
+  const yoast = (post as any)?.yoast_head_json;
+  const seoTitle = post?.title || "Blog Post";
   const seoDescription =
-    post?.data?.seoDescription ||
-    post?.excerpt ||
-    (post?.body ? generateDescriptionFromBody(post.body) : "");
+    yoast?.description ||
+    (post?.excerpt ? post.excerpt.replace(/<[^>]*>/g, "").trim() : (post?.body ? generateDescriptionFromBody(post.body) : ""));
   const pageUrl = `https://www.kaizenweb.co.uk/blog/${post?.slug || ""}`;
   const coverImageUrl = post?.coverImage || DEFAULT_IMAGE;
 
@@ -453,19 +457,7 @@ export default function BlogDetail() {
 
   return (
     <Layout>
-      <Helmet>
-        <title>{seoTitle} | Kaizen</title>
-        <meta name="description" content={seoDescription} />
-        <meta property="og:title" content={seoTitle} />
-        <meta property="og:description" content={seoDescription} />
-        <meta property="og:type" content="article" />
-        <meta property="og:url" content={pageUrl} />
-        <meta property="og:image" content={coverImageUrl} />
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content={seoTitle} />
-        <meta name="twitter:description" content={seoDescription} />
-        <meta name="twitter:image" content={coverImageUrl} />
-      </Helmet>
+      <SeoFromYoast yoast={yoast} />
 
       {/* Progress Bar with Percentage */}
       <motion.div className="fixed top-0 left-0 right-0 h-1 z-50 bg-gray-800">
