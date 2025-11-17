@@ -16,7 +16,7 @@ export async function fetchPosts(): Promise<WPPost[]> {
     `${CMS_BASE}/wp-json/wp/v2/posts?_embed&per_page=10`
   );
   if (!res.ok) {
-    throw new Error('Failed to fetch posts from WordPress');
+    throw new Error(`Failed to fetch posts: ${res.status}`);
   }
   return res.json();
 }
@@ -26,7 +26,7 @@ export async function fetchPostBySlug(slug: string): Promise<WPPost | null> {
     `${CMS_BASE}/wp-json/wp/v2/posts?slug=${encodeURIComponent(slug)}&_embed`
   );
   if (!res.ok) {
-    throw new Error('Failed to fetch post from WordPress');
+    throw new Error(`Failed to fetch post: ${res.status}`);
   }
   const data: WPPost[] = await res.json();
   return data[0] ?? null;
