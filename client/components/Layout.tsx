@@ -38,6 +38,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   const [textIsDark, setTextIsDark] = useState(true);
   const { openCalendly } = useCalendly();
   const location = useLocation();
+  const servicesMenuRef = useRef<HTMLDivElement>(null);
   const detectionZoneRef = useRef<HTMLDivElement>(null);
   const closeTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -73,6 +74,54 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       window.scrollTo(0, 0);
     }
   }, [location.pathname]);
+
+  useEffect(() => {
+    const handlePointerDown = (event: MouseEvent | TouchEvent) => {
+      if (
+        servicesMenuRef.current &&
+        !servicesMenuRef.current.contains(event.target as Node)
+      ) {
+        setServicesOpen(false);
+      }
+    };
+
+    document.addEventListener("pointerdown", handlePointerDown);
+
+    return () => {
+      document.removeEventListener("pointerdown", handlePointerDown);
+    };
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      if (closeTimeoutRef.current) {
+        clearTimeout(closeTimeoutRef.current);
+      }
+    };
+  }, []);
+
+  const openServicesMenu = () => {
+    if (closeTimeoutRef.current) {
+      clearTimeout(closeTimeoutRef.current);
+    }
+    setServicesOpen(true);
+  };
+
+  const closeServicesMenu = () => {
+    if (closeTimeoutRef.current) {
+      clearTimeout(closeTimeoutRef.current);
+    }
+    setServicesOpen(false);
+  };
+
+  const scheduleCloseServicesMenu = () => {
+    if (closeTimeoutRef.current) {
+      clearTimeout(closeTimeoutRef.current);
+    }
+    closeTimeoutRef.current = setTimeout(() => {
+      setServicesOpen(false);
+    }, 120);
+  };
 
   // Detect background color beneath header to adjust text color
   useEffect(() => {
@@ -256,19 +305,41 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
               {/* Services Mega Menu - Relative Container */}
               <div
                 className="relative"
-                onMouseEnter={() => {
-                  if (closeTimeoutRef.current) {
-                    clearTimeout(closeTimeoutRef.current);
+                ref={servicesMenuRef}
+                onPointerEnter={openServicesMenu}
+                onPointerLeave={scheduleCloseServicesMenu}
+                onFocusCapture={openServicesMenu}
+                onBlurCapture={(event) => {
+                  const nextFocus = event.relatedTarget as Node | null;
+
+                  if (
+                    servicesMenuRef.current &&
+                    (!nextFocus || !servicesMenuRef.current.contains(nextFocus))
+                  ) {
+                    scheduleCloseServicesMenu();
                   }
-                  setServicesOpen(true);
-                }}
-                onMouseLeave={() => {
-                  closeTimeoutRef.current = setTimeout(() => {
-                    setServicesOpen(false);
-                  }, 150);
                 }}
               >
                 <button
+                  type="button"
+                  aria-haspopup="menu"
+                  aria-expanded={servicesOpen}
+                  aria-controls="services-menu"
+                  onClick={() => setServicesOpen((prev) => !prev)}
+                  onKeyDown={(event) => {
+                    if (event.key === "Escape") {
+                      closeServicesMenu();
+                    }
+
+                    if (event.key === "ArrowDown") {
+                      event.preventDefault();
+                      openServicesMenu();
+                      const firstLink = servicesMenuRef.current?.querySelector<HTMLAnchorElement>(
+                        "#services-menu a",
+                      );
+                      firstLink?.focus();
+                    }
+                  }}
                   className={`px-3 py-2 text-lg font-heading font-medium hover:text-kaizen-cyan transition rounded-md hover:bg-kaizen-light/50 dark:hover:bg-white/5 flex items-center gap-1 ${
                     textIsDark
                       ? "text-kaizen-dark dark:text-white"
@@ -286,21 +357,12 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                 <AnimatePresence>
                   {servicesOpen && (
                     <motion.div
+                      id="services-menu"
+                      role="menu"
                       initial={{ opacity: 0, y: -5 }}
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: -5 }}
                       transition={{ duration: 0.15 }}
-                      onMouseEnter={() => {
-                        if (closeTimeoutRef.current) {
-                          clearTimeout(closeTimeoutRef.current);
-                        }
-                        setServicesOpen(true);
-                      }}
-                      onMouseLeave={() => {
-                        closeTimeoutRef.current = setTimeout(() => {
-                          setServicesOpen(false);
-                        }, 150);
-                      }}
                       className="absolute left-0 top-full mt-0 z-50 min-w-max bg-white dark:bg-slate-900 rounded-lg shadow-xl border border-kaizen-light/20 dark:border-white/10 overflow-hidden"
                       style={{
                         backdropFilter: "blur(10px)",
@@ -317,6 +379,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                             <div className="space-y-6">
                               <Link
                                 to="/services/web-design-liverpool"
+                                role="menuitem"
                                 className="block font-heading font-bold text-base text-kaizen-dark dark:text-white hover:text-kaizen-cyan dark:hover:text-kaizen-cyan transition"
                               >
                                 Web Design Liverpool
@@ -324,6 +387,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 
                               <Link
                                 to="/services/wordpress-web-design"
+                                role="menuitem"
                                 className="block font-heading font-bold text-base text-kaizen-dark dark:text-white hover:text-kaizen-cyan dark:hover:text-kaizen-cyan transition"
                               >
                                 WordPress Design
@@ -331,6 +395,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 
                               <Link
                                 to="/services/ecommerce"
+                                role="menuitem"
                                 className="block font-heading font-bold text-base text-kaizen-dark dark:text-white hover:text-kaizen-cyan dark:hover:text-kaizen-cyan transition"
                               >
                                 E-commerce Development
@@ -338,6 +403,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 
                               <Link
                                 to="/services/local-seo"
+                                role="menuitem"
                                 className="block font-heading font-bold text-base text-kaizen-dark dark:text-white hover:text-kaizen-cyan dark:hover:text-kaizen-cyan transition"
                               >
                                 Local SEO
@@ -354,6 +420,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                             <div className="space-y-6">
                               <Link
                                 to="/services/digital-transformation"
+                                role="menuitem"
                                 className="block font-heading font-bold text-base text-kaizen-dark dark:text-white hover:text-kaizen-cyan dark:hover:text-kaizen-cyan transition"
                               >
                                 Digital Transformation
@@ -361,6 +428,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 
                               <Link
                                 to="/agile-coaching"
+                                role="menuitem"
                                 className="block font-heading font-bold text-base text-kaizen-dark dark:text-white hover:text-kaizen-cyan dark:hover:text-kaizen-cyan transition"
                               >
                                 Agile Coaching
@@ -368,6 +436,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 
                               <Link
                                 to="/contract-product-owner"
+                                role="menuitem"
                                 className="block font-heading font-bold text-base text-kaizen-dark dark:text-white hover:text-kaizen-cyan dark:hover:text-kaizen-cyan transition flex items-center gap-2"
                               >
                                 Contract Product Owner
