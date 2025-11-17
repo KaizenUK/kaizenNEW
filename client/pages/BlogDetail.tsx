@@ -6,7 +6,7 @@ import { Helmet } from "react-helmet-async";
 
 import builder from "@/builder";
 import Layout from "@/components/Layout";
-import { fetchPostBySlug } from "../../src/api/wordpress";
+import { fetchPostBySlug, fetchPosts } from "../../src/api/wordpress";
 import { SeoFromYoast } from "@/components/SeoFromYoast";
 
 type CoverImage = string | { url?: string } | null;
