@@ -19,7 +19,9 @@ export function SeoFromYoast({ yoast }: { yoast?: YoastHeadJson }) {
   return (
     <Helmet>
       {yoast.title && <title>{yoast.title}</title>}
-      {yoast.description && <meta name="description" content={yoast.description} />}
+      {yoast.description && (
+        <meta name="description" content={yoast.description} />
+      )}
       {yoast.canonical && <link rel="canonical" href={yoast.canonical} />}
 
       {yoast.og_title && <meta property="og:title" content={yoast.og_title} />}

@@ -95,8 +95,10 @@ export default function Blog() {
         const processedPosts: ProcessedPost[] = (results || [])
           .map((post) => {
             const coverImage =
-              post._embedded && post._embedded['wp:featuredmedia'] && post._embedded['wp:featuredmedia'][0]
-                ? post._embedded['wp:featuredmedia'][0].source_url
+              post._embedded &&
+              post._embedded["wp:featuredmedia"] &&
+              post._embedded["wp:featuredmedia"][0]
+                ? post._embedded["wp:featuredmedia"][0].source_url
                 : DEFAULT_IMAGE;
 
             const excerptText = post.excerpt?.rendered
@@ -107,7 +109,7 @@ export default function Blog() {
 
             // Attempt to extract tags from _embedded terms if present
             try {
-              const terms = post._embedded?.['wp:term'];
+              const terms = post._embedded?.["wp:term"];
               if (Array.isArray(terms)) {
                 // terms is array of taxonomy arrays
                 terms.forEach((tax: any[]) => {
@@ -130,7 +132,11 @@ export default function Blog() {
               publishedDate: post.date || new Date().toISOString(),
             };
           })
-          .sort((a, b) => new Date(b.publishedDate).getTime() - new Date(a.publishedDate).getTime());
+          .sort(
+            (a, b) =>
+              new Date(b.publishedDate).getTime() -
+              new Date(a.publishedDate).getTime(),
+          );
 
         // Extract unique tags
         const uniqueTags = new Set<string>();

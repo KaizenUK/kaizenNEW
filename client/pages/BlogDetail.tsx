@@ -287,14 +287,19 @@ export default function BlogDetail() {
 
         const bodyContent = wpPost.content?.rendered || "";
         // Basic sanitization: remove script tags and inline event handlers
-        const sanitizedRaw = bodyContent.replace(/<script[\s\S]*?>[\s\S]*?<\/script>/gi, "");
+        const sanitizedRaw = bodyContent.replace(
+          /<script[\s\S]*?>[\s\S]*?<\/script>/gi,
+          "",
+        );
         const withoutOnHandlers = sanitizedRaw.replace(/ on\w+="[^"]*"/gi, "");
         const bodyWithIds = addIdsToHeadings(withoutOnHandlers);
         const headings = extractHeadings(bodyWithIds);
 
         const coverImage =
-          wpPost._embedded && wpPost._embedded['wp:featuredmedia'] && wpPost._embedded['wp:featuredmedia'][0]
-            ? wpPost._embedded['wp:featuredmedia'][0].source_url
+          wpPost._embedded &&
+          wpPost._embedded["wp:featuredmedia"] &&
+          wpPost._embedded["wp:featuredmedia"][0]
+            ? wpPost._embedded["wp:featuredmedia"][0].source_url
             : DEFAULT_IMAGE;
 
         const processedPost: ProcessedPost = {
@@ -440,7 +445,11 @@ export default function BlogDetail() {
   const seoTitle = post?.title || "Blog Post";
   const seoDescription =
     yoast?.description ||
-    (post?.excerpt ? post.excerpt.replace(/<[^>]*>/g, "").trim() : (post?.body ? generateDescriptionFromBody(post.body) : ""));
+    (post?.excerpt
+      ? post.excerpt.replace(/<[^>]*>/g, "").trim()
+      : post?.body
+        ? generateDescriptionFromBody(post.body)
+        : "");
   const pageUrl = `https://www.kaizenweb.co.uk/blog/${post?.slug || ""}`;
   const coverImageUrl = post?.coverImage || DEFAULT_IMAGE;
 
