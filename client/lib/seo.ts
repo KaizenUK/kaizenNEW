@@ -154,6 +154,21 @@ const pageMeta: Record<string, Partial<PageMeta>> = {
     description:
       "Bridge strategy and execution with Kaizen Web's delivery coaching programmes tailored to Liverpool organisations.",
   },
+  "/case-studies/as-collections": {
+    title: "As Collections Case Study | Kaizen Web",
+    description:
+      "How we helped As Collections improve their online presence and streamline operations.",
+  },
+  "/case-studies/helen-moore-hairdressing": {
+    title: "Helen Moore Hairdressing Case Study | Kaizen Web",
+    description:
+      "Local hairdressing salon case study—how we built their online booking system and improved local visibility.",
+  },
+  "/case-studies/independent-retailer": {
+    title: "Independent Retailer Case Study | Kaizen Web",
+    description:
+      "How we helped an independent retailer increase online sales and streamline their operations.",
+  },
 };
 
 type DynamicMetaMatcher = {
