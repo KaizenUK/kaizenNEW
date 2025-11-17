@@ -334,9 +334,10 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                     if (event.key === "ArrowDown") {
                       event.preventDefault();
                       openServicesMenu();
-                      const firstLink = servicesMenuRef.current?.querySelector<HTMLAnchorElement>(
-                        "#services-menu a",
-                      );
+                      const firstLink =
+                        servicesMenuRef.current?.querySelector<HTMLAnchorElement>(
+                          "#services-menu a",
+                        );
                       firstLink?.focus();
                     }
                   }}

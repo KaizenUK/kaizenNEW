@@ -109,7 +109,7 @@ const pageMeta: Record<string, Partial<PageMeta>> = {
   "/case-studies": {
     title: "Case Studies | Liverpool Web Design Results | Kaizen",
     description:
-      "Proof, not promises. See our \"no-BS\" case studies for Liverpool & Wirral businesses. We deliver results.",
+      'Proof, not promises. See our "no-BS" case studies for Liverpool & Wirral businesses. We deliver results.',
   },
   "/contact": {
     title: "Contact | Kaizen | Liverpool Web Design",
@@ -129,7 +129,7 @@ const pageMeta: Record<string, Partial<PageMeta>> = {
   "/privacy-policy": {
     title: "Privacy Policy | Kaizen",
     description:
-      "Our simple, \"no-jargon\" privacy policy. We explain what data we collect (like chat and analytics) and how we keep it safe.",
+      'Our simple, "no-jargon" privacy policy. We explain what data we collect (like chat and analytics) and how we keep it safe.',
     noIndex: true,
   },
   "/cookie-policy": {
