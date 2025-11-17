@@ -149,7 +149,7 @@ export default function Blog() {
       }
     };
 
-    fetchPosts();
+    loadPosts();
   }, []);
 
   const filteredPosts = posts.filter(
