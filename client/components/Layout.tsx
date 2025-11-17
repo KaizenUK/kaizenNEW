@@ -201,8 +201,6 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     <>
       <Helmet key={`seo-${normalizedPath}`} prioritizeSeoTags>
         <title>{meta.title}</title>
-        <meta name="description" content={meta.description} />
-        {keywords && <meta name="keywords" content={keywords} />}
         <meta name="robots" content={robotsValue} />
         <meta name="googlebot" content={robotsValue} />
         <meta name="author" content={SITE_NAME} />
@@ -216,7 +214,6 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         <meta property="og:type" content="website" />
         <meta property="og:site_name" content={SITE_NAME} />
         <meta property="og:title" content={meta.title} />
-        <meta property="og:description" content={meta.description} />
         <meta property="og:url" content={canonicalUrl} />
         <meta property="og:image" content={ogImage} />
         <meta
@@ -225,7 +222,6 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content={meta.title} />
-        <meta name="twitter:description" content={meta.description} />
         <meta name="twitter:image" content={ogImage} />
         <meta name="twitter:site" content="@kaizenweblpool" />
         <script type="application/ld+json">
