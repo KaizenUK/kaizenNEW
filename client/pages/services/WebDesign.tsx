@@ -157,14 +157,6 @@ export default function WebDesign() {
 
   return (
     <Layout>
-      <Helmet>
-        <title>High-Performance Web Design Liverpool | Kaizen</title>
-        <meta
-          name="description"
-          content="Need web design in Liverpool? We build fast, high-performance websites using a modern stack and a straightforward Agile process. Get more leads, not more headaches."
-        />
-      </Helmet>
-
       {/* Section 1: Hero */}
       <section className="min-h-screen bg-kaizen-dark dark:bg-gradient-to-b dark:from-slate-900 dark:to-slate-950 text-kaizen-text-light dark:text-white/85 flex items-center py-20">
         <div className="container mx-auto px-4">
