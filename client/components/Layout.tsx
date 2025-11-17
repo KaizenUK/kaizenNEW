@@ -199,7 +199,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 
   return (
     <>
-      <Helmet prioritizeSeoTags>
+      <Helmet key={`seo-${normalizedPath}`} prioritizeSeoTags>
         <title>{meta.title}</title>
         <meta name="description" content={meta.description} />
         {keywords && <meta name="keywords" content={keywords} />}
