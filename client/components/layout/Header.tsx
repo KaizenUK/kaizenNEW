@@ -222,9 +222,6 @@ const Header: React.FC<HeaderProps> = ({ theme, onThemeChange, mobileMenuOpen, o
     // rely on click outside or route change to close the menu
   };
 
-  const toggleMobileSection = (section: string) => {
-    setExpandedMobileSection((current) => (current === section ? null : section));
-  };
 
   const panelVariants = {
     enter: (dir: number) => ({ opacity: 0, y: -8, x: dir * 32 }),
