@@ -285,11 +285,12 @@ const Header: React.FC<HeaderProps> = ({ theme, onThemeChange }) => {
 
             {/* Insights Trigger */}
             <button
+              ref={insightsTriggerRef}
               type="button"
               onMouseEnter={() => openMenu("insights")}
               onFocus={() => openMenu("insights")}
               onClick={() => handleTriggerClick("insights")}
-              className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white/80 hover:text-white hover:bg-white/5 rounded-full transition"
+              className="flex items-center gap-2 px-4 py-2 text-base font-medium text-white/90 hover:text-white hover:bg-white/5 rounded-full transition"
               aria-expanded={isMenuOpen && activeMenu === "insights"}
             >
               Insights
