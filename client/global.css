@@ -241,7 +241,7 @@
   }
 
   .blog-content h3 {
-    @apply text-2xl lg:text-3xl font-heading font-bold mt-12 mb-4 text-gray-100;
+    @apply text-2xl lg:text-3xl font-heading font-bold mt-12 mb-4 text-gray-100 scroll-mt-32;
   }
 
   .blog-content h4,
