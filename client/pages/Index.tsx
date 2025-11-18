@@ -68,110 +68,41 @@ const ScrollReveal = ({
 const GlowingGridHero = () => {
   const { openCalendly } = useCalendly();
 
-  useEffect(() => {
-    const canvas = document.getElementById("grid-canvas") as HTMLCanvasElement;
-    if (!canvas) return;
-
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
-
-    let animationFrameId: number;
-    let spotlightX = window.innerWidth / 2;
-    let spotlightY = window.innerHeight / 2;
-    let time = 0;
-
-    const setCanvasSize = () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-    };
-
-    const handleMouseMove = (e: MouseEvent) => {
-      spotlightX += (e.clientX - spotlightX) * 0.1;
-      spotlightY += (e.clientY - spotlightY) * 0.1;
-    };
-
-    const drawFrame = () => {
-      const w = canvas.width;
-      const h = canvas.height;
-      const gridSize = 50;
-
-      // Background
-      ctx.fillStyle = "rgb(15, 23, 42)";
-      ctx.fillRect(0, 0, w, h);
-
-      // Grid lines
-      ctx.strokeStyle = "rgba(0, 255, 255, 0.06)";
-      ctx.lineWidth = 1;
-
-      for (let x = 0; x <= w; x += gridSize) {
-        ctx.beginPath();
-        ctx.moveTo(x, 0);
-        ctx.lineTo(x, h);
-        ctx.stroke();
-      }
-
-      for (let y = 0; y <= h; y += gridSize) {
-        ctx.beginPath();
-        ctx.moveTo(0, y);
-        ctx.lineTo(w, y);
-        ctx.stroke();
-      }
-
-      // Auto-animate spotlight if mouse hasn't moved
-      const centerX = w / 2;
-      const centerY = h / 2;
-      const distToCenter = Math.hypot(spotlightX - centerX, spotlightY - centerY);
-
-      if (distToCenter < 5) {
-        spotlightX = centerX + Math.sin(time * 0.0005) * 120;
-        spotlightY = centerY + Math.cos(time * 0.0004) * 120;
-      }
-
-      // Spotlight glow
-      const glow = ctx.createRadialGradient(spotlightX, spotlightY, 0, spotlightX, spotlightY, 400);
-      glow.addColorStop(0, "rgba(0, 255, 255, 0.4)");
-      glow.addColorStop(0.4, "rgba(132, 204, 22, 0.15)");
-      glow.addColorStop(1, "rgba(0, 255, 255, 0)");
-
-      ctx.fillStyle = glow;
-      ctx.fillRect(0, 0, w, h);
-
-      // Highlight grid intersection near spotlight
-      ctx.fillStyle = "rgba(0, 255, 255, 0.3)";
-      for (let x = 0; x <= w; x += gridSize) {
-        for (let y = 0; y <= h; y += gridSize) {
-          const d = Math.hypot(x - spotlightX, y - spotlightY);
-          if (d < 200) {
-            const opacity = (1 - d / 200) * 0.5;
-            ctx.fillStyle = `rgba(0, 255, 255, ${opacity})`;
-            ctx.fillRect(x - 3, y - 3, 6, 6);
-          }
-        }
-      }
-
-      time++;
-      animationFrameId = requestAnimationFrame(drawFrame);
-    };
-
-    setCanvasSize();
-    window.addEventListener("resize", setCanvasSize);
-    window.addEventListener("mousemove", handleMouseMove);
-
-    drawFrame();
-
-    return () => {
-      window.removeEventListener("resize", setCanvasSize);
-      window.removeEventListener("mousemove", handleMouseMove);
-      cancelAnimationFrame(animationFrameId);
-    };
-  }, []);
-
   return (
     <section className="relative min-h-screen bg-gray-950 text-white flex items-center py-20 overflow-hidden">
-      <canvas
-        id="grid-canvas"
+      {/* SVG Grid Pattern */}
+      <svg className="absolute inset-0 w-full h-full pointer-events-none opacity-30">
+        <defs>
+          <pattern id="grid" width="50" height="50" patternUnits="userSpaceOnUse">
+            <path d="M 50 0 L 0 0 0 50" fill="none" stroke="currentColor" strokeWidth="0.5" opacity="0.3" />
+          </pattern>
+        </defs>
+        <rect width="100%" height="100%" fill="url(#grid)" stroke="currentColor" strokeWidth="0.5" opacity="0.2" />
+      </svg>
+
+      {/* Animated Glow Background */}
+      <motion.div
         className="absolute inset-0 pointer-events-none"
-      />
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 1 }}
+      >
+        <motion.div
+          className="absolute w-full h-full bg-gradient-radial from-kaizen-cyan via-transparent to-transparent opacity-20 blur-3xl"
+          animate={{
+            x: ["-20%", "20%", "-20%"],
+            y: ["-20%", "20%", "-20%"],
+          }}
+          transition={{
+            duration: 15,
+            repeat: Infinity,
+            ease: "easeInOut",
+          }}
+          style={{
+            background: "radial-gradient(circle at center, rgba(0, 255, 255, 0.3) 0%, transparent 70%)",
+          }}
+        />
+      </motion.div>
 
       {/* Subtle gradient overlay for text clarity */}
       <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-gray-950" />
