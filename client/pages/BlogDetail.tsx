@@ -650,7 +650,7 @@ export default function BlogDetail() {
                   </motion.h1>
 
                   <motion.div
-                    className="flex items-center gap-6 text-gray-400 font-mono text-sm flex-wrap"
+                    className="flex items-center gap-6 text-gray-600 dark:text-gray-400 font-mono text-sm flex-wrap"
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ duration: 0.6, delay: 0.4 }}
