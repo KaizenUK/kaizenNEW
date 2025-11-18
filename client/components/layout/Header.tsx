@@ -1,5 +1,20 @@
 import { Link, useLocation } from "react-router-dom";
-import { Menu, X, Sun, Moon, ChevronDown } from "lucide-react";
+import {
+  Menu,
+  X,
+  Sun,
+  Moon,
+  ChevronDown,
+  Monitor,
+  ShoppingBag,
+  MapPin,
+  LifeBuoy,
+  Briefcase,
+  Users,
+  BookOpen,
+  FileText,
+  Wrench,
+} from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useCalendly } from "@/context/CalendlyContext";
@@ -11,11 +26,35 @@ interface HeaderProps {
 
 type DesktopMenuKey = "services" | "insights" | null;
 
+interface ServiceItem {
+  label: string;
+  href: string;
+  description: string;
+  icon: JSX.Element;
+  highlight?: boolean;
+}
+
+interface ServiceColumn {
+  title: string;
+  items: ServiceItem[];
+}
+
+interface InsightItem {
+  label: string;
+  href: string;
+  description?: string;
+  icon: JSX.Element;
+}
+
+const desktopMenuOrder: DesktopMenuKey[] = ["services", "insights"];
+
 const Header: React.FC<HeaderProps> = ({ theme, onThemeChange }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [expandedMobileSection, setExpandedMobileSection] = useState<string | null>(null);
   const [activeMenu, setActiveMenu] = useState<DesktopMenuKey>(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [lastMenu, setLastMenu] = useState<DesktopMenuKey>(null);
+  const [direction, setDirection] = useState<1 | -1>(1);
   const navRef = useRef<HTMLDivElement | null>(null);
   const closeTimeoutRef = useRef<number | null>(null);
   const { openCalendly } = useCalendly();
@@ -52,44 +91,79 @@ const Header: React.FC<HeaderProps> = ({ theme, onThemeChange }) => {
     }
   }, [isMenuOpen]);
 
-  const servicesMenu = [
+  const servicesMenu: ServiceColumn[] = [
     {
       title: "Web & Growth",
       items: [
-        { label: "High-Performance Web Design", href: "/services/web-design-liverpool" },
-        { label: "E-commerce Development", href: "/services/ecommerce" },
-        { label: "Local SEO", href: "/services/local-seo" },
+        {
+          label: "High-Performance Web Design",
+          href: "/services/web-design-liverpool",
+          description: "React/Vite builds that load fast and convert.",
+          icon: <Monitor className="w-4 h-4" />,
+        },
+        {
+          label: "E-commerce Development",
+          href: "/services/ecommerce",
+          description: "Shopify and custom stores that actually sell.",
+          icon: <ShoppingBag className="w-4 h-4" />,
+        },
+        {
+          label: "Local SEO",
+          href: "/services/local-seo",
+          description: "Get found by the right people in Liverpool.",
+          icon: <MapPin className="w-4 h-4" />,
+        },
       ],
     },
     {
       title: "Product & Strategy",
       items: [
-        { label: "Project Rescue", href: "/project-rescue", highlight: true },
-        { label: "Contract Product Owner", href: "/contract-product-owner" },
-        { label: "Agile Coaching", href: "/agile-coaching" },
+        {
+          label: "Project Rescue",
+          href: "/project-rescue",
+          description: "Fix broken web projects and get shipping again.",
+          icon: <LifeBuoy className="w-4 h-4" />,
+          highlight: true,
+        },
+        {
+          label: "Contract Product Owner",
+          href: "/contract-product-owner",
+          description: "Hands-on product leadership without the hiring risk.",
+          icon: <Briefcase className="w-4 h-4" />,
+        },
+        {
+          label: "Agile Coaching",
+          href: "/agile-coaching",
+          description: "Turn chaos into a predictable delivery process.",
+          icon: <Users className="w-4 h-4" />,
+        },
       ],
     },
   ];
 
-  const insightsMenu = [
+  const insightsMenu: InsightItem[] = [
     {
       label: "The Price Guide",
-      description: "How Much Does a Website Cost?",
+      description: "How much a serious website really costs in Liverpool.",
       href: "/blog/how-much-does-a-website-cost-in-liverpool-in-2025",
+      icon: <FileText className="w-4 h-4" />,
     },
     {
       label: "The Selection Guide",
-      description: "How to Choose an Agency",
+      description: "How to choose a web agency without the fluff.",
       href: "/blog/choose-web-design-agency-liverpool",
+      icon: <BookOpen className="w-4 h-4" />,
     },
     {
       label: "The Fixer Guide",
-      description: "5 Website Mistakes",
+      description: "Five website mistakes that quietly kill sales.",
       href: "/blog/website-mistakes-liverpool",
+      icon: <Wrench className="w-4 h-4" />,
     },
     {
       label: "View All Articles",
       href: "/blog",
+      icon: <BookOpen className="w-4 h-4" />,
     },
   ];
 
@@ -105,6 +179,16 @@ const Header: React.FC<HeaderProps> = ({ theme, onThemeChange }) => {
       setActiveMenu(null);
       return;
     }
+
+    if (lastMenu && lastMenu !== menu) {
+      const fromIndex = desktopMenuOrder.indexOf(lastMenu);
+      const toIndex = desktopMenuOrder.indexOf(menu);
+      if (fromIndex !== -1 && toIndex !== -1) {
+        setDirection(toIndex > fromIndex ? 1 : -1);
+      }
+    }
+
+    setLastMenu(menu);
     setActiveMenu(menu);
     setIsMenuOpen(true);
   };
@@ -139,12 +223,17 @@ const Header: React.FC<HeaderProps> = ({ theme, onThemeChange }) => {
     setExpandedMobileSection((current) => (current === section ? null : section));
   };
 
+  const panelVariants = {
+    enter: (dir: number) => ({ opacity: 0, y: -8, x: dir * 32 }),
+    center: { opacity: 1, y: 0, x: 0 },
+    exit: (dir: number) => ({ opacity: 0, y: -8, x: dir * -32 }),
+  };
+
   return (
     <header className="sticky top-4 z-50 w-full px-4">
       <nav
-        className="max-w-7xl mx-auto rounded-full bg-gray-950/80 border-t border-white/10"
+        className="max-w-7xl mx-auto rounded-full bg-gray-950/80 border-t border-white/10 backdrop-blur-xl"
         style={{
-          backdropFilter: "blur(12px)",
           boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.5)",
         }}
       >
@@ -152,12 +241,12 @@ const Header: React.FC<HeaderProps> = ({ theme, onThemeChange }) => {
           {/* Logo */}
           <Link
             to="/"
-            className="flex items-center gap-3 hover:opacity-80 transition flex-shrink-0"
+            className="flex items-center gap-3 hover:opacity-90 transition flex-shrink-0"
           >
             <img
               src="https://cdn.builder.io/api/v1/image/assets%2Fe4ae46bbd81b4b95bef54d66dd9748cc%2F03f6c5dd481449d297c430cab962412e?format=webp&width=800"
               alt="Kaizen Web"
-              className="h-12 w-auto"
+              className="h-16 w-auto"
               style={{
                 filter: theme === "dark" ? "brightness(0) invert(1)" : "none",
               }}
@@ -223,35 +312,53 @@ const Header: React.FC<HeaderProps> = ({ theme, onThemeChange }) => {
               {isMenuOpen && activeMenu && (
                 <motion.div
                   key={activeMenu}
-                  initial={{ opacity: 0, y: -8 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -8 }}
-                  transition={{ duration: 0.18, ease: "easeOut" }}
-                  className="absolute top-full left-1/2 mt-2 -translate-x-1/2 rounded-2xl border border-white/10 bg-gray-900/95 shadow-2xl backdrop-blur-xl w-[min(560px,calc(100vw-3rem))] px-8 py-6"
+                  custom={direction}
+                  variants={panelVariants}
+                  initial="enter"
+                  animate="center"
+                  exit="exit"
+                  transition={{ duration: 0.22, ease: "easeOut" }}
+                  className="absolute top-full left-1/2 mt-2 -translate-x-1/2 rounded-2xl border border-white/10 bg-gray-900/95 shadow-2xl backdrop-blur-xl w-[min(640px,calc(100vw-3rem))] px-8 py-6"
                 >
                   {activeMenu === "services" && (
-                    <div className="grid grid-cols-2 gap-12">
+                    <div className="grid grid-cols-2 gap-6">
                       {servicesMenu.map((column) => (
                         <div key={column.title}>
                           <h3 className="text-base font-semibold text-white mb-4">
                             {column.title}
                           </h3>
-                          <ul className="space-y-3">
+                          <ul className="space-y-2">
                             {column.items.map((item) => (
                               <li key={item.href}>
                                 <Link
                                   to={item.href}
-                                  className={`block text-sm transition ${
-                                    item.highlight
-                                      ? "text-cyan-400 hover:text-cyan-300"
-                                      : "text-white/70 hover:text-white"
-                                  }`}
+                                  className="block rounded-xl px-3 py-2 hover:bg-white/5 transition"
                                   onClick={() => {
                                     setIsMenuOpen(false);
                                     setActiveMenu(null);
                                   }}
                                 >
-                                  {item.label}
+                                  <div className="flex items-start gap-3">
+                                    <span
+                                      className={`mt-1 flex h-7 w-7 items-center justify-center rounded-full bg-white/5 text-cyan-300`}
+                                    >
+                                      {item.icon}
+                                    </span>
+                                    <div>
+                                      <div
+                                        className={`text-sm font-semibold ${
+                                          item.highlight
+                                            ? "text-cyan-300"
+                                            : "text-white"
+                                        }`}
+                                      >
+                                        {item.label}
+                                      </div>
+                                      <p className="text-sm text-gray-400 mt-0.5">
+                                        {item.description}
+                                      </p>
+                                    </div>
+                                  </div>
                                 </Link>
                               </li>
                             ))}
@@ -262,25 +369,32 @@ const Header: React.FC<HeaderProps> = ({ theme, onThemeChange }) => {
                   )}
 
                   {activeMenu === "insights" && (
-                    <div className="space-y-4">
+                    <div className="grid grid-cols-1 gap-3">
                       {insightsMenu.map((item) => (
                         <Link
                           key={item.href}
                           to={item.href}
-                          className="block text-left"
+                          className="block rounded-xl px-3 py-2 hover:bg-white/5 transition"
                           onClick={() => {
                             setIsMenuOpen(false);
                             setActiveMenu(null);
                           }}
                         >
-                          <div className="text-base font-semibold text-white">
-                            {item.label}
-                          </div>
-                          {item.description && (
-                            <div className="text-sm text-gray-400 mt-1">
-                              {item.description}
+                          <div className="flex items-start gap-3">
+                            <span className="mt-1 flex h-7 w-7 items-center justify-center rounded-full bg-white/5 text-cyan-300">
+                              {item.icon}
+                            </span>
+                            <div>
+                              <div className="text-base font-semibold text-white">
+                                {item.label}
+                              </div>
+                              {item.description && (
+                                <p className="text-sm text-gray-400 mt-0.5">
+                                  {item.description}
+                                </p>
+                              )}
                             </div>
-                          )}
+                          </div>
                         </Link>
                       ))}
                     </div>
@@ -366,7 +480,7 @@ const Header: React.FC<HeaderProps> = ({ theme, onThemeChange }) => {
                               to={item.href}
                               className={`block px-4 py-2 text-sm font-medium rounded-lg hover:bg-white/5 transition ${
                                 item.highlight
-                                  ? "text-cyan-400 hover:text-cyan-300"
+                                  ? "text-cyan-300 hover:text-cyan-200"
                                   : "text-white/80 hover:text-white"
                               }`}
                               onClick={() => setMobileMenuOpen(false)}
