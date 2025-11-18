@@ -199,22 +199,32 @@ function TableOfContents({ items, activeId }: TableOfContentsProps) {
       <p className="text-xs font-mono text-gray-500 font-bold tracking-widest mb-4">
         TABLE OF CONTENTS
       </p>
-      <nav className="space-y-2">
-        {items.map((item) => (
-          <motion.a
-            key={item.id}
-            href={`#${item.id}`}
-            className={`block text-sm transition py-2 px-3 rounded ${
-              activeId === item.id
-                ? "text-blue-400 font-bold bg-blue-400/10 border-l-2 border-blue-400"
-                : "text-gray-400 hover:text-white hover:bg-gray-800/50"
-            }`}
-            whileHover={{ x: 4 }}
-            transition={{ duration: 0.2 }}
-          >
-            {item.title}
-          </motion.a>
-        ))}
+      <nav className="space-y-1">
+        {items.map((item) => {
+          const isActive = activeId === item.id;
+          return (
+            <motion.a
+              key={item.id}
+              href={`#${item.id}`}
+              className={`block text-sm py-2.5 px-3 rounded transition-all relative group ${
+                isActive
+                  ? "text-white font-semibold bg-kaizen-cyan/15"
+                  : "text-gray-500 hover:text-gray-300"
+              }`}
+              whileHover={{ x: 4 }}
+              transition={{ duration: 0.2 }}
+            >
+              <motion.div
+                className="absolute left-0 top-0 bottom-0 w-1 bg-kaizen-cyan rounded-r"
+                initial={{ scaleY: 0 }}
+                animate={{ scaleY: isActive ? 1 : 0 }}
+                transition={{ duration: 0.3 }}
+                style={{ originY: "center" }}
+              />
+              <span className={isActive ? "text-kaizen-cyan font-bold" : ""}>{item.title}</span>
+            </motion.a>
+          );
+        })}
       </nav>
     </motion.div>
   );
