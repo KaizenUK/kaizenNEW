@@ -463,17 +463,32 @@ export default function BlogDetail() {
 
     const observer = new IntersectionObserver(
       (entries) => {
-        const visibleHeadings = entries.filter((entry) => entry.isIntersecting);
-        if (visibleHeadings.length > 0) {
-          const topHeading = visibleHeadings[0];
-          const id =
-            (topHeading.target as HTMLElement).id ||
-            post.tableOfContents[0]?.id ||
-            "";
+        // Find the heading that is closest to the top of the viewport
+        let closestHeading: IntersectionObserverEntry | null = null;
+        let closestDistance = Infinity;
+
+        entries.forEach((entry) => {
+          // Only consider headings that are above or at the viewport
+          if (entry.boundingClientRect.top <= window.innerHeight * 0.3) {
+            const distance = Math.abs(entry.boundingClientRect.top - window.innerHeight * 0.3);
+            if (distance < closestDistance) {
+              closestDistance = distance;
+              closestHeading = entry;
+            }
+          }
+        });
+
+        // If no heading is above, use the first visible heading
+        if (!closestHeading && entries.length > 0) {
+          closestHeading = entries[0];
+        }
+
+        if (closestHeading) {
+          const id = (closestHeading.target as HTMLElement).id;
           if (id) setActiveSection(id);
         }
       },
-      { threshold: 0.3, rootMargin: "-100px 0px -66% 0px" },
+      { threshold: 0 },
     );
 
     headings.forEach((heading) => {
