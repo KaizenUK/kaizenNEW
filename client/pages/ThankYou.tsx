@@ -45,6 +45,12 @@ const ThankYou = () => {
 
   return (
     <Layout>
+      <Helmet>
+        <title>Thank You | Kaizen Web</title>
+        <meta name="description" content="Thanks for reaching out. Check your email for your calendar invite. Read our latest insights while you wait." />
+        <meta name="robots" content="noindex, follow" />
+      </Helmet>
+
       <section className="min-h-screen bg-gray-950 text-white py-20 px-4">
         <div className="container mx-auto max-w-4xl">
           <motion.div
