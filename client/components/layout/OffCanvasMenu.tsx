@@ -158,10 +158,11 @@ const OffCanvasMenu: React.FC<OffCanvasMenuProps> = ({ isOpen, onClose, theme, o
   };
 
   return (
-    <AnimatePresence>
+    <AnimatePresence mode="wait">
       {isOpen && (
         <>
           <motion.div
+            key="backdrop"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -171,15 +172,12 @@ const OffCanvasMenu: React.FC<OffCanvasMenuProps> = ({ isOpen, onClose, theme, o
           />
 
           <motion.div
-            initial={{ x: -320 }}
-            animate={{ x: 0 }}
-            exit={{ x: -320 }}
-            transition={{ duration: 0.3, ease: "easeOut" }}
-            className="fixed top-0 bottom-0 z-50 bg-gray-950 border-r border-white/10 flex flex-col overflow-hidden"
-            style={{
-              width: "min(320px, 85vw)",
-              left: 0,
-            }}
+            key="sidebar"
+            initial={{ translateX: "-100%" }}
+            animate={{ translateX: "0%" }}
+            exit={{ translateX: "-100%" }}
+            transition={{ type: "tween", duration: 0.3, ease: "easeOut" }}
+            className="fixed top-0 bottom-0 left-0 z-50 w-80 max-w-[85vw] bg-gray-950 border-r border-white/10 flex flex-col overflow-hidden"
           >
             {/* Header */}
             <div className="flex items-center justify-between px-6 py-4 border-b border-white/10">
