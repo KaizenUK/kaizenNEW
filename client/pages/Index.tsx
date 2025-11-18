@@ -121,13 +121,23 @@ const GlowingGridHero = () => {
       }
 
       // Animate spotlight position
-      if (Math.abs(spotlightX - canvas.width / 2) < 1 && Math.abs(spotlightY - canvas.height / 2) < 1) {
+      if (
+        Math.abs(spotlightX - canvas.width / 2) < 1 &&
+        Math.abs(spotlightY - canvas.height / 2) < 1
+      ) {
         spotlightX = canvas.width / 2 + Math.sin(time * 0.001) * 100;
         spotlightY = canvas.height / 2 + Math.cos(time * 0.0008) * 100;
       }
 
       // Draw glowing spotlight with radial gradient
-      const gradient = ctx.createRadialGradient(spotlightX, spotlightY, 0, spotlightX, spotlightY, 400);
+      const gradient = ctx.createRadialGradient(
+        spotlightX,
+        spotlightY,
+        0,
+        spotlightX,
+        spotlightY,
+        400,
+      );
       gradient.addColorStop(0, "rgba(0, 255, 255, 0.3)");
       gradient.addColorStop(0.5, "rgba(132, 204, 22, 0.1)");
       gradient.addColorStop(1, "rgba(0, 255, 255, 0)");
@@ -165,7 +175,10 @@ const GlowingGridHero = () => {
 
   return (
     <section className="relative min-h-screen bg-gray-950 text-white flex items-center py-20 overflow-hidden">
-      <canvas id="grid-canvas" className="absolute inset-0 pointer-events-none" />
+      <canvas
+        id="grid-canvas"
+        className="absolute inset-0 pointer-events-none"
+      />
 
       {/* Subtle gradient overlay for text clarity */}
       <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-gray-950" />
@@ -196,7 +209,8 @@ const GlowingGridHero = () => {
             animate={{ opacity: 1 }}
             transition={{ delay: 0.3, duration: 0.8 }}
           >
-            We build high-performance sites, fix chaotic projects, and coach your team to deliver in sprints. No jargon, just results.
+            We build high-performance sites, fix chaotic projects, and coach
+            your team to deliver in sprints. No jargon, just results.
           </motion.p>
 
           <motion.div
