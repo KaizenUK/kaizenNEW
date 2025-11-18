@@ -143,92 +143,76 @@ function AppContent() {
     <>
       <ModalsAndBanner />
 
-      <Routes>
-        {/* Public Routes */}
-        <Route path="/" element={<Index />} />
-        <Route path="/services" element={<Services />} />
-        <Route path="/services/web-design-liverpool" element={<WebDesign />} />
-        <Route path="/services/local-seo" element={<LocalSeo />} />
-        <Route
-          path="/services/digital-transformation"
-          element={<DigitalTransformation />}
-        />
-        <Route path="/services/ecommerce" element={<Ecommerce />} />
-        <Route
-          path="/services/wordpress-web-design"
-          element={<WordPressWebDesign />}
-        />
-        <Route
-          path="/contract-product-owner"
-          element={<ContractProductOwner />}
-        />
-        <Route path="/project-rescue" element={<ProjectRescue />} />
-        <Route path="/about" element={<About />} />
-        <Route path="/pledge" element={<Pledge />} />
-        <Route path="/agile-coaching" element={<AgileCoaching />} />
-        <Route path="/product-owner" element={<ProductOwner />} />
-        <Route path="/team-transformation" element={<TeamTransformation />} />
-        <Route path="/case-studies" element={<CaseStudies />} />
-        <Route
-          path="/case-studies/as-collections"
-          element={<AsCollectionsCase />}
-        />
-        <Route
-          path="/case-studies/helen-moore-hairdressing"
-          element={<HelenMooreHairdressingCase />}
-        />
-        <Route
-          path="/case-studies/independent-retailer"
-          element={<IndependentRetailerCase />}
-        />
-        <Route path="/blog" element={<Blog />} />
-        <Route path="/blog/:slug" element={<BlogDetail />} />
-        <Route path="/contact" element={<Contact />} />
-        <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-        <Route path="/cookie-policy" element={<CookiePolicy />} />
-        <Route path="/gdpr-policy" element={<GDPRPolicy />} />
+      <Suspense fallback={<PageLoader />}>
+        <Routes>
+          {/* Public Routes */}
+          <Route path="/" element={<Index />} />
+          <Route path="/services" element={<Services />} />
+          <Route path="/services/web-design-liverpool" element={<WebDesign />} />
+          <Route path="/services/local-seo" element={<LocalSeo />} />
+          <Route path="/services/digital-transformation" element={<DigitalTransformation />} />
+          <Route path="/services/ecommerce" element={<Ecommerce />} />
+          <Route path="/services/wordpress-web-design" element={<WordPressWebDesign />} />
+          <Route path="/web-design-liverpool-city-centre" element={<CityCentre />} />
+          <Route path="/contract-product-owner" element={<ContractProductOwner />} />
+          <Route path="/project-rescue" element={<ProjectRescue />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/pledge" element={<Pledge />} />
+          <Route path="/agile-coaching" element={<AgileCoaching />} />
+          <Route path="/product-owner" element={<ProductOwner />} />
+          <Route path="/case-studies" element={<CaseStudies />} />
+          <Route path="/case-studies/as-collections" element={<AsCollectionsCase />} />
+          <Route path="/case-studies/helen-moore-hairdressing" element={<HelenMooreHairdressingCase />} />
+          <Route path="/case-studies/independent-retailer" element={<IndependentRetailerCase />} />
+          <Route path="/blog" element={<Blog />} />
+          <Route path="/blog/:slug" element={<BlogDetail />} />
+          <Route path="/contact" element={<Contact />} />
+          <Route path="/thank-you" element={<ThankYou />} />
+          <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+          <Route path="/cookie-policy" element={<CookiePolicy />} />
+          <Route path="/gdpr-policy" element={<GDPRPolicy />} />
 
-        {/* Admin routes removed from public routing. These components remain in the repo but are intentionally not registered here to prevent public access. Re-enable by restoring the routes below if needed. */}
-        {/*
-        <Route path="/admin/login" element={<AdminLogin />} />
-        <Route
-          path="/admin"
-          element={
-            <AdminGuard>
-              <AdminDashboardWrapper />
-            </AdminGuard>
-          }
-        />
-        <Route
-          path="/admin/blog-posts"
-          element={
-            <AdminGuard>
-              <BlogPostsList />
-            </AdminGuard>
-          }
-        />
-        <Route
-          path="/admin/blog-posts/new"
-          element={
-            <AdminGuard>
-              <BlogPostCreate />
-            </AdminGuard>
-          }
-        />
-        <Route
-          path="/admin/blog-posts/:slug"
-          element={
-            <AdminGuard>
-              <BlogPostDetail />
-            </AdminGuard>
-          }
-        />
-        */}
+          {/* Admin routes removed from public routing. These components remain in the repo but are intentionally not registered here to prevent public access. Re-enable by restoring the routes below if needed. */}
+          {/*
+          <Route path="/admin/login" element={<AdminLogin />} />
+          <Route
+            path="/admin"
+            element={
+              <AdminGuard>
+                <AdminDashboardWrapper />
+              </AdminGuard>
+            }
+          />
+          <Route
+            path="/admin/blog-posts"
+            element={
+              <AdminGuard>
+                <BlogPostsList />
+              </AdminGuard>
+            }
+          />
+          <Route
+            path="/admin/blog-posts/new"
+            element={
+              <AdminGuard>
+                <BlogPostCreate />
+              </AdminGuard>
+            }
+          />
+          <Route
+            path="/admin/blog-posts/:slug"
+            element={
+              <AdminGuard>
+                <BlogPostDetail />
+              </AdminGuard>
+            }
+          />
+          */}
 
-        {/* Catch-all */}
-        {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-        <Route path="*" element={<NotFound />} />
-      </Routes>
+          {/* Catch-all - ADD ALL CUSTOM ROUTES ABOVE THIS */}
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </Suspense>
     </>
   );
 }
