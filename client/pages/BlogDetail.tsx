@@ -692,18 +692,18 @@ export default function BlogDetail() {
 
               {/* CTA Section */}
               <motion.section
-                className="bg-gray-900 border border-gray-800 rounded-lg p-8 my-12"
+                className="bg-gray-100 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-lg p-8 my-12"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.7 }}
               >
-                <p className="text-green-400 text-sm mb-4">
+                <p className="text-green-600 dark:text-green-400 text-sm mb-4">
                   $ ready_to_sprint();
                 </p>
-                <h3 className="text-2xl font-heading font-bold text-white mb-3">
+                <h3 className="text-2xl font-heading font-bold text-gray-950 dark:text-white mb-3">
                   Ready to sprint? Let's build your MVP.
                 </h3>
-                <p className="text-gray-400 text-sm mb-6">
+                <p className="text-gray-600 dark:text-gray-400 text-sm mb-6">
                   Take your idea from concept to launch with Agile delivery and
                   clear thinking.
                 </p>
