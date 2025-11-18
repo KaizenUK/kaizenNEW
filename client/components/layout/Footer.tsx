@@ -90,16 +90,13 @@ const Footer: React.FC<FooterProps> = ({ theme }) => {
   return (
     <footer className="relative bg-gray-950 text-white overflow-hidden">
       {/* Mega "KAIZEN" Watermark */}
-      <div className="absolute inset-0 pointer-events-none overflow-hidden opacity-5">
+      <div className="absolute inset-0 pointer-events-none overflow-hidden opacity-3 flex items-center justify-center">
         <div
-          className="absolute text-gray-100 font-bold whitespace-nowrap"
+          className="text-gray-600 font-bold whitespace-nowrap text-center"
           style={{
-            fontSize: "300px",
-            top: "50%",
-            left: "50%",
-            transform: "translate(-50%, -50%)",
-            width: "200%",
-            textAlign: "center",
+            fontSize: "clamp(100px, 40vw, 500px)",
+            lineHeight: 1,
+            letterSpacing: "-0.05em",
           }}
         >
           KAIZEN
