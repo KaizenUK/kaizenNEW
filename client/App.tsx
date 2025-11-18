@@ -13,8 +13,9 @@ import { CookieBanner } from "@/components/CookieBanner";
 import { RouteChangeTracker } from "@/components/RouteChangeTracker";
 import Layout from "./components/Layout";
 
-// Lazy-load all page components for better initial load performance
-const Index = lazy(() => import("./pages/Index"));
+// Eager load Home page for fast First Paint
+// All other pages are lazy-loaded for better initial load performance
+import Index from "./pages/Index";
 const NotFound = lazy(() => import("./pages/NotFound"));
 const WebDesign = lazy(() => import("./pages/services/WebDesign"));
 const LocalSeo = lazy(() => import("./pages/services/LocalSeo"));
