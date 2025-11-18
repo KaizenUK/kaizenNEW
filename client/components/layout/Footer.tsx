@@ -273,7 +273,7 @@ const Footer: React.FC<FooterProps> = ({ theme }) => {
             <h3 className="font-bold text-sm mb-4 text-white">Connect</h3>
             <div className="flex gap-4">
               <motion.a
-                href="https://linkedin.com/company/kaizen-web"
+                href="https://www.linkedin.com/company/kaizen-uk"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-white/60 hover:text-cyan-400 transition"
@@ -281,6 +281,16 @@ const Footer: React.FC<FooterProps> = ({ theme }) => {
                 whileHover={{ scale: 1.2 }}
               >
                 <Linkedin size={20} />
+              </motion.a>
+              <motion.a
+                href="https://www.instagram.com/kaizen.web.uk"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-white/60 hover:text-cyan-400 transition"
+                aria-label="Instagram"
+                whileHover={{ scale: 1.2 }}
+              >
+                <Instagram size={20} />
               </motion.a>
             </div>
             <p className="text-xs text-white/40 mt-4">hello@kaizenweb.co.uk</p>
