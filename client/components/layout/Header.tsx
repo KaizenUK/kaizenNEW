@@ -41,7 +41,6 @@ const Header: React.FC<HeaderProps> = ({ theme, onThemeChange }) => {
       title: "Web & Growth",
       items: [
         { label: "High-Performance Web Design", href: "/services/web-design-liverpool" },
-        { label: "City Centre Specialist", href: "/web-design-liverpool-city-centre" },
         { label: "E-commerce Development", href: "/services/ecommerce" },
         { label: "Local SEO", href: "/services/local-seo" },
       ],
