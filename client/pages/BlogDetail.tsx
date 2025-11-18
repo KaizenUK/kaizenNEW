@@ -244,12 +244,12 @@ interface AuthorProps {
 function Author({ name, role, image }: AuthorProps) {
   return (
     <motion.div
-      className="bg-gray-900 border border-gray-800 rounded-lg p-6"
+      className="bg-gray-100 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-lg p-6"
       initial={{ opacity: 0, x: -20 }}
       animate={{ opacity: 1, x: 0 }}
       transition={{ duration: 0.5, delay: 0.7 }}
     >
-      <p className="text-xs font-mono text-gray-500 font-bold tracking-widest mb-4">
+      <p className="text-xs font-mono text-gray-600 dark:text-gray-500 font-bold tracking-widest mb-4">
         AUTHOR
       </p>
       <div className="flex items-center gap-4">
@@ -261,8 +261,8 @@ function Author({ name, role, image }: AuthorProps) {
           decoding="async"
         />
         <div>
-          <p className="font-heading font-bold text-white">{name}</p>
-          <p className="text-xs text-gray-400">{role}</p>
+          <p className="font-heading font-bold text-gray-950 dark:text-white">{name}</p>
+          <p className="text-xs text-gray-600 dark:text-gray-400">{role}</p>
         </div>
       </div>
     </motion.div>
