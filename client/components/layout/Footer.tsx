@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
-import { Linkedin, Circle } from "lucide-react";
+import { Linkedin, Instagram, Circle } from "lucide-react";
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { useCalendly } from "@/context/CalendlyContext";
