@@ -129,9 +129,10 @@ const GlowingGridHero = () => {
         <rect width="100%" height="100%" fill="url(#glow-center)" />
       </svg>
 
-      {/* Animated glow orbs */}
+      {/* Animated glow orbs - use GPU acceleration */}
       <motion.div
         className="absolute top-1/4 right-20 w-80 h-80 bg-kaizen-cyan rounded-full blur-3xl opacity-15"
+        style={{ willChange: "transform" }}
         animate={{
           y: [0, -40, 0],
           x: [0, 30, 0],
@@ -144,6 +145,7 @@ const GlowingGridHero = () => {
       />
       <motion.div
         className="absolute bottom-1/4 left-1/4 w-96 h-96 bg-kaizen-lime rounded-full blur-3xl opacity-10"
+        style={{ willChange: "transform" }}
         animate={{
           y: [0, 40, 0],
           x: [0, -30, 0],
