@@ -307,7 +307,7 @@ const Header: React.FC<HeaderProps> = ({ theme, onThemeChange }) => {
               <Link
                 key={link.href}
                 to={link.href}
-                className="px-4 py-2 text-sm font-medium text-white/80 hover:text-white hover:bg-white/5 rounded-full transition"
+                className="px-4 py-2 text-base font-medium text-white/80 hover:text-white hover:bg-white/5 rounded-full transition"
               >
                 {link.label}
               </Link>
