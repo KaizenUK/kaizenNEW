@@ -434,7 +434,7 @@ const Header: React.FC<HeaderProps> = ({ theme, onThemeChange, mobileMenuOpen, o
             {/* Mobile Menu Button */}
             <button
               className="lg:hidden text-white/80 hover:text-white transition"
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              onClick={() => onMobileMenuChange(!mobileMenuOpen)}
               aria-label="Toggle mobile menu"
             >
               {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
