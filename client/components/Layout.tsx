@@ -189,27 +189,6 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     setTheme((prev) => (prev === "light" ? "dark" : "light"));
   };
 
-  const ThemeToggleButton = ({
-    showLabel = false,
-  }: {
-    showLabel?: boolean;
-  }) => (
-    <button
-      type="button"
-      onClick={toggleTheme}
-      aria-pressed={theme === "dark"}
-      aria-label={
-        theme === "dark" ? "Switch to light mode" : "Switch to dark mode"
-      }
-      className="inline-flex min-h-[44px] min-w-[44px] items-center justify-center gap-2 rounded-full border border-kaizen-light/70 bg-kaizen-light/60 px-4 py-2 text-sm font-heading font-medium text-kaizen-text-dark transition hover:border-kaizen-cyan focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-kaizen-cyan dark:bg-kaizen-dark/40 dark:text-kaizen-text-light md:px-3 md:py-2"
-    >
-      {theme === "dark" ? <Sun size={18} /> : <Moon size={18} />}
-      {showLabel && (
-        <span>{theme === "dark" ? "Light mode" : "Dark mode"}</span>
-      )}
-    </button>
-  );
-
   return (
     <>
       <Helmet key={`seo-${normalizedPath}`} prioritizeSeoTags>
