@@ -55,8 +55,10 @@ const Header: React.FC<HeaderProps> = ({ theme, onThemeChange }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [lastMenu, setLastMenu] = useState<DesktopMenuKey>(null);
   const [direction, setDirection] = useState<1 | -1>(1);
+  const [panelLeft, setPanelLeft] = useState<number | null>(null);
   const navRef = useRef<HTMLDivElement | null>(null);
-  const closeTimeoutRef = useRef<number | null>(null);
+  const servicesTriggerRef = useRef<HTMLButtonElement | null>(null);
+  const insightsTriggerRef = useRef<HTMLButtonElement | null>(null);
   const { openCalendly } = useCalendly();
   const location = useLocation();
 
@@ -68,9 +70,7 @@ const Header: React.FC<HeaderProps> = ({ theme, onThemeChange }) => {
 
   useEffect(() => {
     return () => {
-      if (closeTimeoutRef.current) {
-        window.clearTimeout(closeTimeoutRef.current);
-      }
+      // no-op cleanup
     };
   }, []);
 
