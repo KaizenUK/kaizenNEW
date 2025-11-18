@@ -353,7 +353,7 @@ const Header: React.FC<HeaderProps> = ({ theme, onThemeChange }) => {
                                     </span>
                                     <div>
                                       <div
-                                        className={`text-sm font-semibold ${
+                                        className={`text-base font-semibold ${
                                           item.highlight
                                             ? "text-cyan-300"
                                             : "text-white"
@@ -361,7 +361,7 @@ const Header: React.FC<HeaderProps> = ({ theme, onThemeChange }) => {
                                       >
                                         {item.label}
                                       </div>
-                                      <p className="text-sm text-gray-400 mt-0.5">
+                                      <p className="text-sm text-gray-400 mt-1">
                                         {item.description}
                                       </p>
                                     </div>
