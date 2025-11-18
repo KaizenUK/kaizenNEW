@@ -59,6 +59,7 @@ const Header: React.FC<HeaderProps> = ({ theme, onThemeChange }) => {
   const navRef = useRef<HTMLDivElement | null>(null);
   const servicesTriggerRef = useRef<HTMLButtonElement | null>(null);
   const insightsTriggerRef = useRef<HTMLButtonElement | null>(null);
+  const scrollYRef = useRef<number>(0);
   const { openCalendly } = useCalendly();
   const location = useLocation();
 
@@ -67,6 +68,21 @@ const Header: React.FC<HeaderProps> = ({ theme, onThemeChange }) => {
     setIsMenuOpen(false);
     setActiveMenu(null);
   }, [location.pathname]);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+      if (mobileMenuOpen && currentScrollY > scrollYRef.current + 50) {
+        setMobileMenuOpen(false);
+      }
+      scrollYRef.current = currentScrollY;
+    };
+
+    if (mobileMenuOpen) {
+      window.addEventListener("scroll", handleScroll, { passive: true });
+      return () => window.removeEventListener("scroll", handleScroll);
+    }
+  }, [mobileMenuOpen]);
 
   useEffect(() => {
     return () => {
