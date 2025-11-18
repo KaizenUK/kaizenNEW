@@ -585,18 +585,10 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                   </li>
                   <li>
                     <Link
-                      to="/services/local-seo"
+                      to="/project-rescue"
                       className="text-kaizen-text-light/80 hover:text-kaizen-cyan transition"
                     >
-                      Local SEO
-                    </Link>
-                  </li>
-                  <li>
-                    <Link
-                      to="/services/ecommerce"
-                      className="text-kaizen-text-light/80 hover:text-kaizen-cyan transition"
-                    >
-                      E-commerce
+                      Project Rescue
                     </Link>
                   </li>
                   <li>
@@ -613,6 +605,22 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                       className="text-kaizen-text-light/80 hover:text-kaizen-cyan transition"
                     >
                       Contract Product Owner
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      to="/services/local-seo"
+                      className="text-kaizen-text-light/80 hover:text-kaizen-cyan transition"
+                    >
+                      Local SEO
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      to="/services/ecommerce"
+                      className="text-kaizen-text-light/80 hover:text-kaizen-cyan transition"
+                    >
+                      E-commerce
                     </Link>
                   </li>
                 </ul>
