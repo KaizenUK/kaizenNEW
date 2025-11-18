@@ -1,15 +1,10 @@
 import { Link, useLocation } from "react-router-dom";
 import { Menu, X } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useCalendly } from "@/context/CalendlyContext";
 
-interface HeaderProps {
-  theme: "light" | "dark";
-  onThemeChange: () => void;
-}
-
-const Header: React.FC<HeaderProps> = ({ theme, onThemeChange }) => {
+const Header: React.FC = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { openCalendly } = useCalendly();
   const location = useLocation();
