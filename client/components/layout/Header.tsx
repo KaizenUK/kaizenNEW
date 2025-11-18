@@ -105,7 +105,11 @@ const Header: React.FC<HeaderProps> = ({ theme, onThemeChange }) => {
                     <Link
                       key={item.href}
                       to={item.href}
-                      className="block px-4 py-3 text-sm font-medium text-white/80 hover:text-white rounded-lg hover:bg-white/5 transition"
+                      className={`block px-4 py-3 text-sm font-medium rounded-lg hover:bg-white/5 transition ${
+                        item.highlight
+                          ? "text-cyan-400 hover:text-cyan-300"
+                          : "text-white/80 hover:text-white"
+                      }`}
                       onClick={() => setMobileMenuOpen(false)}
                     >
                       {item.label}
