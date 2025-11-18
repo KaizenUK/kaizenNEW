@@ -263,7 +263,7 @@ export default function Blog() {
       </section>
 
       {/* Bento Grid Section */}
-      <section className="bg-gray-950 px-4 py-20">
+      <section className="bg-white dark:bg-gray-950 px-4 py-20">
         <div className="container mx-auto max-w-6xl">
           <AnimatePresence mode="wait">
             {filteredPosts.length > 0 ? (
@@ -276,21 +276,21 @@ export default function Blog() {
                 transition={{ duration: 0.5 }}
               >
                 {/* Slot 1: Feature Post - 8 cols, 2 rows */}
-                {featuredPost && (
+                {filteredPosts.length > 1 && (
                   <motion.div
-                    key={`feature-${featuredPost.id}`}
+                    key={`feature-${filteredPosts[1]?.id}`}
                     className="col-span-1 md:col-span-8 row-span-2"
                     initial={{ opacity: 0, scale: 0.95 }}
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ duration: 0.5 }}
                   >
                     <Link
-                      to={`/blog/${featuredPost.slug}`}
-                      className="group relative overflow-hidden rounded-3xl border border-white/5 h-full block"
+                      to={`/blog/${filteredPosts[1]?.slug}`}
+                      className="group relative overflow-hidden rounded-2xl border border-gray-200 dark:border-gray-800 h-full block hover:border-gray-300 dark:hover:border-gray-700 transition-all"
                     >
                       <img
-                        src={featuredPost.image}
-                        alt={featuredPost.title}
+                        src={filteredPosts[1]?.image}
+                        alt={filteredPosts[1]?.title}
                         className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                         loading="lazy"
                         decoding="async"
@@ -300,23 +300,23 @@ export default function Blog() {
 
                       <div className="absolute bottom-0 left-0 right-0 p-8">
                         <h2 className="text-3xl font-sans font-bold tracking-tight text-white mb-4 leading-tight">
-                          {featuredPost.title}
+                          {filteredPosts[1]?.title}
                         </h2>
-                        <p className="text-white/60 text-sm line-clamp-2 mb-4">
-                          {featuredPost.excerpt}
+                        <p className="text-white/70 text-sm line-clamp-2 mb-4">
+                          {filteredPosts[1]?.excerpt}
                         </p>
                         <div className="flex items-center gap-3">
-                          {featuredPost.tags.slice(0, 2).map((tag, idx) => (
+                          {filteredPosts[1]?.tags.slice(0, 2).map((tag, idx) => (
                             <span
                               key={`feature-tag-${idx}`}
-                              className={`text-xs font-mono text-white/50 uppercase tracking-wider`}
+                              className={`text-xs font-mono text-white/60 uppercase tracking-wider`}
                             >
                               {tag}
                             </span>
                           ))}
-                          <span className="text-xs font-mono text-gray-500 ml-auto">
+                          <span className="text-xs font-mono text-gray-400 ml-auto">
                             {new Date(
-                              featuredPost.publishedDate,
+                              filteredPosts[1]?.publishedDate,
                             ).toLocaleDateString()}
                           </span>
                         </div>
@@ -327,23 +327,23 @@ export default function Blog() {
 
                 {/* Slot 2: Up Next List - 4 cols, 2 rows */}
                 <motion.div
-                  className="col-span-1 md:col-span-4 row-span-2 bg-gray-950/50 border border-white/5 rounded-3xl overflow-hidden p-6"
+                  className="col-span-1 md:col-span-4 row-span-2 bg-gray-100 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl overflow-hidden p-6"
                   initial={{ opacity: 0, scale: 0.95 }}
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{ duration: 0.5, delay: 0.1 }}
                 >
-                  <h3 className="text-sm font-mono font-bold text-white/50 uppercase tracking-widest mb-6">
+                  <h3 className="text-sm font-mono font-bold text-gray-600 dark:text-gray-500 uppercase tracking-widest mb-6">
                     Up Next
                   </h3>
 
                   <div className="space-y-4">
-                    {upNextPosts.map((post, idx) => (
+                    {upNextPosts.map((post) => (
                       <Link
                         key={`upnext-${post.id}`}
                         to={`/blog/${post.slug}`}
-                        className="flex gap-3 group hover:opacity-80 transition"
+                        className="flex gap-3 group hover:opacity-70 transition"
                       >
-                        <div className="w-16 h-16 flex-shrink-0 rounded-lg overflow-hidden border border-white/5">
+                        <div className="w-16 h-16 flex-shrink-0 rounded-lg overflow-hidden border border-gray-300 dark:border-gray-700">
                           <img
                             src={post.image}
                             alt={post.title}
@@ -353,10 +353,10 @@ export default function Blog() {
                           />
                         </div>
                         <div className="flex-1 min-w-0">
-                          <h4 className="text-sm font-sans font-bold text-white leading-tight line-clamp-2 mb-1">
+                          <h4 className="text-sm font-sans font-bold text-gray-950 dark:text-white leading-tight line-clamp-2 mb-1">
                             {post.title}
                           </h4>
-                          <p className="text-xs font-mono text-gray-500">
+                          <p className="text-xs font-mono text-gray-500 dark:text-gray-400">
                             {new Date(post.publishedDate).toLocaleDateString()}
                           </p>
                         </div>
@@ -367,20 +367,20 @@ export default function Blog() {
 
                 {/* Slot 3: CTA Card - 4 cols, 1 row */}
                 <motion.div
-                  className="col-span-1 md:col-span-4 bg-gradient-to-br from-cyan-500/20 to-green-500/20 border border-white/10 rounded-3xl overflow-hidden p-8 flex flex-col justify-center"
+                  className="col-span-1 md:col-span-4 bg-gradient-to-br from-blue-50 to-cyan-50 dark:from-blue-950/30 dark:to-cyan-950/30 border border-blue-200 dark:border-cyan-900/30 rounded-2xl overflow-hidden p-8 flex flex-col justify-center"
                   initial={{ opacity: 0, scale: 0.95 }}
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{ duration: 0.5, delay: 0.2 }}
                 >
-                  <h3 className="text-xl font-sans font-bold text-white mb-4">
+                  <h3 className="text-xl font-sans font-bold text-gray-950 dark:text-white mb-4">
                     Need a project rescue?
                   </h3>
-                  <p className="text-white/70 text-sm mb-6 leading-relaxed">
+                  <p className="text-gray-700 dark:text-gray-300 text-sm mb-6 leading-relaxed">
                     Book a triage call to discuss your website challenges.
                   </p>
                   <Link
                     to="/project-rescue"
-                    className="inline-flex items-center gap-2 text-cyan-400 font-medium hover:text-cyan-300 transition"
+                    className="inline-flex items-center gap-2 text-blue-600 dark:text-cyan-400 font-medium hover:text-blue-700 dark:hover:text-cyan-300 transition"
                   >
                     Book a Call <ArrowRight size={16} />
                   </Link>
@@ -397,9 +397,9 @@ export default function Blog() {
                   >
                     <Link
                       to={`/blog/${post.slug}`}
-                      className="group relative overflow-hidden rounded-3xl border border-white/5 bg-gray-950/50 hover:border-white/10 transition-all h-full flex flex-col"
+                      className="group relative overflow-hidden rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 hover:border-gray-300 dark:hover:border-gray-700 transition-all h-full flex flex-col"
                     >
-                      <div className="relative h-48 overflow-hidden">
+                      <div className="relative h-48 overflow-hidden bg-gray-200 dark:bg-gray-800">
                         <img
                           src={post.image}
                           alt={post.title}
@@ -410,19 +410,19 @@ export default function Blog() {
                       </div>
 
                       <div className="p-6 flex-1 flex flex-col">
-                        <h3 className="text-lg font-sans font-bold text-white mb-3 leading-tight line-clamp-2 flex-1">
+                        <h3 className="text-lg font-sans font-bold text-gray-950 dark:text-white mb-3 leading-tight line-clamp-2 flex-1">
                           {post.title}
                         </h3>
-                        <p className="text-white/50 text-sm line-clamp-2 mb-4">
+                        <p className="text-gray-600 dark:text-gray-400 text-sm line-clamp-2 mb-4">
                           {post.excerpt}
                         </p>
-                        <div className="flex items-center gap-2 text-white/40 text-xs">
+                        <div className="flex items-center gap-2 text-gray-600 dark:text-gray-400 text-xs">
                           {post.tags.slice(0, 1).map((tag, idx) => (
                             <span key={`post-tag-${idx}`} className="font-mono">
                               {tag}
                             </span>
                           ))}
-                          <span className="ml-auto font-mono text-gray-600">
+                          <span className="ml-auto font-mono text-gray-400 dark:text-gray-600">
                             {new Date(post.publishedDate).toLocaleDateString()}
                           </span>
                         </div>
@@ -438,8 +438,8 @@ export default function Blog() {
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
               >
-                <Code2 className="w-12 h-12 text-gray-700 mx-auto mb-4" />
-                <p className="text-gray-500">No posts in this category yet.</p>
+                <Code2 className="w-12 h-12 text-gray-300 dark:text-gray-700 mx-auto mb-4" />
+                <p className="text-gray-500 dark:text-gray-400">No posts in this category yet.</p>
               </motion.div>
             )}
           </AnimatePresence>
