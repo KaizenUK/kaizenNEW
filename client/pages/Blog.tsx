@@ -7,6 +7,7 @@ import { Helmet } from "react-helmet-async";
 import builder from "@/builder";
 import { fetchPosts } from "../../src/api/wordpress";
 import Layout from "@/components/Layout";
+import { decodeHtmlEntities, stripHtmlTags } from "@/lib/html-utils";
 
 type CoverImage = string | { url?: string } | null;
 
