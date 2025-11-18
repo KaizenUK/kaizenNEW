@@ -324,7 +324,8 @@ const Header: React.FC<HeaderProps> = ({ theme, onThemeChange }) => {
                   animate="center"
                   exit="exit"
                   transition={{ duration: 0.22, ease: "easeOut" }}
-                  className="absolute top-full left-1/2 mt-2 -translate-x-1/2 rounded-2xl border border-white/10 bg-gray-900/95 shadow-2xl backdrop-blur-xl w-[min(640px,calc(100vw-3rem))] px-8 py-6"
+                  className="absolute top-full mt-2 rounded-2xl border border-white/10 bg-gray-900/95 shadow-2xl backdrop-blur-xl w-[min(720px,calc(100vw-3rem))] px-8 py-6"
+                  style={{ left: panelLeft ?? "50%", transform: "translateX(-50%)" }}
                 >
                   {activeMenu === "services" && (
                     <div className="grid grid-cols-2 gap-6">
