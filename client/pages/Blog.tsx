@@ -76,7 +76,7 @@ export default function Blog() {
                 : DEFAULT_IMAGE;
 
             const excerptText = post.excerpt?.rendered
-              ? post.excerpt.rendered.replace(/<[^>]*>/g, "").trim()
+              ? decodeHtmlEntities(stripHtmlTags(post.excerpt.rendered)).trim()
               : "";
 
             const tags: string[] = [];
@@ -96,7 +96,7 @@ export default function Blog() {
 
             return {
               id: String(post.id),
-              title: post.title?.rendered || "Untitled",
+              title: decodeHtmlEntities(post.title?.rendered || "Untitled"),
               slug: post.slug || "",
               excerpt: excerptText,
               tags,
