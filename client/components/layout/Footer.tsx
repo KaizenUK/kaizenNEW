@@ -108,13 +108,13 @@ const Footer: React.FC<FooterProps> = ({ theme }) => {
 
       <div className="relative z-10 container mx-auto px-4 py-16">
         {/* Bento Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-16 auto-rows-max">
-          {/* Block A: Dynamic CTA (Large, spanning full width or 2 columns) */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
+          {/* Block A: Dynamic CTA (spans 2 cols on md, 2 cols on lg) */}
           <motion.div
-            className="md:col-span-2 lg:col-span-2 p-8 rounded-2xl border border-white/5 bg-gray-900/50 backdrop-blur-sm"
+            className="col-span-1 md:col-span-2 lg:col-span-2 p-8 rounded-2xl border border-white/5 bg-gray-900/50 backdrop-blur-sm"
             whileHover={{ borderColor: "rgba(255,255,255,0.1)" }}
           >
-            <h2 className="text-3xl md:text-4xl font-bold mb-6 leading-tight">
+            <h2 className="text-2xl md:text-3xl font-bold mb-6 leading-tight">
               {cta.heading}
             </h2>
             <motion.button
@@ -128,7 +128,7 @@ const Footer: React.FC<FooterProps> = ({ theme }) => {
 
           {/* Block B: Live Status */}
           <motion.div
-            className="p-6 rounded-2xl border border-white/5 bg-gray-900/50 backdrop-blur-sm flex flex-col justify-center"
+            className="col-span-1 md:col-span-1 lg:col-span-1 p-6 rounded-2xl border border-white/5 bg-gray-900/50 backdrop-blur-sm flex flex-col justify-center"
             whileHover={{ borderColor: "rgba(255,255,255,0.1)" }}
           >
             <div className="flex items-center gap-3 mb-3">
@@ -152,7 +152,7 @@ const Footer: React.FC<FooterProps> = ({ theme }) => {
 
           {/* Block C: Tech Stack */}
           <motion.div
-            className="p-6 rounded-2xl border border-white/5 bg-gray-900/50 backdrop-blur-sm"
+            className="col-span-1 md:col-span-1 lg:col-span-1 p-6 rounded-2xl border border-white/5 bg-gray-900/50 backdrop-blur-sm"
             whileHover={{ borderColor: "rgba(255,255,255,0.1)" }}
           >
             <p className="text-xs font-semibold text-white/40 uppercase tracking-wider mb-4">
@@ -169,7 +169,7 @@ const Footer: React.FC<FooterProps> = ({ theme }) => {
 
           {/* Block D: Context & Love */}
           <motion.div
-            className="p-6 rounded-2xl border border-white/5 bg-gray-900/50 backdrop-blur-sm"
+            className="col-span-1 md:col-span-1 lg:col-span-1 p-6 rounded-2xl border border-white/5 bg-gray-900/50 backdrop-blur-sm"
             whileHover={{ borderColor: "rgba(255,255,255,0.1)" }}
           >
             <p className="text-sm font-medium mb-3">Made with ❤️ in Liverpool, UK</p>
@@ -180,7 +180,7 @@ const Footer: React.FC<FooterProps> = ({ theme }) => {
 
           {/* Block E: Services Links */}
           <motion.div
-            className="p-6 rounded-2xl border border-white/5 bg-gray-900/50 backdrop-blur-sm"
+            className="col-span-1 md:col-span-1 lg:col-span-1 p-6 rounded-2xl border border-white/5 bg-gray-900/50 backdrop-blur-sm"
             whileHover={{ borderColor: "rgba(255,255,255,0.1)" }}
           >
             <h3 className="font-bold text-sm mb-4">Services</h3>
@@ -203,7 +203,7 @@ const Footer: React.FC<FooterProps> = ({ theme }) => {
 
           {/* Block F: Company Links */}
           <motion.div
-            className="p-6 rounded-2xl border border-white/5 bg-gray-900/50 backdrop-blur-sm"
+            className="col-span-1 md:col-span-1 lg:col-span-1 p-6 rounded-2xl border border-white/5 bg-gray-900/50 backdrop-blur-sm"
             whileHover={{ borderColor: "rgba(255,255,255,0.1)" }}
           >
             <h3 className="font-bold text-sm mb-4">Company</h3>
@@ -226,7 +226,7 @@ const Footer: React.FC<FooterProps> = ({ theme }) => {
 
           {/* Block G: Socials & Contact */}
           <motion.div
-            className="p-6 rounded-2xl border border-white/5 bg-gray-900/50 backdrop-blur-sm"
+            className="col-span-1 md:col-span-1 lg:col-span-1 p-6 rounded-2xl border border-white/5 bg-gray-900/50 backdrop-blur-sm"
             whileHover={{ borderColor: "rgba(255,255,255,0.1)" }}
           >
             <h3 className="font-bold text-sm mb-4">Connect</h3>
