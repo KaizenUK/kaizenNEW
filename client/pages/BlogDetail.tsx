@@ -673,7 +673,7 @@ export default function BlogDetail() {
                 {/* Tags */}
                 {post.tags.length > 0 && (
                   <motion.div
-                    className="flex gap-3 flex-wrap mb-12 pt-8 border-t border-gray-800"
+                    className="flex gap-3 flex-wrap mb-12 pt-8 border-t border-gray-200 dark:border-gray-800"
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ duration: 0.6, delay: 0.6 }}
@@ -681,7 +681,7 @@ export default function BlogDetail() {
                     {post.tags.map((tag, tagIdx) => (
                       <span
                         key={`post-tag-${post.id}-${tagIdx}`}
-                        className="px-3 py-1 bg-gray-800 text-gray-300 rounded-full text-xs font-mono font-bold tracking-widest"
+                        className="px-3 py-1 bg-gray-200 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-full text-xs font-mono font-bold tracking-widest"
                       >
                         {tag}
                       </span>
