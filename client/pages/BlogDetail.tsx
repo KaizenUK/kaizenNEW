@@ -392,12 +392,12 @@ export default function BlogDetail() {
 
         const processedPost: ProcessedPost = {
           id: String(wpPost.id),
-          title: wpPost.title?.rendered || "Untitled",
+          title: decodeHtmlEntities(wpPost.title?.rendered || "Untitled"),
           slug: wpPost.slug || slug,
           publishedDate: wpPost.date || new Date().toISOString(),
           body: bodyWithIds,
           coverImage: coverImage,
-          excerpt: wpPost.excerpt?.rendered || "",
+          excerpt: decodeHtmlEntities(stripHtmlTags(wpPost.excerpt?.rendered || "")),
           tags: [],
           category: "Blog Post",
           author: {
