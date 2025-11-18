@@ -1,9 +1,6 @@
-import { Link, useLocation } from "react-router-dom";
-import { Menu, X, ChevronDown, Moon, Sun, Linkedin } from "lucide-react";
+import { useLocation } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
 import { Helmet } from "react-helmet-async";
-import { motion, AnimatePresence } from "framer-motion";
-import { useCalendly } from "@/context/CalendlyContext";
 import {
   buildLocalBusinessSchema,
   getPageMeta,
@@ -11,6 +8,8 @@ import {
   SITE_URL,
   DEFAULT_OG_IMAGE,
 } from "@/lib/seo";
+import Header from "@/components/layout/Header";
+import Footer from "@/components/layout/Footer";
 
 interface LayoutProps {
   children: React.ReactNode;
