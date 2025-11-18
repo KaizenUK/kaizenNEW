@@ -66,9 +66,36 @@ const ScrollReveal = ({
 // Glowing Grid Hero with Tracing Beam Effect
 const GlowingGridHero = () => {
   const { openCalendly } = useCalendly();
+  const [mousePos, setMousePos] = useState({ x: 50, y: 35 });
+  const heroRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      if (!heroRef.current) return;
+
+      const rect = heroRef.current.getBoundingClientRect();
+      const x = ((e.clientX - rect.left) / rect.width) * 100;
+      const y = ((e.clientY - rect.top) / rect.height) * 100;
+
+      // Clamp values to keep the glow within reasonable bounds
+      setMousePos({
+        x: Math.max(0, Math.min(100, x)),
+        y: Math.max(0, Math.min(100, y)),
+      });
+    };
+
+    const hero = heroRef.current;
+    if (hero) {
+      hero.addEventListener("mousemove", handleMouseMove);
+      return () => hero.removeEventListener("mousemove", handleMouseMove);
+    }
+  }, []);
 
   return (
-    <section className="relative min-h-screen bg-gray-950 text-white flex items-center py-20 overflow-hidden">
+    <section
+      ref={heroRef}
+      className="relative min-h-screen bg-gray-950 text-white flex items-center py-20 overflow-hidden"
+    >
       {/* SVG Grid Background */}
       <svg
         className="absolute inset-0 w-full h-full pointer-events-none"
@@ -88,9 +115,13 @@ const GlowingGridHero = () => {
               strokeWidth="0.5"
             />
           </pattern>
-          <radialGradient id="glow-center" cx="50%" cy="35%">
-            <stop offset="0%" stopColor="rgba(0, 255, 255, 0.25)" />
-            <stop offset="40%" stopColor="rgba(132, 204, 22, 0.08)" />
+          <radialGradient
+            id="glow-center"
+            cx={`${mousePos.x}%`}
+            cy={`${mousePos.y}%`}
+          >
+            <stop offset="0%" stopColor="rgba(0, 255, 255, 0.3)" />
+            <stop offset="35%" stopColor="rgba(132, 204, 22, 0.12)" />
             <stop offset="100%" stopColor="rgba(0, 255, 255, 0)" />
           </radialGradient>
         </defs>
