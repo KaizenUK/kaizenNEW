@@ -14,7 +14,7 @@ import {
   FileText,
   Wrench,
 } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import { useCalendly } from "@/context/CalendlyContext";
 import { cn } from "@/lib/utils";
 
@@ -48,8 +48,6 @@ interface InsightItem {
 const OffCanvasMenu: React.FC<OffCanvasMenuProps> = ({ isOpen, onClose, theme, onThemeChange }) => {
   const [expandedSection, setExpandedSection] = useState<string | null>(null);
   const { openCalendly } = useCalendly();
-  const location = useLocation();
-  const scrollYRef = useRef<number>(0);
 
   const servicesMenu: ServiceColumn[] = [
     {
@@ -132,26 +130,6 @@ const OffCanvasMenu: React.FC<OffCanvasMenuProps> = ({ isOpen, onClose, theme, o
     { label: "Case Studies", href: "/case-studies" },
     { label: "About", href: "/about" },
   ];
-
-  useEffect(() => {
-    onClose();
-    setExpandedSection(null);
-  }, [location.pathname, onClose]);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      const currentScrollY = window.scrollY;
-      if (isOpen && currentScrollY > scrollYRef.current + 50) {
-        onClose();
-      }
-      scrollYRef.current = currentScrollY;
-    };
-
-    if (isOpen) {
-      window.addEventListener("scroll", handleScroll, { passive: true });
-      return () => window.removeEventListener("scroll", handleScroll);
-    }
-  }, [isOpen, onClose]);
 
   const toggleSection = (section: string) => {
     setExpandedSection((current) => (current === section ? null : section));
