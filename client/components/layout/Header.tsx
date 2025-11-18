@@ -56,7 +56,11 @@ const Header: React.FC<HeaderProps> = ({ theme, onThemeChange }) => {
                 <Link
                   key={item.href}
                   to={item.href}
-                  className="px-4 py-2 text-sm font-medium text-white/80 hover:text-white transition rounded-full hover:bg-white/5"
+                  className={`px-4 py-2 text-sm font-medium transition rounded-full hover:bg-white/5 ${
+                    item.highlight
+                      ? "text-cyan-400 hover:text-cyan-300"
+                      : "text-white/80 hover:text-white"
+                  }`}
                   style={{
                     mixBlendMode: "exclusion",
                   }}
