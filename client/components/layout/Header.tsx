@@ -16,8 +16,8 @@ const Header: React.FC = () => {
   const navItems = [
     { label: "Web Design", href: "/services/web-design-liverpool" },
     { label: "Project Rescue", href: "/project-rescue", highlight: true },
-    { label: "Agile Coaching", href: "/services/agile-coaching" },
-    { label: "Contract PO", href: "/services/contract-product-owner" },
+    { label: "Agile Coaching", href: "/agile-coaching" },
+    { label: "Contract PO", href: "/contract-product-owner" },
     { label: "Our Pledge", href: "/pledge" },
     { label: "Case Studies", href: "/case-studies" },
   ];
