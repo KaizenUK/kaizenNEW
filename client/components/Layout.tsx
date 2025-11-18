@@ -428,95 +428,35 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             <div className="md:hidden border-t border-kaizen-light/20 dark:border-white/10 bg-kaizen-light/50 dark:bg-slate-900/50 backdrop-blur-sm">
               <div className="container mx-auto px-4 py-4 space-y-2">
                 <Link
-                  to="/"
+                  to="/services/web-design-liverpool"
                   className="block px-3 py-2 text-lg font-heading font-medium hover:text-kaizen-cyan transition rounded-md hover:bg-kaizen-light"
                   onClick={() => setMobileMenuOpen(false)}
                 >
-                  Home
+                  Web Design
                 </Link>
 
-                <button
-                  onClick={() => setServicesOpen(!servicesOpen)}
-                  className="w-full text-left px-3 py-2 text-lg font-heading font-medium hover:text-kaizen-cyan transition rounded-md hover:bg-kaizen-light flex items-center gap-2"
-                >
-                  Services
-                  <ChevronDown
-                    size={16}
-                    className={`transition ${servicesOpen ? "rotate-180" : ""}`}
-                  />
-                </button>
-
-                {servicesOpen && (
-                  <div className="ml-4 space-y-2 border-l border-kaizen-light pl-4">
-                    <Link
-                      to="/services/web-design-liverpool"
-                      className="block text-lg text-kaizen-text-dark/70 hover:text-kaizen-cyan transition"
-                      onClick={() => {
-                        setMobileMenuOpen(false);
-                        setServicesOpen(false);
-                      }}
-                    >
-                      Web Design
-                    </Link>
-                    <Link
-                      to="/services/local-seo"
-                      className="block text-sm text-kaizen-text-dark/70 hover:text-kaizen-cyan transition"
-                      onClick={() => {
-                        setMobileMenuOpen(false);
-                        setServicesOpen(false);
-                      }}
-                    >
-                      Local SEO
-                    </Link>
-                    <Link
-                      to="/services/ecommerce"
-                      className="block text-sm text-kaizen-text-dark/70 hover:text-kaizen-cyan transition"
-                      onClick={() => {
-                        setMobileMenuOpen(false);
-                        setServicesOpen(false);
-                      }}
-                    >
-                      E-commerce
-                    </Link>
-                    <Link
-                      to="/services/digital-transformation"
-                      className="block text-sm text-kaizen-text-dark/70 hover:text-kaizen-cyan transition"
-                      onClick={() => {
-                        setMobileMenuOpen(false);
-                        setServicesOpen(false);
-                      }}
-                    >
-                      Digital Transformation
-                    </Link>
-                    <Link
-                      to="/agile-coaching"
-                      className="block text-sm text-kaizen-text-dark/70 hover:text-kaizen-cyan transition"
-                      onClick={() => {
-                        setMobileMenuOpen(false);
-                        setServicesOpen(false);
-                      }}
-                    >
-                      Agile Coaching
-                    </Link>
-                    <Link
-                      to="/contract-product-owner"
-                      className="block text-sm text-kaizen-text-dark/70 hover:text-kaizen-cyan transition"
-                      onClick={() => {
-                        setMobileMenuOpen(false);
-                        setServicesOpen(false);
-                      }}
-                    >
-                      Contract Product Owner
-                    </Link>
-                  </div>
-                )}
-
                 <Link
-                  to="/about"
+                  to="/project-rescue"
                   className="block px-3 py-2 text-lg font-heading font-medium hover:text-kaizen-cyan transition rounded-md hover:bg-kaizen-light"
                   onClick={() => setMobileMenuOpen(false)}
                 >
-                  About
+                  Project Rescue
+                </Link>
+
+                <Link
+                  to="/agile-coaching"
+                  className="block px-3 py-2 text-lg font-heading font-medium hover:text-kaizen-cyan transition rounded-md hover:bg-kaizen-light"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  Agile Coaching
+                </Link>
+
+                <Link
+                  to="/contract-product-owner"
+                  className="block px-3 py-2 text-lg font-heading font-medium hover:text-kaizen-cyan transition rounded-md hover:bg-kaizen-light"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  Contract PO
                 </Link>
 
                 <Link
@@ -533,14 +473,6 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   Case Studies
-                </Link>
-
-                <Link
-                  to="/blog"
-                  className="block px-3 py-2 text-lg font-heading font-medium hover:text-kaizen-cyan transition rounded-md hover:bg-kaizen-light"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  Blog
                 </Link>
 
                 <button
