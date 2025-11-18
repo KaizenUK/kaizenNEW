@@ -494,6 +494,20 @@ export default function WordPressWebDesign() {
               <ArrowUpRight size={18} />
             </button>
           </motion.div>
+
+          <motion.p
+            className="text-kaizen-text-light/70 dark:text-white/60 mt-8 text-sm"
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+          >
+            Got a broken WordPress site? We also offer{" "}
+            <Link to="/project-rescue" className="text-kaizen-cyan hover:underline">
+              project rescue services
+            </Link>
+            .
+          </motion.p>
         </div>
       </section>
     </Layout>
