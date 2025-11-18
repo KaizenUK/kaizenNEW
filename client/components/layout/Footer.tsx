@@ -132,22 +132,8 @@ const Footer: React.FC<FooterProps> = ({ theme }) => {
   ];
 
   return (
-    <footer className="relative bg-gray-950 text-white overflow-hidden">
-      {/* Mega "KAIZEN" Watermark */}
-      <div className="absolute inset-0 pointer-events-none overflow-hidden flex items-end justify-center">
-        <div
-          className="text-white/5 font-bold whitespace-nowrap absolute bottom-0"
-          style={{
-            fontSize: "clamp(200px, 50vw, 60rem)",
-            lineHeight: 1,
-            letterSpacing: "-0.05em",
-          }}
-        >
-          KAIZEN
-        </div>
-      </div>
-
-      <div className="relative z-10 container mx-auto px-4 py-16">
+    <footer className="bg-gray-950 text-white">
+      <div className="container mx-auto px-4 py-16">
         {/* Bento Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-16">
           {/* Block A: Dynamic CTA (spans 2 cols on md, 2 cols on lg) */}
