@@ -1,26 +1,82 @@
 import { Link, useLocation } from "react-router-dom";
-import { Menu, X } from "lucide-react";
-import { useEffect, useState } from "react";
+import { Menu, X, Sun, Moon, ChevronDown } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useCalendly } from "@/context/CalendlyContext";
 
-const Header: React.FC = () => {
+interface HeaderProps {
+  theme: "light" | "dark";
+  onThemeChange: () => void;
+}
+
+const Header: React.FC<HeaderProps> = ({ theme, onThemeChange }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [expandedMobileSection, setExpandedMobileSection] = useState<string | null>(null);
+  const [servicesDropdownOpen, setServicesDropdownOpen] = useState(false);
+  const [insightsDropdownOpen, setInsightsDropdownOpen] = useState(false);
+  const servicesDropdownRef = useRef<HTMLDivElement>(null);
+  const insightsDropdownRef = useRef<HTMLDivElement>(null);
   const { openCalendly } = useCalendly();
   const location = useLocation();
 
   useEffect(() => {
     setMobileMenuOpen(false);
+    setServicesDropdownOpen(false);
+    setInsightsDropdownOpen(false);
   }, [location.pathname]);
 
-  const navItems = [
-    { label: "Web Design", href: "/services/web-design-liverpool" },
-    { label: "Project Rescue", href: "/project-rescue", highlight: true },
-    { label: "Agile Coaching", href: "/agile-coaching" },
-    { label: "Contract PO", href: "/contract-product-owner" },
+  // Close dropdowns when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (servicesDropdownRef.current && !servicesDropdownRef.current.contains(e.target as Node)) {
+        setServicesDropdownOpen(false);
+      }
+      if (insightsDropdownRef.current && !insightsDropdownRef.current.contains(e.target as Node)) {
+        setInsightsDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const servicesMenu = [
+    {
+      title: "Web & Growth",
+      items: [
+        { label: "High-Performance Web Design", href: "/services/web-design-liverpool" },
+        { label: "City Centre Specialist", href: "/web-design-liverpool-city-centre" },
+        { label: "E-commerce Development", href: "/services/ecommerce" },
+        { label: "Local SEO", href: "/services/local-seo" },
+      ],
+    },
+    {
+      title: "Product & Strategy",
+      items: [
+        { label: "Project Rescue", href: "/project-rescue", highlight: true },
+        { label: "Contract Product Owner", href: "/contract-product-owner" },
+        { label: "Agile Coaching", href: "/agile-coaching" },
+        { label: "Team Transformation", href: "/services/team-transformation" },
+      ],
+    },
+  ];
+
+  const insightsMenu = [
+    { label: "The Price Guide", description: "How Much Does a Website Cost?", href: "/blog/how-much-does-a-website-cost-in-liverpool-in-2025" },
+    { label: "The Selection Guide", description: "How to Choose an Agency", href: "/blog/choose-web-design-agency-liverpool" },
+    { label: "The Fixer Guide", description: "5 Website Mistakes", href: "/blog/website-mistakes-liverpool" },
+    { label: "View All Articles", href: "/blog" },
+  ];
+
+  const topLevelLinks = [
     { label: "Our Pledge", href: "/pledge" },
     { label: "Case Studies", href: "/case-studies" },
+    { label: "About", href: "/about" },
   ];
+
+  const toggleMobileSection = (section: string) => {
+    setExpandedMobileSection(expandedMobileSection === section ? null : section);
+  };
 
   return (
     <>
@@ -32,8 +88,8 @@ const Header: React.FC = () => {
             boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.5)",
           }}
         >
-          <div className="flex items-center justify-between px-6 py-4">
-            {/* Logo */}
+          <div className="flex items-center justify-between px-6 py-3">
+            {/* Logo - Fixed Visibility */}
             <Link
               to="/"
               className="flex items-center gap-3 hover:opacity-80 transition flex-shrink-0"
@@ -41,32 +97,138 @@ const Header: React.FC = () => {
               <img
                 src="https://cdn.builder.io/api/v1/image/assets%2Fe4ae46bbd81b4b95bef54d66dd9748cc%2F03f6c5dd481449d297c430cab962412e?format=webp&width=800"
                 alt="Kaizen Web"
-                className="h-8 w-auto"
+                className="h-12 w-auto"
+                style={{
+                  filter: theme === "dark" ? "brightness(0) invert(1)" : "none",
+                }}
               />
             </Link>
 
             {/* Desktop Navigation - Hidden on Mobile */}
-            <div className="hidden lg:flex items-center gap-1">
-              {navItems.map((item) => (
-                <Link
-                  key={item.href}
-                  to={item.href}
-                  className={`px-4 py-2 text-sm font-medium transition rounded-full hover:bg-white/5 ${
-                    item.highlight
-                      ? "text-cyan-400 hover:text-cyan-300"
-                      : "text-white/80 hover:text-white"
-                  }`}
-                  style={{
-                    mixBlendMode: "exclusion",
-                  }}
+            <div className="hidden lg:flex items-center gap-8">
+              {/* Services Dropdown */}
+              <div className="relative" ref={servicesDropdownRef}>
+                <button
+                  onClick={() => setServicesDropdownOpen(!servicesDropdownOpen)}
+                  className="flex items-center gap-1 px-4 py-2 text-sm font-medium text-white/90 hover:text-white transition rounded-full hover:bg-white/5"
                 >
-                  {item.label}
+                  Services
+                  <ChevronDown size={16} className={`transition ${servicesDropdownOpen ? "rotate-180" : ""}`} />
+                </button>
+
+                {/* Services Mega Menu */}
+                <AnimatePresence>
+                  {servicesDropdownOpen && (
+                    <motion.div
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -10 }}
+                      className="absolute top-full left-0 mt-2 w-screen max-w-2xl rounded-2xl border border-white/5 bg-gray-950/95 backdrop-blur-xl shadow-2xl p-8"
+                      style={{
+                        backdropFilter: "blur(12px)",
+                      }}
+                    >
+                      <div className="grid grid-cols-2 gap-8">
+                        {servicesMenu.map((column) => (
+                          <div key={column.title}>
+                            <h3 className="text-xs font-semibold text-white/40 uppercase tracking-wider mb-4">
+                              {column.title}
+                            </h3>
+                            <ul className="space-y-3">
+                              {column.items.map((item) => (
+                                <li key={item.href}>
+                                  <Link
+                                    to={item.href}
+                                    className={`block text-sm font-medium transition group ${
+                                      item.highlight
+                                        ? "text-cyan-400 hover:text-cyan-300"
+                                        : "text-white/80 hover:text-white"
+                                    }`}
+                                    onClick={() => setServicesDropdownOpen(false)}
+                                  >
+                                    <span className="inline-block mr-2 group-hover:translate-x-1 transition">→</span>
+                                    {item.label}
+                                  </Link>
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        ))}
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+
+              {/* Insights Dropdown */}
+              <div className="relative" ref={insightsDropdownRef}>
+                <button
+                  onClick={() => setInsightsDropdownOpen(!insightsDropdownOpen)}
+                  className="flex items-center gap-1 px-4 py-2 text-sm font-medium text-white/90 hover:text-white transition rounded-full hover:bg-white/5"
+                >
+                  Insights
+                  <ChevronDown size={16} className={`transition ${insightsDropdownOpen ? "rotate-180" : ""}`} />
+                </button>
+
+                {/* Insights Mega Menu */}
+                <AnimatePresence>
+                  {insightsDropdownOpen && (
+                    <motion.div
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -10 }}
+                      className="absolute top-full right-0 mt-2 w-80 rounded-2xl border border-white/5 bg-gray-950/95 backdrop-blur-xl shadow-2xl p-6"
+                      style={{
+                        backdropFilter: "blur(12px)",
+                      }}
+                    >
+                      <ul className="space-y-4">
+                        {insightsMenu.map((item, idx) => (
+                          <li key={item.href}>
+                            <Link
+                              to={item.href}
+                              className="block text-sm font-medium text-white/80 hover:text-white transition group"
+                              onClick={() => setInsightsDropdownOpen(false)}
+                            >
+                              <span className="inline-block mr-2 group-hover:translate-x-1 transition">→</span>
+                              <span className="font-semibold">{item.label}</span>
+                              {item.description && (
+                                <div className="text-xs text-white/40 mt-1 ml-6">{item.description}</div>
+                              )}
+                            </Link>
+                          </li>
+                        ))}
+                      </ul>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+
+              {/* Top-Level Links */}
+              {topLevelLinks.map((link) => (
+                <Link
+                  key={link.href}
+                  to={link.href}
+                  className="px-4 py-2 text-sm font-medium text-white/80 hover:text-white transition rounded-full hover:bg-white/5"
+                >
+                  {link.label}
                 </Link>
               ))}
             </div>
 
-            {/* CTA & Mobile Toggle */}
+            {/* Right Side: Theme Toggle & CTA & Mobile Menu */}
             <div className="flex items-center gap-4">
+              {/* Theme Toggle */}
+              <motion.button
+                onClick={onThemeChange}
+                whileHover={{ scale: 1.05 }}
+                className="hidden sm:inline-flex items-center justify-center w-10 h-10 rounded-full text-white/70 hover:text-white hover:bg-white/10 transition"
+                aria-label="Toggle theme"
+              >
+                {theme === "dark" ? <Sun size={18} /> : <Moon size={18} />}
+              </motion.button>
+
+              {/* CTA Button */}
               <motion.button
                 onClick={openCalendly}
                 whileHover={{ scale: 1.05 }}
@@ -96,29 +258,104 @@ const Header: React.FC = () => {
                 className="lg:hidden border-t border-white/10 bg-gray-950/40 backdrop-blur-md"
               >
                 <div className="px-6 py-4 space-y-2">
-                  {navItems.map((item) => (
+                  {/* Services Accordion */}
+                  <div>
+                    <button
+                      onClick={() => toggleMobileSection("services")}
+                      className="w-full text-left px-4 py-3 text-sm font-medium text-white/80 rounded-lg hover:bg-white/5 hover:text-white transition flex items-center justify-between"
+                    >
+                      Services
+                      <ChevronDown size={16} className={`transition ${expandedMobileSection === "services" ? "rotate-180" : ""}`} />
+                    </button>
+                    {expandedMobileSection === "services" && (
+                      <div className="ml-4 space-y-2 mt-2 border-l border-white/10 pl-4">
+                        {servicesMenu.map((column) => (
+                          <div key={column.title}>
+                            <p className="text-xs font-semibold text-white/40 uppercase tracking-wider mb-2">
+                              {column.title}
+                            </p>
+                            {column.items.map((item) => (
+                              <Link
+                                key={item.href}
+                                to={item.href}
+                                className={`block px-4 py-2 text-sm font-medium rounded-lg hover:bg-white/5 transition ${
+                                  item.highlight
+                                    ? "text-cyan-400 hover:text-cyan-300"
+                                    : "text-white/80 hover:text-white"
+                                }`}
+                                onClick={() => setMobileMenuOpen(false)}
+                              >
+                                {item.label}
+                              </Link>
+                            ))}
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Insights Accordion */}
+                  <div>
+                    <button
+                      onClick={() => toggleMobileSection("insights")}
+                      className="w-full text-left px-4 py-3 text-sm font-medium text-white/80 rounded-lg hover:bg-white/5 hover:text-white transition flex items-center justify-between"
+                    >
+                      Insights
+                      <ChevronDown size={16} className={`transition ${expandedMobileSection === "insights" ? "rotate-180" : ""}`} />
+                    </button>
+                    {expandedMobileSection === "insights" && (
+                      <div className="ml-4 space-y-2 mt-2 border-l border-white/10 pl-4">
+                        {insightsMenu.map((item) => (
+                          <Link
+                            key={item.href}
+                            to={item.href}
+                            className="block px-4 py-2 text-sm font-medium text-white/80 rounded-lg hover:bg-white/5 hover:text-white transition"
+                            onClick={() => setMobileMenuOpen(false)}
+                          >
+                            {item.label}
+                            {item.description && (
+                              <div className="text-xs text-white/40 mt-1">{item.description}</div>
+                            )}
+                          </Link>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Top-Level Links */}
+                  {topLevelLinks.map((link) => (
                     <Link
-                      key={item.href}
-                      to={item.href}
-                      className={`block px-4 py-3 text-sm font-medium rounded-lg hover:bg-white/5 transition ${
-                        item.highlight
-                          ? "text-cyan-400 hover:text-cyan-300"
-                          : "text-white/80 hover:text-white"
-                      }`}
+                      key={link.href}
+                      to={link.href}
+                      className="block px-4 py-3 text-sm font-medium text-white/80 rounded-lg hover:bg-white/5 hover:text-white transition"
                       onClick={() => setMobileMenuOpen(false)}
                     >
-                      {item.label}
+                      {link.label}
                     </Link>
                   ))}
-                  <button
-                    onClick={() => {
-                      openCalendly();
-                      setMobileMenuOpen(false);
-                    }}
-                    className="w-full mt-4 px-6 py-3 rounded-full text-sm font-medium text-gray-950 bg-gradient-to-r from-cyan-400 to-lime-400 hover:shadow-lg transition"
-                  >
-                    Book a Call
-                  </button>
+
+                  {/* Mobile CTA */}
+                  <div className="pt-4 mt-4 border-t border-white/10 space-y-2">
+                    <button
+                      onClick={() => {
+                        onThemeChange();
+                        setMobileMenuOpen(false);
+                      }}
+                      className="w-full px-4 py-3 text-sm font-medium text-white/80 rounded-lg hover:bg-white/5 hover:text-white transition flex items-center justify-center gap-2"
+                    >
+                      {theme === "dark" ? <Sun size={16} /> : <Moon size={16} />}
+                      {theme === "dark" ? "Light Mode" : "Dark Mode"}
+                    </button>
+                    <button
+                      onClick={() => {
+                        openCalendly();
+                        setMobileMenuOpen(false);
+                      }}
+                      className="w-full px-6 py-3 rounded-full text-sm font-medium text-gray-950 bg-gradient-to-r from-cyan-400 to-lime-400 hover:shadow-lg transition"
+                    >
+                      Book a Call
+                    </button>
+                  </div>
                 </div>
               </motion.div>
             )}
