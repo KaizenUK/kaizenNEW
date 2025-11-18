@@ -1,6 +1,8 @@
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap");
 
+/* Font display swap is already applied via &display=swap URL parameter above */
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -228,30 +230,40 @@
 }
 
 @layer components {
+  /* Hide scrollbar while keeping functionality */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
   .blog-content {
-    @apply prose prose-invert max-w-none space-y-6;
+    @apply prose dark:prose-invert max-w-none space-y-6;
   }
 
   .blog-content h1 {
-    @apply text-4xl lg:text-5xl font-heading font-bold mt-12 mb-6;
+    @apply text-4xl lg:text-5xl font-heading font-bold mt-12 mb-6 text-gray-950 dark:text-white;
   }
 
   .blog-content h2 {
-    @apply text-3xl lg:text-4xl font-heading font-bold mt-12 mb-6 text-white relative scroll-mt-32;
+    @apply text-3xl lg:text-4xl font-heading font-bold mt-12 mb-6 text-gray-950 dark:text-white relative scroll-mt-32;
   }
 
   .blog-content h3 {
-    @apply text-2xl lg:text-3xl font-heading font-bold mt-12 mb-4 text-gray-100 scroll-mt-32;
+    @apply text-2xl lg:text-3xl font-heading font-bold mt-12 mb-4 text-gray-900 dark:text-gray-100 scroll-mt-32;
   }
 
   .blog-content h4,
   .blog-content h5,
   .blog-content h6 {
-    @apply text-xl font-heading font-bold mt-8 mb-3 text-gray-200;
+    @apply text-xl font-heading font-bold mt-8 mb-3 text-gray-800 dark:text-gray-200;
   }
 
   .blog-content p {
-    @apply text-gray-300 leading-relaxed text-base lg:text-lg;
+    @apply text-gray-700 dark:text-gray-300 leading-relaxed text-base lg:text-lg;
   }
 
   .blog-content a {
@@ -272,15 +284,15 @@
   }
 
   .blog-content li {
-    @apply text-gray-300 text-base lg:text-lg mb-3;
+    @apply text-gray-700 dark:text-gray-300 text-base lg:text-lg mb-3;
   }
 
   .blog-content code {
-    @apply bg-gray-900 text-amber-300 px-2 py-1 rounded text-sm font-mono;
+    @apply bg-gray-100 dark:bg-gray-900 text-amber-700 dark:text-amber-300 px-2 py-1 rounded text-sm font-mono;
   }
 
   .blog-content blockquote {
-    @apply border-l-4 border-kaizen-cyan pl-4 py-2 my-6 bg-gray-900/50 italic text-gray-300 text-base lg:text-lg;
+    @apply border-l-4 border-kaizen-cyan pl-4 py-2 my-6 bg-gray-100 dark:bg-gray-900/50 italic text-gray-700 dark:text-gray-300 text-base lg:text-lg;
   }
 
   .blog-content img {

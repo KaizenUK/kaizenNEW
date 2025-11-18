@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import Layout from "@/components/Layout";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
+import { Helmet } from "react-helmet-async";
 import { useCalendly } from "@/context/CalendlyContext";
 import {
   ArrowRight,
@@ -119,8 +120,41 @@ const CTAButton = ({
 export default function WordPressWebDesign() {
   const { openCalendly: openCalendlyFromContext } = useCalendly();
 
+  const seoSchema = {
+    "@context": "https://schema.org",
+    "@type": "Service",
+    name: "WordPress Web Design Liverpool",
+    description:
+      "Custom WordPress web design and development for Liverpool and Wirral businesses. Fast, secure, easy-to-manage websites.",
+    provider: {
+      "@type": "Organization",
+      name: "Kaizen Web",
+      url: "https://kaizenweb.co.uk",
+    },
+    areaServed: {
+      "@type": "City",
+      name: "Liverpool",
+    },
+    image:
+      "https://cdn.builder.io/api/v1/image/assets%2Fe4ae46bbd81b4b95bef54d66dd9748cc%2Fa18f81c064614dceb4a9d1fcb2c9f64b?format=webp&width=800",
+  };
+
   return (
     <Layout>
+      <Helmet>
+        <title>
+          WordPress Web Design Liverpool | Fast, Secure, Easy-to-Manage
+        </title>
+        <meta
+          name="description"
+          content="Custom WordPress web design for Liverpool & Wirral businesses. Fast, secure, and easy-to-manage websites with powerful features. No bloat, no gimmicks."
+        />
+        <meta
+          name="keywords"
+          content="WordPress web design Liverpool, WordPress developer Wirral, custom WordPress websites, managed WordPress"
+        />
+        <script type="application/ld+json">{JSON.stringify(seoSchema)}</script>
+      </Helmet>
       {/* Section 1: Hero - Layered Card & Reveal Style */}
       <section className="relative min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 dark:from-slate-950 dark:via-slate-900 dark:to-black overflow-hidden flex items-center py-20">
         {/* Background visual - abstract WordPress editor aesthetic */}
@@ -239,6 +273,8 @@ export default function WordPressWebDesign() {
                   src="https://cdn.builder.io/api/v1/image/assets%2Fe4ae46bbd81b4b95bef54d66dd9748cc%2Fa18f81c064614dceb4a9d1fcb2c9f64b?format=webp&width=800"
                   alt="WordPress block editor interface for easy content management"
                   className="w-full h-full object-cover rounded-2xl"
+                  loading="lazy"
+                  decoding="async"
                 />
               </div>
             </motion.div>
@@ -344,6 +380,7 @@ export default function WordPressWebDesign() {
                   "A top-rated salon in Wallasey Village with no website, missing out on online discovery and relying on phone-only bookings.",
                 outcome:
                   "We built a classy, easy-to-manage WordPress site that captures her brand and includes a 24/7 online booking system.",
+                slug: "HelenMooreHairdressing",
               },
               {
                 client: "A.S Collections",
@@ -352,6 +389,7 @@ export default function WordPressWebDesign() {
                   "Their previous site was dated, performed poorly on mobile, and failed to build trust in the competitive commercial debt recovery sector.",
                 outcome:
                   "A complete, modern redesign on an easy-to-use platform. The new site is fast, authoritative, and simple for their team to update.",
+                slug: "AsCollections",
               },
             ].map((caseStudy, index) => (
               <motion.div
@@ -359,9 +397,12 @@ export default function WordPressWebDesign() {
                 variants={fadeInUp}
                 className="p-8 bg-kaizen-light dark:bg-slate-900/50 rounded-2xl border border-kaizen-light dark:border-slate-800/50"
               >
-                <h3 className="text-sm font-bold text-kaizen-cyan dark:text-kaizen-cyan/70 uppercase tracking-wide mb-2">
+                <Link
+                  to={`/case-studies/${caseStudy.slug.toLowerCase()}`}
+                  className="text-sm font-bold text-kaizen-cyan dark:text-kaizen-cyan/70 uppercase tracking-wide mb-2 hover:opacity-80 transition inline-block"
+                >
                   {caseStudy.client}
-                </h3>
+                </Link>
                 <p className="text-xs font-medium text-kaizen-text-dark/60 dark:text-white/50 mb-6">
                   {caseStudy.industry}
                 </p>
@@ -384,6 +425,13 @@ export default function WordPressWebDesign() {
                       {caseStudy.outcome}
                     </p>
                   </div>
+
+                  <Link
+                    to={`/case-studies/${caseStudy.slug.toLowerCase()}`}
+                    className="inline-flex items-center gap-2 text-kaizen-cyan font-medium hover:gap-3 transition"
+                  >
+                    Read Full Case Study <ArrowRight size={18} />
+                  </Link>
                 </div>
               </motion.div>
             ))}
@@ -456,6 +504,23 @@ export default function WordPressWebDesign() {
               <ArrowUpRight size={18} />
             </button>
           </motion.div>
+
+          <motion.p
+            className="text-kaizen-text-light/70 dark:text-white/60 mt-8 text-sm"
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+          >
+            Got a broken WordPress site? We also offer{" "}
+            <Link
+              to="/project-rescue"
+              className="text-kaizen-cyan hover:underline"
+            >
+              project rescue services
+            </Link>
+            .
+          </motion.p>
         </div>
       </section>
     </Layout>

@@ -94,7 +94,8 @@ const GlowingGridHero = () => {
   return (
     <section
       ref={heroRef}
-      className="relative min-h-screen bg-gray-950 text-white flex items-center py-20 overflow-hidden"
+      className="relative min-h-[100vh] bg-gray-950 text-white flex items-center py-20 overflow-hidden"
+      style={{ minHeight: "100vh" }}
     >
       {/* SVG Grid Background */}
       <svg
@@ -129,9 +130,10 @@ const GlowingGridHero = () => {
         <rect width="100%" height="100%" fill="url(#glow-center)" />
       </svg>
 
-      {/* Animated glow orbs */}
+      {/* Animated glow orbs - use GPU acceleration */}
       <motion.div
         className="absolute top-1/4 right-20 w-80 h-80 bg-kaizen-cyan rounded-full blur-3xl opacity-15"
+        style={{ willChange: "transform" }}
         animate={{
           y: [0, -40, 0],
           x: [0, 30, 0],
@@ -144,6 +146,7 @@ const GlowingGridHero = () => {
       />
       <motion.div
         className="absolute bottom-1/4 left-1/4 w-96 h-96 bg-kaizen-lime rounded-full blur-3xl opacity-10"
+        style={{ willChange: "transform" }}
         animate={{
           y: [0, 40, 0],
           x: [0, -30, 0],
@@ -224,7 +227,7 @@ export default function Home() {
       <GlowingGridHero />
 
       {/* Section 2: The "Three Pillars" */}
-      <section className="py-20 md:py-32 bg-white dark:bg-slate-950">
+      <section className="py-20 md:py-32 bg-white dark:bg-slate-950 min-h-screen">
         <div className="container mx-auto px-4">
           <ScrollReveal>
             <div className="text-center mb-16">
