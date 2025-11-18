@@ -153,7 +153,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       </Helmet>
 
       <div className="min-h-screen flex flex-col bg-background text-foreground transition-colors">
-        <Header theme={theme} onThemeChange={toggleTheme} />
+        <Header />
 
         {/* Main Content */}
         <main className="flex-grow">{children}</main>
