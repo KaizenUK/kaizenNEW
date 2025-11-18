@@ -331,7 +331,7 @@ function RichTextContent({ html }: RichTextContentProps) {
   return (
     <motion.div
       ref={contentRef}
-      className="max-w-3xl space-y-4 blog-content prose prose-invert max-w-none"
+      className="max-w-3xl lg:max-w-5xl blog-content prose prose-invert max-w-none"
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6, delay: 0.3 }}
