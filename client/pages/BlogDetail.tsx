@@ -443,65 +443,66 @@ export default function BlogDetail() {
     fetchPost();
   }, [slug]);
 
-  // Update reading progress
+  // Update reading progress AND TOC active state based on scroll position
   useEffect(() => {
+    let rafId: number | null = null;
+
     const handleScroll = () => {
-      const totalHeight =
-        document.documentElement.scrollHeight - window.innerHeight;
-      const scrolled = window.scrollY;
-      const progress = totalHeight > 0 ? scrolled / totalHeight : 0;
-      const clampedProgress = Math.min(progress, 1);
-      setScrollProgress(Math.round(clampedProgress * 100));
-      scaleX.set(clampedProgress);
+      if (rafId !== null) {
+        cancelAnimationFrame(rafId);
+      }
+
+      rafId = requestAnimationFrame(() => {
+        // Update progress bar
+        const totalHeight =
+          document.documentElement.scrollHeight - window.innerHeight;
+        const scrolled = window.scrollY;
+        const progress = totalHeight > 0 ? scrolled / totalHeight : 0;
+        const clampedProgress = Math.min(progress, 1);
+        setScrollProgress(Math.round(clampedProgress * 100));
+        scaleX.set(clampedProgress);
+
+        // Update TOC active section based on scroll position
+        if (!contentRef.current) return;
+
+        const headings = Array.from(
+          contentRef.current.querySelectorAll("h2[id]"),
+        ) as HTMLElement[];
+
+        if (headings.length === 0) {
+          setActiveSection("content");
+          return;
+        }
+
+        // Find the heading that is closest to the top of the viewport
+        // We look for the last heading that is above the visual center (around 150px from top)
+        let activeId = headings[0]?.id || "content";
+        const triggerPoint = 150; // Heading becomes active when it reaches 150px from top
+
+        for (let i = headings.length - 1; i >= 0; i--) {
+          const heading = headings[i];
+          const rect = heading.getBoundingClientRect();
+
+          // If heading is above the trigger point, it's our active heading
+          if (rect.top <= triggerPoint) {
+            activeId = heading.id;
+            break;
+          }
+        }
+
+        setActiveSection(activeId);
+        console.log("Active Section:", activeId);
+      });
     };
 
     window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, [scaleX]);
-
-  // IntersectionObserver for TOC active state
-  useEffect(() => {
-    if (!post || !contentRef.current) return;
-
-    const headings = contentRef.current.querySelectorAll("h2[id]");
-    if (headings.length === 0) {
-      setActiveSection(post.tableOfContents[0]?.id || "content");
-      return;
-    }
-
-    // Use a visible band in the middle of the screen to detect active heading
-    const observer = new IntersectionObserver(
-      (entries) => {
-        // Find all intersecting entries and get the one that's most visible
-        const visibleEntries = entries.filter((entry) => entry.isIntersecting);
-
-        if (visibleEntries.length > 0) {
-          // Get the first visible entry (topmost)
-          const activeEntry = visibleEntries[0];
-          const id = (activeEntry.target as HTMLElement).id;
-          if (id) {
-            setActiveSection(id);
-          }
-        }
-      },
-      {
-        // This creates a band 100px from the top of the viewport
-        rootMargin: "-100px 0px -66% 0px",
-        threshold: 0,
-      },
-    );
-
-    // Observe all h2 headings
-    headings.forEach((heading) => {
-      if (heading.id) {
-        observer.observe(heading);
-      }
-    });
-
     return () => {
-      observer.disconnect();
+      window.removeEventListener("scroll", handleScroll);
+      if (rafId !== null) {
+        cancelAnimationFrame(rafId);
+      }
     };
-  }, [post]);
+  }, [scaleX]);
 
   if (isLoading) {
     return (
