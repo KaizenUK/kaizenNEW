@@ -468,16 +468,16 @@ const Header: React.FC<HeaderProps> = ({ theme, onThemeChange }) => {
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.2 }}
-                className="fixed inset-0 z-[50] bg-black/40 backdrop-blur-md lg:hidden"
+                className="fixed inset-0 z-40 bg-black/40 backdrop-blur-md lg:hidden"
                 onClick={() => setMobileMenuOpen(false)}
               />
 
               <motion.div
-                initial={{ x: -320 }}
+                initial={{ x: "-100%" }}
                 animate={{ x: 0 }}
-                exit={{ x: -320 }}
+                exit={{ x: "-100%" }}
                 transition={{ duration: 0.3, ease: "easeOut" }}
-                className="fixed left-0 top-0 bottom-0 z-[60] w-80 max-w-[90vw] bg-gray-950 border-r border-white/10 flex flex-col lg:hidden overflow-hidden"
+                className="fixed left-0 top-0 bottom-0 z-50 w-80 max-w-[85vw] bg-gray-950 border-r border-white/10 flex flex-col lg:hidden overflow-hidden"
               >
                 {/* Header */}
                 <div className="flex items-center justify-between px-6 py-4 border-b border-white/10">
