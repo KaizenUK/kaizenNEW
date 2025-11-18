@@ -1,5 +1,19 @@
 import { Link, useLocation } from "react-router-dom";
-import { X, Sun, Moon, ChevronDown } from "lucide-react";
+import {
+  X,
+  Sun,
+  Moon,
+  ChevronDown,
+  Monitor,
+  ShoppingBag,
+  MapPin,
+  LifeBuoy,
+  Briefcase,
+  Users,
+  BookOpen,
+  FileText,
+  Wrench,
+} from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useCalendly } from "@/context/CalendlyContext";
@@ -30,18 +44,6 @@ interface InsightItem {
   description?: string;
   icon: JSX.Element;
 }
-
-import {
-  Monitor,
-  ShoppingBag,
-  MapPin,
-  LifeBuoy,
-  Briefcase,
-  Users,
-  BookOpen,
-  FileText,
-  Wrench,
-} from "lucide-react";
 
 const OffCanvasMenu: React.FC<OffCanvasMenuProps> = ({ isOpen, onClose, theme, onThemeChange }) => {
   const [expandedSection, setExpandedSection] = useState<string | null>(null);
