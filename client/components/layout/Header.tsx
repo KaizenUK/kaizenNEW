@@ -56,7 +56,7 @@ const Header: React.FC<HeaderProps> = ({ theme, onThemeChange }) => {
         { label: "Project Rescue", href: "/project-rescue", highlight: true },
         { label: "Contract Product Owner", href: "/contract-product-owner" },
         { label: "Agile Coaching", href: "/agile-coaching" },
-        { label: "Team Transformation", href: "/services/team-transformation" },
+        { label: "Team Transformation", href: "/team-transformation" },
       ],
     },
   ];
