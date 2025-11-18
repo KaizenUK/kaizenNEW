@@ -67,103 +67,97 @@ const ScrollReveal = ({
 // Glowing Grid Hero with Tracing Beam Effect
 const GlowingGridHero = () => {
   const { openCalendly } = useCalendly();
-  const animationFrameIdRef = useState<number | null>(null)[1];
 
   useEffect(() => {
     const canvas = document.getElementById("grid-canvas") as HTMLCanvasElement;
     if (!canvas) return;
 
-    const ctx = canvas.getContext("2d", { willReadFrequently: false });
+    const ctx = canvas.getContext("2d");
     if (!ctx) return;
+
+    let animationFrameId: number;
+    let spotlightX = window.innerWidth / 2;
+    let spotlightY = window.innerHeight / 2;
+    let time = 0;
 
     const setCanvasSize = () => {
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
     };
-    setCanvasSize();
-    window.addEventListener("resize", setCanvasSize);
-
-    const gridSize = 40;
-    const animationState = { time: 0, spotlightX: canvas.width / 2, spotlightY: canvas.height / 2 };
 
     const handleMouseMove = (e: MouseEvent) => {
-      animationState.spotlightX += (e.clientX - animationState.spotlightX) * 0.08;
-      animationState.spotlightY += (e.clientY - animationState.spotlightY) * 0.08;
+      spotlightX += (e.clientX - spotlightX) * 0.1;
+      spotlightY += (e.clientY - spotlightY) * 0.1;
     };
 
-    window.addEventListener("mousemove", handleMouseMove);
+    const drawFrame = () => {
+      const w = canvas.width;
+      const h = canvas.height;
+      const gridSize = 50;
 
-    let animationFrameId: number;
-
-    const animate = () => {
+      // Background
       ctx.fillStyle = "rgb(15, 23, 42)";
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.fillRect(0, 0, w, h);
 
-      // Draw subtle grid
-      ctx.strokeStyle = "rgba(0, 255, 255, 0.08)";
-      ctx.lineWidth = 0.5;
-
-      for (let x = 0; x < canvas.width; x += gridSize) {
-        ctx.beginPath();
-        ctx.moveTo(x, 0);
-        ctx.lineTo(x, canvas.height);
-        ctx.stroke();
-      }
-
-      for (let y = 0; y < canvas.height; y += gridSize) {
-        ctx.beginPath();
-        ctx.moveTo(0, y);
-        ctx.lineTo(canvas.width, y);
-        ctx.stroke();
-      }
-
-      // Animate spotlight position
-      const isAtCenter =
-        Math.abs(animationState.spotlightX - canvas.width / 2) < 1 &&
-        Math.abs(animationState.spotlightY - canvas.height / 2) < 1;
-
-      if (isAtCenter) {
-        animationState.spotlightX = canvas.width / 2 + Math.sin(animationState.time * 0.0008) * 80;
-        animationState.spotlightY = canvas.height / 2 + Math.cos(animationState.time * 0.0006) * 80;
-      }
-
-      // Draw glowing spotlight with radial gradient
-      const gradient = ctx.createRadialGradient(
-        animationState.spotlightX,
-        animationState.spotlightY,
-        0,
-        animationState.spotlightX,
-        animationState.spotlightY,
-        350
-      );
-      gradient.addColorStop(0, "rgba(0, 255, 255, 0.35)");
-      gradient.addColorStop(0.5, "rgba(132, 204, 22, 0.12)");
-      gradient.addColorStop(1, "rgba(0, 255, 255, 0)");
-
-      ctx.fillStyle = gradient;
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-      // Brighten grid lines near spotlight
-      ctx.strokeStyle = "rgba(0, 255, 255, 0.25)";
+      // Grid lines
+      ctx.strokeStyle = "rgba(0, 255, 255, 0.06)";
       ctx.lineWidth = 1;
 
-      const proximity = 120;
-      for (let x = 0; x < canvas.width; x += gridSize) {
-        for (let y = 0; y < canvas.height; y += gridSize) {
-          const dist = Math.hypot(x - animationState.spotlightX, y - animationState.spotlightY);
-          if (dist < proximity) {
-            const opacity = (1 - dist / proximity) * 0.35;
+      for (let x = 0; x <= w; x += gridSize) {
+        ctx.beginPath();
+        ctx.moveTo(x, 0);
+        ctx.lineTo(x, h);
+        ctx.stroke();
+      }
+
+      for (let y = 0; y <= h; y += gridSize) {
+        ctx.beginPath();
+        ctx.moveTo(0, y);
+        ctx.lineTo(w, y);
+        ctx.stroke();
+      }
+
+      // Auto-animate spotlight if mouse hasn't moved
+      const centerX = w / 2;
+      const centerY = h / 2;
+      const distToCenter = Math.hypot(spotlightX - centerX, spotlightY - centerY);
+
+      if (distToCenter < 5) {
+        spotlightX = centerX + Math.sin(time * 0.0005) * 120;
+        spotlightY = centerY + Math.cos(time * 0.0004) * 120;
+      }
+
+      // Spotlight glow
+      const glow = ctx.createRadialGradient(spotlightX, spotlightY, 0, spotlightX, spotlightY, 400);
+      glow.addColorStop(0, "rgba(0, 255, 255, 0.4)");
+      glow.addColorStop(0.4, "rgba(132, 204, 22, 0.15)");
+      glow.addColorStop(1, "rgba(0, 255, 255, 0)");
+
+      ctx.fillStyle = glow;
+      ctx.fillRect(0, 0, w, h);
+
+      // Highlight grid intersection near spotlight
+      ctx.fillStyle = "rgba(0, 255, 255, 0.3)";
+      for (let x = 0; x <= w; x += gridSize) {
+        for (let y = 0; y <= h; y += gridSize) {
+          const d = Math.hypot(x - spotlightX, y - spotlightY);
+          if (d < 200) {
+            const opacity = (1 - d / 200) * 0.5;
             ctx.fillStyle = `rgba(0, 255, 255, ${opacity})`;
-            ctx.fillRect(x - 2, y - 2, 4, 4);
+            ctx.fillRect(x - 3, y - 3, 6, 6);
           }
         }
       }
 
-      animationState.time += 1;
-      animationFrameId = requestAnimationFrame(animate);
+      time++;
+      animationFrameId = requestAnimationFrame(drawFrame);
     };
 
-    animationFrameId = requestAnimationFrame(animate);
+    setCanvasSize();
+    window.addEventListener("resize", setCanvasSize);
+    window.addEventListener("mousemove", handleMouseMove);
+
+    drawFrame();
 
     return () => {
       window.removeEventListener("resize", setCanvasSize);
