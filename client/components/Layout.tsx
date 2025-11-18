@@ -314,177 +314,47 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             {/* Desktop Navigation */}
             <div className="hidden md:flex items-center gap-1">
               <Link
-                to="/"
+                to="/services/web-design-liverpool"
                 className={`px-3 py-2 text-lg font-heading font-medium hover:text-kaizen-cyan transition rounded-md hover:bg-kaizen-light/50 dark:hover:bg-white/5 ${
                   textIsDark
                     ? "text-kaizen-dark dark:text-white"
                     : "text-white dark:text-white"
                 }`}
               >
-                Home
+                Web Design
               </Link>
 
-              {/* Services Mega Menu - Relative Container */}
-              <div
-                className="relative"
-                ref={servicesMenuRef}
-                onPointerEnter={openServicesMenu}
-                onPointerLeave={scheduleCloseServicesMenu}
-                onFocusCapture={openServicesMenu}
-                onBlurCapture={(event) => {
-                  const nextFocus = event.relatedTarget as Node | null;
-
-                  if (
-                    servicesMenuRef.current &&
-                    (!nextFocus || !servicesMenuRef.current.contains(nextFocus))
-                  ) {
-                    scheduleCloseServicesMenu();
-                  }
-                }}
-              >
-                <button
-                  type="button"
-                  aria-haspopup="menu"
-                  aria-expanded={servicesOpen}
-                  aria-controls="services-menu"
-                  onClick={() => setServicesOpen((prev) => !prev)}
-                  onKeyDown={(event) => {
-                    if (event.key === "Escape") {
-                      closeServicesMenu();
-                    }
-
-                    if (event.key === "ArrowDown") {
-                      event.preventDefault();
-                      openServicesMenu();
-                      const firstLink =
-                        servicesMenuRef.current?.querySelector<HTMLAnchorElement>(
-                          "#services-menu a",
-                        );
-                      firstLink?.focus();
-                    }
-                  }}
-                  className={`px-3 py-2 text-lg font-heading font-medium hover:text-kaizen-cyan transition rounded-md hover:bg-kaizen-light/50 dark:hover:bg-white/5 flex items-center gap-1 ${
-                    textIsDark
-                      ? "text-kaizen-dark dark:text-white"
-                      : "text-white dark:text-white"
-                  }`}
-                >
-                  Services
-                  <ChevronDown
-                    size={16}
-                    className={`transition ${servicesOpen ? "rotate-180" : ""}`}
-                  />
-                </button>
-
-                {/* Mega Menu Panel */}
-                <AnimatePresence>
-                  {servicesOpen && (
-                    <motion.div
-                      id="services-menu"
-                      role="menu"
-                      initial={{ opacity: 0, y: -5 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -5 }}
-                      transition={{ duration: 0.15 }}
-                      className="absolute left-0 top-full mt-0 z-50 min-w-max bg-white dark:bg-slate-900 rounded-lg shadow-xl border border-kaizen-light/20 dark:border-white/10 overflow-hidden"
-                      style={{
-                        backdropFilter: "blur(10px)",
-                      }}
-                    >
-                      <div className="p-8 min-w-[600px]">
-                        <div className="grid grid-cols-2 gap-12">
-                          {/* Column 1: Web & SEO */}
-                          <div>
-                            <p className="text-xs font-mono text-kaizen-text-dark/60 dark:text-white/60 font-bold mb-6 tracking-widest">
-                              WEB & SEO
-                            </p>
-
-                            <div className="space-y-6">
-                              <Link
-                                to="/services/web-design-liverpool"
-                                role="menuitem"
-                                className="block font-heading font-bold text-base text-kaizen-dark dark:text-white hover:text-kaizen-cyan dark:hover:text-kaizen-cyan transition"
-                              >
-                                Web Design Liverpool
-                              </Link>
-
-                              <Link
-                                to="/services/wordpress-web-design"
-                                role="menuitem"
-                                className="block font-heading font-bold text-base text-kaizen-dark dark:text-white hover:text-kaizen-cyan dark:hover:text-kaizen-cyan transition"
-                              >
-                                WordPress Design
-                              </Link>
-
-                              <Link
-                                to="/services/ecommerce"
-                                role="menuitem"
-                                className="block font-heading font-bold text-base text-kaizen-dark dark:text-white hover:text-kaizen-cyan dark:hover:text-kaizen-cyan transition"
-                              >
-                                E-commerce Development
-                              </Link>
-
-                              <Link
-                                to="/services/local-seo"
-                                role="menuitem"
-                                className="block font-heading font-bold text-base text-kaizen-dark dark:text-white hover:text-kaizen-cyan dark:hover:text-kaizen-cyan transition"
-                              >
-                                Local SEO
-                              </Link>
-                            </div>
-                          </div>
-
-                          {/* Column 2: Agile & Transformation */}
-                          <div>
-                            <p className="text-xs font-mono text-kaizen-text-dark/60 dark:text-white/60 font-bold mb-6 tracking-widest">
-                              AGILE & TRANSFORMATION
-                            </p>
-
-                            <div className="space-y-6">
-                              <Link
-                                to="/services/digital-transformation"
-                                role="menuitem"
-                                className="block font-heading font-bold text-base text-kaizen-dark dark:text-white hover:text-kaizen-cyan dark:hover:text-kaizen-cyan transition"
-                              >
-                                Digital Transformation
-                              </Link>
-
-                              <Link
-                                to="/agile-coaching"
-                                role="menuitem"
-                                className="block font-heading font-bold text-base text-kaizen-dark dark:text-white hover:text-kaizen-cyan dark:hover:text-kaizen-cyan transition"
-                              >
-                                Agile Coaching
-                              </Link>
-
-                              <Link
-                                to="/contract-product-owner"
-                                role="menuitem"
-                                className="block font-heading font-bold text-base text-kaizen-dark dark:text-white hover:text-kaizen-cyan dark:hover:text-kaizen-cyan transition flex items-center gap-2"
-                              >
-                                Contract Product Owner
-                                <span className="inline-block px-2 py-1 bg-kaizen-cyan/20 text-kaizen-cyan text-xs font-bold rounded">
-                                  Founder-Led
-                                </span>
-                              </Link>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </div>
-
               <Link
-                to="/about"
+                to="/project-rescue"
                 className={`px-3 py-2 text-lg font-heading font-medium hover:text-kaizen-cyan transition rounded-md hover:bg-kaizen-light/50 dark:hover:bg-white/5 ${
                   textIsDark
                     ? "text-kaizen-dark dark:text-white"
                     : "text-white dark:text-white"
                 }`}
               >
-                About
+                Project Rescue
+              </Link>
+
+              <Link
+                to="/agile-coaching"
+                className={`px-3 py-2 text-lg font-heading font-medium hover:text-kaizen-cyan transition rounded-md hover:bg-kaizen-light/50 dark:hover:bg-white/5 ${
+                  textIsDark
+                    ? "text-kaizen-dark dark:text-white"
+                    : "text-white dark:text-white"
+                }`}
+              >
+                Agile Coaching
+              </Link>
+
+              <Link
+                to="/contract-product-owner"
+                className={`px-3 py-2 text-lg font-heading font-medium hover:text-kaizen-cyan transition rounded-md hover:bg-kaizen-light/50 dark:hover:bg-white/5 ${
+                  textIsDark
+                    ? "text-kaizen-dark dark:text-white"
+                    : "text-white dark:text-white"
+                }`}
+              >
+                Contract PO
               </Link>
 
               <Link
@@ -507,17 +377,6 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                 }`}
               >
                 Case Studies
-              </Link>
-
-              <Link
-                to="/blog"
-                className={`px-3 py-2 text-lg font-heading font-medium hover:text-kaizen-cyan transition rounded-md hover:bg-kaizen-light/50 dark:hover:bg-white/5 ${
-                  textIsDark
-                    ? "text-kaizen-dark dark:text-white"
-                    : "text-white dark:text-white"
-                }`}
-              >
-                Blog
               </Link>
             </div>
 
