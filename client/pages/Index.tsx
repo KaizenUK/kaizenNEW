@@ -67,13 +67,13 @@ const ScrollReveal = ({
 // Glowing Grid Hero with Tracing Beam Effect
 const GlowingGridHero = () => {
   const { openCalendly } = useCalendly();
-  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+  const animationFrameIdRef = useState<number | null>(null)[1];
 
   useEffect(() => {
     const canvas = document.getElementById("grid-canvas") as HTMLCanvasElement;
     if (!canvas) return;
 
-    const ctx = canvas.getContext("2d");
+    const ctx = canvas.getContext("2d", { willReadFrequently: false });
     if (!ctx) return;
 
     const setCanvasSize = () => {
@@ -84,22 +84,19 @@ const GlowingGridHero = () => {
     window.addEventListener("resize", setCanvasSize);
 
     const gridSize = 40;
-    let time = 0;
-
-    // Smooth spotlight position based on mouse or animation
-    let spotlightX = canvas.width / 2;
-    let spotlightY = canvas.height / 2;
+    const animationState = { time: 0, spotlightX: canvas.width / 2, spotlightY: canvas.height / 2 };
 
     const handleMouseMove = (e: MouseEvent) => {
-      spotlightX += (e.clientX - spotlightX) * 0.1;
-      spotlightY += (e.clientY - spotlightY) * 0.1;
-      setMousePos({ x: e.clientX, y: e.clientY });
+      animationState.spotlightX += (e.clientX - animationState.spotlightX) * 0.08;
+      animationState.spotlightY += (e.clientY - animationState.spotlightY) * 0.08;
     };
 
     window.addEventListener("mousemove", handleMouseMove);
 
+    let animationFrameId: number;
+
     const animate = () => {
-      ctx.fillStyle = "rgb(15, 23, 42)"; // bg-gray-950
+      ctx.fillStyle = "rgb(15, 23, 42)";
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
       // Draw subtle grid
@@ -121,25 +118,26 @@ const GlowingGridHero = () => {
       }
 
       // Animate spotlight position
-      if (
-        Math.abs(spotlightX - canvas.width / 2) < 1 &&
-        Math.abs(spotlightY - canvas.height / 2) < 1
-      ) {
-        spotlightX = canvas.width / 2 + Math.sin(time * 0.001) * 100;
-        spotlightY = canvas.height / 2 + Math.cos(time * 0.0008) * 100;
+      const isAtCenter =
+        Math.abs(animationState.spotlightX - canvas.width / 2) < 1 &&
+        Math.abs(animationState.spotlightY - canvas.height / 2) < 1;
+
+      if (isAtCenter) {
+        animationState.spotlightX = canvas.width / 2 + Math.sin(animationState.time * 0.0008) * 80;
+        animationState.spotlightY = canvas.height / 2 + Math.cos(animationState.time * 0.0006) * 80;
       }
 
       // Draw glowing spotlight with radial gradient
       const gradient = ctx.createRadialGradient(
-        spotlightX,
-        spotlightY,
+        animationState.spotlightX,
+        animationState.spotlightY,
         0,
-        spotlightX,
-        spotlightY,
-        400,
+        animationState.spotlightX,
+        animationState.spotlightY,
+        350
       );
-      gradient.addColorStop(0, "rgba(0, 255, 255, 0.3)");
-      gradient.addColorStop(0.5, "rgba(132, 204, 22, 0.1)");
+      gradient.addColorStop(0, "rgba(0, 255, 255, 0.35)");
+      gradient.addColorStop(0.5, "rgba(132, 204, 22, 0.12)");
       gradient.addColorStop(1, "rgba(0, 255, 255, 0)");
 
       ctx.fillStyle = gradient;
@@ -149,27 +147,28 @@ const GlowingGridHero = () => {
       ctx.strokeStyle = "rgba(0, 255, 255, 0.25)";
       ctx.lineWidth = 1;
 
-      const proximity = 150;
+      const proximity = 120;
       for (let x = 0; x < canvas.width; x += gridSize) {
         for (let y = 0; y < canvas.height; y += gridSize) {
-          const dist = Math.hypot(x - spotlightX, y - spotlightY);
+          const dist = Math.hypot(x - animationState.spotlightX, y - animationState.spotlightY);
           if (dist < proximity) {
-            const opacity = (1 - dist / proximity) * 0.4;
-            ctx.fillStyle = `rgba(0, 255, 255, ${opacity * 0.6})`;
+            const opacity = (1 - dist / proximity) * 0.35;
+            ctx.fillStyle = `rgba(0, 255, 255, ${opacity})`;
             ctx.fillRect(x - 2, y - 2, 4, 4);
           }
         }
       }
 
-      time += 1;
-      requestAnimationFrame(animate);
+      animationState.time += 1;
+      animationFrameId = requestAnimationFrame(animate);
     };
 
-    animate();
+    animationFrameId = requestAnimationFrame(animate);
 
     return () => {
       window.removeEventListener("resize", setCanvasSize);
       window.removeEventListener("mousemove", handleMouseMove);
+      cancelAnimationFrame(animationFrameId);
     };
   }, []);
 
