@@ -500,17 +500,20 @@ export default function BlogDetail() {
         </motion.div>
       </motion.div>
 
-      {/* Hero Image Section */}
+      {/* Hero Image Section with Parallax */}
       <motion.div
         className="relative h-96 overflow-hidden bg-gray-900"
         initial={{ scale: 1.1 }}
         animate={{ scale: 1 }}
         transition={{ duration: 0.8 }}
       >
-        <img
+        <motion.img
           src={post.coverImage}
           alt={post.title}
           className="w-full h-full object-cover"
+          initial={{ scale: 1.1 }}
+          animate={{ scale: 1 }}
+          transition={{ duration: 1.2 }}
         />
         <div className="absolute inset-0 bg-gradient-to-t from-gray-950 via-transparent to-transparent" />
 
