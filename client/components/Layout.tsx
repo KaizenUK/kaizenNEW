@@ -32,6 +32,7 @@ const getPreferredTheme = (): ThemeMode => {
 
 const Layout: React.FC<LayoutProps> = ({ children }) => {
   const [theme, setTheme] = useState<ThemeMode>(() => getPreferredTheme());
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const location = useLocation();
 
   const normalizedPath =
@@ -153,7 +154,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       </Helmet>
 
       <div className="min-h-screen flex flex-col bg-background text-foreground transition-colors">
-        <Header theme={theme} onThemeChange={toggleTheme} />
+        <Header theme={theme} onThemeChange={toggleTheme} mobileMenuOpen={mobileMenuOpen} onMobileMenuChange={setMobileMenuOpen} />
 
         {/* Main Content */}
         <main className="flex-grow">{children}</main>
