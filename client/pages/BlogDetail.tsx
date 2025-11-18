@@ -174,6 +174,8 @@ function ImageWithSkeleton({ src, alt }: ImageWithSkeletonProps) {
           setHasError(true);
         }}
         className={`w-full h-auto relative z-10 ${isLoading ? "opacity-0" : "opacity-100"} transition-opacity`}
+        loading="lazy"
+        decoding="async"
       />
       {hasError && (
         <div className="absolute inset-0 flex items-center justify-center bg-gray-800 text-gray-500">
