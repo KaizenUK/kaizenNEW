@@ -44,9 +44,9 @@ const Header: React.FC<HeaderProps> = ({ theme, onThemeChange }) => {
               className="flex items-center gap-3 hover:opacity-80 transition flex-shrink-0"
             >
               <img
-                src="https://cdn.builder.io/api/v1/image/assets%2Fe4ae46bbd81b4b95bef54d66dd9748cc%2F19f6366118ef41298050443945090b5f?format=webp&width=800"
+                src="https://cdn.builder.io/api/v1/image/assets%2Fe4ae46bbd81b4b95bef54d66dd9748cc%2F03f6c5dd481449d297c430cab962412e?format=webp&width=800"
                 alt="Kaizen Web"
-                className="h-10 w-auto"
+                className="h-8 w-auto"
               />
             </Link>
 
