@@ -250,14 +250,14 @@ const Header: React.FC<HeaderProps> = ({
   };
 
   return (
-    <header className="sticky top-4 z-50 w-full px-4">
+    <header className="sticky top-4 z-50 w-full px-4 h-20">
       <nav
-        className="max-w-7xl mx-auto rounded-full bg-gray-950/80 border-t border-white/10 backdrop-blur-xl"
+        className="max-w-7xl mx-auto rounded-full bg-gray-950/80 border-t border-white/10 backdrop-blur-xl h-full"
         style={{
           boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.5)",
         }}
       >
-        <div className="flex items-center justify-between px-6 py-3">
+        <div className="flex items-center justify-between px-6 py-3 h-full">
           {/* Logo */}
           <Link
             to="/"
