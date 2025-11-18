@@ -31,7 +31,7 @@ const Footer: React.FC<FooterProps> = ({ theme }) => {
 
   // Determine dynamic CTA based on route
   const getDynamicCTA = () => {
-    const path = location.pathname;
+    const path = location.pathname.toLowerCase();
 
     if (path.includes("web-design")) {
       return {
@@ -40,7 +40,7 @@ const Footer: React.FC<FooterProps> = ({ theme }) => {
         onClick: openCalendly,
       };
     }
-    if (path.includes("agile") || path.includes("coaching")) {
+    if (path.includes("agile-coaching") || path.includes("coaching") || path.includes("team-transformation")) {
       return {
         heading: "Ready to transform your team?",
         buttonText: "Start Coaching",
@@ -51,6 +51,13 @@ const Footer: React.FC<FooterProps> = ({ theme }) => {
       return {
         heading: "Need to save your project?",
         buttonText: "Rescue My Project",
+        onClick: openCalendly,
+      };
+    }
+    if (path.includes("contract-product-owner")) {
+      return {
+        heading: "Need expert product leadership?",
+        buttonText: "Book a PO Consultation",
         onClick: openCalendly,
       };
     }
