@@ -20,6 +20,12 @@ const NotFound = () => {
 
   return (
     <Layout>
+      <Helmet>
+        <title>Page Not Found | Kaizen Web</title>
+        <meta name="description" content="The page you're looking for doesn't exist. Let's get your project back on track. Book a Project Rescue call with Kaizen Web." />
+        <meta name="robots" content="noindex, nofollow" />
+      </Helmet>
+
       <section className="min-h-screen flex items-center justify-center bg-gray-950 text-white px-4 py-20">
         <motion.div
           className="text-center max-w-3xl"
