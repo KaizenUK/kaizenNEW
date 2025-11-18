@@ -82,27 +82,21 @@ const GlowingGridHero = () => {
 
       {/* Animated Glow Background */}
       <motion.div
-        className="absolute inset-0 pointer-events-none"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 1 }}
-      >
-        <motion.div
-          className="absolute w-full h-full bg-gradient-radial from-kaizen-cyan via-transparent to-transparent opacity-20 blur-3xl"
-          animate={{
-            x: ["-20%", "20%", "-20%"],
-            y: ["-20%", "20%", "-20%"],
-          }}
-          transition={{
-            duration: 15,
-            repeat: Infinity,
-            ease: "easeInOut",
-          }}
-          style={{
-            background: "radial-gradient(circle at center, rgba(0, 255, 255, 0.3) 0%, transparent 70%)",
-          }}
-        />
-      </motion.div>
+        className="absolute inset-0 pointer-events-none opacity-20"
+        animate={{
+          x: ["-20%", "20%", "-20%"],
+          y: ["-20%", "20%", "-20%"],
+        }}
+        transition={{
+          duration: 15,
+          repeat: Infinity,
+          ease: "easeInOut",
+        }}
+        style={{
+          background: "radial-gradient(circle at center, rgba(0, 255, 255, 0.4) 0%, transparent 70%)",
+          filter: "blur(80px)",
+        }}
+      />
 
       {/* Subtle gradient overlay for text clarity */}
       <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-gray-950" />
