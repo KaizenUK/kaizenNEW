@@ -29,15 +29,9 @@ const Header: React.FC<HeaderProps> = ({ theme, onThemeChange }) => {
 
   return (
     <>
-      <header
-        className="sticky top-4 z-50 mx-4"
-        style={{
-          display: "flex",
-          justifyContent: "center",
-        }}
-      >
+      <header className="sticky top-4 z-50 w-full px-4">
         <nav
-          className="max-w-7xl w-full rounded-full bg-gray-950/80 border-t border-white/10 shadow-2xl"
+          className="max-w-7xl mx-auto rounded-full bg-gray-950/80 border-t border-white/10"
           style={{
             backdropFilter: "blur(12px)",
             boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.5)",
