@@ -63,14 +63,13 @@ const ScrollReveal = ({
   );
 };
 
-// Neural Network background component
-const NeuralNetworkHero = () => {
+// Glowing Grid Hero with Tracing Beam Effect
+const GlowingGridHero = () => {
   const { openCalendly } = useCalendly();
+  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
 
   useEffect(() => {
-    const canvas = document.getElementById(
-      "neural-canvas",
-    ) as HTMLCanvasElement;
+    const canvas = document.getElementById("grid-canvas") as HTMLCanvasElement;
     if (!canvas) return;
 
     const ctx = canvas.getContext("2d");
@@ -83,48 +82,75 @@ const NeuralNetworkHero = () => {
     setCanvasSize();
     window.addEventListener("resize", setCanvasSize);
 
-    const nodes: { x: number; y: number; vx: number; vy: number }[] = [];
-    const numNodes = 80;
+    const gridSize = 40;
+    let time = 0;
 
-    for (let i = 0; i < numNodes; i++) {
-      nodes.push({
-        x: Math.random() * canvas.width,
-        y: Math.random() * canvas.height,
-        vx: (Math.random() - 0.5) * 0.3,
-        vy: (Math.random() - 0.5) * 0.3,
-      });
-    }
+    // Smooth spotlight position based on mouse or animation
+    let spotlightX = canvas.width / 2;
+    let spotlightY = canvas.height / 2;
+
+    const handleMouseMove = (e: MouseEvent) => {
+      spotlightX += (e.clientX - spotlightX) * 0.1;
+      spotlightY += (e.clientY - spotlightY) * 0.1;
+      setMousePos({ x: e.clientX, y: e.clientY });
+    };
+
+    window.addEventListener("mousemove", handleMouseMove);
 
     const animate = () => {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = "rgb(15, 23, 42)"; // bg-gray-950
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-      nodes.forEach((node) => {
-        node.x += node.vx;
-        node.y += node.vy;
+      // Draw subtle grid
+      ctx.strokeStyle = "rgba(0, 255, 255, 0.08)";
+      ctx.lineWidth = 0.5;
 
-        if (node.x < 0 || node.x > canvas.width) node.vx *= -1;
-        if (node.y < 0 || node.y > canvas.height) node.vy *= -1;
-
+      for (let x = 0; x < canvas.width; x += gridSize) {
         ctx.beginPath();
-        ctx.arc(node.x, node.y, 2, 0, Math.PI * 2);
-        ctx.fillStyle = "rgba(0, 255, 255, 0.5)";
-        ctx.fill();
-      });
+        ctx.moveTo(x, 0);
+        ctx.lineTo(x, canvas.height);
+        ctx.stroke();
+      }
 
-      nodes.forEach((nodeA, i) => {
-        nodes.slice(i + 1).forEach((nodeB) => {
-          const dist = Math.hypot(nodeA.x - nodeB.x, nodeA.y - nodeB.y);
-          if (dist < 150) {
-            ctx.beginPath();
-            ctx.moveTo(nodeA.x, nodeA.y);
-            ctx.lineTo(nodeB.x, nodeB.y);
-            ctx.strokeStyle = `rgba(0, 255, 255, ${0.2 * (1 - dist / 150)})`;
-            ctx.lineWidth = 1;
-            ctx.stroke();
+      for (let y = 0; y < canvas.height; y += gridSize) {
+        ctx.beginPath();
+        ctx.moveTo(0, y);
+        ctx.lineTo(canvas.width, y);
+        ctx.stroke();
+      }
+
+      // Animate spotlight position
+      if (Math.abs(spotlightX - canvas.width / 2) < 1 && Math.abs(spotlightY - canvas.height / 2) < 1) {
+        spotlightX = canvas.width / 2 + Math.sin(time * 0.001) * 100;
+        spotlightY = canvas.height / 2 + Math.cos(time * 0.0008) * 100;
+      }
+
+      // Draw glowing spotlight with radial gradient
+      const gradient = ctx.createRadialGradient(spotlightX, spotlightY, 0, spotlightX, spotlightY, 400);
+      gradient.addColorStop(0, "rgba(0, 255, 255, 0.3)");
+      gradient.addColorStop(0.5, "rgba(132, 204, 22, 0.1)");
+      gradient.addColorStop(1, "rgba(0, 255, 255, 0)");
+
+      ctx.fillStyle = gradient;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      // Brighten grid lines near spotlight
+      ctx.strokeStyle = "rgba(0, 255, 255, 0.25)";
+      ctx.lineWidth = 1;
+
+      const proximity = 150;
+      for (let x = 0; x < canvas.width; x += gridSize) {
+        for (let y = 0; y < canvas.height; y += gridSize) {
+          const dist = Math.hypot(x - spotlightX, y - spotlightY);
+          if (dist < proximity) {
+            const opacity = (1 - dist / proximity) * 0.4;
+            ctx.fillStyle = `rgba(0, 255, 255, ${opacity * 0.6})`;
+            ctx.fillRect(x - 2, y - 2, 4, 4);
           }
-        });
-      });
+        }
+      }
 
+      time += 1;
       requestAnimationFrame(animate);
     };
 
@@ -132,16 +158,16 @@ const NeuralNetworkHero = () => {
 
     return () => {
       window.removeEventListener("resize", setCanvasSize);
+      window.removeEventListener("mousemove", handleMouseMove);
     };
   }, []);
 
   return (
-    <section className="relative min-h-screen bg-slate-950 text-white flex items-center py-20 overflow-hidden">
-      <canvas
-        id="neural-canvas"
-        className="absolute inset-0 pointer-events-none"
-      />
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-transparent via-slate-950/50 to-slate-950" />
+    <section className="relative min-h-screen bg-gray-950 text-white flex items-center py-20 overflow-hidden">
+      <canvas id="grid-canvas" className="absolute inset-0 pointer-events-none" />
+
+      {/* Subtle gradient overlay for text clarity */}
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-gray-950" />
 
       <div className="container mx-auto px-4 relative z-10">
         <div className="max-w-4xl mx-auto text-center">
@@ -151,7 +177,7 @@ const NeuralNetworkHero = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
           >
-            PRODUCT OWNER-LED WEB DESIGN
+            High-Performance Web Design for Liverpool
           </motion.p>
 
           <motion.h1
@@ -160,18 +186,16 @@ const NeuralNetworkHero = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.1 }}
           >
-            Product Owner-led Web Design & Agile Delivery for Liverpool SMEs
+            Web Design Liverpool: Product Owner-Led & Agile
           </motion.h1>
 
           <motion.p
-            className="text-xl md:text-2xl text-white/80 leading-relaxed mb-12 max-w-3xl mx-auto"
+            className="text-lg md:text-xl text-white/85 leading-relaxed mb-12 max-w-3xl mx-auto"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.3, duration: 0.8 }}
           >
-            We build high-performance WordPress & React sites, fix chaotic
-            projects, and coach your team to deliver in sprints. No jargon, just
-            results.
+            We build high-performance sites, fix chaotic projects, and coach your team to deliver in sprints. No jargon, just results.
           </motion.p>
 
           <motion.div
@@ -182,14 +206,14 @@ const NeuralNetworkHero = () => {
           >
             <Link
               to="/contact"
-              className="px-8 py-4 rounded-lg bg-gradient-to-r from-kaizen-cyan to-kaizen-lime text-kaizen-dark font-heading font-bold text-lg hover:shadow-lg hover:shadow-kaizen-cyan/50 transition inline-flex items-center justify-center gap-2"
+              className="px-8 py-4 rounded-lg bg-gradient-to-r from-kaizen-cyan to-kaizen-lime text-gray-950 font-heading font-bold text-lg hover:shadow-2xl hover:shadow-kaizen-cyan/60 hover:scale-105 transition-all inline-flex items-center justify-center gap-2"
             >
               Get a Liverpool web design quote
               <ArrowRight size={20} />
             </Link>
             <Link
               to="/case-studies"
-              className="px-8 py-4 rounded-lg border-2 border-white/20 text-white font-heading font-bold text-lg hover:border-kaizen-cyan hover:text-kaizen-cyan transition inline-flex items-center justify-center gap-2"
+              className="px-8 py-4 rounded-lg border-2 border-white/30 text-white font-heading font-bold text-lg hover:border-kaizen-cyan hover:text-kaizen-cyan hover:shadow-lg hover:shadow-kaizen-cyan/30 transition-all inline-flex items-center justify-center gap-2"
             >
               View case studies
               <ArrowUpRight size={20} />
