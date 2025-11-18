@@ -51,8 +51,6 @@ interface InsightItem {
 const desktopMenuOrder: DesktopMenuKey[] = ["services", "insights"];
 
 const Header: React.FC<HeaderProps> = ({ theme, onThemeChange, mobileMenuOpen, onMobileMenuChange }) => {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [expandedMobileSection, setExpandedMobileSection] = useState<string | null>(null);
   const [activeMenu, setActiveMenu] = useState<DesktopMenuKey>(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [lastMenu, setLastMenu] = useState<DesktopMenuKey>(null);
@@ -61,30 +59,13 @@ const Header: React.FC<HeaderProps> = ({ theme, onThemeChange, mobileMenuOpen, o
   const navRef = useRef<HTMLDivElement | null>(null);
   const servicesTriggerRef = useRef<HTMLButtonElement | null>(null);
   const insightsTriggerRef = useRef<HTMLButtonElement | null>(null);
-  const scrollYRef = useRef<number>(0);
   const { openCalendly } = useCalendly();
   const location = useLocation();
 
   useEffect(() => {
-    setMobileMenuOpen(false);
     setIsMenuOpen(false);
     setActiveMenu(null);
   }, [location.pathname]);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      const currentScrollY = window.scrollY;
-      if (mobileMenuOpen && currentScrollY > scrollYRef.current + 50) {
-        setMobileMenuOpen(false);
-      }
-      scrollYRef.current = currentScrollY;
-    };
-
-    if (mobileMenuOpen) {
-      window.addEventListener("scroll", handleScroll, { passive: true });
-      return () => window.removeEventListener("scroll", handleScroll);
-    }
-  }, [mobileMenuOpen]);
 
   useEffect(() => {
     return () => {
