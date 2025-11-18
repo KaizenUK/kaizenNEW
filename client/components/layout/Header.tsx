@@ -22,6 +22,8 @@ import { useCalendly } from "@/context/CalendlyContext";
 interface HeaderProps {
   theme: "light" | "dark";
   onThemeChange: () => void;
+  mobileMenuOpen: boolean;
+  onMobileMenuChange: (open: boolean) => void;
 }
 
 type DesktopMenuKey = "services" | "insights" | null;
@@ -48,7 +50,7 @@ interface InsightItem {
 
 const desktopMenuOrder: DesktopMenuKey[] = ["services", "insights"];
 
-const Header: React.FC<HeaderProps> = ({ theme, onThemeChange }) => {
+const Header: React.FC<HeaderProps> = ({ theme, onThemeChange, mobileMenuOpen, onMobileMenuChange }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [expandedMobileSection, setExpandedMobileSection] = useState<string | null>(null);
   const [activeMenu, setActiveMenu] = useState<DesktopMenuKey>(null);
