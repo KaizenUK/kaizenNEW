@@ -459,23 +459,28 @@ const Header: React.FC<HeaderProps> = ({ theme, onThemeChange }) => {
           </div>
         </div>
 
-        {/* Mobile Menu */}
+        {/* Off-Canvas Mobile Menu */}
         <AnimatePresence>
           {mobileMenuOpen && (
-            <motion.div
-              initial={{ opacity: 0, y: -12 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -12 }}
-              transition={{ duration: 0.2, ease: "easeOut" }}
-              className="fixed inset-0 z-[60] flex items-center justify-center px-4 lg:hidden"
-            >
-              <div
-                className="absolute inset-0 bg-black/60 backdrop-blur-xl"
+            <>
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.2 }}
+                className="fixed inset-0 z-[50] bg-black/40 backdrop-blur-md lg:hidden"
                 onClick={() => setMobileMenuOpen(false)}
               />
 
-              <div className="relative z-10 w-full max-w-sm rounded-[40px] bg-gray-950/95 border border-white/10 shadow-2xl flex flex-col max-h-[calc(100vh-3rem)] overflow-hidden">
-                <div className="flex items-center justify-between px-6 pt-5 pb-3 border-b border-white/10">
+              <motion.div
+                initial={{ x: -320 }}
+                animate={{ x: 0 }}
+                exit={{ x: -320 }}
+                transition={{ duration: 0.3, ease: "easeOut" }}
+                className="fixed left-0 top-0 bottom-0 z-[60] w-80 max-w-[90vw] bg-gray-950 border-r border-white/10 flex flex-col lg:hidden overflow-hidden"
+              >
+                {/* Header */}
+                <div className="flex items-center justify-between px-6 py-4 border-b border-white/10">
                   <Link
                     to="/"
                     className="flex items-center gap-2"
@@ -484,7 +489,7 @@ const Header: React.FC<HeaderProps> = ({ theme, onThemeChange }) => {
                     <img
                       src="https://cdn.builder.io/api/v1/image/assets%2Fe4ae46bbd81b4b95bef54d66dd9748cc%2F03f6c5dd481449d297c430cab962412e?format=webp&width=800"
                       alt="Kaizen Web"
-                      className="h-10 w-auto"
+                      className="h-8 w-auto"
                       style={{
                         filter: theme === "dark" ? "brightness(0) invert(1)" : "none",
                       }}
@@ -500,12 +505,13 @@ const Header: React.FC<HeaderProps> = ({ theme, onThemeChange }) => {
                   </button>
                 </div>
 
-                <div className="flex-1 overflow-y-auto px-6 py-4 space-y-2">
+                {/* Scrollable Content */}
+                <div className="flex-1 overflow-y-auto px-4 py-4 space-y-1">
                   {/* Services Accordion */}
                   <div>
                     <button
                       onClick={() => toggleMobileSection("services")}
-                      className="w-full text-left px-2 py-3 text-base font-medium text-white/90 hover:text-white hover:bg-white/5 rounded-xl transition flex items-center justify-between"
+                      className="w-full text-left px-3 py-3 text-base font-medium text-white/90 hover:text-white hover:bg-white/5 rounded-lg transition flex items-center justify-between"
                     >
                       <span>Services</span>
                       <ChevronDown
@@ -521,11 +527,11 @@ const Header: React.FC<HeaderProps> = ({ theme, onThemeChange }) => {
                         animate={{ opacity: 1, height: "auto" }}
                         exit={{ opacity: 0, height: 0 }}
                         transition={{ duration: 0.15 }}
-                        className="mt-2 space-y-1 overflow-hidden"
+                        className="mt-1 space-y-0.5 overflow-hidden"
                       >
                         {servicesMenu.map((column) => (
                           <div key={column.title}>
-                            <p className="text-xs font-semibold text-white/40 uppercase tracking-wider mb-1">
+                            <p className="text-xs font-semibold text-white/40 uppercase tracking-wider px-3 py-2 mb-1">
                               {column.title}
                             </p>
                             {column.items.map((item) => (
@@ -552,7 +558,7 @@ const Header: React.FC<HeaderProps> = ({ theme, onThemeChange }) => {
                   <div>
                     <button
                       onClick={() => toggleMobileSection("insights")}
-                      className="w-full text-left px-2 py-3 text-base font-medium text-white/90 hover:text-white hover:bg-white/5 rounded-xl transition flex items-center justify-between"
+                      className="w-full text-left px-3 py-3 text-base font-medium text-white/90 hover:text-white hover:bg-white/5 rounded-lg transition flex items-center justify-between"
                     >
                       <span>Insights</span>
                       <ChevronDown
@@ -568,7 +574,7 @@ const Header: React.FC<HeaderProps> = ({ theme, onThemeChange }) => {
                         animate={{ opacity: 1, height: "auto" }}
                         exit={{ opacity: 0, height: 0 }}
                         transition={{ duration: 0.15 }}
-                        className="mt-2 space-y-1 overflow-hidden"
+                        className="mt-1 space-y-0.5 overflow-hidden"
                       >
                         {insightsMenu.map((item) => (
                           <Link
@@ -579,7 +585,7 @@ const Header: React.FC<HeaderProps> = ({ theme, onThemeChange }) => {
                           >
                             <div className="font-semibold">{item.label}</div>
                             {item.description && (
-                              <div className="text-xs text-white/50 mt-1">{item.description}</div>
+                              <div className="text-xs text-white/50 mt-0.5">{item.description}</div>
                             )}
                           </Link>
                         ))}
@@ -587,12 +593,15 @@ const Header: React.FC<HeaderProps> = ({ theme, onThemeChange }) => {
                     )}
                   </div>
 
+                  {/* Divider */}
+                  <div className="my-2 border-t border-white/10" />
+
                   {/* Top-Level Links */}
                   {topLevelLinks.map((link) => (
                     <Link
                       key={link.href}
                       to={link.href}
-                      className="block px-2 py-3 text-base font-medium text-white/90 hover:text-white hover:bg-white/5 rounded-xl transition"
+                      className="block px-3 py-3 text-base font-medium text-white/90 hover:text-white hover:bg-white/5 rounded-lg transition"
                       onClick={() => setMobileMenuOpen(false)}
                     >
                       {link.label}
@@ -600,14 +609,14 @@ const Header: React.FC<HeaderProps> = ({ theme, onThemeChange }) => {
                   ))}
                 </div>
 
-                {/* Mobile CTA */}
-                <div className="px-6 pt-3 pb-5 border-t border-white/10 space-y-3">
+                {/* Footer */}
+                <div className="px-4 py-4 border-t border-white/10 space-y-3">
                   <button
                     onClick={() => {
                       onThemeChange();
                       setMobileMenuOpen(false);
                     }}
-                    className="w-full px-4 py-3 text-sm font-medium text-white/80 hover:text-white hover:bg-white/5 rounded-full transition flex items-center justify-center gap-2"
+                    className="w-full px-3 py-3 text-sm font-medium text-white/80 hover:text-white hover:bg-white/5 rounded-lg transition flex items-center justify-center gap-2"
                   >
                     {theme === "dark" ? <Sun size={16} /> : <Moon size={16} />}
                     {theme === "dark" ? "Light Mode" : "Dark Mode"}
@@ -617,13 +626,13 @@ const Header: React.FC<HeaderProps> = ({ theme, onThemeChange }) => {
                       openCalendly();
                       setMobileMenuOpen(false);
                     }}
-                    className="w-full px-6 py-3 rounded-full text-sm font-medium text-gray-950 bg-gradient-to-r from-cyan-400 to-lime-400 hover:shadow-lg transition"
+                    className="w-full px-4 py-3 rounded-full text-sm font-medium text-gray-950 bg-gradient-to-r from-cyan-400 to-lime-400 hover:shadow-lg transition"
                   >
                     Book a Call
                   </button>
                 </div>
-              </div>
-            </motion.div>
+              </motion.div>
+            </>
           )}
         </AnimatePresence>
       </nav>
