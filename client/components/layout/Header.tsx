@@ -106,6 +106,18 @@ const Header: React.FC<HeaderProps> = ({
           icon: <Monitor className="w-4 h-4" />,
         },
         {
+          label: "WordPress Web Design",
+          href: "/services/wordpress-web-design",
+          description: "Custom, high-performance WordPress builds.",
+          icon: <Monitor className="w-4 h-4" />,
+        },
+        {
+          label: "Liverpool City Centre",
+          href: "/web-design-liverpool-city-centre",
+          description: "Web design for Baltic Triangle and city centre businesses.",
+          icon: <MapPin className="w-4 h-4" />,
+        },
+        {
           label: "E-commerce Development",
           href: "/services/ecommerce",
           description: "Shopify and custom stores that actually sell.",
