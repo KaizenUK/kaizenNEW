@@ -216,20 +216,11 @@ const Header: React.FC<HeaderProps> = ({ theme, onThemeChange }) => {
   };
 
   const cancelCloseMenu = () => {
-    if (closeTimeoutRef.current) {
-      window.clearTimeout(closeTimeoutRef.current);
-      closeTimeoutRef.current = null;
-    }
+    // menu remains open while moving between trigger and panel
   };
 
   const scheduleCloseMenu = () => {
-    if (closeTimeoutRef.current) {
-      window.clearTimeout(closeTimeoutRef.current);
-    }
-    closeTimeoutRef.current = window.setTimeout(() => {
-      setIsMenuOpen(false);
-      setActiveMenu(null);
-    }, 130);
+    // rely on click outside or route change to close the menu
   };
 
   const toggleMobileSection = (section: string) => {
