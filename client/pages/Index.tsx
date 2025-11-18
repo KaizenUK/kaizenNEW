@@ -69,9 +69,47 @@ const GlowingGridHero = () => {
 
   return (
     <section className="relative min-h-screen bg-gray-950 text-white flex items-center py-20 overflow-hidden">
-      {/* Background glow */}
-      <div className="absolute inset-0 bg-gradient-to-br from-gray-900 via-gray-950 to-gray-950 opacity-80" />
-      <div className="absolute top-1/3 right-0 w-96 h-96 bg-kaizen-cyan rounded-full blur-3xl opacity-10" />
+      {/* SVG Grid Background */}
+      <svg className="absolute inset-0 w-full h-full pointer-events-none" preserveAspectRatio="none">
+        <defs>
+          <pattern id="hero-grid" width="60" height="60" patternUnits="userSpaceOnUse">
+            <path d="M 60 0 L 0 0 0 60" fill="none" stroke="rgba(0, 255, 255, 0.1)" strokeWidth="0.5" />
+          </pattern>
+          <radialGradient id="glow-center" cx="50%" cy="35%">
+            <stop offset="0%" stopColor="rgba(0, 255, 255, 0.25)" />
+            <stop offset="40%" stopColor="rgba(132, 204, 22, 0.08)" />
+            <stop offset="100%" stopColor="rgba(0, 255, 255, 0)" />
+          </radialGradient>
+        </defs>
+        <rect width="100%" height="100%" fill="url(#hero-grid)" />
+        <rect width="100%" height="100%" fill="url(#glow-center)" />
+      </svg>
+
+      {/* Animated glow orbs */}
+      <motion.div
+        className="absolute top-1/4 right-20 w-80 h-80 bg-kaizen-cyan rounded-full blur-3xl opacity-15"
+        animate={{
+          y: [0, -40, 0],
+          x: [0, 30, 0],
+        }}
+        transition={{
+          duration: 20,
+          repeat: Infinity,
+          ease: "easeInOut",
+        }}
+      />
+      <motion.div
+        className="absolute bottom-1/4 left-1/4 w-96 h-96 bg-kaizen-lime rounded-full blur-3xl opacity-10"
+        animate={{
+          y: [0, 40, 0],
+          x: [0, -30, 0],
+        }}
+        transition={{
+          duration: 25,
+          repeat: Infinity,
+          ease: "easeInOut",
+        }}
+      />
 
       {/* Subtle gradient overlay for text clarity */}
       <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-gray-950" />
