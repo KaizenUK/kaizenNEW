@@ -231,7 +231,7 @@ export default function Home() {
   return (
     <Layout>
       {/* Section 1: The "Wow" Hero */}
-      <NeuralNetworkHero />
+      <GlowingGridHero />
 
       {/* Section 2: The "Three Pillars" */}
       <section className="py-20 md:py-32 bg-white dark:bg-slate-950">
