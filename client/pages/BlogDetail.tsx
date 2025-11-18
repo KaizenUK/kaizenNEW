@@ -454,56 +454,48 @@ export default function BlogDetail() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, [scaleX]);
 
-  // Scroll-based TOC tracking for accurate heading detection
+  // IntersectionObserver for TOC active state
   useEffect(() => {
     if (!post || !contentRef.current) return;
 
     const headings = contentRef.current.querySelectorAll("h2[id]");
     if (headings.length === 0) {
-      setActiveSection(post.tableOfContents[0]?.id || "");
+      setActiveSection(post.tableOfContents[0]?.id || "content");
       return;
     }
 
-    const handleScroll = () => {
-      let activeHeading: HTMLElement | null = null;
-      let closestDistance = Infinity;
+    // Use a visible band in the middle of the screen to detect active heading
+    const observer = new IntersectionObserver(
+      (entries) => {
+        // Find all intersecting entries and get the one that's most visible
+        const visibleEntries = entries.filter((entry) => entry.isIntersecting);
 
-      // Find the heading that is closest to the top of the viewport (200px offset for sticky nav)
-      headings.forEach((heading) => {
-        const element = heading as HTMLElement;
-        const rect = element.getBoundingClientRect();
-        const distance = Math.abs(rect.top - 200); // Account for sticky nav height
-
-        // Prefer headings that are above the 200px mark
-        if (rect.top <= 200 && distance < closestDistance) {
-          closestDistance = distance;
-          activeHeading = element;
-        }
-      });
-
-      // If no heading is above the 200px mark, use the first heading that's visible
-      if (!activeHeading) {
-        headings.forEach((heading) => {
-          const element = heading as HTMLElement;
-          const rect = element.getBoundingClientRect();
-          if (rect.top >= 0 && rect.top <= window.innerHeight) {
-            activeHeading = element;
+        if (visibleEntries.length > 0) {
+          // Get the first visible entry (topmost)
+          const activeEntry = visibleEntries[0];
+          const id = (activeEntry.target as HTMLElement).id;
+          if (id) {
+            setActiveSection(id);
           }
-        });
-      }
+        }
+      },
+      {
+        // This creates a band 100px from the top of the viewport
+        rootMargin: "-100px 0px -66% 0px",
+        threshold: 0,
+      },
+    );
 
-      if (activeHeading && activeHeading.id) {
-        setActiveSection(activeHeading.id);
+    // Observe all h2 headings
+    headings.forEach((heading) => {
+      if (heading.id) {
+        observer.observe(heading);
       }
+    });
+
+    return () => {
+      observer.disconnect();
     };
-
-    // Use passive listener for better scroll performance
-    window.addEventListener("scroll", handleScroll, { passive: true });
-
-    // Initial check on mount
-    handleScroll();
-
-    return () => window.removeEventListener("scroll", handleScroll);
   }, [post]);
 
   if (isLoading) {
