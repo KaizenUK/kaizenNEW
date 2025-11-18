@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useCalendly } from "@/context/CalendlyContext";
+import { cn } from "@/lib/utils";
 
 interface OffCanvasMenuProps {
   isOpen: boolean;
@@ -156,47 +157,23 @@ const OffCanvasMenu: React.FC<OffCanvasMenuProps> = ({ isOpen, onClose, theme, o
     setExpandedSection((current) => (current === section ? null : section));
   };
 
-  if (!isOpen) return null;
-
   return (
     <>
-      <style>{`
-        @keyframes slideInFromLeft {
-          from {
-            transform: translateX(-100%);
-          }
-          to {
-            transform: translateX(0);
-          }
-        }
-        
-        @keyframes fadeIn {
-          from {
-            opacity: 0;
-          }
-          to {
-            opacity: 1;
-          }
-        }
-        
-        .off-canvas-backdrop {
-          animation: fadeIn 0.2s ease-out forwards;
-        }
-        
-        .off-canvas-sidebar {
-          animation: slideInFromLeft 0.3s ease-out forwards;
-        }
-      `}</style>
-
       {/* Backdrop */}
       <div
-        className="fixed inset-0 z-40 bg-black/40 backdrop-blur-md off-canvas-backdrop"
+        className={cn(
+          "fixed inset-0 z-40 bg-black/40 backdrop-blur-md transition-opacity duration-200",
+          isOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none",
+        )}
         onClick={onClose}
       />
 
       {/* Sidebar */}
       <div
-        className="fixed top-0 bottom-0 left-0 z-50 w-80 max-w-[85vw] bg-gray-950 border-r border-white/10 flex flex-col overflow-hidden off-canvas-sidebar"
+        className={cn(
+          "fixed top-0 bottom-0 left-0 z-50 w-80 max-w-[85vw] bg-gray-950 border-r border-white/10 flex flex-col overflow-hidden transform transition-transform duration-300 ease-out",
+          isOpen ? "translate-x-0" : "-translate-x-full",
+        )}
       >
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-white/10">
@@ -235,9 +212,10 @@ const OffCanvasMenu: React.FC<OffCanvasMenuProps> = ({ isOpen, onClose, theme, o
               <span>Services</span>
               <ChevronDown
                 size={18}
-                className={`transition-transform duration-200 ${
-                  expandedSection === "services" ? "rotate-180" : ""
-                }`}
+                className={cn(
+                  "transition-transform duration-200",
+                  expandedSection === "services" && "rotate-180",
+                )}
               />
             </button>
             {expandedSection === "services" && (
@@ -251,11 +229,12 @@ const OffCanvasMenu: React.FC<OffCanvasMenuProps> = ({ isOpen, onClose, theme, o
                       <Link
                         key={item.href}
                         to={item.href}
-                        className={`block px-3 py-2 text-sm font-medium rounded-lg hover:bg-white/5 transition ${
+                        className={cn(
+                          "block px-3 py-2 text-sm font-medium rounded-lg hover:bg-white/5 transition",
                           item.highlight
                             ? "text-cyan-300 hover:text-cyan-200"
-                            : "text-white/80 hover:text-white"
-                        }`}
+                            : "text-white/80 hover:text-white",
+                        )}
                         onClick={onClose}
                       >
                         {item.label}
@@ -276,9 +255,10 @@ const OffCanvasMenu: React.FC<OffCanvasMenuProps> = ({ isOpen, onClose, theme, o
               <span>Insights</span>
               <ChevronDown
                 size={18}
-                className={`transition-transform duration-200 ${
-                  expandedSection === "insights" ? "rotate-180" : ""
-                }`}
+                className={cn(
+                  "transition-transform duration-200",
+                  expandedSection === "insights" && "rotate-180",
+                )}
               />
             </button>
             {expandedSection === "insights" && (
