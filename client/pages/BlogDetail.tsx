@@ -505,11 +505,11 @@ export default function BlogDetail() {
   if (isLoading) {
     return (
       <Layout>
-        <div className="flex items-center justify-center min-h-screen">
+        <div className="flex items-center justify-center min-h-screen bg-white dark:bg-gray-950">
           <motion.div
             animate={{ rotate: 360 }}
             transition={{ repeat: Infinity, duration: 2, ease: "linear" }}
-            className="w-12 h-12 border-4 border-gray-800 border-t-blue-400 rounded-full"
+            className="w-12 h-12 border-4 border-gray-300 dark:border-gray-800 border-t-blue-400 rounded-full"
           />
         </div>
       </Layout>
@@ -519,11 +519,11 @@ export default function BlogDetail() {
   if (!post) {
     return (
       <Layout>
-        <div className="min-h-screen bg-gray-950 text-white flex flex-col items-center justify-center px-4">
+        <div className="min-h-screen bg-white dark:bg-gray-950 text-gray-950 dark:text-white flex flex-col items-center justify-center px-4">
           <h1 className="text-4xl font-heading font-bold mb-4">
             Post Not Found
           </h1>
-          <p className="text-gray-400 mb-8">
+          <p className="text-gray-600 dark:text-gray-400 mb-8">
             The blog post you're looking for doesn't exist.
           </p>
           <Link
@@ -571,19 +571,19 @@ export default function BlogDetail() {
       <SeoFromYoast yoast={yoast} />
 
       {/* Progress Bar with Percentage */}
-      <motion.div className="fixed top-0 left-0 right-0 h-1 z-50 bg-gray-800">
+      <motion.div className="fixed top-0 left-0 right-0 h-1 z-50 bg-gray-200 dark:bg-gray-800">
         <motion.div
           className="h-full bg-gradient-to-r from-blue-500 via-purple-500 to-blue-400"
           style={{ scaleX, transformOrigin: "left" }}
         />
-        <motion.div className="absolute top-2 right-4 text-xs font-mono text-gray-300 bg-gray-900/80 px-2 py-1 rounded">
+        <motion.div className="absolute top-2 right-4 text-xs font-mono text-gray-700 dark:text-gray-300 bg-gray-100/80 dark:bg-gray-900/80 px-2 py-1 rounded">
           {scrollProgress}%
         </motion.div>
       </motion.div>
 
       {/* Hero Image Section with Parallax */}
       <motion.div
-        className="relative h-96 overflow-hidden bg-gray-900"
+        className="relative h-96 overflow-hidden bg-gray-200 dark:bg-gray-900"
         initial={{ scale: 1.1 }}
         animate={{ scale: 1 }}
         transition={{ duration: 0.8 }}
@@ -595,13 +595,15 @@ export default function BlogDetail() {
           initial={{ scale: 1.1 }}
           animate={{ scale: 1 }}
           transition={{ duration: 1.2 }}
+          loading="lazy"
+          decoding="async"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-gray-950 via-transparent to-transparent" />
 
         <div className="absolute top-4 left-4">
           <Link
             to="/blog"
-            className="inline-flex items-center gap-2 px-4 py-2 bg-gray-900/80 hover:bg-gray-900 text-gray-300 rounded-lg transition font-mono text-sm"
+            className="inline-flex items-center gap-2 px-4 py-2 bg-white/80 dark:bg-gray-900/80 hover:bg-white dark:hover:bg-gray-900 text-gray-950 dark:text-gray-300 rounded-lg transition font-mono text-sm"
           >
             <ArrowLeft size={16} />
             Back to Blog
@@ -610,7 +612,7 @@ export default function BlogDetail() {
       </motion.div>
 
       {/* Content Section */}
-      <section className="bg-gray-950 text-white py-12 px-4">
+      <section className="bg-white dark:bg-gray-950 text-gray-950 dark:text-white py-12 px-4">
         <div className="container mx-auto max-w-7xl">
           <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
             {/* Left Sidebar - TOC and Author */}
