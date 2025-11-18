@@ -70,33 +70,9 @@ const GlowingGridHero = () => {
 
   return (
     <section className="relative min-h-screen bg-gray-950 text-white flex items-center py-20 overflow-hidden">
-      {/* SVG Grid Pattern */}
-      <svg className="absolute inset-0 w-full h-full pointer-events-none opacity-30">
-        <defs>
-          <pattern id="grid" width="50" height="50" patternUnits="userSpaceOnUse">
-            <path d="M 50 0 L 0 0 0 50" fill="none" stroke="currentColor" strokeWidth="0.5" opacity="0.3" />
-          </pattern>
-        </defs>
-        <rect width="100%" height="100%" fill="url(#grid)" stroke="currentColor" strokeWidth="0.5" opacity="0.2" />
-      </svg>
-
-      {/* Animated Glow Background */}
-      <motion.div
-        className="absolute inset-0 pointer-events-none opacity-20"
-        animate={{
-          x: ["-20%", "20%", "-20%"],
-          y: ["-20%", "20%", "-20%"],
-        }}
-        transition={{
-          duration: 15,
-          repeat: Infinity,
-          ease: "easeInOut",
-        }}
-        style={{
-          background: "radial-gradient(circle at center, rgba(0, 255, 255, 0.4) 0%, transparent 70%)",
-          filter: "blur(80px)",
-        }}
-      />
+      {/* Background glow */}
+      <div className="absolute inset-0 bg-gradient-to-br from-gray-900 via-gray-950 to-gray-950 opacity-80" />
+      <div className="absolute top-1/3 right-0 w-96 h-96 bg-kaizen-cyan rounded-full blur-3xl opacity-10" />
 
       {/* Subtle gradient overlay for text clarity */}
       <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-gray-950" />
