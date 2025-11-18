@@ -94,7 +94,8 @@ const GlowingGridHero = () => {
   return (
     <section
       ref={heroRef}
-      className="relative min-h-screen bg-gray-950 text-white flex items-center py-20 overflow-hidden"
+      className="relative min-h-[100vh] bg-gray-950 text-white flex items-center py-20 overflow-hidden"
+      style={{ minHeight: "100vh" }}
     >
       {/* SVG Grid Background */}
       <svg
