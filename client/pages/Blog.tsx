@@ -165,7 +165,7 @@ export default function Blog() {
       </AnimatePresence>
 
       {/* Page Header - Clean Modern Masthead with Featured Post */}
-      <section className="relative bg-gradient-to-b from-white to-gray-50 dark:from-gray-950 dark:to-gray-900 border-b border-gray-200 dark:border-gray-800 overflow-hidden">
+      <section className="relative bg-gradient-to-b from-white to-gray-50 dark:from-gray-950 dark:to-gray-900 border-b border-gray-200 dark:border-gray-800 overflow-hidden min-h-[600px]">
         {/* Decorative background elements */}
         <motion.div
           className="absolute -top-40 -right-40 w-80 h-80 rounded-full bg-blue-200/30 dark:bg-blue-500/10 blur-3xl"
