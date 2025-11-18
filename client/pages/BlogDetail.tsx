@@ -195,7 +195,7 @@ interface TableOfContentsProps {
 function TableOfContents({ items, activeId }: TableOfContentsProps) {
   return (
     <motion.div
-      className="bg-gray-100 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-lg p-6"
+      className="bg-gray-100 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-lg p-6 sticky top-20"
       initial={{ opacity: 0, x: -20 }}
       animate={{ opacity: 1, x: 0 }}
       transition={{ duration: 0.5, delay: 0.6 }}
@@ -203,31 +203,40 @@ function TableOfContents({ items, activeId }: TableOfContentsProps) {
       <p className="text-xs font-mono text-gray-600 dark:text-gray-500 font-bold tracking-widest mb-4">
         TABLE OF CONTENTS
       </p>
-      <nav className="space-y-1">
+      <nav className="space-y-0">
         {items.map((item) => {
           const isActive = activeId === item.id;
           return (
             <motion.a
               key={item.id}
               href={`#${item.id}`}
-              className={`block text-sm py-2.5 px-3 rounded transition-all relative group ${
+              className={`block text-sm py-3 px-3 rounded-md transition-all duration-200 relative group border-l-2 ${
                 isActive
-                  ? "text-white dark:text-white font-semibold bg-kaizen-cyan/15"
-                  : "text-gray-700 dark:text-gray-500 hover:text-gray-900 dark:hover:text-gray-300"
+                  ? "text-cyan-600 dark:text-cyan-400 border-l-cyan-500 dark:border-l-cyan-400 font-semibold bg-cyan-50/50 dark:bg-gray-950/50"
+                  : "text-gray-700 dark:text-gray-500 border-l-transparent hover:text-gray-950 dark:hover:text-gray-300 hover:bg-gray-200/50 dark:hover:bg-gray-800/50"
               }`}
-              whileHover={{ x: 4 }}
+              whileHover={{ x: 3 }}
               transition={{ duration: 0.2 }}
             >
-              <motion.div
-                className="absolute left-0 top-0 bottom-0 w-1 bg-kaizen-cyan rounded-r"
-                initial={{ scaleY: 0 }}
-                animate={{ scaleY: isActive ? 1 : 0 }}
-                transition={{ duration: 0.3 }}
-                style={{ originY: "center" }}
-              />
-              <span className={isActive ? "text-kaizen-cyan font-bold" : ""}>
+              <motion.span
+                className="block"
+                initial={{ opacity: 0.8 }}
+                animate={{ opacity: isActive ? 1 : 0.8 }}
+                transition={{ duration: 0.2 }}
+              >
                 {item.title}
-              </span>
+              </motion.span>
+
+              {/* Animated indicator dot for active state */}
+              {isActive && (
+                <motion.div
+                  className="absolute right-3 top-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-cyan-500 dark:bg-cyan-400"
+                  initial={{ scale: 0, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  exit={{ scale: 0, opacity: 0 }}
+                  transition={{ duration: 0.2 }}
+                />
+              )}
             </motion.a>
           );
         })}
