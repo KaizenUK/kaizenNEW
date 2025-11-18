@@ -120,8 +120,31 @@ const CTAButton = ({
 export default function WordPressWebDesign() {
   const { openCalendly: openCalendlyFromContext } = useCalendly();
 
+  const seoSchema = {
+    "@context": "https://schema.org",
+    "@type": "Service",
+    name: "WordPress Web Design Liverpool",
+    description: "Custom WordPress web design and development for Liverpool and Wirral businesses. Fast, secure, easy-to-manage websites.",
+    provider: {
+      "@type": "Organization",
+      name: "Kaizen Web",
+      url: "https://kaizenweb.co.uk",
+    },
+    areaServed: {
+      "@type": "City",
+      name: "Liverpool"
+    },
+    image: "https://cdn.builder.io/api/v1/image/assets%2Fe4ae46bbd81b4b95bef54d66dd9748cc%2Fa18f81c064614dceb4a9d1fcb2c9f64b?format=webp&width=800",
+  };
+
   return (
     <Layout>
+      <Helmet>
+        <title>WordPress Web Design Liverpool | Fast, Secure, Easy-to-Manage</title>
+        <meta name="description" content="Custom WordPress web design for Liverpool & Wirral businesses. Fast, secure, and easy-to-manage websites with powerful features. No bloat, no gimmicks." />
+        <meta name="keywords" content="WordPress web design Liverpool, WordPress developer Wirral, custom WordPress websites, managed WordPress" />
+        <script type="application/ld+json">{JSON.stringify(seoSchema)}</script>
+      </Helmet>
       {/* Section 1: Hero - Layered Card & Reveal Style */}
       <section className="relative min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 dark:from-slate-950 dark:via-slate-900 dark:to-black overflow-hidden flex items-center py-20">
         {/* Background visual - abstract WordPress editor aesthetic */}
