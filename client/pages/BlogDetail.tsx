@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { useState, useRef, useEffect } from "react";
 import { AnimatePresence, motion, useSpring } from "framer-motion";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { Link, useParams } from "react-router-dom";
