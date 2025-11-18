@@ -188,6 +188,19 @@ const Header: React.FC<HeaderProps> = ({ theme, onThemeChange }) => {
       }
     }
 
+    const nav = navRef.current;
+    const triggerEl =
+      menu === "services" ? servicesTriggerRef.current : menu === "insights" ? insightsTriggerRef.current : null;
+
+    if (nav && triggerEl) {
+      const navRect = nav.getBoundingClientRect();
+      const triggerRect = triggerEl.getBoundingClientRect();
+      const centerX = triggerRect.left + triggerRect.width / 2 - navRect.left;
+      setPanelLeft(centerX);
+    } else {
+      setPanelLeft(null);
+    }
+
     setLastMenu(menu);
     setActiveMenu(menu);
     setIsMenuOpen(true);
