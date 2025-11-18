@@ -230,6 +230,16 @@
 }
 
 @layer components {
+  /* Hide scrollbar while keeping functionality */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
   .blog-content {
     @apply prose prose-invert max-w-none space-y-6;
   }
