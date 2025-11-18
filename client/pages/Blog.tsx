@@ -165,8 +165,35 @@ export default function Blog() {
       </AnimatePresence>
 
       {/* Page Header - Clean Modern Masthead with Featured Post */}
-      <section className="bg-white dark:bg-gray-950 border-b border-gray-200 dark:border-gray-800">
-        <div className="container mx-auto max-w-6xl px-4 py-16 md:py-20">
+      <section className="relative bg-gradient-to-b from-white to-gray-50 dark:from-gray-950 dark:to-gray-900 border-b border-gray-200 dark:border-gray-800 overflow-hidden">
+        {/* Decorative background elements */}
+        <motion.div
+          className="absolute -top-40 -right-40 w-80 h-80 rounded-full bg-blue-200/30 dark:bg-blue-500/10 blur-3xl"
+          animate={{
+            y: [0, 40, 0],
+            x: [0, 40, 0],
+          }}
+          transition={{
+            duration: 20,
+            repeat: Infinity,
+            ease: "easeInOut",
+          }}
+        />
+        <motion.div
+          className="absolute -bottom-40 -left-40 w-80 h-80 rounded-full bg-cyan-200/30 dark:bg-cyan-500/10 blur-3xl"
+          animate={{
+            y: [0, -40, 0],
+            x: [0, -40, 0],
+          }}
+          transition={{
+            duration: 20,
+            repeat: Infinity,
+            ease: "easeInOut",
+            delay: 1,
+          }}
+        />
+
+        <div className="container mx-auto max-w-6xl px-4 py-16 md:py-20 relative z-10">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             {/* Left: Title, Subtitle, Description, Filters */}
             <motion.div
@@ -190,18 +217,21 @@ export default function Blog() {
               </p>
 
               {/* Filter Bar */}
-              <div className="flex gap-2 overflow-x-auto pb-2 -mx-4 px-4 scrollbar-hide">
-                {allTags.map((tag) => (
+              <div className={`flex gap-2 ${allTags.length > 5 ? "overflow-x-auto" : "flex-wrap"} ${allTags.length > 5 ? "pb-2 -mx-4 px-4 scrollbar-hide" : ""}`}>
+                {allTags.map((tag, idx) => (
                   <motion.button
                     key={`filter-chip-${tag}`}
                     onClick={() => setSelectedTag(tag)}
-                    className={`px-4 py-2 rounded-full font-mono text-xs font-bold whitespace-nowrap transition-all ${
+                    className={`px-4 py-2 rounded-full font-mono text-xs font-bold whitespace-nowrap transition-all backdrop-blur ${
                       selectedTag === tag
-                        ? "bg-gray-950 text-white dark:bg-white dark:text-gray-950"
+                        ? "bg-gray-950 text-white dark:bg-white dark:text-gray-950 shadow-lg shadow-cyan-500/20"
                         : "bg-gray-200 text-gray-700 dark:bg-gray-800 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-700"
                     }`}
-                    whileHover={{ scale: 1.05 }}
+                    whileHover={{ scale: 1.05, y: -2 }}
                     whileTap={{ scale: 0.95 }}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.4, delay: idx * 0.05 }}
                   >
                     {tag}
                   </motion.button>
