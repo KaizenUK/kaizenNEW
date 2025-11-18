@@ -31,15 +31,8 @@ const getPreferredTheme = (): ThemeMode => {
 };
 
 const Layout: React.FC<LayoutProps> = ({ children }) => {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [servicesOpen, setServicesOpen] = useState(false);
   const [theme, setTheme] = useState<ThemeMode>(() => getPreferredTheme());
-  const [textIsDark, setTextIsDark] = useState(true);
-  const { openCalendly } = useCalendly();
   const location = useLocation();
-  const servicesMenuRef = useRef<HTMLDivElement>(null);
-  const detectionZoneRef = useRef<HTMLDivElement>(null);
-  const closeTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const normalizedPath =
     location.pathname !== "/" && location.pathname.endsWith("/")
