@@ -10,6 +10,7 @@ import {
 } from "@/lib/seo";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
+import OffCanvasMenu from "@/components/layout/OffCanvasMenu";
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -161,6 +162,13 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 
         <Footer theme={theme} />
       </div>
+
+      <OffCanvasMenu
+        isOpen={mobileMenuOpen}
+        onClose={() => setMobileMenuOpen(false)}
+        theme={theme}
+        onThemeChange={toggleTheme}
+      />
     </>
   );
 };
