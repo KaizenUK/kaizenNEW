@@ -112,6 +112,13 @@ function addIdsToHeadings(html: string): string {
   return result;
 }
 
+function decodeHtmlEntities(html: string): string {
+  if (!html) return "";
+  const parser = new DOMParser();
+  const decoded = parser.parseFromString(html, "text/html").documentElement.textContent || "";
+  return decoded;
+}
+
 function extractHeadings(html: string): TableOfContentsItem[] {
   const headings: TableOfContentsItem[] = [];
 
@@ -124,7 +131,8 @@ function extractHeadings(html: string): TableOfContentsItem[] {
 
   while ((match = h2Regex.exec(html)) !== null) {
     const id = match[1];
-    const text = match[2].replace(/<[^>]*>/g, "").trim();
+    const rawText = match[2].replace(/<[^>]*>/g, "").trim();
+    const text = decodeHtmlEntities(rawText);
     if (text && id) {
       headings.push({ id, title: text, level: 2 });
     }
