@@ -337,7 +337,7 @@ const Header: React.FC<HeaderProps> = ({ theme, onThemeChange }) => {
                 <div>
                   <button
                     onClick={() => toggleMobileSection("services")}
-                    className="w-full text-left px-4 py-3 text-sm font-medium text-white/80 hover:text-white hover:bg.white/5 rounded-lg transition flex items-center justify-between"
+                    className="w-full text-left px-4 py-3 text-sm font-medium text-white/80 hover:text-white hover:bg-white/5 rounded-lg transition flex items-center justify-between"
                   >
                     Services
                     <ChevronDown
@@ -406,7 +406,7 @@ const Header: React.FC<HeaderProps> = ({ theme, onThemeChange }) => {
                         <Link
                           key={item.href}
                           to={item.href}
-                          className="block px-4 py-2 text-sm font-medium text.white/80 hover:text-white hover:bg-white/5 rounded-lg transition"
+                          className="block px-4 py-2 text-sm font-medium text-white/80 hover:text-white hover:bg-white/5 rounded-lg transition"
                           onClick={() => setMobileMenuOpen(false)}
                         >
                           <div className="font-semibold">{item.label}</div>
