@@ -257,6 +257,8 @@ function Author({ name, role, image }: AuthorProps) {
           src={image}
           alt={name}
           className="w-12 h-12 rounded-full object-cover"
+          loading="lazy"
+          decoding="async"
         />
         <div>
           <p className="font-heading font-bold text-white">{name}</p>
