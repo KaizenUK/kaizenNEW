@@ -8,10 +8,41 @@ interface FooterProps {
   theme: "light" | "dark";
 }
 
+// Helper function to get the next quarter
+const getNextQuarter = (): string => {
+  const now = new Date();
+  const currentMonth = now.getMonth(); // 0-11
+  const currentYear = now.getFullYear();
+
+  // Add 3 months
+  let targetMonth = currentMonth + 3;
+  let targetYear = currentYear;
+
+  if (targetMonth > 11) {
+    targetMonth -= 12;
+    targetYear += 1;
+  }
+
+  // Determine quarter
+  let quarter: number;
+  if (targetMonth < 3) {
+    quarter = 1;
+  } else if (targetMonth < 6) {
+    quarter = 2;
+  } else if (targetMonth < 9) {
+    quarter = 3;
+  } else {
+    quarter = 4;
+  }
+
+  return `Q${quarter} ${targetYear}`;
+};
+
 const Footer: React.FC<FooterProps> = ({ theme }) => {
   const location = useLocation();
   const { openCalendly } = useCalendly();
   const [liverpooolTime, setLiverpooolTime] = useState("");
+  const [nextQuarter, setNextQuarter] = useState("");
 
   useEffect(() => {
     const updateTime = () => {
@@ -29,6 +60,10 @@ const Footer: React.FC<FooterProps> = ({ theme }) => {
     return () => clearInterval(interval);
   }, []);
 
+  useEffect(() => {
+    setNextQuarter(getNextQuarter());
+  }, []);
+
   // Determine dynamic CTA based on route
   const getDynamicCTA = () => {
     const path = location.pathname.toLowerCase();
@@ -40,7 +75,7 @@ const Footer: React.FC<FooterProps> = ({ theme }) => {
         onClick: openCalendly,
       };
     }
-    if (path.includes("agile-coaching") || path.includes("coaching") || path.includes("team-transformation")) {
+    if (path.includes("agile-coaching") || path.includes("coaching")) {
       return {
         heading: "Ready to transform your team?",
         buttonText: "Start Coaching",
@@ -71,11 +106,13 @@ const Footer: React.FC<FooterProps> = ({ theme }) => {
   const cta = getDynamicCTA();
 
   const techStack = [
-    { name: "React", color: "text-blue-400" },
-    { name: "Vite", color: "text-purple-400" },
-    { name: "Builder.io", color: "text-cyan-400" },
-    { name: "WordPress", color: "text-blue-500" },
-    { name: "Shopify", color: "text-green-400" },
+    { name: "React", url: "https://react.dev", icon: "⚛️" },
+    { name: "Vite", url: "https://vitejs.dev", icon: "⚡" },
+    { name: "Builder.io", url: "https://builder.io", icon: "🏗️" },
+    { name: "WordPress", url: "https://wordpress.org", icon: "📝" },
+    { name: "Shopify", url: "https://shopify.com", icon: "🛍️" },
+    { name: "Tailwind", url: "https://tailwindcss.com", icon: "🎨" },
+    { name: "Framer Motion", url: "https://www.framer.com/motion", icon: "✨" },
   ];
 
   const services = [
@@ -97,11 +134,11 @@ const Footer: React.FC<FooterProps> = ({ theme }) => {
   return (
     <footer className="relative bg-gray-950 text-white overflow-hidden">
       {/* Mega "KAIZEN" Watermark */}
-      <div className="absolute inset-0 pointer-events-none overflow-hidden opacity-3 flex items-center justify-center">
+      <div className="absolute inset-0 pointer-events-none overflow-hidden flex items-end justify-center">
         <div
-          className="text-gray-600 font-bold whitespace-nowrap text-center"
+          className="text-white/5 font-bold whitespace-nowrap absolute bottom-0"
           style={{
-            fontSize: "clamp(100px, 40vw, 500px)",
+            fontSize: "clamp(200px, 50vw, 60rem)",
             lineHeight: 1,
             letterSpacing: "-0.05em",
           }}
@@ -112,13 +149,13 @@ const Footer: React.FC<FooterProps> = ({ theme }) => {
 
       <div className="relative z-10 container mx-auto px-4 py-16">
         {/* Bento Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-16">
           {/* Block A: Dynamic CTA (spans 2 cols on md, 2 cols on lg) */}
           <motion.div
-            className="col-span-1 md:col-span-2 lg:col-span-2 p-8 rounded-2xl border border-white/5 bg-gray-900/50 backdrop-blur-sm"
-            whileHover={{ borderColor: "rgba(255,255,255,0.1)" }}
+            className="col-span-1 md:col-span-2 lg:col-span-2 p-8 rounded-2xl border border-white/5 bg-gray-900/50 backdrop-blur-sm hover:border-white/10 transition"
+            whileHover={{ y: -2 }}
           >
-            <h2 className="text-2xl md:text-3xl font-bold mb-6 leading-tight">
+            <h2 className="text-2xl md:text-3xl font-bold mb-6 leading-tight text-white">
               {cta.heading}
             </h2>
             <motion.button
@@ -132,8 +169,8 @@ const Footer: React.FC<FooterProps> = ({ theme }) => {
 
           {/* Block B: Live Status */}
           <motion.div
-            className="col-span-1 md:col-span-1 lg:col-span-1 p-6 rounded-2xl border border-white/5 bg-gray-900/50 backdrop-blur-sm flex flex-col justify-center"
-            whileHover={{ borderColor: "rgba(255,255,255,0.1)" }}
+            className="col-span-1 md:col-span-1 lg:col-span-1 p-6 rounded-2xl border border-white/5 bg-gray-900/50 backdrop-blur-sm hover:border-white/10 transition flex flex-col justify-center"
+            whileHover={{ y: -2 }}
           >
             <div className="flex items-center gap-3 mb-3">
               <div className="relative">
@@ -150,44 +187,53 @@ const Footer: React.FC<FooterProps> = ({ theme }) => {
               </span>
             </div>
             <p className="text-sm text-white/60">
-              Accepting new projects for Q1 2026
+              Accepting new projects for {nextQuarter}
             </p>
           </motion.div>
 
           {/* Block C: Tech Stack */}
           <motion.div
-            className="col-span-1 md:col-span-1 lg:col-span-1 p-6 rounded-2xl border border-white/5 bg-gray-900/50 backdrop-blur-sm"
-            whileHover={{ borderColor: "rgba(255,255,255,0.1)" }}
+            className="col-span-1 md:col-span-1 lg:col-span-2 p-6 rounded-2xl border border-white/5 bg-gray-900/50 backdrop-blur-sm hover:border-white/10 transition"
+            whileHover={{ y: -2 }}
           >
             <p className="text-xs font-semibold text-white/40 uppercase tracking-wider mb-4">
               Powered by modern tech
             </p>
-            <div className="flex flex-wrap gap-3">
+            <div className="flex flex-wrap gap-4">
               {techStack.map((tech) => (
-                <span key={tech.name} className="text-sm text-white/50">
-                  {tech.name}
-                </span>
+                <motion.a
+                  key={tech.name}
+                  href={tech.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-white/50 hover:text-white transition grayscale opacity-50 hover:opacity-100 hover:grayscale-0"
+                  whileHover={{ scale: 1.05 }}
+                  title={`Visit ${tech.name}`}
+                >
+                  <span className="text-lg">{tech.icon}</span>
+                  <span>{tech.name}</span>
+                </motion.a>
               ))}
             </div>
           </motion.div>
 
           {/* Block D: Context & Love */}
           <motion.div
-            className="col-span-1 md:col-span-1 lg:col-span-1 p-6 rounded-2xl border border-white/5 bg-gray-900/50 backdrop-blur-sm"
-            whileHover={{ borderColor: "rgba(255,255,255,0.1)" }}
+            className="col-span-1 md:col-span-1 lg:col-span-1 p-6 rounded-2xl border border-white/5 bg-gray-900/50 backdrop-blur-sm hover:border-white/10 transition"
+            whileHover={{ y: -2 }}
           >
-            <p className="text-sm font-medium mb-3">Made with ❤️ in Liverpool, UK</p>
+            <p className="text-sm font-medium mb-3 text-white">Made with ❤️ in Liverpool, UK</p>
             <p className="text-xs text-white/60">
-              Local time: <span className="font-mono">{liverpooolTime} GMT</span>
+              Local time: <span className="font-mono font-semibold text-white/80">{liverpooolTime} GMT</span>
             </p>
           </motion.div>
 
           {/* Block E: Services Links */}
           <motion.div
-            className="col-span-1 md:col-span-1 lg:col-span-1 p-6 rounded-2xl border border-white/5 bg-gray-900/50 backdrop-blur-sm"
-            whileHover={{ borderColor: "rgba(255,255,255,0.1)" }}
+            className="col-span-1 md:col-span-1 lg:col-span-1 p-6 rounded-2xl border border-white/5 bg-gray-900/50 backdrop-blur-sm hover:border-white/10 transition"
+            whileHover={{ y: -2 }}
           >
-            <h3 className="font-bold text-sm mb-4">Services</h3>
+            <h3 className="font-bold text-sm mb-4 text-white">Services</h3>
             <ul className="space-y-2">
               {services.slice(0, 3).map((service) => (
                 <li key={service.href}>
@@ -196,7 +242,7 @@ const Footer: React.FC<FooterProps> = ({ theme }) => {
                     className="text-sm text-white/60 hover:text-white transition inline-flex items-center group"
                   >
                     {service.label}
-                    <span className="inline-block ml-1 transform group-hover:translate-x-1 transition">
+                    <span className="inline-block ml-1 transform group-hover:translate-x-1 transition opacity-0 group-hover:opacity-100">
                       →
                     </span>
                   </Link>
@@ -207,10 +253,10 @@ const Footer: React.FC<FooterProps> = ({ theme }) => {
 
           {/* Block F: Company Links */}
           <motion.div
-            className="col-span-1 md:col-span-1 lg:col-span-1 p-6 rounded-2xl border border-white/5 bg-gray-900/50 backdrop-blur-sm"
-            whileHover={{ borderColor: "rgba(255,255,255,0.1)" }}
+            className="col-span-1 md:col-span-1 lg:col-span-1 p-6 rounded-2xl border border-white/5 bg-gray-900/50 backdrop-blur-sm hover:border-white/10 transition"
+            whileHover={{ y: -2 }}
           >
-            <h3 className="font-bold text-sm mb-4">Company</h3>
+            <h3 className="font-bold text-sm mb-4 text-white">Company</h3>
             <ul className="space-y-2">
               {companyLinks.map((link) => (
                 <li key={link.href}>
@@ -219,7 +265,7 @@ const Footer: React.FC<FooterProps> = ({ theme }) => {
                     className="text-sm text-white/60 hover:text-white transition inline-flex items-center group"
                   >
                     {link.label}
-                    <span className="inline-block ml-1 transform group-hover:translate-x-1 transition">
+                    <span className="inline-block ml-1 transform group-hover:translate-x-1 transition opacity-0 group-hover:opacity-100">
                       →
                     </span>
                   </Link>
@@ -230,20 +276,21 @@ const Footer: React.FC<FooterProps> = ({ theme }) => {
 
           {/* Block G: Socials & Contact */}
           <motion.div
-            className="col-span-1 md:col-span-1 lg:col-span-1 p-6 rounded-2xl border border-white/5 bg-gray-900/50 backdrop-blur-sm"
-            whileHover={{ borderColor: "rgba(255,255,255,0.1)" }}
+            className="col-span-1 md:col-span-1 lg:col-span-1 p-6 rounded-2xl border border-white/5 bg-gray-900/50 backdrop-blur-sm hover:border-white/10 transition"
+            whileHover={{ y: -2 }}
           >
-            <h3 className="font-bold text-sm mb-4">Connect</h3>
+            <h3 className="font-bold text-sm mb-4 text-white">Connect</h3>
             <div className="flex gap-4">
-              <a
+              <motion.a
                 href="https://linkedin.com/company/kaizen-web"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-white/60 hover:text-cyan-400 transition"
                 aria-label="LinkedIn"
+                whileHover={{ scale: 1.2 }}
               >
                 <Linkedin size={20} />
-              </a>
+              </motion.a>
             </div>
             <p className="text-xs text-white/40 mt-4">
               hello@kaizenweb.co.uk
