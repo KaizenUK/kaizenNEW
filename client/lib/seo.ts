@@ -34,14 +34,15 @@ const defaultMeta: PageMeta = {
 
 const pageMeta: Record<string, Partial<PageMeta>> = {
   "/": {
-    title: "Web Design Liverpool | Kaizen – Agile Web Development",
+    title: "Web Design Liverpool: Product Owner-Led Agile Development | Kaizen",
     description:
-      "Kaizen is a Liverpool web design agency. We build fast, high-performance websites and offer Agile coaching to improve your team's workflow. No-BS, just results.",
+      "Web design Liverpool. We build high-performance sites, fix chaotic projects & coach teams to deliver in sprints. Hands-on product leadership, zero jargon.",
     keywords: [
       "web design liverpool",
-      "liverpool web design",
+      "product owner-led web design",
       "agile web development",
       "kaizen",
+      "high-performance websites",
     ],
   },
   "/services": {
@@ -161,6 +162,18 @@ const pageMeta: Record<string, Partial<PageMeta>> = {
       "senior product owner",
       "agile product owner",
       "sean mcdonnell",
+    ],
+  },
+  "/project-rescue": {
+    title: "Project Rescue & Contract Product Ownership | Kaizen Liverpool",
+    description:
+      "When your build is over budget, late, or stuck, Kaizen steps in as a hands-on Contract Product Owner to stabilise delivery and actually ship.",
+    keywords: [
+      "project rescue liverpool",
+      "contract product owner",
+      "failing web projects",
+      "agile rescue",
+      "product ownership",
     ],
   },
   "/about": {

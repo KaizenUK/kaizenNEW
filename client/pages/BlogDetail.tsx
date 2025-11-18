@@ -112,6 +112,14 @@ function addIdsToHeadings(html: string): string {
   return result;
 }
 
+function decodeHtmlEntities(html: string): string {
+  if (!html) return "";
+  const parser = new DOMParser();
+  const decoded =
+    parser.parseFromString(html, "text/html").documentElement.textContent || "";
+  return decoded;
+}
+
 function extractHeadings(html: string): TableOfContentsItem[] {
   const headings: TableOfContentsItem[] = [];
 
@@ -124,7 +132,8 @@ function extractHeadings(html: string): TableOfContentsItem[] {
 
   while ((match = h2Regex.exec(html)) !== null) {
     const id = match[1];
-    const text = match[2].replace(/<[^>]*>/g, "").trim();
+    const rawText = match[2].replace(/<[^>]*>/g, "").trim();
+    const text = decodeHtmlEntities(rawText);
     if (text && id) {
       headings.push({ id, title: text, level: 2 });
     }
@@ -191,22 +200,34 @@ function TableOfContents({ items, activeId }: TableOfContentsProps) {
       <p className="text-xs font-mono text-gray-500 font-bold tracking-widest mb-4">
         TABLE OF CONTENTS
       </p>
-      <nav className="space-y-2">
-        {items.map((item) => (
-          <motion.a
-            key={item.id}
-            href={`#${item.id}`}
-            className={`block text-sm transition py-2 px-3 rounded ${
-              activeId === item.id
-                ? "text-blue-400 font-bold bg-blue-400/10 border-l-2 border-blue-400"
-                : "text-gray-400 hover:text-white hover:bg-gray-800/50"
-            }`}
-            whileHover={{ x: 4 }}
-            transition={{ duration: 0.2 }}
-          >
-            {item.title}
-          </motion.a>
-        ))}
+      <nav className="space-y-1">
+        {items.map((item) => {
+          const isActive = activeId === item.id;
+          return (
+            <motion.a
+              key={item.id}
+              href={`#${item.id}`}
+              className={`block text-sm py-2.5 px-3 rounded transition-all relative group ${
+                isActive
+                  ? "text-white font-semibold bg-kaizen-cyan/15"
+                  : "text-gray-500 hover:text-gray-300"
+              }`}
+              whileHover={{ x: 4 }}
+              transition={{ duration: 0.2 }}
+            >
+              <motion.div
+                className="absolute left-0 top-0 bottom-0 w-1 bg-kaizen-cyan rounded-r"
+                initial={{ scaleY: 0 }}
+                animate={{ scaleY: isActive ? 1 : 0 }}
+                transition={{ duration: 0.3 }}
+                style={{ originY: "center" }}
+              />
+              <span className={isActive ? "text-kaizen-cyan font-bold" : ""}>
+                {item.title}
+              </span>
+            </motion.a>
+          );
+        })}
       </nav>
     </motion.div>
   );
@@ -249,9 +270,71 @@ interface RichTextContentProps {
 }
 
 function RichTextContent({ html }: RichTextContentProps) {
+  const contentRef = useRef<HTMLDivElement>(null);
+  const [copiedId, setCopiedId] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!contentRef.current) return;
+
+    // Add copy link functionality to H2 headings
+    const h2s = contentRef.current.querySelectorAll("h2[id]");
+    h2s.forEach((h2) => {
+      const id = h2.getAttribute("id");
+      if (!id) return;
+
+      // Create a wrapper group if not already present
+      if (!h2.parentElement?.classList.contains("group")) {
+        const wrapper = document.createElement("div");
+        wrapper.className = "group relative";
+        h2.parentNode?.insertBefore(wrapper, h2);
+        wrapper.appendChild(h2);
+      }
+
+      // Remove existing copy button if present
+      const existingBtn = h2.querySelector(".copy-link-btn");
+      if (existingBtn) existingBtn.remove();
+
+      // Add copy button
+      const btn = document.createElement("button");
+      btn.className =
+        "copy-link-btn absolute -left-8 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity text-kaizen-cyan hover:text-kaizen-lime p-1";
+      btn.innerHTML = "#";
+      btn.title = "Copy link to this section";
+      btn.type = "button";
+      btn.onclick = (e) => {
+        e.preventDefault();
+        const url = `${window.location.href.split("#")[0]}#${id}`;
+        navigator.clipboard.writeText(url);
+        setCopiedId(id);
+        setTimeout(() => setCopiedId(null), 2000);
+      };
+
+      h2.parentElement?.insertBefore(btn, h2);
+    });
+
+    // Style links with decorative underline
+    const links = contentRef.current.querySelectorAll("a:not(.copy-link-btn)");
+    links.forEach((link) => {
+      link.classList.add(
+        "text-kaizen-cyan",
+        "hover:text-kaizen-lime",
+        "underline",
+        "transition-colors",
+      );
+    });
+
+    // Style blockquotes
+    const blockquotes = contentRef.current.querySelectorAll("blockquote");
+    blockquotes.forEach((bq) => {
+      bq.className =
+        "border-l-4 border-kaizen-cyan pl-4 py-2 my-4 bg-gray-900/50 italic text-gray-300";
+    });
+  }, []);
+
   return (
     <motion.div
-      className="max-w-3xl space-y-4 blog-content"
+      ref={contentRef}
+      className="max-w-3xl lg:max-w-5xl blog-content prose prose-invert max-w-none"
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6, delay: 0.3 }}
@@ -383,17 +466,34 @@ export default function BlogDetail() {
 
     const observer = new IntersectionObserver(
       (entries) => {
-        const visibleHeadings = entries.filter((entry) => entry.isIntersecting);
-        if (visibleHeadings.length > 0) {
-          const topHeading = visibleHeadings[0];
-          const id =
-            (topHeading.target as HTMLElement).id ||
-            post.tableOfContents[0]?.id ||
-            "";
+        // Find the heading that is closest to the top of the viewport
+        let closestHeading: IntersectionObserverEntry | null = null;
+        let closestDistance = Infinity;
+
+        entries.forEach((entry) => {
+          // Only consider headings that are above or at the viewport
+          if (entry.boundingClientRect.top <= window.innerHeight * 0.3) {
+            const distance = Math.abs(
+              entry.boundingClientRect.top - window.innerHeight * 0.3,
+            );
+            if (distance < closestDistance) {
+              closestDistance = distance;
+              closestHeading = entry;
+            }
+          }
+        });
+
+        // If no heading is above, use the first visible heading
+        if (!closestHeading && entries.length > 0) {
+          closestHeading = entries[0];
+        }
+
+        if (closestHeading) {
+          const id = (closestHeading.target as HTMLElement).id;
           if (id) setActiveSection(id);
         }
       },
-      { threshold: 0.3, rootMargin: "-100px 0px -66% 0px" },
+      { threshold: 0 },
     );
 
     headings.forEach((heading) => {
@@ -482,17 +582,20 @@ export default function BlogDetail() {
         </motion.div>
       </motion.div>
 
-      {/* Hero Image Section */}
+      {/* Hero Image Section with Parallax */}
       <motion.div
         className="relative h-96 overflow-hidden bg-gray-900"
         initial={{ scale: 1.1 }}
         animate={{ scale: 1 }}
         transition={{ duration: 0.8 }}
       >
-        <img
+        <motion.img
           src={post.coverImage}
           alt={post.title}
           className="w-full h-full object-cover"
+          initial={{ scale: 1.1 }}
+          animate={{ scale: 1 }}
+          transition={{ duration: 1.2 }}
         />
         <div className="absolute inset-0 bg-gradient-to-t from-gray-950 via-transparent to-transparent" />
 
