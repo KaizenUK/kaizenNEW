@@ -217,23 +217,55 @@ export default function Blog() {
               </p>
 
               {/* Filter Bar */}
-              <div className={`flex gap-2 ${allTags.length > 5 ? "overflow-x-auto" : "flex-wrap"} ${allTags.length > 5 ? "pb-2 -mx-4 px-4 scrollbar-hide" : ""}`}>
+              <div className="flex flex-wrap gap-3">
                 {allTags.map((tag, idx) => (
                   <motion.button
                     key={`filter-chip-${tag}`}
                     onClick={() => setSelectedTag(tag)}
-                    className={`px-4 py-2 rounded-full font-mono text-xs font-bold whitespace-nowrap transition-all backdrop-blur ${
+                    className={`relative px-5 py-2.5 rounded-full font-mono text-xs font-bold transition-all backdrop-blur group overflow-hidden ${
                       selectedTag === tag
-                        ? "bg-gray-950 text-white dark:bg-white dark:text-gray-950 shadow-lg shadow-cyan-500/20"
-                        : "bg-gray-200 text-gray-700 dark:bg-gray-800 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-700"
+                        ? "text-white dark:text-gray-950 shadow-lg"
+                        : "text-gray-600 dark:text-gray-400 hover:text-gray-950 dark:hover:text-white"
                     }`}
-                    whileHover={{ scale: 1.05, y: -2 }}
+                    whileHover={{ scale: 1.08, y: -3 }}
                     whileTap={{ scale: 0.95 }}
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.4, delay: idx * 0.05 }}
+                    transition={{ duration: 0.4, delay: idx * 0.06 }}
                   >
-                    {tag}
+                    {/* Background gradient that changes on active state */}
+                    <motion.div
+                      className={`absolute inset-0 rounded-full transition-all ${
+                        selectedTag === tag
+                          ? "bg-gradient-to-r from-cyan-500 to-blue-600 dark:from-cyan-400 dark:to-blue-500 shadow-lg shadow-cyan-500/50 dark:shadow-cyan-400/30"
+                          : "bg-gradient-to-r from-gray-200 to-gray-300 dark:from-gray-700 dark:to-gray-800"
+                      }`}
+                      initial={{ scale: 1 }}
+                      animate={{ scale: selectedTag === tag ? 1 : 1 }}
+                      transition={{ duration: 0.3 }}
+                    />
+
+                    {/* Text and animated underline */}
+                    <div className="relative z-10 flex items-center gap-1">
+                      <span>{tag}</span>
+                      {selectedTag === tag && (
+                        <motion.div
+                          className="inline-block"
+                          animate={{ x: [0, 2, 0] }}
+                          transition={{ duration: 0.8, repeat: Infinity }}
+                        >
+                          ✓
+                        </motion.div>
+                      )}
+                    </div>
+
+                    {/* Hover effect border */}
+                    {selectedTag !== tag && (
+                      <motion.div
+                        className="absolute inset-0 rounded-full border-2 border-transparent group-hover:border-gray-300 dark:group-hover:border-gray-600"
+                        whileHover={{ borderColor: "rgb(var(--kaizen-cyan) / 0.5)" }}
+                      />
+                    )}
                   </motion.button>
                 ))}
               </div>
