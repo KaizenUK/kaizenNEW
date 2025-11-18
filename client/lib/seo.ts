@@ -163,6 +163,18 @@ const pageMeta: Record<string, Partial<PageMeta>> = {
       "sean mcdonnell",
     ],
   },
+  "/project-rescue": {
+    title: "Project Rescue & Contract Product Ownership | Kaizen Liverpool",
+    description:
+      "When your build is over budget, late, or stuck, Kaizen steps in as a hands-on Contract Product Owner to stabilise delivery and actually ship.",
+    keywords: [
+      "project rescue liverpool",
+      "contract product owner",
+      "failing web projects",
+      "agile rescue",
+      "product ownership",
+    ],
+  },
   "/about": {
     title: "About Kaizen | Liverpool Web Design & Agile Experts",
     description:
