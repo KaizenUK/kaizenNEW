@@ -171,11 +171,12 @@ const OffCanvasMenu: React.FC<OffCanvasMenuProps> = ({ isOpen, onClose, theme, o
           />
 
           <motion.div
-            initial={{ x: "-100%" }}
+            initial={{ x: "-320px" }}
             animate={{ x: 0 }}
-            exit={{ x: "-100%" }}
+            exit={{ x: "-320px" }}
             transition={{ duration: 0.3, ease: "easeOut" }}
             className="fixed left-0 top-0 bottom-0 z-50 w-80 max-w-[85vw] bg-gray-950 border-r border-white/10 flex flex-col overflow-hidden"
+            style={{ width: "min(320px, 85vw)" }}
           >
             {/* Header */}
             <div className="flex items-center justify-between px-6 py-4 border-b border-white/10">
