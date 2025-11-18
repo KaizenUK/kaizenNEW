@@ -255,7 +255,7 @@
   }
 
   .blog-content a {
-    @apply text-blue-400 hover:text-blue-300 underline transition;
+    @apply text-kaizen-cyan hover:text-kaizen-lime underline transition-colors;
   }
 
   .blog-content ul,
