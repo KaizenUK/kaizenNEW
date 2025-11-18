@@ -331,7 +331,7 @@ function RichTextContent({ html }: RichTextContentProps) {
     const blockquotes = contentRef.current.querySelectorAll("blockquote");
     blockquotes.forEach((bq) => {
       bq.className =
-        "border-l-4 border-kaizen-cyan pl-4 py-2 my-4 bg-gray-900/50 italic text-gray-300";
+        "border-l-4 border-kaizen-cyan pl-4 py-2 my-4 bg-gray-100 dark:bg-gray-900/50 italic text-gray-700 dark:text-gray-300";
     });
   }, []);
 
