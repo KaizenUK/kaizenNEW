@@ -1,7 +1,7 @@
 import { Link, useLocation } from "react-router-dom";
 import { Menu, X, Sun, Moon, ChevronDown } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, LayoutGroup } from "framer-motion";
 import { useCalendly } from "@/context/CalendlyContext";
 
 interface HeaderProps {
@@ -9,30 +9,26 @@ interface HeaderProps {
   onThemeChange: () => void;
 }
 
+type MenuType = "services" | "insights" | null;
+
 const Header: React.FC<HeaderProps> = ({ theme, onThemeChange }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [expandedMobileSection, setExpandedMobileSection] = useState<string | null>(null);
-  const [servicesDropdownOpen, setServicesDropdownOpen] = useState(false);
-  const [insightsDropdownOpen, setInsightsDropdownOpen] = useState(false);
-  const servicesDropdownRef = useRef<HTMLDivElement>(null);
-  const insightsDropdownRef = useRef<HTMLDivElement>(null);
+  const [activeDropdown, setActiveDropdown] = useState<MenuType>(null);
+  const dropdownRef = useRef<HTMLDivElement>(null);
   const { openCalendly } = useCalendly();
   const location = useLocation();
 
   useEffect(() => {
     setMobileMenuOpen(false);
-    setServicesDropdownOpen(false);
-    setInsightsDropdownOpen(false);
+    setActiveDropdown(null);
   }, [location.pathname]);
 
   // Close dropdowns when clicking outside
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
-      if (servicesDropdownRef.current && !servicesDropdownRef.current.contains(e.target as Node)) {
-        setServicesDropdownOpen(false);
-      }
-      if (insightsDropdownRef.current && !insightsDropdownRef.current.contains(e.target as Node)) {
-        setInsightsDropdownOpen(false);
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+        setActiveDropdown(null);
       }
     };
 
@@ -56,7 +52,6 @@ const Header: React.FC<HeaderProps> = ({ theme, onThemeChange }) => {
         { label: "Project Rescue", href: "/project-rescue", highlight: true },
         { label: "Contract Product Owner", href: "/contract-product-owner" },
         { label: "Agile Coaching", href: "/agile-coaching" },
-        { label: "Team Transformation", href: "/team-transformation" },
       ],
     },
   ];
@@ -106,103 +101,112 @@ const Header: React.FC<HeaderProps> = ({ theme, onThemeChange }) => {
 
             {/* Desktop Navigation - Hidden on Mobile */}
             <div className="hidden lg:flex items-center gap-8">
-              {/* Services Dropdown */}
-              <div className="relative" ref={servicesDropdownRef}>
-                <button
-                  onClick={() => setServicesDropdownOpen(!servicesDropdownOpen)}
-                  className="flex items-center gap-1 px-4 py-2 text-sm font-medium text-white/90 hover:text-white transition rounded-full hover:bg-white/5"
-                >
-                  Services
-                  <ChevronDown size={16} className={`transition ${servicesDropdownOpen ? "rotate-180" : ""}`} />
-                </button>
+              <LayoutGroup>
+                {/* Services Dropdown */}
+                <div className="relative" ref={dropdownRef}>
+                  <motion.button
+                    onClick={() => setActiveDropdown(activeDropdown === "services" ? null : "services")}
+                    className="flex items-center gap-1 px-4 py-2 text-sm font-medium text-white/90 hover:text-white transition rounded-full hover:bg-white/5"
+                  >
+                    Services
+                    <ChevronDown size={16} className={`transition ${activeDropdown === "services" ? "rotate-180" : ""}`} />
+                  </motion.button>
 
-                {/* Services Mega Menu */}
-                <AnimatePresence>
-                  {servicesDropdownOpen && (
-                    <motion.div
-                      initial={{ opacity: 0, y: -10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -10 }}
-                      className="absolute top-full left-0 mt-2 w-screen max-w-2xl rounded-2xl border border-white/5 bg-gray-950/95 backdrop-blur-xl shadow-2xl p-8"
-                      style={{
-                        backdropFilter: "blur(12px)",
-                      }}
-                    >
-                      <div className="grid grid-cols-2 gap-8">
-                        {servicesMenu.map((column) => (
-                          <div key={column.title}>
-                            <h3 className="text-xs font-semibold text-white/40 uppercase tracking-wider mb-4">
-                              {column.title}
-                            </h3>
-                            <ul className="space-y-3">
-                              {column.items.map((item) => (
-                                <li key={item.href}>
-                                  <Link
-                                    to={item.href}
-                                    className={`block text-sm font-medium transition group ${
-                                      item.highlight
-                                        ? "text-cyan-400 hover:text-cyan-300"
-                                        : "text-white/80 hover:text-white"
-                                    }`}
-                                    onClick={() => setServicesDropdownOpen(false)}
-                                  >
-                                    <span className="inline-block mr-2 group-hover:translate-x-1 transition">→</span>
-                                    {item.label}
-                                  </Link>
-                                </li>
-                              ))}
-                            </ul>
-                          </div>
-                        ))}
-                      </div>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </div>
+                  {/* Magnetic Menu Container */}
+                  <AnimatePresence mode="wait">
+                    {activeDropdown && (
+                      <motion.div
+                        key={activeDropdown}
+                        layoutId="dropdown-container"
+                        initial={{ opacity: 0, y: -10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -10 }}
+                        transition={{ duration: 0.2 }}
+                        className="absolute top-full left-0 mt-2 w-screen max-w-2xl rounded-2xl border border-white/10 bg-gray-950/95 shadow-2xl p-8"
+                        style={{
+                          backdropFilter: "blur(20px)",
+                        }}
+                      >
+                        <div className="grid grid-cols-2 gap-12">
+                          {(activeDropdown === "services" ? servicesMenu : null) && servicesMenu.map((column) => (
+                            <div key={column.title}>
+                              <h3 className="text-base font-semibold text-white/90 mb-6">
+                                {column.title}
+                              </h3>
+                              <ul className="space-y-4">
+                                {column.items.map((item) => (
+                                  <li key={item.href}>
+                                    <Link
+                                      to={item.href}
+                                      className={`block text-sm transition group ${
+                                        item.highlight
+                                          ? "text-cyan-400 hover:text-cyan-300 font-medium"
+                                          : "text-white/70 hover:text-white"
+                                      }`}
+                                      onClick={() => setActiveDropdown(null)}
+                                    >
+                                      <span className="inline-block mr-2 group-hover:translate-x-1 transition">→</span>
+                                      {item.label}
+                                    </Link>
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
+                          ))}
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
 
-              {/* Insights Dropdown */}
-              <div className="relative" ref={insightsDropdownRef}>
-                <button
-                  onClick={() => setInsightsDropdownOpen(!insightsDropdownOpen)}
-                  className="flex items-center gap-1 px-4 py-2 text-sm font-medium text-white/90 hover:text-white transition rounded-full hover:bg-white/5"
-                >
-                  Insights
-                  <ChevronDown size={16} className={`transition ${insightsDropdownOpen ? "rotate-180" : ""}`} />
-                </button>
+                {/* Insights Dropdown */}
+                <div className="relative">
+                  <motion.button
+                    onClick={() => setActiveDropdown(activeDropdown === "insights" ? null : "insights")}
+                    className="flex items-center gap-1 px-4 py-2 text-sm font-medium text-white/90 hover:text-white transition rounded-full hover:bg-white/5"
+                  >
+                    Insights
+                    <ChevronDown size={16} className={`transition ${activeDropdown === "insights" ? "rotate-180" : ""}`} />
+                  </motion.button>
 
-                {/* Insights Mega Menu */}
-                <AnimatePresence>
-                  {insightsDropdownOpen && (
-                    <motion.div
-                      initial={{ opacity: 0, y: -10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -10 }}
-                      className="absolute top-full right-0 mt-2 w-80 rounded-2xl border border-white/5 bg-gray-950/95 backdrop-blur-xl shadow-2xl p-6"
-                      style={{
-                        backdropFilter: "blur(12px)",
-                      }}
-                    >
-                      <ul className="space-y-4">
-                        {insightsMenu.map((item, idx) => (
-                          <li key={item.href}>
-                            <Link
-                              to={item.href}
-                              className="block text-sm font-medium text-white/80 hover:text-white transition group"
-                              onClick={() => setInsightsDropdownOpen(false)}
-                            >
-                              <span className="inline-block mr-2 group-hover:translate-x-1 transition">→</span>
-                              <span className="font-semibold">{item.label}</span>
-                              {item.description && (
-                                <div className="text-xs text-white/40 mt-1 ml-6">{item.description}</div>
-                              )}
-                            </Link>
-                          </li>
-                        ))}
-                      </ul>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </div>
+                  {/* Magnetic Menu Container */}
+                  <AnimatePresence mode="wait">
+                    {activeDropdown === "insights" && (
+                      <motion.div
+                        layoutId="dropdown-container"
+                        initial={{ opacity: 0, y: -10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -10 }}
+                        transition={{ duration: 0.2 }}
+                        className="absolute top-full right-0 mt-2 w-96 rounded-2xl border border-white/10 bg-gray-950/95 shadow-2xl p-6"
+                        style={{
+                          backdropFilter: "blur(20px)",
+                        }}
+                      >
+                        <ul className="space-y-4">
+                          {insightsMenu.map((item) => (
+                            <li key={item.href}>
+                              <Link
+                                to={item.href}
+                                className="block text-sm transition group"
+                                onClick={() => setActiveDropdown(null)}
+                              >
+                                <span className="inline-block mr-2 group-hover:translate-x-1 transition text-white/70">→</span>
+                                <span className="font-semibold text-white/90 group-hover:text-white">
+                                  {item.label}
+                                </span>
+                                {item.description && (
+                                  <div className="text-xs text-gray-400 mt-1 ml-6">{item.description}</div>
+                                )}
+                              </Link>
+                            </li>
+                          ))}
+                        </ul>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+              </LayoutGroup>
 
               {/* Top-Level Links */}
               {topLevelLinks.map((link) => (
@@ -314,7 +318,7 @@ const Header: React.FC<HeaderProps> = ({ theme, onThemeChange }) => {
                           >
                             {item.label}
                             {item.description && (
-                              <div className="text-xs text-white/40 mt-1">{item.description}</div>
+                              <div className="text-xs text-gray-400 mt-1">{item.description}</div>
                             )}
                           </Link>
                         ))}
