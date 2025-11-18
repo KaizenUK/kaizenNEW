@@ -370,6 +370,7 @@ export default function WordPressWebDesign() {
                   "A top-rated salon in Wallasey Village with no website, missing out on online discovery and relying on phone-only bookings.",
                 outcome:
                   "We built a classy, easy-to-manage WordPress site that captures her brand and includes a 24/7 online booking system.",
+                slug: "HelenMooreHairdressing",
               },
               {
                 client: "A.S Collections",
@@ -378,6 +379,7 @@ export default function WordPressWebDesign() {
                   "Their previous site was dated, performed poorly on mobile, and failed to build trust in the competitive commercial debt recovery sector.",
                 outcome:
                   "A complete, modern redesign on an easy-to-use platform. The new site is fast, authoritative, and simple for their team to update.",
+                slug: "AsCollections",
               },
             ].map((caseStudy, index) => (
               <motion.div
@@ -385,9 +387,12 @@ export default function WordPressWebDesign() {
                 variants={fadeInUp}
                 className="p-8 bg-kaizen-light dark:bg-slate-900/50 rounded-2xl border border-kaizen-light dark:border-slate-800/50"
               >
-                <h3 className="text-sm font-bold text-kaizen-cyan dark:text-kaizen-cyan/70 uppercase tracking-wide mb-2">
+                <Link
+                  to={`/case-studies/${caseStudy.slug.toLowerCase()}`}
+                  className="text-sm font-bold text-kaizen-cyan dark:text-kaizen-cyan/70 uppercase tracking-wide mb-2 hover:opacity-80 transition inline-block"
+                >
                   {caseStudy.client}
-                </h3>
+                </Link>
                 <p className="text-xs font-medium text-kaizen-text-dark/60 dark:text-white/50 mb-6">
                   {caseStudy.industry}
                 </p>
@@ -410,6 +415,13 @@ export default function WordPressWebDesign() {
                       {caseStudy.outcome}
                     </p>
                   </div>
+
+                  <Link
+                    to={`/case-studies/${caseStudy.slug.toLowerCase()}`}
+                    className="inline-flex items-center gap-2 text-kaizen-cyan font-medium hover:gap-3 transition"
+                  >
+                    Read Full Case Study <ArrowRight size={18} />
+                  </Link>
                 </div>
               </motion.div>
             ))}
