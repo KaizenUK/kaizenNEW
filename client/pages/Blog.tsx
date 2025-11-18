@@ -242,6 +242,8 @@ export default function Blog() {
                     src={featuredPost.image}
                     alt={featuredPost.title}
                     className="w-full h-full object-cover"
+                    loading="lazy"
+                    decoding="async"
                   />
 
                   <div className="absolute inset-0 bg-gradient-to-t from-gray-950 via-transparent to-transparent" />
