@@ -454,7 +454,7 @@ export default function BlogDetail() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, [scaleX]);
 
-  // IntersectionObserver for TOC
+  // Scroll-based TOC tracking for accurate heading detection
   useEffect(() => {
     if (!post || !contentRef.current) return;
 
@@ -464,43 +464,46 @@ export default function BlogDetail() {
       return;
     }
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        // Find the heading that is closest to the top of the viewport
-        let closestHeading: IntersectionObserverEntry | null = null;
-        let closestDistance = Infinity;
+    const handleScroll = () => {
+      let activeHeading: HTMLElement | null = null;
+      let closestDistance = Infinity;
 
-        entries.forEach((entry) => {
-          // Only consider headings that are above or at the viewport
-          if (entry.boundingClientRect.top <= window.innerHeight * 0.3) {
-            const distance = Math.abs(
-              entry.boundingClientRect.top - window.innerHeight * 0.3,
-            );
-            if (distance < closestDistance) {
-              closestDistance = distance;
-              closestHeading = entry;
-            }
+      // Find the heading that is closest to the top of the viewport (200px offset for sticky nav)
+      headings.forEach((heading) => {
+        const element = heading as HTMLElement;
+        const rect = element.getBoundingClientRect();
+        const distance = Math.abs(rect.top - 200); // Account for sticky nav height
+
+        // Prefer headings that are above the 200px mark
+        if (rect.top <= 200 && distance < closestDistance) {
+          closestDistance = distance;
+          activeHeading = element;
+        }
+      });
+
+      // If no heading is above the 200px mark, use the first heading that's visible
+      if (!activeHeading) {
+        headings.forEach((heading) => {
+          const element = heading as HTMLElement;
+          const rect = element.getBoundingClientRect();
+          if (rect.top >= 0 && rect.top <= window.innerHeight) {
+            activeHeading = element;
           }
         });
+      }
 
-        // If no heading is above, use the first visible heading
-        if (!closestHeading && entries.length > 0) {
-          closestHeading = entries[0];
-        }
+      if (activeHeading && activeHeading.id) {
+        setActiveSection(activeHeading.id);
+      }
+    };
 
-        if (closestHeading) {
-          const id = (closestHeading.target as HTMLElement).id;
-          if (id) setActiveSection(id);
-        }
-      },
-      { threshold: 0 },
-    );
+    // Use passive listener for better scroll performance
+    window.addEventListener("scroll", handleScroll, { passive: true });
 
-    headings.forEach((heading) => {
-      if (heading.id) observer.observe(heading);
-    });
+    // Initial check on mount
+    handleScroll();
 
-    return () => observer.disconnect();
+    return () => window.removeEventListener("scroll", handleScroll);
   }, [post]);
 
   if (isLoading) {
