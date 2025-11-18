@@ -6,43 +6,49 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { HelmetProvider } from "react-helmet-async";
-import { useEffect } from "react";
+import { Suspense, lazy, useEffect } from "react";
 import { CalendlyProvider, useCalendly } from "@/context/CalendlyContext";
 import { CalendlyModal } from "@/components/CalendlyModal";
 import { CookieBanner } from "@/components/CookieBanner";
 import { RouteChangeTracker } from "@/components/RouteChangeTracker";
-import Index from "./pages/Index";
-import NotFound from "./pages/NotFound";
-import WebDesign from "./pages/services/WebDesign";
-import LocalSeo from "./pages/services/LocalSeo";
-import DigitalTransformation from "./pages/services/DigitalTransformation";
-import Ecommerce from "./pages/services/Ecommerce";
-import WordPressWebDesign from "./pages/services/WordPressWebDesign";
-import ContractProductOwner from "./pages/ContractProductOwner";
-import ProjectRescue from "./pages/ProjectRescue";
-import CaseStudies from "./pages/CaseStudies";
-import Blog from "./pages/Blog";
-import BlogDetail from "./pages/BlogDetail";
-import Contact from "./pages/Contact";
-import BlogAdmin from "./pages/BlogAdmin";
-import Services from "./pages/Services";
-import About from "./pages/About";
-import Pledge from "./pages/Pledge";
-import AgileCoaching from "./pages/AgileCoaching";
-import ProductOwner from "./pages/ProductOwner";
-import AsCollectionsCase from "./pages/caseStudies/AsCollections";
-import HelenMooreHairdressingCase from "./pages/caseStudies/HelenMooreHairdressing";
-import IndependentRetailerCase from "./pages/caseStudies/IndependentRetailer";
-import TeamTransformation from "./pages/TeamTransformation";
-import PrivacyPolicy from "./pages/PrivacyPolicy";
-import CookiePolicy from "./pages/CookiePolicy";
-import GDPRPolicy from "./pages/GDPRPolicy";
-import AdminGuard from "@/components/AdminGuard";
-import AdminLogin from "./pages/admin/AdminLogin";
-import AdminDashboardWrapper from "@/components/AdminDashboardWrapper";
-import BlogPostsList from "./pages/admin/BlogPostsList";
-import BlogPostCreate from "./pages/admin/BlogPostCreate";
-import BlogPostDetail from "./pages/admin/BlogPostDetail";
+import Layout from "./components/Layout";
+
+// Lazy-load all page components for better initial load performance
+const Index = lazy(() => import("./pages/Index"));
+const NotFound = lazy(() => import("./pages/NotFound"));
+const WebDesign = lazy(() => import("./pages/services/WebDesign"));
+const LocalSeo = lazy(() => import("./pages/services/LocalSeo"));
+const DigitalTransformation = lazy(() => import("./pages/services/DigitalTransformation"));
+const Ecommerce = lazy(() => import("./pages/services/Ecommerce"));
+const WordPressWebDesign = lazy(() => import("./pages/services/WordPressWebDesign"));
+const CityCentre = lazy(() => import("./pages/services/CityCentre"));
+const ContractProductOwner = lazy(() => import("./pages/ContractProductOwner"));
+const ProjectRescue = lazy(() => import("./pages/ProjectRescue"));
+const CaseStudies = lazy(() => import("./pages/CaseStudies"));
+const Blog = lazy(() => import("./pages/Blog"));
+const BlogDetail = lazy(() => import("./pages/BlogDetail"));
+const Contact = lazy(() => import("./pages/Contact"));
+const Services = lazy(() => import("./pages/Services"));
+const About = lazy(() => import("./pages/About"));
+const Pledge = lazy(() => import("./pages/Pledge"));
+const AgileCoaching = lazy(() => import("./pages/AgileCoaching"));
+const ProductOwner = lazy(() => import("./pages/ProductOwner"));
+const AsCollectionsCase = lazy(() => import("./pages/caseStudies/AsCollections"));
+const HelenMooreHairdressingCase = lazy(() => import("./pages/caseStudies/HelenMooreHairdressing"));
+const IndependentRetailerCase = lazy(() => import("./pages/caseStudies/IndependentRetailer"));
+const PrivacyPolicy = lazy(() => import("./pages/PrivacyPolicy"));
+const CookiePolicy = lazy(() => import("./pages/CookiePolicy"));
+const GDPRPolicy = lazy(() => import("./pages/GDPRPolicy"));
+const ThankYou = lazy(() => import("./pages/ThankYou"));
+
+// Fallback component for lazy-loaded routes
+const PageLoader = () => (
+  <Layout>
+    <div className="flex items-center justify-center min-h-screen">
+      <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-kaizen-cyan"></div>
+    </div>
+  </Layout>
+);
 
 const queryClient = new QueryClient();
 
