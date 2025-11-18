@@ -45,7 +45,12 @@ interface InsightItem {
   icon: JSX.Element;
 }
 
-const OffCanvasMenu: React.FC<OffCanvasMenuProps> = ({ isOpen, onClose, theme, onThemeChange }) => {
+const OffCanvasMenu: React.FC<OffCanvasMenuProps> = ({
+  isOpen,
+  onClose,
+  theme,
+  onThemeChange,
+}) => {
   const [expandedSection, setExpandedSection] = useState<string | null>(null);
   const { openCalendly } = useCalendly();
 
@@ -141,7 +146,9 @@ const OffCanvasMenu: React.FC<OffCanvasMenuProps> = ({ isOpen, onClose, theme, o
       <div
         className={cn(
           "fixed inset-0 z-40 bg-black/40 backdrop-blur-md transition-opacity duration-200",
-          isOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none",
+          isOpen
+            ? "opacity-100 pointer-events-auto"
+            : "opacity-0 pointer-events-none",
         )}
         onClick={onClose}
       />
@@ -155,11 +162,7 @@ const OffCanvasMenu: React.FC<OffCanvasMenuProps> = ({ isOpen, onClose, theme, o
       >
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-white/10">
-          <Link
-            to="/"
-            className="flex items-center gap-2"
-            onClick={onClose}
-          >
+          <Link to="/" className="flex items-center gap-2" onClick={onClose}>
             <img
               src="https://cdn.builder.io/api/v1/image/assets%2Fe4ae46bbd81b4b95bef54d66dd9748cc%2F03f6c5dd481449d297c430cab962412e?format=webp&width=800"
               alt="Kaizen Web"
@@ -250,7 +253,9 @@ const OffCanvasMenu: React.FC<OffCanvasMenuProps> = ({ isOpen, onClose, theme, o
                   >
                     <div className="font-semibold">{item.label}</div>
                     {item.description && (
-                      <div className="text-xs text-white/50 mt-0.5">{item.description}</div>
+                      <div className="text-xs text-white/50 mt-0.5">
+                        {item.description}
+                      </div>
                     )}
                   </Link>
                 ))}

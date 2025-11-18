@@ -170,8 +170,8 @@ const NeuralNetworkHero = () => {
             transition={{ delay: 0.3, duration: 0.8 }}
           >
             We build high-performance WordPress & React sites, fix chaotic
-            projects, and coach your team to deliver in sprints. No jargon,
-            just results.
+            projects, and coach your team to deliver in sprints. No jargon, just
+            results.
           </motion.p>
 
           <motion.div
@@ -374,8 +374,7 @@ export default function Home() {
               {
                 step: "02",
                 title: "Design the Journey",
-                content:
-                  "Wireframes focused on clarity and conversion.",
+                content: "Wireframes focused on clarity and conversion.",
               },
               {
                 step: "03",
@@ -386,8 +385,7 @@ export default function Home() {
               {
                 step: "04",
                 title: "Launch & Improve",
-                content:
-                  "Careful launch, then iterations based on real data.",
+                content: "Careful launch, then iterations based on real data.",
               },
             ].map((item, index) => (
               <ScrollReveal key={index} delay={index}>

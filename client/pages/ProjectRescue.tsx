@@ -114,9 +114,9 @@ export default function ProjectRescue() {
               animate={{ opacity: 1 }}
               transition={{ delay: 0.3, duration: 0.8 }}
             >
-              When your build is over budget, late, or stuck, Kaizen steps in
-              as a hands-on Contract Product Owner to stabilise delivery,
-              rebuild trust, and actually ship.
+              When your build is over budget, late, or stuck, Kaizen steps in as
+              a hands-on Contract Product Owner to stabilise delivery, rebuild
+              trust, and actually ship.
             </motion.p>
 
             <motion.div
@@ -304,9 +304,7 @@ export default function ProjectRescue() {
                   Best Fit
                 </h3>
                 <ul className="space-y-3 text-base text-kaizen-dark dark:text-white">
-                  <li>
-                    ✓ You have dev/design resources but lack leadership
-                  </li>
+                  <li>✓ You have dev/design resources but lack leadership</li>
                   <li>✓ The project is commercially critical</li>
                   <li>✓ You're open to changing workflows</li>
                   <li>

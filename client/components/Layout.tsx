@@ -83,7 +83,6 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     }
   }, [location.pathname]);
 
-
   const toggleTheme = () => {
     setTheme((prev) => (prev === "light" ? "dark" : "light"));
   };
@@ -155,7 +154,12 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       </Helmet>
 
       <div className="min-h-screen flex flex-col bg-background text-foreground transition-colors">
-        <Header theme={theme} onThemeChange={toggleTheme} mobileMenuOpen={mobileMenuOpen} onMobileMenuChange={setMobileMenuOpen} />
+        <Header
+          theme={theme}
+          onThemeChange={toggleTheme}
+          mobileMenuOpen={mobileMenuOpen}
+          onMobileMenuChange={setMobileMenuOpen}
+        />
 
         {/* Main Content */}
         <main className="flex-grow">{children}</main>

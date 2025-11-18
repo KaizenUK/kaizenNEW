@@ -208,9 +208,14 @@ const Footer: React.FC<FooterProps> = ({ theme }) => {
             className="col-span-1 md:col-span-1 lg:col-span-1 p-6 rounded-2xl border border-white/5 bg-gray-900/50 backdrop-blur-sm hover:border-white/10 transition"
             whileHover={{ y: -2 }}
           >
-            <p className="text-sm font-medium mb-3 text-white">Made with ❤️ in Liverpool, UK</p>
+            <p className="text-sm font-medium mb-3 text-white">
+              Made with ❤️ in Liverpool, UK
+            </p>
             <p className="text-xs text-white/60">
-              Local time: <span className="font-mono font-semibold text-white/80">{liverpooolTime} GMT</span>
+              Local time:{" "}
+              <span className="font-mono font-semibold text-white/80">
+                {liverpooolTime} GMT
+              </span>
             </p>
           </motion.div>
 
@@ -278,9 +283,7 @@ const Footer: React.FC<FooterProps> = ({ theme }) => {
                 <Linkedin size={20} />
               </motion.a>
             </div>
-            <p className="text-xs text-white/40 mt-4">
-              hello@kaizenweb.co.uk
-            </p>
+            <p className="text-xs text-white/40 mt-4">hello@kaizenweb.co.uk</p>
           </motion.div>
         </div>
 
@@ -288,11 +291,17 @@ const Footer: React.FC<FooterProps> = ({ theme }) => {
         <div className="border-t border-white/5 pt-8 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-white/40">
           <p>© {new Date().getFullYear()} Kaizen Web. All rights reserved.</p>
           <div className="flex gap-6">
-            <Link to="/privacy-policy" className="hover:text-white/60 transition">
+            <Link
+              to="/privacy-policy"
+              className="hover:text-white/60 transition"
+            >
               Privacy Policy
             </Link>
             <span>|</span>
-            <Link to="/cookie-policy" className="hover:text-white/60 transition">
+            <Link
+              to="/cookie-policy"
+              className="hover:text-white/60 transition"
+            >
               Cookie Policy
             </Link>
           </div>

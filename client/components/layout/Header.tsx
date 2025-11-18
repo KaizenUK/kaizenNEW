@@ -50,7 +50,12 @@ interface InsightItem {
 
 const desktopMenuOrder: DesktopMenuKey[] = ["services", "insights"];
 
-const Header: React.FC<HeaderProps> = ({ theme, onThemeChange, mobileMenuOpen, onMobileMenuChange }) => {
+const Header: React.FC<HeaderProps> = ({
+  theme,
+  onThemeChange,
+  mobileMenuOpen,
+  onMobileMenuChange,
+}) => {
   const [activeMenu, setActiveMenu] = useState<DesktopMenuKey>(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [lastMenu, setLastMenu] = useState<DesktopMenuKey>(null);
@@ -189,7 +194,11 @@ const Header: React.FC<HeaderProps> = ({ theme, onThemeChange, mobileMenuOpen, o
 
     const nav = navRef.current;
     const triggerEl =
-      menu === "services" ? servicesTriggerRef.current : menu === "insights" ? insightsTriggerRef.current : null;
+      menu === "services"
+        ? servicesTriggerRef.current
+        : menu === "insights"
+          ? insightsTriggerRef.current
+          : null;
 
     if (nav && triggerEl) {
       const navRect = nav.getBoundingClientRect();
@@ -221,7 +230,6 @@ const Header: React.FC<HeaderProps> = ({ theme, onThemeChange, mobileMenuOpen, o
   const scheduleCloseMenu = () => {
     // rely on click outside or route change to close the menu
   };
-
 
   const panelVariants = {
     enter: (dir: number) => ({ opacity: 0, y: -8, x: dir * 32 }),
@@ -321,7 +329,10 @@ const Header: React.FC<HeaderProps> = ({ theme, onThemeChange, mobileMenuOpen, o
                   exit="exit"
                   transition={{ duration: 0.22, ease: "easeOut" }}
                   className="absolute top-full mt-2 rounded-2xl border border-white/10 bg-gray-900/95 shadow-2xl backdrop-blur-xl w-[min(720px,calc(100vw-3rem))] px-8 py-6"
-                  style={{ left: panelLeft ?? "50%", transform: "translateX(-50%)" }}
+                  style={{
+                    left: panelLeft ?? "50%",
+                    transform: "translateX(-50%)",
+                  }}
                 >
                   {activeMenu === "services" && (
                     <div className="grid grid-cols-2 gap-6">
@@ -438,7 +449,6 @@ const Header: React.FC<HeaderProps> = ({ theme, onThemeChange, mobileMenuOpen, o
             </button>
           </div>
         </div>
-
       </nav>
     </header>
   );
