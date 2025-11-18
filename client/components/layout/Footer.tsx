@@ -74,8 +74,8 @@ const Footer: React.FC<FooterProps> = ({ theme }) => {
   const services = [
     { label: "Web Design", href: "/services/web-design-liverpool" },
     { label: "Project Rescue", href: "/project-rescue" },
-    { label: "Agile Coaching", href: "/services/agile-coaching" },
-    { label: "Contract PO", href: "/services/contract-product-owner" },
+    { label: "Agile Coaching", href: "/agile-coaching" },
+    { label: "Contract PO", href: "/contract-product-owner" },
     { label: "Local SEO", href: "/services/local-seo" },
     { label: "E-commerce", href: "/services/ecommerce" },
   ];
