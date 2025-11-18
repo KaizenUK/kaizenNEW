@@ -326,7 +326,7 @@ export default function Blog() {
       </section>
 
       {/* Bento Grid Section */}
-      <section className="bg-white dark:bg-gray-950 px-4 py-20">
+      <section className="bg-white dark:bg-gray-950 px-4 py-20 min-h-screen">
         <div className="container mx-auto max-w-6xl">
           <AnimatePresence mode="wait">
             {filteredPosts.length > 0 ? (
