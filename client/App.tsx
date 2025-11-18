@@ -19,6 +19,7 @@ import DigitalTransformation from "./pages/services/DigitalTransformation";
 import Ecommerce from "./pages/services/Ecommerce";
 import WordPressWebDesign from "./pages/services/WordPressWebDesign";
 import ContractProductOwner from "./pages/ContractProductOwner";
+import ProjectRescue from "./pages/ProjectRescue";
 import CaseStudies from "./pages/CaseStudies";
 import Blog from "./pages/Blog";
 import BlogDetail from "./pages/BlogDetail";
@@ -155,6 +156,7 @@ function AppContent() {
           path="/contract-product-owner"
           element={<ContractProductOwner />}
         />
+        <Route path="/project-rescue" element={<ProjectRescue />} />
         <Route path="/about" element={<About />} />
         <Route path="/pledge" element={<Pledge />} />
         <Route path="/agile-coaching" element={<AgileCoaching />} />
