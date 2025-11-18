@@ -21,26 +21,35 @@ export default function CityCentre() {
   return (
     <Layout>
       <Helmet>
-        <title>Web Design Liverpool City Centre | High-Performance Websites</title>
-        <meta name="description" content="Expert web design for Liverpool city centre businesses. Conversion-focused websites that drive local customers. React, Vite, fast performance." />
-        <meta name="keywords" content="web design Liverpool city centre, Liverpool city centre websites, web design L1 L2 L3, local web design Liverpool" />
+        <title>
+          Web Design Liverpool City Centre | High-Performance Websites
+        </title>
+        <meta
+          name="description"
+          content="Expert web design for Liverpool city centre businesses. Conversion-focused websites that drive local customers. React, Vite, fast performance."
+        />
+        <meta
+          name="keywords"
+          content="web design Liverpool city centre, Liverpool city centre websites, web design L1 L2 L3, local web design Liverpool"
+        />
         <script type="application/ld+json">
           {JSON.stringify({
             "@context": "https://schema.org",
             "@type": "LocalBusiness",
-            "name": "Kaizen Web",
-            "description": "Web design and development agency in Liverpool city centre",
-            "url": "https://kaizenweb.co.uk",
-            "telephone": "+44-151-XXX-XXXX",
-            "address": {
+            name: "Kaizen Web",
+            description:
+              "Web design and development agency in Liverpool city centre",
+            url: "https://kaizenweb.co.uk",
+            telephone: "+44-151-XXX-XXXX",
+            address: {
               "@type": "PostalAddress",
-              "addressLocality": "Liverpool",
-              "addressRegion": "Merseyside",
-              "postalCode": "L1",
-              "addressCountry": "GB"
+              addressLocality: "Liverpool",
+              addressRegion: "Merseyside",
+              postalCode: "L1",
+              addressCountry: "GB",
             },
-            "areaServed": "Liverpool City Centre",
-            "image": "https://kaizenweb.co.uk/kaizen-logo.png"
+            areaServed: "Liverpool City Centre",
+            image: "https://kaizenweb.co.uk/kaizen-logo.png",
           })}
         </script>
       </Helmet>
@@ -68,7 +77,10 @@ export default function CityCentre() {
               animate={{ opacity: 1 }}
               transition={{ duration: 0.8, delay: 0.2 }}
             >
-              Your city centre business competes on every level. Your website shouldn't be generic. We build conversion-focused websites for Liverpool's independent retailers, hospitality, creative studios, and professional services. Fast. Purposeful. Built to work.
+              Your city centre business competes on every level. Your website
+              shouldn't be generic. We build conversion-focused websites for
+              Liverpool's independent retailers, hospitality, creative studios,
+              and professional services. Fast. Purposeful. Built to work.
             </motion.p>
 
             <motion.div
@@ -110,13 +122,19 @@ export default function CityCentre() {
                 City Centre Websites Need to Be Different.
               </h2>
               <p className="text-xl text-white/60 leading-relaxed max-w-3xl">
-                Your competitors are using the same generic website builders and templates. They're all the same. Your customers walk past your shop every day—but they don't know you exist online. You need a website that reflects the quality of your business, ranks for local searches, and converts browsers into customers.
+                Your competitors are using the same generic website builders and
+                templates. They're all the same. Your customers walk past your
+                shop every day—but they don't know you exist online. You need a
+                website that reflects the quality of your business, ranks for
+                local searches, and converts browsers into customers.
               </p>
             </div>
 
             <div className="grid md:grid-cols-2 gap-12 items-start my-16">
               <div>
-                <h3 className="text-2xl font-heading font-bold mb-6 text-white">The Problem</h3>
+                <h3 className="text-2xl font-heading font-bold mb-6 text-white">
+                  The Problem
+                </h3>
                 <ul className="space-y-4">
                   {[
                     "Generic website builders that look like everyone else's.",
@@ -126,7 +144,9 @@ export default function CityCentre() {
                     "You can't update content without hiring a developer.",
                   ].map((point, i) => (
                     <li key={i} className="flex gap-3 text-white/70">
-                      <span className="text-kaizen-cyan flex-shrink-0 mt-1">✓</span>
+                      <span className="text-kaizen-cyan flex-shrink-0 mt-1">
+                        ✓
+                      </span>
                       <span>{point}</span>
                     </li>
                   ))}
@@ -134,7 +154,9 @@ export default function CityCentre() {
               </div>
 
               <div>
-                <h3 className="text-2xl font-heading font-bold mb-6 text-white">Our Approach</h3>
+                <h3 className="text-2xl font-heading font-bold mb-6 text-white">
+                  Our Approach
+                </h3>
                 <ul className="space-y-4">
                   {[
                     "High-performance React/Vite builds. Lightning-fast load times.",
@@ -144,7 +166,9 @@ export default function CityCentre() {
                     "Conversion-focused. Every page designed to turn visitors into customers.",
                   ].map((point, i) => (
                     <li key={i} className="flex gap-3 text-white/70">
-                      <span className="text-kaizen-lime flex-shrink-0 mt-1">✓</span>
+                      <span className="text-kaizen-lime flex-shrink-0 mt-1">
+                        ✓
+                      </span>
                       <span>{point}</span>
                     </li>
                   ))}
@@ -154,7 +178,11 @@ export default function CityCentre() {
 
             <div className="mt-16 p-8 bg-gradient-to-r from-kaizen-cyan/10 to-kaizen-lime/10 rounded-2xl border border-kaizen-cyan/20">
               <p className="text-lg text-white/80 leading-relaxed">
-                <strong>Real talk:</strong> Your website is your most cost-effective salesperson. It works 24/7, costs less than a single piece of print advertising, and reaches customers at the exact moment they're searching for what you sell. Don't let it be generic.
+                <strong>Real talk:</strong> Your website is your most
+                cost-effective salesperson. It works 24/7, costs less than a
+                single piece of print advertising, and reaches customers at the
+                exact moment they're searching for what you sell. Don't let it
+                be generic.
               </p>
             </div>
           </motion.div>
@@ -213,7 +241,13 @@ export default function CityCentre() {
 
             <div className="mt-20 p-8 bg-slate-950 rounded-xl border border-white/5">
               <p className="text-white/70 leading-relaxed">
-                <span className="text-kaizen-cyan font-semibold">Not just L1 and L2:</span> We work with city centre businesses across all postcodes—from the Baltic Triangle to Duke Street, from Lord Street to Bold Street. If you're in Liverpool's city centre, this is built for you.
+                <span className="text-kaizen-cyan font-semibold">
+                  Not just L1 and L2:
+                </span>{" "}
+                We work with city centre businesses across all postcodes—from
+                the Baltic Triangle to Duke Street, from Lord Street to Bold
+                Street. If you're in Liverpool's city centre, this is built for
+                you.
               </p>
             </div>
           </motion.div>
@@ -299,7 +333,9 @@ export default function CityCentre() {
               Your City Centre Website Starts Here.
             </h2>
             <p className="text-xl text-white/60 mb-16 max-w-2xl mx-auto leading-relaxed">
-              We've helped Liverpool city centre businesses build websites that rank, convert, and sell. Let's talk about what's possible for your business.
+              We've helped Liverpool city centre businesses build websites that
+              rank, convert, and sell. Let's talk about what's possible for your
+              business.
             </p>
 
             <motion.div
@@ -324,7 +360,8 @@ export default function CityCentre() {
             </motion.div>
 
             <p className="text-white/50 text-sm mt-12">
-              Based in Liverpool. Serving city centre businesses across L1, L2, L3 and beyond.
+              Based in Liverpool. Serving city centre businesses across L1, L2,
+              L3 and beyond.
             </p>
           </motion.div>
         </div>

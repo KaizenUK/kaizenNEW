@@ -141,8 +141,14 @@ export default function Blog() {
     <Layout>
       <Helmet>
         <title>Web Design & Agile Insights | Kaizen Blog</title>
-        <meta name="description" content="Practical guides on web design, agile delivery, and product ownership. Learn from Kaizen's expert-led insights." />
-        <meta name="keywords" content="blog, web design, agile delivery, product ownership, Liverpool" />
+        <meta
+          name="description"
+          content="Practical guides on web design, agile delivery, and product ownership. Learn from Kaizen's expert-led insights."
+        />
+        <meta
+          name="keywords"
+          content="blog, web design, agile delivery, product ownership, Liverpool"
+        />
       </Helmet>
 
       {/* Page Loading Animation */}
@@ -213,7 +219,9 @@ export default function Blog() {
 
               {/* Description */}
               <p className="text-lg text-gray-700 dark:text-gray-300 mb-10 leading-relaxed max-w-xl">
-                Deep dives into web design, Agile methodology, and building products that matter. We write about what we actually do, not what sounds good.
+                Deep dives into web design, Agile methodology, and building
+                products that matter. We write about what we actually do, not
+                what sounds good.
               </p>
 
               {/* Filter Bar */}
@@ -263,7 +271,9 @@ export default function Blog() {
                     {selectedTag !== tag && (
                       <motion.div
                         className="absolute inset-0 rounded-full border-2 border-transparent group-hover:border-gray-300 dark:group-hover:border-gray-600"
-                        whileHover={{ borderColor: "rgb(var(--kaizen-cyan) / 0.5)" }}
+                        whileHover={{
+                          borderColor: "rgb(var(--kaizen-cyan) / 0.5)",
+                        }}
                       />
                     )}
                   </motion.button>
@@ -369,14 +379,16 @@ export default function Blog() {
                           {filteredPosts[1]?.excerpt}
                         </p>
                         <div className="flex items-center gap-3">
-                          {filteredPosts[1]?.tags.slice(0, 2).map((tag, idx) => (
-                            <span
-                              key={`feature-tag-${idx}`}
-                              className={`text-xs font-mono text-white/60 uppercase tracking-wider`}
-                            >
-                              {tag}
-                            </span>
-                          ))}
+                          {filteredPosts[1]?.tags
+                            .slice(0, 2)
+                            .map((tag, idx) => (
+                              <span
+                                key={`feature-tag-${idx}`}
+                                className={`text-xs font-mono text-white/60 uppercase tracking-wider`}
+                              >
+                                {tag}
+                              </span>
+                            ))}
                           <span className="text-xs font-mono text-gray-400 ml-auto">
                             {new Date(
                               filteredPosts[1]?.publishedDate,
@@ -502,7 +514,9 @@ export default function Blog() {
                 exit={{ opacity: 0 }}
               >
                 <Code2 className="w-12 h-12 text-gray-300 dark:text-gray-700 mx-auto mb-4" />
-                <p className="text-gray-500 dark:text-gray-400">No posts in this category yet.</p>
+                <p className="text-gray-500 dark:text-gray-400">
+                  No posts in this category yet.
+                </p>
               </motion.div>
             )}
           </AnimatePresence>

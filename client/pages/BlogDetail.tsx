@@ -271,7 +271,9 @@ function Author({ name, role, image }: AuthorProps) {
           decoding="async"
         />
         <div>
-          <p className="font-heading font-bold text-gray-950 dark:text-white">{name}</p>
+          <p className="font-heading font-bold text-gray-950 dark:text-white">
+            {name}
+          </p>
           <p className="text-xs text-gray-600 dark:text-gray-400">{role}</p>
         </div>
       </div>
@@ -406,7 +408,9 @@ export default function BlogDetail() {
           publishedDate: wpPost.date || new Date().toISOString(),
           body: bodyWithIds,
           coverImage: coverImage,
-          excerpt: decodeHtmlEntities(stripHtmlTags(wpPost.excerpt?.rendered || "")),
+          excerpt: decodeHtmlEntities(
+            stripHtmlTags(wpPost.excerpt?.rendered || ""),
+          ),
           tags: [],
           category: "Blog Post",
           author: {

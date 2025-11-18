@@ -4,12 +4,12 @@
  */
 export function decodeHtmlEntities(html: string): string {
   if (!html) return "";
-  
+
   // Create a temporary DOM element to decode entities
   const textarea = document.createElement("textarea");
   textarea.innerHTML = html;
   const decoded = textarea.value;
-  
+
   return decoded;
 }
 

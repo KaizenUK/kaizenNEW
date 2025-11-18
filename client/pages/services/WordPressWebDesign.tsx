@@ -124,7 +124,8 @@ export default function WordPressWebDesign() {
     "@context": "https://schema.org",
     "@type": "Service",
     name: "WordPress Web Design Liverpool",
-    description: "Custom WordPress web design and development for Liverpool and Wirral businesses. Fast, secure, easy-to-manage websites.",
+    description:
+      "Custom WordPress web design and development for Liverpool and Wirral businesses. Fast, secure, easy-to-manage websites.",
     provider: {
       "@type": "Organization",
       name: "Kaizen Web",
@@ -132,17 +133,26 @@ export default function WordPressWebDesign() {
     },
     areaServed: {
       "@type": "City",
-      name: "Liverpool"
+      name: "Liverpool",
     },
-    image: "https://cdn.builder.io/api/v1/image/assets%2Fe4ae46bbd81b4b95bef54d66dd9748cc%2Fa18f81c064614dceb4a9d1fcb2c9f64b?format=webp&width=800",
+    image:
+      "https://cdn.builder.io/api/v1/image/assets%2Fe4ae46bbd81b4b95bef54d66dd9748cc%2Fa18f81c064614dceb4a9d1fcb2c9f64b?format=webp&width=800",
   };
 
   return (
     <Layout>
       <Helmet>
-        <title>WordPress Web Design Liverpool | Fast, Secure, Easy-to-Manage</title>
-        <meta name="description" content="Custom WordPress web design for Liverpool & Wirral businesses. Fast, secure, and easy-to-manage websites with powerful features. No bloat, no gimmicks." />
-        <meta name="keywords" content="WordPress web design Liverpool, WordPress developer Wirral, custom WordPress websites, managed WordPress" />
+        <title>
+          WordPress Web Design Liverpool | Fast, Secure, Easy-to-Manage
+        </title>
+        <meta
+          name="description"
+          content="Custom WordPress web design for Liverpool & Wirral businesses. Fast, secure, and easy-to-manage websites with powerful features. No bloat, no gimmicks."
+        />
+        <meta
+          name="keywords"
+          content="WordPress web design Liverpool, WordPress developer Wirral, custom WordPress websites, managed WordPress"
+        />
         <script type="application/ld+json">{JSON.stringify(seoSchema)}</script>
       </Helmet>
       {/* Section 1: Hero - Layered Card & Reveal Style */}
@@ -503,7 +513,10 @@ export default function WordPressWebDesign() {
             transition={{ duration: 0.6, delay: 0.2 }}
           >
             Got a broken WordPress site? We also offer{" "}
-            <Link to="/project-rescue" className="text-kaizen-cyan hover:underline">
+            <Link
+              to="/project-rescue"
+              className="text-kaizen-cyan hover:underline"
+            >
               project rescue services
             </Link>
             .

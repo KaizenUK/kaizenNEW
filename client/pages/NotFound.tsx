@@ -22,7 +22,10 @@ const NotFound = () => {
     <Layout>
       <Helmet>
         <title>Page Not Found | Kaizen Web</title>
-        <meta name="description" content="The page you're looking for doesn't exist. Let's get your project back on track. Book a Project Rescue call with Kaizen Web." />
+        <meta
+          name="description"
+          content="The page you're looking for doesn't exist. Let's get your project back on track. Book a Project Rescue call with Kaizen Web."
+        />
         <meta name="robots" content="noindex, nofollow" />
       </Helmet>
 
@@ -51,7 +54,8 @@ const NotFound = () => {
               Project Not Found
             </p>
             <p className="text-lg text-gray-400 mb-8 leading-relaxed max-w-2xl mx-auto">
-              Looks like you've ventured into the void. Don't let your own project end up here.
+              Looks like you've ventured into the void. Don't let your own
+              project end up here.
             </p>
           </motion.div>
 

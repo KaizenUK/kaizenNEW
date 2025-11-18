@@ -9,7 +9,8 @@ const ThankYou = () => {
     {
       title: "Five Website Mistakes That Quietly Kill Sales",
       slug: "website-mistakes-liverpool",
-      description: "Learn the common pitfalls that are costing you conversions.",
+      description:
+        "Learn the common pitfalls that are costing you conversions.",
     },
     {
       title: "How Much Does a Website Cost in Liverpool in 2025?",
@@ -47,7 +48,10 @@ const ThankYou = () => {
     <Layout>
       <Helmet>
         <title>Thank You | Kaizen Web</title>
-        <meta name="description" content="Thanks for reaching out. Check your email for your calendar invite. Read our latest insights while you wait." />
+        <meta
+          name="description"
+          content="Thanks for reaching out. Check your email for your calendar invite. Read our latest insights while you wait."
+        />
         <meta name="robots" content="noindex, follow" />
       </Helmet>
 
@@ -76,7 +80,8 @@ const ThankYou = () => {
               variants={itemVariants}
               className="text-xl text-gray-400 mb-8 max-w-2xl mx-auto leading-relaxed"
             >
-              If you booked a call, check your email for the calendar invite. We look forward to speaking.
+              If you booked a call, check your email for the calendar invite. We
+              look forward to speaking.
             </motion.p>
 
             <motion.div

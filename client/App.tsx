@@ -19,9 +19,13 @@ import Index from "./pages/Index";
 const NotFound = lazy(() => import("./pages/NotFound"));
 const WebDesign = lazy(() => import("./pages/services/WebDesign"));
 const LocalSeo = lazy(() => import("./pages/services/LocalSeo"));
-const DigitalTransformation = lazy(() => import("./pages/services/DigitalTransformation"));
+const DigitalTransformation = lazy(
+  () => import("./pages/services/DigitalTransformation"),
+);
 const Ecommerce = lazy(() => import("./pages/services/Ecommerce"));
-const WordPressWebDesign = lazy(() => import("./pages/services/WordPressWebDesign"));
+const WordPressWebDesign = lazy(
+  () => import("./pages/services/WordPressWebDesign"),
+);
 const CityCentre = lazy(() => import("./pages/services/CityCentre"));
 const ContractProductOwner = lazy(() => import("./pages/ContractProductOwner"));
 const ProjectRescue = lazy(() => import("./pages/ProjectRescue"));
@@ -34,9 +38,15 @@ const About = lazy(() => import("./pages/About"));
 const Pledge = lazy(() => import("./pages/Pledge"));
 const AgileCoaching = lazy(() => import("./pages/AgileCoaching"));
 const ProductOwner = lazy(() => import("./pages/ProductOwner"));
-const AsCollectionsCase = lazy(() => import("./pages/caseStudies/AsCollections"));
-const HelenMooreHairdressingCase = lazy(() => import("./pages/caseStudies/HelenMooreHairdressing"));
-const IndependentRetailerCase = lazy(() => import("./pages/caseStudies/IndependentRetailer"));
+const AsCollectionsCase = lazy(
+  () => import("./pages/caseStudies/AsCollections"),
+);
+const HelenMooreHairdressingCase = lazy(
+  () => import("./pages/caseStudies/HelenMooreHairdressing"),
+);
+const IndependentRetailerCase = lazy(
+  () => import("./pages/caseStudies/IndependentRetailer"),
+);
 const PrivacyPolicy = lazy(() => import("./pages/PrivacyPolicy"));
 const CookiePolicy = lazy(() => import("./pages/CookiePolicy"));
 const GDPRPolicy = lazy(() => import("./pages/GDPRPolicy"));
@@ -149,22 +159,46 @@ function AppContent() {
           {/* Public Routes */}
           <Route path="/" element={<Index />} />
           <Route path="/services" element={<Services />} />
-          <Route path="/services/web-design-liverpool" element={<WebDesign />} />
+          <Route
+            path="/services/web-design-liverpool"
+            element={<WebDesign />}
+          />
           <Route path="/services/local-seo" element={<LocalSeo />} />
-          <Route path="/services/digital-transformation" element={<DigitalTransformation />} />
+          <Route
+            path="/services/digital-transformation"
+            element={<DigitalTransformation />}
+          />
           <Route path="/services/ecommerce" element={<Ecommerce />} />
-          <Route path="/services/wordpress-web-design" element={<WordPressWebDesign />} />
-          <Route path="/web-design-liverpool-city-centre" element={<CityCentre />} />
-          <Route path="/contract-product-owner" element={<ContractProductOwner />} />
+          <Route
+            path="/services/wordpress-web-design"
+            element={<WordPressWebDesign />}
+          />
+          <Route
+            path="/web-design-liverpool-city-centre"
+            element={<CityCentre />}
+          />
+          <Route
+            path="/contract-product-owner"
+            element={<ContractProductOwner />}
+          />
           <Route path="/project-rescue" element={<ProjectRescue />} />
           <Route path="/about" element={<About />} />
           <Route path="/pledge" element={<Pledge />} />
           <Route path="/agile-coaching" element={<AgileCoaching />} />
           <Route path="/product-owner" element={<ProductOwner />} />
           <Route path="/case-studies" element={<CaseStudies />} />
-          <Route path="/case-studies/as-collections" element={<AsCollectionsCase />} />
-          <Route path="/case-studies/helen-moore-hairdressing" element={<HelenMooreHairdressingCase />} />
-          <Route path="/case-studies/independent-retailer" element={<IndependentRetailerCase />} />
+          <Route
+            path="/case-studies/as-collections"
+            element={<AsCollectionsCase />}
+          />
+          <Route
+            path="/case-studies/helen-moore-hairdressing"
+            element={<HelenMooreHairdressingCase />}
+          />
+          <Route
+            path="/case-studies/independent-retailer"
+            element={<IndependentRetailerCase />}
+          />
           <Route path="/blog" element={<Blog />} />
           <Route path="/blog/:slug" element={<BlogDetail />} />
           <Route path="/contact" element={<Contact />} />

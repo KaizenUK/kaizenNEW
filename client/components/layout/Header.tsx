@@ -114,7 +114,8 @@ const Header: React.FC<HeaderProps> = ({
         {
           label: "Liverpool City Centre",
           href: "/web-design-liverpool-city-centre",
-          description: "Web design for Baltic Triangle and city centre businesses.",
+          description:
+            "Web design for Baltic Triangle and city centre businesses.",
           icon: <MapPin className="w-4 h-4" />,
         },
         {
