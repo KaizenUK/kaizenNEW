@@ -723,7 +723,7 @@ export default function BlogDetail() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.6, delay: 0.8 }}
                 >
-                  <h2 className="text-3xl font-heading font-bold mb-8">
+                  <h2 className="text-3xl font-heading font-bold text-gray-950 dark:text-white mb-8">
                     More from the Blog
                   </h2>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -736,12 +736,12 @@ export default function BlogDetail() {
                       >
                         <Link
                           to={`/blog/${relatedPost.slug}`}
-                          className="group p-4 border border-gray-700 rounded-lg hover:border-blue-500/50 hover:bg-gray-800/50 transition block"
+                          className="group p-4 border border-gray-200 dark:border-gray-700 rounded-lg hover:border-blue-500/50 dark:hover:border-blue-500/50 hover:bg-gray-100 dark:hover:bg-gray-800/50 transition block"
                         >
-                          <h4 className="font-heading font-bold text-white group-hover:text-blue-300 transition mb-2">
+                          <h4 className="font-heading font-bold text-gray-950 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-300 transition mb-2">
                             {relatedPost.title}
                           </h4>
-                          <p className="text-gray-500 text-sm font-mono">
+                          <p className="text-gray-600 dark:text-gray-500 text-sm font-mono">
                             {relatedPost.publishedDate
                               ? new Date(
                                   relatedPost.publishedDate,
