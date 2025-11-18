@@ -108,7 +108,7 @@ const Footer: React.FC<FooterProps> = ({ theme }) => {
 
       <div className="relative z-10 container mx-auto px-4 py-16">
         {/* Bento Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-16 auto-rows-max">
           {/* Block A: Dynamic CTA (Large, spanning full width or 2 columns) */}
           <motion.div
             className="md:col-span-2 lg:col-span-2 p-8 rounded-2xl border border-white/5 bg-gray-900/50 backdrop-blur-sm"
