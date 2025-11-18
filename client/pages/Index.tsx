@@ -70,10 +70,23 @@ const GlowingGridHero = () => {
   return (
     <section className="relative min-h-screen bg-gray-950 text-white flex items-center py-20 overflow-hidden">
       {/* SVG Grid Background */}
-      <svg className="absolute inset-0 w-full h-full pointer-events-none" preserveAspectRatio="none">
+      <svg
+        className="absolute inset-0 w-full h-full pointer-events-none"
+        preserveAspectRatio="none"
+      >
         <defs>
-          <pattern id="hero-grid" width="60" height="60" patternUnits="userSpaceOnUse">
-            <path d="M 60 0 L 0 0 0 60" fill="none" stroke="rgba(0, 255, 255, 0.1)" strokeWidth="0.5" />
+          <pattern
+            id="hero-grid"
+            width="60"
+            height="60"
+            patternUnits="userSpaceOnUse"
+          >
+            <path
+              d="M 60 0 L 0 0 0 60"
+              fill="none"
+              stroke="rgba(0, 255, 255, 0.1)"
+              strokeWidth="0.5"
+            />
           </pattern>
           <radialGradient id="glow-center" cx="50%" cy="35%">
             <stop offset="0%" stopColor="rgba(0, 255, 255, 0.25)" />

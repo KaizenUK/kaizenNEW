@@ -115,7 +115,8 @@ function addIdsToHeadings(html: string): string {
 function decodeHtmlEntities(html: string): string {
   if (!html) return "";
   const parser = new DOMParser();
-  const decoded = parser.parseFromString(html, "text/html").documentElement.textContent || "";
+  const decoded =
+    parser.parseFromString(html, "text/html").documentElement.textContent || "";
   return decoded;
 }
 
@@ -221,7 +222,9 @@ function TableOfContents({ items, activeId }: TableOfContentsProps) {
                 transition={{ duration: 0.3 }}
                 style={{ originY: "center" }}
               />
-              <span className={isActive ? "text-kaizen-cyan font-bold" : ""}>{item.title}</span>
+              <span className={isActive ? "text-kaizen-cyan font-bold" : ""}>
+                {item.title}
+              </span>
             </motion.a>
           );
         })}
@@ -470,7 +473,9 @@ export default function BlogDetail() {
         entries.forEach((entry) => {
           // Only consider headings that are above or at the viewport
           if (entry.boundingClientRect.top <= window.innerHeight * 0.3) {
-            const distance = Math.abs(entry.boundingClientRect.top - window.innerHeight * 0.3);
+            const distance = Math.abs(
+              entry.boundingClientRect.top - window.innerHeight * 0.3,
+            );
             if (distance < closestDistance) {
               closestDistance = distance;
               closestHeading = entry;
