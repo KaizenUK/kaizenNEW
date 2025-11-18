@@ -81,7 +81,7 @@ const ThankYou = () => {
 
             <motion.div
               variants={itemVariants}
-              className="flex flex-col sm:flex-row gap-4 justify-center"
+              className="flex flex-col sm:flex-row gap-4 justify-center flex-wrap"
             >
               <Link
                 to="/"
@@ -92,8 +92,16 @@ const ThankYou = () => {
               </Link>
 
               <Link
-                to="/blog"
+                to="/services/web-design-liverpool"
                 className="inline-flex items-center justify-center gap-2 px-8 py-3 border-2 border-kaizen-cyan text-kaizen-cyan font-heading font-bold rounded-lg hover:bg-kaizen-cyan/10 transition"
+              >
+                Explore Web Design Services
+                <ArrowRight size={18} />
+              </Link>
+
+              <Link
+                to="/blog"
+                className="inline-flex items-center justify-center gap-2 px-8 py-3 border-2 border-white/30 text-white/70 font-heading font-bold rounded-lg hover:border-white/60 hover:text-white transition"
               >
                 Read Our Blog
                 <ArrowRight size={18} />
