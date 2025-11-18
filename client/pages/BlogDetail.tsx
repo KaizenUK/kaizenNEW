@@ -155,11 +155,11 @@ function ImageWithSkeleton({ src, alt }: ImageWithSkeletonProps) {
   const [hasError, setHasError] = useState(false);
 
   return (
-    <div className="relative w-full bg-gray-800 rounded-lg overflow-hidden">
+    <div className="relative w-full bg-gray-200 dark:bg-gray-800 rounded-lg overflow-hidden">
       <AnimatePresence>
         {isLoading && (
           <motion.div
-            className="absolute inset-0 bg-gradient-to-r from-gray-800 via-gray-700 to-gray-800 bg-[length:200%_100%]"
+            className="absolute inset-0 bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 dark:from-gray-800 dark:via-gray-700 dark:to-gray-800 bg-[length:200%_100%]"
             animate={{ backgroundPosition: ["0% 0%", "200% 0%"] }}
             transition={{ duration: 2, repeat: Infinity }}
             exit={{ opacity: 0 }}
@@ -179,7 +179,7 @@ function ImageWithSkeleton({ src, alt }: ImageWithSkeletonProps) {
         decoding="async"
       />
       {hasError && (
-        <div className="absolute inset-0 flex items-center justify-center bg-gray-800 text-gray-500">
+        <div className="absolute inset-0 flex items-center justify-center bg-gray-200 dark:bg-gray-800 text-gray-600 dark:text-gray-500">
           <span className="text-sm">Image failed to load</span>
         </div>
       )}
