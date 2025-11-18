@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { ArrowRight, Code2 } from "lucide-react";
 import { Link } from "react-router-dom";
+import { Helmet } from "react-helmet-async";
 
 import builder from "@/builder";
 import { fetchPosts } from "../../src/api/wordpress";
@@ -52,33 +53,6 @@ function extractImageUrl(image: CoverImage): string {
   return DEFAULT_IMAGE;
 }
 
-interface TypingTextProps {
-  text: string;
-  speed?: number;
-}
-
-function TypingText({ text, speed = 100 }: TypingTextProps) {
-  const [displayText, setDisplayText] = useState("");
-  const [index, setIndex] = useState(0);
-
-  useEffect(() => {
-    if (index < text.length) {
-      const timeout = setTimeout(() => {
-        setDisplayText((prev) => prev + text[index]);
-        setIndex((prev) => prev + 1);
-      }, speed);
-      return () => clearTimeout(timeout);
-    }
-  }, [index, text, speed]);
-
-  return (
-    <span>
-      {displayText}
-      <span className="animate-pulse">_</span>
-    </span>
-  );
-}
-
 export default function Blog() {
   const [selectedTag, setSelectedTag] = useState("All");
   const [posts, setPosts] = useState<ProcessedPost[]>([]);
@@ -89,7 +63,6 @@ export default function Blog() {
     const loadPosts = async () => {
       try {
         setIsLoading(true);
-        // Use WordPress as the source of truth
         const results = await fetchPosts();
 
         const processedPosts: ProcessedPost[] = (results || [])
@@ -107,11 +80,9 @@ export default function Blog() {
 
             const tags: string[] = [];
 
-            // Attempt to extract tags from _embedded terms if present
             try {
               const terms = post._embedded?.["wp:term"];
               if (Array.isArray(terms)) {
-                // terms is array of taxonomy arrays
                 terms.forEach((tax: any[]) => {
                   tax.forEach((t) => {
                     if (t && t.name) tags.push(t.name);
@@ -138,7 +109,6 @@ export default function Blog() {
               new Date(a.publishedDate).getTime(),
           );
 
-        // Extract unique tags
         const uniqueTags = new Set<string>();
         processedPosts.forEach((post) => {
           (post.tags || []).forEach((tag) => {
@@ -163,10 +133,17 @@ export default function Blog() {
   );
 
   const featuredPost = filteredPosts[0];
-  const otherPosts = filteredPosts.slice(1);
+  const upNextPosts = filteredPosts.slice(1, 4);
+  const remainingPosts = filteredPosts.slice(4);
 
   return (
     <Layout>
+      <Helmet>
+        <title>Web Design & Agile Insights | Kaizen Blog</title>
+        <meta name="description" content="Practical guides on web design, agile delivery, and product ownership. Learn from Kaizen's expert-led insights." />
+        <meta name="keywords" content="blog, web design, agile delivery, product ownership, Liverpool" />
+      </Helmet>
+
       {/* Page Loading Animation */}
       <AnimatePresence>
         {isLoading && (
@@ -186,249 +163,219 @@ export default function Blog() {
         )}
       </AnimatePresence>
 
-      {/* Hero Section */}
-      <motion.section
-        className="bg-gradient-to-br from-gray-950 via-gray-900 to-black text-white py-20 md:py-32 px-4"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.6 }}
-      >
-        <div className="container mx-auto">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            {/* Left: Title + Typing Effect */}
-            <motion.div
-              className="max-w-2xl"
-              initial={{ y: 20, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-            >
-              <h1 className="text-5xl md:text-6xl font-heading font-bold mb-6 leading-tight">
-                The Kaizen Blog
-              </h1>
-              <p className="text-xl md:text-2xl font-mono text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-purple-400 to-amber-400 mb-8">
-                <TypingText text="Iterate. Ship. Improve." speed={80} />
-              </p>
-              <p className="text-lg text-gray-300 mb-8 leading-relaxed">
-                Deep dives into web design, Agile methodology, and building
-                products that matter. We write about what we actually do, not
-                what sounds good.
-              </p>
-              <div className="flex gap-4">
-                <span className="inline-block px-3 py-1 bg-gray-800 border border-gray-700 rounded text-xs font-mono text-gray-300">
-                  Design Systems
-                </span>
-                <span className="inline-block px-3 py-1 bg-gray-800 border border-gray-700 rounded text-xs font-mono text-gray-300">
-                  Agile Delivery
-                </span>
-                <span className="inline-block px-3 py-1 bg-gray-800 border border-gray-700 rounded text-xs font-mono text-gray-300">
-                  Tech
-                </span>
-              </div>
-            </motion.div>
+      {/* Page Header - The Masthead */}
+      <section className="bg-gradient-to-b from-gray-950 via-gray-900 to-gray-950 text-white py-20 md:py-32 px-4">
+        <div className="container mx-auto max-w-6xl">
+          {/* Massive Graphic Header */}
+          <motion.h1
+            className="text-7xl md:text-9xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-b from-white to-gray-800/20 mb-8 leading-none"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+          >
+            INSIGHTS
+          </motion.h1>
 
-            {/* Right: Featured Post Card */}
-            {featuredPost && (
-              <Link to={`/blog/${featuredPost.slug}`} className="block h-80">
-                <motion.div
-                  className="relative group h-80 rounded-xl overflow-hidden border border-gray-700 hover:border-blue-500/50 transition-all duration-300"
-                  initial={{ y: 20, opacity: 0 }}
-                  animate={{ y: 0, opacity: 1 }}
-                  transition={{ duration: 0.6, delay: 0.4 }}
-                  whileHover={{ y: -8 }}
-                >
-                  <div className="absolute inset-0 bg-gradient-to-r from-blue-500/0 via-purple-500/0 to-amber-500/0 group-hover:from-blue-500/20 group-hover:via-purple-500/20 group-hover:to-amber-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
+          {/* Sub-Headline */}
+          <motion.p
+            className="text-xl md:text-2xl text-white/70 mb-12 font-light leading-relaxed max-w-3xl"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+          >
+            Practical guides on Web Design, Agile Delivery, and Product Ownership.
+          </motion.p>
 
-                  <img
-                    src={featuredPost.image}
-                    alt={featuredPost.title}
-                    className="w-full h-full object-cover"
-                    loading="lazy"
-                    decoding="async"
-                  />
-
-                  <div className="absolute inset-0 bg-gradient-to-t from-gray-950 via-transparent to-transparent" />
-
-                  <div className="absolute bottom-0 left-0 right-0 p-6">
-                    <div className="flex items-center gap-2 mb-3 flex-wrap">
-                      {featuredPost.tags.slice(0, 2).map((tag, tagIndex) => (
-                        <span
-                          key={`hero-tag-${tag}-${tagIndex}`}
-                          className={`text-xs font-mono font-bold tracking-widest ${
-                            TAG_COLORS[tag.toLowerCase()] || "text-gray-400"
-                          }`}
-                        >
-                          {tag}
-                        </span>
-                      ))}
-                      <span className="text-gray-500 text-xs font-mono ml-auto">
-                        {new Date(
-                          featuredPost.publishedDate,
-                        ).toLocaleDateString()}
-                      </span>
-                    </div>
-                    <h3 className="text-xl font-heading font-bold mb-3 text-white group-hover:text-blue-300 transition">
-                      {featuredPost.title}
-                    </h3>
-                    <div className="flex items-center gap-2 text-blue-400 font-mono text-sm opacity-0 group-hover:opacity-100 translate-x-0 group-hover:translate-x-1 transition-all">
-                      Read <ArrowRight size={16} />
-                    </div>
-                  </div>
-                </motion.div>
-              </Link>
-            )}
-          </div>
-        </div>
-      </motion.section>
-
-      {/* Category Filter */}
-      <motion.section
-        className="bg-gray-950 border-b border-gray-800 px-4 py-8"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.6, delay: 0.3 }}
-      >
-        <div className="container mx-auto">
-          <p className="text-gray-500 text-sm font-mono mb-4">Filter by tags</p>
-          <div className="flex flex-wrap gap-3">
+          {/* Filter Bar - Horizontal Scrolling Glass Chips */}
+          <motion.div
+            className="flex gap-3 overflow-x-auto pb-4 -mx-4 px-4 scrollbar-hide"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.4 }}
+          >
             {allTags.map((tag) => (
               <motion.button
-                key={`tag-chip-${tag}`}
+                key={`filter-chip-${tag}`}
                 onClick={() => setSelectedTag(tag)}
-                className={`px-4 py-2 rounded-lg font-mono text-xs font-bold tracking-widest transition-all ${
+                className={`px-4 py-2 rounded-full font-mono text-sm font-bold whitespace-nowrap transition-all ${
                   selectedTag === tag
-                    ? "bg-gradient-to-r from-blue-500 to-purple-500 text-white"
-                    : "bg-gray-800 text-gray-300 hover:bg-gray-700 border border-gray-700"
+                    ? "bg-white text-black"
+                    : "bg-white/10 backdrop-blur border border-white/10 text-white/70 hover:bg-white/20"
                 }`}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.4, delay: 0.3 }}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
               >
                 {tag}
               </motion.button>
             ))}
-          </div>
+          </motion.div>
         </div>
-      </motion.section>
+      </section>
 
-      {/* Bento Grid */}
+      {/* Bento Grid Section */}
       <section className="bg-gray-950 px-4 py-20">
-        <div className="container mx-auto">
+        <div className="container mx-auto max-w-6xl">
           <AnimatePresence mode="wait">
             {filteredPosts.length > 0 ? (
               <motion.div
                 key={selectedTag}
-                className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+                className="grid grid-cols-1 md:grid-cols-12 gap-6 auto-rows-[minmax(250px,auto)]"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                transition={{ duration: 0.3 }}
+                transition={{ duration: 0.5 }}
               >
-                {/* Featured Post - spans 2 columns */}
+                {/* Slot 1: Feature Post - 8 cols, 2 rows */}
                 {featuredPost && (
                   <motion.div
-                    key={`featured-${featuredPost.id}`}
-                    layoutId="featured-post"
-                    initial={{ opacity: 0, scale: 0.8 }}
+                    key={`feature-${featuredPost.id}`}
+                    className="col-span-1 md:col-span-8 row-span-2"
+                    initial={{ opacity: 0, scale: 0.95 }}
                     animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.8 }}
-                    transition={{ duration: 0.4 }}
-                    className="lg:col-span-2"
+                    transition={{ duration: 0.5 }}
                   >
                     <Link
                       to={`/blog/${featuredPost.slug}`}
-                      className="group relative overflow-hidden rounded-xl border border-gray-700 hover:border-blue-500/50 transition-all duration-300 bg-gray-900 h-80 block"
+                      className="group relative overflow-hidden rounded-3xl border border-white/5 h-full block"
                     >
-                      <div className="absolute inset-0 bg-gradient-to-r from-blue-500/0 via-purple-500/0 to-amber-500/0 group-hover:from-blue-500/20 group-hover:via-purple-500/20 group-hover:to-amber-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
-
                       <img
                         src={featuredPost.image}
                         alt={featuredPost.title}
-                        className="w-full h-full object-cover"
+                        className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                         loading="lazy"
                         decoding="async"
                       />
 
                       <div className="absolute inset-0 bg-gradient-to-t from-gray-950 via-gray-950/40 to-transparent" />
 
-                      <div className="absolute bottom-0 left-0 right-0 p-6">
-                        <div className="flex items-center gap-3 mb-4 flex-wrap">
-                          {featuredPost.tags
-                            .slice(0, 2)
-                            .map((tag, tagIndex) => (
-                              <span
-                                key={`grid-featured-tag-${tag}-${tagIndex}`}
-                                className={`text-xs font-mono font-bold tracking-widest ${
-                                  TAG_COLORS[tag.toLowerCase()] ||
-                                  "text-gray-400"
-                                }`}
-                              >
-                                {tag}
-                              </span>
-                            ))}
-                          <span className="text-gray-500 text-xs font-mono ml-auto">
+                      <div className="absolute bottom-0 left-0 right-0 p-8">
+                        <h2 className="text-3xl font-sans font-bold tracking-tight text-white mb-4 leading-tight">
+                          {featuredPost.title}
+                        </h2>
+                        <p className="text-white/60 text-sm line-clamp-2 mb-4">
+                          {featuredPost.excerpt}
+                        </p>
+                        <div className="flex items-center gap-3">
+                          {featuredPost.tags.slice(0, 2).map((tag, idx) => (
+                            <span
+                              key={`feature-tag-${idx}`}
+                              className={`text-xs font-mono text-white/50 uppercase tracking-wider`}
+                            >
+                              {tag}
+                            </span>
+                          ))}
+                          <span className="text-xs font-mono text-gray-500 ml-auto">
                             {new Date(
                               featuredPost.publishedDate,
                             ).toLocaleDateString()}
                           </span>
-                        </div>
-                        <h3 className="text-2xl font-heading font-bold mb-4 text-white group-hover:text-blue-300 transition line-clamp-2">
-                          {featuredPost.title}
-                        </h3>
-                        <div className="flex items-center gap-2 text-blue-400 font-mono text-sm opacity-0 group-hover:opacity-100 translate-x-0 group-hover:translate-x-2 transition-all">
-                          Read Article <ArrowRight size={16} />
                         </div>
                       </div>
                     </Link>
                   </motion.div>
                 )}
 
-                {/* Grid Posts */}
-                {otherPosts.map((post, index) => (
+                {/* Slot 2: Up Next List - 4 cols, 2 rows */}
+                <motion.div
+                  className="col-span-1 md:col-span-4 row-span-2 bg-gray-950/50 border border-white/5 rounded-3xl overflow-hidden p-6"
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.5, delay: 0.1 }}
+                >
+                  <h3 className="text-sm font-mono font-bold text-white/50 uppercase tracking-widest mb-6">
+                    Up Next
+                  </h3>
+
+                  <div className="space-y-4">
+                    {upNextPosts.map((post, idx) => (
+                      <Link
+                        key={`upnext-${post.id}`}
+                        to={`/blog/${post.slug}`}
+                        className="flex gap-3 group hover:opacity-80 transition"
+                      >
+                        <div className="w-16 h-16 flex-shrink-0 rounded-lg overflow-hidden border border-white/5">
+                          <img
+                            src={post.image}
+                            alt={post.title}
+                            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                            loading="lazy"
+                            decoding="async"
+                          />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <h4 className="text-sm font-sans font-bold text-white leading-tight line-clamp-2 mb-1">
+                            {post.title}
+                          </h4>
+                          <p className="text-xs font-mono text-gray-500">
+                            {new Date(post.publishedDate).toLocaleDateString()}
+                          </p>
+                        </div>
+                      </Link>
+                    ))}
+                  </div>
+                </motion.div>
+
+                {/* Slot 3: CTA Card - 4 cols, 1 row */}
+                <motion.div
+                  className="col-span-1 md:col-span-4 bg-gradient-to-br from-cyan-500/20 to-green-500/20 border border-white/10 rounded-3xl overflow-hidden p-8 flex flex-col justify-center"
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.5, delay: 0.2 }}
+                >
+                  <h3 className="text-xl font-sans font-bold text-white mb-4">
+                    Need a project rescue?
+                  </h3>
+                  <p className="text-white/70 text-sm mb-6 leading-relaxed">
+                    Book a triage call to discuss your website challenges.
+                  </p>
+                  <Link
+                    to="/project-rescue"
+                    className="inline-flex items-center gap-2 text-cyan-400 font-medium hover:text-cyan-300 transition"
+                  >
+                    Book a Call <ArrowRight size={16} />
+                  </Link>
+                </motion.div>
+
+                {/* Slot 4: Standard Grid Posts - 4 cols each */}
+                {remainingPosts.map((post, idx) => (
                   <motion.div
-                    key={post.id || `post-fallback-${index}`}
-                    layoutId={`post-${post.id}`}
-                    initial={{ opacity: 0, scale: 0.8 }}
+                    key={`standard-${post.id}`}
+                    className="col-span-1 md:col-span-4"
+                    initial={{ opacity: 0, scale: 0.95 }}
                     animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.8 }}
-                    transition={{ duration: 0.4, delay: index * 0.1 }}
+                    transition={{ duration: 0.5, delay: 0.3 + idx * 0.05 }}
                   >
                     <Link
                       to={`/blog/${post.slug}`}
-                      className="group relative overflow-hidden rounded-xl border border-gray-700 hover:border-blue-500/50 transition-all duration-300 bg-gray-900 h-64 aspect-square block"
+                      className="group relative overflow-hidden rounded-3xl border border-white/5 bg-gray-950/50 hover:border-white/10 transition-all h-full flex flex-col"
                     >
-                      <div className="absolute inset-0 bg-gradient-to-r from-blue-500/0 via-purple-500/0 to-amber-500/0 group-hover:from-blue-500/20 group-hover:via-purple-500/20 group-hover:to-amber-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
+                      <div className="relative h-48 overflow-hidden">
+                        <img
+                          src={post.image}
+                          alt={post.title}
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                          loading="lazy"
+                          decoding="async"
+                        />
+                      </div>
 
-                      <img
-                        src={post.image}
-                        alt={post.title}
-                        className="w-full h-full object-cover"
-                        loading="lazy"
-                        decoding="async"
-                      />
-
-                      <div className="absolute inset-0 bg-gradient-to-t from-gray-950 via-transparent to-transparent" />
-
-                      <div className="absolute bottom-0 left-0 right-0 p-4">
-                        <div className="flex items-center gap-2 mb-3 flex-wrap">
-                          {post.tags.slice(0, 1).map((tag, tagIndex) => (
-                            <span
-                              key={`grid-post-tag-${post.id}-${tagIndex}`}
-                              className={`text-xs font-mono font-bold tracking-widest ${
-                                TAG_COLORS[tag.toLowerCase()] || "text-gray-400"
-                              }`}
-                            >
+                      <div className="p-6 flex-1 flex flex-col">
+                        <h3 className="text-lg font-sans font-bold text-white mb-3 leading-tight line-clamp-2 flex-1">
+                          {post.title}
+                        </h3>
+                        <p className="text-white/50 text-sm line-clamp-2 mb-4">
+                          {post.excerpt}
+                        </p>
+                        <div className="flex items-center gap-2 text-white/40 text-xs">
+                          {post.tags.slice(0, 1).map((tag, idx) => (
+                            <span key={`post-tag-${idx}`} className="font-mono">
                               {tag}
                             </span>
                           ))}
+                          <span className="ml-auto font-mono text-gray-600">
+                            {new Date(post.publishedDate).toLocaleDateString()}
+                          </span>
                         </div>
-                        <h3 className="text-sm font-heading font-bold text-white group-hover:text-blue-300 transition line-clamp-2">
-                          {post.title}
-                        </h3>
-                        <p className="text-gray-400 text-xs mt-2 line-clamp-2">
-                          {post.excerpt}
-                        </p>
                       </div>
                     </Link>
                   </motion.div>
@@ -448,39 +395,6 @@ export default function Blog() {
           </AnimatePresence>
         </div>
       </section>
-
-      {/* CTA Section */}
-      <motion.section
-        className="bg-gray-900 border-t border-gray-800 px-4 py-16"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.6 }}
-      >
-        <div className="container mx-auto max-w-2xl">
-          <motion.div
-            className="bg-gray-800/50 border border-gray-700 rounded-lg p-8 font-mono"
-            initial={{ y: 20, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            whileHover={{ scale: 1.02 }}
-          >
-            <p className="text-green-400 text-sm mb-4">$ ready_to_sprint();</p>
-            <h3 className="text-2xl font-heading font-bold text-white mb-3">
-              Ready to sprint? Let's build your MVP.
-            </h3>
-            <p className="text-gray-400 text-sm mb-6">
-              Take your idea from concept to launch with Agile delivery and
-              clear thinking.
-            </p>
-            <Link
-              to="/contact"
-              className="inline-block px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-500 text-white font-heading font-bold rounded-lg hover:opacity-90 transition flex items-center gap-2"
-            >
-              Start Project <ArrowRight size={18} />
-            </Link>
-          </motion.div>
-        </div>
-      </motion.section>
     </Layout>
   );
 }
