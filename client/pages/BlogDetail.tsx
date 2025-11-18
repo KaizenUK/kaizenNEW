@@ -8,6 +8,7 @@ import builder from "@/builder";
 import Layout from "@/components/Layout";
 import { fetchPostBySlug, fetchPosts } from "../../src/api/wordpress";
 import { SeoFromYoast } from "../../src/components/SeoFromYoast";
+import { decodeHtmlEntities, stripHtmlTags } from "@/lib/html-utils";
 
 type CoverImage = string | { url?: string } | null;
 type TableOfContentsItem = { id: string; title: string; level: number };
