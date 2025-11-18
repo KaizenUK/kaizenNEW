@@ -194,12 +194,12 @@ interface TableOfContentsProps {
 function TableOfContents({ items, activeId }: TableOfContentsProps) {
   return (
     <motion.div
-      className="bg-gray-900 border border-gray-800 rounded-lg p-6"
+      className="bg-gray-100 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-lg p-6"
       initial={{ opacity: 0, x: -20 }}
       animate={{ opacity: 1, x: 0 }}
       transition={{ duration: 0.5, delay: 0.6 }}
     >
-      <p className="text-xs font-mono text-gray-500 font-bold tracking-widest mb-4">
+      <p className="text-xs font-mono text-gray-600 dark:text-gray-500 font-bold tracking-widest mb-4">
         TABLE OF CONTENTS
       </p>
       <nav className="space-y-1">
@@ -211,8 +211,8 @@ function TableOfContents({ items, activeId }: TableOfContentsProps) {
               href={`#${item.id}`}
               className={`block text-sm py-2.5 px-3 rounded transition-all relative group ${
                 isActive
-                  ? "text-white font-semibold bg-kaizen-cyan/15"
-                  : "text-gray-500 hover:text-gray-300"
+                  ? "text-white dark:text-white font-semibold bg-kaizen-cyan/15"
+                  : "text-gray-700 dark:text-gray-500 hover:text-gray-900 dark:hover:text-gray-300"
               }`}
               whileHover={{ x: 4 }}
               transition={{ duration: 0.2 }}
