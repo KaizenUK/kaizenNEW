@@ -267,9 +267,71 @@ interface RichTextContentProps {
 }
 
 function RichTextContent({ html }: RichTextContentProps) {
+  const contentRef = useRef<HTMLDivElement>(null);
+  const [copiedId, setCopiedId] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!contentRef.current) return;
+
+    // Add copy link functionality to H2 headings
+    const h2s = contentRef.current.querySelectorAll("h2[id]");
+    h2s.forEach((h2) => {
+      const id = h2.getAttribute("id");
+      if (!id) return;
+
+      // Create a wrapper group if not already present
+      if (!h2.parentElement?.classList.contains("group")) {
+        const wrapper = document.createElement("div");
+        wrapper.className = "group relative";
+        h2.parentNode?.insertBefore(wrapper, h2);
+        wrapper.appendChild(h2);
+      }
+
+      // Remove existing copy button if present
+      const existingBtn = h2.querySelector(".copy-link-btn");
+      if (existingBtn) existingBtn.remove();
+
+      // Add copy button
+      const btn = document.createElement("button");
+      btn.className =
+        "copy-link-btn absolute -left-8 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity text-kaizen-cyan hover:text-kaizen-lime p-1";
+      btn.innerHTML = "#";
+      btn.title = "Copy link to this section";
+      btn.type = "button";
+      btn.onclick = (e) => {
+        e.preventDefault();
+        const url = `${window.location.href.split("#")[0]}#${id}`;
+        navigator.clipboard.writeText(url);
+        setCopiedId(id);
+        setTimeout(() => setCopiedId(null), 2000);
+      };
+
+      h2.parentElement?.insertBefore(btn, h2);
+    });
+
+    // Style links with decorative underline
+    const links = contentRef.current.querySelectorAll("a:not(.copy-link-btn)");
+    links.forEach((link) => {
+      link.classList.add(
+        "text-kaizen-cyan",
+        "hover:text-kaizen-lime",
+        "underline",
+        "transition-colors",
+      );
+    });
+
+    // Style blockquotes
+    const blockquotes = contentRef.current.querySelectorAll("blockquote");
+    blockquotes.forEach((bq) => {
+      bq.className =
+        "border-l-4 border-kaizen-cyan pl-4 py-2 my-4 bg-gray-900/50 italic text-gray-300";
+    });
+  }, []);
+
   return (
     <motion.div
-      className="max-w-3xl space-y-4 blog-content"
+      ref={contentRef}
+      className="max-w-3xl space-y-4 blog-content prose prose-invert max-w-none"
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6, delay: 0.3 }}
