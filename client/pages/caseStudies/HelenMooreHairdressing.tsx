@@ -50,12 +50,20 @@ export default function HelenMooreHairdressingCase() {
             </span>
 
             <h1 className="text-5xl md:text-6xl lg:text-7xl font-heading font-black leading-tight text-white">
-              Helen Moore Hairdressing
+              Helen Moore: A High-Performance Wirral Web Design Case Study.
             </h1>
 
             <p className="text-xl md:text-2xl text-white/80 leading-relaxed max-w-3xl">
-              A 0-to-1 build: taking a top-rated Wirral salon from "no website"
-              to a fully booked, high-end online brand.
+              Based in Wallasey, Helen Moore is a Wirral institution. Their previous
+              site was slow and burying their best work. We did not just refresh it;
+              we re-engineered it.
+            </p>
+
+            <p className="text-lg md:text-xl text-white/75 leading-relaxed max-w-3xl">
+              Most salon clients book via Instagram on their phones. We built a custom
+              React front end that loads quickly on 4G, so the journey from
+              "social scroll" to booked appointment feels effortless instead of
+              frustrating.
             </p>
           </motion.div>
         </div>
@@ -194,13 +202,60 @@ export default function HelenMooreHairdressingCase() {
               <h2 className="text-4xl md:text-5xl font-heading font-bold mb-6 text-kaizen-dark dark:text-white">
                 The Result: High Rankings and a Full Calendar
               </h2>
-              <p className="text-lg text-kaizen-text-dark/70 dark:text-white/70 leading-relaxed">
+              <p className="text-lg text-kaizen-text-dark/70 dark:text-white/70 leading-relaxed mb-8">
                 Helen Moore Hairdressing now ranks highly on Google for her key
                 local search terms. The online booking system has dramatically
                 reduced her admin, and clients love the new, easy-to-use site.
-                She's gone from invisible to a dominant online presence in her
+                She has gone from invisible to a dominant online presence in her
                 area.
               </p>
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+                <div className="rounded-xl border border-kaizen-light dark:border-slate-800 bg-white dark:bg-slate-950 p-5">
+                  <p className="text-sm font-mono uppercase tracking-[0.25em] text-kaizen-cyan mb-2">
+                    96/100 Speed
+                  </p>
+                  <p className="text-sm text-kaizen-text-dark/80 dark:text-white/75">
+                    Near perfect Google Lighthouse score for maximum visibility.
+                  </p>
+                </div>
+                <div className="rounded-xl border border-kaizen-light dark:border-slate-800 bg-white dark:bg-slate-950 p-5">
+                  <p className="text-sm font-mono uppercase tracking-[0.25em] text-kaizen-cyan mb-2">
+                    Mobile-first
+                  </p>
+                  <p className="text-sm text-kaizen-text-dark/80 dark:text-white/75">
+                    Optimised for Instagram traffic and small screens first.
+                  </p>
+                </div>
+                <div className="rounded-xl border border-kaizen-light dark:border-slate-800 bg-white dark:bg-slate-950 p-5">
+                  <p className="text-sm font-mono uppercase tracking-[0.25em] text-kaizen-cyan mb-2">
+                    Local SEO
+                  </p>
+                  <p className="text-sm text-kaizen-text-dark/80 dark:text-white/75">
+                    Dominating search results in Wallasey and across the Wirral.
+                  </p>
+                </div>
+              </div>
+
+              <div className="mt-2">
+                <p className="text-xs font-mono uppercase tracking-[0.25em] text-kaizen-text-dark/60 dark:text-white/60 mb-3">
+                  Built With:
+                </p>
+                <div className="flex flex-wrap gap-2 text-xs">
+                  {[
+                    "React front end",
+                    "Headless WordPress",
+                    "Local SEO foundations",
+                  ].map((item) => (
+                    <span
+                      key={item}
+                      className="px-3 py-1 rounded-full bg-kaizen-light dark:bg-slate-900 text-kaizen-text-dark/80 dark:text-white/70 border border-kaizen-light/70 dark:border-slate-800 text-xs"
+                    >
+                      {item}
+                    </span>
+                  ))}
+                </div>
+              </div>
             </motion.div>
           </div>
         </div>
