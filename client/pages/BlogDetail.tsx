@@ -408,7 +408,8 @@ export default function BlogDetail() {
           title: decodeHtmlEntities(wpPost.title?.rendered || "Untitled"),
           slug: wpPost.slug || slug,
           publishedDate: wpPost.date || new Date().toISOString(),
-          modifiedDate: wpPost.modified || wpPost.date || new Date().toISOString(),
+          modifiedDate:
+            wpPost.modified || wpPost.date || new Date().toISOString(),
           body: bodyWithIds,
           coverImage: coverImage,
           excerpt: decodeHtmlEntities(

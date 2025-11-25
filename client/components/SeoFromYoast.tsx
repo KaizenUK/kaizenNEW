@@ -23,10 +23,7 @@ export function SeoFromYoast({ yoast }: { yoast?: YoastHeadJson }) {
         <meta name="description" content={yoast.description} />
       )}
       {yoast.canonical && (
-        <link
-          rel="canonical"
-          href={yoast.canonical.split("?")[0]}
-        />
+        <link rel="canonical" href={yoast.canonical.split("?")[0]} />
       )}
 
       {yoast.og_title && <meta property="og:title" content={yoast.og_title} />}
