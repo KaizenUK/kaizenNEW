@@ -43,8 +43,9 @@ function WirralTopoBackground() {
       {[40, 90, 140, 190, 240, 290, 340].map((y, idx) => (
         <path
           key={y}
-          d={`M 40 ${y} C 200 ${y - 40}, 360 ${y + 20}, 520 ${y - 30} S 760 ${y +
-            10}, 840 ${y - 20}`}
+          d={`M 40 ${y} C 200 ${y - 40}, 360 ${y + 20}, 520 ${y - 30} S 760 ${
+            y + 10
+          }, 840 ${y - 20}`}
           fill="none"
           stroke="url(#wirral-lines)"
           strokeWidth={idx % 2 === 0 ? 1.4 : 0.8}
@@ -52,27 +53,9 @@ function WirralTopoBackground() {
         />
       ))}
 
-      <circle
-        cx="260"
-        cy="150"
-        r="3"
-        fill="#22d3ee"
-        opacity="0.9"
-      />
-      <circle
-        cx="420"
-        cy="210"
-        r="3"
-        fill="#22c55e"
-        opacity="0.9"
-      />
-      <circle
-        cx="560"
-        cy="130"
-        r="3"
-        fill="#38bdf8"
-        opacity="0.9"
-      />
+      <circle cx="260" cy="150" r="3" fill="#22d3ee" opacity="0.9" />
+      <circle cx="420" cy="210" r="3" fill="#22c55e" opacity="0.9" />
+      <circle cx="560" cy="130" r="3" fill="#38bdf8" opacity="0.9" />
     </svg>
   );
 }
@@ -111,9 +94,9 @@ export default function WebDesignWirral() {
               </h1>
 
               <p className="text-lg md:text-xl text-slate-300 max-w-2xl mb-8">
-                We build fast, conversion-focused sites for Heswall, West
-                Kirby, Birkenhead and the wider Wirral. Clear pricing, no
-                retainers, and a delivery process that respects your time.
+                We build fast, conversion-focused sites for Heswall, West Kirby,
+                Birkenhead and the wider Wirral. Clear pricing, no retainers,
+                and a delivery process that respects your time.
               </p>
 
               <div className="flex flex-col sm:flex-row gap-4">
@@ -185,8 +168,8 @@ export default function WebDesignWirral() {
             </h2>
             <p className="text-slate-700 dark:text-slate-300 mb-4">
               We rebuilt Helen Moore Hairdressing&apos;s online presence so new
-              and existing clients could actually find, trust and book them
-              from their phones.
+              and existing clients could actually find, trust and book them from
+              their phones.
             </p>
             <p className="text-slate-700 dark:text-slate-300 mb-6">
               The result: a faster site, clearer messaging, and a booking

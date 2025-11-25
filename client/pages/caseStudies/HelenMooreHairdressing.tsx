@@ -54,16 +54,16 @@ export default function HelenMooreHairdressingCase() {
             </h1>
 
             <p className="text-xl md:text-2xl text-white/80 leading-relaxed max-w-3xl">
-              Based in Wallasey, Helen Moore is a Wirral institution. Their previous
-              site was slow and burying their best work. We did not just refresh it;
-              we re-engineered it.
+              Based in Wallasey, Helen Moore is a Wirral institution. Their
+              previous site was slow and burying their best work. We did not
+              just refresh it; we re-engineered it.
             </p>
 
             <p className="text-lg md:text-xl text-white/75 leading-relaxed max-w-3xl">
-              Most salon clients book via Instagram on their phones. We built a custom
-              React front end that loads quickly on 4G, so the journey from
-              "social scroll" to booked appointment feels effortless instead of
-              frustrating.
+              Most salon clients book via Instagram on their phones. We built a
+              custom React front end that loads quickly on 4G, so the journey
+              from "social scroll" to booked appointment feels effortless
+              instead of frustrating.
             </p>
           </motion.div>
         </div>
@@ -322,9 +322,7 @@ export default function HelenMooreHairdressingCase() {
       {/* Primary CTA */}
       <section className="bg-kaizen-dark dark:bg-slate-950 py-20 px-4">
         <div className="container mx-auto max-w-4xl text-center">
-          <motion.h2
-            className="text-3xl md:text-4xl font-heading font-bold mb-6 text-white"
-          >
+          <motion.h2 className="text-3xl md:text-4xl font-heading font-bold mb-6 text-white">
             Want a site that performs like this?
           </motion.h2>
           <p className="text-base md:text-lg text-white/75 mb-8 max-w-2xl mx-auto">

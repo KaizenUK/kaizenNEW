@@ -71,8 +71,7 @@ const OffCanvasMenu: React.FC<OffCanvasMenuProps> = ({
         {
           label: "Web Design Wirral",
           href: "/web-design-wirral",
-          description:
-            "Web design for Heswall, West Kirby, and Birkenhead.",
+          description: "Web design for Heswall, West Kirby, and Birkenhead.",
           icon: <Map className="w-4 h-4" />,
         },
         {
@@ -90,8 +89,7 @@ const OffCanvasMenu: React.FC<OffCanvasMenuProps> = ({
         {
           label: "Liverpool City Centre",
           href: "/web-design-liverpool-city-centre",
-          description:
-            "Web design for Liverpool city centre businesses.",
+          description: "Web design for Liverpool city centre businesses.",
           icon: <MapPin className="w-4 h-4" />,
         },
       ],
