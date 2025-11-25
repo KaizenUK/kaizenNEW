@@ -9,6 +9,7 @@ import Layout from "@/components/Layout";
 import { fetchPostBySlug, fetchPosts } from "../../src/api/wordpress";
 import { SeoFromYoast } from "../../src/components/SeoFromYoast";
 import { decodeHtmlEntities, stripHtmlTags } from "@/lib/html-utils";
+import { SITE_URL } from "@/lib/seo";
 
 type CoverImage = string | { url?: string } | null;
 type TableOfContentsItem = { id: string; title: string; level: number };
@@ -47,6 +48,7 @@ interface ProcessedPost {
   };
   readingTime: number;
   tableOfContents: TableOfContentsItem[];
+  modifiedDate?: string;
 }
 
 interface RelatedPost {
@@ -406,6 +408,7 @@ export default function BlogDetail() {
           title: decodeHtmlEntities(wpPost.title?.rendered || "Untitled"),
           slug: wpPost.slug || slug,
           publishedDate: wpPost.date || new Date().toISOString(),
+          modifiedDate: wpPost.modified || wpPost.date || new Date().toISOString(),
           body: bodyWithIds,
           coverImage: coverImage,
           excerpt: decodeHtmlEntities(
@@ -564,7 +567,7 @@ export default function BlogDetail() {
       : post?.body
         ? generateDescriptionFromBody(post.body)
         : "");
-  const pageUrl = `https://www.kaizenweb.co.uk/blog/${post?.slug || ""}`;
+  const pageUrl = `${SITE_URL}/blog/${post?.slug || ""}`;
   const coverImageUrl = post?.coverImage || DEFAULT_IMAGE;
 
   // Derive friendly published date + time label
@@ -581,8 +584,46 @@ export default function BlogDetail() {
       })
     : null;
 
+  const modifiedRaw = post?.modifiedDate || post?.publishedDate;
+  const publishedIso = publishedRaw
+    ? new Date(publishedRaw).toISOString()
+    : undefined;
+  const modifiedIso = modifiedRaw
+    ? new Date(modifiedRaw).toISOString()
+    : undefined;
+
+  const articleSchema = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    mainEntityOfPage: {
+      "@type": "WebPage",
+      "@id": pageUrl,
+    },
+    headline: seoTitle,
+    description: seoDescription,
+    image: [coverImageUrl],
+    datePublished: publishedIso,
+    dateModified: modifiedIso || publishedIso,
+    author: {
+      "@type": "Person",
+      name: post.author.name,
+    },
+    publisher: {
+      "@type": "Organization",
+      name: "Kaizen Web",
+    },
+    url: pageUrl,
+  };
+
   return (
     <Layout>
+      {post && (
+        <Helmet>
+          <script type="application/ld+json">
+            {JSON.stringify(articleSchema)}
+          </script>
+        </Helmet>
+      )}
       <SeoFromYoast yoast={yoast} />
 
       {/* Progress Bar with Percentage */}
@@ -598,7 +639,7 @@ export default function BlogDetail() {
 
       {/* Hero Image Section with Parallax */}
       <motion.div
-        className="relative h-96 overflow-hidden bg-gray-200 dark:bg-gray-900"
+        className="relative overflow-hidden bg-gray-200 dark:bg-gray-900 blog-hero"
         initial={{ scale: 1.1 }}
         animate={{ scale: 1 }}
         transition={{ duration: 0.8 }}
@@ -607,6 +648,8 @@ export default function BlogDetail() {
           src={post.coverImage}
           alt={post.title}
           className="w-full h-full object-cover"
+          width={1200}
+          height={675}
           initial={{ scale: 1.1 }}
           animate={{ scale: 1 }}
           transition={{ duration: 1.2 }}

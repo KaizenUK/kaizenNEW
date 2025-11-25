@@ -41,8 +41,9 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       ? location.pathname.slice(0, -1)
       : location.pathname;
   const meta = getPageMeta(normalizedPath);
-  const canonicalUrl =
+  const canonicalUrlBase =
     normalizedPath === "/" ? SITE_URL : `${SITE_URL}${normalizedPath}`;
+  const canonicalUrl = canonicalUrlBase.split("?")[0];
   const keywords = meta.keywords?.join(", ");
   const robotsValue = meta.noIndex ? "noindex, nofollow" : "index, follow";
 
