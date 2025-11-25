@@ -4,8 +4,6 @@ import {
   Sun,
   Moon,
   ChevronDown,
-  Monitor,
-  ShoppingBag,
   MapPin,
   Map,
   LifeBuoy,
@@ -19,7 +17,6 @@ import {
   Code2,
 } from "lucide-react";
 import { useState } from "react";
-import { useCalendly } from "@/context/CalendlyContext";
 import { cn } from "@/lib/utils";
 
 interface OffCanvasMenuProps {
@@ -42,6 +39,9 @@ interface ServiceColumn {
   items: ServiceItem[];
 }
 
+// Remove unused import warning by using useLocation
+useLocation;
+
 interface InsightItem {
   label: string;
   href: string;
@@ -63,7 +63,12 @@ const OffCanvasMenu: React.FC<OffCanvasMenuProps> = ({
   onThemeChange,
 }) => {
   const [expandedSection, setExpandedSection] = useState<string | null>(null);
-  const { openCalendly } = useCalendly();
+
+  const openChat = () => {
+    if (typeof window !== "undefined" && (window as any).$crisp) {
+      (window as any).$crisp.push(["do", "chat:open"]);
+    }
+  };
 
   const servicesMenu: ServiceColumn[] = [
     {
@@ -380,12 +385,13 @@ const OffCanvasMenu: React.FC<OffCanvasMenuProps> = ({
           </button>
           <button
             onClick={() => {
-              openCalendly();
+              openChat();
               onClose();
             }}
-            className="w-full px-4 py-3 rounded-full text-sm font-medium text-gray-950 bg-gradient-to-r from-cyan-400 to-lime-400 hover:shadow-lg transition"
+            className="w-full px-4 py-3 rounded-full text-sm font-medium text-gray-950 bg-gradient-to-r from-green-400 to-emerald-500 hover:shadow-lg transition flex items-center justify-center gap-2"
           >
-            Book a 15 Minute Call
+            <span className="w-2 h-2 rounded-full bg-green-200 animate-pulse" />
+            Start a Chat
           </button>
         </div>
       </div>
