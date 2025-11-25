@@ -457,7 +457,7 @@ export default function Blog() {
                     to="/project-rescue"
                     className="inline-flex items-center gap-2 text-blue-600 dark:text-cyan-400 font-medium hover:text-blue-700 dark:hover:text-cyan-300 transition"
                   >
-                    Book a Call <ArrowRight size={16} />
+                    Book a 15 Minute Call <ArrowRight size={16} />
                   </Link>
                 </motion.div>
 

@@ -91,7 +91,7 @@ export default function Contact() {
                 onClick={openCalendly}
                 className="px-8 py-4 rounded-lg bg-gradient-to-r from-kaizen-cyan to-kaizen-lime text-kaizen-dark font-heading font-bold text-lg hover:shadow-lg hover:shadow-kaizen-cyan/50 transition"
               >
-                Book Your 15-Minute Call
+                Book a 15 Minute Call
               </button>
             </motion.div>
           </div>

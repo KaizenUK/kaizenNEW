@@ -461,7 +461,7 @@ const Header: React.FC<HeaderProps> = ({
               whileHover={{ scale: 1.05 }}
               className="hidden sm:block px-6 py-2 rounded-full text-sm font-medium text-gray-950 bg-gradient-to-r from-cyan-400 to-lime-400 hover:shadow-lg transition"
             >
-              Book a Call
+              Book a 15 Minute Call
             </motion.button>
 
             {/* Mobile Menu Button */}

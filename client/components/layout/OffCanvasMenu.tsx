@@ -323,7 +323,7 @@ const OffCanvasMenu: React.FC<OffCanvasMenuProps> = ({
             }}
             className="w-full px-4 py-3 rounded-full text-sm font-medium text-gray-950 bg-gradient-to-r from-cyan-400 to-lime-400 hover:shadow-lg transition"
           >
-            Book a Call
+            Book a 15 Minute Call
           </button>
         </div>
       </div>
