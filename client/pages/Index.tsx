@@ -355,7 +355,7 @@ export default function Home() {
                 Proudly based in Liverpool
               </h2>
               <p className="text-xl text-kaizen-text-dark/70 dark:text-white/70 leading-relaxed">
-                Kaizen is based near the Baltic Triangle. We work with clients
+                Kaizen is based in Liverpool city centre. We work with clients
                 across Merseyside and understand how locals actually search
                 ('near me', area names). We're always happy to meet for a quick
                 video call or a coffee in town.
