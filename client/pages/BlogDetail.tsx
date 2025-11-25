@@ -592,6 +592,17 @@ export default function BlogDetail() {
   const modifiedIso = modifiedRaw
     ? new Date(modifiedRaw).toISOString()
     : undefined;
+  const modifiedDate = modifiedRaw ? new Date(modifiedRaw) : null;
+  const modifiedLabel = modifiedDate
+    ? modifiedDate.toLocaleString("en-GB", {
+        day: "2-digit",
+        month: "long",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: true,
+      })
+    : null;
 
   const articleSchema = {
     "@context": "https://schema.org",
@@ -709,18 +720,25 @@ export default function BlogDetail() {
                   </motion.h1>
 
                   <motion.div
-                    className="flex items-center gap-6 text-gray-600 dark:text-gray-400 font-mono text-sm flex-wrap"
+                    className="flex flex-col gap-1 text-gray-600 dark:text-gray-400 font-mono text-sm"
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ duration: 0.6, delay: 0.4 }}
                   >
-                    {publishedLabel && (
-                      <>
-                        <span>Published on {publishedLabel}</span>
-                        <span>•</span>
-                      </>
+                    <div className="flex items-center gap-2 flex-wrap">
+                      {publishedLabel && (
+                        <>
+                          <span>Published on {publishedLabel}</span>
+                          <span>•</span>
+                        </>
+                      )}
+                      <span>{post.readingTime} min read</span>
+                    </div>
+                    {modifiedLabel && (
+                      <div className="italic text-xs md:text-sm text-gray-500 dark:text-gray-400">
+                        Last updated {modifiedLabel}
+                      </div>
                     )}
-                    <span>{post.readingTime} min read</span>
                   </motion.div>
                 </div>
 

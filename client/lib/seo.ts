@@ -72,6 +72,18 @@ const pageMeta: Record<string, Partial<PageMeta>> = {
       "web design agency wirral",
     ],
   },
+  "/web-design-wirral": {
+    title: "Web Design Wirral | Heswall, West Kirby & Birkenhead | Kaizen Web",
+    description:
+      "Web design for Heswall, West Kirby and Birkenhead businesses. Fast, conversion-focused sites with clear pricing and no fluff.",
+    keywords: [
+      "web design wirral",
+      "web design heswall",
+      "web design west kirby",
+      "web design birkenhead",
+      "wirral web design",
+    ],
+  },
   "/services/local-seo": {
     title: "Local SEO Services Liverpool & Wirral | Kaizen",
     description:

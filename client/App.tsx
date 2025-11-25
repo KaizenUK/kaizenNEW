@@ -27,6 +27,9 @@ const WordPressWebDesign = lazy(
   () => import("./pages/services/WordPressWebDesign"),
 );
 const CityCentre = lazy(() => import("./pages/services/CityCentre"));
+const WebDesignWirral = lazy(
+  () => import("./pages/services/WebDesignWirral"),
+);
 const ContractProductOwner = lazy(() => import("./pages/ContractProductOwner"));
 const ProjectRescue = lazy(() => import("./pages/ProjectRescue"));
 const CaseStudies = lazy(() => import("./pages/CaseStudies"));
@@ -177,6 +180,7 @@ function AppContent() {
             path="/web-design-liverpool-city-centre"
             element={<CityCentre />}
           />
+          <Route path="/web-design-wirral" element={<WebDesignWirral />} />
           <Route
             path="/contract-product-owner"
             element={<ContractProductOwner />}

@@ -7,12 +7,15 @@ import {
   Monitor,
   ShoppingBag,
   MapPin,
+  Map,
   LifeBuoy,
   Briefcase,
   Users,
   BookOpen,
   FileText,
+  FileCode2,
   Wrench,
+  Zap,
 } from "lucide-react";
 import { useState } from "react";
 import { useCalendly } from "@/context/CalendlyContext";
@@ -59,10 +62,24 @@ const OffCanvasMenu: React.FC<OffCanvasMenuProps> = ({
       title: "Web & Growth",
       items: [
         {
-          label: "High-Performance Web Design",
+          label: "Web Design Liverpool",
           href: "/services/web-design-liverpool",
-          description: "React/Vite builds that load fast and convert.",
-          icon: <Monitor className="w-4 h-4" />,
+          description:
+            "Fast, conversion-focused sites for Liverpool businesses.",
+          icon: <MapPin className="w-4 h-4" />,
+        },
+        {
+          label: "Web Design Wirral",
+          href: "/web-design-wirral",
+          description:
+            "Web design for Heswall, West Kirby, and Birkenhead.",
+          icon: <Map className="w-4 h-4" />,
+        },
+        {
+          label: "WordPress Web Design",
+          href: "/services/wordpress-web-design",
+          description: "Custom, high-performance WordPress builds.",
+          icon: <FileCode2 className="w-4 h-4" />,
         },
         {
           label: "E-commerce Development",
@@ -71,9 +88,10 @@ const OffCanvasMenu: React.FC<OffCanvasMenuProps> = ({
           icon: <ShoppingBag className="w-4 h-4" />,
         },
         {
-          label: "Local SEO",
-          href: "/services/local-seo",
-          description: "Get found by the right people in Liverpool.",
+          label: "Liverpool City Centre",
+          href: "/web-design-liverpool-city-centre",
+          description:
+            "Web design for Baltic Triangle and city centre businesses.",
           icon: <MapPin className="w-4 h-4" />,
         },
       ],
@@ -99,6 +117,13 @@ const OffCanvasMenu: React.FC<OffCanvasMenuProps> = ({
           href: "/agile-coaching",
           description: "Turn chaos into a predictable delivery process.",
           icon: <Users className="w-4 h-4" />,
+        },
+        {
+          label: "Digital Transformation",
+          href: "/services/digital-transformation",
+          description:
+            "Automate manual work and connect your systems across the business.",
+          icon: <Zap className="w-4 h-4" />,
         },
       ],
     },
