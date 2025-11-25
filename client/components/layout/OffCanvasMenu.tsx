@@ -15,6 +15,7 @@ import {
   Wrench,
   Zap,
   Code2,
+  ShoppingBag,
 } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
