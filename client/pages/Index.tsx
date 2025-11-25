@@ -1,8 +1,9 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { ArrowRight, ArrowUpRight } from "lucide-react";
 import Layout from "@/components/Layout";
 import { LeafletMap } from "@/components/LeafletMap";
+import { openCrisp } from "@/lib/crisp-utils";
 
 const fadeInUp = {
   hidden: { opacity: 0, y: 20 },
@@ -63,51 +64,9 @@ const ScrollReveal = ({
 };
 
 const HeroSection = () => {
-  const heroRef = useRef<HTMLDivElement>(null);
-  const [mousePos, setMousePos] = useState({ x: 50, y: 35 });
-  const [parallaxOffset, setParallaxOffset] = useState(0);
-
-  useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      if (!heroRef.current) return;
-
-      const rect = heroRef.current.getBoundingClientRect();
-      const x = ((e.clientX - rect.left) / rect.width) * 100;
-      const y = ((e.clientY - rect.top) / rect.height) * 100;
-
-      setMousePos({
-        x: Math.max(0, Math.min(100, x)),
-        y: Math.max(0, Math.min(100, y)),
-      });
-    };
-
-    const handleScroll = () => {
-      setParallaxOffset(window.scrollY * 0.5);
-    };
-
-    const hero = heroRef.current;
-    if (hero) {
-      hero.addEventListener("mousemove", handleMouseMove);
-    }
-
-    window.addEventListener("scroll", handleScroll);
-    return () => {
-      hero?.removeEventListener("mousemove", handleMouseMove);
-      window.removeEventListener("scroll", handleScroll);
-    };
-  }, []);
-
-  const openChat = () => {
-    if (typeof window !== "undefined" && (window as any).$crisp) {
-      (window as any).$crisp.push(["do", "chat:open"]);
-    }
-  };
 
   return (
-    <section
-      ref={heroRef}
-      className="relative min-h-[100vh] bg-gray-950 text-white flex items-center py-20 overflow-hidden"
-    >
+    <section className="relative min-h-[100vh] bg-gray-950 text-white flex items-center py-20 overflow-hidden">
       <svg
         className="absolute inset-0 w-full h-full pointer-events-none opacity-40"
         preserveAspectRatio="none"
@@ -126,32 +85,9 @@ const HeroSection = () => {
               strokeWidth="0.5"
             />
           </pattern>
-          <radialGradient
-            id="glow-center"
-            cx={`${mousePos.x}%`}
-            cy={`${mousePos.y}%`}
-          >
-            <stop offset="0%" stopColor="rgba(0, 255, 255, 0.25)" />
-            <stop offset="35%" stopColor="rgba(132, 204, 22, 0.08)" />
-            <stop offset="100%" stopColor="rgba(0, 255, 255, 0)" />
-          </radialGradient>
         </defs>
         <rect width="100%" height="100%" fill="url(#hero-grid)" />
-        <rect width="100%" height="100%" fill="url(#glow-center)" />
       </svg>
-
-      <motion.div
-        className="absolute top-1/4 right-20 w-80 h-80 bg-kaizen-cyan rounded-full blur-3xl opacity-10"
-        style={{ willChange: "transform", y: parallaxOffset * 0.3 }}
-        animate={{ y: [0, -40, 0], x: [0, 30, 0] }}
-        transition={{ duration: 20, repeat: Infinity, ease: "easeInOut" }}
-      />
-      <motion.div
-        className="absolute bottom-1/4 left-1/4 w-96 h-96 bg-kaizen-lime rounded-full blur-3xl opacity-8"
-        style={{ willChange: "transform", y: parallaxOffset * 0.4 }}
-        animate={{ y: [0, 40, 0], x: [0, -30, 0] }}
-        transition={{ duration: 25, repeat: Infinity, ease: "easeInOut" }}
-      />
 
       <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-gray-950" />
 
@@ -193,7 +129,7 @@ const HeroSection = () => {
             transition={{ delay: 0.5, duration: 0.6 }}
           >
             <button
-              onClick={openChat}
+              onClick={() => openCrisp()}
               className="px-8 py-4 rounded-lg bg-gradient-to-r from-green-400 to-emerald-500 text-gray-950 font-heading font-bold text-lg hover:shadow-2xl hover:shadow-green-500/60 hover:scale-105 transition-all inline-flex items-center justify-center gap-2 relative group"
             >
               <motion.div
@@ -275,10 +211,6 @@ const PricingSlider = () => {
       id="pricing-slider-section"
       className="py-20 md:py-32 bg-gradient-to-br from-slate-50 via-white to-slate-50 dark:from-slate-950 dark:via-slate-950 dark:to-slate-900/50 relative overflow-hidden"
     >
-      <div className="absolute inset-0 opacity-30 dark:opacity-10">
-        <div className="absolute top-20 right-1/4 w-96 h-96 bg-kaizen-cyan rounded-full blur-3xl opacity-10" />
-        <div className="absolute bottom-20 left-1/3 w-72 h-72 bg-kaizen-lime rounded-full blur-3xl opacity-10" />
-      </div>
 
       <div className="container mx-auto px-4 relative z-10">
         <motion.div
@@ -436,7 +368,7 @@ const PricingSlider = () => {
 
                   <button
                     onClick={
-                      currentTier.cta.includes("Chat") ? openChat : undefined
+                      currentTier.cta.includes("Chat") ? () => openCrisp() : undefined
                     }
                     className="mt-6 w-full px-6 py-3 rounded-lg bg-gradient-to-r from-kaizen-cyan to-kaizen-lime text-gray-950 font-heading font-bold hover:shadow-lg hover:scale-105 transition-all inline-flex items-center justify-center gap-2"
                   >
@@ -480,12 +412,6 @@ const KaizenPhilosophy = () => {
           <rect width="1200" height="600" fill="url(#philosophy-pattern)" />
         </svg>
       </div>
-
-      <motion.div
-        className="absolute top-1/2 right-0 w-96 h-96 bg-kaizen-lime rounded-full blur-3xl opacity-5"
-        animate={{ y: [0, 50, 0], x: [0, 20, 0] }}
-        transition={{ duration: 15, repeat: Infinity, ease: "easeInOut" }}
-      />
 
       <div className="container mx-auto px-4 relative z-10">
         <div className="max-w-3xl mx-auto">
@@ -593,13 +519,6 @@ const KaizenPhilosophy = () => {
 const AIValueProp = () => {
   return (
     <section className="py-20 md:py-32 bg-gradient-to-b from-white via-slate-50 to-white dark:from-slate-950 dark:via-slate-900/50 dark:to-slate-950 relative overflow-hidden">
-      <div className="absolute inset-0 opacity-20 dark:opacity-10">
-        <motion.div
-          className="absolute top-20 right-1/4 w-96 h-96 bg-kaizen-lime rounded-full blur-3xl"
-          animate={{ y: [0, 50, 0], x: [0, 30, 0] }}
-          transition={{ duration: 15, repeat: Infinity, ease: "easeInOut" }}
-        />
-      </div>
 
       <div className="container mx-auto px-4 relative z-10">
         <div className="max-w-4xl mx-auto">
@@ -691,11 +610,6 @@ const PerformanceBadge = () => {
 
   return (
     <section className="py-20 md:py-32 bg-slate-50 dark:bg-slate-900/50 relative overflow-hidden">
-      <motion.div
-        className="absolute top-1/4 left-1/4 w-80 h-80 bg-kaizen-cyan rounded-full blur-3xl opacity-8"
-        animate={{ y: [0, -40, 0] }}
-        transition={{ duration: 20, repeat: Infinity, ease: "easeInOut" }}
-      />
 
       <div className="container mx-auto px-4 relative z-10">
         <motion.div
@@ -876,13 +790,6 @@ const PerformanceBadge = () => {
 const LocalMap = () => {
   return (
     <section className="py-20 md:py-32 bg-gray-950 text-white relative overflow-hidden">
-      <div className="absolute inset-0 opacity-20">
-        <motion.div
-          className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-kaizen-cyan rounded-full blur-3xl"
-          animate={{ y: [0, 40, 0], x: [0, 30, 0] }}
-          transition={{ duration: 20, repeat: Infinity, ease: "easeInOut" }}
-        />
-      </div>
 
       <div className="container mx-auto px-4 relative z-10">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
@@ -934,11 +841,7 @@ const LocalMap = () => {
             </div>
 
             <button
-              onClick={() => {
-                if (typeof window !== "undefined" && (window as any).$crisp) {
-                  (window as any).$crisp.push(["do", "chat:open"]);
-                }
-              }}
+              onClick={() => openCrisp()}
               className="px-8 py-4 rounded-lg bg-gradient-to-r from-kaizen-cyan to-kaizen-lime text-gray-950 font-heading font-bold hover:shadow-lg hover:scale-105 transition-all inline-flex items-center gap-2"
             >
               Ready to Build? Start a Chat
