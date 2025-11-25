@@ -19,6 +19,7 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
+import { openCrisp } from "@/lib/crisp-utils";
 
 interface OffCanvasMenuProps {
   isOpen: boolean;
@@ -39,9 +40,6 @@ interface ServiceColumn {
   title: string;
   items: ServiceItem[];
 }
-
-// Remove unused import warning by using useLocation
-useLocation;
 
 interface InsightItem {
   label: string;
@@ -64,12 +62,6 @@ const OffCanvasMenu: React.FC<OffCanvasMenuProps> = ({
   onThemeChange,
 }) => {
   const [expandedSection, setExpandedSection] = useState<string | null>(null);
-
-  const openChat = () => {
-    if (typeof window !== "undefined" && (window as any).$crisp) {
-      (window as any).$crisp.push(["do", "chat:open"]);
-    }
-  };
 
   const servicesMenu: ServiceColumn[] = [
     {
@@ -386,7 +378,7 @@ const OffCanvasMenu: React.FC<OffCanvasMenuProps> = ({
           </button>
           <button
             onClick={() => {
-              openChat();
+              openCrisp();
               onClose();
             }}
             className="w-full px-4 py-3 rounded-full text-sm font-medium text-gray-950 bg-gradient-to-r from-green-400 to-emerald-500 hover:shadow-lg transition flex items-center justify-center gap-2"
