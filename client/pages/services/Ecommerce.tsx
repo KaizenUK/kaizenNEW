@@ -219,7 +219,7 @@ export default function Ecommerce() {
                 onClick={openCalendlyFromContext}
                 className="px-6 py-3 rounded-lg border border-slate-400/50 text-slate-300 font-heading font-bold hover:border-kaizen-cyan hover:text-kaizen-cyan transition-colors inline-flex items-center justify-center gap-2"
               >
-                Book a Call
+                Book a 15 Minute Call
                 <ArrowUpRight size={18} />
               </button>
             </motion.div>
@@ -578,7 +578,7 @@ export default function Ecommerce() {
               onClick={openCalendlyFromContext}
               className="px-8 py-3 rounded-full border-2 border-kaizen-text-light/30 dark:border-white/20 text-kaizen-text-light dark:text-white/85 font-heading font-bold hover:border-kaizen-cyan dark:hover:border-kaizen-cyan transition inline-flex items-center justify-center gap-2"
             >
-              Book Your 15-Minute Call
+              Book a 15 Minute Call
               <ArrowUpRight size={18} />
             </button>
           </motion.div>

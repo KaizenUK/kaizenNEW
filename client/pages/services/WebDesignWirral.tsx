@@ -121,7 +121,7 @@ export default function WebDesignWirral() {
                   onClick={openCalendly}
                   className="inline-flex items-center justify-center gap-2 px-8 py-3 rounded-full bg-gradient-to-r from-cyan-400 to-lime-400 text-slate-950 font-heading font-bold hover:shadow-lg hover:shadow-cyan-400/40 transition"
                 >
-                  Book a 20-minute call
+                  Book a 15 Minute Call
                   <ArrowRight size={18} />
                 </button>
 
@@ -181,7 +181,7 @@ export default function WebDesignWirral() {
               Trusted by Wirral businesses
             </p>
             <h2 className="text-3xl md:text-4xl font-heading font-bold text-slate-900 dark:text-white mb-4">
-              Helen Moore Hairdressing, Hoylake.
+              Helen Moore Hairdressing, Wallasey Village.
             </h2>
             <p className="text-slate-700 dark:text-slate-300 mb-4">
               We rebuilt Helen Moore Hairdressing&apos;s online presence so new
@@ -208,9 +208,18 @@ export default function WebDesignWirral() {
               Snapshot
             </p>
             <ul className="space-y-3 text-sm text-slate-800 dark:text-slate-200 relative">
-              <li>✓ Local SEO-friendly structure for Wirral searches.</li>
-              <li>✓ Fast-loading gallery and price list on mobile.</li>
-              <li>✓ Clear calls-to-action to call, book and find the salon.</li>
+              <li>
+                <span className="text-emerald-500 mr-1">✓</span>
+                Local SEO-friendly structure for Wirral searches.
+              </li>
+              <li>
+                <span className="text-emerald-500 mr-1">✓</span>
+                Fast-loading gallery and price list on mobile.
+              </li>
+              <li>
+                <span className="text-emerald-500 mr-1">✓</span>
+                Clear calls-to-action to call, book and find the salon.
+              </li>
             </ul>
           </div>
         </div>
@@ -235,7 +244,7 @@ export default function WebDesignWirral() {
               onClick={openCalendly}
               className="inline-flex items-center justify-center gap-2 px-8 py-3 rounded-full bg-gradient-to-r from-cyan-400 to-lime-400 text-slate-950 font-heading font-bold hover:shadow-lg hover:shadow-cyan-400/40 transition"
             >
-              Book a call
+              Book a 15 Minute Call
               <ArrowRight size={18} />
             </button>
 

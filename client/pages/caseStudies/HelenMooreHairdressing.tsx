@@ -17,10 +17,10 @@ export default function HelenMooreHairdressingCase() {
   return (
     <Layout>
       <Helmet>
-        <title>Helen Moore Hairdressing Case Study | Kaizen Web</title>
+        <title>Wirral Web Design Case Study: Helen Moore | Kaizen</title>
         <meta
           name="description"
-          content="How we built a 0-to-1 website for Helen Moore Hairdressing resulting in #1 local rankings and 24/7 online booking."
+          content="See how we transformed a Wallasey salon with a custom React website. Faster bookings, perfect mobile scores, and better local SEO."
         />
       </Helmet>
 
