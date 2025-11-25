@@ -17,6 +17,7 @@ import {
   FileCode2,
   Wrench,
   Zap,
+  Code2,
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -29,7 +30,7 @@ interface HeaderProps {
   onMobileMenuChange: (open: boolean) => void;
 }
 
-type DesktopMenuKey = "services" | "insights" | null;
+type DesktopMenuKey = "services" | "insights" | "case-studies" | null;
 
 interface ServiceItem {
   label: string;
@@ -51,7 +52,14 @@ interface InsightItem {
   icon: JSX.Element;
 }
 
-const desktopMenuOrder: DesktopMenuKey[] = ["services", "insights"];
+interface CaseStudyItem {
+  label: string;
+  href: string;
+  description: string;
+  icon: JSX.Element;
+}
+
+const desktopMenuOrder: DesktopMenuKey[] = ["services", "insights", "case-studies"];
 
 const Header: React.FC<HeaderProps> = ({
   theme,
@@ -67,6 +75,7 @@ const Header: React.FC<HeaderProps> = ({
   const navRef = useRef<HTMLDivElement | null>(null);
   const servicesTriggerRef = useRef<HTMLButtonElement | null>(null);
   const insightsTriggerRef = useRef<HTMLButtonElement | null>(null);
+  const caseStudiesTriggerRef = useRef<HTMLButtonElement | null>(null);
   const { openCalendly } = useCalendly();
   const location = useLocation();
 
@@ -194,9 +203,29 @@ const Header: React.FC<HeaderProps> = ({
     },
   ];
 
+  const caseStudiesMenu: CaseStudyItem[] = [
+    {
+      label: "A.S. Collections",
+      href: "/case-studies/as-collections",
+      description: "Commercial Debt Recovery",
+      icon: <Briefcase className="w-4 h-4" />,
+    },
+    {
+      label: "Helen Moore",
+      href: "/case-studies/helen-moore-hairdressing",
+      description: "Local Business / Salon",
+      icon: <MapPin className="w-4 h-4" />,
+    },
+    {
+      label: "Kaizen Web",
+      href: "/case-studies/kaizen-rebuild",
+      description: "Agency Rebuild / Tech Deep Dive",
+      icon: <Code2 className="w-4 h-4" />,
+    },
+  ];
+
   const topLevelLinks = [
     { label: "Our Pledge", href: "/pledge" },
-    { label: "Case Studies", href: "/case-studies" },
     { label: "About", href: "/about" },
   ];
 
@@ -221,7 +250,9 @@ const Header: React.FC<HeaderProps> = ({
         ? servicesTriggerRef.current
         : menu === "insights"
           ? insightsTriggerRef.current
-          : null;
+          : menu === "case-studies"
+            ? caseStudiesTriggerRef.current
+            : null;
 
     if (nav && triggerEl) {
       const navRect = nav.getBoundingClientRect();
@@ -329,6 +360,25 @@ const Header: React.FC<HeaderProps> = ({
               />
             </button>
 
+            {/* Case Studies Trigger */}
+            <button
+              ref={caseStudiesTriggerRef}
+              type="button"
+              onMouseEnter={() => openMenu("case-studies")}
+              onFocus={() => openMenu("case-studies")}
+              onClick={() => handleTriggerClick("case-studies")}
+              className="flex items-center gap-2 px-4 py-2 text-base font-medium text-white/90 hover:text-white hover:bg-white/5 rounded-full transition"
+              aria-expanded={isMenuOpen && activeMenu === "case-studies"}
+            >
+              Case Studies
+              <ChevronDown
+                size={16}
+                className={`transition-transform duration-200 ${
+                  isMenuOpen && activeMenu === "case-studies" ? "rotate-180" : ""
+                }`}
+              />
+            </button>
+
             {/* Top-Level Links */}
             {topLevelLinks.map((link) => (
               <Link
@@ -408,6 +458,38 @@ const Header: React.FC<HeaderProps> = ({
                   {activeMenu === "insights" && (
                     <div className="grid grid-cols-1 gap-3">
                       {insightsMenu.map((item) => (
+                        <Link
+                          key={item.href}
+                          to={item.href}
+                          className="block rounded-xl px-3 py-2 hover:bg-white/5 transition"
+                          onClick={() => {
+                            setIsMenuOpen(false);
+                            setActiveMenu(null);
+                          }}
+                        >
+                          <div className="flex items-start gap-3">
+                            <span className="mt-1 flex h-7 w-7 items-center justify-center rounded-full bg-white/5 text-cyan-300">
+                              {item.icon}
+                            </span>
+                            <div>
+                              <div className="text-base font-semibold text-white">
+                                {item.label}
+                              </div>
+                              {item.description && (
+                                <p className="text-sm text-gray-400 mt-0.5">
+                                  {item.description}
+                                </p>
+                              )}
+                            </div>
+                          </div>
+                        </Link>
+                      ))}
+                    </div>
+                  )}
+
+                  {activeMenu === "case-studies" && (
+                    <div className="grid grid-cols-1 gap-3">
+                      {caseStudiesMenu.map((item) => (
                         <Link
                           key={item.href}
                           to={item.href}

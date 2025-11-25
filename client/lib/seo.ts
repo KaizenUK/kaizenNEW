@@ -294,6 +294,11 @@ const pageMeta: Record<string, Partial<PageMeta>> = {
     description:
       "How we helped an independent retailer increase online sales and streamline their operations.",
   },
+  "/case-studies/kaizen-rebuild": {
+    title: "Kaizen Web Rebuild Case Study | React + Vite Migration",
+    description:
+      "A technical deep dive into how we migrated Kaizen Web from a legacy setup to a high-performance React + Vite + Headless architecture.",
+  },
 };
 
 type DynamicMetaMatcher = {

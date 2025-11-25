@@ -48,6 +48,9 @@ const HelenMooreHairdressingCase = lazy(
 const IndependentRetailerCase = lazy(
   () => import("./pages/caseStudies/IndependentRetailer"),
 );
+const KaizenRebuildCase = lazy(
+  () => import("./pages/caseStudies/KaizenRebuild"),
+);
 const PrivacyPolicy = lazy(() => import("./pages/PrivacyPolicy"));
 const CookiePolicy = lazy(() => import("./pages/CookiePolicy"));
 const GDPRPolicy = lazy(() => import("./pages/GDPRPolicy"));
@@ -200,6 +203,10 @@ function AppContent() {
           <Route
             path="/case-studies/independent-retailer"
             element={<IndependentRetailerCase />}
+          />
+          <Route
+            path="/case-studies/kaizen-rebuild"
+            element={<KaizenRebuildCase />}
           />
           <Route path="/blog" element={<Blog />} />
           <Route path="/blog/:slug" element={<BlogDetail />} />

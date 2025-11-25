@@ -16,6 +16,7 @@ import {
   FileCode2,
   Wrench,
   Zap,
+  Code2,
 } from "lucide-react";
 import { useState } from "react";
 import { useCalendly } from "@/context/CalendlyContext";
@@ -45,6 +46,13 @@ interface InsightItem {
   label: string;
   href: string;
   description?: string;
+  icon: JSX.Element;
+}
+
+interface CaseStudyItem {
+  label: string;
+  href: string;
+  description: string;
   icon: JSX.Element;
 }
 
@@ -153,9 +161,29 @@ const OffCanvasMenu: React.FC<OffCanvasMenuProps> = ({
     },
   ];
 
+  const caseStudiesMenu: CaseStudyItem[] = [
+    {
+      label: "A.S. Collections",
+      href: "/case-studies/as-collections",
+      description: "Commercial Debt Recovery",
+      icon: <Briefcase className="w-4 h-4" />,
+    },
+    {
+      label: "Helen Moore",
+      href: "/case-studies/helen-moore-hairdressing",
+      description: "Local Business / Salon",
+      icon: <MapPin className="w-4 h-4" />,
+    },
+    {
+      label: "Kaizen Web",
+      href: "/case-studies/kaizen-rebuild",
+      description: "Agency Rebuild / Tech Deep Dive",
+      icon: <Code2 className="w-4 h-4" />,
+    },
+  ];
+
   const topLevelLinks = [
     { label: "Our Pledge", href: "/pledge" },
-    { label: "Case Studies", href: "/case-studies" },
     { label: "About", href: "/about" },
   ];
 
@@ -268,6 +296,42 @@ const OffCanvasMenu: React.FC<OffCanvasMenuProps> = ({
             {expandedSection === "insights" && (
               <div className="mt-1 space-y-0.5">
                 {insightsMenu.map((item) => (
+                  <Link
+                    key={item.href}
+                    to={item.href}
+                    className="block px-3 py-2 text-sm font-medium text-white/80 hover:text-white hover:bg-white/5 rounded-lg transition"
+                    onClick={onClose}
+                  >
+                    <div className="font-semibold">{item.label}</div>
+                    {item.description && (
+                      <div className="text-xs text-white/50 mt-0.5">
+                        {item.description}
+                      </div>
+                    )}
+                  </Link>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Case Studies Accordion */}
+          <div>
+            <button
+              onClick={() => toggleSection("case-studies")}
+              className="w-full text-left px-3 py-3 text-base font-medium text-white/90 hover:text-white hover:bg-white/5 rounded-lg transition flex items-center justify-between"
+            >
+              <span>Case Studies</span>
+              <ChevronDown
+                size={18}
+                className={cn(
+                  "transition-transform duration-200",
+                  expandedSection === "case-studies" && "rotate-180",
+                )}
+              />
+            </button>
+            {expandedSection === "case-studies" && (
+              <div className="mt-1 space-y-0.5">
+                {caseStudiesMenu.map((item) => (
                   <Link
                     key={item.href}
                     to={item.href}
