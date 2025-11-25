@@ -22,6 +22,8 @@ import {
 import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useCalendly } from "@/context/CalendlyContext";
+import { openCrisp } from "@/lib/crisp-utils";
+import { useLocation } from "react-router-dom";
 
 interface HeaderProps {
   theme: "light" | "dark";
@@ -82,11 +84,6 @@ const Header: React.FC<HeaderProps> = ({
   const caseStudiesTriggerRef = useRef<HTMLButtonElement | null>(null);
   const location = useLocation();
 
-  const openChat = () => {
-    if (typeof window !== "undefined" && (window as any).$crisp) {
-      (window as any).$crisp.push(["do", "chat:open"]);
-    }
-  };
 
   useEffect(() => {
     setIsMenuOpen(false);
