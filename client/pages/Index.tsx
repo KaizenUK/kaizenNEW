@@ -1,11 +1,8 @@
 import { useState, useEffect, useRef } from "react";
-import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { ArrowRight, ArrowUpRight } from "lucide-react";
 import Layout from "@/components/Layout";
-import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
-import L from "leaflet";
-import "leaflet/dist/leaflet.css";
+import { LeafletMap } from "@/components/LeafletMap";
 
 const fadeInUp = {
   hidden: { opacity: 0, y: 20 },
