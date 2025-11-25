@@ -639,7 +639,7 @@ export default function BlogDetail() {
 
       {/* Hero Image Section with Parallax */}
       <motion.div
-        className="relative overflow-hidden bg-gray-200 dark:bg-gray-900 blog-hero"
+        className="relative h-[400px] md:h-[500px] w-full overflow-hidden bg-gray-900 blog-hero"
         initial={{ scale: 1.1 }}
         animate={{ scale: 1 }}
         transition={{ duration: 0.8 }}
@@ -647,7 +647,7 @@ export default function BlogDetail() {
         <motion.img
           src={post.coverImage}
           alt={post.title}
-          className="w-full h-full object-cover"
+          className="w-full h-full object-cover object-center opacity-90"
           width={1200}
           height={675}
           initial={{ scale: 1.1 }}
