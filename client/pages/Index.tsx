@@ -874,31 +874,6 @@ const PerformanceBadge = () => {
 };
 
 const LocalMap = () => {
-  const liverpoollCoords = [53.4084, -2.9916];
-  const wirralCoords = [53.375, -3.0425];
-
-  const customIcon = L.icon({
-    iconUrl:
-      "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-cyan.png",
-    shadowUrl:
-      "https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png",
-    iconSize: [25, 41],
-    iconAnchor: [12, 41],
-    popupAnchor: [1, -34],
-    shadowSize: [41, 41],
-  });
-
-  const wirralIcon = L.icon({
-    iconUrl:
-      "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-lime.png",
-    shadowUrl:
-      "https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png",
-    iconSize: [25, 41],
-    iconAnchor: [12, 41],
-    popupAnchor: [1, -34],
-    shadowSize: [41, 41],
-  });
-
   return (
     <section className="py-20 md:py-32 bg-gray-950 text-white relative overflow-hidden">
       <div className="absolute inset-0 opacity-20">
@@ -917,23 +892,7 @@ const LocalMap = () => {
             viewport={{ once: true }}
             className="relative h-96 rounded-2xl overflow-hidden border-2 border-white/10 shadow-2xl"
           >
-            <MapContainer
-              center={[53.391, -3.017]}
-              zoom={9}
-              scrollWheelZoom={false}
-              style={{ height: "100%", width: "100%" }}
-            >
-              <TileLayer
-                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                attribution='&copy; OpenStreetMap contributors'
-              />
-              <Marker position={liverpoollCoords} icon={customIcon}>
-                <Popup>Liverpool • Merseyside</Popup>
-              </Marker>
-              <Marker position={wirralCoords} icon={wirralIcon}>
-                <Popup>Wirral • Merseyside</Popup>
-              </Marker>
-            </MapContainer>
+            <LeafletMap className="w-full h-full" />
           </motion.div>
 
           <motion.div
