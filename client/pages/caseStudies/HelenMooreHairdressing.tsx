@@ -1,6 +1,12 @@
 import Layout from "@/components/Layout";
 import { Helmet } from "react-helmet-async";
-import { ArrowLeft, ArrowUpRight, Star, Smartphone, Search } from "lucide-react";
+import {
+  ArrowLeft,
+  ArrowUpRight,
+  Star,
+  Smartphone,
+  Search,
+} from "lucide-react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 
@@ -80,11 +86,7 @@ export default function HelenMooreHairdressingCase() {
                   Built With:
                 </p>
                 <div className="flex flex-wrap gap-2">
-                  {[
-                    "React",
-                    "Headless WordPress",
-                    "Local SEO",
-                  ].map((item) => (
+                  {["React", "Headless WordPress", "Local SEO"].map((item) => (
                     <span
                       key={item}
                       className="px-3 py-1 rounded-full bg-slate-100 dark:bg-slate-900 text-slate-600 dark:text-slate-400 text-xs font-medium"

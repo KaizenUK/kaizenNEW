@@ -1,6 +1,15 @@
 import Layout from "@/components/Layout";
 import { Helmet } from "react-helmet-async";
-import { ArrowLeft, ArrowUpRight, Code2, Server, Database, Zap, Shield, Globe } from "lucide-react";
+import {
+  ArrowLeft,
+  ArrowUpRight,
+  Code2,
+  Server,
+  Database,
+  Zap,
+  Shield,
+  Globe,
+} from "lucide-react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useCalendly } from "@/context/CalendlyContext";
@@ -94,8 +103,8 @@ export default function KaizenRebuildCase() {
             </h1>
 
             <p className="text-xl md:text-2xl text-slate-400 leading-relaxed max-w-3xl font-light">
-              We migrated from a legacy setup to a high-performance React + Vite +
-              Headless architecture. Here is the autopsy.
+              We migrated from a legacy setup to a high-performance React + Vite
+              + Headless architecture. Here is the autopsy.
             </p>
           </motion.div>
         </div>
@@ -115,8 +124,8 @@ export default function KaizenRebuildCase() {
             </h2>
             <div className="prose prose-invert prose-lg max-w-none text-slate-400">
               <p>
-                We were selling high-performance engines but driving a sedan. Our
-                old site had 140 'ghost pages', mixed SEO signals, and slow
+                We were selling high-performance engines but driving a sedan.
+                Our old site had 140 'ghost pages', mixed SEO signals, and slow
                 WordPress cron jobs. It wasn't good enough.
               </p>
               <p>

@@ -59,7 +59,11 @@ interface CaseStudyItem {
   icon: JSX.Element;
 }
 
-const desktopMenuOrder: DesktopMenuKey[] = ["services", "insights", "case-studies"];
+const desktopMenuOrder: DesktopMenuKey[] = [
+  "services",
+  "insights",
+  "case-studies",
+];
 
 const Header: React.FC<HeaderProps> = ({
   theme,
@@ -374,7 +378,9 @@ const Header: React.FC<HeaderProps> = ({
               <ChevronDown
                 size={16}
                 className={`transition-transform duration-200 ${
-                  isMenuOpen && activeMenu === "case-studies" ? "rotate-180" : ""
+                  isMenuOpen && activeMenu === "case-studies"
+                    ? "rotate-180"
+                    : ""
                 }`}
               />
             </button>
