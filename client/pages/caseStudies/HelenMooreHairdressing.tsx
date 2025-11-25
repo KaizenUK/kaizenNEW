@@ -319,6 +319,28 @@ export default function HelenMooreHairdressingCase() {
         </div>
       </section>
 
+      {/* Primary CTA */}
+      <section className="bg-kaizen-dark dark:bg-slate-950 py-20 px-4">
+        <div className="container mx-auto max-w-4xl text-center">
+          <motion.h2
+            className="text-3xl md:text-4xl font-heading font-bold mb-6 text-white"
+          >
+            Want a site that performs like this?
+          </motion.h2>
+          <p className="text-base md:text-lg text-white/75 mb-8 max-w-2xl mx-auto">
+            Share a few details about your project and we will come back with a
+            straightforward, no-fluff quote.
+          </p>
+          <Link
+            to="/contact"
+            className="inline-flex items-center gap-2 px-8 py-3 rounded-full bg-gradient-to-r from-kaizen-cyan to-kaizen-lime text-kaizen-dark font-heading font-bold hover:shadow-lg hover:shadow-kaizen-cyan/40 transition"
+          >
+            Get a Quote Like This
+            <ArrowUpRight size={18} />
+          </Link>
+        </div>
+      </section>
+
       {/* Pagination */}
       <section className="bg-kaizen-light dark:bg-slate-900/50 py-16 px-4 border-t border-kaizen-light dark:border-slate-800">
         <div className="container mx-auto max-w-5xl">
