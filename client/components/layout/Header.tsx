@@ -80,8 +80,13 @@ const Header: React.FC<HeaderProps> = ({
   const servicesTriggerRef = useRef<HTMLButtonElement | null>(null);
   const insightsTriggerRef = useRef<HTMLButtonElement | null>(null);
   const caseStudiesTriggerRef = useRef<HTMLButtonElement | null>(null);
-  const { openCalendly } = useCalendly();
   const location = useLocation();
+
+  const openChat = () => {
+    if (typeof window !== "undefined" && (window as any).$crisp) {
+      (window as any).$crisp.push(["do", "chat:open"]);
+    }
+  };
 
   useEffect(() => {
     setIsMenuOpen(false);
@@ -543,11 +548,12 @@ const Header: React.FC<HeaderProps> = ({
 
             {/* CTA Button */}
             <motion.button
-              onClick={openCalendly}
+              onClick={openChat}
               whileHover={{ scale: 1.05 }}
-              className="hidden sm:block px-6 py-2 rounded-full text-sm font-medium text-gray-950 bg-gradient-to-r from-cyan-400 to-lime-400 hover:shadow-lg transition"
+              className="hidden sm:flex items-center gap-2 px-6 py-2 rounded-full text-sm font-medium text-gray-950 bg-gradient-to-r from-green-400 to-emerald-500 hover:shadow-lg transition"
             >
-              Book a 15 Minute Call
+              <span className="w-2 h-2 rounded-full bg-green-200 animate-pulse" />
+              Start a Chat
             </motion.button>
 
             {/* Mobile Menu Button */}
