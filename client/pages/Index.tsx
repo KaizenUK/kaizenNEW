@@ -269,7 +269,7 @@ const PricingSlider = () => {
               max="4"
               value={tier}
               onChange={(e) => setTier(parseInt(e.target.value))}
-              className="w-full h-3 bg-gradient-to-r from-cyan-400 via-lime-400 to-cyan-400 rounded-lg appearance-none cursor-pointer accent-cyan-400"
+              className="pricing-slider w-full h-3 bg-gradient-to-r from-cyan-400 via-lime-400 to-cyan-400 rounded-lg appearance-none cursor-pointer"
               style={{
                 background: `linear-gradient(to right, rgb(34, 211, 238), rgb(132, 204, 22), rgb(34, 211, 238))`,
               }}
@@ -285,9 +285,9 @@ const PricingSlider = () => {
 
           <motion.div
             key={tier}
-            initial={{ opacity: 0, scale: 0.95 }}
+            initial={{ opacity: 0, scale: 0.97 }}
             animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.3 }}
+            transition={{ duration: 0.45, ease: "easeOut" }}
             className="relative group"
           >
             <div className="absolute -inset-px bg-gradient-to-r from-kaizen-cyan via-kaizen-lime to-kaizen-cyan rounded-3xl opacity-0 group-hover:opacity-20 blur transition duration-300" />
