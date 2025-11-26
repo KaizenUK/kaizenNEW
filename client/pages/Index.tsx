@@ -67,9 +67,23 @@ const ScrollReveal = ({
 };
 
 const HeroSection = () => {
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    setMousePosition({
+      x: (e.clientX - rect.left) / rect.width,
+      y: (e.clientY - rect.top) / rect.height,
+    });
+  };
 
   return (
-    <section className="relative min-h-[100vh] bg-gray-950 text-white flex items-center py-20 overflow-hidden">
+    <motion.section
+      onMouseMove={handleMouseMove}
+      className="relative min-h-[100vh] bg-gray-950 text-white flex items-center py-20 overflow-hidden"
+      whileHover={{ scale: 1.02 }}
+      transition={{ duration: 0.4 }}
+    >
       <svg
         className="absolute inset-0 w-full h-full pointer-events-none opacity-40"
         preserveAspectRatio="none"
@@ -94,6 +108,16 @@ const HeroSection = () => {
 
       <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-gray-950" />
 
+      <motion.div
+        className="pointer-events-none absolute inset-0"
+        animate={{
+          background: [
+            `radial-gradient(circle at ${mousePosition.x * 100}% ${mousePosition.y * 100}%, rgba(34, 211, 238, 0.1) 0%, transparent 50%)`,
+          ],
+        }}
+        transition={{ type: "tween", duration: 0.3 }}
+      />
+
       <div className="container mx-auto px-4 relative z-10">
         <div className="max-w-4xl mx-auto text-center">
           <motion.p
@@ -111,7 +135,7 @@ const HeroSection = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.1 }}
           >
-            Web Design Liverpool &amp; Wirral: Stop Managing Your Own Build.
+            Liverpool &amp; Wirral Web Design: 2025 Pricing That Actually Makes Sense.
           </motion.h1>
 
           <motion.p
@@ -120,9 +144,7 @@ const HeroSection = () => {
             animate={{ opacity: 1 }}
             transition={{ delay: 0.3, duration: 0.8 }}
           >
-            Serving Merseyside businesses. We build high-performance websites with
-            a dedicated Product Owner driving every decision. Fast timelines.
-            Protected budgets. Zero fluff.
+            Premium Web Design for Liverpool &amp; Wirral Businesses. We build high-performance websites with a dedicated Product Owner. Fast timelines. Protected budgets. Zero fluff.
           </motion.p>
 
           <motion.div
@@ -140,7 +162,7 @@ const HeroSection = () => {
                 animate={{ scale: [1, 1.5, 1], opacity: [1, 0.5, 1] }}
                 transition={{ duration: 2, repeat: Infinity }}
               />
-              Start a Project Chat
+              Get a Starter Quote
               <ArrowRight size={20} />
             </button>
             <button
@@ -156,7 +178,7 @@ const HeroSection = () => {
           </motion.div>
         </div>
       </div>
-    </section>
+    </motion.section>
   );
 };
 
