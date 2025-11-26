@@ -83,7 +83,6 @@ const Header: React.FC<HeaderProps> = ({
   const caseStudiesTriggerRef = useRef<HTMLButtonElement | null>(null);
   const location = useLocation();
 
-
   useEffect(() => {
     setIsMenuOpen(false);
     setActiveMenu(null);

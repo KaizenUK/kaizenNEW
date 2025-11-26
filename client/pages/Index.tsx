@@ -5,7 +5,12 @@ import { Link } from "react-router-dom";
 import Layout from "@/components/Layout";
 import { LeafletMap } from "@/components/LeafletMap";
 import { openCrisp } from "@/lib/crisp-utils";
-import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/components/ui/accordion";
+import {
+  Accordion,
+  AccordionItem,
+  AccordionTrigger,
+  AccordionContent,
+} from "@/components/ui/accordion";
 import { fetchPosts } from "../../src/api/wordpress";
 import { decodeAndStrip } from "@/lib/html-utils";
 
@@ -136,7 +141,8 @@ const HeroSection = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.1 }}
           >
-            Liverpool &amp; Wirral Web Design: 2025 Pricing That Actually Makes Sense.
+            Liverpool &amp; Wirral Web Design: 2025 Pricing That Actually Makes
+            Sense.
           </motion.h1>
 
           <motion.p
@@ -145,7 +151,9 @@ const HeroSection = () => {
             animate={{ opacity: 1 }}
             transition={{ delay: 0.3, duration: 0.8 }}
           >
-            Premium Web Design for Liverpool &amp; Wirral Businesses. We build high-performance websites with a dedicated Product Owner. Fast timelines. Protected budgets. Zero fluff.
+            Premium Web Design for Liverpool &amp; Wirral Businesses. We build
+            high-performance websites with a dedicated Product Owner. Fast
+            timelines. Protected budgets. Zero fluff.
           </motion.p>
 
           <motion.div
@@ -168,7 +176,9 @@ const HeroSection = () => {
             </button>
             <button
               onClick={() => {
-                const slider = document.getElementById("pricing-slider-section");
+                const slider = document.getElementById(
+                  "pricing-slider-section",
+                );
                 slider?.scrollIntoView({ behaviour: "smooth" });
               }}
               className="px-8 py-4 rounded-lg border-2 border-white/30 text-white font-heading font-bold text-lg hover:border-kaizen-cyan hover:text-kaizen-cyan hover:shadow-lg hover:shadow-kaizen-cyan/30 transition-all inline-flex items-center justify-center gap-2"
@@ -231,7 +241,6 @@ const PricingSlider = () => {
       id="pricing-slider-section"
       className="py-20 md:py-32 bg-gradient-to-br from-slate-50 via-white to-slate-50 dark:from-slate-950 dark:via-slate-950 dark:to-slate-900/50 relative overflow-hidden"
     >
-
       <div className="container mx-auto px-4 relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -308,11 +317,12 @@ const PricingSlider = () => {
                       {tier === 0 && (
                         <>
                           <li className="flex items-center gap-2 text-gray-700 dark:text-gray-300">
-                            <span className="text-kaizen-cyan">✓</span> Ready-made
-                            template
+                            <span className="text-kaizen-cyan">✓</span>{" "}
+                            Ready-made template
                           </li>
                           <li className="flex items-center gap-2 text-gray-700 dark:text-gray-300">
-                            <span className="text-kaizen-cyan">✓</span> Basic SEO
+                            <span className="text-kaizen-cyan">✓</span> Basic
+                            SEO
                           </li>
                           <li className="flex items-center gap-2 text-gray-700 dark:text-gray-300">
                             <span className="text-kaizen-cyan">✓</span> Mobile
@@ -327,24 +337,24 @@ const PricingSlider = () => {
                             design
                           </li>
                           <li className="flex items-center gap-2 text-gray-700 dark:text-gray-300">
-                            <span className="text-kaizen-cyan">✓</span> Lead capture
-                            forms
+                            <span className="text-kaizen-cyan">✓</span> Lead
+                            capture forms
                           </li>
                           <li className="flex items-center gap-2 text-gray-700 dark:text-gray-300">
-                            <span className="text-kaizen-cyan">✓</span> Analytics
-                            setup
+                            <span className="text-kaizen-cyan">✓</span>{" "}
+                            Analytics setup
                           </li>
                         </>
                       )}
                       {tier === 2 && (
                         <>
                           <li className="flex items-center gap-2 text-gray-700 dark:text-gray-300">
-                            <span className="text-kaizen-cyan">✓</span> React/Headless
-                            build
+                            <span className="text-kaizen-cyan">✓</span>{" "}
+                            React/Headless build
                           </li>
                           <li className="flex items-center gap-2 text-gray-700 dark:text-gray-300">
-                            <span className="text-kaizen-cyan">✓</span> 96+ Lighthouse
-                            score
+                            <span className="text-kaizen-cyan">✓</span> 96+
+                            Lighthouse score
                           </li>
                           <li className="flex items-center gap-2 text-gray-700 dark:text-gray-300">
                             <span className="text-kaizen-cyan">✓</span> Full SEO
@@ -363,19 +373,20 @@ const PricingSlider = () => {
                             authentication
                           </li>
                           <li className="flex items-center gap-2 text-gray-700 dark:text-gray-300">
-                            <span className="text-kaizen-cyan">✓</span> Dedicated
-                            Product Owner
+                            <span className="text-kaizen-cyan">✓</span>{" "}
+                            Dedicated Product Owner
                           </li>
                         </>
                       )}
                       {tier === 4 && (
                         <>
                           <li className="flex items-center gap-2 text-gray-700 dark:text-gray-300">
-                            <span className="text-kaizen-cyan">✓</span> Full project
-                            audit
+                            <span className="text-kaizen-cyan">✓</span> Full
+                            project audit
                           </li>
                           <li className="flex items-center gap-2 text-gray-700 dark:text-gray-300">
-                            <span className="text-kaizen-cyan">✓</span> Recovery plan
+                            <span className="text-kaizen-cyan">✓</span> Recovery
+                            plan
                           </li>
                           <li className="flex items-center gap-2 text-gray-700 dark:text-gray-300">
                             <span className="text-kaizen-cyan">✓</span> New team
@@ -420,7 +431,9 @@ const PricingCTABanner = () => {
                   Not sure what you need?
                 </h3>
                 <p className="text-white/80 text-lg mb-6">
-                  Read our transparent breakdown to understand website pricing in Liverpool and how much you should actually expect to pay in 2025.
+                  Read our transparent breakdown to understand website pricing
+                  in Liverpool and how much you should actually expect to pay in
+                  2025.
                 </p>
               </div>
               <div className="flex flex-col sm:flex-row gap-4">
@@ -486,7 +499,9 @@ const LatestInsights = () => {
       <section className="py-20 md:py-32 bg-white dark:bg-slate-950">
         <div className="container mx-auto px-4">
           <div className="text-center">
-            <p className="text-gray-600 dark:text-gray-400">Loading insights...</p>
+            <p className="text-gray-600 dark:text-gray-400">
+              Loading insights...
+            </p>
           </div>
         </div>
       </section>
@@ -509,7 +524,8 @@ const LatestInsights = () => {
             Latest Insights
           </h2>
           <p className="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
-            Stay updated with our latest thoughts on web design, development, and digital transformation for Liverpool and Wirral businesses.
+            Stay updated with our latest thoughts on web design, development,
+            and digital transformation for Liverpool and Wirral businesses.
           </p>
         </motion.div>
 
@@ -590,7 +606,7 @@ const SEOFAQSection = () => {
     {
       question: "Do you use templates or custom code?",
       answer:
-        "We build custom-coded sites using React or a bespoke WordPress theme. We do not use £50 \"off-the-shelf\" templates that bloat your site and hurt your SEO.",
+        'We build custom-coded sites using React or a bespoke WordPress theme. We do not use £50 "off-the-shelf" templates that bloat your site and hurt your SEO.',
     },
     {
       question: "What happens after the website launches?",
@@ -600,7 +616,7 @@ const SEOFAQSection = () => {
     {
       question: "Can you fix my current broken website?",
       answer:
-        "Yes. Our \"Project Rescue\" service is designed exactly for this. We audit your code, stabilise the build, and help you launch.",
+        'Yes. Our "Project Rescue" service is designed exactly for this. We audit your code, stabilise the build, and help you launch.',
     },
   ];
 
@@ -639,7 +655,11 @@ const SEOFAQSection = () => {
         <div className="max-w-3xl mx-auto">
           <Accordion type="single" collapsible className="w-full">
             {faqItems.map((item, index) => (
-              <AccordionItem key={index} value={`item-${index}`} className="border-b border-gray-200 dark:border-gray-800">
+              <AccordionItem
+                key={index}
+                value={`item-${index}`}
+                className="border-b border-gray-200 dark:border-gray-800"
+              >
                 <AccordionTrigger className="text-lg font-heading font-bold text-gray-950 dark:text-white hover:text-kaizen-cyan transition-colors">
                   {item.question}
                 </AccordionTrigger>
@@ -718,11 +738,11 @@ const KaizenPhilosophy = () => {
             </h2>
 
             <p className="text-xl md:text-2xl font-light text-white/80 mb-8 leading-relaxed">
-              Kaizen—continuous improvement—is about more than just an agile methodology.
-              It's a mindset. Most agencies launch a website and vanish. We build systems
-              that evolve. We embed ourselves in your process with a dedicated Product
-              Owner who shields you from chaos, protects your budget, and ensures you ship
-              on time.
+              Kaizen—continuous improvement—is about more than just an agile
+              methodology. It's a mindset. Most agencies launch a website and
+              vanish. We build systems that evolve. We embed ourselves in your
+              process with a dedicated Product Owner who shields you from chaos,
+              protects your budget, and ensures you ship on time.
             </p>
 
             <div className="space-y-6">
@@ -743,9 +763,9 @@ const KaizenPhilosophy = () => {
                     You Get a Product Owner, Not a Contact
                   </h3>
                   <p className="text-white/70">
-                    We assign a dedicated senior professional to your project. Not an
-                    account manager shuffling between clients. One person, hands-on, making
-                    strategic decisions every day.
+                    We assign a dedicated senior professional to your project.
+                    Not an account manager shuffling between clients. One
+                    person, hands-on, making strategic decisions every day.
                   </p>
                 </div>
               </motion.div>
@@ -767,9 +787,9 @@ const KaizenPhilosophy = () => {
                     Agile Sprints Over Chaos
                   </h3>
                   <p className="text-white/70">
-                    Two-week sprints. Clear deliverables. Predictable progress. We kill the
-                    "scope creep monster" and replace it with transparent planning and
-                    realistic timelines.
+                    Two-week sprints. Clear deliverables. Predictable progress.
+                    We kill the "scope creep monster" and replace it with
+                    transparent planning and realistic timelines.
                   </p>
                 </div>
               </motion.div>
@@ -791,8 +811,9 @@ const KaizenPhilosophy = () => {
                     Real Results Measured, Not Promised
                   </h3>
                   <p className="text-white/70">
-                    We benchmark performance from day one. Lighthouse scores. Core Web Vitals.
-                    Conversion funnels. You'll see concrete data, not marketing fluff.
+                    We benchmark performance from day one. Lighthouse scores.
+                    Core Web Vitals. Conversion funnels. You'll see concrete
+                    data, not marketing fluff.
                   </p>
                 </div>
               </motion.div>
@@ -807,7 +828,6 @@ const KaizenPhilosophy = () => {
 const AIValueProp = () => {
   return (
     <section className="py-20 md:py-32 bg-gradient-to-b from-white via-slate-50 to-white dark:from-slate-950 dark:via-slate-900/50 dark:to-slate-950 relative overflow-hidden">
-
       <div className="container mx-auto px-4 relative z-10">
         <div className="max-w-4xl mx-auto">
           <motion.div
@@ -843,7 +863,8 @@ const AIValueProp = () => {
                   Traditional Agency
                 </h3>
                 <p className="text-sm text-red-700 dark:text-red-300 mb-4 leading-relaxed">
-                  Manual coding. Junior developers. Long timelines. Scope creep. Surprise costs.
+                  Manual coding. Junior developers. Long timelines. Scope creep.
+                  Surprise costs.
                 </p>
                 <p className="font-heading font-bold text-red-600 dark:text-red-400 text-xl">
                   Cost: £££ (and climbing)
@@ -864,7 +885,8 @@ const AIValueProp = () => {
                   Kaizen
                 </h3>
                 <p className="text-sm text-green-700 dark:text-green-300 mb-4 leading-relaxed">
-                  AI-augmented development. Strategic thinking. Two-week sprints. Predictable costs.
+                  AI-augmented development. Strategic thinking. Two-week
+                  sprints. Predictable costs.
                 </p>
                 <p className="font-heading font-bold text-green-600 dark:text-green-400 text-xl">
                   Cost: Better ROI
@@ -898,7 +920,6 @@ const PerformanceBadge = () => {
 
   return (
     <section className="py-20 md:py-32 bg-slate-50 dark:bg-slate-900/50 relative overflow-hidden">
-
       <div className="container mx-auto px-4 relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -1056,8 +1077,8 @@ const PerformanceBadge = () => {
             className="text-center"
           >
             <p className="text-gray-700 dark:text-gray-300 mb-6">
-              We don't guess. We benchmark. Every build is tested against industry
-              standards.
+              We don't guess. We benchmark. Every build is tested against
+              industry standards.
             </p>
             <a
               href="https://gtmetrix.com/reports/www.kaizenweb.co.uk/e2VJJsxv/"
@@ -1078,7 +1099,6 @@ const PerformanceBadge = () => {
 const LocalMap = () => {
   return (
     <section className="py-20 md:py-32 bg-gray-950 text-white relative overflow-hidden">
-
       <div className="container mx-auto px-4 relative z-10">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           <motion.div
@@ -1102,9 +1122,9 @@ const LocalMap = () => {
               Made Local, For Local.
             </h2>
             <p className="text-lg text-white/80 mb-8 leading-relaxed">
-              Kaizen is based in Liverpool city centre. We serve businesses across
-              Liverpool, Wirral, and Merseyside. We understand how locals search,
-              what they need, and how to get them found.
+              Kaizen is based in Liverpool city centre. We serve businesses
+              across Liverpool, Wirral, and Merseyside. We understand how locals
+              search, what they need, and how to get them found.
             </p>
 
             <div className="space-y-4 mb-8">

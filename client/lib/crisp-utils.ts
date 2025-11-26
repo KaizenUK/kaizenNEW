@@ -12,7 +12,8 @@ export const openCrisp = (): void => {
   // Retry mechanism with exponential backoff
   let retries = 0;
   const maxRetries = 5;
-  const retryDelay = (attempt: number) => Math.min(500 * Math.pow(2, attempt), 5000);
+  const retryDelay = (attempt: number) =>
+    Math.min(500 * Math.pow(2, attempt), 5000);
 
   const attemptOpen = () => {
     if (crispWindow.$crisp?.push) {
