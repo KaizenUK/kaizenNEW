@@ -465,6 +465,23 @@ const CoreServiceVerticals = () => {
           initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.3 }}
+          className="max-w-4xl mx-auto text-center mb-14"
+        >
+          <p className="text-xs font-mono tracking-[0.25em] text-cyan-300 mb-4 uppercase">
+            What We Do
+          </p>
+          <h2 className="text-3xl md:text-4xl font-heading font-bold mb-3">
+            Our business is split into two main verticals
+          </h2>
+          <p className="text-sm md:text-base text-slate-300 max-w-2xl mx-auto">
+            Web design for Liverpool &amp; Wirral, and hands-on Contract Product Ownership for complex or failing digital projects.
+          </p>
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.3 }}
           className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-10 items-stretch"
         >
           <motion.div
