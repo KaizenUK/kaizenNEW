@@ -1106,6 +1106,9 @@ export default function Home() {
     <Layout>
       <HeroSection />
       <PricingSlider />
+      <PricingCTABanner />
+      <LatestInsights />
+      <SEOFAQSection />
       <KaizenPhilosophy />
       <AIValueProp />
       <PerformanceBadge />
