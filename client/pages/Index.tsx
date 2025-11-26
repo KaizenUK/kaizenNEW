@@ -456,6 +456,124 @@ const PricingCTABanner = () => {
   );
 };
 
+const CoreServiceVerticals = () => {
+  return (
+    <section className="py-20 md:py-28 bg-slate-950 text-white relative overflow-hidden">
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_0_0,rgba(45,212,191,0.18),transparent_55%),radial-gradient(circle_at_100%_100%,rgba(56,189,248,0.18),transparent_55%)]" />
+      <div className="container mx-auto px-4 relative z-10">
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.3 }}
+          className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-10 items-stretch"
+        >
+          <motion.div
+            initial={{ opacity: 0, x: -24, rotate: -0.3 }}
+            whileInView={{ opacity: 1, x: 0, rotate: 0 }}
+            viewport={{ once: true, amount: 0.4 }}
+            whileHover={{ y: -6, rotate: -0.6 }}
+            transition={{ type: "spring", stiffness: 140, damping: 18 }}
+            className="relative rounded-3xl border border-cyan-400/40 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 overflow-hidden shadow-[0_24px_70px_rgba(8,47,73,0.9)]"
+          >
+            <div className="absolute inset-0 opacity-30 bg-[radial-gradient(circle_at_10%_0,rgba(56,189,248,0.5),transparent_55%),radial-gradient(circle_at_90%_100%,rgba(45,212,191,0.4),transparent_55%)]" />
+            <div className="relative p-8 md:p-10 flex flex-col h-full">
+              <p className="text-xs font-mono tracking-[0.25em] text-cyan-300 mb-4 uppercase">
+                Vertical One
+              </p>
+              <h3 className="text-3xl md:text-4xl font-heading font-bold mb-4">
+                Liverpool &amp; Wirral Web Design
+              </h3>
+              <p className="text-sm md:text-base text-slate-200 mb-6 max-w-md">
+                High-performance web design for Liverpool &amp; Wirral SMEs. We design and build fast React and WordPress sites that turn searches into leads and support long-term SEO.
+              </p>
+              <ul className="space-y-2 text-sm md:text-base text-slate-200/90 mb-8">
+                <li className="flex items-center gap-2">
+                  <span className="h-1.5 w-6 rounded-full bg-cyan-400" />
+                  Local-first SEO for Liverpool &amp; Wirral searches
+                </li>
+                <li className="flex items-center gap-2">
+                  <span className="h-1.5 w-6 rounded-full bg-cyan-400" />
+                  Performance-led builds (Core Web Vitals in mind)
+                </li>
+                <li className="flex items-center gap-2">
+                  <span className="h-1.5 w-6 rounded-full bg-cyan-400" />
+                  Clear pricing for brochure, ecommerce &amp; web apps
+                </li>
+              </ul>
+              <div className="mt-auto flex items-center justify-between gap-4">
+                <Link
+                  to="/services/web-design-liverpool"
+                  className="inline-flex items-center gap-2 rounded-full bg-white text-slate-950 px-5 py-2.5 text-sm font-heading font-semibold shadow-lg hover:shadow-cyan-400/40 hover:-translate-y-0.5 transition-all"
+                >
+                  Explore Web Design
+                  <ArrowRight size={18} />
+                </Link>
+                <Link
+                  to="/services/web-design-wirral"
+                  className="hidden md:inline-flex text-xs font-mono tracking-widest text-cyan-300/80 hover:text-cyan-200 transition-colors uppercase"
+                >
+                  Wirral web design
+                </Link>
+              </div>
+            </div>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, x: 24, rotate: 0.3 }}
+            whileInView={{ opacity: 1, x: 0, rotate: 0 }}
+            viewport={{ once: true, amount: 0.4 }}
+            whileHover={{ y: -6, rotate: 0.6 }}
+            transition={{ type: "spring", stiffness: 140, damping: 18 }}
+            className="relative rounded-3xl border border-lime-400/40 bg-gradient-to-br from-slate-900 via-slate-950 to-slate-900 overflow-hidden shadow-[0_24px_70px_rgba(22,101,52,0.9)]"
+          >
+            <div className="absolute inset-0 opacity-30 bg-[radial-gradient(circle_at_15%_0,rgba(190,242,100,0.5),transparent_55%),radial-gradient(circle_at_90%_100%,rgba(22,163,74,0.5),transparent_55%)]" />
+            <div className="relative p-8 md:p-10 flex flex-col h-full">
+              <p className="text-xs font-mono tracking-[0.25em] text-lime-300 mb-4 uppercase">
+                Vertical Two
+              </p>
+              <h3 className="text-3xl md:text-4xl font-heading font-bold mb-4">
+                Contract Product Owner
+              </h3>
+              <p className="text-sm md:text-base text-slate-100 mb-6 max-w-md">
+                Senior Contract Product Owner for Liverpool &amp; Wirral teams. We rescue failing builds, run Agile sprints, and keep budgets, scope and delivery under control.
+              </p>
+              <ul className="space-y-2 text-sm md:text-base text-slate-100/90 mb-8">
+                <li className="flex items-center gap-2">
+                  <span className="h-1.5 w-6 rounded-full bg-lime-400" />
+                  Hands-on ownership of backlog, roadmap &amp; delivery
+                </li>
+                <li className="flex items-center gap-2">
+                  <span className="h-1.5 w-6 rounded-full bg-lime-400" />
+                  Ideal for complex rebuilds and project rescue
+                </li>
+                <li className="flex items-center gap-2">
+                  <span className="h-1.5 w-6 rounded-full bg-lime-400" />
+                  Works alongside your in-house or agency dev team
+                </li>
+              </ul>
+              <div className="mt-auto flex items-center justify-between gap-4">
+                <Link
+                  to="/contract-product-owner"
+                  className="inline-flex items-center gap-2 rounded-full bg-lime-300 text-slate-950 px-5 py-2.5 text-sm font-heading font-semibold shadow-lg hover:bg-lime-200 hover:shadow-lime-300/40 hover:-translate-y-0.5 transition-all"
+                >
+                  Explore Contract PO
+                  <ArrowRight size={18} />
+                </Link>
+                <Link
+                  to="/project-rescue"
+                  className="hidden md:inline-flex text-xs font-mono tracking-widest text-lime-200/80 hover:text-lime-100 transition-colors uppercase"
+                >
+                  Project Rescue
+                </Link>
+              </div>
+            </div>
+          </motion.div>
+        </motion.div>
+      </div>
+    </section>
+  );
+};
+
 const LatestInsights = () => {
   const [posts, setPosts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -1166,6 +1284,7 @@ export default function Home() {
       <HeroSection />
       <PricingSlider />
       <PricingCTABanner />
+      <CoreServiceVerticals />
       <KaizenPhilosophy />
       <AIValueProp />
       <PerformanceBadge />
