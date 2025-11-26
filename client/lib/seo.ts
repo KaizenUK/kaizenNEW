@@ -35,9 +35,9 @@ const defaultMeta: PageMeta = {
 
 const pageMeta: Record<string, Partial<PageMeta>> = {
   "/": {
-    title: "Web Design Liverpool & Wirral | Product Owner-Led Development | Kaizen",
+    title: "Web Design Liverpool & Wirral | 2025 Pricing | Kaizen",
     description:
-      "Web design for Liverpool and Wirral businesses. We build high-performance sites, fix chaotic projects & coach teams to deliver in sprints. Hands-on product leadership, zero jargon.",
+      "Premium Web Design for Liverpool & Wirral businesses. Specialist in React, WordPress & Project Rescue. See our 2025 Pricing Guide. Fixed quotes, no fluff.",
     keywords: [
       "web design liverpool",
       "web design wirral",
@@ -47,6 +47,8 @@ const pageMeta: Record<string, Partial<PageMeta>> = {
       "agile web development",
       "kaizen",
       "high-performance websites",
+      "web design pricing",
+      "liverpool web designer",
     ],
   },
   "/services": {
