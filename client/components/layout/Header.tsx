@@ -23,7 +23,6 @@ import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useCalendly } from "@/context/CalendlyContext";
 import { openCrisp } from "@/lib/crisp-utils";
-import { useLocation } from "react-router-dom";
 
 interface HeaderProps {
   theme: "light" | "dark";
