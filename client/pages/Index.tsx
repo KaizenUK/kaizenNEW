@@ -1,9 +1,12 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { ArrowRight, ArrowUpRight } from "lucide-react";
+import { ArrowRight, ArrowUpRight, ChevronRight } from "lucide-react";
+import { Link } from "react-router-dom";
 import Layout from "@/components/Layout";
 import { LeafletMap } from "@/components/LeafletMap";
 import { openCrisp } from "@/lib/crisp-utils";
+import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/components/ui/accordion";
+import { fetchPosts } from "@/src/api/wordpress";
 
 const fadeInUp = {
   hidden: { opacity: 0, y: 20 },
