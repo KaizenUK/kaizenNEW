@@ -183,7 +183,7 @@ const HeroSection = () => {
 };
 
 const PricingSlider = () => {
-  const [tier, setTier] = useState(2);
+  const [tier, setTier] = useState(0);
 
   const tiers = [
     {
