@@ -404,6 +404,234 @@ const PricingSlider = () => {
   );
 };
 
+const PricingCTABanner = () => {
+  return (
+    <section className="py-16 md:py-20 bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 relative overflow-hidden border-y border-white/10">
+      <div className="container mx-auto px-4 relative z-10">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="max-w-4xl mx-auto"
+        >
+          <div className="rounded-2xl bg-white/5 backdrop-blur-xl border border-white/10 p-8 md:p-12">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+              <div>
+                <h3 className="text-2xl md:text-3xl font-heading font-bold text-white mb-4">
+                  Not sure what you need?
+                </h3>
+                <p className="text-white/80 text-lg mb-6">
+                  Read our transparent breakdown to understand website pricing in Liverpool and how much you should actually expect to pay in 2025.
+                </p>
+              </div>
+              <div className="flex flex-col sm:flex-row gap-4">
+                <Link
+                  to="/blog/how-much-does-a-website-cost-in-liverpool-in-2025"
+                  className="flex-1 px-8 py-4 rounded-lg bg-gradient-to-r from-kaizen-cyan to-kaizen-lime text-gray-950 font-heading font-bold hover:shadow-lg hover:scale-105 transition-all inline-flex items-center justify-center gap-2"
+                >
+                  Read the 2025 Liverpool Pricing Guide
+                  <ChevronRight size={20} />
+                </Link>
+                <div className="flex items-center justify-center">
+                  <span className="text-xs font-mono tracking-widest text-kaizen-cyan/70 uppercase">
+                    Updated Nov 2025
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </motion.div>
+      </div>
+    </section>
+  );
+};
+
+const LatestInsights = () => {
+  const [posts, setPosts] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchPosts()
+      .then((data) => {
+        setPosts(data.slice(0, 3));
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.error("Failed to fetch posts:", error);
+        setLoading(false);
+      });
+  }, []);
+
+  if (loading) {
+    return (
+      <section className="py-20 md:py-32 bg-white dark:bg-slate-950">
+        <div className="container mx-auto px-4">
+          <div className="text-center">
+            <p className="text-gray-600 dark:text-gray-400">Loading insights...</p>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  return (
+    <section className="py-20 md:py-32 bg-white dark:bg-slate-950">
+      <div className="container mx-auto px-4">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="text-center mb-16"
+        >
+          <p className="text-xs font-mono tracking-[0.25em] text-kaizen-cyan uppercase mb-4">
+            Knowledge Base
+          </p>
+          <h2 className="text-4xl md:text-5xl font-heading font-bold text-gray-950 dark:text-white mb-6">
+            Latest Insights
+          </h2>
+          <p className="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+            Stay updated with our latest thoughts on web design, development, and digital transformation for Liverpool and Wirral businesses.
+          </p>
+        </motion.div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          {posts.map((post, index) => (
+            <motion.div
+              key={post.id}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: index * 0.1 }}
+              whileHover={{ y: -8 }}
+              className="group relative overflow-hidden rounded-2xl bg-slate-50 dark:bg-slate-900/50 backdrop-blur-lg border border-slate-200/50 dark:border-slate-800/50 hover:border-kaizen-cyan/50 transition-all duration-300"
+            >
+              <div className="absolute -inset-px bg-gradient-to-br from-kaizen-cyan to-kaizen-lime rounded-2xl opacity-0 group-hover:opacity-10 blur transition duration-300" />
+              <div className="relative p-6 md:p-8">
+                <div className="flex items-center gap-2 mb-4">
+                  <span className="text-xs font-mono tracking-widest text-kaizen-cyan uppercase">
+                    Article
+                  </span>
+                  <span className="text-xs text-gray-500 dark:text-gray-400">
+                    {new Date(post.date).toLocaleDateString("en-GB", {
+                      year: "numeric",
+                      month: "short",
+                      day: "numeric",
+                    })}
+                  </span>
+                </div>
+                <h3 className="text-xl font-heading font-bold text-gray-950 dark:text-white mb-3 line-clamp-2">
+                  {post.title.rendered.replace(/&amp;/g, "&")}
+                </h3>
+                <p className="text-sm text-gray-600 dark:text-gray-400 mb-6 line-clamp-2">
+                  {post.excerpt.rendered
+                    .replace(/<[^>]*>/g, "")
+                    .replace(/&amp;/g, "&")
+                    .replace(/&quot;/g, '"')}
+                </p>
+                <Link
+                  to={`/blog/${post.slug}`}
+                  className="inline-flex items-center gap-2 text-kaizen-cyan font-heading font-bold hover:gap-3 transition-all duration-300"
+                >
+                  Read Article
+                  <ArrowRight size={16} />
+                </Link>
+              </div>
+            </motion.div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+};
+
+const SEOFAQSection = () => {
+  const faqItems = [
+    {
+      question: "How much does a website cost in Liverpool in 2025?",
+      answer:
+        "Prices range from £500 for DIY Shopify sites to £15k+ for custom React apps. Most professional brochure sites sit between £3k–£8k.",
+    },
+    {
+      question: "Do you serve Wirral and Merseyside?",
+      answer:
+        "Yes. We are based in Liverpool City Centre but serve businesses across Wirral, Chester, and the wider Merseyside region.",
+    },
+    {
+      question: "Why are you different from other Liverpool digital agencies?",
+      answer:
+        "We are Product Owner-led. You don't get an account manager; you get a senior technical partner who runs your project in Agile sprints.",
+    },
+  ];
+
+  const faqSchema = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: faqItems.map((item) => ({
+      "@type": "Question",
+      name: item.question,
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: item.answer,
+      },
+    })),
+  };
+
+  return (
+    <section className="py-20 md:py-32 bg-slate-50 dark:bg-slate-900/50 relative overflow-hidden">
+      <script type="application/ld+json">{JSON.stringify(faqSchema)}</script>
+
+      <div className="container mx-auto px-4 relative z-10">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="text-center mb-16 max-w-2xl mx-auto"
+        >
+          <p className="text-xs font-mono tracking-[0.25em] text-kaizen-cyan uppercase mb-4">
+            Common Questions
+          </p>
+          <h2 className="text-4xl md:text-5xl font-heading font-bold text-gray-950 dark:text-white mb-6">
+            Common Questions from Liverpool Businesses
+          </h2>
+        </motion.div>
+
+        <div className="max-w-3xl mx-auto">
+          <Accordion type="single" collapsible className="w-full">
+            {faqItems.map((item, index) => (
+              <AccordionItem key={index} value={`item-${index}`} className="border-b border-gray-200 dark:border-gray-800">
+                <AccordionTrigger className="text-lg font-heading font-bold text-gray-950 dark:text-white hover:text-kaizen-cyan transition-colors">
+                  {item.question}
+                </AccordionTrigger>
+                <AccordionContent className="text-gray-700 dark:text-gray-300 leading-relaxed">
+                  {item.answer}
+                </AccordionContent>
+              </AccordionItem>
+            ))}
+          </Accordion>
+        </div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="text-center mt-12"
+        >
+          <p className="text-gray-700 dark:text-gray-300 mb-6">
+            Still have questions? Let's chat.
+          </p>
+          <button
+            onClick={() => openCrisp()}
+            className="px-8 py-4 rounded-lg bg-gradient-to-r from-kaizen-cyan to-kaizen-lime text-gray-950 font-heading font-bold hover:shadow-lg hover:scale-105 transition-all inline-flex items-center gap-2"
+          >
+            Start a Conversation
+            <ArrowRight size={20} />
+          </button>
+        </motion.div>
+      </div>
+    </section>
+  );
+};
+
 const KaizenPhilosophy = () => {
   return (
     <section className="py-20 md:py-32 bg-gray-950 text-white relative overflow-hidden">
