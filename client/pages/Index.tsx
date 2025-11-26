@@ -6,7 +6,7 @@ import Layout from "@/components/Layout";
 import { LeafletMap } from "@/components/LeafletMap";
 import { openCrisp } from "@/lib/crisp-utils";
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/components/ui/accordion";
-import { fetchPosts } from "@/src/api/wordpress";
+import { fetchPosts } from "../../src/api/wordpress";
 
 const fadeInUp = {
   hidden: { opacity: 0, y: 20 },
@@ -549,7 +549,7 @@ const SEOFAQSection = () => {
     {
       question: "How much does a website cost in Liverpool in 2025?",
       answer:
-        "Prices range from £500 for DIY Shopify sites to £15k+ for custom React apps. Most professional brochure sites sit between £3k–£8k.",
+        "Prices range from £500 for DIY Shopify sites to ��15k+ for custom React apps. Most professional brochure sites sit between £3k–£8k.",
     },
     {
       question: "Do you serve Wirral and Merseyside?",
