@@ -15,3 +15,5 @@ Disallow: /admin
 Disallow: /admin/
 Disallow: /admin/*
 Allow: /
+
+Sitemap: https://www.kaizenweb.co.uk/sitemap.xml
