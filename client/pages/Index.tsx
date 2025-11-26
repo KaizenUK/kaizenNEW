@@ -201,12 +201,6 @@ const PricingSlider = () => {
 
   const currentTier = tiers[tier];
 
-  const openChat = () => {
-    if (typeof window !== "undefined" && (window as any).$crisp) {
-      (window as any).$crisp.push(["do", "chat:open"]);
-    }
-  };
-
   return (
     <section
       id="pricing-slider-section"
