@@ -19,7 +19,14 @@ export const LeafletMap = ({
   useEffect(() => {
     if (!mapRef.current || mapInstance.current) return;
 
-    mapInstance.current = L.map(mapRef.current).setView(center, zoom);
+    mapInstance.current = L.map(mapRef.current, {
+      scrollWheelZoom: false,
+      dragging: false,
+      doubleClickZoom: false,
+      touchZoom: false,
+      boxZoom: false,
+      keyboard: false,
+    }).setView(center, zoom);
 
     L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
       attribution: "&copy; OpenStreetMap contributors",
@@ -27,7 +34,7 @@ export const LeafletMap = ({
     }).addTo(mapInstance.current);
 
     const liverpoollCoords: [number, number] = [53.4084, -2.9916];
-    const wirralCoords: [number, number] = [53.375, -3.0425];
+    const wirralCoords: [number, number] = [53.4011, -3.1114];
 
     const createIcon = (color: "cyan" | "lime") => {
       const colorMap = {

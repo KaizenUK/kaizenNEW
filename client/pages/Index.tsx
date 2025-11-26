@@ -7,6 +7,7 @@ import { LeafletMap } from "@/components/LeafletMap";
 import { openCrisp } from "@/lib/crisp-utils";
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/components/ui/accordion";
 import { fetchPosts } from "../../src/api/wordpress";
+import { decodeAndStrip } from "@/lib/html-utils";
 
 const fadeInUp = {
   hidden: { opacity: 0, y: 20 },
@@ -386,9 +387,7 @@ const PricingSlider = () => {
                   </div>
 
                   <button
-                    onClick={
-                      currentTier.cta.includes("Chat") ? () => openCrisp() : undefined
-                    }
+                    onClick={() => openCrisp()}
                     className="mt-6 w-full px-6 py-3 rounded-lg bg-gradient-to-r from-kaizen-cyan to-kaizen-lime text-gray-950 font-heading font-bold hover:shadow-lg hover:scale-105 transition-all inline-flex items-center justify-center gap-2"
                   >
                     {currentTier.cta}
@@ -427,7 +426,7 @@ const PricingCTABanner = () => {
               <div className="flex flex-col sm:flex-row gap-4">
                 <Link
                   to="/blog/how-much-does-a-website-cost-in-liverpool-in-2025"
-                  className="flex-1 px-8 py-4 rounded-lg bg-gradient-to-r from-kaizen-cyan to-kaizen-lime text-gray-950 font-heading font-bold hover:shadow-lg hover:scale-105 transition-all inline-flex items-center justify-center gap-2"
+                  className="inline-flex items-center justify-center px-5 py-3 rounded-lg border border-kaizen-cyan/70 text-kaizen-cyan font-heading font-semibold bg-transparent hover:bg-kaizen-cyan/10 hover:shadow-md transition-all gap-2"
                 >
                   Read the 2025 Liverpool Pricing Guide
                   <ChevronRight size={20} />
@@ -453,7 +452,27 @@ const LatestInsights = () => {
   useEffect(() => {
     fetchPosts()
       .then((data) => {
-        setPosts(data.slice(0, 3));
+        const processed = (data || [])
+          .map((post: any) => {
+            const image =
+              post._embedded?.["wp:featuredmedia"]?.[0]?.source_url ||
+              "https://images.unsplash.com/photo-1460925895917-aae19e488e71?w=800&h=600&fit=crop";
+
+            return {
+              id: String(post.id),
+              slug: post.slug || "",
+              title: decodeAndStrip(post.title?.rendered || "Untitled"),
+              excerpt: decodeAndStrip(post.excerpt?.rendered || ""),
+              date: post.date || new Date().toISOString(),
+              image,
+            };
+          })
+          .sort(
+            (a: any, b: any) =>
+              new Date(b.date).getTime() - new Date(a.date).getTime(),
+          );
+
+        setPosts(processed.slice(0, 3));
         setLoading(false);
       })
       .catch((error) => {
@@ -506,35 +525,42 @@ const LatestInsights = () => {
               className="group relative overflow-hidden rounded-2xl bg-slate-50 dark:bg-slate-900/50 backdrop-blur-lg border border-slate-200/50 dark:border-slate-800/50 hover:border-kaizen-cyan/50 transition-all duration-300"
             >
               <div className="absolute -inset-px bg-gradient-to-br from-kaizen-cyan to-kaizen-lime rounded-2xl opacity-0 group-hover:opacity-10 blur transition duration-300" />
-              <div className="relative p-6 md:p-8">
-                <div className="flex items-center gap-2 mb-4">
-                  <span className="text-xs font-mono tracking-widest text-kaizen-cyan uppercase">
-                    Article
-                  </span>
-                  <span className="text-xs text-gray-500 dark:text-gray-400">
-                    {new Date(post.date).toLocaleDateString("en-GB", {
-                      year: "numeric",
-                      month: "short",
-                      day: "numeric",
-                    })}
-                  </span>
+              <div className="relative">
+                <div className="h-40 w-full overflow-hidden rounded-t-2xl border-b border-slate-200/50 dark:border-slate-800/50">
+                  <img
+                    src={post.image}
+                    alt={post.title}
+                    loading="lazy"
+                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                  />
                 </div>
-                <h3 className="text-xl font-heading font-bold text-gray-950 dark:text-white mb-3 line-clamp-2">
-                  {post.title.rendered.replace(/&amp;/g, "&")}
-                </h3>
-                <p className="text-sm text-gray-600 dark:text-gray-400 mb-6 line-clamp-2">
-                  {post.excerpt.rendered
-                    .replace(/<[^>]*>/g, "")
-                    .replace(/&amp;/g, "&")
-                    .replace(/&quot;/g, '"')}
-                </p>
-                <Link
-                  to={`/blog/${post.slug}`}
-                  className="inline-flex items-center gap-2 text-kaizen-cyan font-heading font-bold hover:gap-3 transition-all duration-300"
-                >
-                  Read Article
-                  <ArrowRight size={16} />
-                </Link>
+                <div className="p-6 md:p-8">
+                  <div className="flex items-center gap-2 mb-4">
+                    <span className="text-xs font-mono tracking-widest text-kaizen-cyan uppercase">
+                      Article
+                    </span>
+                    <span className="text-xs text-gray-500 dark:text-gray-400">
+                      {new Date(post.date).toLocaleDateString("en-GB", {
+                        year: "numeric",
+                        month: "short",
+                        day: "numeric",
+                      })}
+                    </span>
+                  </div>
+                  <h3 className="text-xl font-heading font-bold text-gray-950 dark:text-white mb-3 line-clamp-2">
+                    {post.title}
+                  </h3>
+                  <p className="text-sm text-gray-600 dark:text-gray-400 mb-6 line-clamp-2">
+                    {post.excerpt}
+                  </p>
+                  <Link
+                    to={`/blog/${post.slug}`}
+                    className="inline-flex items-center gap-2 text-kaizen-cyan font-heading font-bold hover:gap-3 transition-all duration-300"
+                  >
+                    Read Article
+                    <ArrowRight size={16} />
+                  </Link>
+                </div>
               </div>
             </motion.div>
           ))}
@@ -549,7 +575,7 @@ const SEOFAQSection = () => {
     {
       question: "How much does a website cost in Liverpool in 2025?",
       answer:
-        "Prices range from £500 for DIY Shopify sites to ��15k+ for custom React apps. Most professional brochure sites sit between £3k–£8k.",
+        "Prices range from £500 for DIY Shopify sites to £15k+ for custom React apps. Most professional brochure sites sit between £3k–£8k.",
     },
     {
       question: "Do you serve Wirral and Merseyside?",
@@ -560,6 +586,21 @@ const SEOFAQSection = () => {
       question: "Why are you different from other Liverpool digital agencies?",
       answer:
         "We are Product Owner-led. You don't get an account manager; you get a senior technical partner who runs your project in Agile sprints.",
+    },
+    {
+      question: "Do you use templates or custom code?",
+      answer:
+        "We build custom-coded sites using React or a bespoke WordPress theme. We do not use £50 \"off-the-shelf\" templates that bloat your site and hurt your SEO.",
+    },
+    {
+      question: "What happens after the website launches?",
+      answer:
+        "You own everything. We provide 30 days of free support to fix any snagging issues. After that, you can sign up for a maintenance plan or manage it yourself. No lock-in contracts.",
+    },
+    {
+      question: "Can you fix my current broken website?",
+      answer:
+        "Yes. Our \"Project Rescue\" service is designed exactly for this. We audit your code, stabilise the build, and help you launch.",
     },
   ];
 
@@ -1107,12 +1148,12 @@ export default function Home() {
       <HeroSection />
       <PricingSlider />
       <PricingCTABanner />
-      <LatestInsights />
-      <SEOFAQSection />
       <KaizenPhilosophy />
       <AIValueProp />
       <PerformanceBadge />
       <LocalMap />
+      <LatestInsights />
+      <SEOFAQSection />
     </Layout>
   );
 }
