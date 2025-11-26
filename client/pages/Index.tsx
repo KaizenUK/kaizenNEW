@@ -4,6 +4,7 @@ import { ArrowRight, ArrowUpRight } from "lucide-react";
 import Layout from "@/components/Layout";
 import { LeafletMap } from "@/components/LeafletMap";
 import { openCrisp } from "@/lib/crisp-utils";
+import { useLocation } from "react-router-dom";
 
 const fadeInUp = {
   hidden: { opacity: 0, y: 20 },
