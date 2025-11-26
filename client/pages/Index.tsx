@@ -431,17 +431,15 @@ const PricingCTABanner = () => {
                   Not sure what you need?
                 </h3>
                 <p className="text-white/80 text-lg mb-6">
-                  Read our transparent breakdown to understand website pricing
-                  in Liverpool and how much you should actually expect to pay in
-                  2025.
+                  Read our transparent Liverpool &amp; Wirral pricing guide so you know what a serious website should cost in 2025 and what you should actually expect to pay.
                 </p>
               </div>
               <div className="flex flex-col sm:flex-row gap-4">
                 <Link
                   to="/blog/how-much-does-a-website-cost-in-liverpool-in-2025"
-                  className="inline-flex items-center justify-center px-5 py-3 rounded-lg border border-kaizen-cyan/70 text-kaizen-cyan font-heading font-semibold bg-transparent hover:bg-kaizen-cyan/10 hover:shadow-md transition-all gap-2"
+                  className="inline-flex items-center justify-center px-5 py-3 rounded-full bg-kaizen-cyan text-slate-950 font-heading font-semibold hover:bg-kaizen-cyan/90 hover:shadow-lg hover:translate-y-0.5 transition-all gap-2"
                 >
-                  Read the 2025 Liverpool Pricing Guide
+                  Open Pricing Guide
                   <ChevronRight size={20} />
                 </Link>
                 <div className="flex items-center justify-center">
