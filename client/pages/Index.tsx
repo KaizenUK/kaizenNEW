@@ -431,7 +431,9 @@ const PricingCTABanner = () => {
                   Not sure what you need?
                 </h3>
                 <p className="text-white/80 text-lg mb-6">
-                  Read our transparent Liverpool &amp; Wirral pricing guide so you know what a serious website should cost in 2025 and what you should actually expect to pay.
+                  Read our transparent Liverpool &amp; Wirral pricing guide so
+                  you know what a serious website should cost in 2025 and what
+                  you should actually expect to pay.
                 </p>
               </div>
               <div className="flex flex-col sm:flex-row gap-4">
@@ -474,7 +476,8 @@ const CoreServiceVerticals = () => {
             Our business is split into two main verticals
           </h2>
           <p className="text-sm md:text-base text-slate-300 max-w-2xl mx-auto">
-            Web design for Liverpool &amp; Wirral, and hands-on Contract Product Ownership for complex or failing digital projects.
+            Web design for Liverpool &amp; Wirral, and hands-on Contract Product
+            Ownership for complex or failing digital projects.
           </p>
         </motion.div>
 
@@ -501,7 +504,9 @@ const CoreServiceVerticals = () => {
                 Liverpool &amp; Wirral Web Design
               </h3>
               <p className="text-sm md:text-base text-slate-200 mb-6 max-w-md">
-                High-performance web design for Liverpool &amp; Wirral SMEs. We design and build fast React and WordPress sites that turn searches into leads and support long-term SEO.
+                High-performance web design for Liverpool &amp; Wirral SMEs. We
+                design and build fast React and WordPress sites that turn
+                searches into leads and support long-term SEO.
               </p>
               <ul className="space-y-2 text-sm md:text-base text-slate-200/90 mb-8">
                 <li className="flex items-center gap-2">
@@ -552,7 +557,9 @@ const CoreServiceVerticals = () => {
                 Contract Product Owner
               </h3>
               <p className="text-sm md:text-base text-slate-100 mb-6 max-w-md">
-                Senior Contract Product Owner for Liverpool &amp; Wirral teams. We rescue failing builds, run Agile sprints, and keep budgets, scope and delivery under control.
+                Senior Contract Product Owner for Liverpool &amp; Wirral teams.
+                We rescue failing builds, run Agile sprints, and keep budgets,
+                scope and delivery under control.
               </p>
               <ul className="space-y-2 text-sm md:text-base text-slate-100/90 mb-8">
                 <li className="flex items-center gap-2">
