@@ -1,4 +1,3 @@
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap");
 
 /* Font display swap is already applied via &display=swap URL parameter above */
@@ -11,7 +10,7 @@
   /**
    * Kaizen Web brand colors and theme
    * CSS variables in HSL format for Tailwind integration
-  */
+   */
   :root {
     --background: 210 14% 97%;
     --foreground: 222 47% 11%;
@@ -227,6 +226,63 @@
   .code-rain-column {
     animation: code-rain 1.2s linear infinite;
   }
+
+  /* Pricing slider thumb styling */
+  .pricing-slider {
+    -webkit-appearance: none;
+    appearance: none;
+    height: 0.75rem;
+    border-radius: 9999px;
+    background-color: transparent;
+  }
+
+  .pricing-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 1.25rem;
+    height: 1.25rem;
+    border-radius: 9999px;
+    background: #020617;
+    border: 2px solid #ffffff;
+    box-shadow: 0 0 0 2px rgba(15, 23, 42, 0.35);
+    cursor: pointer;
+    transition:
+      transform 150ms ease-out,
+      box-shadow 150ms ease-out;
+  }
+
+  .pricing-slider::-webkit-slider-thumb:hover {
+    transform: scale(1.06);
+    box-shadow: 0 0 0 3px rgba(15, 23, 42, 0.45);
+  }
+
+  .pricing-slider::-webkit-slider-thumb:active {
+    transform: scale(0.98);
+    box-shadow: 0 0 0 4px rgba(15, 23, 42, 0.55);
+  }
+
+  .pricing-slider::-moz-range-thumb {
+    width: 1.25rem;
+    height: 1.25rem;
+    border-radius: 9999px;
+    background: #020617;
+    border: 2px solid #ffffff;
+    box-shadow: 0 0 0 2px rgba(15, 23, 42, 0.35);
+    cursor: pointer;
+    transition:
+      transform 150ms ease-out,
+      box-shadow 150ms ease-out;
+  }
+
+  .pricing-slider::-moz-range-thumb:hover {
+    transform: scale(1.06);
+    box-shadow: 0 0 0 3px rgba(15, 23, 42, 0.45);
+  }
+
+  .pricing-slider::-moz-range-thumb:active {
+    transform: scale(0.98);
+    box-shadow: 0 0 0 4px rgba(15, 23, 42, 0.55);
+  }
 }
 
 @layer components {
@@ -242,6 +298,12 @@
 
   .blog-content {
     @apply prose dark:prose-invert max-w-none space-y-6;
+  }
+
+  .blog-hero {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 9;
   }
 
   .blog-content h1 {
@@ -292,18 +354,6 @@
   }
 
   .blog-content blockquote {
-    @apply border-l-4 border-kaizen-cyan pl-4 py-2 my-6 bg-gray-100 dark:bg-gray-900/50 italic text-gray-700 dark:text-gray-300 text-base lg:text-lg;
-  }
-
-  .blog-content img {
-    @apply rounded-2xl max-h-[600px] object-contain mx-auto my-6 lg:my-8 w-full;
-  }
-
-  .blog-content figure {
-    @apply my-6 lg:my-8;
-  }
-
-  .blog-content figure img {
-    @apply rounded-2xl max-h-[600px] object-contain mx-auto w-full;
+    @apply border-l-4 border-kaizen-cyan pl-4 italic text-gray-700 dark:text-gray-300;
   }
 }

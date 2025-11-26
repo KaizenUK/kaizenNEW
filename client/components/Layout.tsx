@@ -41,8 +41,9 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       ? location.pathname.slice(0, -1)
       : location.pathname;
   const meta = getPageMeta(normalizedPath);
-  const canonicalUrl =
+  const canonicalUrlBase =
     normalizedPath === "/" ? SITE_URL : `${SITE_URL}${normalizedPath}`;
+  const canonicalUrl = canonicalUrlBase.split("?")[0];
   const keywords = meta.keywords?.join(", ");
   const robotsValue = meta.noIndex ? "noindex, nofollow" : "index, follow";
 
@@ -132,6 +133,46 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         <script type="application/ld+json">
           {JSON.stringify({
             "@context": "https://schema.org",
+            "@type": "ProfessionalService",
+            name: "Kaizen",
+            image: "https://www.kaizenweb.co.uk/assets/logo.png",
+            url: "https://www.kaizenweb.co.uk",
+            telephone: "",
+            address: {
+              "@type": "PostalAddress",
+              addressLocality: "Liverpool",
+              addressRegion: "Merseyside",
+              addressCountry: "UK",
+            },
+            geo: {
+              "@type": "GeoCoordinates",
+              latitude: "53.4084",
+              longitude: "-2.9916",
+            },
+            areaServed: [
+              {
+                "@type": "City",
+                name: "Liverpool",
+              },
+              {
+                "@type": "City",
+                name: "Wirral",
+              },
+              {
+                "@type": "City",
+                name: "Merseyside",
+              },
+              {
+                "@type": "City",
+                name: "Chester",
+              },
+            ],
+            priceRange: "£££",
+          })}
+        </script>
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
             "@type": "LocalBusiness",
             name: "Kaizen",
             url: "https://www.kaizenweb.co.uk",
@@ -146,7 +187,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
               "@type": "ContactPoint",
               contactType: "Customer Support",
               email: "hello@kaizenweb.co.uk",
-              areaServed: ["Liverpool", "Wirral"],
+              areaServed: ["Liverpool", "Wirral", "Merseyside", "Chester"],
             },
             sameAs: ["https://www.linkedin.com/company/kaizen-web"],
           })}

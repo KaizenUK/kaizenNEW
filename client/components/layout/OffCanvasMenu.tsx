@@ -4,19 +4,22 @@ import {
   Sun,
   Moon,
   ChevronDown,
-  Monitor,
-  ShoppingBag,
   MapPin,
+  Map,
   LifeBuoy,
   Briefcase,
   Users,
   BookOpen,
   FileText,
+  FileCode2,
   Wrench,
+  Zap,
+  Code2,
+  ShoppingBag,
 } from "lucide-react";
 import { useState } from "react";
-import { useCalendly } from "@/context/CalendlyContext";
 import { cn } from "@/lib/utils";
+import { openCrisp } from "@/lib/crisp-utils";
 
 interface OffCanvasMenuProps {
   isOpen: boolean;
@@ -45,6 +48,13 @@ interface InsightItem {
   icon: JSX.Element;
 }
 
+interface CaseStudyItem {
+  label: string;
+  href: string;
+  description: string;
+  icon: JSX.Element;
+}
+
 const OffCanvasMenu: React.FC<OffCanvasMenuProps> = ({
   isOpen,
   onClose,
@@ -52,17 +62,29 @@ const OffCanvasMenu: React.FC<OffCanvasMenuProps> = ({
   onThemeChange,
 }) => {
   const [expandedSection, setExpandedSection] = useState<string | null>(null);
-  const { openCalendly } = useCalendly();
 
   const servicesMenu: ServiceColumn[] = [
     {
       title: "Web & Growth",
       items: [
         {
-          label: "High-Performance Web Design",
+          label: "Web Design Liverpool",
           href: "/services/web-design-liverpool",
-          description: "React/Vite builds that load fast and convert.",
-          icon: <Monitor className="w-4 h-4" />,
+          description:
+            "Fast, conversion-focused sites for Liverpool businesses.",
+          icon: <MapPin className="w-4 h-4" />,
+        },
+        {
+          label: "Web Design Wirral",
+          href: "/web-design-wirral",
+          description: "Web design for Heswall, West Kirby, and Birkenhead.",
+          icon: <Map className="w-4 h-4" />,
+        },
+        {
+          label: "WordPress Web Design",
+          href: "/services/wordpress-web-design",
+          description: "Custom, high-performance WordPress builds.",
+          icon: <FileCode2 className="w-4 h-4" />,
         },
         {
           label: "E-commerce Development",
@@ -71,9 +93,9 @@ const OffCanvasMenu: React.FC<OffCanvasMenuProps> = ({
           icon: <ShoppingBag className="w-4 h-4" />,
         },
         {
-          label: "Local SEO",
-          href: "/services/local-seo",
-          description: "Get found by the right people in Liverpool.",
+          label: "Liverpool City Centre",
+          href: "/web-design-liverpool-city-centre",
+          description: "Web design for Liverpool city centre businesses.",
           icon: <MapPin className="w-4 h-4" />,
         },
       ],
@@ -99,6 +121,13 @@ const OffCanvasMenu: React.FC<OffCanvasMenuProps> = ({
           href: "/agile-coaching",
           description: "Turn chaos into a predictable delivery process.",
           icon: <Users className="w-4 h-4" />,
+        },
+        {
+          label: "Digital Transformation",
+          href: "/services/digital-transformation",
+          description:
+            "Automate manual work and connect your systems across the business.",
+          icon: <Zap className="w-4 h-4" />,
         },
       ],
     },
@@ -130,9 +159,29 @@ const OffCanvasMenu: React.FC<OffCanvasMenuProps> = ({
     },
   ];
 
+  const caseStudiesMenu: CaseStudyItem[] = [
+    {
+      label: "A.S. Collections",
+      href: "/case-studies/as-collections",
+      description: "Commercial Debt Recovery",
+      icon: <Briefcase className="w-4 h-4" />,
+    },
+    {
+      label: "Helen Moore",
+      href: "/case-studies/helen-moore-hairdressing",
+      description: "Local Business / Salon",
+      icon: <MapPin className="w-4 h-4" />,
+    },
+    {
+      label: "Kaizen Web",
+      href: "/case-studies/kaizen-rebuild",
+      description: "Agency Rebuild / Tech Deep Dive",
+      icon: <Code2 className="w-4 h-4" />,
+    },
+  ];
+
   const topLevelLinks = [
     { label: "Our Pledge", href: "/pledge" },
-    { label: "Case Studies", href: "/case-studies" },
     { label: "About", href: "/about" },
   ];
 
@@ -263,6 +312,42 @@ const OffCanvasMenu: React.FC<OffCanvasMenuProps> = ({
             )}
           </div>
 
+          {/* Case Studies Accordion */}
+          <div>
+            <button
+              onClick={() => toggleSection("case-studies")}
+              className="w-full text-left px-3 py-3 text-base font-medium text-white/90 hover:text-white hover:bg-white/5 rounded-lg transition flex items-center justify-between"
+            >
+              <span>Case Studies</span>
+              <ChevronDown
+                size={18}
+                className={cn(
+                  "transition-transform duration-200",
+                  expandedSection === "case-studies" && "rotate-180",
+                )}
+              />
+            </button>
+            {expandedSection === "case-studies" && (
+              <div className="mt-1 space-y-0.5">
+                {caseStudiesMenu.map((item) => (
+                  <Link
+                    key={item.href}
+                    to={item.href}
+                    className="block px-3 py-2 text-sm font-medium text-white/80 hover:text-white hover:bg-white/5 rounded-lg transition"
+                    onClick={onClose}
+                  >
+                    <div className="font-semibold">{item.label}</div>
+                    {item.description && (
+                      <div className="text-xs text-white/50 mt-0.5">
+                        {item.description}
+                      </div>
+                    )}
+                  </Link>
+                ))}
+              </div>
+            )}
+          </div>
+
           {/* Divider */}
           <div className="my-2 border-t border-white/10" />
 
@@ -293,12 +378,13 @@ const OffCanvasMenu: React.FC<OffCanvasMenuProps> = ({
           </button>
           <button
             onClick={() => {
-              openCalendly();
+              openCrisp();
               onClose();
             }}
-            className="w-full px-4 py-3 rounded-full text-sm font-medium text-gray-950 bg-gradient-to-r from-cyan-400 to-lime-400 hover:shadow-lg transition"
+            className="w-full px-4 py-3 rounded-full text-sm font-medium text-gray-950 bg-gradient-to-r from-green-400 to-emerald-500 hover:shadow-lg transition flex items-center justify-center gap-2"
           >
-            Book a Call
+            <span className="w-2 h-2 rounded-full bg-green-200 animate-pulse" />
+            Start a Chat
           </button>
         </div>
       </div>

@@ -199,7 +199,7 @@ export default function CaseStudies() {
               onClick={openCalendlyFromContext}
               className="px-8 py-3 rounded-lg border-2 border-white/30 text-white font-heading font-bold hover:border-kaizen-cyan hover:text-kaizen-cyan transition"
             >
-              Book a 15-Minute Call
+              Book a 15 Minute Call
             </button>
           </motion.div>
         </div>

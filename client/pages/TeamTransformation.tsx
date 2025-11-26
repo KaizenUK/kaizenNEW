@@ -120,7 +120,7 @@ export default function TeamTransformation() {
             onClick={openCalendlyFromContext}
             className="inline-flex items-center gap-2 px-8 py-3 rounded-full bg-gradient-to-r from-kaizen-cyan to-kaizen-lime text-kaizen-dark font-heading font-bold hover:opacity-90 transition"
           >
-            Schedule Discovery Call
+            Book a 15 Minute Call
             <ArrowRight size={18} />
           </button>
         </div>

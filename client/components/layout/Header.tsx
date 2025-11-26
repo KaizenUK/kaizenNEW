@@ -8,16 +8,21 @@ import {
   Monitor,
   ShoppingBag,
   MapPin,
+  Map,
   LifeBuoy,
   Briefcase,
   Users,
   BookOpen,
   FileText,
+  FileCode2,
   Wrench,
+  Zap,
+  Code2,
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useCalendly } from "@/context/CalendlyContext";
+import { openCrisp } from "@/lib/crisp-utils";
 
 interface HeaderProps {
   theme: "light" | "dark";
@@ -26,7 +31,7 @@ interface HeaderProps {
   onMobileMenuChange: (open: boolean) => void;
 }
 
-type DesktopMenuKey = "services" | "insights" | null;
+type DesktopMenuKey = "services" | "insights" | "case-studies" | null;
 
 interface ServiceItem {
   label: string;
@@ -48,7 +53,18 @@ interface InsightItem {
   icon: JSX.Element;
 }
 
-const desktopMenuOrder: DesktopMenuKey[] = ["services", "insights"];
+interface CaseStudyItem {
+  label: string;
+  href: string;
+  description: string;
+  icon: JSX.Element;
+}
+
+const desktopMenuOrder: DesktopMenuKey[] = [
+  "services",
+  "insights",
+  "case-studies",
+];
 
 const Header: React.FC<HeaderProps> = ({
   theme,
@@ -64,7 +80,7 @@ const Header: React.FC<HeaderProps> = ({
   const navRef = useRef<HTMLDivElement | null>(null);
   const servicesTriggerRef = useRef<HTMLButtonElement | null>(null);
   const insightsTriggerRef = useRef<HTMLButtonElement | null>(null);
-  const { openCalendly } = useCalendly();
+  const caseStudiesTriggerRef = useRef<HTMLButtonElement | null>(null);
   const location = useLocation();
 
   useEffect(() => {
@@ -100,23 +116,23 @@ const Header: React.FC<HeaderProps> = ({
       title: "Web & Growth",
       items: [
         {
-          label: "High-Performance Web Design",
+          label: "Web Design Liverpool",
           href: "/services/web-design-liverpool",
-          description: "React/Vite builds that load fast and convert.",
-          icon: <Monitor className="w-4 h-4" />,
+          description:
+            "Fast, conversion-focused sites for Liverpool businesses.",
+          icon: <MapPin className="w-4 h-4" />,
+        },
+        {
+          label: "Web Design Wirral",
+          href: "/web-design-wirral",
+          description: "Web design for Heswall, West Kirby, and Birkenhead.",
+          icon: <Map className="w-4 h-4" />,
         },
         {
           label: "WordPress Web Design",
           href: "/services/wordpress-web-design",
           description: "Custom, high-performance WordPress builds.",
-          icon: <Monitor className="w-4 h-4" />,
-        },
-        {
-          label: "Liverpool City Centre",
-          href: "/web-design-liverpool-city-centre",
-          description:
-            "Web design for Baltic Triangle and city centre businesses.",
-          icon: <MapPin className="w-4 h-4" />,
+          icon: <FileCode2 className="w-4 h-4" />,
         },
         {
           label: "E-commerce Development",
@@ -125,9 +141,9 @@ const Header: React.FC<HeaderProps> = ({
           icon: <ShoppingBag className="w-4 h-4" />,
         },
         {
-          label: "Local SEO",
-          href: "/services/local-seo",
-          description: "Get found by the right people in Liverpool.",
+          label: "Liverpool City Centre",
+          href: "/web-design-liverpool-city-centre",
+          description: "Web design for Liverpool city centre businesses.",
           icon: <MapPin className="w-4 h-4" />,
         },
       ],
@@ -153,6 +169,13 @@ const Header: React.FC<HeaderProps> = ({
           href: "/agile-coaching",
           description: "Turn chaos into a predictable delivery process.",
           icon: <Users className="w-4 h-4" />,
+        },
+        {
+          label: "Digital Transformation",
+          href: "/services/digital-transformation",
+          description:
+            "Automate manual work and connect your systems across the business.",
+          icon: <Zap className="w-4 h-4" />,
         },
       ],
     },
@@ -184,9 +207,29 @@ const Header: React.FC<HeaderProps> = ({
     },
   ];
 
+  const caseStudiesMenu: CaseStudyItem[] = [
+    {
+      label: "A.S. Collections",
+      href: "/case-studies/as-collections",
+      description: "Commercial Debt Recovery",
+      icon: <Briefcase className="w-4 h-4" />,
+    },
+    {
+      label: "Helen Moore",
+      href: "/case-studies/helen-moore-hairdressing",
+      description: "Local Business / Salon",
+      icon: <MapPin className="w-4 h-4" />,
+    },
+    {
+      label: "Kaizen Web",
+      href: "/case-studies/kaizen-rebuild",
+      description: "Agency Rebuild / Tech Deep Dive",
+      icon: <Code2 className="w-4 h-4" />,
+    },
+  ];
+
   const topLevelLinks = [
     { label: "Our Pledge", href: "/pledge" },
-    { label: "Case Studies", href: "/case-studies" },
     { label: "About", href: "/about" },
   ];
 
@@ -211,7 +254,9 @@ const Header: React.FC<HeaderProps> = ({
         ? servicesTriggerRef.current
         : menu === "insights"
           ? insightsTriggerRef.current
-          : null;
+          : menu === "case-studies"
+            ? caseStudiesTriggerRef.current
+            : null;
 
     if (nav && triggerEl) {
       const navRect = nav.getBoundingClientRect();
@@ -315,6 +360,27 @@ const Header: React.FC<HeaderProps> = ({
                 size={16}
                 className={`transition-transform duration-200 ${
                   isMenuOpen && activeMenu === "insights" ? "rotate-180" : ""
+                }`}
+              />
+            </button>
+
+            {/* Case Studies Trigger */}
+            <button
+              ref={caseStudiesTriggerRef}
+              type="button"
+              onMouseEnter={() => openMenu("case-studies")}
+              onFocus={() => openMenu("case-studies")}
+              onClick={() => handleTriggerClick("case-studies")}
+              className="flex items-center gap-2 px-4 py-2 text-base font-medium text-white/90 hover:text-white hover:bg-white/5 rounded-full transition"
+              aria-expanded={isMenuOpen && activeMenu === "case-studies"}
+            >
+              Case Studies
+              <ChevronDown
+                size={16}
+                className={`transition-transform duration-200 ${
+                  isMenuOpen && activeMenu === "case-studies"
+                    ? "rotate-180"
+                    : ""
                 }`}
               />
             </button>
@@ -426,6 +492,38 @@ const Header: React.FC<HeaderProps> = ({
                       ))}
                     </div>
                   )}
+
+                  {activeMenu === "case-studies" && (
+                    <div className="grid grid-cols-1 gap-3">
+                      {caseStudiesMenu.map((item) => (
+                        <Link
+                          key={item.href}
+                          to={item.href}
+                          className="block rounded-xl px-3 py-2 hover:bg-white/5 transition"
+                          onClick={() => {
+                            setIsMenuOpen(false);
+                            setActiveMenu(null);
+                          }}
+                        >
+                          <div className="flex items-start gap-3">
+                            <span className="mt-1 flex h-7 w-7 items-center justify-center rounded-full bg-white/5 text-cyan-300">
+                              {item.icon}
+                            </span>
+                            <div>
+                              <div className="text-base font-semibold text-white">
+                                {item.label}
+                              </div>
+                              {item.description && (
+                                <p className="text-sm text-gray-400 mt-0.5">
+                                  {item.description}
+                                </p>
+                              )}
+                            </div>
+                          </div>
+                        </Link>
+                      ))}
+                    </div>
+                  )}
                 </motion.div>
               )}
             </AnimatePresence>
@@ -444,13 +542,19 @@ const Header: React.FC<HeaderProps> = ({
             </motion.button>
 
             {/* CTA Button */}
-            <motion.button
-              onClick={openCalendly}
+            <motion.div
+              className="hidden sm:block relative group"
               whileHover={{ scale: 1.05 }}
-              className="hidden sm:block px-6 py-2 rounded-full text-sm font-medium text-gray-950 bg-gradient-to-r from-cyan-400 to-lime-400 hover:shadow-lg transition"
             >
-              Book a Call
-            </motion.button>
+              <div className="absolute -inset-1 bg-gradient-to-r from-green-400 to-emerald-500 rounded-full opacity-40 group-hover:opacity-60 blur transition duration-300" />
+              <button
+                onClick={() => openCrisp()}
+                className="relative flex items-center gap-2 px-6 py-2 rounded-full text-sm font-medium text-gray-950 bg-gradient-to-r from-green-400 to-emerald-500 backdrop-blur-xl hover:shadow-2xl hover:shadow-green-500/50 transition"
+              >
+                <span className="w-2 h-2 rounded-full bg-green-200 animate-pulse" />
+                Start a Chat
+              </button>
+            </motion.div>
 
             {/* Mobile Menu Button */}
             <button

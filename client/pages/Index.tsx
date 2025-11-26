@@ -1,9 +1,18 @@
-import { useState, useEffect, useRef } from "react";
-import { Link } from "react-router-dom";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { ArrowRight, ArrowUpRight, CheckCircle } from "lucide-react";
+import { ArrowRight, ArrowUpRight, ChevronRight } from "lucide-react";
+import { Link } from "react-router-dom";
 import Layout from "@/components/Layout";
-import { useCalendly } from "@/context/CalendlyContext";
+import { LeafletMap } from "@/components/LeafletMap";
+import { openCrisp } from "@/lib/crisp-utils";
+import {
+  Accordion,
+  AccordionItem,
+  AccordionTrigger,
+  AccordionContent,
+} from "@/components/ui/accordion";
+import { fetchPosts } from "../../src/api/wordpress";
+import { decodeAndStrip } from "@/lib/html-utils";
 
 const fadeInUp = {
   hidden: { opacity: 0, y: 20 },
@@ -63,43 +72,26 @@ const ScrollReveal = ({
   );
 };
 
-// Glowing Grid Hero with Tracing Beam Effect
-const GlowingGridHero = () => {
-  const { openCalendly } = useCalendly();
-  const [mousePos, setMousePos] = useState({ x: 50, y: 35 });
-  const heroRef = useRef<HTMLDivElement>(null);
+const HeroSection = () => {
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 
-  useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      if (!heroRef.current) return;
-
-      const rect = heroRef.current.getBoundingClientRect();
-      const x = ((e.clientX - rect.left) / rect.width) * 100;
-      const y = ((e.clientY - rect.top) / rect.height) * 100;
-
-      // Clamp values to keep the glow within reasonable bounds
-      setMousePos({
-        x: Math.max(0, Math.min(100, x)),
-        y: Math.max(0, Math.min(100, y)),
-      });
-    };
-
-    const hero = heroRef.current;
-    if (hero) {
-      hero.addEventListener("mousemove", handleMouseMove);
-      return () => hero.removeEventListener("mousemove", handleMouseMove);
-    }
-  }, []);
+  const handleMouseMove = (e: React.MouseEvent) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    setMousePosition({
+      x: (e.clientX - rect.left) / rect.width,
+      y: (e.clientY - rect.top) / rect.height,
+    });
+  };
 
   return (
-    <section
-      ref={heroRef}
+    <motion.section
+      onMouseMove={handleMouseMove}
       className="relative min-h-[100vh] bg-gray-950 text-white flex items-center py-20 overflow-hidden"
-      style={{ minHeight: "100vh" }}
+      whileHover={{ scale: 1.02 }}
+      transition={{ duration: 0.4 }}
     >
-      {/* SVG Grid Background */}
       <svg
-        className="absolute inset-0 w-full h-full pointer-events-none"
+        className="absolute inset-0 w-full h-full pointer-events-none opacity-40"
         preserveAspectRatio="none"
       >
         <defs>
@@ -112,54 +104,25 @@ const GlowingGridHero = () => {
             <path
               d="M 60 0 L 0 0 0 60"
               fill="none"
-              stroke="rgba(0, 255, 255, 0.1)"
+              stroke="rgba(0, 255, 255, 0.08)"
               strokeWidth="0.5"
             />
           </pattern>
-          <radialGradient
-            id="glow-center"
-            cx={`${mousePos.x}%`}
-            cy={`${mousePos.y}%`}
-          >
-            <stop offset="0%" stopColor="rgba(0, 255, 255, 0.3)" />
-            <stop offset="35%" stopColor="rgba(132, 204, 22, 0.12)" />
-            <stop offset="100%" stopColor="rgba(0, 255, 255, 0)" />
-          </radialGradient>
         </defs>
         <rect width="100%" height="100%" fill="url(#hero-grid)" />
-        <rect width="100%" height="100%" fill="url(#glow-center)" />
       </svg>
 
-      {/* Animated glow orbs - use GPU acceleration */}
-      <motion.div
-        className="absolute top-1/4 right-20 w-80 h-80 bg-kaizen-cyan rounded-full blur-3xl opacity-15"
-        style={{ willChange: "transform" }}
-        animate={{
-          y: [0, -40, 0],
-          x: [0, 30, 0],
-        }}
-        transition={{
-          duration: 20,
-          repeat: Infinity,
-          ease: "easeInOut",
-        }}
-      />
-      <motion.div
-        className="absolute bottom-1/4 left-1/4 w-96 h-96 bg-kaizen-lime rounded-full blur-3xl opacity-10"
-        style={{ willChange: "transform" }}
-        animate={{
-          y: [0, 40, 0],
-          x: [0, -30, 0],
-        }}
-        transition={{
-          duration: 25,
-          repeat: Infinity,
-          ease: "easeInOut",
-        }}
-      />
-
-      {/* Subtle gradient overlay for text clarity */}
       <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-gray-950" />
+
+      <motion.div
+        className="pointer-events-none absolute inset-0"
+        animate={{
+          background: [
+            `radial-gradient(circle at ${mousePosition.x * 100}% ${mousePosition.y * 100}%, rgba(34, 211, 238, 0.1) 0%, transparent 50%)`,
+          ],
+        }}
+        transition={{ type: "tween", duration: 0.3 }}
+      />
 
       <div className="container mx-auto px-4 relative z-10">
         <div className="max-w-4xl mx-auto text-center">
@@ -169,7 +132,7 @@ const GlowingGridHero = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
           >
-            High-Performance Web Design for Liverpool
+            Product Owner-Led Web Design
           </motion.p>
 
           <motion.h1
@@ -178,7 +141,8 @@ const GlowingGridHero = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.1 }}
           >
-            Web Design Liverpool: Product Owner-Led & Agile
+            Liverpool &amp; Wirral Web Design: 2025 Pricing That Actually Makes
+            Sense.
           </motion.h1>
 
           <motion.p
@@ -187,8 +151,9 @@ const GlowingGridHero = () => {
             animate={{ opacity: 1 }}
             transition={{ delay: 0.3, duration: 0.8 }}
           >
-            We build high-performance sites, fix chaotic projects, and coach
-            your team to deliver in sprints. No jargon, just results.
+            Premium Web Design for Liverpool &amp; Wirral Businesses. We build
+            high-performance websites with a dedicated Product Owner. Fast
+            timelines. Protected budgets. Zero fluff.
           </motion.p>
 
           <motion.div
@@ -197,20 +162,1139 @@ const GlowingGridHero = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.5, duration: 0.6 }}
           >
-            <Link
-              to="/contact"
-              className="px-8 py-4 rounded-lg bg-gradient-to-r from-kaizen-cyan to-kaizen-lime text-gray-950 font-heading font-bold text-lg hover:shadow-2xl hover:shadow-kaizen-cyan/60 hover:scale-105 transition-all inline-flex items-center justify-center gap-2"
+            <button
+              onClick={() => openCrisp()}
+              className="px-8 py-4 rounded-lg bg-gradient-to-r from-green-400 to-emerald-500 text-gray-950 font-heading font-bold text-lg hover:shadow-2xl hover:shadow-green-500/60 hover:scale-105 transition-all inline-flex items-center justify-center gap-2 relative group"
             >
-              Get a Liverpool web design quote
+              <motion.div
+                className="absolute -left-2 top-1/2 -translate-y-1/2 w-3 h-3 rounded-full bg-green-300"
+                animate={{ scale: [1, 1.5, 1], opacity: [1, 0.5, 1] }}
+                transition={{ duration: 2, repeat: Infinity }}
+              />
+              Get a Starter Quote
               <ArrowRight size={20} />
-            </Link>
-            <Link
-              to="/case-studies"
+            </button>
+            <button
+              onClick={() => {
+                const slider = document.getElementById(
+                  "pricing-slider-section",
+                );
+                slider?.scrollIntoView({ behaviour: "smooth" });
+              }}
               className="px-8 py-4 rounded-lg border-2 border-white/30 text-white font-heading font-bold text-lg hover:border-kaizen-cyan hover:text-kaizen-cyan hover:shadow-lg hover:shadow-kaizen-cyan/30 transition-all inline-flex items-center justify-center gap-2"
             >
-              View case studies
+              See Our Pricing
               <ArrowUpRight size={20} />
-            </Link>
+            </button>
+          </motion.div>
+        </div>
+      </div>
+    </motion.section>
+  );
+};
+
+const PricingSlider = () => {
+  const [tier, setTier] = useState(0);
+
+  const tiers = [
+    {
+      name: "Starter",
+      description: "Trades & Sole Traders",
+      price: "From £500",
+      detail: "Template setup, fast launch.",
+      cta: "Get a Starter Quote",
+    },
+    {
+      name: "Growth",
+      description: "Small Business / Marketing",
+      price: "£2k – £5k",
+      detail: "Custom design, lead gen focused.",
+      cta: "Book a Growth Call",
+    },
+    {
+      name: "Scale",
+      description: "High-Performance",
+      price: "£8k – £15k",
+      detail: "React/Headless, instant load.",
+      cta: "Get a Scale Quote",
+    },
+    {
+      name: "Enterprise",
+      description: "SaaS / Web App",
+      price: "£15k+",
+      detail: "Complex logic, user portals.",
+      cta: "Book an Enterprise Call",
+    },
+    {
+      name: "Rescue",
+      description: "Broken Project?",
+      price: "Custom Triage",
+      detail: "We fix what others broke.",
+      cta: "Start a Rescue Chat",
+    },
+  ];
+
+  const currentTier = tiers[tier];
+
+  return (
+    <section
+      id="pricing-slider-section"
+      className="py-20 md:py-32 bg-gradient-to-br from-slate-50 via-white to-slate-50 dark:from-slate-950 dark:via-slate-950 dark:to-slate-900/50 relative overflow-hidden"
+    >
+      <div className="container mx-auto px-4 relative z-10">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="text-center mb-16"
+        >
+          <p className="text-xs font-mono tracking-[0.25em] text-kaizen-cyan uppercase mb-4">
+            Pricing That Fits
+          </p>
+          <h2 className="text-4xl md:text-5xl font-heading font-bold text-gray-950 dark:text-white">
+            Choose Your Build
+          </h2>
+        </motion.div>
+
+        <div className="max-w-4xl mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="mb-12"
+          >
+            <input
+              type="range"
+              min="0"
+              max="4"
+              value={tier}
+              onChange={(e) => setTier(parseInt(e.target.value))}
+              className="pricing-slider w-full h-3 bg-gradient-to-r from-cyan-400 via-lime-400 to-cyan-400 rounded-lg appearance-none cursor-pointer"
+              style={{
+                background: `linear-gradient(to right, rgb(34, 211, 238), rgb(132, 204, 22), rgb(34, 211, 238))`,
+              }}
+            />
+            <div className="flex justify-between text-xs text-gray-500 dark:text-gray-400 mt-2 font-mono">
+              <span>Starter</span>
+              <span>Growth</span>
+              <span>Scale</span>
+              <span>Enterprise</span>
+              <span>Rescue</span>
+            </div>
+          </motion.div>
+
+          <motion.div
+            key={tier}
+            initial={{ opacity: 0, scale: 0.97 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.45, ease: "easeOut" }}
+            className="relative group"
+          >
+            <div className="absolute -inset-px bg-gradient-to-r from-kaizen-cyan via-kaizen-lime to-kaizen-cyan rounded-3xl opacity-0 group-hover:opacity-20 blur transition duration-300" />
+            <div className="relative bg-white/80 dark:bg-slate-950/80 backdrop-blur-xl rounded-3xl border border-white/50 dark:border-white/10 p-8 md:p-12 mb-8 shadow-xl dark:shadow-2xl">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div>
+                  <h3 className="text-3xl font-heading font-bold text-gray-950 dark:text-white mb-2">
+                    {currentTier.name}
+                  </h3>
+                  <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
+                    {currentTier.description}
+                  </p>
+                  <div className="text-4xl font-heading font-black bg-gradient-to-r from-kaizen-cyan to-kaizen-lime bg-clip-text text-transparent mb-4">
+                    {currentTier.price}
+                  </div>
+                  <p className="text-lg text-gray-700 dark:text-gray-300">
+                    {currentTier.detail}
+                  </p>
+                </div>
+
+                <div className="flex flex-col justify-between">
+                  <div>
+                    <p className="text-xs font-mono tracking-widest text-gray-500 dark:text-gray-400 uppercase mb-3">
+                      What's Included
+                    </p>
+                    <ul className="space-y-2">
+                      {tier === 0 && (
+                        <>
+                          <li className="flex items-center gap-2 text-gray-700 dark:text-gray-300">
+                            <span className="text-kaizen-cyan">✓</span>{" "}
+                            Ready-made template
+                          </li>
+                          <li className="flex items-center gap-2 text-gray-700 dark:text-gray-300">
+                            <span className="text-kaizen-cyan">✓</span> Basic
+                            SEO
+                          </li>
+                          <li className="flex items-center gap-2 text-gray-700 dark:text-gray-300">
+                            <span className="text-kaizen-cyan">✓</span> Mobile
+                            responsive
+                          </li>
+                        </>
+                      )}
+                      {tier === 1 && (
+                        <>
+                          <li className="flex items-center gap-2 text-gray-700 dark:text-gray-300">
+                            <span className="text-kaizen-cyan">✓</span> Custom
+                            design
+                          </li>
+                          <li className="flex items-center gap-2 text-gray-700 dark:text-gray-300">
+                            <span className="text-kaizen-cyan">✓</span> Lead
+                            capture forms
+                          </li>
+                          <li className="flex items-center gap-2 text-gray-700 dark:text-gray-300">
+                            <span className="text-kaizen-cyan">✓</span>{" "}
+                            Analytics setup
+                          </li>
+                        </>
+                      )}
+                      {tier === 2 && (
+                        <>
+                          <li className="flex items-center gap-2 text-gray-700 dark:text-gray-300">
+                            <span className="text-kaizen-cyan">✓</span>{" "}
+                            React/Headless build
+                          </li>
+                          <li className="flex items-center gap-2 text-gray-700 dark:text-gray-300">
+                            <span className="text-kaizen-cyan">✓</span> 96+
+                            Lighthouse score
+                          </li>
+                          <li className="flex items-center gap-2 text-gray-700 dark:text-gray-300">
+                            <span className="text-kaizen-cyan">✓</span> Full SEO
+                            optimisation
+                          </li>
+                        </>
+                      )}
+                      {tier === 3 && (
+                        <>
+                          <li className="flex items-center gap-2 text-gray-700 dark:text-gray-300">
+                            <span className="text-kaizen-cyan">✓</span> Complex
+                            features
+                          </li>
+                          <li className="flex items-center gap-2 text-gray-700 dark:text-gray-300">
+                            <span className="text-kaizen-cyan">✓</span> User
+                            authentication
+                          </li>
+                          <li className="flex items-center gap-2 text-gray-700 dark:text-gray-300">
+                            <span className="text-kaizen-cyan">✓</span>{" "}
+                            Dedicated Product Owner
+                          </li>
+                        </>
+                      )}
+                      {tier === 4 && (
+                        <>
+                          <li className="flex items-center gap-2 text-gray-700 dark:text-gray-300">
+                            <span className="text-kaizen-cyan">✓</span> Full
+                            project audit
+                          </li>
+                          <li className="flex items-center gap-2 text-gray-700 dark:text-gray-300">
+                            <span className="text-kaizen-cyan">✓</span> Recovery
+                            plan
+                          </li>
+                          <li className="flex items-center gap-2 text-gray-700 dark:text-gray-300">
+                            <span className="text-kaizen-cyan">✓</span> New team
+                            stabilisation
+                          </li>
+                        </>
+                      )}
+                    </ul>
+                  </div>
+
+                  <button
+                    onClick={() => openCrisp()}
+                    className="mt-6 w-full px-6 py-3 rounded-lg bg-gradient-to-r from-kaizen-cyan to-kaizen-lime text-gray-950 font-heading font-bold hover:shadow-lg hover:scale-105 transition-all inline-flex items-center justify-center gap-2"
+                  >
+                    {currentTier.cta}
+                    <ArrowRight size={18} />
+                  </button>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        </div>
+      </div>
+    </section>
+  );
+};
+
+const PricingCTABanner = () => {
+  return (
+    <section className="py-16 md:py-20 bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 relative overflow-hidden border-y border-white/10">
+      <div className="container mx-auto px-4 relative z-10">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="max-w-4xl mx-auto"
+        >
+          <div className="rounded-2xl bg-white/5 backdrop-blur-xl border border-white/10 p-8 md:p-12">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+              <div>
+                <h3 className="text-2xl md:text-3xl font-heading font-bold text-white mb-4">
+                  Not sure what you need?
+                </h3>
+                <p className="text-white/80 text-lg mb-6">
+                  Read our transparent Liverpool &amp; Wirral pricing guide so
+                  you know what a serious website should cost in 2025 and what
+                  you should actually expect to pay.
+                </p>
+              </div>
+              <div className="flex flex-col sm:flex-row gap-4">
+                <Link
+                  to="/blog/how-much-does-a-website-cost-in-liverpool-in-2025"
+                  className="inline-flex items-center justify-center px-5 py-3 rounded-full bg-kaizen-cyan text-slate-950 font-heading font-semibold hover:bg-kaizen-cyan/90 hover:shadow-lg hover:translate-y-0.5 transition-all gap-2"
+                >
+                  Open Pricing Guide
+                  <ChevronRight size={20} />
+                </Link>
+                <div className="flex items-center justify-center">
+                  <span className="text-xs font-mono tracking-widest text-kaizen-cyan/70 uppercase">
+                    Updated Nov 2025
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </motion.div>
+      </div>
+    </section>
+  );
+};
+
+const CoreServiceVerticals = () => {
+  return (
+    <section className="py-20 md:py-28 bg-slate-950 text-white relative overflow-hidden">
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_0_0,rgba(45,212,191,0.18),transparent_55%),radial-gradient(circle_at_100%_100%,rgba(56,189,248,0.18),transparent_55%)]" />
+      <div className="container mx-auto px-4 relative z-10">
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.3 }}
+          className="max-w-4xl mx-auto text-center mb-14"
+        >
+          <p className="text-xs font-mono tracking-[0.25em] text-cyan-300 mb-4 uppercase">
+            What We Do
+          </p>
+          <h2 className="text-3xl md:text-4xl font-heading font-bold mb-3">
+            Our business is split into two main verticals
+          </h2>
+          <p className="text-sm md:text-base text-slate-300 max-w-2xl mx-auto">
+            Web design for Liverpool &amp; Wirral, and hands-on Contract Product
+            Ownership for complex or failing digital projects.
+          </p>
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.3 }}
+          className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-10 items-stretch"
+        >
+          <motion.div
+            initial={{ opacity: 0, x: -24, rotate: -0.3 }}
+            whileInView={{ opacity: 1, x: 0, rotate: 0 }}
+            viewport={{ once: true, amount: 0.4 }}
+            whileHover={{ y: -6, rotate: -0.6 }}
+            transition={{ type: "spring", stiffness: 140, damping: 18 }}
+            className="relative rounded-3xl border border-cyan-400/40 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 overflow-hidden shadow-[0_24px_70px_rgba(8,47,73,0.9)]"
+          >
+            <div className="absolute inset-0 opacity-30 bg-[radial-gradient(circle_at_10%_0,rgba(56,189,248,0.5),transparent_55%),radial-gradient(circle_at_90%_100%,rgba(45,212,191,0.4),transparent_55%)]" />
+            <div className="relative p-8 md:p-10 flex flex-col h-full">
+              <p className="text-xs font-mono tracking-[0.25em] text-cyan-300 mb-4 uppercase">
+                Vertical One
+              </p>
+              <h3 className="text-3xl md:text-4xl font-heading font-bold mb-4">
+                Liverpool &amp; Wirral Web Design
+              </h3>
+              <p className="text-sm md:text-base text-slate-200 mb-6 max-w-md">
+                High-performance web design for Liverpool &amp; Wirral SMEs. We
+                design and build fast React and WordPress sites that turn
+                searches into leads and support long-term SEO.
+              </p>
+              <ul className="space-y-2 text-sm md:text-base text-slate-200/90 mb-8">
+                <li className="flex items-center gap-2">
+                  <span className="h-1.5 w-6 rounded-full bg-cyan-400" />
+                  Local-first SEO for Liverpool &amp; Wirral searches
+                </li>
+                <li className="flex items-center gap-2">
+                  <span className="h-1.5 w-6 rounded-full bg-cyan-400" />
+                  Performance-led builds (Core Web Vitals in mind)
+                </li>
+                <li className="flex items-center gap-2">
+                  <span className="h-1.5 w-6 rounded-full bg-cyan-400" />
+                  Clear pricing for brochure, ecommerce &amp; web apps
+                </li>
+              </ul>
+              <div className="mt-auto flex items-center justify-between gap-4">
+                <Link
+                  to="/services/web-design-liverpool"
+                  className="inline-flex items-center gap-2 rounded-full bg-white text-slate-950 px-5 py-2.5 text-sm font-heading font-semibold shadow-lg hover:shadow-cyan-400/40 hover:-translate-y-0.5 transition-all"
+                >
+                  Explore Web Design
+                  <ArrowRight size={18} />
+                </Link>
+                <Link
+                  to="/services/web-design-wirral"
+                  className="hidden md:inline-flex text-xs font-mono tracking-widest text-cyan-300/80 hover:text-cyan-200 transition-colors uppercase"
+                >
+                  Wirral web design
+                </Link>
+              </div>
+            </div>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, x: 24, rotate: 0.3 }}
+            whileInView={{ opacity: 1, x: 0, rotate: 0 }}
+            viewport={{ once: true, amount: 0.4 }}
+            whileHover={{ y: -6, rotate: 0.6 }}
+            transition={{ type: "spring", stiffness: 140, damping: 18 }}
+            className="relative rounded-3xl border border-lime-400/40 bg-gradient-to-br from-slate-900 via-slate-950 to-slate-900 overflow-hidden shadow-[0_24px_70px_rgba(22,101,52,0.9)]"
+          >
+            <div className="absolute inset-0 opacity-30 bg-[radial-gradient(circle_at_15%_0,rgba(190,242,100,0.5),transparent_55%),radial-gradient(circle_at_90%_100%,rgba(22,163,74,0.5),transparent_55%)]" />
+            <div className="relative p-8 md:p-10 flex flex-col h-full">
+              <p className="text-xs font-mono tracking-[0.25em] text-lime-300 mb-4 uppercase">
+                Vertical Two
+              </p>
+              <h3 className="text-3xl md:text-4xl font-heading font-bold mb-4">
+                Contract Product Owner
+              </h3>
+              <p className="text-sm md:text-base text-slate-100 mb-6 max-w-md">
+                Senior Contract Product Owner for Liverpool &amp; Wirral teams.
+                We rescue failing builds, run Agile sprints, and keep budgets,
+                scope and delivery under control.
+              </p>
+              <ul className="space-y-2 text-sm md:text-base text-slate-100/90 mb-8">
+                <li className="flex items-center gap-2">
+                  <span className="h-1.5 w-6 rounded-full bg-lime-400" />
+                  Hands-on ownership of backlog, roadmap &amp; delivery
+                </li>
+                <li className="flex items-center gap-2">
+                  <span className="h-1.5 w-6 rounded-full bg-lime-400" />
+                  Ideal for complex rebuilds and project rescue
+                </li>
+                <li className="flex items-center gap-2">
+                  <span className="h-1.5 w-6 rounded-full bg-lime-400" />
+                  Works alongside your in-house or agency dev team
+                </li>
+              </ul>
+              <div className="mt-auto flex items-center justify-between gap-4">
+                <Link
+                  to="/contract-product-owner"
+                  className="inline-flex items-center gap-2 rounded-full bg-lime-300 text-slate-950 px-5 py-2.5 text-sm font-heading font-semibold shadow-lg hover:bg-lime-200 hover:shadow-lime-300/40 hover:-translate-y-0.5 transition-all"
+                >
+                  Explore Contract PO
+                  <ArrowRight size={18} />
+                </Link>
+                <Link
+                  to="/project-rescue"
+                  className="hidden md:inline-flex text-xs font-mono tracking-widest text-lime-200/80 hover:text-lime-100 transition-colors uppercase"
+                >
+                  Project Rescue
+                </Link>
+              </div>
+            </div>
+          </motion.div>
+        </motion.div>
+      </div>
+    </section>
+  );
+};
+
+const LatestInsights = () => {
+  const [posts, setPosts] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchPosts()
+      .then((data) => {
+        const processed = (data || [])
+          .map((post: any) => {
+            const image =
+              post._embedded?.["wp:featuredmedia"]?.[0]?.source_url ||
+              "https://images.unsplash.com/photo-1460925895917-aae19e488e71?w=800&h=600&fit=crop";
+
+            return {
+              id: String(post.id),
+              slug: post.slug || "",
+              title: decodeAndStrip(post.title?.rendered || "Untitled"),
+              excerpt: decodeAndStrip(post.excerpt?.rendered || ""),
+              date: post.date || new Date().toISOString(),
+              image,
+            };
+          })
+          .sort(
+            (a: any, b: any) =>
+              new Date(b.date).getTime() - new Date(a.date).getTime(),
+          );
+
+        setPosts(processed.slice(0, 3));
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.error("Failed to fetch posts:", error);
+        setLoading(false);
+      });
+  }, []);
+
+  if (loading) {
+    return (
+      <section className="py-20 md:py-32 bg-white dark:bg-slate-950">
+        <div className="container mx-auto px-4">
+          <div className="text-center">
+            <p className="text-gray-600 dark:text-gray-400">
+              Loading insights...
+            </p>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  return (
+    <section className="py-20 md:py-32 bg-white dark:bg-slate-950">
+      <div className="container mx-auto px-4">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="text-center mb-16"
+        >
+          <p className="text-xs font-mono tracking-[0.25em] text-kaizen-cyan uppercase mb-4">
+            Knowledge Base
+          </p>
+          <h2 className="text-4xl md:text-5xl font-heading font-bold text-gray-950 dark:text-white mb-6">
+            Latest Insights
+          </h2>
+          <p className="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+            Stay updated with our latest thoughts on web design, development,
+            and digital transformation for Liverpool and Wirral businesses.
+          </p>
+        </motion.div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          {posts.map((post, index) => (
+            <motion.div
+              key={post.id}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: index * 0.1 }}
+              whileHover={{ y: -8 }}
+              className="group relative overflow-hidden rounded-2xl bg-slate-50 dark:bg-slate-900/50 backdrop-blur-lg border border-slate-200/50 dark:border-slate-800/50 hover:border-kaizen-cyan/50 transition-all duration-300"
+            >
+              <div className="absolute -inset-px bg-gradient-to-br from-kaizen-cyan to-kaizen-lime rounded-2xl opacity-0 group-hover:opacity-10 blur transition duration-300" />
+              <div className="relative">
+                <div className="h-40 w-full overflow-hidden rounded-t-2xl border-b border-slate-200/50 dark:border-slate-800/50">
+                  <img
+                    src={post.image}
+                    alt={post.title}
+                    loading="lazy"
+                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                  />
+                </div>
+                <div className="p-6 md:p-8">
+                  <div className="flex items-center gap-2 mb-4">
+                    <span className="text-xs font-mono tracking-widest text-kaizen-cyan uppercase">
+                      Article
+                    </span>
+                    <span className="text-xs text-gray-500 dark:text-gray-400">
+                      {new Date(post.date).toLocaleDateString("en-GB", {
+                        year: "numeric",
+                        month: "short",
+                        day: "numeric",
+                      })}
+                    </span>
+                  </div>
+                  <h3 className="text-xl font-heading font-bold text-gray-950 dark:text-white mb-3 line-clamp-2">
+                    {post.title}
+                  </h3>
+                  <p className="text-sm text-gray-600 dark:text-gray-400 mb-6 line-clamp-2">
+                    {post.excerpt}
+                  </p>
+                  <Link
+                    to={`/blog/${post.slug}`}
+                    className="inline-flex items-center gap-2 text-kaizen-cyan font-heading font-bold hover:gap-3 transition-all duration-300"
+                  >
+                    Read Article
+                    <ArrowRight size={16} />
+                  </Link>
+                </div>
+              </div>
+            </motion.div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+};
+
+const SEOFAQSection = () => {
+  const faqItems = [
+    {
+      question: "How much does a website cost in Liverpool in 2025?",
+      answer:
+        "Prices range from £500 for DIY Shopify sites to £15k+ for custom React apps. Most professional brochure sites sit between £3k–£8k.",
+    },
+    {
+      question: "Do you serve Wirral and Merseyside?",
+      answer:
+        "Yes. We are based in Liverpool City Centre but serve businesses across Wirral, Chester, and the wider Merseyside region.",
+    },
+    {
+      question: "Why are you different from other Liverpool digital agencies?",
+      answer:
+        "We are Product Owner-led. You don't get an account manager; you get a senior technical partner who runs your project in Agile sprints.",
+    },
+    {
+      question: "Do you use templates or custom code?",
+      answer:
+        'We build custom-coded sites using React or a bespoke WordPress theme. We do not use £50 "off-the-shelf" templates that bloat your site and hurt your SEO.',
+    },
+    {
+      question: "What happens after the website launches?",
+      answer:
+        "You own everything. We provide 30 days of free support to fix any snagging issues. After that, you can sign up for a maintenance plan or manage it yourself. No lock-in contracts.",
+    },
+    {
+      question: "Can you fix my current broken website?",
+      answer:
+        'Yes. Our "Project Rescue" service is designed exactly for this. We audit your code, stabilise the build, and help you launch.',
+    },
+  ];
+
+  const faqSchema = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: faqItems.map((item) => ({
+      "@type": "Question",
+      name: item.question,
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: item.answer,
+      },
+    })),
+  };
+
+  return (
+    <section className="py-20 md:py-32 bg-slate-50 dark:bg-slate-900/50 relative overflow-hidden">
+      <script type="application/ld+json">{JSON.stringify(faqSchema)}</script>
+
+      <div className="container mx-auto px-4 relative z-10">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="text-center mb-16 max-w-2xl mx-auto"
+        >
+          <p className="text-xs font-mono tracking-[0.25em] text-kaizen-cyan uppercase mb-4">
+            Common Questions
+          </p>
+          <h2 className="text-4xl md:text-5xl font-heading font-bold text-gray-950 dark:text-white mb-6">
+            Common Questions from Liverpool Businesses
+          </h2>
+        </motion.div>
+
+        <div className="max-w-3xl mx-auto">
+          <Accordion type="single" collapsible className="w-full">
+            {faqItems.map((item, index) => (
+              <AccordionItem
+                key={index}
+                value={`item-${index}`}
+                className="border-b border-gray-200 dark:border-gray-800"
+              >
+                <AccordionTrigger className="text-lg font-heading font-bold text-gray-950 dark:text-white hover:text-kaizen-cyan transition-colors">
+                  {item.question}
+                </AccordionTrigger>
+                <AccordionContent className="text-gray-700 dark:text-gray-300 leading-relaxed">
+                  {item.answer}
+                </AccordionContent>
+              </AccordionItem>
+            ))}
+          </Accordion>
+        </div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="text-center mt-12"
+        >
+          <p className="text-gray-700 dark:text-gray-300 mb-6">
+            Still have questions? Let's chat.
+          </p>
+          <button
+            onClick={() => openCrisp()}
+            className="px-8 py-4 rounded-lg bg-gradient-to-r from-kaizen-cyan to-kaizen-lime text-gray-950 font-heading font-bold hover:shadow-lg hover:scale-105 transition-all inline-flex items-center gap-2"
+          >
+            Start a Conversation
+            <ArrowRight size={20} />
+          </button>
+        </motion.div>
+      </div>
+    </section>
+  );
+};
+
+const KaizenPhilosophy = () => {
+  return (
+    <section className="py-20 md:py-32 bg-gray-950 text-white relative overflow-hidden">
+      <div className="absolute inset-0 opacity-20">
+        <svg
+          className="w-full h-full"
+          viewBox="0 0 1200 600"
+          preserveAspectRatio="xMidYMid slice"
+        >
+          <defs>
+            <pattern
+              id="philosophy-pattern"
+              width="120"
+              height="120"
+              patternUnits="userSpaceOnUse"
+            >
+              <path
+                d="M 120 0 L 0 0 0 120"
+                fill="none"
+                stroke="rgba(0, 255, 255, 0.05)"
+                strokeWidth="0.5"
+              />
+            </pattern>
+          </defs>
+          <rect width="1200" height="600" fill="url(#philosophy-pattern)" />
+        </svg>
+      </div>
+
+      <div className="container mx-auto px-4 relative z-10">
+        <div className="max-w-3xl mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+          >
+            <p className="text-xs font-mono tracking-[0.25em] text-kaizen-cyan uppercase mb-6">
+              Our Philosophy
+            </p>
+
+            <h2 className="text-5xl md:text-6xl font-heading font-black mb-8 leading-tight">
+              Why We're Different
+            </h2>
+
+            <p className="text-xl md:text-2xl font-light text-white/80 mb-8 leading-relaxed">
+              Kaizen—continuous improvement—is about more than just an agile
+              methodology. It's a mindset. Most agencies launch a website and
+              vanish. We build systems that evolve. We embed ourselves in your
+              process with a dedicated Product Owner who shields you from chaos,
+              protects your budget, and ensures you ship on time.
+            </p>
+
+            <div className="space-y-6">
+              <motion.div
+                initial={{ opacity: 0, x: -20 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.1 }}
+                className="flex gap-4"
+              >
+                <div className="flex-shrink-0">
+                  <div className="flex items-center justify-center h-10 w-10 rounded-lg bg-kaizen-cyan/20">
+                    <span className="text-kaizen-cyan font-bold">→</span>
+                  </div>
+                </div>
+                <div>
+                  <h3 className="text-lg font-heading font-bold mb-2">
+                    You Get a Product Owner, Not a Contact
+                  </h3>
+                  <p className="text-white/70">
+                    We assign a dedicated senior professional to your project.
+                    Not an account manager shuffling between clients. One
+                    person, hands-on, making strategic decisions every day.
+                  </p>
+                </div>
+              </motion.div>
+
+              <motion.div
+                initial={{ opacity: 0, x: -20 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.2 }}
+                className="flex gap-4"
+              >
+                <div className="flex-shrink-0">
+                  <div className="flex items-center justify-center h-10 w-10 rounded-lg bg-kaizen-lime/20">
+                    <span className="text-kaizen-lime font-bold">→</span>
+                  </div>
+                </div>
+                <div>
+                  <h3 className="text-lg font-heading font-bold mb-2">
+                    Agile Sprints Over Chaos
+                  </h3>
+                  <p className="text-white/70">
+                    Two-week sprints. Clear deliverables. Predictable progress.
+                    We kill the "scope creep monster" and replace it with
+                    transparent planning and realistic timelines.
+                  </p>
+                </div>
+              </motion.div>
+
+              <motion.div
+                initial={{ opacity: 0, x: -20 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.3 }}
+                className="flex gap-4"
+              >
+                <div className="flex-shrink-0">
+                  <div className="flex items-center justify-center h-10 w-10 rounded-lg bg-kaizen-cyan/20">
+                    <span className="text-kaizen-cyan font-bold">→</span>
+                  </div>
+                </div>
+                <div>
+                  <h3 className="text-lg font-heading font-bold mb-2">
+                    Real Results Measured, Not Promised
+                  </h3>
+                  <p className="text-white/70">
+                    We benchmark performance from day one. Lighthouse scores.
+                    Core Web Vitals. Conversion funnels. You'll see concrete
+                    data, not marketing fluff.
+                  </p>
+                </div>
+              </motion.div>
+            </div>
+          </motion.div>
+        </div>
+      </div>
+    </section>
+  );
+};
+
+const AIValueProp = () => {
+  return (
+    <section className="py-20 md:py-32 bg-gradient-to-b from-white via-slate-50 to-white dark:from-slate-950 dark:via-slate-900/50 dark:to-slate-950 relative overflow-hidden">
+      <div className="container mx-auto px-4 relative z-10">
+        <div className="max-w-4xl mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="mb-16"
+          >
+            <p className="text-xs font-mono tracking-[0.25em] text-kaizen-cyan uppercase mb-4">
+              Modern Tech, Old-School Standards
+            </p>
+            <h2 className="text-4xl md:text-5xl font-heading font-bold text-gray-950 dark:text-white mb-6">
+              Why We're Better Value
+            </h2>
+            <p className="text-lg md:text-xl text-gray-700 dark:text-gray-300 leading-relaxed">
+              We use advanced AI to handle boilerplate. You pay for strategy,
+              architecture, and the Senior Product Owner steering the ship—not
+              junior developers typing HTML.
+            </p>
+          </motion.div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.1 }}
+              className="group relative overflow-hidden rounded-2xl bg-white/50 dark:bg-slate-900/50 backdrop-blur-lg border border-red-200/50 dark:border-red-900/30 p-8 hover:border-red-300/80 dark:hover:border-red-800/60 transition-all duration-300"
+            >
+              <div className="absolute -inset-px bg-gradient-to-br from-red-200 to-red-100 dark:from-red-900 dark:to-red-800 rounded-2xl opacity-0 group-hover:opacity-10 blur transition duration-300" />
+              <div className="relative">
+                <h3 className="text-2xl font-heading font-bold text-red-600 dark:text-red-400 mb-3">
+                  Traditional Agency
+                </h3>
+                <p className="text-sm text-red-700 dark:text-red-300 mb-4 leading-relaxed">
+                  Manual coding. Junior developers. Long timelines. Scope creep.
+                  Surprise costs.
+                </p>
+                <p className="font-heading font-bold text-red-600 dark:text-red-400 text-xl">
+                  Cost: £££ (and climbing)
+                </p>
+              </div>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.2 }}
+              className="group relative overflow-hidden rounded-2xl bg-white/50 dark:bg-slate-900/50 backdrop-blur-lg border border-green-200/50 dark:border-green-900/30 p-8 hover:border-green-300/80 dark:hover:border-green-800/60 transition-all duration-300"
+            >
+              <div className="absolute -inset-px bg-gradient-to-br from-green-200 to-green-100 dark:from-green-900 dark:to-green-800 rounded-2xl opacity-0 group-hover:opacity-10 blur transition duration-300" />
+              <div className="relative">
+                <h3 className="text-2xl font-heading font-bold text-green-600 dark:text-green-400 mb-3">
+                  Kaizen
+                </h3>
+                <p className="text-sm text-green-700 dark:text-green-300 mb-4 leading-relaxed">
+                  AI-augmented development. Strategic thinking. Two-week
+                  sprints. Predictable costs.
+                </p>
+                <p className="font-heading font-bold text-green-600 dark:text-green-400 text-xl">
+                  Cost: Better ROI
+                </p>
+              </div>
+            </motion.div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+};
+
+const PerformanceBadge = () => {
+  const [fillPercent, setFillPercent] = useState(0);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting) {
+        setFillPercent(96);
+      }
+    });
+
+    const element = document.getElementById("performance-badge");
+    if (element) {
+      observer.observe(element);
+    }
+
+    return () => observer.disconnect();
+  }, []);
+
+  return (
+    <section className="py-20 md:py-32 bg-slate-50 dark:bg-slate-900/50 relative overflow-hidden">
+      <div className="container mx-auto px-4 relative z-10">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="text-center mb-16"
+        >
+          <p className="text-xs font-mono tracking-[0.25em] text-kaizen-cyan uppercase mb-4">
+            Proof, Not Promises
+          </p>
+          <h2 className="text-4xl md:text-5xl font-heading font-bold text-gray-950 dark:text-white">
+            Grade A Performance
+          </h2>
+        </motion.div>
+
+        <div className="max-w-2xl mx-auto">
+          <motion.div
+            id="performance-badge"
+            initial={{ opacity: 0, scale: 0.8 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            className="relative w-64 h-64 mx-auto mb-12"
+          >
+            <svg
+              className="w-full h-full drop-shadow-2xl"
+              viewBox="0 0 200 200"
+            >
+              <defs>
+                <linearGradient
+                  id="shimmer"
+                  x1="0%"
+                  y1="0%"
+                  x2="100%"
+                  y2="100%"
+                >
+                  <stop offset="0%" stopColor="rgba(255,255,255,0)" />
+                  <stop offset="50%" stopColor="rgba(255,255,255,0.6)" />
+                  <stop offset="100%" stopColor="rgba(255,255,255,0)" />
+                </linearGradient>
+              </defs>
+
+              <circle
+                cx="100"
+                cy="100"
+                r="90"
+                fill="none"
+                stroke="#e5e7eb"
+                strokeWidth="8"
+              />
+
+              <motion.circle
+                cx="100"
+                cy="100"
+                r="90"
+                fill="none"
+                stroke="#22c55e"
+                strokeWidth="8"
+                strokeDasharray={565.48}
+                initial={{ strokeDashoffset: 565.48 }}
+                animate={{ strokeDashoffset: 565.48 * (1 - fillPercent / 100) }}
+                transition={{ duration: 2, ease: "easeOut" }}
+                strokeLinecap="round"
+              />
+
+              <motion.circle
+                cx="100"
+                cy="100"
+                r="90"
+                fill="url(#shimmer)"
+                opacity="0.3"
+                animate={{ rotate: 360 }}
+                transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
+                style={{ transformOrigin: "100px 100px" }}
+              />
+
+              <text
+                x="100"
+                y="95"
+                textAnchor="middle"
+                className="font-heading font-black text-4xl"
+                fill="#047857"
+              >
+                {fillPercent}%
+              </text>
+              <text
+                x="100"
+                y="125"
+                textAnchor="middle"
+                className="text-xs"
+                fill="#6b7280"
+              >
+                Performance
+              </text>
+            </svg>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.5 }}
+            className="grid grid-cols-3 gap-4 text-center mb-12"
+          >
+            <motion.div
+              whileHover={{ y: -5 }}
+              className="group relative rounded-2xl bg-white/50 dark:bg-slate-950/50 backdrop-blur-lg border border-slate-200/50 dark:border-slate-800/50 p-6 hover:border-kaizen-cyan/50 transition-all duration-300 cursor-default"
+            >
+              <div className="absolute -inset-px bg-gradient-to-br from-kaizen-cyan to-kaizen-lime rounded-2xl opacity-0 group-hover:opacity-10 blur transition duration-300" />
+              <div className="relative">
+                <p className="text-xs text-gray-600 dark:text-gray-400 font-mono uppercase tracking-widest mb-2">
+                  LCP
+                </p>
+                <p className="text-2xl font-heading font-bold text-gray-950 dark:text-white">
+                  0.8s
+                </p>
+              </div>
+            </motion.div>
+
+            <motion.div
+              whileHover={{ y: -5 }}
+              className="group relative rounded-2xl bg-white/50 dark:bg-slate-950/50 backdrop-blur-lg border border-slate-200/50 dark:border-slate-800/50 p-6 hover:border-kaizen-cyan/50 transition-all duration-300 cursor-default"
+            >
+              <div className="absolute -inset-px bg-gradient-to-br from-kaizen-cyan to-kaizen-lime rounded-2xl opacity-0 group-hover:opacity-10 blur transition duration-300" />
+              <div className="relative">
+                <p className="text-xs text-gray-600 dark:text-gray-400 font-mono uppercase tracking-widest mb-2">
+                  TBT
+                </p>
+                <p className="text-2xl font-heading font-bold text-gray-950 dark:text-white">
+                  0ms
+                </p>
+              </div>
+            </motion.div>
+
+            <motion.div
+              whileHover={{ y: -5 }}
+              className="group relative rounded-2xl bg-white/50 dark:bg-slate-950/50 backdrop-blur-lg border border-slate-200/50 dark:border-slate-800/50 p-6 hover:border-kaizen-cyan/50 transition-all duration-300 cursor-default"
+            >
+              <div className="absolute -inset-px bg-gradient-to-br from-kaizen-cyan to-kaizen-lime rounded-2xl opacity-0 group-hover:opacity-10 blur transition duration-300" />
+              <div className="relative">
+                <p className="text-xs text-gray-600 dark:text-gray-400 font-mono uppercase tracking-widest mb-2">
+                  CLS
+                </p>
+                <p className="text-2xl font-heading font-bold text-gray-950 dark:text-white">
+                  0.01
+                </p>
+              </div>
+            </motion.div>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.7 }}
+            className="text-center"
+          >
+            <p className="text-gray-700 dark:text-gray-300 mb-6">
+              We don't guess. We benchmark. Every build is tested against
+              industry standards.
+            </p>
+            <a
+              href="https://gtmetrix.com/reports/www.kaizenweb.co.uk/e2VJJsxv/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-lg border-2 border-kaizen-cyan/50 text-kaizen-cyan font-heading font-bold hover:border-kaizen-cyan hover:bg-kaizen-cyan/10 transition-all duration-300"
+            >
+              View Full Report
+              <ArrowUpRight size={18} />
+            </a>
+          </motion.div>
+        </div>
+      </div>
+    </section>
+  );
+};
+
+const LocalMap = () => {
+  return (
+    <section className="py-20 md:py-32 bg-gray-950 text-white relative overflow-hidden">
+      <div className="container mx-auto px-4 relative z-10">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            className="relative h-96 rounded-2xl overflow-hidden border-2 border-white/10 shadow-2xl"
+          >
+            <LeafletMap className="w-full h-full" />
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, x: 20 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+          >
+            <p className="text-xs font-mono tracking-[0.25em] text-kaizen-cyan uppercase mb-6">
+              Local Authority
+            </p>
+            <h2 className="text-4xl md:text-5xl font-heading font-bold mb-8 leading-tight">
+              Made Local, For Local.
+            </h2>
+            <p className="text-lg text-white/80 mb-8 leading-relaxed">
+              Kaizen is based in Liverpool city centre. We serve businesses
+              across Liverpool, Wirral, and Merseyside. We understand how locals
+              search, what they need, and how to get them found.
+            </p>
+
+            <div className="space-y-4 mb-8">
+              <div className="flex items-center gap-3">
+                <div className="w-3 h-3 rounded-full bg-kaizen-cyan" />
+                <span className="text-white/90">
+                  Liverpool city centre based
+                </span>
+              </div>
+              <div className="flex items-center gap-3">
+                <div className="w-3 h-3 rounded-full bg-kaizen-lime" />
+                <span className="text-white/90">
+                  Serving all Merseyside locations
+                </span>
+              </div>
+              <div className="flex items-center gap-3">
+                <div className="w-3 h-3 rounded-full bg-white/50" />
+                <span className="text-white/90">
+                  Local knowledge meets global expertise
+                </span>
+              </div>
+            </div>
+
+            <button
+              onClick={() => openCrisp()}
+              className="px-8 py-4 rounded-lg bg-gradient-to-r from-kaizen-cyan to-kaizen-lime text-gray-950 font-heading font-bold hover:shadow-lg hover:scale-105 transition-all inline-flex items-center gap-2"
+            >
+              Ready to Build? Start a Chat
+              <ArrowRight size={20} />
+            </button>
           </motion.div>
         </div>
       </div>
@@ -219,364 +1303,18 @@ const GlowingGridHero = () => {
 };
 
 export default function Home() {
-  const { openCalendly } = useCalendly();
-
   return (
     <Layout>
-      {/* Section 1: The "Wow" Hero */}
-      <GlowingGridHero />
-
-      {/* Section 2: The "Three Pillars" */}
-      <section className="py-20 md:py-32 bg-white dark:bg-slate-950 min-h-screen">
-        <div className="container mx-auto px-4">
-          <ScrollReveal>
-            <div className="text-center mb-16">
-              <h2 className="text-4xl md:text-5xl font-heading font-bold mb-6 text-kaizen-dark dark:text-white">
-                The Three Pillars
-              </h2>
-              <p className="text-xl text-kaizen-text-dark/70 dark:text-white/70 max-w-2xl mx-auto">
-                Our unique 3-part offering combines technical excellence with
-                hands-on delivery leadership.
-              </p>
-            </div>
-          </ScrollReveal>
-
-          <motion.div
-            className="grid grid-cols-1 md:grid-cols-3 gap-8"
-            variants={staggerContainer}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-100px" }}
-          >
-            {[
-              {
-                title: "High-Performance Web Design",
-                copy: "Fast, modern builds in WordPress and React. Mobile-first, SEO-ready, and easy for your team to manage.",
-                link: "/services/web-design-liverpool",
-                linkText: "Learn more",
-              },
-              {
-                title: "Agile Coaching & Delivery Training",
-                copy: "We help teams run in sprints. Simple rituals: backlog, planning, reviews. Delivery habits that actually stick.",
-                link: "/agile-coaching",
-                linkText: "Learn more",
-              },
-              {
-                title: "Contract Product Owner & Project Rescue",
-                copy: "We step in when projects are late, over budget, or stuck. Hands-on leadership to bring clarity and momentum.",
-                link: "/project-rescue",
-                linkText: "See Project Rescue",
-              },
-            ].map((card, index) => (
-              <motion.div
-                key={index}
-                variants={fadeInUp}
-                className="group p-8 bg-kaizen-light dark:bg-slate-900/50 rounded-2xl border border-kaizen-light dark:border-slate-800/50 hover:border-kaizen-cyan dark:hover:border-kaizen-cyan/50 transition"
-              >
-                <h3 className="text-2xl font-heading font-bold mb-4 text-kaizen-dark dark:text-white">
-                  {card.title}
-                </h3>
-                <p className="text-lg text-kaizen-text-dark/70 dark:text-white/60 leading-relaxed mb-6">
-                  {card.copy}
-                </p>
-                <Link
-                  to={card.link}
-                  className="inline-flex items-center gap-2 text-kaizen-cyan hover:gap-3 transition-all font-heading font-bold"
-                >
-                  {card.linkText} <ArrowRight size={18} />
-                </Link>
-              </motion.div>
-            ))}
-          </motion.div>
-        </div>
-      </section>
-
-      {/* Section 3: Who We Help */}
-      <section className="py-20 md:py-32 bg-kaizen-light dark:bg-slate-900/50">
-        <div className="container mx-auto px-4">
-          <ScrollReveal>
-            <div className="text-center mb-16">
-              <h2 className="text-4xl md:text-5xl font-heading font-bold mb-6 text-kaizen-dark dark:text-white">
-                Websites for Liverpool businesses like yours
-              </h2>
-            </div>
-          </ScrollReveal>
-
-          <motion.div
-            className="grid grid-cols-1 md:grid-cols-3 gap-8"
-            variants={staggerContainer}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-100px" }}
-          >
-            {[
-              {
-                title: "Professional Services",
-                copy: "Turn expertise into enquiries with credible, mobile-ready sites.",
-                subtitle: "(Solicitors, Accountants)",
-              },
-              {
-                title: "Trades & Home Services",
-                copy: "Showcase work and get 'call now' leads from people on the move.",
-                subtitle: "(Builders, Electricians)",
-              },
-              {
-                title: "E-commerce & Retail",
-                copy: "Fast product pages, simple checkout, and SEO-friendly structure.",
-                subtitle: "(Shops, DTC brands)",
-              },
-            ].map((card, index) => (
-              <motion.div
-                key={index}
-                variants={fadeInUp}
-                className="p-8 bg-white dark:bg-slate-900 rounded-2xl border border-kaizen-light dark:border-slate-800/50 hover:border-kaizen-cyan dark:hover:border-kaizen-cyan/50 transition"
-              >
-                <h3 className="text-2xl font-heading font-bold mb-2 text-kaizen-dark dark:text-white">
-                  {card.title}
-                </h3>
-                <p className="text-sm text-kaizen-text-dark/60 dark:text-white/50 mb-4">
-                  {card.subtitle}
-                </p>
-                <p className="text-lg text-kaizen-text-dark/70 dark:text-white/60 leading-relaxed">
-                  {card.copy}
-                </p>
-              </motion.div>
-            ))}
-          </motion.div>
-        </div>
-      </section>
-
-      {/* Section 4: Proudly Based in Liverpool */}
-      <section className="py-20 md:py-32 bg-white dark:bg-slate-950">
-        <div className="container mx-auto px-4">
-          <ScrollReveal>
-            <div className="max-w-3xl mx-auto text-center">
-              <h2 className="text-4xl md:text-5xl font-heading font-bold mb-8 text-kaizen-dark dark:text-white">
-                Proudly based in Liverpool
-              </h2>
-              <p className="text-xl text-kaizen-text-dark/70 dark:text-white/70 leading-relaxed">
-                Kaizen is based near the Baltic Triangle. We work with clients
-                across Merseyside and understand how locals actually search
-                ('near me', area names). We're always happy to meet for a quick
-                video call or a coffee in town.
-              </p>
-            </div>
-          </ScrollReveal>
-        </div>
-      </section>
-
-      {/* Section 5: The "Agile Process" (How We Work) */}
-      <section className="py-20 md:py-32 bg-kaizen-light dark:bg-slate-900/50">
-        <div className="container mx-auto px-4">
-          <ScrollReveal>
-            <div className="text-center mb-16">
-              <h2 className="text-4xl md:text-5xl font-heading font-bold mb-6 text-kaizen-dark dark:text-white">
-                How We Work: The Agile Process
-              </h2>
-              <p className="text-xl text-kaizen-text-dark/70 dark:text-white/70 max-w-2xl mx-auto">
-                Proving the Product Owner difference through clear, iterative
-                delivery.
-              </p>
-            </div>
-          </ScrollReveal>
-
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
-            {[
-              {
-                step: "01",
-                title: "Discover & Define",
-                content:
-                  "Workshop to define goals. Output: a prioritised backlog, not a wishlist.",
-              },
-              {
-                step: "02",
-                title: "Design the Journey",
-                content: "Wireframes focused on clarity and conversion.",
-              },
-              {
-                step: "03",
-                title: "Build in Sprints",
-                content:
-                  "Short sprints with clear acceptance criteria. You see progress often, not just at the end.",
-              },
-              {
-                step: "04",
-                title: "Launch & Improve",
-                content: "Careful launch, then iterations based on real data.",
-              },
-            ].map((item, index) => (
-              <ScrollReveal key={index} delay={index}>
-                <div className="relative p-8 bg-white dark:bg-slate-900 rounded-2xl border border-kaizen-light dark:border-slate-800">
-                  <p className="text-6xl font-heading font-black text-kaizen-cyan/20 dark:text-kaizen-cyan/10 mb-4">
-                    {item.step}
-                  </p>
-                  <h3 className="text-2xl font-heading font-bold mb-4 text-kaizen-dark dark:text-white">
-                    {item.title}
-                  </h3>
-                  <p className="text-base text-kaizen-text-dark/70 dark:text-white/70 leading-relaxed">
-                    {item.content}
-                  </p>
-                </div>
-              </ScrollReveal>
-            ))}
-          </div>
-
-          <div className="flex flex-wrap items-center justify-center gap-4">
-            <Link
-              to="/services/digital-transformation"
-              className="inline-flex items-center gap-2 text-kaizen-cyan hover:gap-3 transition-all font-heading font-bold text-lg"
-            >
-              See Digital Transformation <ArrowRight size={18} />
-            </Link>
-            <span className="text-kaizen-text-dark/30 dark:text-white/30">
-              |
-            </span>
-            <Link
-              to="/contract-product-owner"
-              className="inline-flex items-center gap-2 text-kaizen-cyan hover:gap-3 transition-all font-heading font-bold text-lg"
-            >
-              Learn about Contract PO support <ArrowRight size={18} />
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* Section 6: Project Rescue Teaser */}
-      <section className="py-20 md:py-32 bg-slate-950 text-white relative overflow-hidden">
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(255,0,0,0.1),transparent_50%)]" />
-        <div className="container mx-auto px-4 relative">
-          <ScrollReveal>
-            <div className="max-w-3xl mx-auto text-center">
-              <h2 className="text-4xl md:text-5xl font-heading font-bold mb-6">
-                Project already in trouble?
-              </h2>
-              <p className="text-xl text-white/80 leading-relaxed mb-12">
-                Is your current build over budget, late, or messy? Do you have
-                endless scope changes and no clear owner? We can help.
-              </p>
-              <Link
-                to="/project-rescue"
-                className="px-8 py-4 rounded-lg bg-gradient-to-r from-red-500 to-red-700 text-white font-heading font-bold text-lg hover:shadow-lg hover:shadow-red-500/50 transition inline-flex items-center justify-center gap-2"
-              >
-                Learn about Project Rescue
-                <ArrowRight size={20} />
-              </Link>
-            </div>
-          </ScrollReveal>
-        </div>
-      </section>
-
-      {/* Section 7: Recent Work & Blog */}
-      <section className="py-20 md:py-32 bg-white dark:bg-slate-950">
-        <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-            {/* Work */}
-            <ScrollReveal>
-              <div>
-                <h2 className="text-3xl font-heading font-bold mb-8 text-kaizen-dark dark:text-white">
-                  Recent Work
-                </h2>
-                <div className="space-y-6">
-                  {[
-                    {
-                      title: "Professional Services - Liverpool",
-                      subtitle: "Custom WordPress site with local SEO",
-                      link: "/case-studies/as-collections",
-                    },
-                    {
-                      title: "Hairdressing Salon - Wirral",
-                      subtitle: "Booking system & online presence",
-                      link: "/case-studies/helen-moore-hairdressing",
-                    },
-                  ].map((item, index) => (
-                    <Link
-                      key={index}
-                      to={item.link}
-                      className="block p-6 bg-kaizen-light dark:bg-slate-900/50 rounded-xl border border-kaizen-light dark:border-slate-800/50 hover:border-kaizen-cyan dark:hover:border-kaizen-cyan/50 transition group"
-                    >
-                      <h3 className="text-xl font-heading font-bold mb-2 text-kaizen-dark dark:text-white group-hover:text-kaizen-cyan transition">
-                        {item.title}
-                      </h3>
-                      <p className="text-base text-kaizen-text-dark/70 dark:text-white/60">
-                        {item.subtitle}
-                      </p>
-                    </Link>
-                  ))}
-                </div>
-                <Link
-                  to="/case-studies"
-                  className="inline-flex items-center gap-2 text-kaizen-cyan hover:gap-3 transition-all font-heading font-bold text-lg mt-6"
-                >
-                  View all case studies <ArrowRight size={18} />
-                </Link>
-              </div>
-            </ScrollReveal>
-
-            {/* Blog */}
-            <ScrollReveal delay={1}>
-              <div>
-                <h2 className="text-3xl font-heading font-bold mb-8 text-kaizen-dark dark:text-white">
-                  Latest Insights
-                </h2>
-                <div className="space-y-6">
-                  <Link
-                    to="/blog/new-kaizen-website-relaunch"
-                    className="block p-6 bg-kaizen-light dark:bg-slate-900/50 rounded-xl border border-kaizen-light dark:border-slate-800/50 hover:border-kaizen-cyan dark:hover:border-kaizen-cyan/50 transition group"
-                  >
-                    <h3 className="text-xl font-heading font-bold mb-2 text-kaizen-dark dark:text-white group-hover:text-kaizen-cyan transition">
-                      More Than a Refresh: Why We Rebuilt the Kaizen Website
-                    </h3>
-                    <p className="text-base text-kaizen-text-dark/70 dark:text-white/60">
-                      We didn't just refresh our site; we tore it down to the
-                      studs...
-                    </p>
-                  </Link>
-                </div>
-                <Link
-                  to="/blog"
-                  className="inline-flex items-center gap-2 text-kaizen-cyan hover:gap-3 transition-all font-heading font-bold text-lg mt-6"
-                >
-                  View all blog posts <ArrowRight size={18} />
-                </Link>
-              </div>
-            </ScrollReveal>
-          </div>
-        </div>
-      </section>
-
-      {/* Section 8: Final CTA */}
-      <section className="py-20 md:py-32 bg-gradient-to-br from-kaizen-dark via-slate-900 to-black text-white relative overflow-hidden">
-        <div className="pointer-events-none absolute top-20 right-10 h-96 w-96 rounded-full bg-kaizen-cyan/10 blur-3xl" />
-        <div className="pointer-events-none absolute bottom-20 left-10 h-96 w-96 rounded-full bg-kaizen-lime/10 blur-3xl" />
-        <div className="container mx-auto px-4 relative">
-          <ScrollReveal>
-            <div className="max-w-3xl mx-auto text-center">
-              <h2 className="text-4xl md:text-5xl font-heading font-bold mb-6">
-                Ready to talk about your website or project?
-              </h2>
-              <p className="text-xl text-white/80 leading-relaxed mb-12">
-                No hard sell. Just a straightforward chat about what's going
-                wrong and what you want to achieve.
-              </p>
-              <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-                <Link
-                  to="/contact"
-                  className="px-8 py-4 rounded-lg bg-gradient-to-r from-kaizen-cyan to-kaizen-lime text-kaizen-dark font-heading font-bold text-lg hover:shadow-lg hover:shadow-kaizen-cyan/50 transition inline-flex items-center justify-center gap-2"
-                >
-                  Get a Liverpool web design quote
-                  <ArrowRight size={20} />
-                </Link>
-                <Link
-                  to="/about"
-                  className="text-white/80 hover:text-kaizen-cyan transition font-heading font-bold text-lg inline-flex items-center gap-2"
-                >
-                  Or learn how we work <ArrowRight size={18} />
-                </Link>
-              </div>
-            </div>
-          </ScrollReveal>
-        </div>
-      </section>
+      <HeroSection />
+      <PricingSlider />
+      <PricingCTABanner />
+      <CoreServiceVerticals />
+      <KaizenPhilosophy />
+      <AIValueProp />
+      <PerformanceBadge />
+      <LocalMap />
+      <LatestInsights />
+      <SEOFAQSection />
     </Layout>
   );
 }

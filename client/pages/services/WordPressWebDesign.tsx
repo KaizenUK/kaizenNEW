@@ -244,7 +244,7 @@ export default function WordPressWebDesign() {
                   onClick={openCalendlyFromContext}
                   className="px-8 py-3 rounded-lg border-2 border-kaizen-cyan text-kaizen-cyan dark:text-kaizen-cyan/70 font-heading font-bold hover:bg-kaizen-cyan/10 dark:hover:bg-kaizen-cyan/5 transition inline-flex items-center justify-center gap-2"
                 >
-                  Book a 15-Minute Call
+                  Book a 15 Minute Call
                   <ArrowUpRight size={18} />
                 </button>
               </motion.div>
@@ -500,7 +500,7 @@ export default function WordPressWebDesign() {
               onClick={openCalendlyFromContext}
               className="px-8 py-3 rounded-lg border-2 border-kaizen-text-light/30 dark:border-white/20 text-kaizen-text-light dark:text-white/85 font-heading font-bold hover:border-kaizen-cyan dark:hover:border-kaizen-cyan transition inline-flex items-center justify-center gap-2"
             >
-              Book Your 15-Minute Call
+              Book a 15 Minute Call
               <ArrowUpRight size={18} />
             </button>
           </motion.div>

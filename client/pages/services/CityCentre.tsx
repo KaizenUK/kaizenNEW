@@ -245,9 +245,8 @@ export default function CityCentre() {
                   Not just L1 and L2:
                 </span>{" "}
                 We work with city centre businesses across all postcodes—from
-                the Baltic Triangle to Duke Street, from Lord Street to Bold
-                Street. If you're in Liverpool's city centre, this is built for
-                you.
+                the waterfront to Duke Street, from Lord Street to Bold Street.
+                If you're in Liverpool's city centre, this is built for you.
               </p>
             </div>
           </motion.div>

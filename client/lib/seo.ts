@@ -20,11 +20,12 @@ export const BUSINESS_ADDRESS = {
 export const DEFAULT_OG_IMAGE = `${SITE_URL}/og-image.jpg`;
 
 const defaultMeta: PageMeta = {
-  title: "Web Design Liverpool | Kaizen – Agile Web Development",
+  title: "Web Design Liverpool & Wirral | Kaizen – Agile Web Development",
   description:
-    "Kaizen is a Liverpool web design agency. We build fast, high-performance websites and offer Agile coaching to improve your team's workflow. No-BS, just results.",
+    "Kaizen is a Liverpool and Wirral web design agency. We build fast, high-performance websites and offer Agile coaching to improve your team's workflow. No-BS, just results.",
   keywords: [
     "web design liverpool",
+    "web design wirral",
     "liverpool web design",
     "agile web development",
     "kaizen",
@@ -34,15 +35,20 @@ const defaultMeta: PageMeta = {
 
 const pageMeta: Record<string, Partial<PageMeta>> = {
   "/": {
-    title: "Web Design Liverpool: Product Owner-Led Agile Development | Kaizen",
+    title: "Web Design Liverpool & Wirral | 2025 Pricing | Kaizen",
     description:
-      "Web design Liverpool. We build high-performance sites, fix chaotic projects & coach teams to deliver in sprints. Hands-on product leadership, zero jargon.",
+      "Premium Web Design for Liverpool & Wirral businesses. Specialist in React, WordPress & Project Rescue. See our 2025 Pricing Guide. Fixed quotes, no fluff.",
     keywords: [
       "web design liverpool",
+      "web design wirral",
+      "web design liverpool and wirral",
+      "web design merseyside",
       "product owner-led web design",
       "agile web development",
       "kaizen",
       "high-performance websites",
+      "web design pricing",
+      "liverpool web designer",
     ],
   },
   "/services": {
@@ -70,6 +76,18 @@ const pageMeta: Record<string, Partial<PageMeta>> = {
       "high-performance websites",
       "react web design liverpool",
       "web design agency wirral",
+    ],
+  },
+  "/web-design-wirral": {
+    title: "Web Design Wirral | Heswall, West Kirby & Birkenhead | Kaizen Web",
+    description:
+      "Web design for Heswall, West Kirby and Birkenhead businesses. Fast, conversion-focused sites with clear pricing and no fluff.",
+    keywords: [
+      "web design wirral",
+      "web design heswall",
+      "web design west kirby",
+      "web design birkenhead",
+      "wirral web design",
     ],
   },
   "/services/local-seo": {
@@ -282,6 +300,11 @@ const pageMeta: Record<string, Partial<PageMeta>> = {
     description:
       "How we helped an independent retailer increase online sales and streamline their operations.",
   },
+  "/case-studies/kaizen-rebuild": {
+    title: "Kaizen Web Rebuild Case Study | React + Vite Migration",
+    description:
+      "A technical deep dive into how we migrated Kaizen Web from a legacy setup to a high-performance React + Vite + Headless architecture.",
+  },
 };
 
 type DynamicMetaMatcher = {
@@ -359,10 +382,20 @@ export const buildLocalBusinessSchema = (description: string) => ({
     latitude: 53.4084,
     longitude: -2.9916,
   },
-  areaServed: {
-    "@type": "City",
-    name: "Liverpool",
-  },
+  areaServed: [
+    {
+      "@type": "City",
+      name: "Liverpool",
+    },
+    {
+      "@type": "City",
+      name: "Wirral",
+    },
+    {
+      "@type": "AdministrativeArea",
+      name: "Merseyside",
+    },
+  ],
   openingHoursSpecification: [
     {
       "@type": "OpeningHoursSpecification",

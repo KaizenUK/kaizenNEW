@@ -241,7 +241,7 @@ export default function ContractProductOwner() {
                 onClick={openCalendlyFromContext}
                 className="px-8 py-3 rounded-lg bg-gradient-to-r from-kaizen-cyan to-kaizen-lime text-kaizen-dark font-heading font-bold hover:shadow-lg hover:shadow-kaizen-cyan/50 transition inline-flex items-center justify-center gap-2"
               >
-                Book a Call with Sean
+                Book a 15 Minute Call with Sean
                 <ArrowRight size={18} />
               </button>
               <button
@@ -591,7 +591,7 @@ export default function ContractProductOwner() {
               onClick={openCalendlyFromContext}
               className="px-8 py-3 rounded-lg bg-gradient-to-r from-kaizen-cyan to-kaizen-lime text-kaizen-dark font-heading font-bold hover:shadow-lg hover:shadow-kaizen-cyan/50 transition inline-flex items-center justify-center gap-2"
             >
-              Book a Call with Sean
+              Book a 15 Minute Call with Sean
               <ArrowRight size={18} />
             </button>
             <button

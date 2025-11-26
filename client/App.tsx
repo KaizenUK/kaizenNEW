@@ -27,6 +27,7 @@ const WordPressWebDesign = lazy(
   () => import("./pages/services/WordPressWebDesign"),
 );
 const CityCentre = lazy(() => import("./pages/services/CityCentre"));
+const WebDesignWirral = lazy(() => import("./pages/services/WebDesignWirral"));
 const ContractProductOwner = lazy(() => import("./pages/ContractProductOwner"));
 const ProjectRescue = lazy(() => import("./pages/ProjectRescue"));
 const CaseStudies = lazy(() => import("./pages/CaseStudies"));
@@ -46,6 +47,9 @@ const HelenMooreHairdressingCase = lazy(
 );
 const IndependentRetailerCase = lazy(
   () => import("./pages/caseStudies/IndependentRetailer"),
+);
+const KaizenRebuildCase = lazy(
+  () => import("./pages/caseStudies/KaizenRebuild"),
 );
 const PrivacyPolicy = lazy(() => import("./pages/PrivacyPolicy"));
 const CookiePolicy = lazy(() => import("./pages/CookiePolicy"));
@@ -177,6 +181,7 @@ function AppContent() {
             path="/web-design-liverpool-city-centre"
             element={<CityCentre />}
           />
+          <Route path="/web-design-wirral" element={<WebDesignWirral />} />
           <Route
             path="/contract-product-owner"
             element={<ContractProductOwner />}
@@ -198,6 +203,10 @@ function AppContent() {
           <Route
             path="/case-studies/independent-retailer"
             element={<IndependentRetailerCase />}
+          />
+          <Route
+            path="/case-studies/kaizen-rebuild"
+            element={<KaizenRebuildCase />}
           />
           <Route path="/blog" element={<Blog />} />
           <Route path="/blog/:slug" element={<BlogDetail />} />

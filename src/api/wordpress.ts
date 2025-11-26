@@ -4,6 +4,7 @@ export type WPPost = {
   id: number;
   slug: string;
   date: string;
+  modified?: string;
   title: { rendered: string };
   excerpt: { rendered: string };
   content: { rendered: string };
