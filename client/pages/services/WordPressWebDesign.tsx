@@ -228,10 +228,10 @@ export default function WordPressWebDesign() {
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.8, duration: 0.8 }}
               >
-                Get the platform you know and love, built the right way. We
-                build fast, secure, and easy-to-manage WordPress websites for
-                Liverpool & Wirral businesses. No clunky themes, no bloat—just
-                performance.
+                Get the platform you know and love, built the right way. We use
+                AI tools to create fast, secure, and easy-to-manage WordPress
+                sites for Liverpool & Wirral businesses, so you keep the
+                familiar editor while we focus on performance and reliability.
               </motion.p>
 
               <motion.div
@@ -293,9 +293,9 @@ export default function WordPressWebDesign() {
             <p className="text-xl text-kaizen-text-dark/70 dark:text-white/60 leading-relaxed max-w-3xl">
               The problem isn't WordPress; it's the way most agencies build on
               it. They use cheap, bloated themes and dozens of clunky plugins
-              that break your site and kill your page speed. We're different. We
-              build custom, clean WordPress sites from the ground up, giving you
-              a fast, secure foundation.
+              that break your site and kill your page speed. We're different.
+              We use AI tools to generate lean, semantic WordPress builds that
+              feel familiar to edit but perform like a modern platform.
             </p>
           </ScrollReveal>
         </div>
@@ -354,6 +354,43 @@ export default function WordPressWebDesign() {
               </motion.div>
             ))}
           </motion.div>
+        </div>
+      </section>
+
+      {/* Section: Is WordPress right for me? */}
+      <section className="py-20 md:py-24 bg-white dark:bg-slate-950">
+        <div className="container mx-auto px-4">
+          <ScrollReveal>
+            <div className="max-w-3xl mx-auto rounded-2xl border border-kaizen-light dark:border-slate-800 bg-kaizen-light dark:bg-slate-900/60 p-6 md:p-8">
+              <p className="text-xs font-mono tracking-[0.25em] text-kaizen-cyan uppercase mb-3">
+                WordPress or React?
+              </p>
+              <h2 className="text-2xl md:text-3xl font-heading font-bold mb-4 text-kaizen-dark dark:text-white">
+                Is WordPress right for my business?
+              </h2>
+              <p className="text-base md:text-lg text-kaizen-text-dark/80 dark:text-white/70 leading-relaxed mb-4">
+                WordPress is ideal for smaller businesses and lower-traffic
+                sites that need a flexible, easy-to-manage presence. If you
+                already have a theme you really want to use, we can work with
+                it while still keeping your build as lean as possible.
+              </p>
+              <p className="text-base md:text-lg text-kaizen-text-dark/80 dark:text-white/70 leading-relaxed mb-4">
+                If you later move to a React or headless build, you will
+                still manage your content through a familiar CMS. The
+                front-end changes, but your day-to-day editing workflow stays
+                simple and predictable.
+              </p>
+              <a
+                href="https://kaizenweb.co.uk/blog/wordpress-vs-react-business-roi"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 text-kaizen-cyan hover:text-kaizen-lime font-heading font-semibold text-sm md:text-base"
+              >
+                Read: WordPress vs React – Business ROI guide
+                <ArrowUpRight size={16} />
+              </a>
+            </div>
+          </ScrollReveal>
         </div>
       </section>
 
@@ -486,9 +523,9 @@ export default function WordPressWebDesign() {
               "Yes, but only if managed correctly. We build headless or hardened WordPress sites that strip out vulnerabilities, and we manage updates to prevent plugin hacks.",
           },
           {
-            question: "Do you use templates?",
+            question: "Is this just a template?",
             answer:
-              "No. We build custom themes or headless frontends. Templates are bloated and slow; we build for speed and SEO scores.",
+              "No. We use AI to generate bespoke code tailored exactly to your brand. Templates are bloated; our AI produces clean, semantic code that scores 100/100 on Google, but at a fraction of the usual bespoke price.",
           },
           {
             question: "Can I edit the content myself?",
@@ -535,7 +572,7 @@ export default function WordPressWebDesign() {
             viewport={{ once: true }}
             transition={{ duration: 0.6, delay: 0.2 }}
           >
-            Got a broken WordPress site? We also offer{" "}
+            Got a broken WordPress site? We also offer {""}
             <Link
               to="/project-rescue"
               className="text-kaizen-cyan hover:underline"

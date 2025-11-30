@@ -212,13 +212,14 @@ const RescueStrip = () => {
           </p>
         </div>
         <div className="flex flex-col items-start gap-3 min-w-[220px]">
-          <button
-            onClick={() => openCrisp()}
+          <Link
+            to="/project-rescue"
             className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-gradient-to-r from-lime-400 to-emerald-400 text-gray-950 font-heading font-semibold text-sm hover:shadow-lg hover:shadow-lime-400/50 transition"
+            onClick={() => window.scrollTo(0, 0)}
           >
             Project Rescue Triage
             <ArrowRight size={18} />
-          </button>
+          </Link>
           <p className="text-[11px] text-white/60 font-mono uppercase tracking-[0.2em]">
             No obligation. Straight talk.
           </p>
@@ -768,9 +769,9 @@ const SEOFAQSection = () => {
       eyebrow="Common Questions"
       items={[
         {
-          question: "Why do you charge for a Discovery phase?",
+          question: "What is your role if AI does the coding?",
           answer:
-            "Because guessing is expensive. We scope the project properly upfront (user stories and technical architecture) so we can give you a fixed price, rather than a low estimate that doubles later.",
+            "AI is the engine; we are the pilots. Our Contract Product Owners define the strategy, user journey, and business logic. We ensure the AI builds the right product that actually solves your business problem.",
         },
         {
           question: "Are you a Liverpool agency?",
