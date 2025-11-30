@@ -510,7 +510,7 @@ export default function BlogPostsList() {
                           <td className="p-4">
                             <div className="flex gap-3">
                               <a
-                                href={`https://www.kaizenweb.co.uk/blog/${post.slug}`}
+                                href={`https://kaizenweb.co.uk/blog/${post.slug}`}
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="text-gray-400 hover:text-blue-400 transition"
