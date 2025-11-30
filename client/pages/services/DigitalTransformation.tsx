@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useCalendly } from "@/context/CalendlyContext";
+import { FaqSection } from "@/components/FaqSection";
 
 const fadeInUp = {
   hidden: { opacity: 0, y: 20 },
@@ -444,6 +445,23 @@ export default function DigitalTransformation() {
           </div>
         </div>
       </section>
+
+      <FaqSection
+        heading="Digital Transformation FAQs"
+        eyebrow="Common Questions"
+        items={[
+          {
+            question: "How do you measure ROI on transformation?",
+            answer:
+              "We define success metrics (for example admin hours saved or conversion rate increase) before we write code. We act as Contract Product Owners, meaning we focus on value, not just output.",
+          },
+          {
+            question: "How long does a transformation project take?",
+            answer:
+              "We work in Agile sprints. You will see working software in weeks, not months. A typical modernisation project takes 3–6 months depending on complexity.",
+          },
+        ]}
+      />
 
       {/* Section 7: Final CTA */}
       <section className="bg-kaizen-dark dark:bg-gradient-to-b dark:from-slate-900 dark:to-slate-950 text-white py-20 md:py-32 px-4">

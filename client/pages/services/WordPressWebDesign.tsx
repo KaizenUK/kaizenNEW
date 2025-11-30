@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Helmet } from "react-helmet-async";
 import { useCalendly } from "@/context/CalendlyContext";
+import { FaqSection } from "@/components/FaqSection";
 import {
   ArrowRight,
   ArrowUpRight,
@@ -474,6 +475,28 @@ export default function WordPressWebDesign() {
           </motion.div>
         </div>
       </section>
+
+      <FaqSection
+        heading="WordPress Web Design FAQs"
+        eyebrow="Common Questions"
+        items={[
+          {
+            question: "Is WordPress secure for business?",
+            answer:
+              "Yes, but only if managed correctly. We build headless or hardened WordPress sites that strip out vulnerabilities, and we manage updates to prevent plugin hacks.",
+          },
+          {
+            question: "Do you use templates?",
+            answer:
+              "No. We build custom themes or headless frontends. Templates are bloated and slow; we build for speed and SEO scores.",
+          },
+          {
+            question: "Can I edit the content myself?",
+            answer:
+              "Absolutely. We use WordPress specifically because it offers the best editing experience for your marketing team, while we handle the code.",
+          },
+        ]}
+      />
 
       {/* Section 6: Final Call to Action */}
       <section className="py-20 md:py-32 bg-kaizen-dark dark:bg-gradient-to-b dark:from-slate-900 dark:to-slate-950 text-kaizen-text-light dark:text-white/85">
