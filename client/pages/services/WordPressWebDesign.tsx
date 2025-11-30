@@ -525,7 +525,7 @@ export default function WordPressWebDesign() {
           {
             question: "Is this just a template?",
             answer:
-              "No. We use AI to generate bespoke code tailored exactly to your brand. Templates are bloated; our AI produces clean, semantic code that scores 100/100 on Google, but at a fraction of the usual bespoke price.",
+              "No. We use AI to generate bespoke code tailored exactly to your brand. Templates are bloated; our AI produces clean, semantic code that performs strongly on Core Web Vitals, but at a fraction of the usual bespoke price.",
           },
           {
             question: "Can I edit the content myself?",

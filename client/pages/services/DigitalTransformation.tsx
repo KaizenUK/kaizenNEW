@@ -358,7 +358,7 @@ export default function DigitalTransformation() {
               },
               {
                 step: "03",
-                title: "Empower",
+                title: "Give Teams Control",
                 desc: "We deliver a streamlined, documented process and train your team on how to use it, giving you back hours every single week.",
               },
             ].map((item, index) => (

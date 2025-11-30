@@ -199,7 +199,7 @@ export default function About() {
               {
                 icon: Lightbulb,
                 title: "Kaizen (改善)",
-                copy: "It's not just a cool word. In Japanese, it means 'continuous improvement.' We believe in it because we've lived it. There is always a better way to build a website or run a project. We are obsessed with finding it.",
+                copy: "Kaizen means 'continuous improvement.' We believe in it because we've lived it. There is always a better way to build a website or run a project. We are obsessed with finding it.",
               },
               {
                 icon: Heart,
@@ -209,7 +209,7 @@ export default function About() {
               {
                 icon: Users,
                 title: '"Train to Leave"',
-                copy: "We believe in the mantra: \"Train people well enough so they can leave, treat them well enough so they don't want to.\" We apply this to you. We'll empower your team so you're not dependent on us.",
+                copy: "We believe in the mantra: \"Train people well enough so they can leave, treat them well enough so they don't want to.\" We apply this to you. We give your team control so you're not dependent on us.",
               },
             ].map((item, index) => (
               <motion.div
