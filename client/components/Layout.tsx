@@ -118,6 +118,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         )}
         <meta name="twitter:image" content={ogImage} />
         <meta name="twitter:site" content="@kaizenweblpool" />
+        <link rel="preload" as="image" href={DEFAULT_OG_IMAGE} fetchPriority="high" />
         <script type="application/ld+json">
           {JSON.stringify(structuredData)}
         </script>

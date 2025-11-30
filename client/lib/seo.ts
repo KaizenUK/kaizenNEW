@@ -380,9 +380,17 @@ export const getPageMeta = (pathname: string): PageMeta => {
 
 export const buildLocalBusinessSchema = (description: string) => ({
   "@context": "https://schema.org",
-  "@type": "ProfessionalService",
+  "@type": ["ProfessionalService", "LocalBusiness", "Organization"],
   name: SITE_NAME,
+  alternateName: "Kaizen",
+  legalName: "Kaizen Web",
   image: DEFAULT_OG_IMAGE,
+  logo: {
+    "@type": "ImageObject",
+    url: "https://cdn.builder.io/api/v1/image/assets%2Fe4ae46bbd81b4b95bef54d66dd9748cc%2F19f6366118ef41298050443945090b5f?format=webp&width=800",
+    width: 800,
+    height: 800,
+  },
   url: SITE_URL,
   telephone: BUSINESS_PHONE,
   email: BUSINESS_EMAIL,
@@ -423,9 +431,12 @@ export const buildLocalBusinessSchema = (description: string) => ({
     },
   ],
   priceRange: "$$",
+  foundingDate: "2020",
+  foundingLocation: "Liverpool, UK",
   sameAs: [
     "https://www.linkedin.com/company/kaizen-web",
     "https://www.instagram.com/kaizenwebliverpool",
     "https://twitter.com/kaizenweblpool",
+    "https://www.crunchbase.com/organization/kaizen-web",
   ],
 });

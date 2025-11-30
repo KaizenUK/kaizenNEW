@@ -6,6 +6,7 @@ import Layout from "@/components/Layout";
 import { LeafletMap } from "@/components/LeafletMap";
 import { FaqSection } from "@/components/FaqSection";
 import { openCrisp } from "@/lib/crisp-utils";
+import { DEFAULT_OG_IMAGE } from "@/lib/seo";
 import {
   Accordion,
   AccordionItem,
@@ -91,6 +92,18 @@ const HeroSection = () => {
       whileHover={{ scale: 1.02 }}
       transition={{ duration: 0.4 }}
     >
+      {/* Hidden preload-optimized hero image for LCP */}
+      <img
+        src={DEFAULT_OG_IMAGE}
+        alt=""
+        loading="eager"
+        fetchPriority="high"
+        decoding="async"
+        width="1200"
+        height="630"
+        className="absolute inset-0 w-0 h-0 opacity-0 pointer-events-none"
+        aria-hidden="true"
+      />
       <svg
         className="absolute inset-0 w-full h-full pointer-events-none opacity-40"
         preserveAspectRatio="none"
