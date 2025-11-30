@@ -78,6 +78,17 @@ const pageMeta: Record<string, Partial<PageMeta>> = {
       "web design agency wirral",
     ],
   },
+  "/web-design-liverpool-city-centre": {
+    title: "Web Design Liverpool City Centre | Kaizen Web",
+    description:
+      "City centre web design for Liverpool businesses that need fast, conversion-focused sites with clear messaging and transparent pricing.",
+    keywords: [
+      "web design liverpool city centre",
+      "liverpool city centre web design",
+      "city centre websites",
+      "liverpool web design",
+    ],
+  },
   "/web-design-wirral": {
     title: "Web Design Wirral | Heswall, West Kirby & Birkenhead | Kaizen Web",
     description:
@@ -232,6 +243,13 @@ const pageMeta: Record<string, Partial<PageMeta>> = {
     description:
       "Let's talk. Chat with us live, or book a 15-minute, no-pressure discovery call directly in our calendar.",
     keywords: ["contact kaizen", "book a call", "liverpool web design contact"],
+  },
+  "/thank-you": {
+    title: "Thank You | Kaizen Web Liverpool",
+    description:
+      "Thanks for getting in touch with Kaizen Web. We'll respond quickly with practical next steps for your Liverpool or Wirral project.",
+    noIndex: true,
+    keywords: ["thank you", "enquiry received", "kaizen web"],
   },
   "/blog": {
     title: "Blog | Kaizen | Web Design & Agile Insights",

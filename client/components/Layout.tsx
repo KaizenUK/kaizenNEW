@@ -48,17 +48,8 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   const robotsValue = meta.noIndex ? "noindex, nofollow" : "index, follow";
 
   // Only render global description/keywords for primary site pages (home, services, company pages, blog index, legal pages)
-  const shouldRenderDescription =
-    normalizedPath === "/" ||
-    normalizedPath === "/about" ||
-    normalizedPath === "/pledge" ||
-    normalizedPath === "/case-studies" ||
-    normalizedPath === "/contact" ||
-    normalizedPath === "/blog" ||
-    normalizedPath === "/privacy-policy" ||
-    normalizedPath === "/cookie-policy" ||
-    normalizedPath.startsWith("/services") ||
-    normalizedPath.startsWith("/case-studies");
+  const isAdminRoute = normalizedPath.startsWith("/admin");
+  const shouldRenderDescription = !isAdminRoute;
 
   const structuredData = buildLocalBusinessSchema(meta.description);
   const ogImage = meta.image ?? DEFAULT_OG_IMAGE;
