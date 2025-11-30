@@ -474,6 +474,33 @@ export default function WebDesign() {
         </div>
       </section>
 
+      <FaqSection
+        heading="Common Questions from Liverpool Businesses"
+        eyebrow="Common Questions"
+        items={[
+          {
+            question: "How much does a bespoke website cost in Liverpool?",
+            answer:
+              "For a professional, custom-built site (not a template), prices in Liverpool typically range from £3,500 for a brochure site to £15,000+ for a complex React application. We provide fixed-price quotes after a scope session.",
+          },
+          {
+            question: "How long does a build take?",
+            answer:
+              "A custom WordPress build takes 4–6 weeks. A complex React/Next.js application takes 8–12 weeks. We work in 2-week sprints, so you see progress every fortnight.",
+          },
+          {
+            question: "Do you outsource development?",
+            answer:
+              "No. Unlike many creative agencies, we do not white-label. All code is written by our internal team or managed directly by your Contract Product Owner.",
+          },
+          {
+            question: "Can you fix my existing site without rebuilding it?",
+            answer:
+              "Yes. Our Project Rescue service is designed to audit and fix broken code. However, if the technical debt is too high, we may recommend a rebuild for financial safety.",
+          },
+        ]}
+      />
+
       {/* Section 6: Final CTA */}
       <section className="py-20 md:py-32 bg-white dark:bg-slate-950">
         <div className="container mx-auto px-4 text-center">
