@@ -240,18 +240,20 @@ const Footer: React.FC<FooterProps> = () => {
             <h3 className="font-bold text-sm mb-4 text-white">Follow</h3>
             <div className="flex items-center gap-4">
               <a
-                href="https://www.linkedin.com/company/kaizen-web-liverpool/"
+                href="https://www.linkedin.com/company/kaizen-web"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-white/60 hover:text-white transition"
+                aria-label="Follow Kaizen Web on LinkedIn"
               >
                 <Linkedin size={20} />
               </a>
               <a
-                href="https://www.instagram.com/kaizenweb.liverpool/"
+                href="https://www.instagram.com/kaizenwebliverpool"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-white/60 hover:text-white transition"
+                aria-label="Follow Kaizen Web on Instagram"
               >
                 <Instagram size={20} />
               </a>
