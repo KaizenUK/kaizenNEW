@@ -290,6 +290,18 @@ interface RichTextContentProps {
 function RichTextContent({ html }: RichTextContentProps) {
   const contentRef = useRef<HTMLDivElement>(null);
   const [copiedId, setCopiedId] = useState<string | null>(null);
+  const [isTableModalOpen, setIsTableModalOpen] = useState(false);
+  const [modalTableHtml, setModalTableHtml] = useState("");
+
+  const openTableModal = (tableHtml: string) => {
+    setModalTableHtml(tableHtml);
+    setIsTableModalOpen(true);
+  };
+
+  const closeTableModal = () => {
+    setIsTableModalOpen(false);
+    setModalTableHtml("");
+  };
 
   useEffect(() => {
     if (!contentRef.current) return;
@@ -348,13 +360,30 @@ function RichTextContent({ html }: RichTextContentProps) {
         "border-l-4 border-primary bg-gray-50 dark:bg-slate-800 pl-4 py-3 my-6 italic text-gray-800 dark:text-gray-200 rounded-md";
     });
 
-    // Wrap tables for horizontal scrolling on small screens
+    // Handle tables: hide on mobile, show modal button
     const tables = contentRef.current.querySelectorAll("table");
     tables.forEach((table) => {
       const parent = table.parentElement;
       if (!parent) return;
       if (parent.classList.contains("blog-table-wrapper")) return;
 
+      // Hide table on mobile, show on desktop
+      table.classList.add("hidden", "md:table");
+
+      // Create and inject mobile button
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className =
+        "block md:hidden w-full bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white py-4 rounded-xl font-semibold flex items-center justify-center gap-2 my-6 hover:bg-slate-200 dark:hover:bg-slate-700 transition";
+      btn.innerHTML = "🔍 View Comparison Table";
+
+      btn.addEventListener("click", () => {
+        openTableModal(table.outerHTML);
+      });
+
+      parent.insertBefore(btn, table);
+
+      // Desktop: wrap table for scrolling
       const wrapper = document.createElement("div");
       wrapper.className =
         "blog-table-wrapper overflow-x-auto my-6 -mx-4 sm:mx-0";
@@ -364,14 +393,21 @@ function RichTextContent({ html }: RichTextContentProps) {
   }, []);
 
   return (
-    <motion.div
-      ref={contentRef}
-      className="max-w-3xl blog-content prose dark:prose-invert text-gray-950 dark:text-white"
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.6, delay: 0.3 }}
-      dangerouslySetInnerHTML={{ __html: html }}
-    />
+    <>
+      <motion.div
+        ref={contentRef}
+        className="max-w-3xl blog-content prose dark:prose-invert text-gray-950 dark:text-white"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, delay: 0.3 }}
+        dangerouslySetInnerHTML={{ __html: html }}
+      />
+      <BlogTableModal
+        isOpen={isTableModalOpen}
+        onClose={closeTableModal}
+        htmlContent={modalTableHtml}
+      />
+    </>
   );
 }
 
