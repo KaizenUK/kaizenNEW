@@ -494,7 +494,7 @@ export default function ContractProductOwner() {
                   <div className="p-4 text-sm text-kaizen-text-dark/80 dark:text-white/70 border-l border-kaizen-light/60 dark:border-slate-800">
                     {row.pm}
                   </div>
-                  <div className="p-4 text-sm text-kaizen-text-dark/90 dark:text-white border-l border-kaizen-light/60 dark:border-slate-800">
+                  <div className="p-4 text-sm text-kaizen-text-dark/90 dark:text-white border-l border-kaizen-light/60 dark:border-slate-800 bg-green-50/60 dark:bg-green-900/15">
                     {row.po}
                   </div>
                 </div>
