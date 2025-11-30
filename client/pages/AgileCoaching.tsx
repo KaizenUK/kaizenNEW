@@ -3,6 +3,7 @@ import Layout from "@/components/Layout";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useCalendly } from "@/context/CalendlyContext";
+import { FaqSection } from "@/components/FaqSection";
 import {
   ArrowRight,
   ArrowUpRight,
