@@ -4,6 +4,7 @@ import { ArrowRight, ArrowUpRight, ChevronRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import Layout from "@/components/Layout";
 import { LeafletMap } from "@/components/LeafletMap";
+import { FaqSection } from "@/components/FaqSection";
 import { openCrisp } from "@/lib/crisp-utils";
 import {
   Accordion,
@@ -761,109 +762,28 @@ const LatestInsights = () => {
 };
 
 const SEOFAQSection = () => {
-  const faqItems = [
-    {
-      question: "How much does a website cost in Liverpool in 2025?",
-      answer:
-        "Prices range from £500 for DIY Shopify sites to £15k+ for custom React apps. Most professional brochure sites sit between £3k–£8k.",
-    },
-    {
-      question: "Do you serve Wirral and Merseyside?",
-      answer:
-        "Yes. We are based in Liverpool City Centre but serve businesses across Wirral, Chester, and the wider Merseyside region.",
-    },
-    {
-      question: "Why are you different from other Liverpool digital agencies?",
-      answer:
-        "We are Product Owner-led. You don't get an account manager; you get a senior technical partner who runs your project in Agile sprints.",
-    },
-    {
-      question: "Do you use templates or custom code?",
-      answer:
-        'We build custom-coded sites using React or a bespoke WordPress theme. We do not use £50 "off-the-shelf" templates that bloat your site and hurt your SEO.',
-    },
-    {
-      question: "What happens after the website launches?",
-      answer:
-        "You own everything. We provide 30 days of free support to fix any snagging issues. After that, you can sign up for a maintenance plan or manage it yourself. No lock-in contracts.",
-    },
-    {
-      question: "Can you fix my current broken website?",
-      answer:
-        'Yes. Our "Project Rescue" service is designed exactly for this. We audit your code, stabilise the build, and help you launch.',
-    },
-  ];
-
-  const faqSchema = {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    mainEntity: faqItems.map((item) => ({
-      "@type": "Question",
-      name: item.question,
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: item.answer,
-      },
-    })),
-  };
-
   return (
-    <section className="py-20 md:py-32 bg-slate-50 dark:bg-slate-900/50 relative overflow-hidden">
-      <script type="application/ld+json">{JSON.stringify(faqSchema)}</script>
-
-      <div className="container mx-auto px-4 relative z-10">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="text-center mb-16 max-w-2xl mx-auto"
-        >
-          <p className="text-xs font-mono tracking-[0.25em] text-kaizen-cyan uppercase mb-4">
-            Common Questions
-          </p>
-          <h2 className="text-4xl md:text-5xl font-heading font-bold text-gray-950 dark:text-white mb-6">
-            Common Questions from Liverpool Businesses
-          </h2>
-        </motion.div>
-
-        <div className="max-w-3xl mx-auto">
-          <Accordion type="single" collapsible className="w-full">
-            {faqItems.map((item, index) => (
-              <AccordionItem
-                key={index}
-                value={`item-${index}`}
-                className="border-b border-gray-200 dark:border-gray-800"
-              >
-                <AccordionTrigger className="text-lg font-heading font-bold text-gray-950 dark:text-white hover:text-kaizen-cyan transition-colors">
-                  {item.question}
-                </AccordionTrigger>
-                <AccordionContent className="text-gray-700 dark:text-gray-300 leading-relaxed">
-                  {item.answer}
-                </AccordionContent>
-              </AccordionItem>
-            ))}
-          </Accordion>
-        </div>
-
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="text-center mt-12"
-        >
-          <p className="text-gray-700 dark:text-gray-300 mb-6">
-            Still have questions? Let's chat.
-          </p>
-          <button
-            onClick={() => openCrisp()}
-            className="px-8 py-4 rounded-lg bg-gradient-to-r from-kaizen-cyan to-kaizen-lime text-gray-950 font-heading font-bold hover:shadow-lg hover:scale-105 transition-all inline-flex items-center gap-2"
-          >
-            Start a Conversation
-            <ArrowRight size={20} />
-          </button>
-        </motion.div>
-      </div>
-    </section>
+    <FaqSection
+      heading="Common Questions from Liverpool Businesses"
+      eyebrow="Common Questions"
+      items={[
+        {
+          question: "Why do you charge for a Discovery phase?",
+          answer:
+            "Because guessing is expensive. We scope the project properly upfront (user stories and technical architecture) so we can give you a fixed price, rather than a low estimate that doubles later.",
+        },
+        {
+          question: "Are you a Liverpool agency?",
+          answer:
+            "Yes, we are based in Liverpool and the Wirral, but we work with clients across the UK. We are happy to meet face-to-face for local projects.",
+        },
+        {
+          question: "Do you provide hosting?",
+          answer:
+            "We provide high-performance VPS hosting for clients on our maintenance plans. We do not use cheap shared hosting as it compromises speed and security.",
+        },
+      ]}
+    />
   );
 };
 
