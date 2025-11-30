@@ -297,7 +297,7 @@ const Header: React.FC<HeaderProps> = ({
 
   return (
     <header className="sticky top-4 z-50 w-full px-4 h-20">
-      <nav
+      <div
         className="max-w-7xl mx-auto rounded-full bg-gray-950/80 border-t border-white/10 backdrop-blur-xl h-full"
         style={{
           boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.5)",
@@ -320,11 +320,12 @@ const Header: React.FC<HeaderProps> = ({
           </Link>
 
           {/* Desktop Navigation */}
-          <div
+          <nav
             ref={navRef}
             className="relative hidden lg:flex items-center gap-1"
             onMouseEnter={cancelCloseMenu}
             onMouseLeave={scheduleCloseMenu}
+            aria-label="Main navigation"
           >
             {/* Services Trigger */}
             <button
@@ -527,7 +528,7 @@ const Header: React.FC<HeaderProps> = ({
                 </motion.div>
               )}
             </AnimatePresence>
-          </div>
+          </nav>
 
           {/* Right Actions */}
           <div className="flex items-center gap-4">
@@ -566,7 +567,7 @@ const Header: React.FC<HeaderProps> = ({
             </button>
           </div>
         </div>
-      </nav>
+      </div>
     </header>
   );
 };
