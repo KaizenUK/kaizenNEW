@@ -1338,6 +1338,7 @@ export default function Home() {
   return (
     <Layout>
       <HeroSection />
+      <RescueStrip />
       <PricingSlider />
       <PricingCTABanner />
       <CoreServiceVerticals />
