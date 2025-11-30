@@ -303,6 +303,29 @@ export default function ProjectRescue() {
         </div>
       </section>
 
+      {/* FAQ: Project Rescue */}
+      <FaqSection
+        heading="Project Rescue FAQs"
+        eyebrow="Common Questions"
+        items={[
+          {
+            question: "Is my project actually salvageable?",
+            answer:
+              "In most cases, yes. We perform a Code Triage first. If the core architecture is sound, we can fix the bugs. If the code is a liability, we will advise a rebuild to save you money in the long run.",
+          },
+          {
+            question: "Do you take over existing code?",
+            answer:
+              "Yes. We audit the repository, secure the intellectual property and set up a proper deployment pipeline so you regain control from your previous agency.",
+          },
+          {
+            question: "How quickly can you start?",
+            answer:
+              "We can usually deploy a technical audit within 48 hours. For emergency fixes, we have a rapid response protocol.",
+          },
+        ]}
+      />
+
       {/* Qualification */}
       <section className="py-20 md:py-32 bg-kaizen-light dark:bg-slate-900/50">
         <div className="container mx-auto px-4">
