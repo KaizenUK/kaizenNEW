@@ -223,7 +223,11 @@ const BlogSearch: React.FC<BlogSearchProps> = ({ onStateChange }) => {
         </div>
       </form>
 
-      <div className="mt-2 min-h-[1.5rem]" aria-live="polite" aria-atomic="true">
+      <div
+        className="mt-2 min-h-[1.5rem]"
+        aria-live="polite"
+        aria-atomic="true"
+      >
         {loading && (
           <p className="text-xs text-gray-500 dark:text-gray-400">
             Searching articles...

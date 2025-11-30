@@ -539,49 +539,56 @@ export default function Blog() {
                 </motion.div>
 
                 {/* Slot 4: Standard Grid Posts - 4 cols each */}
-                {remainingPosts.slice(0, visibleStandardCount).map((post, idx) => (
-                  <motion.div
-                    key={`standard-${post.id}`}
-                    className="col-span-1 md:col-span-4"
-                    initial={{ opacity: 0, scale: 0.95 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ duration: 0.5, delay: 0.3 + idx * 0.05 }}
-                  >
-                    <Link
-                      to={`/blog/${post.slug}`}
-                      className="group relative overflow-hidden rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 hover:border-gray-300 dark:hover:border-gray-700 transition-all h-full flex flex-col"
+                {remainingPosts
+                  .slice(0, visibleStandardCount)
+                  .map((post, idx) => (
+                    <motion.div
+                      key={`standard-${post.id}`}
+                      className="col-span-1 md:col-span-4"
+                      initial={{ opacity: 0, scale: 0.95 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{ duration: 0.5, delay: 0.3 + idx * 0.05 }}
                     >
-                      <div className="relative h-48 overflow-hidden bg-gray-200 dark:bg-gray-800">
-                        <img
-                          src={post.image}
-                          alt={post.title}
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                          loading="lazy"
-                          decoding="async"
-                        />
-                      </div>
-
-                      <div className="p-6 flex-1 flex flex-col">
-                        <h3 className="text-lg font-sans font-bold text-gray-950 dark:text-white mb-3 leading-tight line-clamp-2 flex-1">
-                          {post.title}
-                        </h3>
-                        <p className="text-gray-600 dark:text-gray-400 text-sm line-clamp-2 mb-4">
-                          {post.excerpt}
-                        </p>
-                        <div className="flex items-center gap-2 text-gray-600 dark:text-gray-400 text-xs">
-                          {post.tags.slice(0, 1).map((tag, idx) => (
-                            <span key={`post-tag-${idx}`} className="font-mono">
-                              {tag}
-                            </span>
-                          ))}
-                          <span className="ml-auto font-mono text-gray-400 dark:text-gray-600">
-                            {new Date(post.publishedDate).toLocaleDateString()}
-                          </span>
+                      <Link
+                        to={`/blog/${post.slug}`}
+                        className="group relative overflow-hidden rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 hover:border-gray-300 dark:hover:border-gray-700 transition-all h-full flex flex-col"
+                      >
+                        <div className="relative h-48 overflow-hidden bg-gray-200 dark:bg-gray-800">
+                          <img
+                            src={post.image}
+                            alt={post.title}
+                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                            loading="lazy"
+                            decoding="async"
+                          />
                         </div>
-                      </div>
-                    </Link>
-                  </motion.div>
-                ))}
+
+                        <div className="p-6 flex-1 flex flex-col">
+                          <h3 className="text-lg font-sans font-bold text-gray-950 dark:text-white mb-3 leading-tight line-clamp-2 flex-1">
+                            {post.title}
+                          </h3>
+                          <p className="text-gray-600 dark:text-gray-400 text-sm line-clamp-2 mb-4">
+                            {post.excerpt}
+                          </p>
+                          <div className="flex items-center gap-2 text-gray-600 dark:text-gray-400 text-xs">
+                            {post.tags.slice(0, 1).map((tag, idx) => (
+                              <span
+                                key={`post-tag-${idx}`}
+                                className="font-mono"
+                              >
+                                {tag}
+                              </span>
+                            ))}
+                            <span className="ml-auto font-mono text-gray-400 dark:text-gray-600">
+                              {new Date(
+                                post.publishedDate,
+                              ).toLocaleDateString()}
+                            </span>
+                          </div>
+                        </div>
+                      </Link>
+                    </motion.div>
+                  ))}
 
                 {remainingPosts.length > visibleStandardCount && (
                   <div className="col-span-1 md:col-span-12 flex justify-center mt-4">
