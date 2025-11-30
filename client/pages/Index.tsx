@@ -193,6 +193,38 @@ const HeroSection = () => {
   );
 };
 
+const RescueStrip = () => {
+  return (
+    <section className="bg-black text-white py-10 border-y border-white/10">
+      <div className="container mx-auto px-4 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+        <div className="max-w-2xl">
+          <p className="text-xs font-mono tracking-[0.3em] text-lime-300 mb-3 uppercase">
+            Project Rescue
+          </p>
+          <h2 className="text-2xl md:text-3xl font-heading font-bold mb-3">
+            Stalled project? We fix what other agencies broke.
+          </h2>
+          <p className="text-sm md:text-base text-white/80">
+            If your software build is over budget, buggy, or stuck in endless sprints, we audit the code, stabilise delivery, and get it live so it can start paying you back.
+          </p>
+        </div>
+        <div className="flex flex-col items-start gap-3 min-w-[220px]">
+          <button
+            onClick={() => openCrisp()}
+            className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-gradient-to-r from-lime-400 to-emerald-400 text-gray-950 font-heading font-semibold text-sm hover:shadow-lg hover:shadow-lime-400/50 transition"
+          >
+            Project Rescue Triage
+            <ArrowRight size={18} />
+          </button>
+          <p className="text-[11px] text-white/60 font-mono uppercase tracking-[0.2em]">
+            No obligation. Straight talk.
+          </p>
+        </div>
+      </div>
+    </section>
+  );
+};
+
 const PricingSlider = () => {
   const [tier, setTier] = useState(0);
 
