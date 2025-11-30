@@ -264,9 +264,7 @@
   /* Premium SaaS-style tables inside blog prose */
   .prose table {
     @apply w-full border-collapse rounded-2xl overflow-hidden border border-gray-200 shadow-lg text-sm;
-    display: block;
     max-width: 100%;
-    overflow-x: auto;
   }
 
   .dark .prose table {
@@ -277,13 +275,10 @@
     @apply bg-slate-900 text-white;
   }
 
-  .dark .prose thead {
-    @apply bg-slate-950 text-white;
-  }
-
   .prose th,
   .prose td {
     @apply align-top border-none;
+    min-width: 9.375rem;
   }
 
   .prose th {
@@ -316,6 +311,17 @@
 
   .prose tbody td {
     @apply p-4;
+  }
+
+  .prose img {
+    @apply rounded-xl;
+    display: block;
+    max-width: 100%;
+    max-height: 500px;
+    margin-left: auto;
+    margin-right: auto;
+    width: auto;
+    object-fit: contain;
   }
 
   .pricing-slider::-moz-range-thumb {

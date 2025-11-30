@@ -345,14 +345,27 @@ function RichTextContent({ html }: RichTextContentProps) {
     const blockquotes = contentRef.current.querySelectorAll("blockquote");
     blockquotes.forEach((bq) => {
       bq.className =
-        "border-l-4 border-kaizen-cyan pl-4 py-2 my-4 bg-gray-100 dark:bg-gray-900/50 italic text-gray-700 dark:text-gray-300";
+        "border-l-4 border-primary bg-gray-50 dark:bg-slate-800 pl-4 py-3 my-6 italic text-gray-800 dark:text-gray-200 rounded-md";
+    });
+
+    // Wrap tables for horizontal scrolling on small screens
+    const tables = contentRef.current.querySelectorAll("table");
+    tables.forEach((table) => {
+      const parent = table.parentElement;
+      if (!parent) return;
+      if (parent.classList.contains("blog-table-wrapper")) return;
+
+      const wrapper = document.createElement("div");
+      wrapper.className = "blog-table-wrapper overflow-x-auto my-6";
+      parent.insertBefore(wrapper, table);
+      wrapper.appendChild(table);
     });
   }, []);
 
   return (
     <motion.div
       ref={contentRef}
-      className="max-w-3xl lg:max-w-5xl blog-content prose dark:prose-invert max-w-none text-gray-950 dark:text-white"
+      className="max-w-3xl blog-content prose dark:prose-invert text-gray-950 dark:text-white"
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6, delay: 0.3 }}
