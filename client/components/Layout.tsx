@@ -8,6 +8,7 @@ import {
   SITE_URL,
   DEFAULT_OG_IMAGE,
 } from "@/lib/seo";
+import { generateBreadcrumbSchema } from "@/lib/breadcrumb-schema";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import OffCanvasMenu from "@/components/layout/OffCanvasMenu";
@@ -52,6 +53,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   const shouldRenderDescription = !isAdminRoute;
 
   const structuredData = buildLocalBusinessSchema(meta.description);
+  const breadcrumbSchema = generateBreadcrumbSchema(normalizedPath);
   const ogImage = meta.image ?? DEFAULT_OG_IMAGE;
 
   useEffect(() => {
@@ -122,6 +124,11 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         <script type="application/ld+json">
           {JSON.stringify(structuredData)}
         </script>
+        {breadcrumbSchema && (
+          <script type="application/ld+json">
+            {JSON.stringify(breadcrumbSchema)}
+          </script>
+        )}
         <script type="application/ld+json">
           {JSON.stringify({
             "@context": "https://schema.org",
