@@ -214,7 +214,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
               Admin Dashboard
             </div>
             <a
-              href="https://www.kaizenweb.co.uk/"
+              href="https://kaizenweb.co.uk/"
               target="_blank"
               rel="noopener noreferrer"
               className="px-4 py-2 bg-gray-800 hover:bg-gray-700 rounded-lg transition text-gray-300 hover:text-blue-400 text-sm font-body flex items-center gap-2"
