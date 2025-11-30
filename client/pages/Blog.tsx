@@ -221,9 +221,9 @@ export default function Blog() {
                 The Kaizen Blog
               </h1>
 
-              {/* Subtitle */}
-              <p className="text-lg md:text-xl text-gray-600 dark:text-gray-400 mb-6 font-light">
-                Iterate. Ship. Improve.
+              {/* Subtitle - styled as code block */}
+              <p className="text-green-600 dark:text-green-400 text-sm mb-6 font-mono">
+                $ Iterate. Ship. Improve.
               </p>
 
               {/* Description */}

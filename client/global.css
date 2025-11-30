@@ -414,7 +414,13 @@
 
   /* Ensure all images in blog content have rounded corners */
   .blog-content img {
-    @apply rounded-xl;
+    border-radius: 0.75rem !important;
+  }
+
+  /* Override prose image styles */
+  .prose img,
+  .dark .prose img {
+    border-radius: 0.75rem !important;
   }
 
   .blog-hero {
