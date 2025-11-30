@@ -6,6 +6,7 @@ import { Helmet } from "react-helmet-async";
 
 import builder from "@/builder";
 import Layout from "@/components/Layout";
+import BlogTableModal from "@/components/BlogTableModal";
 import { fetchPostBySlug, fetchPosts } from "../../src/api/wordpress";
 import { SeoFromYoast } from "../../src/components/SeoFromYoast";
 import { decodeHtmlEntities, stripHtmlTags } from "@/lib/html-utils";
