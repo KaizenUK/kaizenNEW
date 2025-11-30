@@ -1,5 +1,7 @@
+import React from "react";
 import { createRoot } from "react-dom/client";
 import App from "./App";
+import "./global.css";
 
 // Suppress findDOMNode deprecation warning from react-quill and other libraries
 const originalWarning = console.warn;
@@ -18,4 +20,8 @@ if (!rootElement) {
   throw new Error("Root element not found");
 }
 
-createRoot(rootElement).render(<App />);
+createRoot(rootElement).render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>,
+);
