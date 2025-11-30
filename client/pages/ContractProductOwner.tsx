@@ -384,7 +384,7 @@ export default function ContractProductOwner() {
               {
                 step: "03",
                 title: "Deliver & Report",
-                copy: 'I manage the release process and provide you with a simple, no-jargon report every week. You see constant, predictable progress.',
+                copy: "I manage the release process and provide you with a simple, no-jargon report every week. You see constant, predictable progress.",
               },
             ].map((item, index) => (
               <motion.div
@@ -428,11 +428,13 @@ export default function ContractProductOwner() {
                 Why We Use Product Owners, Not Project Managers
               </h2>
               <p className="text-lg md:text-xl text-kaizen-text-dark/70 dark:text-white/70 leading-relaxed">
-                Most agencies assign you a Project Manager. Their job is to protect the agency's margin.
-                At Kaizen, I step in as a Contract Product Owner. My job is to protect your ROI.
+                Most agencies assign you a Project Manager. Their job is to
+                protect the agency's margin. At Kaizen, I step in as a Contract
+                Product Owner. My job is to protect your ROI.
               </p>
               <p className="text-lg text-kaizen-text-dark/70 dark:text-white/70 leading-relaxed mt-4">
-                It sounds like a subtle title change, but the difference in delivery is massive.
+                It sounds like a subtle title change, but the difference in
+                delivery is massive.
               </p>
             </div>
           </ScrollReveal>
@@ -500,8 +502,11 @@ export default function ContractProductOwner() {
             </div>
 
             <p className="mt-6 text-sm md:text-base text-kaizen-text-dark/80 dark:text-white/70">
-              <span className="font-semibold">The bottom line:</span> If you want someone to send you a weekly status report, hire a Project Manager.
-              If you want someone to take ownership of the backlog, make the hard commercial decisions, and ensure the software actually solves the business problem, you need a Product Owner.
+              <span className="font-semibold">The bottom line:</span> If you
+              want someone to send you a weekly status report, hire a Project
+              Manager. If you want someone to take ownership of the backlog,
+              make the hard commercial decisions, and ensure the software
+              actually solves the business problem, you need a Product Owner.
             </p>
           </div>
 
@@ -510,13 +515,18 @@ export default function ContractProductOwner() {
               FAQ: Do I need a Product Owner or a Project Manager?
             </h3>
             <p className="text-lg text-kaizen-text-dark/80 dark:text-white/70 leading-relaxed mb-4">
-              A Project Manager asks: <strong>"When will this be done?"</strong> They focus on dates, status reports, and Gantt charts.
+              A Project Manager asks: <strong>"When will this be done?"</strong>{" "}
+              They focus on dates, status reports, and Gantt charts.
             </p>
             <p className="text-lg text-kaizen-text-dark/80 dark:text-white/70 leading-relaxed mb-4">
-              A Product Owner asks: <strong>"Should we build this at all?"</strong> I focus on value, risk, and what the work does to your bottom line.
+              A Product Owner asks:{" "}
+              <strong>"Should we build this at all?"</strong> I focus on value,
+              risk, and what the work does to your bottom line.
             </p>
             <p className="text-lg text-kaizen-text-dark/80 dark:text-white/70 leading-relaxed">
-              If your team is building the wrong features on time, you do not have a delivery problem, you have a strategy problem. That is where a Product Owner pays for themselves very quickly.
+              If your team is building the wrong features on time, you do not
+              have a delivery problem, you have a strategy problem. That is
+              where a Product Owner pays for themselves very quickly.
             </p>
           </div>
         </div>

@@ -205,7 +205,9 @@ const RescueStrip = () => {
             Stalled project? We fix what other agencies broke.
           </h2>
           <p className="text-sm md:text-base text-white/80">
-            If your software build is over budget, buggy, or stuck in endless sprints, we audit the code, stabilise delivery, and get it live so it can start paying you back.
+            If your software build is over budget, buggy, or stuck in endless
+            sprints, we audit the code, stabilise delivery, and get it live so
+            it can start paying you back.
           </p>
         </div>
         <div className="flex flex-col items-start gap-3 min-w-[220px]">

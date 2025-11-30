@@ -125,7 +125,8 @@ export default function ProjectRescue() {
               animate={{ opacity: 1 }}
               transition={{ delay: 0.4, duration: 0.8 }}
             >
-              Thinking of restarting? Before you spend another penny, read our {""}
+              Thinking of restarting? Before you spend another penny, read our{" "}
+              {""}
               <a
                 href="https://kaizenweb.co.uk/blog/fix-failing-software-project-financial-guide"
                 target="_blank"
@@ -134,7 +135,8 @@ export default function ProjectRescue() {
               >
                 Financial Guide to Rescue vs Rebuild
               </a>
-              . We explain the sunk cost fallacy and help you decide if your code is worth saving.
+              . We explain the sunk cost fallacy and help you decide if your
+              code is worth saving.
             </motion.p>
 
             <motion.div

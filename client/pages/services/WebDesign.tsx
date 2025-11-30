@@ -268,7 +268,9 @@ export default function WebDesign() {
                 Tech Stack ROI
               </p>
               <p className="text-lg md:text-xl text-kaizen-text-dark/80 dark:text-white/80 mb-4 leading-relaxed">
-                Not sure which tech stack fits your budget? We broke down the three-year commercial difference between WordPress and React in plain English.
+                Not sure which tech stack fits your budget? We broke down the
+                three-year commercial difference between WordPress and React in
+                plain English.
               </p>
               <a
                 href="https://kaizenweb.co.uk/blog/wordpress-vs-react-business-roi"
