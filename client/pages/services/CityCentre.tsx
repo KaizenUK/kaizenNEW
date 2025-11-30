@@ -366,6 +366,28 @@ export default function CityCentre() {
           </motion.div>
         </div>
       </section>
+
+      <FaqSection
+        heading="Liverpool City Centre Web Design FAQs"
+        eyebrow="Common Questions"
+        items={[
+          {
+            question: "Do you have experience with Liverpool hospitality or retail?",
+            answer:
+              "Yes. We understand the high-paced nature of city centre businesses. We build sites that handle menu updates, booking integrations and high mobile traffic.",
+          },
+          {
+            question: "Can you help with Local SEO for the City Centre?",
+            answer:
+              "Absolutely. Ranking in L1 is competitive. We build your site with Local Business schema baked in to help you appear in the Google Map Pack for city centre searches.",
+          },
+          {
+            question: "Do we need a meeting?",
+            answer:
+              "We are happy to meet in town. A face-to-face discovery session often solves more in 30 minutes than a week of emails.",
+          },
+        ]}
+      />
     </Layout>
   );
 }
