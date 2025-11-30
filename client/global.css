@@ -283,8 +283,7 @@
 
   .prose th,
   .prose td {
-    @apply align-top;
-    white-space: nowrap;
+    @apply align-top border-none;
   }
 
   .prose th {
