@@ -1,10 +1,12 @@
-import { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { ArrowRight, ArrowUpRight, ChevronRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import Layout from "@/components/Layout";
 import { LeafletMap } from "@/components/LeafletMap";
+import { FaqSection } from "@/components/FaqSection";
 import { openCrisp } from "@/lib/crisp-utils";
+import { DEFAULT_OG_IMAGE } from "@/lib/seo";
 import {
   Accordion,
   AccordionItem,
@@ -90,6 +92,18 @@ const HeroSection = () => {
       whileHover={{ scale: 1.02 }}
       transition={{ duration: 0.4 }}
     >
+      {/* Hidden preload-optimized hero image for LCP */}
+      <img
+        src={DEFAULT_OG_IMAGE}
+        alt=""
+        loading="eager"
+        fetchpriority="high"
+        decoding="async"
+        width="1200"
+        height="630"
+        className="absolute inset-0 w-0 h-0 opacity-0 pointer-events-none"
+        aria-hidden="true"
+      />
       <svg
         className="absolute inset-0 w-full h-full pointer-events-none opacity-40"
         preserveAspectRatio="none"
@@ -118,7 +132,9 @@ const HeroSection = () => {
         className="pointer-events-none absolute inset-0"
         animate={{
           background: [
-            `radial-gradient(circle at ${mousePosition.x * 100}% ${mousePosition.y * 100}%, rgba(34, 211, 238, 0.1) 0%, transparent 50%)`,
+            `radial-gradient(circle at ${mousePosition.x * 100}% ${
+              mousePosition.y * 100
+            }%, rgba(34, 211, 238, 0.1) 0%, transparent 50%)`,
           ],
         }}
         transition={{ type: "tween", duration: 0.3 }}
@@ -179,7 +195,7 @@ const HeroSection = () => {
                 const slider = document.getElementById(
                   "pricing-slider-section",
                 );
-                slider?.scrollIntoView({ behaviour: "smooth" });
+                slider?.scrollIntoView({ behaviour: "smooth" as any });
               }}
               className="px-8 py-4 rounded-lg border-2 border-white/30 text-white font-heading font-bold text-lg hover:border-kaizen-cyan hover:text-kaizen-cyan hover:shadow-lg hover:shadow-kaizen-cyan/30 transition-all inline-flex items-center justify-center gap-2"
             >
@@ -190,6 +206,41 @@ const HeroSection = () => {
         </div>
       </div>
     </motion.section>
+  );
+};
+
+const RescueStrip = () => {
+  return (
+    <section className="bg-black text-white py-10 border-y border-white/10">
+      <div className="container mx-auto px-4 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+        <div className="max-w-2xl">
+          <p className="text-xs font-mono tracking-[0.3em] text-lime-300 mb-3 uppercase">
+            Project Rescue
+          </p>
+          <h2 className="text-2xl md:text-3xl font-heading font-bold mb-3">
+            Stalled project? We fix what other agencies broke.
+          </h2>
+          <p className="text-sm md:text-base text-white/80">
+            If your software build is over budget, buggy, or stuck in endless
+            sprints, we audit the code, stabilise delivery, and get it live so
+            it can start paying you back.
+          </p>
+        </div>
+        <div className="flex flex-col items-start gap-3 min-w-[220px]">
+          <Link
+            to="/project-rescue"
+            className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-gradient-to-r from-lime-400 to-emerald-400 text-gray-950 font-heading font-semibold text-sm hover:shadow-lg hover:shadow-lime-400/50 transition"
+            onClick={() => window.scrollTo(0, 0)}
+          >
+            Project Rescue Triage
+            <ArrowRight size={18} />
+          </Link>
+          <p className="text-[11px] text-white/60 font-mono uppercase tracking-[0.2em]">
+            No obligation. Straight talk.
+          </p>
+        </div>
+      </div>
+    </section>
   );
 };
 
@@ -271,7 +322,8 @@ const PricingSlider = () => {
               onChange={(e) => setTier(parseInt(e.target.value))}
               className="pricing-slider w-full h-3 bg-gradient-to-r from-cyan-400 via-lime-400 to-cyan-400 rounded-lg appearance-none cursor-pointer"
               style={{
-                background: `linear-gradient(to right, rgb(34, 211, 238), rgb(132, 204, 22), rgb(34, 211, 238))`,
+                background:
+                  "linear-gradient(to right, rgb(34, 211, 238), rgb(132, 204, 22), rgb(34, 211, 238))",
               }}
             />
             <div className="flex justify-between text-xs text-gray-500 dark:text-gray-400 mt-2 font-mono">
@@ -349,7 +401,7 @@ const PricingSlider = () => {
                       {tier === 2 && (
                         <>
                           <li className="flex items-center gap-2 text-gray-700 dark:text-gray-300">
-                            <span className="text-kaizen-cyan">✓</span>{" "}
+                            <span className="text-kaizen-cyan">✓</span>
                             React/Headless build
                           </li>
                           <li className="flex items-center gap-2 text-gray-700 dark:text-gray-300">
@@ -458,6 +510,56 @@ const PricingCTABanner = () => {
   );
 };
 
+const AIPriceNarrative = () => {
+  return (
+    <section className="py-20 md:py-28 bg-white dark:bg-slate-950 border-t border-slate-200/60 dark:border-slate-800/80">
+      <div className="container mx-auto px-4 max-w-5xl">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="max-w-3xl mb-10"
+        >
+          <p className="text-xs font-mono tracking-[0.25em] text-kaizen-cyan uppercase mb-4">
+            AI-Augmented Delivery
+          </p>
+          <h2 className="text-3xl md:text-4xl font-heading font-bold mb-3 text-slate-900 dark:text-white">
+            Enterprise Tech. Freelancer Prices.
+          </h2>
+          <p className="text-lg md:text-xl text-slate-700 dark:text-slate-300">
+            How we build £15k React platforms for £4k.
+          </p>
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ delay: 0.1 }}
+          className="space-y-4 text-slate-800 dark:text-slate-200 text-base md:text-lg max-w-3xl"
+        >
+          <p>
+            Most agencies bill you for manual labour. They charge for every hour
+            a developer spends typing syntax.
+          </p>
+          <p>We don't.</p>
+          <p>Kaizen is an AI-augmented agency.</p>
+          <p>
+            We use proprietary AI workflows to handle the heavy lifting of code
+            generation. This cuts development time by around 70%.
+          </p>
+          <p>
+            You get the blistering speed of React, the security of headless
+            architecture, and the polish of a custom build, but you only pay for
+            the product strategy, not the typing.
+          </p>
+          <p>Same code. Same quality. Unfair price.</p>
+        </motion.div>
+      </div>
+    </section>
+  );
+};
+
 const CoreServiceVerticals = () => {
   return (
     <section className="py-20 md:py-28 bg-slate-950 text-white relative overflow-hidden">
@@ -525,7 +627,7 @@ const CoreServiceVerticals = () => {
               <div className="mt-auto flex items-center justify-between gap-4">
                 <Link
                   to="/services/web-design-liverpool"
-                  className="inline-flex items-center gap-2 rounded-full bg-white text-slate-950 px-5 py-2.5 text-sm font-heading font-semibold shadow-lg hover:shadow-cyan-400/40 hover:-translate-y-0.5 transition-all"
+                  className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-cyan-300 to-cyan-200 text-slate-950 px-5 py-2.5 text-sm font-heading font-semibold shadow-lg hover:shadow-cyan-400/60 hover:-translate-y-0.5 transition-all"
                 >
                   Explore Web Design
                   <ArrowRight size={18} />
@@ -685,8 +787,10 @@ const LatestInsights = () => {
                 <div className="h-40 w-full overflow-hidden rounded-t-2xl border-b border-slate-200/50 dark:border-slate-800/50">
                   <img
                     src={post.image}
-                    alt={post.title}
+                    alt={`Featured image for ${post.title} - Kaizen Web Liverpool`}
                     loading="lazy"
+                    width="800"
+                    height="600"
                     className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                   />
                 </div>
@@ -727,109 +831,28 @@ const LatestInsights = () => {
 };
 
 const SEOFAQSection = () => {
-  const faqItems = [
-    {
-      question: "How much does a website cost in Liverpool in 2025?",
-      answer:
-        "Prices range from £500 for DIY Shopify sites to £15k+ for custom React apps. Most professional brochure sites sit between £3k–£8k.",
-    },
-    {
-      question: "Do you serve Wirral and Merseyside?",
-      answer:
-        "Yes. We are based in Liverpool City Centre but serve businesses across Wirral, Chester, and the wider Merseyside region.",
-    },
-    {
-      question: "Why are you different from other Liverpool digital agencies?",
-      answer:
-        "We are Product Owner-led. You don't get an account manager; you get a senior technical partner who runs your project in Agile sprints.",
-    },
-    {
-      question: "Do you use templates or custom code?",
-      answer:
-        'We build custom-coded sites using React or a bespoke WordPress theme. We do not use £50 "off-the-shelf" templates that bloat your site and hurt your SEO.',
-    },
-    {
-      question: "What happens after the website launches?",
-      answer:
-        "You own everything. We provide 30 days of free support to fix any snagging issues. After that, you can sign up for a maintenance plan or manage it yourself. No lock-in contracts.",
-    },
-    {
-      question: "Can you fix my current broken website?",
-      answer:
-        'Yes. Our "Project Rescue" service is designed exactly for this. We audit your code, stabilise the build, and help you launch.',
-    },
-  ];
-
-  const faqSchema = {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    mainEntity: faqItems.map((item) => ({
-      "@type": "Question",
-      name: item.question,
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: item.answer,
-      },
-    })),
-  };
-
   return (
-    <section className="py-20 md:py-32 bg-slate-50 dark:bg-slate-900/50 relative overflow-hidden">
-      <script type="application/ld+json">{JSON.stringify(faqSchema)}</script>
-
-      <div className="container mx-auto px-4 relative z-10">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="text-center mb-16 max-w-2xl mx-auto"
-        >
-          <p className="text-xs font-mono tracking-[0.25em] text-kaizen-cyan uppercase mb-4">
-            Common Questions
-          </p>
-          <h2 className="text-4xl md:text-5xl font-heading font-bold text-gray-950 dark:text-white mb-6">
-            Common Questions from Liverpool Businesses
-          </h2>
-        </motion.div>
-
-        <div className="max-w-3xl mx-auto">
-          <Accordion type="single" collapsible className="w-full">
-            {faqItems.map((item, index) => (
-              <AccordionItem
-                key={index}
-                value={`item-${index}`}
-                className="border-b border-gray-200 dark:border-gray-800"
-              >
-                <AccordionTrigger className="text-lg font-heading font-bold text-gray-950 dark:text-white hover:text-kaizen-cyan transition-colors">
-                  {item.question}
-                </AccordionTrigger>
-                <AccordionContent className="text-gray-700 dark:text-gray-300 leading-relaxed">
-                  {item.answer}
-                </AccordionContent>
-              </AccordionItem>
-            ))}
-          </Accordion>
-        </div>
-
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="text-center mt-12"
-        >
-          <p className="text-gray-700 dark:text-gray-300 mb-6">
-            Still have questions? Let's chat.
-          </p>
-          <button
-            onClick={() => openCrisp()}
-            className="px-8 py-4 rounded-lg bg-gradient-to-r from-kaizen-cyan to-kaizen-lime text-gray-950 font-heading font-bold hover:shadow-lg hover:scale-105 transition-all inline-flex items-center gap-2"
-          >
-            Start a Conversation
-            <ArrowRight size={20} />
-          </button>
-        </motion.div>
-      </div>
-    </section>
+    <FaqSection
+      heading="Common Questions from Liverpool Businesses"
+      eyebrow="Common Questions"
+      items={[
+        {
+          question: "What is your role if AI does the coding?",
+          answer:
+            "AI is the engine; we are the pilots. Our Contract Product Owners define the strategy, user journey, and business logic. We ensure the AI builds the right product that actually solves your business problem.",
+        },
+        {
+          question: "Are you a Liverpool agency?",
+          answer:
+            "Yes, we are based in Liverpool and the Wirral, but we work with clients across the UK. We are happy to meet face-to-face for local projects.",
+        },
+        {
+          question: "Do you provide hosting?",
+          answer:
+            "We provide high-performance VPS hosting for clients on our maintenance plans. We do not use cheap shared hosting as it compromises speed and security.",
+        },
+      ]}
+    />
   );
 };
 
@@ -878,11 +901,11 @@ const KaizenPhilosophy = () => {
             </h2>
 
             <p className="text-xl md:text-2xl font-light text-white/80 mb-8 leading-relaxed">
-              Kaizen—continuous improvement—is about more than just an agile
-              methodology. It's a mindset. Most agencies launch a website and
-              vanish. We build systems that evolve. We embed ourselves in your
-              process with a dedicated Product Owner who shields you from chaos,
-              protects your budget, and ensures you ship on time.
+              Kaizen—continuous improvement—is a mindset, not a buzzword. Most
+              agencies launch a website and vanish. We build systems that
+              evolve. We embed ourselves in your process with a dedicated
+              Product Owner who shields you from chaos, protects your budget,
+              and ensures you ship on time.
             </p>
 
             <div className="space-y-6">
@@ -928,8 +951,8 @@ const KaizenPhilosophy = () => {
                   </h3>
                   <p className="text-white/70">
                     Two-week sprints. Clear deliverables. Predictable progress.
-                    We kill the "scope creep monster" and replace it with
-                    transparent planning and realistic timelines.
+                    We replace scope creep with transparent planning and
+                    realistic timelines.
                   </p>
                 </div>
               </motion.div>
@@ -984,7 +1007,7 @@ const AIValueProp = () => {
             </h2>
             <p className="text-lg md:text-xl text-gray-700 dark:text-gray-300 leading-relaxed">
               We use advanced AI to handle boilerplate. You pay for strategy,
-              architecture, and the Senior Product Owner steering the ship—not
+              architecture, and the Senior Product Owner steering the ship, not
               junior developers typing HTML.
             </p>
           </motion.div>
@@ -1119,7 +1142,9 @@ const PerformanceBadge = () => {
                 strokeWidth="8"
                 strokeDasharray={565.48}
                 initial={{ strokeDashoffset: 565.48 }}
-                animate={{ strokeDashoffset: 565.48 * (1 - fillPercent / 100) }}
+                animate={{
+                  strokeDashoffset: 565.48 * (1 - fillPercent / 100),
+                }}
                 transition={{ duration: 2, ease: "easeOut" }}
                 strokeLinecap="round"
               />
@@ -1217,8 +1242,11 @@ const PerformanceBadge = () => {
             className="text-center"
           >
             <p className="text-gray-700 dark:text-gray-300 mb-6">
-              We don't guess. We benchmark. Every build is tested against
-              industry standards.
+              We don't guess. We benchmark. Core Web Vitals are Google's way of
+              measuring real user experience: how quickly your page loads, how
+              responsive it feels, and how stable it looks as it renders. A 96%
+              score means your site feels instant on real devices and gives
+              Google fewer reasons to push you down the results.
             </p>
             <a
               href="https://gtmetrix.com/reports/www.kaizenweb.co.uk/e2VJJsxv/"
@@ -1245,9 +1273,10 @@ const LocalMap = () => {
             initial={{ opacity: 0, x: -20 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
-            className="relative h-96 rounded-2xl overflow-hidden border-2 border-white/10 shadow-2xl"
           >
-            <LeafletMap className="w-full h-full" />
+            <div className="relative h-96 rounded-2xl overflow-hidden border-2 border-white/10 shadow-2xl">
+              <LeafletMap className="w-full h-full" />
+            </div>
           </motion.div>
 
           <motion.div
@@ -1306,8 +1335,10 @@ export default function Home() {
   return (
     <Layout>
       <HeroSection />
+      <RescueStrip />
       <PricingSlider />
       <PricingCTABanner />
+      <AIPriceNarrative />
       <CoreServiceVerticals />
       <KaizenPhilosophy />
       <AIValueProp />

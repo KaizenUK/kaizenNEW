@@ -1,20 +1,18 @@
-import { Link, useLocation } from "react-router-dom";
-import { Linkedin, Instagram, Circle } from "lucide-react";
 import { useEffect, useState } from "react";
+import { Link, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
+import { Linkedin, Instagram, Circle } from "lucide-react";
 import { useCalendly } from "@/context/CalendlyContext";
 
 interface FooterProps {
   theme: "light" | "dark";
 }
 
-// Helper function to get the next quarter
 const getNextQuarter = (): string => {
   const now = new Date();
-  const currentMonth = now.getMonth(); // 0-11
+  const currentMonth = now.getMonth();
   const currentYear = now.getFullYear();
 
-  // Add 3 months
   let targetMonth = currentMonth + 3;
   let targetYear = currentYear;
 
@@ -23,25 +21,19 @@ const getNextQuarter = (): string => {
     targetYear += 1;
   }
 
-  // Determine quarter
   let quarter: number;
-  if (targetMonth < 3) {
-    quarter = 1;
-  } else if (targetMonth < 6) {
-    quarter = 2;
-  } else if (targetMonth < 9) {
-    quarter = 3;
-  } else {
-    quarter = 4;
-  }
+  if (targetMonth < 3) quarter = 1;
+  else if (targetMonth < 6) quarter = 2;
+  else if (targetMonth < 9) quarter = 3;
+  else quarter = 4;
 
   return `Q${quarter} ${targetYear}`;
 };
 
-const Footer: React.FC<FooterProps> = ({ theme }) => {
+const Footer: React.FC<FooterProps> = () => {
   const location = useLocation();
   const { openCalendly } = useCalendly();
-  const [liverpooolTime, setLiverpooolTime] = useState("");
+  const [liverpoolTime, setLiverpoolTime] = useState("");
   const [nextQuarter, setNextQuarter] = useState("");
 
   useEffect(() => {
@@ -52,7 +44,7 @@ const Footer: React.FC<FooterProps> = ({ theme }) => {
         hour: "2-digit",
         minute: "2-digit",
       });
-      setLiverpooolTime(ukTime);
+      setLiverpoolTime(ukTime);
     };
 
     updateTime();
@@ -64,7 +56,6 @@ const Footer: React.FC<FooterProps> = ({ theme }) => {
     setNextQuarter(getNextQuarter());
   }, []);
 
-  // Determine dynamic CTA based on route
   const getDynamicCTA = () => {
     const path = location.pathname.toLowerCase();
 
@@ -77,7 +68,7 @@ const Footer: React.FC<FooterProps> = ({ theme }) => {
     }
     if (path.includes("agile-coaching") || path.includes("coaching")) {
       return {
-        heading: "Ready to transform your team?",
+        heading: "Ready to improve your team?",
         buttonText: "Start Coaching",
         onClick: openCalendly,
       };
@@ -105,16 +96,6 @@ const Footer: React.FC<FooterProps> = ({ theme }) => {
 
   const cta = getDynamicCTA();
 
-  const techStack = [
-    { name: "React", url: "https://react.dev", icon: "⚛️" },
-    { name: "Vite", url: "https://vitejs.dev", icon: "⚡" },
-    { name: "Builder.io", url: "https://builder.io", icon: "🏗️" },
-    { name: "WordPress", url: "https://wordpress.org", icon: "📝" },
-    { name: "Shopify", url: "https://shopify.com", icon: "🛍️" },
-    { name: "Tailwind", url: "https://tailwindcss.com", icon: "🎨" },
-    { name: "Framer Motion", url: "https://www.framer.com/motion", icon: "✨" },
-  ];
-
   const services = [
     { label: "Web Design", href: "/services/web-design-liverpool" },
     { label: "Project Rescue", href: "/project-rescue" },
@@ -134,9 +115,7 @@ const Footer: React.FC<FooterProps> = ({ theme }) => {
   return (
     <footer className="bg-gray-950 text-white">
       <div className="container mx-auto px-4 py-16">
-        {/* Bento Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-16">
-          {/* Block A: Dynamic CTA (spans 2 cols on md, 2 cols on lg) */}
           <motion.div
             className="col-span-1 md:col-span-2 lg:col-span-2 p-8 rounded-2xl border border-white/5 bg-gray-900/50 backdrop-blur-sm hover:border-white/10 transition"
             whileHover={{ y: -2 }}
@@ -153,7 +132,6 @@ const Footer: React.FC<FooterProps> = ({ theme }) => {
             </motion.button>
           </motion.div>
 
-          {/* Block B: Live Status */}
           <motion.div
             className="col-span-1 md:col-span-1 lg:col-span-1 p-6 rounded-2xl border border-white/5 bg-gray-900/50 backdrop-blur-sm hover:border-white/10 transition flex flex-col justify-center"
             whileHover={{ y: -2 }}
@@ -177,49 +155,40 @@ const Footer: React.FC<FooterProps> = ({ theme }) => {
             </p>
           </motion.div>
 
-          {/* Block C: Tech Stack */}
           <motion.div
             className="col-span-1 md:col-span-1 lg:col-span-2 p-6 rounded-2xl border border-white/5 bg-gray-900/50 backdrop-blur-sm hover:border-white/10 transition"
             whileHover={{ y: -2 }}
           >
             <p className="text-xs font-semibold text-white/40 uppercase tracking-wider mb-4">
-              Powered by modern tech
+              How we build
             </p>
-            <div className="flex flex-wrap gap-4">
-              {techStack.map((tech) => (
-                <motion.a
-                  key={tech.name}
-                  href={tech.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-white/50 hover:text-white transition grayscale opacity-50 hover:opacity-100 hover:grayscale-0"
-                  whileHover={{ scale: 1.05 }}
-                  title={`Visit ${tech.name}`}
-                >
-                  <span className="text-lg">{tech.icon}</span>
-                  <span>{tech.name}</span>
-                </motion.a>
-              ))}
-            </div>
+            <ul className="space-y-2 text-sm text-white/60">
+              <li>
+                AI-augmented delivery with a senior Product Owner in charge.
+              </li>
+              <li>Core Web Vitals-first builds for real-world speed.</li>
+              <li>Headless-ready architecture when your business needs it.</li>
+              <li>
+                Friendly content tools so your team controls day-to-day edits.
+              </li>
+            </ul>
           </motion.div>
 
-          {/* Block D: Context & Love */}
           <motion.div
             className="col-span-1 md:col-span-1 lg:col-span-1 p-6 rounded-2xl border border-white/5 bg-gray-900/50 backdrop-blur-sm hover:border-white/10 transition"
             whileHover={{ y: -2 }}
           >
             <p className="text-sm font-medium mb-3 text-white">
-              Made with ❤️ in Liverpool, UK
+              Made in Liverpool, UK
             </p>
             <p className="text-xs text-white/60">
               Local time:{" "}
               <span className="font-mono font-semibold text-white/80">
-                {liverpooolTime} GMT
+                {liverpoolTime} GMT
               </span>
             </p>
           </motion.div>
 
-          {/* Block E: Services Links */}
           <motion.div
             className="col-span-1 md:col-span-1 lg:col-span-1 p-6 rounded-2xl border border-white/5 bg-gray-900/50 backdrop-blur-sm hover:border-white/10 transition"
             whileHover={{ y: -2 }}
@@ -242,7 +211,6 @@ const Footer: React.FC<FooterProps> = ({ theme }) => {
             </ul>
           </motion.div>
 
-          {/* Block F: Company Links */}
           <motion.div
             className="col-span-1 md:col-span-1 lg:col-span-1 p-6 rounded-2xl border border-white/5 bg-gray-900/50 backdrop-blur-sm hover:border-white/10 transition"
             whileHover={{ y: -2 }}
@@ -265,65 +233,51 @@ const Footer: React.FC<FooterProps> = ({ theme }) => {
             </ul>
           </motion.div>
 
-          {/* Block G: Socials & Contact */}
           <motion.div
             className="col-span-1 md:col-span-1 lg:col-span-1 p-6 rounded-2xl border border-white/5 bg-gray-900/50 backdrop-blur-sm hover:border-white/10 transition"
             whileHover={{ y: -2 }}
           >
-            <h3 className="font-bold text-sm mb-4 text-white">Connect</h3>
-            <div className="flex gap-4">
-              <motion.a
-                href="https://www.linkedin.com/company/kaizen-uk"
+            <h3 className="font-bold text-sm mb-4 text-white">Follow</h3>
+            <div className="flex items-center gap-4">
+              <a
+                href="https://www.linkedin.com/company/kaizen-web"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-white/60 hover:text-cyan-400 transition"
-                aria-label="LinkedIn"
-                whileHover={{ scale: 1.2 }}
+                className="text-white/60 hover:text-white transition"
+                aria-label="Follow Kaizen Web on LinkedIn"
               >
                 <Linkedin size={20} />
-              </motion.a>
-              <motion.a
-                href="https://www.instagram.com/kaizen.web.uk"
+              </a>
+              <a
+                href="https://www.instagram.com/kaizenwebliverpool"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-white/60 hover:text-cyan-400 transition"
-                aria-label="Instagram"
-                whileHover={{ scale: 1.2 }}
+                className="text-white/60 hover:text-white transition"
+                aria-label="Follow Kaizen Web on Instagram"
               >
                 <Instagram size={20} />
-              </motion.a>
+              </a>
             </div>
-            <p className="text-xs text-white/40 mt-4">hello@kaizenweb.co.uk</p>
           </motion.div>
         </div>
 
-        {/* Legal Footer */}
-        <div className="border-t border-white/5 pt-8 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-white/40">
-          <p>© {new Date().getFullYear()} Kaizen Web. All rights reserved.</p>
-          <div className="flex gap-6">
-            <Link
-              to="/privacy-policy"
-              className="hover:text-white/60 transition"
-            >
-              Privacy Policy
+        <div className="flex flex-col md:flex-row items-center justify-between gap-4 border-t border-white/10 pt-6">
+          <p className="text-xs text-white/50">
+            © {new Date().getFullYear()} Kaizen Web. All rights reserved.
+          </p>
+          <div className="flex items-center gap-4 text-xs text-white/50">
+            <Link to="/privacy-policy" className="hover:text-white">
+              Privacy
             </Link>
-            <span>|</span>
-            <Link
-              to="/cookie-policy"
-              className="hover:text-white/60 transition"
-            >
-              Cookie Policy
+            <Link to="/cookie-policy" className="hover:text-white">
+              Cookies
+            </Link>
+            <Link to="/gdpr-policy" className="hover:text-white">
+              GDPR
             </Link>
           </div>
         </div>
       </div>
-
-      <style>{`
-        @keyframes pulse {
-          0%, 100% { opacity: 1; }
-          50% { opacity: 0.5; }
-        }
-      `}</style>
     </footer>
   );
 };

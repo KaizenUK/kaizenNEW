@@ -1,5 +1,3 @@
-import "./global.css";
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -56,6 +54,16 @@ const CookiePolicy = lazy(() => import("./pages/CookiePolicy"));
 const GDPRPolicy = lazy(() => import("./pages/GDPRPolicy"));
 const ThankYou = lazy(() => import("./pages/ThankYou"));
 
+// Admin components remain in the repo but are intentionally not wired into
+// the public routing table to avoid exposing an admin surface by default.
+// They can be re-enabled locally if needed.
+// import AdminLogin from "./pages/admin/AdminLogin";
+// import AdminDashboardWrapper from "./components/AdminDashboardWrapper";
+// import AdminGuard from "./components/AdminGuard";
+// import BlogPostsList from "./pages/admin/BlogPostsList";
+// import BlogPostCreate from "./pages/admin/BlogPostCreate";
+// import BlogPostDetail from "./pages/admin/BlogPostDetail";
+
 // Fallback component for lazy-loaded routes
 const PageLoader = () => (
   <Layout>
@@ -92,7 +100,6 @@ function AppContent() {
     const originalWarn = console.warn;
 
     const isFindDOMNodeWarning = (args: any[]) => {
-      // Check all args for the pattern
       const fullMessage = args.map((arg) => String(arg)).join(" ");
       return (
         fullMessage.includes("findDOMNode") &&
@@ -124,15 +131,14 @@ function AppContent() {
   useEffect(() => {
     if (typeof window !== "undefined" && (window as any).$crisp) {
       if (isAdminRoute) {
-        // Hide Crisp on admin routes
         (window as any).$crisp.push(["do", "chat:hide"]);
       } else {
-        // Show Crisp on public routes
         (window as any).$crisp.push(["do", "chat:show"]);
       }
     }
   }, [isAdminRoute]);
 
+  // Apply theme based on stored preference for public routes
   useEffect(() => {
     if (typeof document === "undefined") return;
     if (isAdminRoute) {
@@ -151,6 +157,27 @@ function AppContent() {
     } else {
       document.documentElement.classList.remove("dark");
       document.documentElement.dataset.theme = "light";
+    }
+  }, [isAdminRoute]);
+
+  // Optional: in production, strip any data-builder-* attributes from the
+  // rendered DOM to make it harder to infer underlying tooling.
+  useEffect(() => {
+    if (import.meta.env.DEV) return;
+    if (typeof document === "undefined") return;
+
+    const root = document.documentElement;
+    const walker = document.createTreeWalker(root, NodeFilter.SHOW_ELEMENT);
+
+    // eslint-disable-next-line no-constant-condition
+    while (walker.nextNode()) {
+      const el = walker.currentNode as HTMLElement;
+      const attrs = Array.from(el.attributes);
+      for (const attr of attrs) {
+        if (attr.name.startsWith("data-builder-")) {
+          el.removeAttribute(attr.name);
+        }
+      }
     }
   }, [isAdminRoute]);
 
@@ -216,43 +243,6 @@ function AppContent() {
           <Route path="/cookie-policy" element={<CookiePolicy />} />
           <Route path="/gdpr-policy" element={<GDPRPolicy />} />
 
-          {/* Admin routes removed from public routing. These components remain in the repo but are intentionally not registered here to prevent public access. Re-enable by restoring the routes below if needed. */}
-          {/*
-          <Route path="/admin/login" element={<AdminLogin />} />
-          <Route
-            path="/admin"
-            element={
-              <AdminGuard>
-                <AdminDashboardWrapper />
-              </AdminGuard>
-            }
-          />
-          <Route
-            path="/admin/blog-posts"
-            element={
-              <AdminGuard>
-                <BlogPostsList />
-              </AdminGuard>
-            }
-          />
-          <Route
-            path="/admin/blog-posts/new"
-            element={
-              <AdminGuard>
-                <BlogPostCreate />
-              </AdminGuard>
-            }
-          />
-          <Route
-            path="/admin/blog-posts/:slug"
-            element={
-              <AdminGuard>
-                <BlogPostDetail />
-              </AdminGuard>
-            }
-          />
-          */}
-
           {/* Catch-all - ADD ALL CUSTOM ROUTES ABOVE THIS */}
           <Route path="*" element={<NotFound />} />
         </Routes>
@@ -261,21 +251,21 @@ function AppContent() {
   );
 }
 
-const App = () => (
-  <HelmetProvider>
-    <QueryClientProvider client={queryClient}>
-      <CalendlyProvider>
-        <TooltipProvider>
-          <Toaster />
-          <Sonner />
+export default function App() {
+  return (
+    <HelmetProvider>
+      <TooltipProvider>
+        <QueryClientProvider client={queryClient}>
           <BrowserRouter>
-            <RouteChangeTracker />
-            <AppContent />
+            <CalendlyProvider>
+              <RouteChangeTracker />
+              <AppContent />
+              <Toaster />
+              <Sonner />
+            </CalendlyProvider>
           </BrowserRouter>
-        </TooltipProvider>
-      </CalendlyProvider>
-    </QueryClientProvider>
-  </HelmetProvider>
-);
-
-export default App;
+        </QueryClientProvider>
+      </TooltipProvider>
+    </HelmetProvider>
+  );
+}

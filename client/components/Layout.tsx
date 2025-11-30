@@ -8,6 +8,7 @@ import {
   SITE_URL,
   DEFAULT_OG_IMAGE,
 } from "@/lib/seo";
+import { generateBreadcrumbSchema } from "@/lib/breadcrumb-schema";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import OffCanvasMenu from "@/components/layout/OffCanvasMenu";
@@ -48,19 +49,11 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   const robotsValue = meta.noIndex ? "noindex, nofollow" : "index, follow";
 
   // Only render global description/keywords for primary site pages (home, services, company pages, blog index, legal pages)
-  const shouldRenderDescription =
-    normalizedPath === "/" ||
-    normalizedPath === "/about" ||
-    normalizedPath === "/pledge" ||
-    normalizedPath === "/case-studies" ||
-    normalizedPath === "/contact" ||
-    normalizedPath === "/blog" ||
-    normalizedPath === "/privacy-policy" ||
-    normalizedPath === "/cookie-policy" ||
-    normalizedPath.startsWith("/services") ||
-    normalizedPath.startsWith("/case-studies");
+  const isAdminRoute = normalizedPath.startsWith("/admin");
+  const shouldRenderDescription = !isAdminRoute;
 
   const structuredData = buildLocalBusinessSchema(meta.description);
+  const breadcrumbSchema = generateBreadcrumbSchema(normalizedPath);
   const ogImage = meta.image ?? DEFAULT_OG_IMAGE;
 
   useEffect(() => {
@@ -127,16 +120,27 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         )}
         <meta name="twitter:image" content={ogImage} />
         <meta name="twitter:site" content="@kaizenweblpool" />
+        <link
+          rel="preload"
+          as="image"
+          href={DEFAULT_OG_IMAGE}
+          fetchpriority="high"
+        />
         <script type="application/ld+json">
           {JSON.stringify(structuredData)}
         </script>
+        {breadcrumbSchema && (
+          <script type="application/ld+json">
+            {JSON.stringify(breadcrumbSchema)}
+          </script>
+        )}
         <script type="application/ld+json">
           {JSON.stringify({
             "@context": "https://schema.org",
             "@type": "ProfessionalService",
             name: "Kaizen",
-            image: "https://www.kaizenweb.co.uk/assets/logo.png",
-            url: "https://www.kaizenweb.co.uk",
+            image: "https://kaizenweb.co.uk/assets/logo.png",
+            url: "https://kaizenweb.co.uk",
             telephone: "",
             address: {
               "@type": "PostalAddress",
@@ -175,7 +179,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             "@context": "https://schema.org",
             "@type": "LocalBusiness",
             name: "Kaizen",
-            url: "https://www.kaizenweb.co.uk",
+            url: "https://kaizenweb.co.uk",
             logo: "https://cdn.builder.io/api/v1/image/assets%2Fe4ae46bbd81b4b95bef54d66dd9748cc%2F19f6366118ef41298050443945090b5f?format=webp&width=800",
             address: {
               "@type": "PostalAddress",

@@ -3,6 +3,7 @@ import Layout from "@/components/Layout";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useCalendly } from "@/context/CalendlyContext";
+import { FaqSection } from "@/components/FaqSection";
 import {
   ArrowRight,
   ArrowUpRight,
@@ -388,6 +389,28 @@ export default function AgileCoaching() {
           </motion.div>
         </div>
       </section>
+
+      <FaqSection
+        heading="Agile Coaching FAQs"
+        eyebrow="Common Questions"
+        items={[
+          {
+            question: "Do you coach non-technical teams?",
+            answer:
+              "Yes. Agile is about value delivery, not just code. We help marketing and operations teams in Liverpool adopt Scrum or Kanban to reduce wasted time.",
+          },
+          {
+            question: "What is the difference between coaching and training?",
+            answer:
+              "Training is a one-off workshop. Coaching is us sitting with your team during their real work (sprints), fixing bad habits and improving their delivery in real time.",
+          },
+          {
+            question: "How long does an engagement last?",
+            answer:
+              "Typically 3–6 months. We aim to make ourselves redundant by building the capability inside your team, rather than making you dependent on us.",
+          },
+        ]}
+      />
 
       {/* Section 6: Final CTA */}
       <section className="py-20 md:py-32 bg-kaizen-dark dark:bg-gradient-to-b dark:from-slate-900 dark:to-slate-950 text-kaizen-text-light dark:text-white/85">

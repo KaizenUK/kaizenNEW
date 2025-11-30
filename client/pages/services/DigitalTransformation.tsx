@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useCalendly } from "@/context/CalendlyContext";
+import { FaqSection } from "@/components/FaqSection";
 
 const fadeInUp = {
   hidden: { opacity: 0, y: 20 },
@@ -197,7 +198,7 @@ export default function DigitalTransformation() {
       <section className="bg-kaizen-light dark:bg-slate-900/50 py-24 px-4">
         <div className="container mx-auto max-w-6xl">
           <motion.h2
-            className="text-4xl md:text-5xl font-heading font-bold mb-16 text-kaizen-dark dark:text-white"
+            className="text-4xl md:text-5xl font-heading font-bold mb-8 text-kaizen-dark dark:text-white"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-100px" }}
@@ -205,6 +206,20 @@ export default function DigitalTransformation() {
           >
             Who We Help
           </motion.h2>
+
+          <motion.p
+            className="text-lg md:text-xl text-kaizen-text-dark/70 dark:text-white/70 leading-relaxed mb-12 max-w-3xl"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-100px" }}
+            transition={{ duration: 0.6, delay: 0.1 }}
+          >
+            When we talk about digital transformation, we mean using automation
+            and AI tools to connect the systems you already rely on, remove
+            repetitive admin, and create smoother flows between sales, delivery,
+            and finance. It is practical change focused on cost efficiency, not
+            buzzwords.
+          </motion.p>
 
           <motion.div
             className="grid grid-cols-1 md:grid-cols-2 gap-8"
@@ -308,17 +323,13 @@ export default function DigitalTransformation() {
               Real-World Proof: Fixing a Liverpool Firm
             </h3>
 
-            <p className="text-lg text-kaizen-text-dark/70 dark:text-white/70 leading-relaxed space-y-4">
-              <span>
-                This expertise is at the core of Kaizen.{" "}
-                <strong>Our founder, Sean,</strong> led a full digital and
-                operational transformation at{" "}
-                <strong>SMD Credit Solutions</strong> in Liverpool.{" "}
-                <strong>He</strong> found the inefficiencies, rebuilt the
-                internal workflows, and implemented simple, low-code solutions.{" "}
-                <strong>We</strong> now apply this same "fix-and-build" logic to
-                all our clients' businesses.
-              </span>
+            <p className="text-lg text-kaizen-text-dark/70 dark:text-white/70 leading-relaxed">
+              This expertise sits at the core of Kaizen. We have led full
+              digital and operational transformations for Liverpool firms,
+              mapping real-world workflows, rebuilding internal processes, and
+              implementing simple automations that actually get used. The same
+              practical, fix-and-build approach underpins every transformation
+              project we take on.
             </p>
           </motion.div>
         </div>
@@ -351,7 +362,7 @@ export default function DigitalTransformation() {
               },
               {
                 step: "03",
-                title: "Empower",
+                title: "Give Teams Control",
                 desc: "We deliver a streamlined, documented process and train your team on how to use it, giving you back hours every single week.",
               },
             ].map((item, index) => (
@@ -444,6 +455,23 @@ export default function DigitalTransformation() {
           </div>
         </div>
       </section>
+
+      <FaqSection
+        heading="Digital Transformation FAQs"
+        eyebrow="Common Questions"
+        items={[
+          {
+            question: "How does AI lower my operational costs?",
+            answer:
+              "We do not just build websites; we build automation. We use AI to integrate your CRM, booking systems, and data flows, reducing your admin time by up to 40%.",
+          },
+          {
+            question: "How long does a transformation project take?",
+            answer:
+              "We work in Agile sprints. You will see working software in weeks, not months. A typical modernisation project takes 3–6 months depending on complexity.",
+          },
+        ]}
+      />
 
       {/* Section 7: Final CTA */}
       <section className="bg-kaizen-dark dark:bg-gradient-to-b dark:from-slate-900 dark:to-slate-950 text-white py-20 md:py-32 px-4">

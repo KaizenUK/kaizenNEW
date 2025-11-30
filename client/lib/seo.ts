@@ -78,6 +78,17 @@ const pageMeta: Record<string, Partial<PageMeta>> = {
       "web design agency wirral",
     ],
   },
+  "/web-design-liverpool-city-centre": {
+    title: "Web Design Liverpool City Centre | Kaizen Web",
+    description:
+      "City centre web design for Liverpool businesses that need fast, conversion-focused sites with clear messaging and transparent pricing.",
+    keywords: [
+      "web design liverpool city centre",
+      "liverpool city centre web design",
+      "city centre websites",
+      "liverpool web design",
+    ],
+  },
   "/web-design-wirral": {
     title: "Web Design Wirral | Heswall, West Kirby & Birkenhead | Kaizen Web",
     description:
@@ -233,6 +244,13 @@ const pageMeta: Record<string, Partial<PageMeta>> = {
       "Let's talk. Chat with us live, or book a 15-minute, no-pressure discovery call directly in our calendar.",
     keywords: ["contact kaizen", "book a call", "liverpool web design contact"],
   },
+  "/thank-you": {
+    title: "Thank You | Kaizen Web Liverpool",
+    description:
+      "Thanks for getting in touch with Kaizen Web. We'll respond quickly with practical next steps for your Liverpool or Wirral project.",
+    noIndex: true,
+    keywords: ["thank you", "enquiry received", "kaizen web"],
+  },
   "/blog": {
     title: "Blog | Kaizen | Web Design & Agile Insights",
     description:
@@ -362,9 +380,17 @@ export const getPageMeta = (pathname: string): PageMeta => {
 
 export const buildLocalBusinessSchema = (description: string) => ({
   "@context": "https://schema.org",
-  "@type": "ProfessionalService",
+  "@type": ["ProfessionalService", "LocalBusiness", "Organization"],
   name: SITE_NAME,
+  alternateName: "Kaizen",
+  legalName: "Kaizen Web",
   image: DEFAULT_OG_IMAGE,
+  logo: {
+    "@type": "ImageObject",
+    url: "https://cdn.builder.io/api/v1/image/assets%2Fe4ae46bbd81b4b95bef54d66dd9748cc%2F19f6366118ef41298050443945090b5f?format=webp&width=800",
+    width: 800,
+    height: 800,
+  },
   url: SITE_URL,
   telephone: BUSINESS_PHONE,
   email: BUSINESS_EMAIL,
@@ -405,9 +431,12 @@ export const buildLocalBusinessSchema = (description: string) => ({
     },
   ],
   priceRange: "$$",
+  foundingDate: "2020",
+  foundingLocation: "Liverpool, UK",
   sameAs: [
     "https://www.linkedin.com/company/kaizen-web",
     "https://www.instagram.com/kaizenwebliverpool",
     "https://twitter.com/kaizenweblpool",
+    "https://www.crunchbase.com/organization/kaizen-web",
   ],
 });

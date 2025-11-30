@@ -297,7 +297,7 @@ const Header: React.FC<HeaderProps> = ({
 
   return (
     <header className="sticky top-4 z-50 w-full px-4 h-20">
-      <nav
+      <div
         className="max-w-7xl mx-auto rounded-full bg-gray-950/80 border-t border-white/10 backdrop-blur-xl h-full"
         style={{
           boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.5)",
@@ -311,7 +311,9 @@ const Header: React.FC<HeaderProps> = ({
           >
             <img
               src="https://cdn.builder.io/api/v1/image/assets%2Fe4ae46bbd81b4b95bef54d66dd9748cc%2F03f6c5dd481449d297c430cab962412e?format=webp&width=800"
-              alt="Kaizen Web"
+              alt="Kaizen Web - Liverpool Web Design Agency"
+              width="200"
+              height="64"
               className="h-16 w-auto"
               style={{
                 filter: theme === "dark" ? "brightness(0) invert(1)" : "none",
@@ -320,11 +322,12 @@ const Header: React.FC<HeaderProps> = ({
           </Link>
 
           {/* Desktop Navigation */}
-          <div
+          <nav
             ref={navRef}
             className="relative hidden lg:flex items-center gap-1"
             onMouseEnter={cancelCloseMenu}
             onMouseLeave={scheduleCloseMenu}
+            aria-label="Main navigation"
           >
             {/* Services Trigger */}
             <button
@@ -527,7 +530,7 @@ const Header: React.FC<HeaderProps> = ({
                 </motion.div>
               )}
             </AnimatePresence>
-          </div>
+          </nav>
 
           {/* Right Actions */}
           <div className="flex items-center gap-4">
@@ -566,7 +569,7 @@ const Header: React.FC<HeaderProps> = ({
             </button>
           </div>
         </div>
-      </nav>
+      </div>
     </header>
   );
 };

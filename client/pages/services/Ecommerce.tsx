@@ -3,6 +3,7 @@ import Layout from "@/components/Layout";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useCalendly } from "@/context/CalendlyContext";
+import { FaqSection } from "@/components/FaqSection";
 import {
   ArrowRight,
   ArrowUpRight,
@@ -552,6 +553,28 @@ export default function Ecommerce() {
           </motion.div>
         </div>
       </section>
+
+      <FaqSection
+        heading="E-commerce Web Design FAQs"
+        eyebrow="Common Questions"
+        items={[
+          {
+            question: "Shopify or WooCommerce?",
+            answer:
+              "If you want a simple store with zero maintenance, choose Shopify. If you need bespoke functionality, deep integration with ERPs, or lower transaction fees, we recommend a custom WooCommerce or headless build.",
+          },
+          {
+            question: "Can you migrate my data from another platform?",
+            answer:
+              "Yes. We handle the full migration of products, customers and order history so you do not lose data or SEO rankings during the move.",
+          },
+          {
+            question: "Do you handle payment gateway integration?",
+            answer:
+              "Yes. We integrate Stripe, PayPal, Apple Pay and Klarna, ensuring full PCI compliance and security.",
+          },
+        ]}
+      />
 
       {/* Section 6: Final Call to Action */}
       <section className="py-20 md:py-32 bg-kaizen-dark dark:bg-gradient-to-b dark:from-slate-900 dark:to-slate-950 text-kaizen-text-light dark:text-white/85">

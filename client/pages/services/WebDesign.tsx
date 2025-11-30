@@ -10,6 +10,7 @@ import {
   Settings,
 } from "lucide-react";
 import { useCalendly } from "@/context/CalendlyContext";
+import { FaqSection } from "@/components/FaqSection";
 
 // Animation variants
 const fadeInUp = {
@@ -169,10 +170,9 @@ export default function WebDesign() {
               transition={{ delay: 0.6, duration: 0.6 }}
             >
               <p>
-                A website is not just a digital brochure. It's a
-                high-performance asset designed to get you leads. We build
-                websites in Liverpool that are fast, secure, and built on a
-                modern technical stack.
+                A website is a high-performance asset designed to get you leads.
+                We build websites in Liverpool that are fast, secure, and built
+                on a modern technical stack.
               </p>
             </motion.div>
 
@@ -261,6 +261,28 @@ export default function WebDesign() {
               Our Straightforward, Agile Process
             </h2>
           </ScrollReveal>
+
+          <div className="max-w-3xl mx-auto mb-12">
+            <div className="rounded-2xl border border-kaizen-light dark:border-slate-800/60 bg-white dark:bg-slate-950/70 p-6 md:p-8">
+              <p className="text-sm font-mono tracking-[0.25em] text-kaizen-cyan mb-3 uppercase">
+                Tech Stack ROI
+              </p>
+              <p className="text-lg md:text-xl text-kaizen-text-dark/80 dark:text-white/80 mb-4 leading-relaxed">
+                Not sure which tech stack fits your budget? We broke down the
+                three-year commercial difference between WordPress and React in
+                plain English.
+              </p>
+              <a
+                href="https://kaizenweb.co.uk/blog/wordpress-vs-react-business-roi"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 text-kaizen-cyan hover:text-kaizen-lime font-heading font-semibold text-sm md:text-base"
+              >
+                WordPress vs React: A Business ROI Comparison
+                <ArrowUpRight size={16} />
+              </a>
+            </div>
+          </div>
 
           <div className="max-w-3xl mx-auto">
             {[
@@ -450,6 +472,33 @@ export default function WebDesign() {
           </motion.div>
         </div>
       </section>
+
+      <FaqSection
+        heading="Common Questions from Liverpool Businesses"
+        eyebrow="Common Questions"
+        items={[
+          {
+            question: "How much does a bespoke website cost in Liverpool?",
+            answer:
+              "For a professional, custom-built site (not a template), prices in Liverpool typically range from £3,500 for a brochure site to £15,000+ for a complex React application. We provide fixed-price quotes after a scope session.",
+          },
+          {
+            question: "How is your delivery so fast?",
+            answer:
+              "We use AI-augmented development. By using AI to handle the heavy lifting of coding, we can build custom React platforms in weeks, not months. You get enterprise quality without paying for hundreds of hours of manual labour.",
+          },
+          {
+            question: "Do you use junior developers?",
+            answer:
+              "No. We replace the 'junior developer' layer with AI coding agents. Your project is managed by a Senior Product Owner who directs the AI. This reduces human error and keeps your costs drastically lower.",
+          },
+          {
+            question: "Can you fix my existing site without rebuilding it?",
+            answer:
+              "Yes. Our Project Rescue service is designed to audit and fix broken code. However, if the technical debt is too high, we may recommend a rebuild for financial safety.",
+          },
+        ]}
+      />
 
       {/* Section 6: Final CTA */}
       <section className="py-20 md:py-32 bg-white dark:bg-slate-950">

@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import Layout from "@/components/Layout";
 import { Helmet } from "react-helmet-async";
+import { FaqSection } from "@/components/FaqSection";
 import { motion } from "framer-motion";
 import { AlertTriangle, CheckCircle, XCircle, ArrowRight } from "lucide-react";
 import { useCalendly } from "@/context/CalendlyContext";
@@ -109,7 +110,7 @@ export default function ProjectRescue() {
             </motion.h1>
 
             <motion.p
-              className="text-xl md:text-2xl text-white/80 leading-relaxed mb-12 max-w-3xl mx-auto"
+              className="text-xl md:text-2xl text-white/80 leading-relaxed mb-6 max-w-3xl mx-auto"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.3, duration: 0.8 }}
@@ -117,6 +118,26 @@ export default function ProjectRescue() {
               When your build is over budget, late, or stuck, Kaizen steps in as
               a hands-on Contract Product Owner to stabilise delivery, rebuild
               trust, and actually ship.
+            </motion.p>
+
+            <motion.p
+              className="text-base md:text-lg text-white/80 leading-relaxed mb-10 max-w-3xl mx-auto"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.4, duration: 0.8 }}
+            >
+              Thinking of restarting? Before you spend another penny, read our{" "}
+              {""}
+              <a
+                href="https://kaizenweb.co.uk/blog/fix-failing-software-project-financial-guide"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="underline decoration-kaizen-cyan decoration-2 underline-offset-4 hover:text-kaizen-cyan"
+              >
+                Financial Guide to Rescue vs Rebuild
+              </a>
+              . We explain the sunk cost fallacy and help you decide if your
+              code is worth saving.
             </motion.p>
 
             <motion.div
@@ -281,6 +302,29 @@ export default function ProjectRescue() {
           </motion.div>
         </div>
       </section>
+
+      {/* FAQ: Project Rescue */}
+      <FaqSection
+        heading="Project Rescue FAQs"
+        eyebrow="Common Questions"
+        items={[
+          {
+            question: "How do you audit code so quickly?",
+            answer:
+              "We use AI diagnostics. Instead of a human spending days reading lines of code, our AI tools scan your repository for bugs, security risks, and spaghetti code in minutes. We pass those savings directly to you.",
+          },
+          {
+            question: "Can you fix legacy code?",
+            answer:
+              "Yes. Our AI tools are excellent at refactoring old code (legacy PHP, old JavaScript) into modern standards. We can often modernise a platform without needing a full rebuild.",
+          },
+          {
+            question: "How quickly can you start?",
+            answer:
+              "We can usually deploy a technical audit within 48 hours. For emergency fixes, we have a rapid response protocol.",
+          },
+        ]}
+      />
 
       {/* Qualification */}
       <section className="py-20 md:py-32 bg-kaizen-light dark:bg-slate-900/50">

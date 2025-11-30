@@ -3,7 +3,7 @@
 
 header('Content-Type: application/xml; charset=UTF-8');
 
-$base = 'https://www.kaizenweb.co.uk';
+$base = 'https://kaizenweb.co.uk';
 
 // ---------------------------------------------------------------------
 // 1. Static pages – all your key marketing URLs

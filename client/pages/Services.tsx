@@ -29,14 +29,14 @@ export default function Services() {
       icon: TrendingUp,
       title: "Local SEO",
       description:
-        "Help local customers find you through search. Optimize your Google Business Profile and local visibility.",
+        "Help local customers find you through search. Optimise your Google Business Profile and local visibility.",
       link: "/services/local-seo",
     },
     {
       icon: Zap,
       title: "E-commerce Development",
       description:
-        "Sell online with a store that's easy to manage and optimized to convert.",
+        "Sell online with a store that's easy to manage and optimised to convert.",
       link: "/services/ecommerce",
     },
     {

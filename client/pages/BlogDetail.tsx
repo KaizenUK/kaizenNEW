@@ -6,6 +6,7 @@ import { Helmet } from "react-helmet-async";
 
 import builder from "@/builder";
 import Layout from "@/components/Layout";
+import BlogTableModal from "@/components/BlogTableModal";
 import { fetchPostBySlug, fetchPosts } from "../../src/api/wordpress";
 import { SeoFromYoast } from "../../src/components/SeoFromYoast";
 import { decodeHtmlEntities, stripHtmlTags } from "@/lib/html-utils";
@@ -290,6 +291,18 @@ interface RichTextContentProps {
 function RichTextContent({ html }: RichTextContentProps) {
   const contentRef = useRef<HTMLDivElement>(null);
   const [copiedId, setCopiedId] = useState<string | null>(null);
+  const [isTableModalOpen, setIsTableModalOpen] = useState(false);
+  const [modalTableHtml, setModalTableHtml] = useState("");
+
+  const openTableModal = (tableHtml: string) => {
+    setModalTableHtml(tableHtml);
+    setIsTableModalOpen(true);
+  };
+
+  const closeTableModal = () => {
+    setIsTableModalOpen(false);
+    setModalTableHtml("");
+  };
 
   useEffect(() => {
     if (!contentRef.current) return;
@@ -345,19 +358,62 @@ function RichTextContent({ html }: RichTextContentProps) {
     const blockquotes = contentRef.current.querySelectorAll("blockquote");
     blockquotes.forEach((bq) => {
       bq.className =
-        "border-l-4 border-kaizen-cyan pl-4 py-2 my-4 bg-gray-100 dark:bg-gray-900/50 italic text-gray-700 dark:text-gray-300";
+        "border-l-4 border-primary bg-gray-50 dark:bg-slate-800 pl-4 py-3 my-6 italic text-gray-800 dark:text-gray-200 rounded-md";
     });
-  }, []);
+
+    // Handle tables: hide on mobile, show modal button
+    const tables = contentRef.current.querySelectorAll("table");
+    tables.forEach((table) => {
+      const parent = table.parentElement;
+      if (!parent) return;
+      if (parent.classList.contains("blog-table-wrapper")) return;
+
+      // Capture table HTML BEFORE any DOM mutations
+      const tableHtml = table.outerHTML;
+
+      // Create and inject mobile button with the captured HTML
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className =
+        "block md:hidden w-full bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white py-4 rounded-xl font-semibold flex items-center justify-center gap-2 my-6 hover:bg-slate-200 dark:hover:bg-slate-700 transition";
+      btn.innerHTML = "🔍 View Table";
+
+      // Use captured HTML in closure
+      btn.addEventListener("click", (e) => {
+        e.preventDefault();
+        openTableModal(tableHtml);
+      });
+
+      parent.insertBefore(btn, table);
+
+      // Hide table on mobile, show on desktop
+      table.classList.add("hidden", "md:table");
+
+      // Desktop: wrap table for scrolling
+      const wrapper = document.createElement("div");
+      wrapper.className =
+        "blog-table-wrapper overflow-x-auto my-6 -mx-4 sm:mx-0";
+      parent.insertBefore(wrapper, table);
+      wrapper.appendChild(table);
+    });
+  }, [openTableModal]);
 
   return (
-    <motion.div
-      ref={contentRef}
-      className="max-w-3xl lg:max-w-5xl blog-content prose dark:prose-invert max-w-none text-gray-950 dark:text-white"
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.6, delay: 0.3 }}
-      dangerouslySetInnerHTML={{ __html: html }}
-    />
+    <>
+      <motion.div
+        ref={contentRef}
+        className="max-w-3xl blog-content prose dark:prose-invert text-gray-950 dark:text-white"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, delay: 0.3 }}
+        dangerouslySetInnerHTML={{ __html: html }}
+      />
+      <BlogTableModal
+        isOpen={isTableModalOpen}
+        onClose={closeTableModal}
+        htmlContent={modalTableHtml}
+      />
+    </>
   );
 }
 

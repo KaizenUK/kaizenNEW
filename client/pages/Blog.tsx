@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { ArrowRight, Code2 } from "lucide-react";
 import { Link } from "react-router-dom";
@@ -7,6 +7,7 @@ import { Helmet } from "react-helmet-async";
 import builder from "@/builder";
 import { fetchPosts } from "../../src/api/wordpress";
 import Layout from "@/components/Layout";
+import BlogSearch, { type BlogSearchState } from "@/components/BlogSearch";
 import { decodeHtmlEntities, stripHtmlTags } from "@/lib/html-utils";
 
 type CoverImage = string | { url?: string } | null;
@@ -59,6 +60,8 @@ export default function Blog() {
   const [posts, setPosts] = useState<ProcessedPost[]>([]);
   const [allTags, setAllTags] = useState<string[]>(["All"]);
   const [isLoading, setIsLoading] = useState(true);
+  const [searchState, setSearchState] = useState<BlogSearchState | null>(null);
+  const [visibleStandardCount, setVisibleStandardCount] = useState(5);
 
   useEffect(() => {
     const loadPosts = async () => {
@@ -119,8 +122,6 @@ export default function Blog() {
 
         setAllTags(["All", ...Array.from(uniqueTags).sort()]);
         setPosts(processedPosts);
-      } catch (error) {
-        console.error("Failed to fetch blog posts:", error);
       } finally {
         setIsLoading(false);
       }
@@ -136,6 +137,14 @@ export default function Blog() {
   const featuredPost = filteredPosts[0];
   const upNextPosts = filteredPosts.slice(1, 4);
   const remainingPosts = filteredPosts.slice(4);
+
+  const isSearching =
+    !!searchState?.hasSearched && searchState.term.trim().length > 0;
+  const searchResults = searchState?.results ?? [];
+
+  useEffect(() => {
+    setVisibleStandardCount(5);
+  }, [selectedTag, isSearching]);
 
   return (
     <Layout>
@@ -212,9 +221,9 @@ export default function Blog() {
                 The Kaizen Blog
               </h1>
 
-              {/* Subtitle */}
-              <p className="text-lg md:text-xl text-gray-600 dark:text-gray-400 mb-6 font-light">
-                Iterate. Ship. Improve.
+              {/* Subtitle - styled as code block */}
+              <p className="text-green-600 dark:text-green-400 text-sm mb-6 font-mono">
+                $ Iterate. Ship. Improve.
               </p>
 
               {/* Description */}
@@ -224,8 +233,12 @@ export default function Blog() {
                 what sounds good.
               </p>
 
+              <div className="mb-8">
+                <BlogSearch onStateChange={setSearchState} />
+              </div>
+
               {/* Filter Bar */}
-              <div className="flex flex-wrap gap-3">
+              <div className="flex flex-wrap gap-3 mt-2">
                 {allTags.map((tag, idx) => (
                   <motion.button
                     key={`filter-chip-${tag}`}
@@ -339,7 +352,71 @@ export default function Blog() {
       <section className="bg-white dark:bg-gray-950 px-4 py-20 min-h-screen">
         <div className="container mx-auto max-w-6xl">
           <AnimatePresence mode="wait">
-            {filteredPosts.length > 0 ? (
+            {isSearching ? (
+              <motion.div
+                key={`search-${searchState?.term}`}
+                className="grid grid-cols-1 md:grid-cols-3 gap-6"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: 0.3 }}
+              >
+                {searchState?.error ? (
+                  <div className="col-span-full text-center py-10">
+                    <p className="text-gray-500 dark:text-gray-400">
+                      {searchState.error}
+                    </p>
+                  </div>
+                ) : searchState?.loading && searchResults.length === 0 ? (
+                  <div className="col-span-full text-center py-10">
+                    <p className="text-gray-500 dark:text-gray-400">
+                      Searching articles...
+                    </p>
+                  </div>
+                ) : searchResults.length > 0 ? (
+                  searchResults.map((post) => (
+                    <Link
+                      key={`search-${post.id}`}
+                      to={`/blog/${post.slug}`}
+                      className="group relative overflow-hidden rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 hover:border-gray-300 dark:hover:border-gray-700 transition-all h-full flex flex-col"
+                    >
+                      <div className="relative h-48 overflow-hidden bg-gray-200 dark:bg-gray-800">
+                        <img
+                          src={post.image}
+                          alt={post.title}
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                          loading="lazy"
+                          decoding="async"
+                        />
+                      </div>
+
+                      <div className="p-6 flex-1 flex flex-col">
+                        <h3 className="text-lg font-sans font-bold text-gray-950 dark:text-white mb-3 leading-tight line-clamp-2 flex-1">
+                          {post.title}
+                        </h3>
+                        <p className="text-gray-600 dark:text-gray-400 text-sm line-clamp-2 mb-4">
+                          {post.excerpt}
+                        </p>
+                        <div className="flex items-center gap-2 text-gray-600 dark:text-gray-400 text-xs">
+                          <span className="ml-auto font-mono text-gray-400 dark:text-gray-600">
+                            {new Date(post.publishedDate).toLocaleDateString()}
+                          </span>
+                        </div>
+                      </div>
+                    </Link>
+                  ))
+                ) : (
+                  <div className="col-span-full text-center py-10">
+                    <Code2 className="w-12 h-12 text-gray-300 dark:text-gray-700 mx-auto mb-4" />
+                    <p className="text-gray-500 dark:text-gray-400">
+                      {searchState?.term
+                        ? `No articles found for "${searchState.term}"`
+                        : "No matching articles found."}
+                    </p>
+                  </div>
+                )}
+              </motion.div>
+            ) : filteredPosts.length > 0 ? (
               <motion.div
                 key={selectedTag}
                 className="grid grid-cols-1 md:grid-cols-12 gap-6 auto-rows-[minmax(250px,auto)]"
@@ -462,49 +539,73 @@ export default function Blog() {
                 </motion.div>
 
                 {/* Slot 4: Standard Grid Posts - 4 cols each */}
-                {remainingPosts.map((post, idx) => (
-                  <motion.div
-                    key={`standard-${post.id}`}
-                    className="col-span-1 md:col-span-4"
-                    initial={{ opacity: 0, scale: 0.95 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ duration: 0.5, delay: 0.3 + idx * 0.05 }}
-                  >
-                    <Link
-                      to={`/blog/${post.slug}`}
-                      className="group relative overflow-hidden rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 hover:border-gray-300 dark:hover:border-gray-700 transition-all h-full flex flex-col"
+                {remainingPosts
+                  .slice(0, visibleStandardCount)
+                  .map((post, idx) => (
+                    <motion.div
+                      key={`standard-${post.id}`}
+                      className="col-span-1 md:col-span-4"
+                      initial={{ opacity: 0, scale: 0.95 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{ duration: 0.5, delay: 0.3 + idx * 0.05 }}
                     >
-                      <div className="relative h-48 overflow-hidden bg-gray-200 dark:bg-gray-800">
-                        <img
-                          src={post.image}
-                          alt={post.title}
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                          loading="lazy"
-                          decoding="async"
-                        />
-                      </div>
-
-                      <div className="p-6 flex-1 flex flex-col">
-                        <h3 className="text-lg font-sans font-bold text-gray-950 dark:text-white mb-3 leading-tight line-clamp-2 flex-1">
-                          {post.title}
-                        </h3>
-                        <p className="text-gray-600 dark:text-gray-400 text-sm line-clamp-2 mb-4">
-                          {post.excerpt}
-                        </p>
-                        <div className="flex items-center gap-2 text-gray-600 dark:text-gray-400 text-xs">
-                          {post.tags.slice(0, 1).map((tag, idx) => (
-                            <span key={`post-tag-${idx}`} className="font-mono">
-                              {tag}
-                            </span>
-                          ))}
-                          <span className="ml-auto font-mono text-gray-400 dark:text-gray-600">
-                            {new Date(post.publishedDate).toLocaleDateString()}
-                          </span>
+                      <Link
+                        to={`/blog/${post.slug}`}
+                        className="group relative overflow-hidden rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 hover:border-gray-300 dark:hover:border-gray-700 transition-all h-full flex flex-col"
+                      >
+                        <div className="relative h-48 overflow-hidden bg-gray-200 dark:bg-gray-800">
+                          <img
+                            src={post.image}
+                            alt={post.title}
+                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                            loading="lazy"
+                            decoding="async"
+                          />
                         </div>
-                      </div>
-                    </Link>
-                  </motion.div>
-                ))}
+
+                        <div className="p-6 flex-1 flex flex-col">
+                          <h3 className="text-lg font-sans font-bold text-gray-950 dark:text-white mb-3 leading-tight line-clamp-2 flex-1">
+                            {post.title}
+                          </h3>
+                          <p className="text-gray-600 dark:text-gray-400 text-sm line-clamp-2 mb-4">
+                            {post.excerpt}
+                          </p>
+                          <div className="flex items-center gap-2 text-gray-600 dark:text-gray-400 text-xs">
+                            {post.tags.slice(0, 1).map((tag, idx) => (
+                              <span
+                                key={`post-tag-${idx}`}
+                                className="font-mono"
+                              >
+                                {tag}
+                              </span>
+                            ))}
+                            <span className="ml-auto font-mono text-gray-400 dark:text-gray-600">
+                              {new Date(
+                                post.publishedDate,
+                              ).toLocaleDateString()}
+                            </span>
+                          </div>
+                        </div>
+                      </Link>
+                    </motion.div>
+                  ))}
+
+                {remainingPosts.length > visibleStandardCount && (
+                  <div className="col-span-1 md:col-span-12 flex justify-center mt-4">
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setVisibleStandardCount((prev) =>
+                          Math.min(prev + 5, remainingPosts.length),
+                        )
+                      }
+                      className="inline-flex items-center gap-2 rounded-full border border-gray-200 bg-white px-5 py-2 text-sm font-medium text-gray-700 shadow-sm transition hover:border-gray-300 hover:text-gray-900 dark:border-gray-800 dark:bg-gray-900 dark:text-gray-200 dark:hover:border-gray-700 dark:hover:text-white"
+                    >
+                      Load more articles
+                      <ArrowRight className="h-4 w-4" />
+                    </button>
+                  </div>
+                )}
               </motion.div>
             ) : (
               <motion.div

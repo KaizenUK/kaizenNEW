@@ -173,6 +173,20 @@ export default function About() {
                   what I do, and I'm exceptionally good at it. I needed to build
                   something I could depend on.
                 </p>
+
+                <p>
+                  It's {new Date().getFullYear()}. AI is no longer a novelty; it
+                  is how serious teams ship work. We use AI instead of a room
+                  full of mid-level developers, then put a senior Product Owner
+                  in charge so the decisions stay human.
+                </p>
+
+                <p>
+                  The name Kaizen means "continuous improvement". Leaning into
+                  AI is part of that. We are always looking for smarter, leaner
+                  ways to deliver the same quality for less money and in less
+                  time.
+                </p>
               </div>
             </div>
           </ScrollReveal>
@@ -199,7 +213,7 @@ export default function About() {
               {
                 icon: Lightbulb,
                 title: "Kaizen (改善)",
-                copy: "It's not just a cool word. In Japanese, it means 'continuous improvement.' We believe in it because we've lived it. There is always a better way to build a website or run a project. We are obsessed with finding it.",
+                copy: "Kaizen means 'continuous improvement.' We believe in it because we've lived it. There is always a better way to build a website or run a project. We are obsessed with finding it.",
               },
               {
                 icon: Heart,
@@ -209,7 +223,7 @@ export default function About() {
               {
                 icon: Users,
                 title: '"Train to Leave"',
-                copy: "We believe in the mantra: \"Train people well enough so they can leave, treat them well enough so they don't want to.\" We apply this to you. We'll empower your team so you're not dependent on us.",
+                copy: "We believe in the mantra: \"Train people well enough so they can leave, treat them well enough so they don't want to.\" We apply this to you. We give your team control so you're not dependent on us.",
               },
             ].map((item, index) => (
               <motion.div

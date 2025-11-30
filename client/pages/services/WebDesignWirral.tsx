@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { ArrowRight, Map } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useCalendly } from "@/context/CalendlyContext";
+import { FaqSection } from "@/components/FaqSection";
 
 const fadeInUp = {
   hidden: { opacity: 0, y: 20 },
@@ -207,6 +208,28 @@ export default function WebDesignWirral() {
           </div>
         </div>
       </section>
+
+      <FaqSection
+        heading="Wirral Web Design FAQs"
+        eyebrow="Common Questions"
+        items={[
+          {
+            question: "Do you work with businesses across the Wirral?",
+            answer:
+              "Yes. From West Kirby and Heswall to Birkenhead. We are local to the region and happy to meet at your offices or a local coffee shop for a consultation.",
+          },
+          {
+            question: "Why are you cheaper than other agencies?",
+            answer:
+              "Because you aren't paying for our coffee breaks or office overheads. You are paying for a Product Owner plus AI. This cost efficiency allows us to offer enterprise-grade tech to local Wirral businesses at 'freelancer' rates.",
+          },
+          {
+            question: "How fast can you launch a local brochure site?",
+            answer:
+              "Typically 4–6 weeks. We focus on getting your core services and contact details live quickly so you can start generating enquiries.",
+          },
+        ]}
+      />
 
       {/* CTA */}
       <section className="bg-slate-900 text-white py-16 px-4">

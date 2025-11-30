@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { ArrowRight, Check } from "lucide-react";
 import { useCalendly } from "@/context/CalendlyContext";
+import { FaqSection } from "@/components/FaqSection";
 import { Helmet } from "react-helmet-async";
 
 const fadeInUp = {
@@ -139,7 +140,7 @@ export default function CityCentre() {
                   {[
                     "Generic website builders that look like everyone else's.",
                     "Poor performance = lost customers to faster competitors.",
-                    "No local SEO optimization—you're invisible for 'near me' searches.",
+                    "No local SEO optimisation—you're invisible for 'near me' searches.",
                     "Website doesn't reflect your brand's real quality.",
                     "You can't update content without hiring a developer.",
                   ].map((point, i) => (
@@ -160,7 +161,7 @@ export default function CityCentre() {
                 <ul className="space-y-4">
                   {[
                     "High-performance React/Vite builds. Lightning-fast load times.",
-                    "Optimized for local search—you'll rank for city centre + postcode searches.",
+                    "Optimised for local search—you'll rank for city centre + postcode searches.",
                     "Design that matches your brand's actual quality and positioning.",
                     "Headless CMS integration—update content yourself, no developer needed.",
                     "Conversion-focused. Every page designed to turn visitors into customers.",
@@ -365,6 +366,29 @@ export default function CityCentre() {
           </motion.div>
         </div>
       </section>
+
+      <FaqSection
+        heading="Liverpool City Centre Web Design FAQs"
+        eyebrow="Common Questions"
+        items={[
+          {
+            question:
+              "Do you have experience with Liverpool hospitality or retail?",
+            answer:
+              "Yes. We understand the high-paced nature of city centre businesses. We build sites that handle menu updates, booking integrations and high mobile traffic.",
+          },
+          {
+            question: "Can you help with Local SEO for the City Centre?",
+            answer:
+              "Absolutely. Ranking in L1 is competitive. We build your site with Local Business schema baked in to help you appear in the Google Map Pack for city centre searches.",
+          },
+          {
+            question: "Do we need a meeting?",
+            answer:
+              "We are happy to meet in town. A face-to-face discovery session often solves more in 30 minutes than a week of emails.",
+          },
+        ]}
+      />
     </Layout>
   );
 }

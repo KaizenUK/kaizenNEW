@@ -198,6 +198,24 @@
       );
   }
 
+  /* PROTOCOL 3.10: Mobile Tap Target Compliance (Google Mobile Usability) */
+  button,
+  a,
+  [role="button"],
+  input[type="button"],
+  input[type="submit"] {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  /* Exception for icon-only buttons with explicit padding */
+  button.icon-only,
+  a.icon-only {
+    min-height: auto;
+    min-width: auto;
+    padding: 12px;
+  }
+
   :where(p, span, li, a, button, label, td, th) {
     overflow-wrap: anywhere;
     word-break: break-word;
@@ -261,6 +279,83 @@
     box-shadow: 0 0 0 4px rgba(15, 23, 42, 0.55);
   }
 
+  /* Premium SaaS-style tables inside blog prose */
+  .prose table {
+    @apply w-full border-collapse rounded-2xl overflow-hidden border border-gray-200 shadow-lg text-sm;
+    max-width: 100%;
+  }
+
+  .dark .prose table {
+    @apply border-slate-700 shadow-none;
+  }
+
+  .prose thead th {
+    @apply bg-slate-900 text-white;
+  }
+
+  .prose th,
+  .prose td {
+    @apply align-top border-none;
+    min-width: 9.375rem;
+  }
+
+  .prose th {
+    @apply text-xs font-bold uppercase tracking-wider p-4 text-center border-b border-slate-800/40;
+  }
+
+  .prose tbody tr:nth-child(odd) {
+    @apply bg-gray-50 text-gray-700;
+  }
+
+  .prose tbody tr:nth-child(even) {
+    @apply bg-white text-gray-700;
+  }
+
+  .dark .prose tbody tr:nth-child(odd) {
+    @apply bg-slate-800 text-gray-300;
+  }
+
+  .dark .prose tbody tr:nth-child(even) {
+    @apply bg-slate-900 text-gray-300;
+  }
+
+  .prose tbody tr {
+    @apply border-b border-gray-100;
+  }
+
+  .dark .prose tbody tr {
+    @apply border-b border-slate-700;
+  }
+
+  .prose tbody td {
+    @apply p-4;
+  }
+
+  .prose img {
+    @apply rounded-xl;
+    display: block;
+    max-width: 100%;
+    max-height: 720px;
+    margin-left: auto;
+    margin-right: auto;
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+  }
+
+  @media (max-width: 640px) {
+    .prose,
+    .prose p,
+    .prose li {
+      text-align: left;
+    }
+
+    .prose ul,
+    .prose ol {
+      padding-left: 1.25rem;
+    }
+  }
+
   .pricing-slider::-moz-range-thumb {
     width: 1.25rem;
     height: 1.25rem;
@@ -298,6 +393,34 @@
 
   .blog-content {
     @apply prose dark:prose-invert max-w-none space-y-6;
+  }
+
+  /* Blog content: responsive video/iframe containment */
+  .blog-content iframe,
+  .blog-content video,
+  .blog-content embed {
+    @apply max-w-full rounded-xl;
+    display: block;
+    margin: 1.5rem auto;
+    max-height: 500px;
+  }
+
+  /* Video wrapper for aspect ratio preservation */
+  .blog-content > iframe,
+  .blog-content > video {
+    width: 100%;
+    height: auto;
+  }
+
+  /* Ensure all images in blog content have rounded corners */
+  .blog-content img {
+    border-radius: 0.75rem !important;
+  }
+
+  /* Override prose image styles */
+  .prose img,
+  .dark .prose img {
+    border-radius: 0.75rem !important;
   }
 
   .blog-hero {

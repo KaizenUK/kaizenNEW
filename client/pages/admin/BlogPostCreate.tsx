@@ -303,7 +303,7 @@ export default function BlogPostCreate() {
                 placeholder="post-slug"
               />
               <p className="text-xs text-gray-500 mt-2 font-body font-mono">
-                URL: https://www.kaizenweb.co.uk/blog/
+                URL: https://kaizenweb.co.uk/blog/
                 <span className="text-gray-300">
                   {formSlug || "your-slug-here"}
                 </span>
@@ -481,7 +481,7 @@ export default function BlogPostCreate() {
                     {formSeoTitle || formTitle || "Your page title"}
                   </p>
                   <p className="text-green-600 font-mono text-xs mb-2 break-words">
-                    https://www.kaizenweb.co.uk/blog/
+                    https://kaizenweb.co.uk/blog/
                     {formSlug || "your-slug-here"}
                   </p>
                   <p className="text-gray-400 text-sm font-body line-clamp-2">
@@ -529,7 +529,7 @@ export default function BlogPostCreate() {
                 <a
                   href={
                     formSlug
-                      ? `https://www.kaizenweb.co.uk/blog/${formSlug}?preview=1`
+                      ? `https://kaizenweb.co.uk/blog/${formSlug}?preview=1`
                       : undefined
                   }
                   target={formSlug ? "_blank" : undefined}
@@ -775,7 +775,7 @@ export default function BlogPostCreate() {
               </h3>
               <div className="space-y-2">
                 <a
-                  href="https://www.kaizenweb.co.uk/"
+                  href="https://kaizenweb.co.uk/"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-gray-800/50 transition text-gray-300 hover:text-blue-400 text-sm font-body"
@@ -784,7 +784,7 @@ export default function BlogPostCreate() {
                   Go to Kaizen homepage
                 </a>
                 <a
-                  href="https://www.kaizenweb.co.uk/blog"
+                  href="https://kaizenweb.co.uk/blog"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-gray-800/50 transition text-gray-300 hover:text-blue-400 text-sm font-body"
@@ -794,7 +794,7 @@ export default function BlogPostCreate() {
                 </a>
                 {formSlug && (
                   <a
-                    href={`https://www.kaizenweb.co.uk/blog/${formSlug}`}
+                    href={`https://kaizenweb.co.uk/blog/${formSlug}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-gray-800/50 transition text-gray-300 hover:text-blue-400 text-sm font-body"
