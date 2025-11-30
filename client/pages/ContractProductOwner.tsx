@@ -188,6 +188,34 @@ const FlipCard = ({
 export default function ContractProductOwner() {
   const { openCalendly: openCalendlyFromContext } = useCalendly();
 
+  const comparisonRows = [
+    {
+      feature: "Primary Focus",
+      pm: "Dates and deadlines.",
+      po: "Value and ROI.",
+    },
+    {
+      feature: "The Big Question",
+      pm: '"When is this due?"',
+      po: '"Should we build this at all?"',
+    },
+    {
+      feature: "Handling Scope",
+      pm: '"Yes, we can add that (Change Order)."',
+      po: '"No, that adds no value. Let\'s do this instead."',
+    },
+    {
+      feature: "Success Metric",
+      pm: "The project was delivered on time.",
+      po: "The product makes money or saves time.",
+    },
+    {
+      feature: "Relationship",
+      pm: "Middle-man between you and the developers.",
+      po: "Strategic partner leading the developers.",
+    },
+  ];
+
   return (
     <Layout>
       {/* Section 1: Hero - Bold Typography */}
@@ -439,63 +467,74 @@ export default function ContractProductOwner() {
             </div>
           </ScrollReveal>
 
-          <div className="max-w-4xl mx-auto overflow-x-auto">
-            <div className="min-w-[640px] rounded-2xl border border-kaizen-light dark:border-slate-800 bg-white dark:bg-slate-950 shadow-sm">
-              <div className="grid grid-cols-3 border-b border-kaizen-light/70 dark:border-slate-800">
-                <div className="p-4 text-sm font-heading font-semibold text-kaizen-dark dark:text-white bg-kaizen-light/70 dark:bg-slate-900/70">
-                  Feature
+          <div className="max-w-4xl mx-auto">
+            {/* Desktop/tablet: side-by-side comparison table */}
+            <div className="hidden md:block overflow-x-auto">
+              <div className="min-w-[640px] rounded-2xl border border-kaizen-light dark:border-slate-800 bg-white dark:bg-slate-950 shadow-sm">
+                <div className="grid grid-cols-3 border-b border-kaizen-light/70 dark:border-slate-800">
+                  <div className="p-4 text-sm font-heading font-semibold text-kaizen-dark dark:text-white bg-kaizen-light/70 dark:bg-slate-900/70">
+                    Feature
+                  </div>
+                  <div className="p-4 text-sm font-heading font-semibold text-kaizen-dark dark:text-white bg-red-50 dark:bg-red-900/20 border-l border-kaizen-light/70 dark:border-slate-800">
+                    Project Manager (Traditional Agency)
+                  </div>
+                  <div className="p-4 text-sm font-heading font-semibold text-kaizen-dark dark:text-white bg-green-50 dark:bg-green-900/20 border-l border-kaizen-light/70 dark:border-slate-800">
+                    Product Owner (Kaizen)
+                  </div>
                 </div>
-                <div className="p-4 text-sm font-heading font-semibold text-kaizen-dark dark:text-white bg-red-50 dark:bg-red-900/20 border-l border-kaizen-light/70 dark:border-slate-800">
-                  Project Manager (Traditional Agency)
-                </div>
-                <div className="p-4 text-sm font-heading font-semibold text-kaizen-dark dark:text-white bg-green-50 dark:bg-green-900/20 border-l border-kaizen-light/70 dark:border-slate-800">
-                  Product Owner (Kaizen)
-                </div>
-              </div>
 
-              {[
-                {
-                  feature: "Primary Focus",
-                  pm: "Dates and deadlines.",
-                  po: "Value and ROI.",
-                },
-                {
-                  feature: "The Big Question",
-                  pm: '"When is this due?"',
-                  po: '"Should we build this at all?"',
-                },
-                {
-                  feature: "Handling Scope",
-                  pm: '"Yes, we can add that (Change Order)."',
-                  po: '"No, that adds no value. Let\'s do this instead."',
-                },
-                {
-                  feature: "Success Metric",
-                  pm: "The project was delivered on time.",
-                  po: "The product makes money or saves time.",
-                },
-                {
-                  feature: "Relationship",
-                  pm: "Middle-man between you and the developers.",
-                  po: "Strategic partner leading the developers.",
-                },
-              ].map((row, index) => (
+                {comparisonRows.map((row, index) => (
+                  <div
+                    key={row.feature}
+                    className={`grid grid-cols-3 border-t border-kaizen-light/60 dark:border-slate-800 ${
+                      index % 2 === 0
+                        ? "bg-white dark:bg-slate-950"
+                        : "bg-kaizen-light/40 dark:bg-slate-900/60"
+                    }`}
+                  >
+                    <div className="p-4 text-sm font-heading font-semibold text-kaizen-dark dark:text-white">
+                      {row.feature}
+                    </div>
+                    <div className="p-4 text-sm text-kaizen-text-dark/80 dark:text-white/70 border-l border-kaizen-light/60 dark:border-slate-800">
+                      {row.pm}
+                    </div>
+                    <div className="p-4 text-sm text-kaizen-text-dark/90 dark:text-white border-l border-kaizen-light/60 dark:border-slate-800 bg-green-50/60 dark:bg-green-900/15">
+                      {row.po}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Mobile: stacked cards for each feature */}
+            <div className="md:hidden space-y-4">
+              {comparisonRows.map((row) => (
                 <div
                   key={row.feature}
-                  className={`grid grid-cols-3 border-t border-kaizen-light/60 dark:border-slate-800 ${
-                    index % 2 === 0
-                      ? "bg-white dark:bg-slate-950"
-                      : "bg-kaizen-light/40 dark:bg-slate-900/60"
-                  }`}
+                  className="rounded-2xl border border-kaizen-light dark:border-slate-800 bg-white dark:bg-slate-950 shadow-sm overflow-hidden"
                 >
-                  <div className="p-4 text-sm font-heading font-semibold text-kaizen-dark dark:text-white">
-                    {row.feature}
+                  <div className="px-4 py-3 border-b border-kaizen-light/70 dark:border-slate-800 bg-kaizen-light/70 dark:bg-slate-900/70">
+                    <p className="text-sm font-heading font-semibold text-kaizen-dark dark:text-white">
+                      {row.feature}
+                    </p>
                   </div>
-                  <div className="p-4 text-sm text-kaizen-text-dark/80 dark:text-white/70 border-l border-kaizen-light/60 dark:border-slate-800">
-                    {row.pm}
-                  </div>
-                  <div className="p-4 text-sm text-kaizen-text-dark/90 dark:text-white border-l border-kaizen-light/60 dark:border-slate-800 bg-green-50/60 dark:bg-green-900/15">
-                    {row.po}
+                  <div className="divide-y divide-kaizen-light/60 dark:divide-slate-800">
+                    <div className="p-4 bg-red-50 dark:bg-red-900/10">
+                      <p className="text-xs font-semibold uppercase tracking-wide text-red-700 dark:text-red-300 mb-1">
+                        Project Manager (Traditional Agency)
+                      </p>
+                      <p className="text-sm text-kaizen-text-dark/80 dark:text-white/75">
+                        {row.pm}
+                      </p>
+                    </div>
+                    <div className="p-4 bg-green-50/70 dark:bg-green-900/20">
+                      <p className="text-xs font-semibold uppercase tracking-wide text-green-800 dark:text-green-300 mb-1">
+                        Product Owner (Kaizen)
+                      </p>
+                      <p className="text-sm text-kaizen-text-dark/90 dark:text-white">
+                        {row.po}
+                      </p>
+                    </div>
                   </div>
                 </div>
               ))}

@@ -219,9 +219,9 @@ export default function WebDesignWirral() {
               "Yes. From West Kirby and Heswall to Birkenhead. We are local to the region and happy to meet at your offices or a local coffee shop for a consultation.",
           },
           {
-            question: "My business is small and local – is Kaizen too expensive?",
+            question: "Why are you cheaper than other agencies?",
             answer:
-              "We offer tiered pricing. While we specialise in high-performance builds, we have packages specifically for local service businesses that need a professional presence without the enterprise price tag.",
+              "Because you aren't paying for our coffee breaks or office overheads. You are paying for a Product Owner plus AI. This cost efficiency allows us to offer enterprise-grade tech to local Wirral businesses at 'freelancer' rates.",
           },
           {
             question: "How fast can you launch a local brochure site?",

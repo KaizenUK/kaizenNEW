@@ -484,14 +484,14 @@ export default function WebDesign() {
               "For a professional, custom-built site (not a template), prices in Liverpool typically range from £3,500 for a brochure site to £15,000+ for a complex React application. We provide fixed-price quotes after a scope session.",
           },
           {
-            question: "How long does a build take?",
+            question: "How is your delivery so fast?",
             answer:
-              "A custom WordPress build takes 4–6 weeks. A complex React/Next.js application takes 8–12 weeks. We work in 2-week sprints, so you see progress every fortnight.",
+              "We use AI-augmented development. By using AI to handle the heavy lifting of coding, we can build custom React platforms in weeks, not months. You get enterprise quality without paying for hundreds of hours of manual labour.",
           },
           {
-            question: "Do you outsource development?",
+            question: "Do you use junior developers?",
             answer:
-              "No. Unlike many creative agencies, we do not white-label. All code is written by our internal team or managed directly by your Contract Product Owner.",
+              "No. We replace the 'junior developer' layer with AI coding agents. Your project is managed by a Senior Product Owner who directs the AI. This reduces human error and keeps your costs drastically lower.",
           },
           {
             question: "Can you fix my existing site without rebuilding it?",

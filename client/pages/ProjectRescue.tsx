@@ -309,14 +309,14 @@ export default function ProjectRescue() {
         eyebrow="Common Questions"
         items={[
           {
-            question: "Is my project actually salvageable?",
+            question: "How do you audit code so quickly?",
             answer:
-              "In most cases, yes. We perform a Code Triage first. If the core architecture is sound, we can fix the bugs. If the code is a liability, we will advise a rebuild to save you money in the long run.",
+              "We use AI diagnostics. Instead of a human spending days reading lines of code, our AI tools scan your repository for bugs, security risks, and spaghetti code in minutes. We pass those savings directly to you.",
           },
           {
-            question: "Do you take over existing code?",
+            question: "Can you fix legacy code?",
             answer:
-              "Yes. We audit the repository, secure the intellectual property and set up a proper deployment pipeline so you regain control from your previous agency.",
+              "Yes. Our AI tools are excellent at refactoring old code (legacy PHP, old JavaScript) into modern standards. We can often modernise a platform without needing a full rebuild.",
           },
           {
             question: "How quickly can you start?",
