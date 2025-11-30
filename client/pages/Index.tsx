@@ -97,7 +97,7 @@ const HeroSection = () => {
         src={DEFAULT_OG_IMAGE}
         alt=""
         loading="eager"
-        fetchPriority="high"
+        fetchpriority="high"
         decoding="async"
         width="1200"
         height="630"
@@ -627,7 +627,7 @@ const CoreServiceVerticals = () => {
               <div className="mt-auto flex items-center justify-between gap-4">
                 <Link
                   to="/services/web-design-liverpool"
-                  className="inline-flex items-center gap-2 rounded-full bg-white text-slate-950 px-5 py-2.5 text-sm font-heading font-semibold shadow-lg hover:shadow-cyan-400/40 hover:-translate-y-0.5 transition-all"
+                  className="inline-flex items-center gap-2 rounded-full bg-white text-slate-950 px-5 py-2.5 text-sm font-heading font-semibold shadow-lg hover:bg-slate-100 hover:shadow-white/20 hover:-translate-y-0.5 transition-all dark:text-gray-950"
                 >
                   Explore Web Design
                   <ArrowRight size={18} />

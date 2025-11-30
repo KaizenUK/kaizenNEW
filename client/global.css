@@ -395,6 +395,28 @@
     @apply prose dark:prose-invert max-w-none space-y-6;
   }
 
+  /* Blog content: responsive video/iframe containment */
+  .blog-content iframe,
+  .blog-content video,
+  .blog-content embed {
+    @apply max-w-full rounded-xl;
+    display: block;
+    margin: 1.5rem auto;
+    max-height: 500px;
+  }
+
+  /* Video wrapper for aspect ratio preservation */
+  .blog-content > iframe,
+  .blog-content > video {
+    width: 100%;
+    height: auto;
+  }
+
+  /* Ensure all images in blog content have rounded corners */
+  .blog-content img {
+    @apply rounded-xl;
+  }
+
   .blog-hero {
     position: relative;
     width: 100%;
