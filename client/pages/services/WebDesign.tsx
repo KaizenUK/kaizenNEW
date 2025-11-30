@@ -262,6 +262,26 @@ export default function WebDesign() {
             </h2>
           </ScrollReveal>
 
+          <div className="max-w-3xl mx-auto mb-12">
+            <div className="rounded-2xl border border-kaizen-light dark:border-slate-800/60 bg-white dark:bg-slate-950/70 p-6 md:p-8">
+              <p className="text-sm font-mono tracking-[0.25em] text-kaizen-cyan mb-3 uppercase">
+                Tech Stack ROI
+              </p>
+              <p className="text-lg md:text-xl text-kaizen-text-dark/80 dark:text-white/80 mb-4 leading-relaxed">
+                Not sure which tech stack fits your budget? We broke down the three-year commercial difference between WordPress and React in plain English.
+              </p>
+              <a
+                href="https://kaizenweb.co.uk/blog/wordpress-vs-react-business-roi"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 text-kaizen-cyan hover:text-kaizen-lime font-heading font-semibold text-sm md:text-base"
+              >
+                WordPress vs React: A Business ROI Comparison
+                <ArrowUpRight size={16} />
+              </a>
+            </div>
+          </div>
+
           <div className="max-w-3xl mx-auto">
             {[
               {
