@@ -368,24 +368,26 @@ function RichTextContent({ html }: RichTextContentProps) {
       if (!parent) return;
       if (parent.classList.contains("blog-table-wrapper")) return;
 
-      // Hide table on mobile, show on desktop
-      table.classList.add("hidden", "md:table");
+      // Capture table HTML BEFORE any DOM mutations
+      const tableHtml = table.outerHTML;
 
-      // Create and inject mobile button
+      // Create and inject mobile button with the captured HTML
       const btn = document.createElement("button");
       btn.type = "button";
       btn.className =
         "block md:hidden w-full bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white py-4 rounded-xl font-semibold flex items-center justify-center gap-2 my-6 hover:bg-slate-200 dark:hover:bg-slate-700 transition";
       btn.innerHTML = "🔍 View Table";
 
-      // Capture table HTML immediately
-      const tableHtml = table.outerHTML;
+      // Use captured HTML in closure
       btn.addEventListener("click", (e) => {
         e.preventDefault();
         openTableModal(tableHtml);
       });
 
       parent.insertBefore(btn, table);
+
+      // Hide table on mobile, show on desktop
+      table.classList.add("hidden", "md:table");
 
       // Desktop: wrap table for scrolling
       const wrapper = document.createElement("div");
