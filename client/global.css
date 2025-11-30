@@ -261,6 +261,64 @@
     box-shadow: 0 0 0 4px rgba(15, 23, 42, 0.55);
   }
 
+  /* Premium SaaS-style tables inside blog prose */
+  .prose table {
+    @apply w-full border-collapse rounded-2xl overflow-hidden border border-gray-200 shadow-lg text-sm;
+    display: block;
+    max-width: 100%;
+    overflow-x: auto;
+  }
+
+  .dark .prose table {
+    @apply border-slate-700 shadow-none;
+  }
+
+  .prose thead {
+    @apply bg-slate-900 text-white;
+  }
+
+  .dark .prose thead {
+    @apply bg-slate-950 text-white;
+  }
+
+  .prose th,
+  .prose td {
+    @apply align-top;
+    white-space: nowrap;
+  }
+
+  .prose th {
+    @apply text-xs font-bold uppercase tracking-wider p-4 text-left border-b border-slate-800/40;
+  }
+
+  .prose tbody tr:nth-child(odd) {
+    @apply bg-gray-50 text-gray-700;
+  }
+
+  .prose tbody tr:nth-child(even) {
+    @apply bg-white text-gray-700;
+  }
+
+  .dark .prose tbody tr:nth-child(odd) {
+    @apply bg-slate-800 text-gray-300;
+  }
+
+  .dark .prose tbody tr:nth-child(even) {
+    @apply bg-slate-900 text-gray-300;
+  }
+
+  .prose tbody tr {
+    @apply border-b border-gray-100;
+  }
+
+  .dark .prose tbody tr {
+    @apply border-b border-slate-700;
+  }
+
+  .prose tbody td {
+    @apply p-4;
+  }
+
   .pricing-slider::-moz-range-thumb {
     width: 1.25rem;
     height: 1.25rem;
