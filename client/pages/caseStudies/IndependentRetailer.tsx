@@ -92,7 +92,7 @@ export default function IndependentRetailerCase() {
               </h3>
               <p className="text-lg text-kaizen-text-dark dark:text-white/80 leading-relaxed">
                 A modern, headless e-commerce build using React on the frontend
-                with optimized inventory management and lightning-fast
+                with optimised inventory management and lightning-fast
                 performance.
               </p>
             </motion.div>
@@ -150,9 +150,8 @@ export default function IndependentRetailerCase() {
               </h2>
               <p className="text-lg text-kaizen-text-dark/70 dark:text-white/70 leading-relaxed mb-8">
                 We rebuilt the entire e-commerce platform from the ground up
-                using a modern headless architecture. This isn't about flashy
-                features—it's about getting out of the way and letting the
-                product shine.
+                using a modern headless architecture. This is about getting out
+                of the way and letting the product shine.
               </p>
 
               <ul className="space-y-4">

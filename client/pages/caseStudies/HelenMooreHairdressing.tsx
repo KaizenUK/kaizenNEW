@@ -143,7 +143,7 @@ export default function HelenMooreHairdressingCase() {
                 Friction Booking
               </p>
               <p className="text-slate-600 dark:text-slate-400 text-sm">
-                Seamless flow from Instagram scroll to confirmed appointment.
+                Smooth flow from Instagram scroll to confirmed appointment.
               </p>
             </motion.div>
 

@@ -170,8 +170,7 @@ export default function WebDesign() {
               transition={{ delay: 0.6, duration: 0.6 }}
             >
               <p>
-                A website is not just a digital brochure. It's a
-                high-performance asset designed to get you leads. We build
+                A website is a high-performance asset designed to get you leads. We build
                 websites in Liverpool that are fast, secure, and built on a
                 modern technical stack.
               </p>

@@ -173,6 +173,20 @@ export default function About() {
                   what I do, and I'm exceptionally good at it. I needed to build
                   something I could depend on.
                 </p>
+
+                <p>
+                  It's {new Date().getFullYear()}. AI is no longer a novelty; it
+                  is how serious teams ship work. We use AI instead of a room
+                  full of mid-level developers, then put a senior Product Owner
+                  in charge so the decisions stay human.
+                </p>
+
+                <p>
+                  The name Kaizen means "continuous improvement". Leaning into
+                  AI is part of that. We are always looking for smarter,
+                  leaner ways to deliver the same quality for less money and in
+                  less time.
+                </p>
               </div>
             </div>
           </ScrollReveal>

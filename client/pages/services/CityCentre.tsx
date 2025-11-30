@@ -140,7 +140,7 @@ export default function CityCentre() {
                   {[
                     "Generic website builders that look like everyone else's.",
                     "Poor performance = lost customers to faster competitors.",
-                    "No local SEO optimization—you're invisible for 'near me' searches.",
+                    "No local SEO optimisation—you're invisible for 'near me' searches.",
                     "Website doesn't reflect your brand's real quality.",
                     "You can't update content without hiring a developer.",
                   ].map((point, i) => (
@@ -161,7 +161,7 @@ export default function CityCentre() {
                 <ul className="space-y-4">
                   {[
                     "High-performance React/Vite builds. Lightning-fast load times.",
-                    "Optimized for local search—you'll rank for city centre + postcode searches.",
+                    "Optimised for local search—you'll rank for city centre + postcode searches.",
                     "Design that matches your brand's actual quality and positioning.",
                     "Headless CMS integration—update content yourself, no developer needed.",
                     "Conversion-focused. Every page designed to turn visitors into customers.",
