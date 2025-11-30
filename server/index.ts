@@ -8,6 +8,8 @@ const BUILDER_API_KEY = process.env.VITE_BUILDER_API_KEY || "";
 export function createServer() {
   const app = express();
 
+  app.disable("x-powered-by");
+
   // Middleware
   app.use(cors());
   app.use(express.json());
