@@ -379,12 +379,12 @@ export default function ContractProductOwner() {
               {
                 step: "02",
                 title: "Prioritise & Manage",
-                copy: 'I ruthlessly prioritise the work based on business value. I run the weekly "sprints," clear roadblocks for the team, and shield them from distractions.',
+                copy: "I ruthlessly prioritise the work based on business value. I run the weekly sprints, clear roadblocks for the team, and shield them from distractions.",
               },
               {
                 step: "03",
                 title: "Deliver & Report",
-                copy: 'I manage the release process and provide you with a simple, "no-jargon" report every week. You see constant, predictable progress.',
+                copy: 'I manage the release process and provide you with a simple, no-jargon report every week. You see constant, predictable progress.',
               },
             ].map((item, index) => (
               <motion.div
@@ -415,6 +415,109 @@ export default function ContractProductOwner() {
                 </div>
               </motion.div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Section 4b: Why We Use Product Owners, Not Project Managers */}
+      <section className="py-20 md:py-32 bg-kaizen-light dark:bg-slate-900/50">
+        <div className="container mx-auto px-4">
+          <ScrollReveal>
+            <div className="max-w-4xl mx-auto mb-12">
+              <h2 className="text-4xl md:text-5xl font-heading font-bold mb-6 text-kaizen-dark dark:text-white">
+                Why We Use Product Owners, Not Project Managers
+              </h2>
+              <p className="text-lg md:text-xl text-kaizen-text-dark/70 dark:text-white/70 leading-relaxed">
+                Most agencies assign you a Project Manager. Their job is to protect the agency's margin.
+                At Kaizen, I step in as a Contract Product Owner. My job is to protect your ROI.
+              </p>
+              <p className="text-lg text-kaizen-text-dark/70 dark:text-white/70 leading-relaxed mt-4">
+                It sounds like a subtle title change, but the difference in delivery is massive.
+              </p>
+            </div>
+          </ScrollReveal>
+
+          <div className="max-w-4xl mx-auto overflow-x-auto">
+            <div className="min-w-[640px] rounded-2xl border border-kaizen-light dark:border-slate-800 bg-white dark:bg-slate-950 shadow-sm">
+              <div className="grid grid-cols-3 border-b border-kaizen-light/70 dark:border-slate-800">
+                <div className="p-4 text-sm font-heading font-semibold text-kaizen-dark dark:text-white bg-kaizen-light/70 dark:bg-slate-900/70">
+                  Feature
+                </div>
+                <div className="p-4 text-sm font-heading font-semibold text-kaizen-dark dark:text-white bg-red-50 dark:bg-red-900/20 border-l border-kaizen-light/70 dark:border-slate-800">
+                  Project Manager (Traditional Agency)
+                </div>
+                <div className="p-4 text-sm font-heading font-semibold text-kaizen-dark dark:text-white bg-green-50 dark:bg-green-900/20 border-l border-kaizen-light/70 dark:border-slate-800">
+                  Product Owner (Kaizen)
+                </div>
+              </div>
+
+              {[
+                {
+                  feature: "Primary Focus",
+                  pm: "Dates and deadlines.",
+                  po: "Value and ROI.",
+                },
+                {
+                  feature: "The Big Question",
+                  pm: '"When is this due?"',
+                  po: '"Should we build this at all?"',
+                },
+                {
+                  feature: "Handling Scope",
+                  pm: '"Yes, we can add that (Change Order)."',
+                  po: '"No, that adds no value. Let\'s do this instead."',
+                },
+                {
+                  feature: "Success Metric",
+                  pm: "The project was delivered on time.",
+                  po: "The product makes money or saves time.",
+                },
+                {
+                  feature: "Relationship",
+                  pm: "Middle-man between you and the developers.",
+                  po: "Strategic partner leading the developers.",
+                },
+              ].map((row, index) => (
+                <div
+                  key={row.feature}
+                  className={`grid grid-cols-3 border-t border-kaizen-light/60 dark:border-slate-800 ${
+                    index % 2 === 0
+                      ? "bg-white dark:bg-slate-950"
+                      : "bg-kaizen-light/40 dark:bg-slate-900/60"
+                  }`}
+                >
+                  <div className="p-4 text-sm font-heading font-semibold text-kaizen-dark dark:text-white">
+                    {row.feature}
+                  </div>
+                  <div className="p-4 text-sm text-kaizen-text-dark/80 dark:text-white/70 border-l border-kaizen-light/60 dark:border-slate-800">
+                    {row.pm}
+                  </div>
+                  <div className="p-4 text-sm text-kaizen-text-dark/90 dark:text-white border-l border-kaizen-light/60 dark:border-slate-800">
+                    {row.po}
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <p className="mt-6 text-sm md:text-base text-kaizen-text-dark/80 dark:text-white/70">
+              <span className="font-semibold">The bottom line:</span> If you want someone to send you a weekly status report, hire a Project Manager.
+              If you want someone to take ownership of the backlog, make the hard commercial decisions, and ensure the software actually solves the business problem, you need a Product Owner.
+            </p>
+          </div>
+
+          <div className="max-w-4xl mx-auto mt-12 border-t border-kaizen-light dark:border-slate-800 pt-10">
+            <h3 className="text-2xl md:text-3xl font-heading font-bold mb-4 text-kaizen-dark dark:text-white">
+              FAQ: Do I need a Product Owner or a Project Manager?
+            </h3>
+            <p className="text-lg text-kaizen-text-dark/80 dark:text-white/70 leading-relaxed mb-4">
+              A Project Manager asks: <strong>"When will this be done?"</strong> They focus on dates, status reports, and Gantt charts.
+            </p>
+            <p className="text-lg text-kaizen-text-dark/80 dark:text-white/70 leading-relaxed mb-4">
+              A Product Owner asks: <strong>"Should we build this at all?"</strong> I focus on value, risk, and what the work does to your bottom line.
+            </p>
+            <p className="text-lg text-kaizen-text-dark/80 dark:text-white/70 leading-relaxed">
+              If your team is building the wrong features on time, you do not have a delivery problem, you have a strategy problem. That is where a Product Owner pays for themselves very quickly.
+            </p>
           </div>
         </div>
       </section>
