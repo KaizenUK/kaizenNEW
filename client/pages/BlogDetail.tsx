@@ -376,10 +376,13 @@ function RichTextContent({ html }: RichTextContentProps) {
       btn.type = "button";
       btn.className =
         "block md:hidden w-full bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white py-4 rounded-xl font-semibold flex items-center justify-center gap-2 my-6 hover:bg-slate-200 dark:hover:bg-slate-700 transition";
-      btn.innerHTML = "🔍 View Comparison Table";
+      btn.innerHTML = "🔍 View Table";
 
-      btn.addEventListener("click", () => {
-        openTableModal(table.outerHTML);
+      // Capture table HTML immediately
+      const tableHtml = table.outerHTML;
+      btn.addEventListener("click", (e) => {
+        e.preventDefault();
+        openTableModal(tableHtml);
       });
 
       parent.insertBefore(btn, table);
@@ -391,7 +394,7 @@ function RichTextContent({ html }: RichTextContentProps) {
       parent.insertBefore(wrapper, table);
       wrapper.appendChild(table);
     });
-  }, []);
+  }, [openTableModal]);
 
   return (
     <>
