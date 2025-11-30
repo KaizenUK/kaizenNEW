@@ -78,9 +78,9 @@ export default function BlogPostsList() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [allTags, setAllTags] = useState<string[]>([]);
-  const [statusFilter, setStatusFilter] = useState<"all" | "published" | "draft">(
-    "all",
-  );
+  const [statusFilter, setStatusFilter] = useState<
+    "all" | "published" | "draft"
+  >("all");
 
   // Pagination state
   const [pageSize, setPageSize] = useState<number>(10);
@@ -108,10 +108,7 @@ export default function BlogPostsList() {
             } else if (rawCover && typeof rawCover === "object") {
               // Common Builder shapes: { image: "…" } or { src: "…" }
               coverImageUrl =
-                rawCover.image ||
-                rawCover.src ||
-                rawCover.url ||
-                null;
+                rawCover.image || rawCover.src || rawCover.url || null;
             }
 
             return {
@@ -462,13 +459,14 @@ export default function BlogPostsList() {
                           {/* Published date */}
                           <td className="p-4 text-sm text-gray-400">
                             {post.publishedDate
-                              ? new Date(
-                                  post.publishedDate,
-                                ).toLocaleDateString("en-GB", {
-                                  day: "2-digit",
-                                  month: "short",
-                                  year: "numeric",
-                                })
+                              ? new Date(post.publishedDate).toLocaleDateString(
+                                  "en-GB",
+                                  {
+                                    day: "2-digit",
+                                    month: "short",
+                                    year: "numeric",
+                                  },
+                                )
                               : "—"}
                           </td>
 
@@ -548,8 +546,7 @@ export default function BlogPostsList() {
                     <span className="text-gray-200">
                       {totalItems === 0 ? 0 : startIndex + 1}–{endIndex}
                     </span>{" "}
-                    of <span className="text-gray-200">{totalItems}</span>{" "}
-                    posts
+                    of <span className="text-gray-200">{totalItems}</span> posts
                   </span>
                   <span className="hidden md:inline">•</span>
                   <div className="flex items-center gap-2">
