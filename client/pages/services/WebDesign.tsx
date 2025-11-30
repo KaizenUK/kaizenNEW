@@ -10,6 +10,7 @@ import {
   Settings,
 } from "lucide-react";
 import { useCalendly } from "@/context/CalendlyContext";
+import { FaqSection } from "@/components/FaqSection";
 
 // Animation variants
 const fadeInUp = {
