@@ -356,11 +356,12 @@ const PricingSlider = () => {
                       {tier === 0 && (
                         <>
                           <li className="flex items-center gap-2 text-gray-700 dark:text-gray-300">
-                            <span className="text-kaizen-cyan">✓</span> Ready-made
-                            template
+                            <span className="text-kaizen-cyan">✓</span>{" "}
+                            Ready-made template
                           </li>
                           <li className="flex items-center gap-2 text-gray-700 dark:text-gray-300">
-                            <span className="text-kaizen-cyan">✓</span> Basic SEO
+                            <span className="text-kaizen-cyan">✓</span> Basic
+                            SEO
                           </li>
                           <li className="flex items-center gap-2 text-gray-700 dark:text-gray-300">
                             <span className="text-kaizen-cyan">✓</span> Mobile
@@ -379,8 +380,8 @@ const PricingSlider = () => {
                             capture forms
                           </li>
                           <li className="flex items-center gap-2 text-gray-700 dark:text-gray-300">
-                            <span className="text-kaizen-cyan">✓</span> Analytics
-                            setup
+                            <span className="text-kaizen-cyan">✓</span>{" "}
+                            Analytics setup
                           </li>
                         </>
                       )}
@@ -411,8 +412,8 @@ const PricingSlider = () => {
                             authentication
                           </li>
                           <li className="flex items-center gap-2 text-gray-700 dark:text-gray-300">
-                            <span className="text-kaizen-cyan">✓</span> Dedicated
-                            Product Owner
+                            <span className="text-kaizen-cyan">✓</span>{" "}
+                            Dedicated Product Owner
                           </li>
                         </>
                       )}
@@ -525,8 +526,8 @@ const AIPriceNarrative = () => {
           className="space-y-4 text-slate-800 dark:text-slate-200 text-base md:text-lg max-w-3xl"
         >
           <p>
-            Most agencies bill you for manual labour. They charge for every
-            hour a developer spends typing syntax.
+            Most agencies bill you for manual labour. They charge for every hour
+            a developer spends typing syntax.
           </p>
           <p>We don't.</p>
           <p>Kaizen is an AI-augmented agency.</p>
@@ -539,9 +540,7 @@ const AIPriceNarrative = () => {
             architecture, and the polish of a custom build, but you only pay for
             the product strategy, not the typing.
           </p>
-          <p>
-            Same code. Same quality. Unfair price.
-          </p>
+          <p>Same code. Same quality. Unfair price.</p>
         </motion.div>
       </div>
     </section>
@@ -566,8 +565,8 @@ const CoreServiceVerticals = () => {
             Our business is split into two main verticals
           </h2>
           <p className="text-sm md:text-base text-slate-300 max-w-2xl mx-auto">
-            Web design for Liverpool &amp; Wirral, and hands-on Contract
-            Product Ownership for complex or failing digital projects.
+            Web design for Liverpool &amp; Wirral, and hands-on Contract Product
+            Ownership for complex or failing digital projects.
           </p>
         </motion.div>
 
@@ -1034,8 +1033,8 @@ const AIValueProp = () => {
                   Kaizen
                 </h3>
                 <p className="text-sm text-green-700 dark:text-green-300 mb-4 leading-relaxed">
-                  AI-augmented development. Strategic thinking. Two-week sprints.
-                  Predictable costs.
+                  AI-augmented development. Strategic thinking. Two-week
+                  sprints. Predictable costs.
                 </p>
                 <p className="font-heading font-bold text-green-600 dark:text-green-400 text-xl">
                   Cost: Better ROI
@@ -1285,7 +1284,9 @@ const LocalMap = () => {
             <div className="space-y-4 mb-8">
               <div className="flex items-center gap-3">
                 <div className="w-3 h-3 rounded-full bg-kaizen-cyan" />
-                <span className="text-white/90">Liverpool city centre based</span>
+                <span className="text-white/90">
+                  Liverpool city centre based
+                </span>
               </div>
               <div className="flex items-center gap-3">
                 <div className="w-3 h-3 rounded-full bg-kaizen-lime" />

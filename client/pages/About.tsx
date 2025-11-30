@@ -183,9 +183,9 @@ export default function About() {
 
                 <p>
                   The name Kaizen means "continuous improvement". Leaning into
-                  AI is part of that. We are always looking for smarter,
-                  leaner ways to deliver the same quality for less money and in
-                  less time.
+                  AI is part of that. We are always looking for smarter, leaner
+                  ways to deliver the same quality for less money and in less
+                  time.
                 </p>
               </div>
             </div>

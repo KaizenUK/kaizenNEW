@@ -163,10 +163,14 @@ const Footer: React.FC<FooterProps> = () => {
               How we build
             </p>
             <ul className="space-y-2 text-sm text-white/60">
-              <li>AI-augmented delivery with a senior Product Owner in charge.</li>
+              <li>
+                AI-augmented delivery with a senior Product Owner in charge.
+              </li>
               <li>Core Web Vitals-first builds for real-world speed.</li>
               <li>Headless-ready architecture when your business needs it.</li>
-              <li>Friendly content tools so your team controls day-to-day edits.</li>
+              <li>
+                Friendly content tools so your team controls day-to-day edits.
+              </li>
             </ul>
           </motion.div>
 

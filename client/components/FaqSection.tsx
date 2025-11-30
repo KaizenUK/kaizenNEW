@@ -2,7 +2,12 @@ import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import { Helmet } from "react-helmet-async";
 
-import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/components/ui/accordion";
+import {
+  Accordion,
+  AccordionItem,
+  AccordionTrigger,
+  AccordionContent,
+} from "@/components/ui/accordion";
 import { openCrisp } from "@/lib/crisp-utils";
 
 export interface FaqItem {
@@ -17,7 +22,12 @@ interface FaqSectionProps {
   id?: string;
 }
 
-export function FaqSection({ heading, eyebrow = "Common Questions", items, id }: FaqSectionProps) {
+export function FaqSection({
+  heading,
+  eyebrow = "Common Questions",
+  items,
+  id,
+}: FaqSectionProps) {
   const faqSchema = {
     "@context": "https://schema.org",
     "@type": "FAQPage",

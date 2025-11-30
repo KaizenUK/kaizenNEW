@@ -293,9 +293,9 @@ export default function WordPressWebDesign() {
             <p className="text-xl text-kaizen-text-dark/70 dark:text-white/60 leading-relaxed max-w-3xl">
               The problem isn't WordPress; it's the way most agencies build on
               it. They use cheap, bloated themes and dozens of clunky plugins
-              that break your site and kill your page speed. We're different.
-              We use AI tools to generate lean, semantic WordPress builds that
-              feel familiar to edit but perform like a modern platform.
+              that break your site and kill your page speed. We're different. We
+              use AI tools to generate lean, semantic WordPress builds that feel
+              familiar to edit but perform like a modern platform.
             </p>
           </ScrollReveal>
         </div>
@@ -371,14 +371,14 @@ export default function WordPressWebDesign() {
               <p className="text-base md:text-lg text-kaizen-text-dark/80 dark:text-white/70 leading-relaxed mb-4">
                 WordPress is ideal for smaller businesses and lower-traffic
                 sites that need a flexible, easy-to-manage presence. If you
-                already have a theme you really want to use, we can work with
-                it while still keeping your build as lean as possible.
+                already have a theme you really want to use, we can work with it
+                while still keeping your build as lean as possible.
               </p>
               <p className="text-base md:text-lg text-kaizen-text-dark/80 dark:text-white/70 leading-relaxed mb-4">
-                If you later move to a React or headless build, you will
-                still manage your content through a familiar CMS. The
-                front-end changes, but your day-to-day editing workflow stays
-                simple and predictable.
+                If you later move to a React or headless build, you will still
+                manage your content through a familiar CMS. The front-end
+                changes, but your day-to-day editing workflow stays simple and
+                predictable.
               </p>
               <a
                 href="https://kaizenweb.co.uk/blog/wordpress-vs-react-business-roi"

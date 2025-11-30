@@ -297,11 +297,11 @@ export default function ContractProductOwner() {
                 Why Your Project is Failing (And How I Fix It)
               </h2>
               <p className="text-lg md:text-xl text-kaizen-text-dark/70 dark:text-white/60 leading-relaxed mb-8">
-                Most projects fail from a lack of a single, accountable owner. Not
-                a "project manager" who just shuffles tasks, but one person who
-                has the authority to make decisions, protect your budget, and
-                act as the single, expert link between your business goals and
-                your technical team.
+                Most projects fail from a lack of a single, accountable owner.
+                Not a "project manager" who just shuffles tasks, but one person
+                who has the authority to make decisions, protect your budget,
+                and act as the single, expert link between your business goals
+                and your technical team.
               </p>
 
               <div>

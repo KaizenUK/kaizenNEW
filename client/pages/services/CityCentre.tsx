@@ -372,7 +372,8 @@ export default function CityCentre() {
         eyebrow="Common Questions"
         items={[
           {
-            question: "Do you have experience with Liverpool hospitality or retail?",
+            question:
+              "Do you have experience with Liverpool hospitality or retail?",
             answer:
               "Yes. We understand the high-paced nature of city centre businesses. We build sites that handle menu updates, booking integrations and high mobile traffic.",
           },

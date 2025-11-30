@@ -214,7 +214,11 @@ export default function DigitalTransformation() {
             viewport={{ once: true, margin: "-100px" }}
             transition={{ duration: 0.6, delay: 0.1 }}
           >
-            When we talk about digital transformation, we mean using automation and AI tools to connect the systems you already rely on, remove repetitive admin, and create smoother flows between sales, delivery, and finance. It is practical change focused on cost efficiency, not buzzwords.
+            When we talk about digital transformation, we mean using automation
+            and AI tools to connect the systems you already rely on, remove
+            repetitive admin, and create smoother flows between sales, delivery,
+            and finance. It is practical change focused on cost efficiency, not
+            buzzwords.
           </motion.p>
 
           <motion.div
