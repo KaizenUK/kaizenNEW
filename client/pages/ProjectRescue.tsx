@@ -109,7 +109,7 @@ export default function ProjectRescue() {
             </motion.h1>
 
             <motion.p
-              className="text-xl md:text-2xl text-white/80 leading-relaxed mb-12 max-w-3xl mx-auto"
+              className="text-xl md:text-2xl text-white/80 leading-relaxed mb-6 max-w-3xl mx-auto"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.3, duration: 0.8 }}
@@ -117,6 +117,24 @@ export default function ProjectRescue() {
               When your build is over budget, late, or stuck, Kaizen steps in as
               a hands-on Contract Product Owner to stabilise delivery, rebuild
               trust, and actually ship.
+            </motion.p>
+
+            <motion.p
+              className="text-base md:text-lg text-white/80 leading-relaxed mb-10 max-w-3xl mx-auto"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.4, duration: 0.8 }}
+            >
+              Thinking of restarting? Before you spend another penny, read our {""}
+              <a
+                href="https://kaizenweb.co.uk/blog/fix-failing-software-project-financial-guide"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="underline decoration-kaizen-cyan decoration-2 underline-offset-4 hover:text-kaizen-cyan"
+              >
+                Financial Guide to Rescue vs Rebuild
+              </a>
+              . We explain the sunk cost fallacy and help you decide if your code is worth saving.
             </motion.p>
 
             <motion.div
