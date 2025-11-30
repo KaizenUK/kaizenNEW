@@ -198,6 +198,24 @@
       );
   }
 
+  /* PROTOCOL 3.10: Mobile Tap Target Compliance (Google Mobile Usability) */
+  button,
+  a,
+  [role="button"],
+  input[type="button"],
+  input[type="submit"] {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  /* Exception for icon-only buttons with explicit padding */
+  button.icon-only,
+  a.icon-only {
+    min-height: auto;
+    min-width: auto;
+    padding: 12px;
+  }
+
   :where(p, span, li, a, button, label, td, th) {
     overflow-wrap: anywhere;
     word-break: break-word;

@@ -787,8 +787,10 @@ const LatestInsights = () => {
                 <div className="h-40 w-full overflow-hidden rounded-t-2xl border-b border-slate-200/50 dark:border-slate-800/50">
                   <img
                     src={post.image}
-                    alt={post.title}
+                    alt={`Featured image for ${post.title} - Kaizen Web Liverpool`}
                     loading="lazy"
+                    width="800"
+                    height="600"
                     className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                   />
                 </div>
