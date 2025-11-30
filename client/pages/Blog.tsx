@@ -61,6 +61,7 @@ export default function Blog() {
   const [allTags, setAllTags] = useState<string[]>(["All"]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchState, setSearchState] = useState<BlogSearchState | null>(null);
+  const [visibleStandardCount, setVisibleStandardCount] = useState(5);
 
   useEffect(() => {
     const loadPosts = async () => {
@@ -140,6 +141,10 @@ export default function Blog() {
   const isSearching =
     !!searchState?.hasSearched && searchState.term.trim().length > 0;
   const searchResults = searchState?.results ?? [];
+
+  useEffect(() => {
+    setVisibleStandardCount(5);
+  }, [selectedTag, isSearching]);
 
   return (
     <Layout>
@@ -534,7 +539,7 @@ export default function Blog() {
                 </motion.div>
 
                 {/* Slot 4: Standard Grid Posts - 4 cols each */}
-                {remainingPosts.map((post, idx) => (
+                {remainingPosts.slice(0, visibleStandardCount).map((post, idx) => (
                   <motion.div
                     key={`standard-${post.id}`}
                     className="col-span-1 md:col-span-4"
@@ -577,6 +582,23 @@ export default function Blog() {
                     </Link>
                   </motion.div>
                 ))}
+
+                {remainingPosts.length > visibleStandardCount && (
+                  <div className="col-span-1 md:col-span-12 flex justify-center mt-4">
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setVisibleStandardCount((prev) =>
+                          Math.min(prev + 5, remainingPosts.length),
+                        )
+                      }
+                      className="inline-flex items-center gap-2 rounded-full border border-gray-200 bg-white px-5 py-2 text-sm font-medium text-gray-700 shadow-sm transition hover:border-gray-300 hover:text-gray-900 dark:border-gray-800 dark:bg-gray-900 dark:text-gray-200 dark:hover:border-gray-700 dark:hover:text-white"
+                    >
+                      Load more articles
+                      <ArrowRight className="h-4 w-4" />
+                    </button>
+                  </div>
+                )}
               </motion.div>
             ) : (
               <motion.div
