@@ -7,7 +7,7 @@ interface BreadcrumbItem {
 
 export const generateBreadcrumbSchema = (pathname: string) => {
   const segments = pathname.split("/").filter(Boolean);
-  
+
   if (segments.length === 0) {
     return null;
   }
@@ -26,7 +26,7 @@ export const generateBreadcrumbSchema = (pathname: string) => {
       .split("-")
       .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
       .join(" ");
-    
+
     breadcrumbs.push({
       name,
       url: `${SITE_URL}${currentPath}`,
