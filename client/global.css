@@ -282,7 +282,7 @@
   }
 
   .prose th {
-    @apply text-xs font-bold uppercase tracking-wider p-4 text-left border-b border-slate-800/40;
+    @apply text-xs font-bold uppercase tracking-wider p-4 text-center border-b border-slate-800/40;
   }
 
   .prose tbody tr:nth-child(odd) {
@@ -320,18 +320,21 @@
     max-height: 720px;
     margin-left: auto;
     margin-right: auto;
-    width: auto;
+    width: 100%;
+    height: auto;
     object-fit: contain;
   }
 
   @media (max-width: 640px) {
+    .prose,
+    .prose p,
+    .prose li {
+      text-align: left;
+    }
+
     .prose ul,
     .prose ol {
       padding-left: 1.25rem;
-    }
-
-    .prose li {
-      text-align: left;
     }
   }
 

@@ -357,7 +357,7 @@ function RichTextContent({ html }: RichTextContentProps) {
 
       const wrapper = document.createElement("div");
       wrapper.className =
-        "blog-table-wrapper overflow-x-auto my-6 scrollbar-hide -mx-4 sm:mx-0";
+        "blog-table-wrapper overflow-x-auto my-6 -mx-4 sm:mx-0";
       parent.insertBefore(wrapper, table);
       wrapper.appendChild(table);
     });
