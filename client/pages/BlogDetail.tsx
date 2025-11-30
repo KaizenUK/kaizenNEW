@@ -356,7 +356,8 @@ function RichTextContent({ html }: RichTextContentProps) {
       if (parent.classList.contains("blog-table-wrapper")) return;
 
       const wrapper = document.createElement("div");
-      wrapper.className = "blog-table-wrapper overflow-x-auto my-6";
+      wrapper.className =
+        "blog-table-wrapper overflow-x-auto my-6 scrollbar-hide -mx-4 sm:mx-0";
       parent.insertBefore(wrapper, table);
       wrapper.appendChild(table);
     });
