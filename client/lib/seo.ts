@@ -37,7 +37,7 @@ const pageMeta: Record<string, Partial<PageMeta>> = {
   "/": {
     title: "Web Design Liverpool & Wirral | 2025 Pricing | Kaizen",
     description:
-      "Premium Web Design for Liverpool & Wirral businesses. Specialist in React, WordPress & Project Rescue. See our 2025 Pricing Guide. Fixed quotes, no fluff.",
+      "Premium Web Design for Liverpool. AI-Augmented React & WordPress builds led by Contract Product Owners. Fixed price quotes, no fluff.",
     keywords: [
       "web design liverpool",
       "web design wirral",
@@ -52,9 +52,9 @@ const pageMeta: Record<string, Partial<PageMeta>> = {
     ],
   },
   "/services": {
-    title: "Digital Services for Liverpool SMEs | Kaizen Web",
+    title: "Digital Services Liverpool | Web Design & Product Strategy | Kaizen",
     description:
-      "Explore Kaizen Web services covering website design, UX, ecommerce, local SEO, and agile consulting tailored to Liverpool startups and established SMEs.",
+      "A product-led digital agency. Specialising in React Development, Software Rescue, and Agile Consultancy for Liverpool & Wirral SMEs.",
   },
   "/services/web-design-liverpool": {
     title: "High-Performance Web Design Liverpool | Kaizen",
@@ -114,10 +114,9 @@ const pageMeta: Record<string, Partial<PageMeta>> = {
     ],
   },
   "/services/ecommerce": {
-    title:
-      "E-commerce Development Liverpool | Fast Headless & WooCommerce | Kaizen",
+    title: "Shopify Experts Liverpool & Custom Ecommerce Development | Kaizen",
     description:
-      "We build high-performance e-commerce websites for Liverpool & Wirral. Stop losing sales to a slow site. We build fast, custom, headless e-commerce stores.",
+      "High-performance ecommerce. From Shopify setups to complex custom WooCommerce builds. We architect stores that convert.",
     keywords: [
       "ecommerce development liverpool",
       "headless ecommerce",
@@ -127,9 +126,9 @@ const pageMeta: Record<string, Partial<PageMeta>> = {
     ],
   },
   "/services/wordpress-web-design": {
-    title: "WordPress Web Design Liverpool | Fast, Secure WP Sites | Kaizen",
+    title: "Bespoke WordPress Development Liverpool | Kaizen",
     description:
-      "We build custom WordPress websites for Liverpool & Wirral. Get the power and familiarity of WordPress, built the right way: fast, secure, and with no bloat.",
+      "Custom WordPress theme development. No templates. We use AI-augmented coding to build fast, secure, and scalable sites managed by Product Owners.",
     keywords: [
       "wordpress web design liverpool",
       "wordpress developer wirral",
@@ -138,10 +137,9 @@ const pageMeta: Record<string, Partial<PageMeta>> = {
     ],
   },
   "/services/digital-transformation": {
-    title:
-      "Digital Transformation Liverpool | Business Process Automation | Kaizen",
+    title: "Digital Transformation Liverpool | Business Process Automation | Kaizen",
     description:
-      "We help Liverpool & Wirral businesses stop working in chaos. We automate manual tasks, fix inefficient workflows, and get your systems talking.",
+      "We don't just build websites; we automate businesses. AI-integrated workflows and custom software to reduce admin time by up to 40%.",
     keywords: [
       "digital transformation liverpool",
       "business process automation",
@@ -150,9 +148,9 @@ const pageMeta: Record<string, Partial<PageMeta>> = {
     ],
   },
   "/services/agile-coaching": {
-    title: "Agile Coaching for Liverpool Businesses | Kaizen",
+    title: "Agile Coaching Liverpool | Scrum & Kanban Consultancy | Kaizen",
     description:
-      "Stop wasting time on chaotic projects. We offer practical Agile coaching in Liverpool to help your team work smarter, faster, and more efficiently. No jargon.",
+      "Real Agile. No waffle. We coach Liverpool teams to move from chaotic workflows to strict sprints, improving delivery speed and team morale.",
     keywords: [
       "agile coaching liverpool",
       "agile for smes",
@@ -161,9 +159,9 @@ const pageMeta: Record<string, Partial<PageMeta>> = {
     ],
   },
   "/agile-coaching": {
-    title: "Agile Coaching for Liverpool Businesses | Kaizen",
+    title: "Agile Coaching Liverpool | Scrum & Kanban Consultancy | Kaizen",
     description:
-      "Stop wasting time on chaotic projects. We offer practical Agile coaching in Liverpool to help your team work smarter, faster, and more efficiently. No jargon.",
+      "Real Agile. No waffle. We coach Liverpool teams to move from chaotic workflows to strict sprints, improving delivery speed and team morale.",
     keywords: [
       "agile coaching liverpool",
       "agile for smes",
@@ -172,9 +170,9 @@ const pageMeta: Record<string, Partial<PageMeta>> = {
     ],
   },
   "/services/contract-product-owner": {
-    title: "Sean McDonnell | Contract Product Owner Liverpool | Kaizen",
+    title: "Contract Product Owner Liverpool | Agile Delivery & Strategy | Kaizen",
     description:
-      "Sean McDonnell, a Liverpool-based Senior Product Owner with 10+ years' experience in iGaming & high-stakes platform migration. I deliver complex projects, on time.",
+      "Stop hiring 'Yes Men'. Our Contract Product Owners prioritise ROI, manage the backlog, and ensure your software solves the actual business problem.",
     keywords: [
       "contract product owner liverpool",
       "senior product owner",
@@ -183,9 +181,9 @@ const pageMeta: Record<string, Partial<PageMeta>> = {
     ],
   },
   "/contract-product-owner": {
-    title: "Sean McDonnell | Contract Product Owner Liverpool | Kaizen",
+    title: "Contract Product Owner Liverpool | Agile Delivery & Strategy | Kaizen",
     description:
-      "Sean McDonnell, a Liverpool-based Senior Product Owner with 10+ years' experience in iGaming & high-stakes platform migration. I deliver complex projects, on time.",
+      "Stop hiring 'Yes Men'. Our Contract Product Owners prioritise ROI, manage the backlog, and ensure your software solves the actual business problem.",
     keywords: [
       "contract product owner liverpool",
       "senior product owner",
@@ -194,9 +192,9 @@ const pageMeta: Record<string, Partial<PageMeta>> = {
     ],
   },
   "/project-rescue": {
-    title: "Project Rescue & Contract Product Ownership | Kaizen Liverpool",
+    title: "Software Project Rescue Services Liverpool | Code Audits | Kaizen",
     description:
-      "When your build is over budget, late, or stuck, Kaizen steps in as a hands-on Contract Product Owner to stabilise delivery and actually ship.",
+      "Stalled build? We fix failing software projects. Our AI diagnostics audit legacy code in minutes to help you decide: Rescue or Rebuild?",
     keywords: [
       "project rescue liverpool",
       "contract product owner",
