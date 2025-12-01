@@ -5,34 +5,52 @@ header('Content-Type: application/xml; charset=UTF-8');
 
 $base = 'https://kaizenweb.co.uk';
 
-// ---------------------------------------------------------------------
-// 1. Static pages – all your key marketing URLs
-// ---------------------------------------------------------------------
+/**
+ * Normalise URLs:
+ * - ensures exactly one slash between base and path
+ * - removes trailing slash (except for homepage "/")
+ */
+function build_loc(string $base, string $path): string {
+    $base = rtrim($base, '/');
 
+    if ($path === '/' || $path === '') {
+        return $base . '/';
+    }
+
+    $path = '/' . ltrim($path, '/');
+    $loc  = $base . $path;
+
+    // Remove trailing slash (but keep homepage as "/")
+    return rtrim($loc, '/');
+}
+
+// ---------------------------------------------------------------------
+// 1) Static pages – EXACT set you requested
+// ---------------------------------------------------------------------
 $staticPaths = [
-    '/',                                        // Home
+    '/',
     '/services/web-design-liverpool',
+    '/web-design-wirral',
     '/services/wordpress-web-design',
-    '/services/ecommerce',                      // adjust if your actual route is different
-    '/services/local-seo',
+    '/services/ecommerce',
+    '/web-design-liverpool-city-centre',
+    '/project-rescue',
+    '/contract-product-owner',
+    '/agile-coaching',
     '/services/digital-transformation',
+    '/blog',
 
-    '/agile-coaching',                          // if the live route is /services/agile-coaching, change/remove as needed
-    '/contract-product-owner',                  // same note as above
-    '/services/agile-coaching',                 // included because it appeared in your earlier XML snippet
-    '/services/contract-product-owner',
-
-    '/about',
-    '/pledge',
-    '/case-studies',
     '/case-studies/as-collections',
     '/case-studies/helen-moore-hairdressing',
-    '/case-studies/independent-retailer',
-    '/blog',
-    '/project-rescue',
+    '/case-studies/kaizen-rebuild',
+
+    '/pledge',
+    '/about',
     '/contact',
-    '/web-design-liverpool-city-centre',
+
+    // policies
     '/privacy-policy',
+    '/cookie-policy',
     '/gdpr-policy',
 ];
 
@@ -40,21 +58,15 @@ $urls = [];
 
 // Build static URL entries
 foreach ($staticPaths as $path) {
-    // Normalise base + path (avoid double slashes)
-    $loc = rtrim($base, '/') . $path;
-
     $urls[] = [
-        'loc' => $loc,
-        // no changefreq/priority – optional in sitemaps
+        'loc' => build_loc($base, $path),
     ];
 }
 
 // ---------------------------------------------------------------------
-// 2. Dynamic blog posts from headless WP (/cms)
+// 2) Dynamic blog posts from headless WP (/cms)
 // ---------------------------------------------------------------------
-
-// WordPress REST API endpoint to fetch published posts
-$endpoint = 'https://www.kaizenweb.co.uk/cms/wp-json/wp/v2/posts?status=publish&per_page=100&_fields=slug,modified';
+$endpoint = $base . '/cms/wp-json/wp/v2/posts?status=publish&per_page=100&_fields=slug,modified';
 
 $json = @file_get_contents($endpoint);
 
@@ -69,12 +81,10 @@ if ($json !== false) {
 
             $slug = $post['slug'];
 
-            // Front-end URL pattern for blog posts
-            $loc = rtrim($base, '/') . '/blog/' . $slug . '/';
+            // IMPORTANT: no trailing slash to avoid 301 redirects in sitemap
+            $loc = build_loc($base, '/blog/' . $slug);
 
-            $entry = [
-                'loc' => $loc,
-            ];
+            $entry = ['loc' => $loc];
 
             if (!empty($post['modified'])) {
                 $ts = strtotime($post['modified']);
@@ -89,18 +99,17 @@ if ($json !== false) {
 }
 
 // ---------------------------------------------------------------------
-// 3. Output XML
+// 3) Output XML
 // ---------------------------------------------------------------------
-
 echo '<?xml version="1.0" encoding="UTF-8"?>' . "\n";
 echo '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' . "\n";
 
 foreach ($urls as $url) {
     echo "  <url>\n";
-    echo '    <loc>' . htmlspecialchars($url['loc'], ENT_XML1) . '</loc>' . "\n";
+    echo '    <loc>' . htmlspecialchars($url['loc'], ENT_XML1) . "</loc>\n";
 
     if (!empty($url['lastmod'])) {
-        echo '    <lastmod>' . $url['lastmod'] . '</lastmod>' . "\n";
+        echo '    <lastmod>' . $url['lastmod'] . "</lastmod>\n";
     }
 
     echo "  </url>\n";
