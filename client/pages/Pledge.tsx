@@ -113,14 +113,14 @@ export default function Pledge() {
       {/* Section 1: Hero - Code Commit Style */}
       <section className="min-h-screen bg-slate-900 dark:bg-slate-950 flex items-center justify-center py-20 px-4">
         <div className="max-w-3xl w-full">
-          <div className="font-mono text-kaizen-cyan text-4xl md:text-6xl font-bold leading-tight">
+          <h1 className="font-mono text-kaizen-cyan text-4xl md:text-6xl font-bold leading-tight">
             <span>{displayedText}</span>
             <span
               className={`${cursorVisible ? "opacity-100" : "opacity-0"} transition-opacity`}
             >
               _
             </span>
-          </div>
+          </h1>
 
           <motion.div
             className="mt-12 space-y-3 font-mono text-sm md:text-base text-gray-400"

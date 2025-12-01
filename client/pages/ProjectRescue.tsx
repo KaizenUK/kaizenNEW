@@ -303,6 +303,39 @@ export default function ProjectRescue() {
         </div>
       </section>
 
+      {/* Comprehensive Software Project Rescue Services */}
+      <section className="py-20 md:py-32 bg-white dark:bg-slate-950">
+        <div className="container mx-auto px-4">
+          <ScrollReveal>
+            <div className="max-w-3xl mx-auto mb-16">
+              <h2 className="text-4xl md:text-5xl font-heading font-bold mb-8 text-kaizen-dark dark:text-white">
+                Comprehensive Software Project Rescue Services
+              </h2>
+              <p className="text-lg text-kaizen-text-dark/70 dark:text-white/70 leading-relaxed mb-8">
+                Our rescue process isn't just about fixing bugs; it's about securing your asset. We specialise in:
+              </p>
+              <div className="space-y-4">
+                <div>
+                  <h3 className="font-heading font-bold text-lg text-kaizen-dark dark:text-white mb-2">Code Audits & Triage</h3>
+                  <p className="text-base text-kaizen-text-dark/70 dark:text-white/70">Identifying toxic code and security risks in 48 hours.</p>
+                </div>
+                <div>
+                  <h3 className="font-heading font-bold text-lg text-kaizen-dark dark:text-white mb-2">Legacy System Modernisation</h3>
+                  <p className="text-base text-kaizen-text-dark/70 dark:text-white/70">Moving you off outdated PHP or old React versions without losing data.</p>
+                </div>
+                <div>
+                  <h3 className="font-heading font-bold text-lg text-kaizen-dark dark:text-white mb-2">Vendor Handover</h3>
+                  <p className="text-base text-kaizen-text-dark/70 dark:text-white/70">We manage the difficult transition from your previous agency to ensure you regain control of your IP.</p>
+                </div>
+              </div>
+              <p className="text-lg text-kaizen-text-dark/70 dark:text-white/70 leading-relaxed mt-8">
+                Don't let a failed build kill your runway. We fix failing software projects so you can finally launch.
+              </p>
+            </div>
+          </ScrollReveal>
+        </div>
+      </section>
+
       {/* FAQ: Project Rescue */}
       <FaqSection
         heading="Project Rescue FAQs"

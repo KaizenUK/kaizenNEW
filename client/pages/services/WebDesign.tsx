@@ -170,9 +170,7 @@ export default function WebDesign() {
               transition={{ delay: 0.6, duration: 0.6 }}
             >
               <p>
-                A website is a high-performance asset designed to get you leads.
-                We build websites in Liverpool that are fast, secure, and built
-                on a modern technical stack.
+                Kaizen is a product-led Liverpool digital agency that rejects the "cookie-cutter" approach. We focus purely on bespoke web design for businesses that need assets, not brochures. By combining AI-augmented development with senior Product Ownership, we deliver enterprise-grade React & WordPress sites at a fraction of the traditional cost.
               </p>
             </motion.div>
 
