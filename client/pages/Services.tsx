@@ -20,6 +20,13 @@ export default function Services() {
     },
     {
       icon: Code2,
+      title: "Web Design Liverpool City Centre",
+      description:
+        "Specialist web design for Liverpool city centre businesses with unique needs.",
+      link: "/web-design-liverpool-city-centre",
+    },
+    {
+      icon: Code2,
       title: "WordPress Web Design",
       description:
         "Custom, fast, and secure WordPress sites built the right way. No bloat, just performance.",
