@@ -141,7 +141,13 @@ export default function DigitalTransformation() {
             animate={{ opacity: 1 }}
             transition={{ duration: 0.6 }}
           >
-            <KineticTypography />
+            <h1 className="text-5xl md:text-6xl lg:text-7xl font-heading font-black mb-6 leading-tight text-kaizen-dark dark:text-white">
+              Digital Transformation Liverpool
+            </h1>
+
+            <h2 className="text-2xl md:text-3xl font-heading font-semibold mb-12 leading-tight text-kaizen-dark dark:text-white/90">
+              Automated. Integrated. Flowing.
+            </h2>
           </motion.div>
 
           <motion.div

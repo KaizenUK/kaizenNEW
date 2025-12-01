@@ -128,23 +128,30 @@ export default function AgileCoaching() {
         <div className="container mx-auto px-4">
           <div className="max-w-4xl">
             {/* Main H1 - Staggered word reveal */}
-            <h1 className="text-6xl md:text-7xl lg:text-8xl font-heading font-black mb-12 leading-tight text-kaizen-dark dark:text-white">
-              {["Stop.", "Wasting.", "Time."].map((word, index) => (
-                <motion.span
-                  key={index}
-                  className="block"
-                  initial={{ opacity: 0, y: 30 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{
-                    delay: index * 0.15,
-                    duration: 0.5,
-                    ease: "easeOut",
-                  }}
-                >
-                  {word}
-                </motion.span>
-              ))}
+            <h1 className="text-5xl md:text-6xl lg:text-7xl font-heading font-black mb-6 leading-tight text-kaizen-dark dark:text-white">
+              {["Agile", "Coaching", "&", "Consultancy", "Liverpool"].map(
+                (word, index) => (
+                  <motion.span
+                    key={index}
+                    className="block"
+                    initial={{ opacity: 0, y: 30 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{
+                      delay: index * 0.15,
+                      duration: 0.5,
+                      ease: "easeOut",
+                    }}
+                  >
+                    {word}
+                  </motion.span>
+                ),
+              )}
             </h1>
+
+            {/* Sub-headline H2 */}
+            <h2 className="text-2xl md:text-3xl font-heading font-semibold mb-12 leading-tight text-kaizen-dark dark:text-white/90">
+              Stop. Wasting. Time. Start Shipping.
+            </h2>
 
             {/* Sub-headline */}
             <motion.p

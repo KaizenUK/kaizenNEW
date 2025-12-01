@@ -69,7 +69,7 @@ export default function Services() {
         <div className="container mx-auto px-4">
           <div className="max-w-3xl">
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-heading font-bold mb-6 leading-tight">
-              Our Services
+              Digital Services Liverpool
             </h1>
             <p className="text-lg text-kaizen-text-light/80 mb-8">
               We help Liverpool businesses build better digital products. From

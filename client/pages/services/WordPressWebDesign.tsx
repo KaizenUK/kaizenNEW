@@ -203,7 +203,7 @@ export default function WordPressWebDesign() {
               transition={{ duration: 0.9, ease: "easeOut" }}
             >
               <motion.h1 className="text-4xl md:text-5xl lg:text-6xl font-heading font-black mb-6 leading-tight text-kaizen-dark dark:text-white">
-                {["WordPress", "Web Design", "Liverpool."].map(
+                {["Bespoke", "WordPress", "Development", "Liverpool."].map(
                   (word, index) => (
                     <motion.span
                       key={index}
