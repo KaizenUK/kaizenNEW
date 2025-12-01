@@ -138,8 +138,7 @@ const pageMeta: Record<string, Partial<PageMeta>> = {
     ],
   },
   "/services/digital-transformation": {
-    title:
-      "Digital Transformation Liverpool | Business Automation | Kaizen",
+    title: "Digital Transformation Liverpool | Business Automation | Kaizen",
     description:
       "We don't just build websites; we automate businesses. AI-integrated workflows and custom software to reduce admin time by up to 40%.",
     keywords: [

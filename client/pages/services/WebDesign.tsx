@@ -170,7 +170,12 @@ export default function WebDesign() {
               transition={{ delay: 0.6, duration: 0.6 }}
             >
               <p>
-                Kaizen is a product-led Liverpool digital agency that rejects the "cookie-cutter" approach. We focus purely on bespoke web design for businesses that need assets, not brochures. By combining AI-augmented development with senior Product Ownership, we deliver enterprise-grade React & WordPress sites at a fraction of the traditional cost.
+                Kaizen is a product-led Liverpool digital agency that rejects
+                the "cookie-cutter" approach. We focus purely on bespoke web
+                design for businesses that need assets, not brochures. By
+                combining AI-augmented development with senior Product
+                Ownership, we deliver enterprise-grade React & WordPress sites
+                at a fraction of the traditional cost.
               </p>
             </motion.div>
 

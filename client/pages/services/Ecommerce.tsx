@@ -295,20 +295,31 @@ export default function Ecommerce() {
                 Shopify Experts & Custom Ecommerce in Liverpool
               </h2>
               <p className="text-xl text-kaizen-text-dark/70 dark:text-white/70 leading-relaxed mb-8">
-                We don't just build online shops; we build high-performance revenue engines.
+                We don't just build online shops; we build high-performance
+                revenue engines.
               </p>
               <p className="text-lg text-kaizen-text-dark/70 dark:text-white/70 leading-relaxed mb-8">
-                As Shopify Experts in Liverpool, we help brands move beyond basic themes to create custom, high-converting storefronts. Whether you need a headless Shopify build for speed or a custom WooCommerce development to handle complex inventory logic, we architect the solution that fits your scale.
+                As Shopify Experts in Liverpool, we help brands move beyond
+                basic themes to create custom, high-converting storefronts.
+                Whether you need a headless Shopify build for speed or a custom
+                WooCommerce development to handle complex inventory logic, we
+                architect the solution that fits your scale.
               </p>
               <div className="space-y-4">
                 <div>
-                  <h3 className="font-heading font-bold text-lg text-kaizen-dark dark:text-white mb-2">Shopify: For rapid scale and ease of use.</h3>
+                  <h3 className="font-heading font-bold text-lg text-kaizen-dark dark:text-white mb-2">
+                    Shopify: For rapid scale and ease of use.
+                  </h3>
                 </div>
                 <div>
-                  <h3 className="font-heading font-bold text-lg text-kaizen-dark dark:text-white mb-2">WooCommerce: For total control and custom integrations.</h3>
+                  <h3 className="font-heading font-bold text-lg text-kaizen-dark dark:text-white mb-2">
+                    WooCommerce: For total control and custom integrations.
+                  </h3>
                 </div>
                 <div>
-                  <h3 className="font-heading font-bold text-lg text-kaizen-dark dark:text-white mb-2">Headless: For enterprise-grade speed.</h3>
+                  <h3 className="font-heading font-bold text-lg text-kaizen-dark dark:text-white mb-2">
+                    Headless: For enterprise-grade speed.
+                  </h3>
                 </div>
               </div>
             </div>
