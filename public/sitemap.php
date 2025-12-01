@@ -29,19 +29,22 @@ function build_loc(string $base, string $path): string {
 // ---------------------------------------------------------------------
 $staticPaths = [
     '/',
+    '/services',
     '/services/web-design-liverpool',
     '/web-design-wirral',
     '/services/wordpress-web-design',
     '/services/ecommerce',
     '/web-design-liverpool-city-centre',
+    '/services/digital-transformation',
     '/project-rescue',
     '/contract-product-owner',
     '/agile-coaching',
-    '/services/digital-transformation',
     '/blog',
 
+    '/case-studies',
     '/case-studies/as-collections',
     '/case-studies/helen-moore-hairdressing',
+    '/case-studies/independent-retailer',
     '/case-studies/kaizen-rebuild',
 
     '/pledge',
