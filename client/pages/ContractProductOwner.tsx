@@ -223,8 +223,8 @@ export default function ContractProductOwner() {
         <div className="container mx-auto px-4">
           <div className="max-w-4xl">
             {/* Main H1 - Staggered word reveal */}
-            <h1 className="text-5xl md:text-6xl lg:text-7xl font-heading font-black mb-12 leading-tight text-kaizen-dark dark:text-white">
-              {["Your", "project", "needs", "one", "owner."].map(
+            <h1 className="text-5xl md:text-6xl lg:text-7xl font-heading font-black mb-6 leading-tight text-kaizen-dark dark:text-white">
+              {["Contract", "Product", "Owner", "Services"].map(
                 (word, index) => (
                   <motion.span
                     key={index}
@@ -242,6 +242,11 @@ export default function ContractProductOwner() {
                 ),
               )}
             </h1>
+
+            {/* Sub-headline H2 */}
+            <h2 className="text-2xl md:text-3xl font-heading font-semibold mb-12 leading-tight text-kaizen-dark dark:text-white/90">
+              Your project needs a leader, not just a manager.
+            </h2>
 
             {/* Sub-headline */}
             <motion.p

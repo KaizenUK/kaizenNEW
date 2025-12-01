@@ -169,7 +169,7 @@ export default function Ecommerce() {
               transition={{ duration: 0.8, ease: "easeOut" }}
             >
               <h1 className="text-5xl md:text-6xl lg:text-7xl font-heading font-black mb-6 leading-tight text-white">
-                {["E-commerce", "That", "Sells."].map((word, index) => (
+                {["Shopify", "Experts", "&", "Custom", "Ecommerce"].map((word, index) => (
                   <motion.span
                     key={index}
                     className="block"
