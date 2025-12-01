@@ -169,21 +169,23 @@ export default function Ecommerce() {
               transition={{ duration: 0.8, ease: "easeOut" }}
             >
               <h1 className="text-5xl md:text-6xl lg:text-7xl font-heading font-black mb-6 leading-tight text-white">
-                {["Shopify", "Experts", "&", "Custom", "Ecommerce"].map((word, index) => (
-                  <motion.span
-                    key={index}
-                    className="block"
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{
-                      delay: index * 0.2,
-                      duration: 0.6,
-                      ease: "easeOut",
-                    }}
-                  >
-                    {word}
-                  </motion.span>
-                ))}
+                {["Shopify", "Experts", "&", "Custom", "Ecommerce"].map(
+                  (word, index) => (
+                    <motion.span
+                      key={index}
+                      className="block"
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{
+                        delay: index * 0.2,
+                        duration: 0.6,
+                        ease: "easeOut",
+                      }}
+                    >
+                      {word}
+                    </motion.span>
+                  ),
+                )}
               </h1>
             </motion.div>
 

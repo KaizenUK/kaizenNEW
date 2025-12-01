@@ -52,7 +52,8 @@ const pageMeta: Record<string, Partial<PageMeta>> = {
     ],
   },
   "/services": {
-    title: "Digital Services Liverpool | Web Design & Product Strategy | Kaizen",
+    title:
+      "Digital Services Liverpool | Web Design & Product Strategy | Kaizen",
     description:
       "A product-led digital agency. Specialising in React Development, Software Rescue, and Agile Consultancy for Liverpool & Wirral SMEs.",
   },
@@ -137,7 +138,8 @@ const pageMeta: Record<string, Partial<PageMeta>> = {
     ],
   },
   "/services/digital-transformation": {
-    title: "Digital Transformation Liverpool | Business Process Automation | Kaizen",
+    title:
+      "Digital Transformation Liverpool | Business Process Automation | Kaizen",
     description:
       "We don't just build websites; we automate businesses. AI-integrated workflows and custom software to reduce admin time by up to 40%.",
     keywords: [
@@ -170,7 +172,8 @@ const pageMeta: Record<string, Partial<PageMeta>> = {
     ],
   },
   "/services/contract-product-owner": {
-    title: "Contract Product Owner Liverpool | Agile Delivery & Strategy | Kaizen",
+    title:
+      "Contract Product Owner Liverpool | Agile Delivery & Strategy | Kaizen",
     description:
       "Stop hiring 'Yes Men'. Our Contract Product Owners prioritise ROI, manage the backlog, and ensure your software solves the actual business problem.",
     keywords: [
@@ -181,7 +184,8 @@ const pageMeta: Record<string, Partial<PageMeta>> = {
     ],
   },
   "/contract-product-owner": {
-    title: "Contract Product Owner Liverpool | Agile Delivery & Strategy | Kaizen",
+    title:
+      "Contract Product Owner Liverpool | Agile Delivery & Strategy | Kaizen",
     description:
       "Stop hiring 'Yes Men'. Our Contract Product Owners prioritise ROI, manage the backlog, and ensure your software solves the actual business problem.",
     keywords: [
