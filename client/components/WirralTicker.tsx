@@ -23,7 +23,7 @@ export const WirralTicker = memo(function WirralTicker() {
       <div className="absolute left-0 top-0 bottom-0 w-12 bg-gradient-to-r from-slate-900 to-transparent z-10" />
       <div className="absolute right-0 top-0 bottom-0 w-12 bg-gradient-to-l from-slate-900 to-transparent z-10" />
 
-      <div className="relative z-20 mb-2 px-4 text-xs md:text-sm font-mono uppercase tracking-[0.25em] text-slate-400">
+      <div className="relative z-20 mb-2 px-4 text-xs md:text-sm font-mono uppercase tracking-[0.25em] text-slate-400 text-center">
         Proudly Serving Businesses From:
       </div>
 
