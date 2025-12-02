@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Layout from "@/components/Layout";
-import { motion } from "framer-motion";
-import { ArrowRight, Map } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { ArrowRight, Map, CheckCircle2, Zap, Users, BarChart3 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useCalendly } from "@/context/CalendlyContext";
 import { FaqSection } from "@/components/FaqSection";
@@ -94,6 +94,166 @@ function WirralTopoBackground() {
   );
 }
 
+function BlueprintAnimation() {
+  const [activeStep, setActiveStep] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setActiveStep((prev) => (prev + 1) % 4);
+    }, 2000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const getBoxStyle = (stepIndex: number) => {
+    const isActive = activeStep === stepIndex;
+    return isActive
+      ? "stroke-cyan-400 dark:stroke-cyan-300 stroke-[3px] filter drop-shadow-lg transition-all duration-300"
+      : "stroke-slate-300 dark:stroke-slate-700 stroke-1 transition-all duration-300";
+  };
+
+  const getTextStyle = (stepIndex: number) => {
+    const isActive = activeStep === stepIndex;
+    return isActive
+      ? "fill-cyan-600 dark:fill-cyan-300 font-bold transition-all duration-300"
+      : "fill-slate-400 dark:fill-slate-500 font-normal transition-all duration-300";
+  };
+
+  return (
+    <div className="relative w-full max-w-md mx-auto">
+      <svg
+        className="w-full h-auto"
+        viewBox="0 0 300 400"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        {/* Step 0: Hero */}
+        <rect
+          x="20"
+          y="20"
+          width="260"
+          height="60"
+          rx="4"
+          className={`${getBoxStyle(0)} fill-white dark:fill-slate-900`}
+        />
+        <text
+          x="150"
+          y="55"
+          textAnchor="middle"
+          className={`text-xs font-mono ${getTextStyle(0)}`}
+        >
+          Hero: "Book Now"
+        </text>
+
+        {/* Arrow 1 */}
+        <motion.path
+          d="M 150 80 L 150 110"
+          stroke="currentColor"
+          strokeWidth="2"
+          className={activeStep >= 0 ? "text-cyan-400" : "text-slate-200"}
+          initial={{ pathLength: 0 }}
+          animate={{ pathLength: activeStep >= 0 ? 1 : 0 }}
+        />
+
+        {/* Step 1: Services & Booking */}
+        <g>
+          <rect
+            x="20"
+            y="110"
+            width="120"
+            height="80"
+            rx="4"
+            className={`${getBoxStyle(1)} fill-white dark:fill-slate-900`}
+          />
+          <text
+            x="80"
+            y="155"
+            textAnchor="middle"
+            className={`text-xs font-mono ${getTextStyle(1)}`}
+          >
+            Services
+          </text>
+
+          <rect
+            x="160"
+            y="110"
+            width="120"
+            height="80"
+            rx="4"
+            className={`${getBoxStyle(2)} fill-white dark:fill-slate-900`}
+          />
+          <text
+            x="220"
+            y="155"
+            textAnchor="middle"
+            className={`text-xs font-mono ${getTextStyle(2)}`}
+          >
+            Booking
+          </text>
+        </g>
+
+        {/* Arrows 2 */}
+        <motion.path
+          d="M 80 190 L 80 220"
+          stroke="currentColor"
+          strokeWidth="2"
+          className={activeStep >= 1 ? "text-cyan-400" : "text-slate-200"}
+          initial={{ pathLength: 0 }}
+          animate={{ pathLength: activeStep >= 1 ? 1 : 0 }}
+        />
+        <motion.path
+          d="M 220 190 L 220 220"
+          stroke="currentColor"
+          strokeWidth="2"
+          className={activeStep >= 2 ? "text-cyan-400" : "text-slate-200"}
+          initial={{ pathLength: 0 }}
+          animate={{ pathLength: activeStep >= 2 ? 1 : 0 }}
+        />
+
+        {/* Step 3: Contact */}
+        <rect
+          x="20"
+          y="220"
+          width="260"
+          height="60"
+          rx="4"
+          className={`${getBoxStyle(3)} fill-white dark:fill-slate-900`}
+        />
+        <text
+          x="150"
+          y="255"
+          textAnchor="middle"
+          className={`text-xs font-mono ${getTextStyle(3)}`}
+        >
+          Contact & Trust
+        </text>
+
+        {/* Decorative dots */}
+        <circle cx="290" cy="40" r="4" className="fill-cyan-400/50" />
+        <circle cx="10" cy="300" r="4" className="fill-lime-400/50" />
+      </svg>
+      
+      <div className="absolute bottom-10 left-0 right-0 text-center">
+        <p className="text-xs font-mono uppercase tracking-widest text-slate-500 dark:text-slate-400">
+          <AnimatePresence mode="wait">
+            <motion.span
+              key={activeStep}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              className="block font-bold text-cyan-500"
+            >
+              {activeStep === 0 && "Capturing Attention"}
+              {activeStep === 1 && "Guiding Interest"}
+              {activeStep === 2 && "Securing Commitment"}
+              {activeStep === 3 && "Building Trust"}
+            </motion.span>
+          </AnimatePresence>
+        </p>
+      </div>
+    </div>
+  );
+}
+
 export default function WebDesignWirral() {
   const { openCalendly } = useCalendly();
   const [showMobileComparison, setShowMobileComparison] = useState(false);
@@ -101,28 +261,26 @@ export default function WebDesignWirral() {
   return (
     <Layout>
       {/* Hero */}
-      <section className="relative overflow-hidden bg-slate-950 text-white py-20 px-4">
-        <div className="absolute inset-0 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950" />
+      <section className="relative overflow-hidden bg-slate-950 text-white py-24 lg:py-32 px-4">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-slate-900 via-slate-950 to-slate-950" />
         <WirralTopoBackground />
 
-        <div className="relative container mx-auto max-w-5xl">
+        <div className="relative container mx-auto max-w-6xl">
           <motion.div
             variants={containerVariants}
             initial="hidden"
             animate="visible"
-            className="grid grid-cols-1 lg:grid-cols-[minmax(0,3fr)_minmax(0,2fr)] gap-12 items-center"
+            className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center"
           >
-            <motion.div variants={fadeInUp}>
-              <p className="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-[0.25em] text-cyan-300/80 mb-4">
-                <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-cyan-500/10 border border-cyan-400/40">
-                  <Map className="w-3 h-3" />
-                </span>
-                Web Design on the Wirral
-              </p>
+            <motion.div variants={fadeInUp} className="relative z-10">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-950/50 border border-cyan-800/50 text-cyan-300 text-xs font-mono uppercase tracking-wider mb-6">
+                <Map className="w-3 h-3" />
+                <span>Web Design Wirral</span>
+              </div>
 
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-heading font-black leading-tight mb-4">
-                <p>Web Design Wirral</p>
-                <span className="bg-gradient-to-r from-cyan-400 to-lime-400 bg-clip-text text-transparent">
+              <h1 className="text-5xl md:text-6xl lg:text-7xl font-heading font-black leading-[1.1] mb-6 tracking-tight">
+                Bespoke Web Design <br />
+                <span className="bg-gradient-to-r from-cyan-400 via-teal-300 to-lime-400 bg-clip-text text-transparent">
                   <TypewriterEffect
                     words={[
                       "No fluff. Just ROI.",
@@ -135,26 +293,18 @@ export default function WebDesignWirral() {
                     className="inline-block"
                   />
                 </span>
-                <br />
               </h1>
 
-              <div className="text-lg md:text-xl text-slate-300 max-w-2xl mb-8">
-                <p>
-                  High-Performance Websites for Bromborough, Heswall, West Kirby
-                  &amp; Birkenhead and more.{" "}
-                </p>
-                <p>
-                  <br />
-                </p>
-                <p>Led by Contract Product Owners, not Salespeople.</p>
-              </div>
+              <p className="text-xl text-slate-300 max-w-xl mb-8 leading-relaxed">
+                Don't settle for slow templates. We build high-performance, bespoke websites for Wirral businesses that rank, convert, and scale.
+              </p>
 
               <div className="flex flex-col sm:flex-row gap-4">
                 <button
                   onClick={openCalendly}
-                  className="inline-flex items-center justify-center gap-2 px-8 py-3 rounded-full bg-gradient-to-r from-cyan-400 to-lime-400 text-slate-950 font-heading font-bold hover:shadow-lg hover:shadow-cyan-400/40 transition"
+                  className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full bg-cyan-500 text-white font-heading font-bold hover:bg-cyan-400 hover:shadow-[0_0_20px_rgba(34,211,238,0.4)] transition-all duration-300 transform hover:-translate-y-1"
                 >
-                  Book a 15 Minute Call
+                  Book a Demo
                   <ArrowRight size={18} />
                 </button>
 
@@ -162,81 +312,45 @@ export default function WebDesignWirral() {
                   href="https://kaizenweb.co.uk/blog/bespoke-web-design-vs-templates-wirral"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center justify-center gap-2 px-8 py-3 rounded-full border border-white/20 text-sm font-heading text-white/80 hover:text-white hover:bg-white/5 transition"
+                  className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full border border-slate-700 bg-slate-900/50 text-slate-300 font-heading font-medium hover:bg-slate-800 hover:text-white transition-all duration-300 backdrop-blur-sm"
                 >
-                  View Wirral case study
+                  View Case Study
                 </a>
               </div>
-
-              <p className="mt-6 text-xs font-mono text-slate-400 uppercase tracking-[0.25em]">
-                Built with React, Vite and a performance-first mindset.
-              </p>
             </motion.div>
 
-            <motion.div variants={fadeInUp} className="space-y-4">
-              <p className="text-xs font-mono uppercase tracking-[0.25em] text-slate-400">
-                Who we serve
-              </p>
-
-              <div className="grid grid-cols-1 gap-4">
-                {/* Heswall - Premium Service Brands */}
-                <div className="bg-slate-900/70 border border-white/10 rounded-2xl overflow-hidden backdrop-blur-md hover:border-cyan-400/30 transition">
-                  <img
-                    src="https://cdn.builder.io/api/v1/image/assets%2Fe4ae46bbd81b4b95bef54d66dd9748cc%2F980902625e90433687c83e0f3aa10a5d?format=webp&width=800"
-                    alt="Premium web design for professional services in Heswall and Wirral"
-                    className="w-full h-32 object-cover"
-                    loading="lazy"
-                    decoding="async"
-                  />
-                  <div className="p-6">
-                    <h3 className="text-lg font-semibold text-white mb-2">
-                      Heswall
-                    </h3>
-                    <p className="text-sm text-slate-300">
-                      Premium Service Brands. Owner-led service businesses that
-                      need enquiries, not vanity metrics.
-                    </p>
+            <motion.div variants={fadeInUp} className="relative">
+              <div className="absolute -inset-4 bg-gradient-to-r from-cyan-500/20 to-lime-500/20 rounded-[2rem] blur-2xl opacity-50" />
+              <div className="relative bg-slate-900/80 border border-slate-800 rounded-2xl p-6 backdrop-blur-xl shadow-2xl">
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="col-span-2 bg-slate-800/50 rounded-xl p-4 border border-slate-700/50">
+                    <div className="flex items-center gap-3 mb-2">
+                      <div className="w-2 h-2 rounded-full bg-red-500" />
+                      <div className="w-2 h-2 rounded-full bg-yellow-500" />
+                      <div className="w-2 h-2 rounded-full bg-green-500" />
+                    </div>
+                    <div className="space-y-2">
+                      <div className="h-2 w-3/4 bg-slate-700 rounded" />
+                      <div className="h-2 w-1/2 bg-slate-700 rounded" />
+                    </div>
+                  </div>
+                  <div className="bg-slate-800/50 rounded-xl p-4 border border-slate-700/50 flex items-center justify-center">
+                    <div className="text-center">
+                      <div className="text-3xl font-bold text-cyan-400">98</div>
+                      <div className="text-[10px] uppercase tracking-wider text-slate-400">Performance</div>
+                    </div>
+                  </div>
+                  <div className="bg-slate-800/50 rounded-xl p-4 border border-slate-700/50 flex items-center justify-center">
+                    <div className="text-center">
+                      <div className="text-3xl font-bold text-lime-400">100</div>
+                      <div className="text-[10px] uppercase tracking-wider text-slate-400">SEO</div>
+                    </div>
                   </div>
                 </div>
-
-                {/* West Kirby - Experience & Retail */}
-                <div className="bg-slate-900/70 border border-white/10 rounded-2xl overflow-hidden backdrop-blur-md hover:border-cyan-400/30 transition">
-                  <img
-                    src="https://cdn.builder.io/api/v1/image/assets%2Fe4ae46bbd81b4b95bef54d66dd9748cc%2F094cdc9be84c41ee9db80308cbe5ea73?format=webp&width=800"
-                    alt="Bespoke website design for West Kirby cafes, retail, and lifestyle brands"
-                    className="w-full h-32 object-cover"
-                    loading="lazy"
-                    decoding="async"
-                  />
-                  <div className="p-6">
-                    <h3 className="text-lg font-semibold text-white mb-2">
-                      West Kirby
-                    </h3>
-                    <p className="text-sm text-slate-300">
-                      Experience & Retail. Cafes, salons and experience-led
-                      brands that live or die on local reputation.
-                    </p>
-                  </div>
-                </div>
-
-                {/* Birkenhead - Industrial & B2B */}
-                <div className="bg-slate-900/70 border border-white/10 rounded-2xl overflow-hidden backdrop-blur-md hover:border-cyan-400/30 transition">
-                  <img
-                    src="https://cdn.builder.io/api/v1/image/assets%2Fe4ae46bbd81b4b95bef54d66dd9748cc%2Fbbfbdeb9f4684103a86bcdf7d0ac4d6a?format=webp&width=800"
-                    alt="B2B web development for Birkenhead industrial and trade businesses"
-                    className="w-full h-32 object-cover"
-                    loading="lazy"
-                    decoding="async"
-                  />
-                  <div className="p-6">
-                    <h3 className="text-lg font-semibold text-white mb-2">
-                      Birkenhead
-                    </h3>
-                    <p className="text-sm text-slate-300">
-                      Industrial & B2B. Trades who need a site that looks
-                      credible and loads fast on tired work phones.
-                    </p>
-                  </div>
+                <div className="mt-6 pt-6 border-t border-slate-800">
+                  <p className="text-sm text-slate-400 text-center font-mono">
+                    "Kaizen rebuilt our site and enquiries doubled in 30 days."
+                  </p>
                 </div>
               </div>
             </motion.div>
@@ -247,470 +361,258 @@ export default function WebDesignWirral() {
       {/* Scrolling Ticker */}
       <WirralTicker />
 
-      {/* Helen Moore Blueprint Section - With Animated Flow */}
-      <section className="bg-slate-50 dark:bg-slate-950 py-20 px-4 border-t border-slate-200/60 dark:border-slate-800/80">
-        <div className="container mx-auto max-w-5xl grid grid-cols-1 md:grid-cols-[minmax(0,3fr)_minmax(0,2fr)] gap-10 items-center">
-          <div>
-            <p className="text-xs font-mono uppercase tracking-[0.25em] text-slate-500 dark:text-slate-400 mb-3">
-              Trusted by Wirral Businesses (Work in Progress)
-            </p>
-            <h2 className="text-3xl md:text-4xl font-heading font-bold text-slate-900 dark:text-white mb-2">
-              A Sneak Peek: Transforming Helen Moore Hairdressing, Wallasey.
+      {/* Why Wirral Businesses Choose Us */}
+      <section className="py-24 px-4 bg-white dark:bg-slate-950">
+        <div className="container mx-auto max-w-6xl">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-heading font-bold text-slate-900 dark:text-white mb-4">
+              Why Wirral Businesses Choose Us
             </h2>
-            <p className="text-lg text-slate-600 dark:text-slate-400 mb-6 italic">
-              Launching Q1 2026
+            <p className="text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
+              We're not just another remote agency. We're your neighbours, and we understand the local market.
             </p>
-
-            <p className="text-slate-700 dark:text-slate-300 mb-4">
-              We are currently rebuilding Helen Moore&apos;s digital presence
-              from the ground up. The old site was invisible to Google and hard
-              for clients to use on mobile.
-            </p>
-
-            <h3 className="font-semibold text-slate-900 dark:text-white text-lg mb-4">
-              The Fix: Re-architecting the business logic.
-            </h3>
-
-            <ul className="space-y-3 mb-8 text-slate-700 dark:text-slate-300">
-              <motion.li
-                className="flex gap-3"
-                initial={{ opacity: 0, x: -20 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: 0.1, duration: 0.5 }}
-              >
-                <span className="text-cyan-400 font-bold flex-shrink-0">→</span>
-                <span>
-                  <span className="font-semibold">Mobile-First Booking:</span>{" "}
-                  Creating a friction-free path from Instagram to Appointment.
-                </span>
-              </motion.li>
-              <motion.li
-                className="flex gap-3"
-                initial={{ opacity: 0, x: -20 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: 0.2, duration: 0.5 }}
-              >
-                <span className="text-cyan-400 font-bold flex-shrink-0">→</span>
-                <span>
-                  <span className="font-semibold">Local SEO Engine:</span>{" "}
-                  Structuring the site to dominate searches for 'Hairdresser
-                  Wallasey' before it even launches.
-                </span>
-              </motion.li>
-              <motion.li
-                className="flex gap-3"
-                initial={{ opacity: 0, x: -20 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: 0.3, duration: 0.5 }}
-              >
-                <span className="text-cyan-400 font-bold flex-shrink-0">→</span>
-                <span>
-                  <span className="font-semibold">Zero-Bloat Build:</span>{" "}
-                  Replacing heavy plugins with custom, lightweight code for
-                  instant load speeds.
-                </span>
-              </motion.li>
-            </ul>
-
-            <button
-              onClick={() => openCrisp()}
-              className="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-gradient-to-r from-cyan-400 to-lime-400 text-slate-950 font-heading font-bold hover:shadow-lg hover:shadow-cyan-400/40 transition"
-            >
-              Want to see the blueprints? Start a chat
-              <ArrowRight size={18} />
-            </button>
           </div>
 
-          {/* Blueprint Visual with Flow Animation */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
-            className="relative rounded-2xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 p-8 shadow-lg"
-          >
-            <svg
-              className="w-full h-64"
-              viewBox="0 0 300 400"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              {/* Wireframe boxes */}
-              <rect
-                x="20"
-                y="20"
-                width="260"
-                height="60"
-                className="stroke-cyan-400 dark:stroke-cyan-300"
-                strokeWidth="2"
-              />
-              <text
-                x="150"
-                y="55"
-                textAnchor="middle"
-                className="text-xs fill-cyan-500 dark:fill-cyan-300 font-mono"
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {[
+              {
+                icon: Map,
+                title: "Local Understanding",
+                desc: "We know the difference between West Kirby footfall and Birkenhead trade counters.",
+              },
+              {
+                icon: Users,
+                title: "Face-to-Face",
+                desc: "We're happy to meet you at your office or a local coffee shop to discuss your goals.",
+              },
+              {
+                icon: Zap,
+                title: "No Jargon",
+                desc: "We speak plain English. No confusing tech-talk, just clear business strategy.",
+              },
+              {
+                icon: BarChart3,
+                title: "Results Focused",
+                desc: "We care about ROI. If the site doesn't make money, we haven't done our job.",
+              },
+            ].map((item, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.1 }}
+                className="p-6 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800 hover:shadow-xl hover:border-cyan-200 dark:hover:border-cyan-800 transition-all duration-300 group"
               >
-                Hero: "Book Now"
-              </text>
+                <div className="w-12 h-12 rounded-xl bg-cyan-100 dark:bg-cyan-900/30 flex items-center justify-center text-cyan-600 dark:text-cyan-400 mb-4 group-hover:scale-110 transition-transform">
+                  <item.icon size={24} />
+                </div>
+                <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2">
+                  {item.title}
+                </h3>
+                <p className="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
+                  {item.desc}
+                </p>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
 
-              {/* Animated arrow down */}
-              <defs>
-                <linearGradient id="arrow-gradient" x1="0" x2="0" y1="0" y2="1">
-                  <stop offset="0%" stopColor="#22d3ee" />
-                  <stop offset="100%" stopColor="#22c55e" />
-                </linearGradient>
-                <marker
-                  id="arrowhead"
-                  markerWidth="10"
-                  markerHeight="10"
-                  refX="9"
-                  refY="3"
-                  orient="auto"
-                >
-                  <polygon
-                    points="0 0, 10 3, 0 6"
-                    fill="url(#arrow-gradient)"
-                  />
-                </marker>
-              </defs>
+      {/* Helen Moore Blueprint Section */}
+      <section className="py-24 px-4 bg-slate-50 dark:bg-slate-900 border-y border-slate-200 dark:border-slate-800 overflow-hidden">
+        <div className="container mx-auto max-w-6xl">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+            <div className="order-2 lg:order-1">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 text-xs font-bold uppercase tracking-wider mb-6">
+                <span className="relative flex h-2 w-2">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-amber-500"></span>
+                </span>
+                Work in Progress
+              </div>
+              
+              <h2 className="text-3xl md:text-4xl font-heading font-bold text-slate-900 dark:text-white mb-6">
+                Trusted by Wirral Businesses
+              </h2>
+              
+              <div className="prose prose-lg dark:prose-invert mb-8">
+                <p className="text-slate-600 dark:text-slate-300">
+                  We are currently rebuilding <strong>Helen Moore Hairdressing</strong> (Wallasey) from the ground up. The old site was invisible to Google and hard for clients to use on mobile.
+                </p>
+                <p className="text-slate-600 dark:text-slate-300">
+                  <strong>The Fix:</strong> Re-architecting the business logic to create a friction-free path from Instagram to Appointment.
+                </p>
+              </div>
 
-              <motion.line
-                x1="150"
-                y1="80"
-                x2="150"
-                y2="110"
-                stroke="url(#arrow-gradient)"
-                strokeWidth="2"
-                markerEnd="url(#arrowhead)"
-                initial={{ opacity: 0, y1: "80", y2: "80" }}
-                animate={{ opacity: 1, y1: 80, y2: 110 }}
-                transition={{
-                  duration: 0.8,
-                  delay: 0.2,
-                  repeat: Infinity,
-                  repeatDelay: 2,
-                }}
-              />
+              <div className="space-y-4 mb-8">
+                {[
+                  "Mobile-First Booking Strategy",
+                  "Local SEO Engine for 'Hairdresser Wallasey'",
+                  "Zero-Bloat Custom Build"
+                ].map((item, i) => (
+                  <div key={i} className="flex items-center gap-3">
+                    <CheckCircle2 className="text-cyan-500 flex-shrink-0" size={20} />
+                    <span className="text-slate-700 dark:text-slate-200 font-medium">{item}</span>
+                  </div>
+                ))}
+              </div>
 
-              {/* Two columns */}
-              <rect
-                x="20"
-                y="110"
-                width="120"
-                height="80"
-                className="stroke-amber-400 dark:stroke-amber-300"
-                strokeWidth="2"
-              />
-              <text
-                x="80"
-                y="155"
-                textAnchor="middle"
-                className="text-xs fill-amber-500 dark:fill-amber-300 font-mono"
+              <button
+                onClick={() => openCrisp()}
+                className="inline-flex items-center gap-2 text-cyan-600 dark:text-cyan-400 font-bold hover:gap-3 transition-all"
               >
-                Services
-              </text>
+                See the blueprints
+                <ArrowRight size={18} />
+              </button>
+            </div>
 
-              <rect
-                x="160"
-                y="110"
-                width="120"
-                height="80"
-                className="stroke-lime-400 dark:stroke-lime-300"
-                strokeWidth="2"
-              />
-              <text
-                x="220"
-                y="155"
-                textAnchor="middle"
-                className="text-xs fill-lime-500 dark:fill-lime-300 font-mono"
-              >
-                Booking
-              </text>
-
-              {/* Arrows connecting */}
-              <motion.line
-                x1="80"
-                y1="190"
-                x2="80"
-                y2="220"
-                stroke="currentColor"
-                strokeWidth="2"
-                className="text-lime-400"
-                initial={{ opacity: 0, y1: "190", y2: "190" }}
-                animate={{ opacity: 1, y1: 190, y2: 220 }}
-                transition={{
-                  duration: 0.8,
-                  delay: 0.5,
-                  repeat: Infinity,
-                  repeatDelay: 2,
-                }}
-              />
-
-              <motion.line
-                x1="220"
-                y1="190"
-                x2="220"
-                y2="220"
-                stroke="currentColor"
-                strokeWidth="2"
-                className="text-lime-400"
-                initial={{ opacity: 0, y1: "190", y2: "190" }}
-                animate={{ opacity: 1, y1: 190, y2: 220 }}
-                transition={{
-                  duration: 0.8,
-                  delay: 0.6,
-                  repeat: Infinity,
-                  repeatDelay: 2,
-                }}
-              />
-
-              {/* Contact section */}
-              <rect
-                x="20"
-                y="220"
-                width="260"
-                height="60"
-                className="stroke-emerald-400 dark:stroke-emerald-300"
-                strokeWidth="2"
-              />
-              <text
-                x="150"
-                y="255"
-                textAnchor="middle"
-                className="text-xs fill-emerald-500 dark:fill-emerald-300 font-mono"
-              >
-                Contact & Trust
-              </text>
-
-              {/* Decorative elements */}
-              <circle
-                cx="290"
-                cy="40"
-                r="8"
-                className="fill-cyan-400"
-                opacity="0.5"
-              />
-              <circle
-                cx="20"
-                cy="370"
-                r="6"
-                className="fill-lime-400"
-                opacity="0.5"
-              />
-            </svg>
-            <p className="text-xs font-mono uppercase tracking-widest text-slate-500 dark:text-slate-400 mt-4 text-center">
-              <TypewriterEffect
-                words={[
-                  "Architecting the perfect booking journey",
-                  "Mobile-First Strategy",
-                  "Conversion Optimised",
-                ]}
-                speed={80}
-                delayBetweenWords={2000}
-              />
-            </p>
-          </motion.div>
+            <div className="order-1 lg:order-2 flex justify-center">
+              <div className="relative w-full max-w-md bg-white dark:bg-slate-800 rounded-3xl p-8 shadow-2xl border border-slate-100 dark:border-slate-700 transform rotate-1 hover:rotate-0 transition-transform duration-500">
+                <div className="absolute -top-4 -right-4 w-24 h-24 bg-cyan-500/10 rounded-full blur-xl" />
+                <div className="absolute -bottom-4 -left-4 w-32 h-32 bg-lime-500/10 rounded-full blur-xl" />
+                
+                <h3 className="text-sm font-mono uppercase tracking-widest text-slate-400 text-center mb-8">
+                  Site Architecture v2.0
+                </h3>
+                
+                <BlueprintAnimation />
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
       {/* Context Section - About Different Client Types */}
-      <section className="bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 py-20 px-4">
-        <div className="container mx-auto max-w-5xl">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="mb-10 text-center"
-          >
-            <p className="text-xs font-mono uppercase tracking-[0.25em] text-cyan-400 mb-4">
-              One Peninsula, Many Journeys
-            </p>
-            <h2 className="text-3xl md:text-4xl font-heading font-bold text-white mb-4">
+      <section className="py-24 px-4 bg-slate-950 relative overflow-hidden">
+        <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-5" />
+        
+        <div className="container mx-auto max-w-6xl relative z-10">
+          <div className="text-center mb-16">
+            <span className="text-cyan-400 font-mono text-sm tracking-widest uppercase">One Peninsula, Many Journeys</span>
+            <h2 className="text-3xl md:text-4xl font-heading font-bold text-white mt-4 mb-6">
               Wirral businesses are not one-size-fits-all.
             </h2>
-            <p className="text-slate-300 max-w-3xl mx-auto">
-              Instead of forcing every client into the same template, we design
-              funnels around how people actually find and book you – from high
-              street footfall to late‑night mobile searches.
+            <p className="text-slate-400 max-w-2xl mx-auto text-lg">
+              We design funnels around how people actually find and book you – from high street footfall to late‑night mobile searches.
             </p>
-          </motion.div>
+          </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.1 }}
-              className="relative overflow-hidden rounded-2xl border border-slate-800 bg-slate-900/60 p-6 backdrop-blur-sm"
-            >
-              <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/10 via-transparent to-slate-900/60 pointer-events-none" />
-              <div className="relative">
-                <p className="text-xs font-mono uppercase tracking-[0.25em] text-cyan-300 mb-3">
-                  Downtown Birkenhead
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {[
+              {
+                area: "Downtown Birkenhead",
+                title: "Office towers & trade counters",
+                desc: "Fast-loading, trust-heavy brochure sites that make you look credible from the first click.",
+                color: "cyan"
+              },
+              {
+                area: "Coastal Villages",
+                title: "Hoylake, West Kirby & New Brighton",
+                desc: "Experience-led sites that move people from Instagram and Google Maps into bookings.",
+                color: "sky"
+              },
+              {
+                area: "Industrial Hubs",
+                title: "Edges of the peninsula",
+                desc: "No-nonsense landing pages built to capture RFQs, tenders, and phone calls.",
+                color: "lime"
+              }
+            ].map((item, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.1 }}
+                className="group relative overflow-hidden rounded-2xl bg-slate-900 border border-slate-800 p-8 hover:border-slate-700 transition-colors"
+              >
+                <div className={`absolute top-0 right-0 w-32 h-32 bg-${item.color}-500/5 rounded-full blur-2xl -mr-16 -mt-16 transition-opacity group-hover:opacity-100`} />
+                
+                <p className={`text-xs font-mono uppercase tracking-widest text-${item.color}-400 mb-4`}>
+                  {item.area}
                 </p>
-                <h3 className="text-lg font-semibold text-white mb-2">
-                  Office towers & trade counters
-                </h3>
-                <p className="text-sm text-slate-300">
-                  Fast-loading, trust-heavy brochure sites that make you look
-                  credible from the first click – even on tired work phones on
-                  site.
+                <h3 className="text-xl font-bold text-white mb-3">{item.title}</h3>
+                <p className="text-slate-400 leading-relaxed">
+                  {item.desc}
                 </p>
-              </div>
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.2 }}
-              className="relative overflow-hidden rounded-2xl border border-slate-800 bg-slate-900/60 p-6 backdrop-blur-sm"
-            >
-              <div className="absolute inset-0 bg-gradient-to-br from-sky-500/10 via-transparent to-slate-900/60 pointer-events-none" />
-              <div className="relative">
-                <p className="text-xs font-mono uppercase tracking-[0.25em] text-sky-300 mb-3">
-                  Coastal Villages
-                </p>
-                <h3 className="text-lg font-semibold text-white mb-2">
-                  Hoylake, West Kirby & New Brighton
-                </h3>
-                <p className="text-sm text-slate-300">
-                  Experience-led sites that move people from Instagram and
-                  Google Maps into bookings, tables, and repeat visits.
-                </p>
-              </div>
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.3 }}
-              className="relative overflow-hidden rounded-2xl border border-slate-800 bg-slate-900/60 p-6 backdrop-blur-sm"
-            >
-              <div className="absolute inset-0 bg-gradient-to-br from-lime-500/10 via-transparent to-slate-900/60 pointer-events-none" />
-              <div className="relative">
-                <p className="text-xs font-mono uppercase tracking-[0.25em] text-lime-300 mb-3">
-                  Industrial Hubs
-                </p>
-                <h3 className="text-lg font-semibold text-white mb-2">
-                  Edges of the peninsula
-                </h3>
-                <p className="text-sm text-slate-300">
-                  No-nonsense landing pages built to capture RFQs, tenders, and
-                  phone calls – not just look pretty.
-                </p>
-              </div>
-            </motion.div>
+              </motion.div>
+            ))}
           </div>
         </div>
       </section>
 
       {/* Comparison Section */}
-      <section className="bg-slate-950 py-20 px-4 border-t border-slate-800/80">
+      <section className="py-24 px-4 bg-slate-900 border-t border-slate-800">
         <div className="container mx-auto max-w-5xl">
-          <div className="text-center mb-8">
-            <p className="text-xs font-mono uppercase tracking-[0.25em] text-cyan-400 mb-4">
-              Reality Check
-            </p>
-            <h2 className="text-3xl md:text-4xl font-heading font-bold text-white mb-3">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-heading font-bold text-white mb-4">
               Typical Wirral Web Designer vs Kaizen
             </h2>
-            <p className="text-sm md:text-base text-slate-300 max-w-xl mx-auto">
+            <p className="text-slate-400">
               Simple side‑by‑side view so you can see the difference in seconds.
             </p>
           </div>
 
-          {/* Mobile: click to reveal comparison */}
+          {/* Mobile Toggle */}
           <div className="md:hidden mb-8">
             <button
               type="button"
               onClick={() => setShowMobileComparison((prev) => !prev)}
-              className="w-full inline-flex items-center justify-center gap-2 rounded-full border border-cyan-400/60 bg-slate-900/80 px-5 py-3 text-sm font-heading text-cyan-100 hover:bg-slate-900 hover:border-cyan-300 transition"
+              className="w-full flex items-center justify-between p-4 rounded-xl bg-slate-800 text-white font-bold border border-slate-700"
             >
-              Click to see the difference
+              <span>Click to see the difference</span>
               <ArrowRight
-                size={16}
-                className={
-                  showMobileComparison
-                    ? "rotate-90 transition-transform"
-                    : "transition-transform"
-                }
+                size={18}
+                className={`transform transition-transform ${showMobileComparison ? "rotate-90" : ""}`}
               />
             </button>
 
-            {showMobileComparison && (
-              <div className="mt-6 space-y-4">
-                {comparisonRows.map((row) => (
-                  <div
-                    key={row.label}
-                    className="rounded-2xl border border-slate-800 bg-slate-900/80 p-4 shadow-sm"
-                  >
-                    <p className="text-xs font-mono uppercase tracking-[0.2em] text-slate-400 mb-2">
-                      {row.label}
-                    </p>
-                    <div className="grid grid-cols-1 gap-3">
-                      <div>
-                        <p className="text-xs font-semibold text-red-400 mb-1">
-                          Typical designer
-                        </p>
-                        <p className="text-sm text-slate-300">{row.typical}</p>
-                      </div>
-                      <div className="rounded-xl bg-gradient-to-r from-emerald-500/15 via-cyan-500/15 to-transparent p-3 border border-emerald-500/40">
-                        <p className="text-xs font-semibold text-emerald-300 mb-1">
-                          Kaizen
-                        </p>
-                        <p className="text-sm text-emerald-100">{row.kaizen}</p>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-
-          {/* Desktop/tablet: full comparison table */}
-          <div className="hidden md:block overflow-hidden rounded-2xl border border-slate-800 bg-slate-900/70 backdrop-blur-xl shadow-xl">
-            <div className="grid grid-cols-2 text-xs md:text-sm font-mono uppercase tracking-[0.2em] bg-slate-900/90 text-slate-400">
-              <div className="px-4 py-4 text-left text-red-400">
-                Typical designer
-              </div>
-              <div className="px-4 py-4 text-left text-emerald-400 bg-gradient-to-r from-emerald-500/15 via-cyan-500/10 to-transparent">
-                Kaizen
-              </div>
-            </div>
-
-            <div className="divide-y divide-slate-800">
-              {comparisonRows.map((row, index) => (
+            <AnimatePresence>
+              {showMobileComparison && (
                 <motion.div
-                  key={row.label}
-                  initial={{ opacity: 0, y: 10 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: 0.1 + index * 0.05 }}
-                  whileHover={{
-                    backgroundColor: "rgba(15,23,42,0.9)",
-                    scale: 1.01,
-                  }}
-                  className="grid grid-cols-2 text-slate-200"
+                  initial={{ height: 0, opacity: 0 }}
+                  animate={{ height: "auto", opacity: 1 }}
+                  exit={{ height: 0, opacity: 0 }}
+                  className="overflow-hidden"
                 >
-                  <div className="px-4 py-5 border-r border-slate-800/80">
-                    <p className="text-xs font-semibold text-slate-400 mb-1">
-                      {row.label}
-                    </p>
-                    <p className="text-sm md:text-base text-slate-300">
-                      {row.typical}
-                    </p>
-                  </div>
-                  <div className="px-4 py-5 bg-gradient-to-r from-emerald-500/12 via-cyan-500/12 to-transparent">
-                    <p className="text-sm md:text-base text-emerald-100">
-                      {row.kaizen}
-                    </p>
+                  <div className="pt-4 space-y-4">
+                    {comparisonRows.map((row, i) => (
+                      <div key={i} className="bg-slate-800/50 p-4 rounded-xl border border-slate-700">
+                        <div className="text-xs font-mono uppercase text-slate-500 mb-2">{row.label}</div>
+                        <div className="grid grid-cols-1 gap-2">
+                          <div className="text-red-400 text-sm">✗ {row.typical}</div>
+                          <div className="text-emerald-400 text-sm font-bold">✓ {row.kaizen}</div>
+                        </div>
+                      </div>
+                    ))}
                   </div>
                 </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+
+          {/* Desktop Table */}
+          <div className="hidden md:block rounded-2xl overflow-hidden border border-slate-800 bg-slate-900 shadow-2xl">
+            <div className="grid grid-cols-2 bg-slate-950 p-4 text-xs font-mono uppercase tracking-widest text-slate-500">
+              <div>Typical Designer</div>
+              <div className="text-emerald-500">Kaizen Approach</div>
+            </div>
+            <div className="divide-y divide-slate-800">
+              {comparisonRows.map((row, i) => (
+                <div key={i} className="grid grid-cols-2 hover:bg-slate-800/30 transition-colors group">
+                  <div className="p-6 border-r border-slate-800">
+                    <div className="text-xs font-mono text-slate-500 mb-1">{row.label}</div>
+                    <div className="text-slate-300 group-hover:text-red-300 transition-colors">{row.typical}</div>
+                  </div>
+                  <div className="p-6 bg-emerald-900/5 relative overflow-hidden">
+                    <div className="absolute inset-0 bg-emerald-500/5 opacity-0 group-hover:opacity-100 transition-opacity" />
+                    <div className="relative z-10">
+                      <div className="text-xs font-mono text-emerald-600/70 mb-1">{row.label}</div>
+                      <div className="text-emerald-100 font-medium">{row.kaizen}</div>
+                    </div>
+                  </div>
+                </div>
               ))}
             </div>
           </div>
@@ -718,112 +620,23 @@ export default function WebDesignWirral() {
       </section>
 
       {/* Speed Visualiser Section */}
-      <section className="bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 py-24 px-4">
+      <section className="py-24 px-4 bg-gradient-to-b from-slate-950 to-slate-900">
         <div className="container mx-auto max-w-5xl">
-          <div className="text-center mb-12">
-            <p className="text-xs font-mono uppercase tracking-[0.25em] text-cyan-400 mb-4">
-              Performance
-            </p>
+          <div className="text-center mb-16">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-900/30 text-cyan-400 text-xs font-mono uppercase tracking-wider mb-6">
+              <Zap size={14} />
+              <span>Performance First</span>
+            </div>
             <h2 className="text-3xl md:text-4xl font-heading font-bold text-white mb-4">
               We Build the Fastest Sites on the Wirral
             </h2>
-            <p className="text-lg text-slate-300 max-w-2xl mx-auto">
+            <p className="text-lg text-slate-400 max-w-2xl mx-auto">
               Google loves speed. Your customers love speed. We deliver it.
             </p>
           </div>
 
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
-            className="mt-16"
-          >
+          <div className="flex justify-center">
             <Speedometer />
-          </motion.div>
-        </div>
-      </section>
-
-      {/* Why Us Section - Dark Theme */}
-      <section className="bg-gradient-to-br from-slate-950 via-blue-950 to-slate-950 py-20 px-4">
-        <div className="container mx-auto max-w-5xl">
-          <div className="max-w-3xl mx-auto text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-heading font-bold text-white mb-6">
-              Why Kaizen is Different
-            </h2>
-            <p className="text-lg text-slate-300 leading-relaxed">
-              Most Wirral web designers are stuck in 2015. They use slow themes,
-              generic templates, and forget about mobile speed.
-            </p>
-          </div>
-
-          <div className="bg-gradient-to-br from-slate-900/60 to-slate-800/60 rounded-2xl p-8 md:p-12 border border-cyan-400/20 backdrop-blur-sm relative overflow-hidden">
-            <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(45,212,191,0.12),_transparent_55%),radial-gradient(circle_at_bottom,_rgba(56,189,248,0.12),_transparent_55%)]" />
-            <div className="relative">
-              <p className="hidden md:block text-lg md:text-xl text-white leading-relaxed mb-6">
-                <span className="font-semibold text-cyan-300">
-                  Kaizen is different.
-                </span>{" "}
-                We bring Enterprise-Grade React & Headless WordPress tech to
-                local businesses. You get the same tech stack used by major
-                brands, built by a local team that understands the difference
-                between West Kirby and Wallasey.
-              </p>
-              <p className="md:hidden text-base text-white leading-relaxed mb-6">
-                <span className="font-semibold text-cyan-300">
-                  Kaizen is different.
-                </span>{" "}
-                Enterprise-grade React & headless WordPress, built locally for
-                Wirral businesses.
-              </p>
-            </div>
-            <div className="relative grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
-              <div className="flex gap-4">
-                <div className="flex-shrink-0">
-                  <div className="flex items-center justify-center h-10 w-10 rounded-lg bg-cyan-600/30 border border-cyan-400/50 text-white">
-                    <span className="text-xl font-bold">⚡</span>
-                  </div>
-                </div>
-                <div>
-                  <h3 className="font-semibold text-white mb-1">
-                    Enterprise Tech
-                  </h3>
-                  <p className="text-sm text-slate-400">
-                    React & Headless architecture that scales
-                  </p>
-                </div>
-              </div>
-              <div className="flex gap-4">
-                <div className="flex-shrink-0">
-                  <div className="flex items-center justify-center h-10 w-10 rounded-lg bg-lime-600/30 border border-lime-400/50 text-white">
-                    <span className="text-xl font-bold">🎯</span>
-                  </div>
-                </div>
-                <div>
-                  <h3 className="font-semibold text-white mb-1">
-                    AI-Augmented
-                  </h3>
-                  <p className="text-sm text-slate-400">
-                    Smarter, faster development process
-                  </p>
-                </div>
-              </div>
-              <div className="flex gap-4">
-                <div className="flex-shrink-0">
-                  <div className="flex items-center justify-center h-10 w-10 rounded-lg bg-cyan-600/30 border border-cyan-400/50 text-white">
-                    <span className="text-xl font-bold">📍</span>
-                  </div>
-                </div>
-                <div>
-                  <h3 className="font-semibold text-white mb-1">
-                    Local Knowledge
-                  </h3>
-                  <p className="text-sm text-slate-400">
-                    We understand Wirral businesses
-                  </p>
-                </div>
-              </div>
-            </div>
           </div>
         </div>
       </section>
@@ -861,34 +674,34 @@ export default function WebDesignWirral() {
       />
 
       {/* CTA */}
-      <section className="bg-slate-900 text-white py-16 px-4">
-        <div className="container mx-auto max-w-5xl flex flex-col md:flex-row items-center justify-between gap-8">
-          <div>
-            <h2 className="text-2xl md:text-3xl font-heading font-bold mb-3">
+      <section className="bg-slate-900 text-white py-20 px-4 border-t border-slate-800">
+        <div className="container mx-auto max-w-5xl">
+          <div className="bg-gradient-to-br from-cyan-900/20 to-lime-900/20 rounded-3xl p-8 md:p-12 border border-slate-800 text-center">
+            <h2 className="text-3xl md:text-4xl font-heading font-bold mb-6">
               Ready to level up your Wirral site?
             </h2>
-            <p className="text-sm md:text-base text-slate-300 max-w-xl">
+            <p className="text-lg text-slate-300 max-w-2xl mx-auto mb-8">
               Whether you&apos;re based in Heswall, West Kirby, Birkenhead or
               anywhere on the peninsula, we&apos;ll help you ship a site that
               looks sharp, loads fast and actually wins work.
             </p>
-          </div>
 
-          <div className="flex flex-col sm:flex-row gap-4">
-            <button
-              onClick={() => openCrisp()}
-              className="inline-flex items-center justify-center gap-2 px-8 py-3 rounded-full bg-gradient-to-r from-cyan-400 to-lime-400 text-slate-950 font-heading font-bold hover:shadow-lg hover:shadow-cyan-400/40 transition"
-            >
-              Launch Chat
-              <ArrowRight size={18} />
-            </button>
+            <div className="flex flex-col sm:flex-row justify-center gap-4">
+              <button
+                onClick={() => openCrisp()}
+                className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full bg-white text-slate-900 font-heading font-bold hover:bg-cyan-50 transition-colors"
+              >
+                Launch Chat
+                <ArrowRight size={18} />
+              </button>
 
-            <Link
-              to="/contact"
-              className="inline-flex items-center justify-center gap-2 px-8 py-3 rounded-full border border-white/20 text-sm font-heading text-white/80 hover:text-white hover:bg-white/5 transition"
-            >
-              Send a brief
-            </Link>
+              <Link
+                to="/contact"
+                className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full border border-slate-700 text-white hover:bg-slate-800 transition-colors"
+              >
+                Send a brief
+              </Link>
+            </div>
           </div>
         </div>
       </section>
