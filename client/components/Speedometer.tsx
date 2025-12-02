@@ -55,7 +55,7 @@ export function Speedometer() {
   const rotation = -180 + (speed / maxSpeed) * 180;
 
   return (
-    <div className="flex flex-col items-center justify-center gap-6">
+    <div ref={containerRef} className="flex flex-col items-center justify-center gap-6">
       <div className="relative w-48 h-48 md:w-64 md:h-64">
         {/* SVG Speedometer */}
         <svg
