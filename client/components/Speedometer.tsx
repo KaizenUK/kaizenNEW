@@ -5,23 +5,24 @@ export function Speedometer() {
   const maxSpeed = 100;
 
   useEffect(() => {
-    let animationFrame: number;
     let currentValue = 0;
-    const increment = maxSpeed / 60;
+    const durationMs = 1800;
+    const steps = 90;
+    const increment = maxSpeed / steps;
+    const intervalMs = durationMs / steps;
 
-    const animate = () => {
+    const intervalId = window.setInterval(() => {
       currentValue += increment;
-      if (currentValue <= maxSpeed) {
-        setSpeed(Math.floor(currentValue));
-        animationFrame = requestAnimationFrame(animate);
-      } else {
+      if (currentValue >= maxSpeed) {
         setSpeed(maxSpeed);
+        window.clearInterval(intervalId);
+      } else {
+        setSpeed(Math.floor(currentValue));
       }
-    };
+    }, intervalMs);
 
-    animationFrame = requestAnimationFrame(animate);
-    return () => cancelAnimationFrame(animationFrame);
-  }, []);
+    return () => window.clearInterval(intervalId);
+  }, [maxSpeed]);
 
   const rotation = (speed / maxSpeed) * 180 - 90;
 
