@@ -1,7 +1,18 @@
 import { useState, useEffect } from "react";
 import Layout from "@/components/Layout";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowRight, Map, CheckCircle2, Zap, Users, BarChart3, X, Check, Star, XCircle } from "lucide-react";
+import {
+  ArrowRight,
+  Map,
+  CheckCircle2,
+  Zap,
+  Users,
+  BarChart3,
+  X,
+  Check,
+  Star,
+  XCircle,
+} from "lucide-react";
 import { Link } from "react-router-dom";
 import { useCalendly } from "@/context/CalendlyContext";
 import { FaqSection } from "@/components/FaqSection";
@@ -65,19 +76,27 @@ const comparisonFeatures = [
 
 const getColorClass = (color: string) => {
   switch (color) {
-    case "cyan": return "text-cyan-400";
-    case "sky": return "text-sky-400";
-    case "lime": return "text-lime-400";
-    default: return "text-cyan-400";
+    case "cyan":
+      return "text-cyan-400";
+    case "sky":
+      return "text-sky-400";
+    case "lime":
+      return "text-lime-400";
+    default:
+      return "text-cyan-400";
   }
 };
 
 const getBgClass = (color: string) => {
   switch (color) {
-    case "cyan": return "bg-cyan-500/5";
-    case "sky": return "bg-sky-500/5";
-    case "lime": return "bg-lime-500/5";
-    default: return "bg-cyan-500/5";
+    case "cyan":
+      return "bg-cyan-500/5";
+    case "sky":
+      return "bg-sky-500/5";
+    case "lime":
+      return "bg-lime-500/5";
+    default:
+      return "bg-cyan-500/5";
   }
 };
 
@@ -254,7 +273,7 @@ function BlueprintAnimation() {
         <circle cx="290" cy="40" r="4" className="fill-cyan-400/50" />
         <circle cx="10" cy="300" r="4" className="fill-lime-400/50" />
       </svg>
-      
+
       <div className="absolute bottom-10 left-0 right-0 text-center">
         <p className="text-xs font-mono uppercase tracking-widest text-slate-500 dark:text-slate-400">
           <AnimatePresence mode="wait">
@@ -305,11 +324,7 @@ export default function WebDesignWirral() {
                 Bespoke Web Design <br />
                 <span className="bg-gradient-to-r from-cyan-400 via-teal-300 to-lime-400 bg-clip-text text-transparent">
                   <TypewriterEffect
-                    words={[
-                      "Fast.",
-                      "Secure.",
-                      "Profitable.",
-                    ]}
+                    words={["Fast.", "Secure.", "Profitable."]}
                     speed={80}
                     delayBetweenWords={1600}
                     className="inline-block"
@@ -318,7 +333,9 @@ export default function WebDesignWirral() {
               </h1>
 
               <p className="text-xl text-slate-300 max-w-xl mb-8 leading-relaxed">
-                Don't settle for slow templates. We build high-performance, bespoke websites for Wirral businesses that rank, convert, and scale.
+                Don't settle for slow templates. We build high-performance,
+                bespoke websites for Wirral businesses that rank, convert, and
+                scale.
               </p>
 
               <div className="flex flex-col sm:flex-row gap-4 items-center">
@@ -329,16 +346,18 @@ export default function WebDesignWirral() {
                   Book a Demo
                   <ArrowRight size={18} />
                 </button>
-
               </div>
             </motion.div>
 
-            <motion.div variants={fadeInUp} className="relative perspective-1000">
+            <motion.div
+              variants={fadeInUp}
+              className="relative perspective-1000"
+            >
               <div className="absolute -inset-4 bg-gradient-to-r from-cyan-500/20 to-lime-500/20 rounded-[2rem] blur-2xl opacity-50" />
               <div className="relative bg-slate-900/90 border border-slate-700/50 rounded-2xl p-6 backdrop-blur-xl shadow-[0_20px_50px_rgba(0,0,0,0.5)] transform rotate-y-12 rotate-x-6 transition-transform duration-500 hover:rotate-0">
                 {/* 3D Layer Effect */}
                 <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent rounded-2xl pointer-events-none" />
-                
+
                 <div className="grid grid-cols-2 gap-4 relative z-10">
                   <div className="col-span-2 bg-slate-800/80 rounded-xl p-4 border border-slate-700/50 shadow-inner">
                     <div className="flex items-center gap-3 mb-3">
@@ -352,12 +371,20 @@ export default function WebDesignWirral() {
                     </div>
                   </div>
                   <div className="bg-slate-800/80 rounded-xl p-4 border border-slate-700/50 flex flex-col items-center justify-center shadow-lg">
-                    <div className="text-4xl font-black text-cyan-400 drop-shadow-[0_0_10px_rgba(34,211,238,0.3)]">96</div>
-                    <div className="text-[10px] uppercase tracking-wider text-slate-400 font-bold mt-1">Performance</div>
+                    <div className="text-4xl font-black text-cyan-400 drop-shadow-[0_0_10px_rgba(34,211,238,0.3)]">
+                      96
+                    </div>
+                    <div className="text-[10px] uppercase tracking-wider text-slate-400 font-bold mt-1">
+                      Performance
+                    </div>
                   </div>
                   <div className="bg-slate-800/80 rounded-xl p-4 border border-slate-700/50 flex flex-col items-center justify-center shadow-lg">
-                    <div className="text-4xl font-black text-lime-400 drop-shadow-[0_0_10px_rgba(163,230,53,0.3)]">99</div>
-                    <div className="text-[10px] uppercase tracking-wider text-slate-400 font-bold mt-1">SEO</div>
+                    <div className="text-4xl font-black text-lime-400 drop-shadow-[0_0_10px_rgba(163,230,53,0.3)]">
+                      99
+                    </div>
+                    <div className="text-[10px] uppercase tracking-wider text-slate-400 font-bold mt-1">
+                      SEO
+                    </div>
                   </div>
                 </div>
                 <div className="mt-6 pt-6 border-t border-slate-800">
@@ -382,7 +409,8 @@ export default function WebDesignWirral() {
               Why Wirral Businesses Choose Us
             </h2>
             <p className="text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
-              We're not just another remote agency. We're your neighbours, and we understand the local market.
+              We're not just another remote agency. We're your neighbours, and
+              we understand the local market.
             </p>
           </div>
 
@@ -444,17 +472,21 @@ export default function WebDesignWirral() {
                 </span>
                 Work in Progress
               </div>
-              
+
               <h2 className="text-3xl md:text-4xl font-heading font-bold text-slate-900 dark:text-white mb-6">
                 Trusted by Wirral Businesses
               </h2>
-              
+
               <div className="prose prose-lg dark:prose-invert mb-8">
                 <p className="text-slate-600 dark:text-slate-300">
-                  We are currently rebuilding <strong>Helen Moore Hairdressing</strong> (Wallasey) from the ground up. The old site was invisible to Google and hard for clients to use on mobile.
+                  We are currently rebuilding{" "}
+                  <strong>Helen Moore Hairdressing</strong> (Wallasey) from the
+                  ground up. The old site was invisible to Google and hard for
+                  clients to use on mobile.
                 </p>
                 <p className="text-slate-600 dark:text-slate-300">
-                  <strong>The Fix:</strong> Re-architecting the business logic to create a friction-free path from Instagram to Appointment.
+                  <strong>The Fix:</strong> Re-architecting the business logic
+                  to create a friction-free path from Instagram to Appointment.
                 </p>
               </div>
 
@@ -462,11 +494,16 @@ export default function WebDesignWirral() {
                 {[
                   "Mobile-First Booking Strategy",
                   "Local SEO Engine for 'Hairdresser Wallasey'",
-                  "Zero-Bloat Custom Build"
+                  "Zero-Bloat Custom Build",
                 ].map((item, i) => (
                   <div key={i} className="flex items-center gap-3">
-                    <CheckCircle2 className="text-cyan-500 flex-shrink-0" size={20} />
-                    <span className="text-slate-700 dark:text-slate-200 font-medium">{item}</span>
+                    <CheckCircle2
+                      className="text-cyan-500 flex-shrink-0"
+                      size={20}
+                    />
+                    <span className="text-slate-700 dark:text-slate-200 font-medium">
+                      {item}
+                    </span>
                   </div>
                 ))}
               </div>
@@ -484,11 +521,11 @@ export default function WebDesignWirral() {
               <div className="relative w-full max-w-md bg-white dark:bg-slate-800 rounded-3xl p-8 shadow-2xl border border-slate-100 dark:border-slate-700 transform rotate-1 hover:rotate-0 transition-transform duration-500">
                 <div className="absolute -top-4 -right-4 w-24 h-24 bg-cyan-500/10 rounded-full blur-xl" />
                 <div className="absolute -bottom-4 -left-4 w-32 h-32 bg-lime-500/10 rounded-full blur-xl" />
-                
+
                 <h3 className="text-sm font-mono uppercase tracking-widest text-slate-400 text-center mb-8">
                   Site Architecture v2.0
                 </h3>
-                
+
                 <BlueprintAnimation />
               </div>
             </div>
@@ -499,15 +536,18 @@ export default function WebDesignWirral() {
       {/* Context Section - About Different Client Types */}
       <section className="py-24 px-4 bg-slate-950 relative overflow-hidden">
         <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-5" />
-        
+
         <div className="container mx-auto max-w-6xl relative z-10">
           <div className="text-center mb-16">
-            <span className="text-cyan-400 font-mono text-sm tracking-widest uppercase">One Peninsula, Many Journeys</span>
+            <span className="text-cyan-400 font-mono text-sm tracking-widest uppercase">
+              One Peninsula, Many Journeys
+            </span>
             <h2 className="text-3xl md:text-4xl font-heading font-bold text-white mt-4 mb-6">
               Wirral businesses are not one-size-fits-all.
             </h2>
             <p className="text-slate-400 max-w-2xl mx-auto text-lg">
-              We design funnels around how people actually find and book you – from high street footfall to late‑night mobile searches.
+              We design funnels around how people actually find and book you –
+              from high street footfall to late‑night mobile searches.
             </p>
           </div>
 
@@ -517,20 +557,20 @@ export default function WebDesignWirral() {
                 area: "Downtown Birkenhead",
                 title: "Office towers & trade counters",
                 desc: "Fast-loading, trust-heavy brochure sites that make you look credible from the first click.",
-                color: "cyan"
+                color: "cyan",
               },
               {
                 area: "Coastal Towns",
                 title: "Hoylake, West Kirby & New Brighton",
                 desc: "Experience-led sites that move people from Instagram and Google Maps into bookings.",
-                color: "sky"
+                color: "sky",
               },
               {
                 area: "Industrial Hubs",
                 title: "Edges of the peninsula",
                 desc: "No-nonsense landing pages built to capture RFQs, tenders, and phone calls.",
-                color: "lime"
-              }
+                color: "lime",
+              },
             ].map((item, i) => (
               <motion.div
                 key={i}
@@ -540,15 +580,19 @@ export default function WebDesignWirral() {
                 transition={{ delay: i * 0.1 }}
                 className={`group relative overflow-hidden rounded-2xl bg-slate-900 border border-slate-800 p-8 hover:border-slate-700 transition-colors ${getBgClass(item.color)}`}
               >
-                <div className={`absolute top-0 right-0 w-32 h-32 bg-${item.color}-500/5 rounded-full blur-2xl -mr-16 -mt-16 transition-opacity group-hover:opacity-100`} />
-                
-                <p className={`text-xs font-mono uppercase tracking-widest mb-4 ${getColorClass(item.color)}`}>
+                <div
+                  className={`absolute top-0 right-0 w-32 h-32 bg-${item.color}-500/5 rounded-full blur-2xl -mr-16 -mt-16 transition-opacity group-hover:opacity-100`}
+                />
+
+                <p
+                  className={`text-xs font-mono uppercase tracking-widest mb-4 ${getColorClass(item.color)}`}
+                >
                   {item.area}
                 </p>
-                <h3 className="text-xl font-bold text-white mb-3">{item.title}</h3>
-                <p className="text-slate-400 leading-relaxed">
-                  {item.desc}
-                </p>
+                <h3 className="text-xl font-bold text-white mb-3">
+                  {item.title}
+                </h3>
+                <p className="text-slate-400 leading-relaxed">{item.desc}</p>
               </motion.div>
             ))}
           </div>
@@ -596,7 +640,10 @@ export default function WebDesignWirral() {
                   >
                     <div className="p-4 border-b border-slate-800 flex justify-between items-center bg-slate-950 shrink-0">
                       <h3 className="font-bold text-white">Comparison</h3>
-                      <button onClick={() => setShowMobileComparison(false)} className="text-slate-400 hover:text-white">
+                      <button
+                        onClick={() => setShowMobileComparison(false)}
+                        className="text-slate-400 hover:text-white"
+                      >
                         <XCircle size={24} />
                       </button>
                     </div>
@@ -604,22 +651,36 @@ export default function WebDesignWirral() {
                       <div className="grid grid-cols-3 bg-slate-950 p-3 text-[10px] font-mono uppercase tracking-widest text-slate-500 sticky top-0 z-10 border-b border-slate-800">
                         <div>Feature</div>
                         <div className="text-red-400 text-center">Typical</div>
-                        <div className="text-emerald-500 font-bold text-center">Kaizen</div>
+                        <div className="text-emerald-500 font-bold text-center">
+                          Kaizen
+                        </div>
                       </div>
                       <div className="divide-y divide-slate-800">
                         {comparisonFeatures.map((row, i) => (
-                          <div key={i} className="grid grid-cols-3 hover:bg-slate-800/30 transition-colors">
+                          <div
+                            key={i}
+                            className="grid grid-cols-3 hover:bg-slate-800/30 transition-colors"
+                          >
                             <div className="p-3 border-r border-slate-800 flex items-center">
-                              <div className="text-xs font-medium text-slate-300">{row.feature}</div>
+                              <div className="text-xs font-medium text-slate-300">
+                                {row.feature}
+                              </div>
                             </div>
                             <div className="p-3 border-r border-slate-800 flex flex-col items-center justify-center gap-1 text-center">
                               <X size={14} className="text-red-500" />
-                              <div className="text-slate-400 text-[10px] leading-tight">{row.typical}</div>
+                              <div className="text-slate-400 text-[10px] leading-tight">
+                                {row.typical}
+                              </div>
                             </div>
                             <div className="p-3 bg-emerald-900/10 flex flex-col items-center justify-center gap-1 text-center relative overflow-hidden">
                               <div className="absolute inset-0 bg-emerald-500/5" />
-                              <Check size={14} className="text-emerald-400 relative z-10" />
-                              <div className="text-emerald-100 font-bold text-[10px] leading-tight relative z-10">{row.kaizen}</div>
+                              <Check
+                                size={14}
+                                className="text-emerald-400 relative z-10"
+                              />
+                              <div className="text-emerald-100 font-bold text-[10px] leading-tight relative z-10">
+                                {row.kaizen}
+                              </div>
                             </div>
                           </div>
                         ))}
@@ -649,21 +710,33 @@ export default function WebDesignWirral() {
             </div>
             <div className="divide-y divide-slate-100 dark:divide-slate-800 bg-white dark:bg-slate-900">
               {comparisonFeatures.map((row, i) => (
-                <div key={i} className="grid grid-cols-3 hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors group">
+                <div
+                  key={i}
+                  className="grid grid-cols-3 hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors group"
+                >
                   <div className="p-4 border-r border-slate-100 dark:border-slate-800 flex items-center">
-                    <div className="text-sm font-medium text-slate-700 dark:text-slate-300">{row.feature}</div>
+                    <div className="text-sm font-medium text-slate-700 dark:text-slate-300">
+                      {row.feature}
+                    </div>
                   </div>
                   <div className="p-4 border-r border-slate-100 dark:border-slate-800 flex items-center gap-3">
                     <X size={18} className="text-red-500 flex-shrink-0" />
-                    <div className="text-slate-500 dark:text-slate-400 text-sm">{row.typical}</div>
+                    <div className="text-slate-500 dark:text-slate-400 text-sm">
+                      {row.typical}
+                    </div>
                   </div>
                   <div className="p-4 bg-emerald-50/30 dark:bg-emerald-900/5 relative overflow-hidden flex items-center gap-3 border-l border-emerald-100 dark:border-emerald-900/30">
                     <div className="absolute inset-0 bg-emerald-100/20 dark:bg-emerald-500/5 opacity-0 group-hover:opacity-100 transition-opacity" />
                     <div className="relative z-10 flex items-center gap-3">
                       <div className="w-6 h-6 rounded-full bg-emerald-100 dark:bg-emerald-900/50 flex items-center justify-center flex-shrink-0">
-                        <Check size={14} className="text-emerald-600 dark:text-emerald-400" />
+                        <Check
+                          size={14}
+                          className="text-emerald-600 dark:text-emerald-400"
+                        />
                       </div>
-                      <div className="text-emerald-800 dark:text-emerald-100 font-bold text-sm">{row.kaizen}</div>
+                      <div className="text-emerald-800 dark:text-emerald-100 font-bold text-sm">
+                        {row.kaizen}
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -698,10 +771,17 @@ export default function WebDesignWirral() {
                 Ready for Core Web Vitals
               </h3>
               <p className="text-slate-400 mb-6 leading-relaxed">
-                Our builds regularly score <span className="text-emerald-400 font-bold">95%+ in AHREFS site audits</span>, and consistently achieve <span className="text-emerald-400 font-bold">A Grades</span> in performance tests.
+                Our builds regularly score{" "}
+                <span className="text-emerald-400 font-bold">
+                  95%+ in AHREFS site audits
+                </span>
+                , and consistently achieve{" "}
+                <span className="text-emerald-400 font-bold">A Grades</span> in
+                performance tests.
               </p>
               <p className="text-slate-400 mb-6 leading-relaxed">
-                We achieve this with A-grade GTMetrix scores and a relentless focus on code quality.
+                We achieve this with A-grade GTMetrix scores and a relentless
+                focus on code quality.
               </p>
               <a
                 href="https://developers.google.com/search/docs/appearance/core-web-vitals"
@@ -768,13 +848,15 @@ export default function WebDesignWirral() {
             </span>
             Ready to Sprint?
           </div>
-          
+
           <h2 className="text-4xl md:text-5xl font-heading font-bold mb-6">
             Ready to level up your Wirral site?
           </h2>
-          
+
           <p className="text-xl text-slate-400 mb-10 leading-relaxed max-w-2xl mx-auto">
-            Whether you're based in Heswall, West Kirby, Birkenhead or anywhere on the peninsula, we'll help you ship a site that looks sharp, loads fast and actually wins work.
+            Whether you're based in Heswall, West Kirby, Birkenhead or anywhere
+            on the peninsula, we'll help you ship a site that looks sharp, loads
+            fast and actually wins work.
           </p>
 
           <div className="flex flex-col sm:flex-row justify-center gap-6">

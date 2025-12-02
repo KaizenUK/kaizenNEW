@@ -87,7 +87,13 @@ export function Speedometer() {
           xmlns="http://www.w3.org/2000/svg"
         >
           <defs>
-            <filter id="gauge-shadow" x="-20%" y="-20%" width="140%" height="140%">
+            <filter
+              id="gauge-shadow"
+              x="-20%"
+              y="-20%"
+              width="140%"
+              height="140%"
+            >
               <feDropShadow dx="0" dy="4" stdDeviation="4" floodOpacity="0.3" />
             </filter>
             <linearGradient id="needle-gradient" x1="0" x2="1" y1="0" y2="0">
@@ -175,7 +181,12 @@ export function Speedometer() {
           })}
 
           {/* Needle */}
-          <g transform={`rotate(${rotation} 100 100)`} style={{ transition: isWobbling ? 'none' : 'transform 0.1s ease-out' }}>
+          <g
+            transform={`rotate(${rotation} 100 100)`}
+            style={{
+              transition: isWobbling ? "none" : "transform 0.1s ease-out",
+            }}
+          >
             {/* Needle Shadow */}
             <path
               d="M 100 100 L 95 100 L 100 25 L 105 100 Z"
@@ -189,7 +200,14 @@ export function Speedometer() {
               fill="#ef4444"
               filter="url(#gauge-shadow)"
             />
-            <circle cx="100" cy="100" r="6" fill="#1e293b" stroke="#ef4444" strokeWidth="2" />
+            <circle
+              cx="100"
+              cy="100"
+              r="6"
+              fill="#1e293b"
+              stroke="#ef4444"
+              strokeWidth="2"
+            />
           </g>
         </svg>
 
