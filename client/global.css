@@ -400,11 +400,7 @@
   }
 
   /* Ensure all images in blog content have rounded corners */
-  .blog-content img {
-    border-radius: 0.75rem !important;
-  }
-
-  /* Override prose image styles */
+  .blog-content img,
   .prose img,
   .dark .prose img {
     border-radius: 0.75rem !important;
