@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import Layout from "@/components/Layout";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowRight, Map, CheckCircle2, Zap, Users, BarChart3, X, Check } from "lucide-react";
+import { ArrowRight, Map, CheckCircle2, Zap, Users, BarChart3, X, Check, Star } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useCalendly } from "@/context/CalendlyContext";
 import { FaqSection } from "@/components/FaqSection";
@@ -35,26 +35,31 @@ const comparisonFeatures = [
     feature: "Mobile Load Speed",
     typical: "5-8 seconds (Slow)",
     kaizen: "1.2 seconds (Instant)",
+    highlight: true,
   },
   {
     feature: "Technology Stack",
     typical: "Bloated WordPress Theme",
     kaizen: "Custom React + Headless",
+    highlight: true,
   },
   {
     feature: "Local SEO Strategy",
     typical: "Generic / None",
     kaizen: "Wirral-Specific Schema",
+    highlight: true,
   },
   {
     feature: "Ownership",
     typical: "Locked In / Leased",
     kaizen: "100% Yours",
+    highlight: true,
   },
   {
     feature: "Post-Launch Support",
     typical: "Ghosted",
     kaizen: "Quarterly Growth Sprints",
+    highlight: true,
   },
 ];
 
@@ -313,7 +318,7 @@ export default function WebDesignWirral() {
                   rel="noopener noreferrer"
                   className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full border border-slate-700 bg-slate-900/50 text-slate-300 font-heading font-medium hover:bg-slate-800 hover:text-white transition-all duration-300 backdrop-blur-sm"
                 >
-                  View Case Study
+                  Read the Case Study
                 </a>
               </div>
             </motion.div>
@@ -400,7 +405,7 @@ export default function WebDesignWirral() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.1 }}
-                className="p-8 rounded-3xl bg-gradient-to-b from-slate-50 to-white dark:from-slate-900 dark:to-slate-950 shadow-[0_10px_40px_-10px_rgba(0,0,0,0.05)] dark:shadow-none hover:shadow-[0_20px_40px_-10px_rgba(0,0,0,0.1)] transition-all duration-300 group"
+                className="p-8 rounded-3xl bg-gradient-to-b from-slate-50 to-white dark:from-slate-900 dark:to-slate-950 shadow-[0_10px_40px_-10px_rgba(0,0,0,0.05)] dark:shadow-none hover:shadow-[0_20px_40px_-10px_rgba(0,0,0,0.1)] transition-all duration-300 group border border-slate-100 dark:border-slate-800"
               >
                 <div className="w-14 h-14 rounded-2xl bg-cyan-50 dark:bg-cyan-900/20 flex items-center justify-center text-cyan-600 dark:text-cyan-400 mb-6 group-hover:scale-110 transition-transform duration-300">
                   <item.icon size={28} />
@@ -541,86 +546,63 @@ export default function WebDesignWirral() {
       </section>
 
       {/* Comparison Section */}
-      <section className="py-24 px-4 bg-slate-900 border-t border-slate-800">
-        <div className="container mx-auto max-w-5xl">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-heading font-bold text-white mb-4">
+      <section className="py-24 px-4 bg-white dark:bg-slate-950 border-t border-slate-200 dark:border-slate-800">
+        <div className="container mx-auto max-w-6xl">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-heading font-bold text-slate-900 dark:text-white mb-4">
               Typical Wirral Web Designer vs Kaizen
             </h2>
-            <p className="text-slate-400">
+            <p className="text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
               See exactly what you get (and what you don't).
             </p>
           </div>
 
-          {/* Mobile Toggle */}
-          <div className="md:hidden mb-8">
-            <button
-              type="button"
-              onClick={() => setShowMobileComparison((prev) => !prev)}
-              className="w-full flex items-center justify-between p-4 rounded-xl bg-slate-800 text-white font-bold border border-slate-700"
-            >
-              <span>Click to see the difference</span>
-              <ArrowRight
-                size={18}
-                className={`transform transition-transform ${showMobileComparison ? "rotate-90" : ""}`}
-              />
-            </button>
-
-            <AnimatePresence>
-              {showMobileComparison && (
-                <motion.div
-                  initial={{ height: 0, opacity: 0 }}
-                  animate={{ height: "auto", opacity: 1 }}
-                  exit={{ height: 0, opacity: 0 }}
-                  className="overflow-hidden"
-                >
-                  <div className="pt-4 space-y-4">
-                    {comparisonFeatures.map((row, i) => (
-                      <div key={i} className="bg-slate-800/50 p-4 rounded-xl border border-slate-700">
-                        <div className="text-xs font-mono uppercase text-slate-500 mb-2">{row.feature}</div>
-                        <div className="grid grid-cols-1 gap-3">
-                          <div className="flex items-start gap-2 text-red-400 text-sm">
-                            <X size={16} className="mt-0.5 flex-shrink-0" />
-                            <span>{row.typical}</span>
-                          </div>
-                          <div className="flex items-start gap-2 text-emerald-400 text-sm font-bold">
-                            <Check size={16} className="mt-0.5 flex-shrink-0" />
-                            <span>{row.kaizen}</span>
-                          </div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </div>
-
-          {/* Desktop Table */}
-          <div className="hidden md:block rounded-2xl overflow-hidden border border-slate-800 bg-slate-900 shadow-2xl">
-            <div className="grid grid-cols-3 bg-slate-950 p-6 text-xs font-mono uppercase tracking-widest text-slate-500">
-              <div>Feature</div>
-              <div className="text-red-400">Typical Designer</div>
-              <div className="text-emerald-500 font-bold bg-emerald-900/20 -m-6 p-6 border-l border-emerald-900/30">Kaizen Approach</div>
+          {/* Feature Comparison Table */}
+          <div className="overflow-hidden rounded-3xl border border-slate-200 dark:border-slate-800 shadow-xl">
+            {/* Header */}
+            <div className="grid grid-cols-12 bg-slate-50 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800">
+              <div className="col-span-4 p-6 text-xs font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400 flex items-center">
+                Feature
+              </div>
+              <div className="col-span-4 p-6 text-xs font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400 flex items-center justify-center text-center border-l border-slate-200 dark:border-slate-800">
+                Typical Designer
+              </div>
+              <div className="col-span-4 p-6 text-xs font-bold uppercase tracking-widest text-white flex items-center justify-center text-center bg-emerald-600 relative overflow-hidden">
+                <div className="relative z-10 flex items-center gap-2">
+                  <Star size={14} className="fill-white" />
+                  Kaizen Approach
+                </div>
+              </div>
             </div>
-            <div className="divide-y divide-slate-800">
+
+            {/* Rows */}
+            <div className="bg-white dark:bg-slate-950 divide-y divide-slate-100 dark:divide-slate-800">
               {comparisonFeatures.map((row, i) => (
-                <div key={i} className="grid grid-cols-3 hover:bg-slate-800/30 transition-colors group">
-                  <div className="p-6 border-r border-slate-800 flex items-center">
-                    <div className="text-sm font-medium text-slate-300">{row.feature}</div>
+                <div key={i} className="grid grid-cols-12 hover:bg-slate-50 dark:hover:bg-slate-900/50 transition-colors group">
+                  {/* Feature Name */}
+                  <div className="col-span-4 p-6 flex items-center">
+                    <span className="font-bold text-slate-900 dark:text-white text-sm md:text-base">
+                      {row.feature}
+                    </span>
                   </div>
-                  <div className="p-6 border-r border-slate-800 flex items-center gap-3">
-                    <X size={18} className="text-red-500 flex-shrink-0" />
-                    <div className="text-slate-400 text-sm">{row.typical}</div>
+
+                  {/* Typical Designer */}
+                  <div className="col-span-4 p-6 flex flex-col items-center justify-center text-center border-l border-slate-100 dark:border-slate-800">
+                    <X className="text-red-400 mb-2" size={24} />
+                    <span className="text-sm text-slate-500 dark:text-slate-400">
+                      {row.typical}
+                    </span>
                   </div>
-                  <div className="p-6 bg-emerald-900/5 relative overflow-hidden flex items-center gap-3 border-l border-emerald-900/30">
-                    <div className="absolute inset-0 bg-emerald-500/5 opacity-0 group-hover:opacity-100 transition-opacity" />
-                    <div className="relative z-10 flex items-center gap-3">
-                      <div className="w-6 h-6 rounded-full bg-emerald-500/20 flex items-center justify-center flex-shrink-0">
-                        <Check size={14} className="text-emerald-400" />
-                      </div>
-                      <div className="text-emerald-100 font-bold text-sm">{row.kaizen}</div>
+
+                  {/* Kaizen */}
+                  <div className="col-span-4 p-6 flex flex-col items-center justify-center text-center bg-emerald-50/50 dark:bg-emerald-900/10 border-l border-emerald-100 dark:border-emerald-900/30 relative">
+                    <div className="absolute inset-0 border-2 border-transparent group-hover:border-emerald-500/20 transition-colors pointer-events-none" />
+                    <div className="w-8 h-8 rounded-full bg-emerald-100 dark:bg-emerald-900/50 flex items-center justify-center mb-2">
+                      <Check className="text-emerald-600 dark:text-emerald-400" size={18} />
                     </div>
+                    <span className="text-sm font-bold text-emerald-900 dark:text-emerald-100">
+                      {row.kaizen}
+                    </span>
                   </div>
                 </div>
               ))}
@@ -678,6 +660,7 @@ export default function WebDesignWirral() {
         <FaqSection
           heading="Wirral Web Design FAQs"
           eyebrow="Common Questions"
+          className="bg-slate-50 dark:bg-slate-900/50"
           items={[
             {
               question: "How much does a website cost in the Wirral?",
@@ -720,11 +703,11 @@ export default function WebDesignWirral() {
           </div>
           
           <h2 className="text-4xl md:text-5xl font-heading font-bold mb-6">
-            Let's build your MVP.
+            Ready to level up your Wirral site?
           </h2>
           
           <p className="text-xl text-slate-400 mb-10 leading-relaxed max-w-2xl mx-auto">
-            Take your idea from concept to launch with Agile delivery and clear thinking. No obligation. Straight talk.
+            Whether you're based in Heswall, West Kirby, Birkenhead or anywhere on the peninsula, we'll help you ship a site that looks sharp, loads fast and actually wins work.
           </p>
 
           <div className="flex flex-col sm:flex-row justify-center gap-6">
