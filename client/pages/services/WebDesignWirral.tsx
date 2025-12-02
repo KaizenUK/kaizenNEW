@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import Layout from "@/components/Layout";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowRight, Map, CheckCircle2, Zap, Users, BarChart3, X, Check, Star } from "lucide-react";
+import { ArrowRight, Map, CheckCircle2, Zap, Users, BarChart3, X, Check, Star, XCircle } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useCalendly } from "@/context/CalendlyContext";
 import { FaqSection } from "@/components/FaqSection";
@@ -58,10 +58,28 @@ const comparisonFeatures = [
   {
     feature: "Post-Launch Support",
     typical: "Ghosted",
-    kaizen: "Quarterly Growth Sprints",
+    kaizen: "30 Day Snagging & Support",
     highlight: true,
   },
 ];
+
+const getColorClass = (color: string) => {
+  switch (color) {
+    case "cyan": return "text-cyan-400";
+    case "sky": return "text-sky-400";
+    case "lime": return "text-lime-400";
+    default: return "text-cyan-400";
+  }
+};
+
+const getBgClass = (color: string) => {
+  switch (color) {
+    case "cyan": return "bg-cyan-500/5";
+    case "sky": return "bg-sky-500/5";
+    case "lime": return "bg-lime-500/5";
+    default: return "bg-cyan-500/5";
+  }
+};
 
 function WirralTopoBackground() {
   return (
@@ -303,7 +321,7 @@ export default function WebDesignWirral() {
                 Don't settle for slow templates. We build high-performance, bespoke websites for Wirral businesses that rank, convert, and scale.
               </p>
 
-              <div className="flex flex-col sm:flex-row gap-4">
+              <div className="flex flex-col sm:flex-row gap-4 items-center">
                 <button
                   onClick={openCalendly}
                   className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full bg-cyan-500 text-white font-heading font-bold hover:bg-cyan-400 hover:shadow-[0_0_20px_rgba(34,211,238,0.4)] transition-all duration-300 transform hover:-translate-y-1"
@@ -312,14 +330,9 @@ export default function WebDesignWirral() {
                   <ArrowRight size={18} />
                 </button>
 
-                <a
-                  href="https://kaizenweb.co.uk/blog/bespoke-web-design-vs-templates-wirral"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full border border-slate-700 bg-slate-900/50 text-slate-300 font-heading font-medium hover:bg-slate-800 hover:text-white transition-all duration-300 backdrop-blur-sm"
-                >
+                <span className="text-slate-400 text-sm font-medium">
                   Read the Case Study
-                </a>
+                </span>
               </div>
             </motion.div>
 
@@ -528,11 +541,11 @@ export default function WebDesignWirral() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.1 }}
-                className="group relative overflow-hidden rounded-2xl bg-slate-900 border border-slate-800 p-8 hover:border-slate-700 transition-colors"
+                className={`group relative overflow-hidden rounded-2xl bg-slate-900 border border-slate-800 p-8 hover:border-slate-700 transition-colors ${getBgClass(item.color)}`}
               >
                 <div className={`absolute top-0 right-0 w-32 h-32 bg-${item.color}-500/5 rounded-full blur-2xl -mr-16 -mt-16 transition-opacity group-hover:opacity-100`} />
                 
-                <p className={`text-xs font-mono uppercase tracking-widest text-${item.color}-400 mb-4`}>
+                <p className={`text-xs font-mono uppercase tracking-widest mb-4 ${getColorClass(item.color)}`}>
                   {item.area}
                 </p>
                 <h3 className="text-xl font-bold text-white mb-3">{item.title}</h3>
@@ -557,52 +570,87 @@ export default function WebDesignWirral() {
             </p>
           </div>
 
-          {/* Feature Comparison Table */}
-          <div className="overflow-hidden rounded-3xl border border-slate-200 dark:border-slate-800 shadow-xl">
-            {/* Header */}
-            <div className="grid grid-cols-12 bg-slate-50 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800">
-              <div className="col-span-4 p-6 text-xs font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400 flex items-center">
-                Feature
-              </div>
-              <div className="col-span-4 p-6 text-xs font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400 flex items-center justify-center text-center border-l border-slate-200 dark:border-slate-800">
-                Typical Designer
-              </div>
-              <div className="col-span-4 p-6 text-xs font-bold uppercase tracking-widest text-white flex items-center justify-center text-center bg-emerald-600 relative overflow-hidden">
-                <div className="relative z-10 flex items-center gap-2">
-                  <Star size={14} className="fill-white" />
-                  Kaizen Approach
-                </div>
-              </div>
-            </div>
+          {/* Mobile Toggle */}
+          <div className="md:hidden mb-8">
+            <button
+              type="button"
+              onClick={() => setShowMobileComparison(true)}
+              className="w-full flex items-center justify-between p-4 rounded-xl bg-slate-900 text-white font-bold border border-slate-800 shadow-lg"
+            >
+              <span>Click to see the difference</span>
+              <ArrowRight size={18} />
+            </button>
 
-            {/* Rows */}
-            <div className="bg-white dark:bg-slate-950 divide-y divide-slate-100 dark:divide-slate-800">
-              {comparisonFeatures.map((row, i) => (
-                <div key={i} className="grid grid-cols-12 hover:bg-slate-50 dark:hover:bg-slate-900/50 transition-colors group">
-                  {/* Feature Name */}
-                  <div className="col-span-4 p-6 flex items-center">
-                    <span className="font-bold text-slate-900 dark:text-white text-sm md:text-base">
-                      {row.feature}
-                    </span>
-                  </div>
-
-                  {/* Typical Designer */}
-                  <div className="col-span-4 p-6 flex flex-col items-center justify-center text-center border-l border-slate-100 dark:border-slate-800">
-                    <X className="text-red-400 mb-2" size={24} />
-                    <span className="text-sm text-slate-500 dark:text-slate-400">
-                      {row.typical}
-                    </span>
-                  </div>
-
-                  {/* Kaizen */}
-                  <div className="col-span-4 p-6 flex flex-col items-center justify-center text-center bg-emerald-50/50 dark:bg-emerald-900/10 border-l border-emerald-100 dark:border-emerald-900/30 relative">
-                    <div className="absolute inset-0 border-2 border-transparent group-hover:border-emerald-500/20 transition-colors pointer-events-none" />
-                    <div className="w-8 h-8 rounded-full bg-emerald-100 dark:bg-emerald-900/50 flex items-center justify-center mb-2">
-                      <Check className="text-emerald-600 dark:text-emerald-400" size={18} />
+            <AnimatePresence>
+              {showMobileComparison && (
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/90 backdrop-blur-sm"
+                  onClick={() => setShowMobileComparison(false)}
+                >
+                  <motion.div
+                    initial={{ scale: 0.9, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    exit={{ scale: 0.9, opacity: 0 }}
+                    className="bg-slate-900 w-full max-w-md rounded-2xl border border-slate-800 shadow-2xl overflow-hidden"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <div className="p-4 border-b border-slate-800 flex justify-between items-center bg-slate-950">
+                      <h3 className="font-bold text-white">Comparison</h3>
+                      <button onClick={() => setShowMobileComparison(false)} className="text-slate-400 hover:text-white">
+                        <XCircle size={24} />
+                      </button>
                     </div>
-                    <span className="text-sm font-bold text-emerald-900 dark:text-emerald-100">
-                      {row.kaizen}
-                    </span>
+                    <div className="p-4 space-y-4 max-h-[70vh] overflow-y-auto">
+                      {comparisonFeatures.map((row, i) => (
+                        <div key={i} className="bg-slate-800/50 p-4 rounded-xl border border-slate-700">
+                          <div className="text-xs font-mono uppercase text-slate-500 mb-2">{row.feature}</div>
+                          <div className="grid grid-cols-1 gap-3">
+                            <div className="flex items-start gap-2 text-red-400 text-sm">
+                              <X size={16} className="mt-0.5 flex-shrink-0" />
+                              <span>{row.typical}</span>
+                            </div>
+                            <div className="flex items-start gap-2 text-emerald-400 text-sm font-bold">
+                              <Check size={16} className="mt-0.5 flex-shrink-0" />
+                              <span>{row.kaizen}</span>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </motion.div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+
+          {/* Desktop Table */}
+          <div className="hidden md:block rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-800 shadow-2xl">
+            <div className="grid grid-cols-3 bg-slate-50 dark:bg-slate-950 p-4 text-xs font-mono uppercase tracking-widest text-slate-500 dark:text-slate-400">
+              <div>Feature</div>
+              <div className="text-red-500 dark:text-red-400">Typical Designer</div>
+              <div className="text-emerald-600 dark:text-emerald-500 font-bold bg-emerald-100/50 dark:bg-emerald-900/20 -m-4 p-4 border-l border-emerald-200 dark:border-emerald-900/30">Kaizen Approach</div>
+            </div>
+            <div className="divide-y divide-slate-100 dark:divide-slate-800 bg-white dark:bg-slate-900">
+              {comparisonFeatures.map((row, i) => (
+                <div key={i} className="grid grid-cols-3 hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors group">
+                  <div className="p-4 border-r border-slate-100 dark:border-slate-800 flex items-center">
+                    <div className="text-sm font-medium text-slate-700 dark:text-slate-300">{row.feature}</div>
+                  </div>
+                  <div className="p-4 border-r border-slate-100 dark:border-slate-800 flex items-center gap-3">
+                    <X size={18} className="text-red-500 flex-shrink-0" />
+                    <div className="text-slate-500 dark:text-slate-400 text-sm">{row.typical}</div>
+                  </div>
+                  <div className="p-4 bg-emerald-50/30 dark:bg-emerald-900/5 relative overflow-hidden flex items-center gap-3 border-l border-emerald-100 dark:border-emerald-900/30">
+                    <div className="absolute inset-0 bg-emerald-100/20 dark:bg-emerald-500/5 opacity-0 group-hover:opacity-100 transition-opacity" />
+                    <div className="relative z-10 flex items-center gap-3">
+                      <div className="w-6 h-6 rounded-full bg-emerald-100 dark:bg-emerald-900/50 flex items-center justify-center flex-shrink-0">
+                        <Check size={14} className="text-emerald-600 dark:text-emerald-400" />
+                      </div>
+                      <div className="text-emerald-800 dark:text-emerald-100 font-bold text-sm">{row.kaizen}</div>
+                    </div>
                   </div>
                 </div>
               ))}
@@ -636,7 +684,7 @@ export default function WebDesignWirral() {
                 Ready for Core Web Vitals
               </h3>
               <p className="text-slate-400 mb-6 leading-relaxed">
-                Our builds regularly score <span className="text-emerald-400 font-bold">95%+ in Lighthouse</span>, often ahead of giants like Amazon (~90) and the BBC (~88).
+                Our builds regularly score <span className="text-emerald-400 font-bold">95%+ in AHREFS site audits</span>, and consistently achieve <span className="text-emerald-400 font-bold">A Grades</span> in performance tests.
               </p>
               <p className="text-slate-400 mb-6 leading-relaxed">
                 We achieve this with A-grade GTMetrix scores and a relentless focus on code quality.
@@ -655,12 +703,13 @@ export default function WebDesignWirral() {
         </div>
       </section>
 
-      <div className="relative">
+      <div className="relative bg-slate-50 dark:bg-slate-900/50">
         <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-5 pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent to-slate-100/50 dark:to-slate-900/50 pointer-events-none" />
         <FaqSection
           heading="Wirral Web Design FAQs"
           eyebrow="Common Questions"
-          className="bg-slate-50 dark:bg-slate-900/50"
+          className="bg-transparent"
           items={[
             {
               question: "How much does a website cost in the Wirral?",
