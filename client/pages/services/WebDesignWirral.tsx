@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import Layout from "@/components/Layout";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowRight, Map, CheckCircle2, Zap, Users, BarChart3 } from "lucide-react";
+import { ArrowRight, Map, CheckCircle2, Zap, Users, BarChart3, X, Check } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useCalendly } from "@/context/CalendlyContext";
 import { FaqSection } from "@/components/FaqSection";
@@ -30,31 +30,31 @@ const containerVariants = {
   },
 };
 
-const comparisonRows = [
+const comparisonFeatures = [
   {
-    label: "Speed",
-    typical: "Theme site that feels slow.",
-    kaizen: "Lightning-fast on real phones.",
+    feature: "Mobile Load Speed",
+    typical: "5-8 seconds (Slow)",
+    kaizen: "1.2 seconds (Instant)",
   },
   {
-    label: "Tech",
-    typical: "Basic WordPress template.",
-    kaizen: "Modern React + headless stack.",
+    feature: "Technology Stack",
+    typical: "Bloated WordPress Theme",
+    kaizen: "Custom React + Headless",
   },
   {
-    label: "SEO",
-    typical: "Little or no local SEO.",
-    kaizen: "Built for Wirral searches.",
+    feature: "Local SEO Strategy",
+    typical: "Generic / None",
+    kaizen: "Wirral-Specific Schema",
   },
   {
-    label: "Control",
-    typical: "Agency owns everything.",
-    kaizen: "You own the site and code.",
+    feature: "Ownership",
+    typical: "Locked In / Leased",
+    kaizen: "100% Yours",
   },
   {
-    label: "Support",
-    typical: "Launch, then disappear.",
-    kaizen: "Ongoing tweaks and improvements.",
+    feature: "Post-Launch Support",
+    typical: "Ghosted",
+    kaizen: "Quarterly Growth Sprints",
   },
 ];
 
@@ -283,7 +283,6 @@ export default function WebDesignWirral() {
                 <span className="bg-gradient-to-r from-cyan-400 via-teal-300 to-lime-400 bg-clip-text text-transparent">
                   <TypewriterEffect
                     words={[
-                      "No fluff. Just ROI.",
                       "Fast.",
                       "Secure.",
                       "Profitable.",
@@ -319,32 +318,31 @@ export default function WebDesignWirral() {
               </div>
             </motion.div>
 
-            <motion.div variants={fadeInUp} className="relative">
+            <motion.div variants={fadeInUp} className="relative perspective-1000">
               <div className="absolute -inset-4 bg-gradient-to-r from-cyan-500/20 to-lime-500/20 rounded-[2rem] blur-2xl opacity-50" />
-              <div className="relative bg-slate-900/80 border border-slate-800 rounded-2xl p-6 backdrop-blur-xl shadow-2xl">
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="col-span-2 bg-slate-800/50 rounded-xl p-4 border border-slate-700/50">
-                    <div className="flex items-center gap-3 mb-2">
-                      <div className="w-2 h-2 rounded-full bg-red-500" />
-                      <div className="w-2 h-2 rounded-full bg-yellow-500" />
-                      <div className="w-2 h-2 rounded-full bg-green-500" />
+              <div className="relative bg-slate-900/90 border border-slate-700/50 rounded-2xl p-6 backdrop-blur-xl shadow-[0_20px_50px_rgba(0,0,0,0.5)] transform rotate-y-12 rotate-x-6 transition-transform duration-500 hover:rotate-0">
+                {/* 3D Layer Effect */}
+                <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent rounded-2xl pointer-events-none" />
+                
+                <div className="grid grid-cols-2 gap-4 relative z-10">
+                  <div className="col-span-2 bg-slate-800/80 rounded-xl p-4 border border-slate-700/50 shadow-inner">
+                    <div className="flex items-center gap-3 mb-3">
+                      <div className="w-2.5 h-2.5 rounded-full bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.5)]" />
+                      <div className="w-2.5 h-2.5 rounded-full bg-yellow-500 shadow-[0_0_8px_rgba(234,179,8,0.5)]" />
+                      <div className="w-2.5 h-2.5 rounded-full bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.5)]" />
                     </div>
                     <div className="space-y-2">
-                      <div className="h-2 w-3/4 bg-slate-700 rounded" />
-                      <div className="h-2 w-1/2 bg-slate-700 rounded" />
+                      <div className="h-2 w-3/4 bg-slate-700 rounded animate-pulse" />
+                      <div className="h-2 w-1/2 bg-slate-700 rounded animate-pulse delay-75" />
                     </div>
                   </div>
-                  <div className="bg-slate-800/50 rounded-xl p-4 border border-slate-700/50 flex items-center justify-center">
-                    <div className="text-center">
-                      <div className="text-3xl font-bold text-cyan-400">98</div>
-                      <div className="text-[10px] uppercase tracking-wider text-slate-400">Performance</div>
-                    </div>
+                  <div className="bg-slate-800/80 rounded-xl p-4 border border-slate-700/50 flex flex-col items-center justify-center shadow-lg">
+                    <div className="text-4xl font-black text-cyan-400 drop-shadow-[0_0_10px_rgba(34,211,238,0.3)]">96</div>
+                    <div className="text-[10px] uppercase tracking-wider text-slate-400 font-bold mt-1">Performance</div>
                   </div>
-                  <div className="bg-slate-800/50 rounded-xl p-4 border border-slate-700/50 flex items-center justify-center">
-                    <div className="text-center">
-                      <div className="text-3xl font-bold text-lime-400">100</div>
-                      <div className="text-[10px] uppercase tracking-wider text-slate-400">SEO</div>
-                    </div>
+                  <div className="bg-slate-800/80 rounded-xl p-4 border border-slate-700/50 flex flex-col items-center justify-center shadow-lg">
+                    <div className="text-4xl font-black text-lime-400 drop-shadow-[0_0_10px_rgba(163,230,53,0.3)]">99</div>
+                    <div className="text-[10px] uppercase tracking-wider text-slate-400 font-bold mt-1">SEO</div>
                   </div>
                 </div>
                 <div className="mt-6 pt-6 border-t border-slate-800">
@@ -402,12 +400,12 @@ export default function WebDesignWirral() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.1 }}
-                className="p-6 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800 hover:shadow-xl hover:border-cyan-200 dark:hover:border-cyan-800 transition-all duration-300 group"
+                className="p-8 rounded-3xl bg-gradient-to-b from-slate-50 to-white dark:from-slate-900 dark:to-slate-950 shadow-[0_10px_40px_-10px_rgba(0,0,0,0.05)] dark:shadow-none hover:shadow-[0_20px_40px_-10px_rgba(0,0,0,0.1)] transition-all duration-300 group"
               >
-                <div className="w-12 h-12 rounded-xl bg-cyan-100 dark:bg-cyan-900/30 flex items-center justify-center text-cyan-600 dark:text-cyan-400 mb-4 group-hover:scale-110 transition-transform">
-                  <item.icon size={24} />
+                <div className="w-14 h-14 rounded-2xl bg-cyan-50 dark:bg-cyan-900/20 flex items-center justify-center text-cyan-600 dark:text-cyan-400 mb-6 group-hover:scale-110 transition-transform duration-300">
+                  <item.icon size={28} />
                 </div>
-                <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2">
+                <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-3">
                   {item.title}
                 </h3>
                 <p className="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
@@ -507,7 +505,7 @@ export default function WebDesignWirral() {
                 color: "cyan"
               },
               {
-                area: "Coastal Villages",
+                area: "Coastal Towns",
                 title: "Hoylake, West Kirby & New Brighton",
                 desc: "Experience-led sites that move people from Instagram and Google Maps into bookings.",
                 color: "sky"
@@ -550,7 +548,7 @@ export default function WebDesignWirral() {
               Typical Wirral Web Designer vs Kaizen
             </h2>
             <p className="text-slate-400">
-              Simple side‑by‑side view so you can see the difference in seconds.
+              See exactly what you get (and what you don't).
             </p>
           </div>
 
@@ -577,12 +575,18 @@ export default function WebDesignWirral() {
                   className="overflow-hidden"
                 >
                   <div className="pt-4 space-y-4">
-                    {comparisonRows.map((row, i) => (
+                    {comparisonFeatures.map((row, i) => (
                       <div key={i} className="bg-slate-800/50 p-4 rounded-xl border border-slate-700">
-                        <div className="text-xs font-mono uppercase text-slate-500 mb-2">{row.label}</div>
-                        <div className="grid grid-cols-1 gap-2">
-                          <div className="text-red-400 text-sm">✗ {row.typical}</div>
-                          <div className="text-emerald-400 text-sm font-bold">✓ {row.kaizen}</div>
+                        <div className="text-xs font-mono uppercase text-slate-500 mb-2">{row.feature}</div>
+                        <div className="grid grid-cols-1 gap-3">
+                          <div className="flex items-start gap-2 text-red-400 text-sm">
+                            <X size={16} className="mt-0.5 flex-shrink-0" />
+                            <span>{row.typical}</span>
+                          </div>
+                          <div className="flex items-start gap-2 text-emerald-400 text-sm font-bold">
+                            <Check size={16} className="mt-0.5 flex-shrink-0" />
+                            <span>{row.kaizen}</span>
+                          </div>
                         </div>
                       </div>
                     ))}
@@ -594,22 +598,28 @@ export default function WebDesignWirral() {
 
           {/* Desktop Table */}
           <div className="hidden md:block rounded-2xl overflow-hidden border border-slate-800 bg-slate-900 shadow-2xl">
-            <div className="grid grid-cols-2 bg-slate-950 p-4 text-xs font-mono uppercase tracking-widest text-slate-500">
-              <div>Typical Designer</div>
-              <div className="text-emerald-500">Kaizen Approach</div>
+            <div className="grid grid-cols-3 bg-slate-950 p-6 text-xs font-mono uppercase tracking-widest text-slate-500">
+              <div>Feature</div>
+              <div className="text-red-400">Typical Designer</div>
+              <div className="text-emerald-500 font-bold bg-emerald-900/20 -m-6 p-6 border-l border-emerald-900/30">Kaizen Approach</div>
             </div>
             <div className="divide-y divide-slate-800">
-              {comparisonRows.map((row, i) => (
-                <div key={i} className="grid grid-cols-2 hover:bg-slate-800/30 transition-colors group">
-                  <div className="p-6 border-r border-slate-800">
-                    <div className="text-xs font-mono text-slate-500 mb-1">{row.label}</div>
-                    <div className="text-slate-300 group-hover:text-red-300 transition-colors">{row.typical}</div>
+              {comparisonFeatures.map((row, i) => (
+                <div key={i} className="grid grid-cols-3 hover:bg-slate-800/30 transition-colors group">
+                  <div className="p-6 border-r border-slate-800 flex items-center">
+                    <div className="text-sm font-medium text-slate-300">{row.feature}</div>
                   </div>
-                  <div className="p-6 bg-emerald-900/5 relative overflow-hidden">
+                  <div className="p-6 border-r border-slate-800 flex items-center gap-3">
+                    <X size={18} className="text-red-500 flex-shrink-0" />
+                    <div className="text-slate-400 text-sm">{row.typical}</div>
+                  </div>
+                  <div className="p-6 bg-emerald-900/5 relative overflow-hidden flex items-center gap-3 border-l border-emerald-900/30">
                     <div className="absolute inset-0 bg-emerald-500/5 opacity-0 group-hover:opacity-100 transition-opacity" />
-                    <div className="relative z-10">
-                      <div className="text-xs font-mono text-emerald-600/70 mb-1">{row.label}</div>
-                      <div className="text-emerald-100 font-medium">{row.kaizen}</div>
+                    <div className="relative z-10 flex items-center gap-3">
+                      <div className="w-6 h-6 rounded-full bg-emerald-500/20 flex items-center justify-center flex-shrink-0">
+                        <Check size={14} className="text-emerald-400" />
+                      </div>
+                      <div className="text-emerald-100 font-bold text-sm">{row.kaizen}</div>
                     </div>
                   </div>
                 </div>
@@ -635,73 +645,103 @@ export default function WebDesignWirral() {
             </p>
           </div>
 
-          <div className="flex justify-center">
-            <Speedometer />
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <div className="flex justify-center lg:justify-end">
+              <Speedometer />
+            </div>
+            <div className="text-center lg:text-left">
+              <h3 className="text-2xl font-bold text-white mb-4">
+                Ready for Core Web Vitals
+              </h3>
+              <p className="text-slate-400 mb-6 leading-relaxed">
+                Our builds regularly score <span className="text-emerald-400 font-bold">95%+ in Lighthouse</span>, often ahead of giants like Amazon (~90) and the BBC (~88).
+              </p>
+              <p className="text-slate-400 mb-6 leading-relaxed">
+                We achieve this with A-grade GTMetrix scores and a relentless focus on code quality.
+              </p>
+              <a
+                href="https://developers.google.com/search/docs/appearance/core-web-vitals"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 text-cyan-400 hover:text-cyan-300 transition-colors font-medium"
+              >
+                Learn about Core Web Vitals
+                <ArrowRight size={16} />
+              </a>
+            </div>
           </div>
         </div>
       </section>
 
-      <FaqSection
-        heading="Wirral Web Design FAQs"
-        eyebrow="Common Questions"
-        items={[
-          {
-            question: "How much does a website cost in the Wirral?",
-            answer:
-              "Prices vary from £500 for a template to £10,000+ for a custom build. At Kaizen, our bespoke brochure sites start from £3,500. That might not be what you need for your business—it really depends on what your business needs. However, we provide a fixed-price quote after a quick chat, so you never get hit with hidden fees. If it ends up costing more than we anticipated, that's on us. So you have peace of mind.",
-          },
-          {
-            question: "Can I just use AI to build my own website?",
-            answer:
-              "Sure you can, but AI cannot define your business strategy. Without a Product Owner to guide the architecture, DIY AI sites often end up as 'spaghetti code' that breaks in 6 months. We use AI to speed up the build, but human experts ensure it actually generates revenue.",
-          },
-          {
-            question: "Do I own the website after it launches?",
-            answer:
-              "Yes. Unlike some Wirral agencies that lock you into a proprietary system, you own your code and your domain 100%. We hand over the keys (and the repo) on launch day.",
-          },
-          {
-            question: "Are you actually based in the Wirral?",
-            answer:
-              "Our registered office is in Liverpool city centre, but we work from and with clients across the peninsula—from Spital to Moreton. We are happy to meet you at your offices for a face-to-face discovery session.",
-          },
-          {
-            question: "Can you fix my existing WordPress site?",
-            answer:
-              "Yes. If your current site is slow or broken, our 'Project Rescue' team can audit the code, strip out the bloat, and move you to high-performance hosting.",
-          },
-        ]}
-      />
+      <div className="relative">
+        <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-5 pointer-events-none" />
+        <FaqSection
+          heading="Wirral Web Design FAQs"
+          eyebrow="Common Questions"
+          items={[
+            {
+              question: "How much does a website cost in the Wirral?",
+              answer:
+                "Prices vary from £500 for a template to £10,000+ for a custom build. At Kaizen, our bespoke brochure sites start from £3,500. That might not be what you need for your business—it really depends on what your business needs. However, we provide a fixed-price quote after a quick chat, so you never get hit with hidden fees. If it ends up costing more than we anticipated, that's on us. So you have peace of mind.",
+            },
+            {
+              question: "Can I just use AI to build my own website?",
+              answer:
+                "Sure you can, but AI cannot define your business strategy. Without a Product Owner to guide the architecture, DIY AI sites often end up as 'spaghetti code' that breaks in 6 months. We use AI to speed up the build, but human experts ensure it actually generates revenue.",
+            },
+            {
+              question: "Do I own the website after it launches?",
+              answer:
+                "Yes. Unlike some Wirral agencies that lock you into a proprietary system, you own your code and your domain 100%. We hand over the keys (and the repo) on launch day.",
+            },
+            {
+              question: "Are you actually based in the Wirral?",
+              answer:
+                "Our registered office is in Liverpool city centre, but we work from and with clients across the peninsula—from Spital to Moreton. We are happy to meet you at your offices for a face-to-face discovery session.",
+            },
+            {
+              question: "Can you fix my existing WordPress site?",
+              answer:
+                "Yes. If your current site is slow or broken, our 'Project Rescue' team can audit the code, strip out the bloat, and move you to high-performance hosting.",
+            },
+          ]}
+        />
+      </div>
 
-      {/* CTA */}
-      <section className="bg-slate-900 text-white py-20 px-4 border-t border-slate-800">
-        <div className="container mx-auto max-w-5xl">
-          <div className="bg-gradient-to-br from-cyan-900/20 to-lime-900/20 rounded-3xl p-8 md:p-12 border border-slate-800 text-center">
-            <h2 className="text-3xl md:text-4xl font-heading font-bold mb-6">
-              Ready to level up your Wirral site?
-            </h2>
-            <p className="text-lg text-slate-300 max-w-2xl mx-auto mb-8">
-              Whether you&apos;re based in Heswall, West Kirby, Birkenhead or
-              anywhere on the peninsula, we&apos;ll help you ship a site that
-              looks sharp, loads fast and actually wins work.
-            </p>
+      {/* CTA - Project Rescue Style */}
+      <section className="bg-slate-950 text-white py-24 px-4 border-t border-slate-800">
+        <div className="container mx-auto max-w-4xl text-center">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-900/30 text-emerald-400 text-xs font-mono uppercase tracking-wider mb-8">
+            <span className="relative flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+            </span>
+            Ready to Sprint?
+          </div>
+          
+          <h2 className="text-4xl md:text-5xl font-heading font-bold mb-6">
+            Let's build your MVP.
+          </h2>
+          
+          <p className="text-xl text-slate-400 mb-10 leading-relaxed max-w-2xl mx-auto">
+            Take your idea from concept to launch with Agile delivery and clear thinking. No obligation. Straight talk.
+          </p>
 
-            <div className="flex flex-col sm:flex-row justify-center gap-4">
-              <button
-                onClick={() => openCrisp()}
-                className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full bg-white text-slate-900 font-heading font-bold hover:bg-cyan-50 transition-colors"
-              >
-                Launch Chat
-                <ArrowRight size={18} />
-              </button>
+          <div className="flex flex-col sm:flex-row justify-center gap-6">
+            <button
+              onClick={() => openCrisp()}
+              className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full bg-emerald-500 text-white font-heading font-bold hover:bg-emerald-400 hover:shadow-[0_0_20px_rgba(16,185,129,0.4)] transition-all duration-300 transform hover:-translate-y-1"
+            >
+              Start Project
+              <ArrowRight size={18} />
+            </button>
 
-              <Link
-                to="/contact"
-                className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full border border-slate-700 text-white hover:bg-slate-800 transition-colors"
-              >
-                Send a brief
-              </Link>
-            </div>
+            <Link
+              to="/contact"
+              className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full border border-slate-700 text-slate-300 font-heading font-medium hover:bg-slate-800 hover:text-white transition-all duration-300"
+            >
+              Book Discovery Call
+            </Link>
           </div>
         </div>
       </section>
