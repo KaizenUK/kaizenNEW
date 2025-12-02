@@ -1,4 +1,4 @@
-export const CMS_BASE = "https://www.kaizenweb.co.uk/cms";
+export const CMS_BASE = "https://kaizenweb.co.uk/cms";
 
 export type WPPost = {
   id: number;

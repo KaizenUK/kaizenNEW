@@ -228,6 +228,21 @@ const pageMeta: Record<string, Partial<PageMeta>> = {
       "our ai policy",
     ],
   },
+  "/web-design-wirral": {
+    title: "Web Design Wirral | Bespoke Web Design | Kaizen",
+    description:
+      "Don't settle for slow templates. Kaizen build high-performance, bespoke web design for Wirral React speed, easy to maintain, local, fixed pricing. Book a demo.",
+    image:
+      "https://cdn.builder.io/api/v1/image/assets%2Fe4ae46bbd81b4b95bef54d66dd9748cc%2F094cdc9be84c41ee9db80308cbe5ea73?format=webp&width=1200&height=630",
+    keywords: [
+      "bespoke web design wirral",
+      "web design wirral",
+      "wirral websites",
+      "web design heswall",
+      "web design west kirby",
+      "web design birkenhead",
+    ],
+  },
   "/case-studies": {
     title: "Case Studies | Liverpool Web Design Results | Kaizen",
     description:

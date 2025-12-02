@@ -20,6 +20,7 @@ interface FaqSectionProps {
   eyebrow?: string;
   items: FaqItem[];
   id?: string;
+  className?: string;
 }
 
 export function FaqSection({
@@ -27,6 +28,7 @@ export function FaqSection({
   eyebrow = "Common Questions",
   items,
   id,
+  className = "bg-slate-50 dark:bg-slate-900/50",
 }: FaqSectionProps) {
   const faqSchema = {
     "@context": "https://schema.org",
@@ -44,7 +46,7 @@ export function FaqSection({
   return (
     <section
       id={id}
-      className="py-20 md:py-32 bg-slate-50 dark:bg-slate-900/50 relative overflow-hidden"
+      className={`py-20 md:py-32 relative overflow-hidden ${className}`}
     >
       <Helmet>
         <script type="application/ld+json">{JSON.stringify(faqSchema)}</script>

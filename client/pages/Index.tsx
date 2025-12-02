@@ -1249,7 +1249,7 @@ const PerformanceBadge = () => {
               Google fewer reasons to push you down the results.
             </p>
             <a
-              href="https://gtmetrix.com/reports/www.kaizenweb.co.uk/e2VJJsxv/"
+              href="https://gtmetrix.com/reports/kaizenweb.co.uk/e2VJJsxv/"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 px-6 py-3 rounded-lg border-2 border-kaizen-cyan/50 text-kaizen-cyan font-heading font-bold hover:border-kaizen-cyan hover:bg-kaizen-cyan/10 transition-all duration-300"
