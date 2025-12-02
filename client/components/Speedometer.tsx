@@ -3,9 +3,11 @@ import { useState, useEffect, useRef } from "react";
 export function Speedometer() {
   const [speed, setSpeed] = useState(0);
   const maxSpeed = 100;
+  const targetSpeed = 95;
   const containerRef = useRef<HTMLDivElement | null>(null);
   const hasAnimatedRef = useRef(false);
   const animationFrameRef = useRef<number | null>(null);
+  const [isWobbling, setIsWobbling] = useState(false);
 
   useEffect(() => {
     const startAnimation = () => {
@@ -17,11 +19,13 @@ export function Speedometer() {
         const progress = Math.min(elapsed / durationMs, 1);
         // Ease out cubic
         const easeOut = 1 - Math.pow(1 - progress, 3);
-        const value = Math.round(easeOut * maxSpeed);
+        const value = Math.round(easeOut * targetSpeed);
         setSpeed(value);
 
         if (progress < 1) {
           animationFrameRef.current = requestAnimationFrame(animate);
+        } else {
+          setIsWobbling(true);
         }
       };
 
@@ -53,10 +57,22 @@ export function Speedometer() {
         cancelAnimationFrame(animationFrameRef.current);
       }
     };
-  }, [maxSpeed]);
+  }, []);
 
   // Map 0-100 to -90 to 90 degrees
-  const rotation = -90 + (speed / maxSpeed) * 180;
+  // Add wobble if animation is done
+  const wobble = isWobbling ? Math.sin(Date.now() / 100) * 2 : 0;
+  const rotation = -90 + (speed / maxSpeed) * 180 + wobble;
+
+  // Force re-render for wobble
+  useEffect(() => {
+    if (isWobbling) {
+      const interval = setInterval(() => {
+        setSpeed((s) => s); // Trigger re-render
+      }, 50);
+      return () => clearInterval(interval);
+    }
+  }, [isWobbling]);
 
   return (
     <div
@@ -159,7 +175,7 @@ export function Speedometer() {
           })}
 
           {/* Needle */}
-          <g transform={`rotate(${rotation} 100 100)`} style={{ transition: 'transform 0.1s ease-out' }}>
+          <g transform={`rotate(${rotation} 100 100)`} style={{ transition: isWobbling ? 'none' : 'transform 0.1s ease-out' }}>
             {/* Needle Shadow */}
             <path
               d="M 100 100 L 95 100 L 100 25 L 105 100 Z"
@@ -185,7 +201,7 @@ export function Speedometer() {
             </div>
           </div>
           <div className="text-xs font-bold uppercase tracking-widest text-slate-500 mt-2">
-            Lighthouse Score
+            Average Performance
           </div>
         </div>
       </div>
