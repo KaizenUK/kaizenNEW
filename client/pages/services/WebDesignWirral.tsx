@@ -594,31 +594,39 @@ export default function WebDesignWirral() {
                     initial={{ scale: 0.9, opacity: 0 }}
                     animate={{ scale: 1, opacity: 1 }}
                     exit={{ scale: 0.9, opacity: 0 }}
-                    className="bg-slate-900 w-full max-w-md rounded-2xl border border-slate-800 shadow-2xl overflow-hidden"
+                    className="bg-slate-900 w-full max-w-md rounded-2xl border border-slate-800 shadow-2xl overflow-hidden max-h-[80vh] flex flex-col"
                     onClick={(e) => e.stopPropagation()}
                   >
-                    <div className="p-4 border-b border-slate-800 flex justify-between items-center bg-slate-950">
+                    <div className="p-4 border-b border-slate-800 flex justify-between items-center bg-slate-950 shrink-0">
                       <h3 className="font-bold text-white">Comparison</h3>
                       <button onClick={() => setShowMobileComparison(false)} className="text-slate-400 hover:text-white">
                         <XCircle size={24} />
                       </button>
                     </div>
-                    <div className="p-4 space-y-4 max-h-[70vh] overflow-y-auto">
-                      {comparisonFeatures.map((row, i) => (
-                        <div key={i} className="bg-slate-800/50 p-4 rounded-xl border border-slate-700">
-                          <div className="text-xs font-mono uppercase text-slate-500 mb-2">{row.feature}</div>
-                          <div className="grid grid-cols-1 gap-3">
-                            <div className="flex items-start gap-2 text-red-400 text-sm">
-                              <X size={16} className="mt-0.5 flex-shrink-0" />
-                              <span>{row.typical}</span>
+                    <div className="overflow-y-auto p-0">
+                      <div className="grid grid-cols-3 bg-slate-950 p-3 text-[10px] font-mono uppercase tracking-widest text-slate-500 sticky top-0 z-10 border-b border-slate-800">
+                        <div>Feature</div>
+                        <div className="text-red-400 text-center">Typical</div>
+                        <div className="text-emerald-500 font-bold text-center">Kaizen</div>
+                      </div>
+                      <div className="divide-y divide-slate-800">
+                        {comparisonFeatures.map((row, i) => (
+                          <div key={i} className="grid grid-cols-3 hover:bg-slate-800/30 transition-colors">
+                            <div className="p-3 border-r border-slate-800 flex items-center">
+                              <div className="text-xs font-medium text-slate-300">{row.feature}</div>
                             </div>
-                            <div className="flex items-start gap-2 text-emerald-400 text-sm font-bold">
-                              <Check size={16} className="mt-0.5 flex-shrink-0" />
-                              <span>{row.kaizen}</span>
+                            <div className="p-3 border-r border-slate-800 flex flex-col items-center justify-center gap-1 text-center">
+                              <X size={14} className="text-red-500" />
+                              <div className="text-slate-400 text-[10px] leading-tight">{row.typical}</div>
+                            </div>
+                            <div className="p-3 bg-emerald-900/10 flex flex-col items-center justify-center gap-1 text-center relative overflow-hidden">
+                              <div className="absolute inset-0 bg-emerald-500/5" />
+                              <Check size={14} className="text-emerald-400 relative z-10" />
+                              <div className="text-emerald-100 font-bold text-[10px] leading-tight relative z-10">{row.kaizen}</div>
                             </div>
                           </div>
-                        </div>
-                      ))}
+                        ))}
+                      </div>
                     </div>
                   </motion.div>
                 </motion.div>
@@ -628,10 +636,19 @@ export default function WebDesignWirral() {
 
           {/* Desktop Table */}
           <div className="hidden md:block rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-800 shadow-2xl">
-            <div className="grid grid-cols-3 bg-slate-50 dark:bg-slate-950 p-4 text-xs font-mono uppercase tracking-widest text-slate-500 dark:text-slate-400">
-              <div>Feature</div>
-              <div className="text-red-500 dark:text-red-400">Typical Designer</div>
-              <div className="text-emerald-600 dark:text-emerald-500 font-bold bg-emerald-100/50 dark:bg-emerald-900/20 -m-4 p-4 border-l border-emerald-200 dark:border-emerald-900/30">Kaizen Approach</div>
+            <div className="grid grid-cols-3 bg-slate-50 dark:bg-slate-950 border-b border-slate-200 dark:border-slate-800">
+              <div className="p-6 text-xs font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400 flex items-center">
+                Feature
+              </div>
+              <div className="p-6 text-xs font-bold uppercase tracking-widest text-red-500 dark:text-red-400 flex items-center justify-center text-center border-l border-slate-200 dark:border-slate-800">
+                Typical Designer
+              </div>
+              <div className="p-6 text-xs font-bold uppercase tracking-widest text-emerald-600 dark:text-emerald-500 flex items-center justify-center text-center bg-emerald-100/50 dark:bg-emerald-900/20 border-l border-emerald-200 dark:border-emerald-900/30">
+                <div className="flex items-center gap-2">
+                  <Star size={14} className="fill-current" />
+                  Kaizen Approach
+                </div>
+              </div>
             </div>
             <div className="divide-y divide-slate-100 dark:divide-slate-800 bg-white dark:bg-slate-900">
               {comparisonFeatures.map((row, i) => (
@@ -703,41 +720,45 @@ export default function WebDesignWirral() {
         </div>
       </section>
 
-      <div className="relative bg-slate-50 dark:bg-slate-900/50">
-        <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-5 pointer-events-none" />
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent to-slate-100/50 dark:to-slate-900/50 pointer-events-none" />
-        <FaqSection
-          heading="Wirral Web Design FAQs"
-          eyebrow="Common Questions"
-          className="bg-transparent"
-          items={[
-            {
-              question: "How much does a website cost in the Wirral?",
-              answer:
-                "Prices vary from £500 for a template to £10,000+ for a custom build. At Kaizen, our bespoke brochure sites start from £3,500. That might not be what you need for your business—it really depends on what your business needs. However, we provide a fixed-price quote after a quick chat, so you never get hit with hidden fees. If it ends up costing more than we anticipated, that's on us. So you have peace of mind.",
-            },
-            {
-              question: "Can I just use AI to build my own website?",
-              answer:
-                "Sure you can, but AI cannot define your business strategy. Without a Product Owner to guide the architecture, DIY AI sites often end up as 'spaghetti code' that breaks in 6 months. We use AI to speed up the build, but human experts ensure it actually generates revenue.",
-            },
-            {
-              question: "Do I own the website after it launches?",
-              answer:
-                "Yes. Unlike some Wirral agencies that lock you into a proprietary system, you own your code and your domain 100%. We hand over the keys (and the repo) on launch day.",
-            },
-            {
-              question: "Are you actually based in the Wirral?",
-              answer:
-                "Our registered office is in Liverpool city centre, but we work from and with clients across the peninsula—from Spital to Moreton. We are happy to meet you at your offices for a face-to-face discovery session.",
-            },
-            {
-              question: "Can you fix my existing WordPress site?",
-              answer:
-                "Yes. If your current site is slow or broken, our 'Project Rescue' team can audit the code, strip out the bloat, and move you to high-performance hosting.",
-            },
-          ]}
-        />
+      <div className="relative bg-slate-900 py-12">
+        <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10 pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-b from-slate-950 to-slate-900 pointer-events-none" />
+        <div className="container mx-auto px-4 relative z-10">
+          <div className="max-w-4xl mx-auto bg-slate-950/50 backdrop-blur-sm rounded-3xl border border-slate-800 p-8 md:p-12 shadow-2xl">
+            <FaqSection
+              heading="Wirral Web Design FAQs"
+              eyebrow="Common Questions"
+              className="bg-transparent py-0 md:py-0"
+              items={[
+                {
+                  question: "How much does a website cost in the Wirral?",
+                  answer:
+                    "Prices vary from £500 for a template to £10,000+ for a custom build. At Kaizen, our bespoke brochure sites start from £3,500. That might not be what you need for your business—it really depends on what your business needs. However, we provide a fixed-price quote after a quick chat, so you never get hit with hidden fees. If it ends up costing more than we anticipated, that's on us. So you have peace of mind.",
+                },
+                {
+                  question: "Can I just use AI to build my own website?",
+                  answer:
+                    "Sure you can, but AI cannot define your business strategy. Without a Product Owner to guide the architecture, DIY AI sites often end up as 'spaghetti code' that breaks in 6 months. We use AI to speed up the build, but human experts ensure it actually generates revenue.",
+                },
+                {
+                  question: "Do I own the website after it launches?",
+                  answer:
+                    "Yes. Unlike some Wirral agencies that lock you into a proprietary system, you own your code and your domain 100%. We hand over the keys (and the repo) on launch day.",
+                },
+                {
+                  question: "Are you actually based in the Wirral?",
+                  answer:
+                    "Our registered office is in Liverpool city centre, but we work from and with clients across the peninsula—from Spital to Moreton. We are happy to meet you at your offices for a face-to-face discovery session.",
+                },
+                {
+                  question: "Can you fix my existing WordPress site?",
+                  answer:
+                    "Yes. If your current site is slow or broken, our 'Project Rescue' team can audit the code, strip out the bloat, and move you to high-performance hosting.",
+                },
+              ]}
+            />
+          </div>
+        </div>
       </div>
 
       {/* CTA - Project Rescue Style */}
