@@ -77,30 +77,36 @@ export function Speedometer() {
             className="text-slate-700 dark:text-slate-600"
           />
 
-          {/* Speed zones - Green (0-50), Yellow (50-80), Red (80-100) */}
-          {/* 0 starts at far left of the arc, 100 ends at far right */}
+          {/* Speed zones - Red (0-49), Orange (50-89), Green (90-100) */}
+          {/* 0 starts at far left (-90deg), 100 ends at far right (90deg) */}
+          
+          {/* Red Zone: 0 to 50 (approx -90 to 0 degrees) */}
           <path
             d="M 20 100 A 80 80 0 0 1 100 20"
             fill="none"
             stroke="currentColor"
             strokeWidth="8"
-            className="text-emerald-400"
+            className="text-red-500"
             strokeLinecap="round"
           />
+          
+          {/* Orange Zone: 50 to 90 (approx 0 to 72 degrees) */}
           <path
-            d="M 100 20 A 80 80 0 0 1 169.28 60"
+            d="M 100 20 A 80 80 0 0 1 176.08 75.28"
             fill="none"
             stroke="currentColor"
             strokeWidth="8"
             className="text-amber-400"
             strokeLinecap="round"
           />
+          
+          {/* Green Zone: 90 to 100 (approx 72 to 90 degrees) */}
           <path
-            d="M 169.28 60 A 80 80 0 0 1 180 100"
+            d="M 176.08 75.28 A 80 80 0 0 1 180 100"
             fill="none"
             stroke="currentColor"
             strokeWidth="8"
-            className="text-red-500"
+            className="text-emerald-400"
             strokeLinecap="round"
           />
 
@@ -181,27 +187,6 @@ export function Speedometer() {
             </div>
           </div>
         </div>
-      </div>
-
-      <div className="text-center max-w-md">
-        <p className="text-sm md:text-base text-slate-300">
-          <span className="font-semibold text-cyan-400">
-            Ready for Core Web Vitals.
-          </span>{" "}
-          Our builds regularly score{" "}
-          <span className="font-semibold">95%+ in Lighthouse</span>, often ahead
-          of giants like Amazon (~90) and the BBC (~88). Learn what Google cares
-          about in{" "}
-          <a
-            href="https://developers.google.com/search/docs/appearance/core-web-vitals"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="underline decoration-dotted text-cyan-300 hover:text-cyan-200"
-          >
-            Core Web Vitals
-          </a>
-          .
-        </p>
       </div>
     </div>
   );
