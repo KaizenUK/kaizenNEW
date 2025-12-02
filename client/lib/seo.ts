@@ -232,7 +232,8 @@ const pageMeta: Record<string, Partial<PageMeta>> = {
     title: "Web Design Wirral | High-Performance Wirral Websites | Kaizen",
     description:
       "We build fast, bespoke websites for Wirral businesses. From Heswall to Birkenhead, get a site that ranks #1 and converts. Enterprise React tech, local service.",
-    image: "https://cdn.builder.io/api/v1/image/assets%2Fe4ae46bbd81b4b95bef54d66dd9748cc%2F094cdc9be84c41ee9db80308cbe5ea73?format=webp&width=1200&height=630",
+    image:
+      "https://cdn.builder.io/api/v1/image/assets%2Fe4ae46bbd81b4b95bef54d66dd9748cc%2F094cdc9be84c41ee9db80308cbe5ea73?format=webp&width=1200&height=630",
     keywords: [
       "web design wirral",
       "wirral websites",

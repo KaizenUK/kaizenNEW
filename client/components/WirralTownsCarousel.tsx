@@ -77,7 +77,9 @@ export function WirralTownsCarousel() {
           viewport={{ once: true }}
           transition={{ delay: 1 }}
         >
-          Whether you're in a bustling city centre, a coastal village, or an industrial hub, Kaizen builds Wirral websites that rank, convert, and deliver real business results.
+          Whether you're in a bustling city centre, a coastal village, or an
+          industrial hub, Kaizen builds Wirral websites that rank, convert, and
+          deliver real business results.
         </motion.p>
       </div>
     </section>

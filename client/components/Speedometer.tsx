@@ -55,7 +55,10 @@ export function Speedometer() {
   const rotation = -180 + (speed / maxSpeed) * 180;
 
   return (
-    <div ref={containerRef} className="flex flex-col items-center justify-center gap-6">
+    <div
+      ref={containerRef}
+      className="flex flex-col items-center justify-center gap-6"
+    >
       <div className="relative w-48 h-48 md:w-64 md:h-64">
         {/* SVG Speedometer */}
         <svg
@@ -106,8 +109,10 @@ export function Speedometer() {
             const angle = (tick / 100) * 180 - 90;
             const startRadius = 75;
             const endRadius = 85;
-            const startX = 100 + startRadius * Math.cos((angle * Math.PI) / 180);
-            const startY = 100 + startRadius * Math.sin((angle * Math.PI) / 180);
+            const startX =
+              100 + startRadius * Math.cos((angle * Math.PI) / 180);
+            const startY =
+              100 + startRadius * Math.sin((angle * Math.PI) / 180);
             const endX = 100 + endRadius * Math.cos((angle * Math.PI) / 180);
             const endY = 100 + endRadius * Math.sin((angle * Math.PI) / 180);
 
@@ -180,9 +185,13 @@ export function Speedometer() {
 
       <div className="text-center max-w-md">
         <p className="text-sm md:text-base text-slate-300">
-          <span className="font-semibold text-cyan-400">Ready for Core Web Vitals.</span>{" "}
-          Our builds regularly score <span className="font-semibold">95%+ in Lighthouse</span>, often ahead of giants like Amazon (~90) and the BBC (~88). Learn what Google cares about in
-          {" "}
+          <span className="font-semibold text-cyan-400">
+            Ready for Core Web Vitals.
+          </span>{" "}
+          Our builds regularly score{" "}
+          <span className="font-semibold">95%+ in Lighthouse</span>, often ahead
+          of giants like Amazon (~90) and the BBC (~88). Learn what Google cares
+          about in{" "}
           <a
             href="https://developers.google.com/search/docs/appearance/core-web-vitals"
             target="_blank"

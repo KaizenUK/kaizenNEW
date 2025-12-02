@@ -124,7 +124,12 @@ export default function WebDesignWirral() {
                 <p>Web Design Wirral</p>
                 <span className="bg-gradient-to-r from-cyan-400 to-lime-400 bg-clip-text text-transparent">
                   <TypewriterEffect
-                    words={["No fluff. Just ROI.", "Fast.", "Secure.", "Profitable."]}
+                    words={[
+                      "No fluff. Just ROI.",
+                      "Fast.",
+                      "Secure.",
+                      "Profitable.",
+                    ]}
                     speed={80}
                     delayBetweenWords={1600}
                     className="inline-block"
@@ -184,8 +189,13 @@ export default function WebDesignWirral() {
                     decoding="async"
                   />
                   <div className="p-6">
-                    <h3 className="text-lg font-semibold text-white mb-2">Heswall</h3>
-                    <p className="text-sm text-slate-300">Premium Service Brands. Owner-led service businesses that need enquiries, not vanity metrics.</p>
+                    <h3 className="text-lg font-semibold text-white mb-2">
+                      Heswall
+                    </h3>
+                    <p className="text-sm text-slate-300">
+                      Premium Service Brands. Owner-led service businesses that
+                      need enquiries, not vanity metrics.
+                    </p>
                   </div>
                 </div>
 
@@ -199,8 +209,13 @@ export default function WebDesignWirral() {
                     decoding="async"
                   />
                   <div className="p-6">
-                    <h3 className="text-lg font-semibold text-white mb-2">West Kirby</h3>
-                    <p className="text-sm text-slate-300">Experience & Retail. Cafes, salons and experience-led brands that live or die on local reputation.</p>
+                    <h3 className="text-lg font-semibold text-white mb-2">
+                      West Kirby
+                    </h3>
+                    <p className="text-sm text-slate-300">
+                      Experience & Retail. Cafes, salons and experience-led
+                      brands that live or die on local reputation.
+                    </p>
                   </div>
                 </div>
 
@@ -214,8 +229,13 @@ export default function WebDesignWirral() {
                     decoding="async"
                   />
                   <div className="p-6">
-                    <h3 className="text-lg font-semibold text-white mb-2">Birkenhead</h3>
-                    <p className="text-sm text-slate-300">Industrial & B2B. Trades who need a site that looks credible and loads fast on tired work phones.</p>
+                    <h3 className="text-lg font-semibold text-white mb-2">
+                      Birkenhead
+                    </h3>
+                    <p className="text-sm text-slate-300">
+                      Industrial & B2B. Trades who need a site that looks
+                      credible and loads fast on tired work phones.
+                    </p>
                   </div>
                 </div>
               </div>
@@ -237,13 +257,19 @@ export default function WebDesignWirral() {
             <h2 className="text-3xl md:text-4xl font-heading font-bold text-slate-900 dark:text-white mb-2">
               A Sneak Peek: Transforming Helen Moore Hairdressing, Wallasey.
             </h2>
-            <p className="text-lg text-slate-600 dark:text-slate-400 mb-6 italic">Launching Q1 2026</p>
-
-            <p className="text-slate-700 dark:text-slate-300 mb-4">
-              We are currently rebuilding Helen Moore&apos;s digital presence from the ground up. The old site was invisible to Google and hard for clients to use on mobile.
+            <p className="text-lg text-slate-600 dark:text-slate-400 mb-6 italic">
+              Launching Q1 2026
             </p>
 
-            <h3 className="font-semibold text-slate-900 dark:text-white text-lg mb-4">The Fix: Re-architecting the business logic.</h3>
+            <p className="text-slate-700 dark:text-slate-300 mb-4">
+              We are currently rebuilding Helen Moore&apos;s digital presence
+              from the ground up. The old site was invisible to Google and hard
+              for clients to use on mobile.
+            </p>
+
+            <h3 className="font-semibold text-slate-900 dark:text-white text-lg mb-4">
+              The Fix: Re-architecting the business logic.
+            </h3>
 
             <ul className="space-y-3 mb-8 text-slate-700 dark:text-slate-300">
               <motion.li
@@ -254,7 +280,10 @@ export default function WebDesignWirral() {
                 transition={{ delay: 0.1, duration: 0.5 }}
               >
                 <span className="text-cyan-400 font-bold flex-shrink-0">→</span>
-                <span><span className="font-semibold">Mobile-First Booking:</span> Creating a friction-free path from Instagram to Appointment.</span>
+                <span>
+                  <span className="font-semibold">Mobile-First Booking:</span>{" "}
+                  Creating a friction-free path from Instagram to Appointment.
+                </span>
               </motion.li>
               <motion.li
                 className="flex gap-3"
@@ -264,7 +293,11 @@ export default function WebDesignWirral() {
                 transition={{ delay: 0.2, duration: 0.5 }}
               >
                 <span className="text-cyan-400 font-bold flex-shrink-0">→</span>
-                <span><span className="font-semibold">Local SEO Engine:</span> Structuring the site to dominate searches for 'Hairdresser Wallasey' before it even launches.</span>
+                <span>
+                  <span className="font-semibold">Local SEO Engine:</span>{" "}
+                  Structuring the site to dominate searches for 'Hairdresser
+                  Wallasey' before it even launches.
+                </span>
               </motion.li>
               <motion.li
                 className="flex gap-3"
@@ -274,7 +307,11 @@ export default function WebDesignWirral() {
                 transition={{ delay: 0.3, duration: 0.5 }}
               >
                 <span className="text-cyan-400 font-bold flex-shrink-0">→</span>
-                <span><span className="font-semibold">Zero-Bloat Build:</span> Replacing heavy plugins with custom, lightweight code for instant load speeds.</span>
+                <span>
+                  <span className="font-semibold">Zero-Bloat Build:</span>{" "}
+                  Replacing heavy plugins with custom, lightweight code for
+                  instant load speeds.
+                </span>
               </motion.li>
             </ul>
 
@@ -302,8 +339,22 @@ export default function WebDesignWirral() {
               xmlns="http://www.w3.org/2000/svg"
             >
               {/* Wireframe boxes */}
-              <rect x="20" y="20" width="260" height="60" className="stroke-cyan-400 dark:stroke-cyan-300" strokeWidth="2" />
-              <text x="150" y="55" textAnchor="middle" className="text-xs fill-cyan-500 dark:fill-cyan-300 font-mono">Hero: "Book Now"</text>
+              <rect
+                x="20"
+                y="20"
+                width="260"
+                height="60"
+                className="stroke-cyan-400 dark:stroke-cyan-300"
+                strokeWidth="2"
+              />
+              <text
+                x="150"
+                y="55"
+                textAnchor="middle"
+                className="text-xs fill-cyan-500 dark:fill-cyan-300 font-mono"
+              >
+                Hero: "Book Now"
+              </text>
 
               {/* Animated arrow down */}
               <defs>
@@ -319,7 +370,10 @@ export default function WebDesignWirral() {
                   refY="3"
                   orient="auto"
                 >
-                  <polygon points="0 0, 10 3, 0 6" fill="url(#arrow-gradient)" />
+                  <polygon
+                    points="0 0, 10 3, 0 6"
+                    fill="url(#arrow-gradient)"
+                  />
                 </marker>
               </defs>
 
@@ -342,11 +396,39 @@ export default function WebDesignWirral() {
               />
 
               {/* Two columns */}
-              <rect x="20" y="110" width="120" height="80" className="stroke-amber-400 dark:stroke-amber-300" strokeWidth="2" />
-              <text x="80" y="155" textAnchor="middle" className="text-xs fill-amber-500 dark:fill-amber-300 font-mono">Services</text>
+              <rect
+                x="20"
+                y="110"
+                width="120"
+                height="80"
+                className="stroke-amber-400 dark:stroke-amber-300"
+                strokeWidth="2"
+              />
+              <text
+                x="80"
+                y="155"
+                textAnchor="middle"
+                className="text-xs fill-amber-500 dark:fill-amber-300 font-mono"
+              >
+                Services
+              </text>
 
-              <rect x="160" y="110" width="120" height="80" className="stroke-lime-400 dark:stroke-lime-300" strokeWidth="2" />
-              <text x="220" y="155" textAnchor="middle" className="text-xs fill-lime-500 dark:fill-lime-300 font-mono">Booking</text>
+              <rect
+                x="160"
+                y="110"
+                width="120"
+                height="80"
+                className="stroke-lime-400 dark:stroke-lime-300"
+                strokeWidth="2"
+              />
+              <text
+                x="220"
+                y="155"
+                textAnchor="middle"
+                className="text-xs fill-lime-500 dark:fill-lime-300 font-mono"
+              >
+                Booking
+              </text>
 
               {/* Arrows connecting */}
               <motion.line
@@ -386,16 +468,46 @@ export default function WebDesignWirral() {
               />
 
               {/* Contact section */}
-              <rect x="20" y="220" width="260" height="60" className="stroke-emerald-400 dark:stroke-emerald-300" strokeWidth="2" />
-              <text x="150" y="255" textAnchor="middle" className="text-xs fill-emerald-500 dark:fill-emerald-300 font-mono">Contact & Trust</text>
+              <rect
+                x="20"
+                y="220"
+                width="260"
+                height="60"
+                className="stroke-emerald-400 dark:stroke-emerald-300"
+                strokeWidth="2"
+              />
+              <text
+                x="150"
+                y="255"
+                textAnchor="middle"
+                className="text-xs fill-emerald-500 dark:fill-emerald-300 font-mono"
+              >
+                Contact & Trust
+              </text>
 
               {/* Decorative elements */}
-              <circle cx="290" cy="40" r="8" className="fill-cyan-400" opacity="0.5" />
-              <circle cx="20" cy="370" r="6" className="fill-lime-400" opacity="0.5" />
+              <circle
+                cx="290"
+                cy="40"
+                r="8"
+                className="fill-cyan-400"
+                opacity="0.5"
+              />
+              <circle
+                cx="20"
+                cy="370"
+                r="6"
+                className="fill-lime-400"
+                opacity="0.5"
+              />
             </svg>
             <p className="text-xs font-mono uppercase tracking-widest text-slate-500 dark:text-slate-400 mt-4 text-center">
               <TypewriterEffect
-                words={["Architecting the perfect booking journey", "Mobile-First Strategy", "Conversion Optimised"]}
+                words={[
+                  "Architecting the perfect booking journey",
+                  "Mobile-First Strategy",
+                  "Conversion Optimised",
+                ]}
                 speed={80}
                 delayBetweenWords={2000}
               />
@@ -420,7 +532,9 @@ export default function WebDesignWirral() {
               Wirral businesses are not one-size-fits-all.
             </h2>
             <p className="text-slate-300 max-w-3xl mx-auto">
-              Instead of forcing every client into the same template, we design funnels around how people actually find and book you – from high street footfall to late‑night mobile searches.
+              Instead of forcing every client into the same template, we design
+              funnels around how people actually find and book you – from high
+              street footfall to late‑night mobile searches.
             </p>
           </motion.div>
 
@@ -437,9 +551,13 @@ export default function WebDesignWirral() {
                 <p className="text-xs font-mono uppercase tracking-[0.25em] text-cyan-300 mb-3">
                   Downtown Birkenhead
                 </p>
-                <h3 className="text-lg font-semibold text-white mb-2">Office towers & trade counters</h3>
+                <h3 className="text-lg font-semibold text-white mb-2">
+                  Office towers & trade counters
+                </h3>
                 <p className="text-sm text-slate-300">
-                  Fast-loading, trust-heavy brochure sites that make you look credible from the first click – even on tired work phones on site.
+                  Fast-loading, trust-heavy brochure sites that make you look
+                  credible from the first click – even on tired work phones on
+                  site.
                 </p>
               </div>
             </motion.div>
@@ -456,9 +574,12 @@ export default function WebDesignWirral() {
                 <p className="text-xs font-mono uppercase tracking-[0.25em] text-sky-300 mb-3">
                   Coastal Villages
                 </p>
-                <h3 className="text-lg font-semibold text-white mb-2">Hoylake, West Kirby & New Brighton</h3>
+                <h3 className="text-lg font-semibold text-white mb-2">
+                  Hoylake, West Kirby & New Brighton
+                </h3>
                 <p className="text-sm text-slate-300">
-                  Experience-led sites that move people from Instagram and Google Maps into bookings, tables, and repeat visits.
+                  Experience-led sites that move people from Instagram and
+                  Google Maps into bookings, tables, and repeat visits.
                 </p>
               </div>
             </motion.div>
@@ -475,9 +596,12 @@ export default function WebDesignWirral() {
                 <p className="text-xs font-mono uppercase tracking-[0.25em] text-lime-300 mb-3">
                   Industrial Hubs
                 </p>
-                <h3 className="text-lg font-semibold text-white mb-2">Edges of the peninsula</h3>
+                <h3 className="text-lg font-semibold text-white mb-2">
+                  Edges of the peninsula
+                </h3>
                 <p className="text-sm text-slate-300">
-                  No-nonsense landing pages built to capture RFQs, tenders, and phone calls – not just look pretty.
+                  No-nonsense landing pages built to capture RFQs, tenders, and
+                  phone calls – not just look pretty.
                 </p>
               </div>
             </motion.div>
@@ -506,9 +630,16 @@ export default function WebDesignWirral() {
               type="button"
               onClick={() => setShowMobileComparison((prev) => !prev)}
               className="w-full inline-flex items-center justify-center gap-2 rounded-full border border-cyan-400/60 bg-slate-900/80 px-5 py-3 text-sm font-heading text-cyan-100 hover:bg-slate-900 hover:border-cyan-300 transition"
-           >
+            >
               Click to see the difference
-              <ArrowRight size={16} className={showMobileComparison ? "rotate-90 transition-transform" : "transition-transform"} />
+              <ArrowRight
+                size={16}
+                className={
+                  showMobileComparison
+                    ? "rotate-90 transition-transform"
+                    : "transition-transform"
+                }
+              />
             </button>
 
             {showMobileComparison && (
@@ -523,11 +654,15 @@ export default function WebDesignWirral() {
                     </p>
                     <div className="grid grid-cols-1 gap-3">
                       <div>
-                        <p className="text-xs font-semibold text-red-400 mb-1">Typical designer</p>
+                        <p className="text-xs font-semibold text-red-400 mb-1">
+                          Typical designer
+                        </p>
                         <p className="text-sm text-slate-300">{row.typical}</p>
                       </div>
                       <div className="rounded-xl bg-gradient-to-r from-emerald-500/15 via-cyan-500/15 to-transparent p-3 border border-emerald-500/40">
-                        <p className="text-xs font-semibold text-emerald-300 mb-1">Kaizen</p>
+                        <p className="text-xs font-semibold text-emerald-300 mb-1">
+                          Kaizen
+                        </p>
                         <p className="text-sm text-emerald-100">{row.kaizen}</p>
                       </div>
                     </div>
@@ -540,7 +675,9 @@ export default function WebDesignWirral() {
           {/* Desktop/tablet: full comparison table */}
           <div className="hidden md:block overflow-hidden rounded-2xl border border-slate-800 bg-slate-900/70 backdrop-blur-xl shadow-xl">
             <div className="grid grid-cols-2 text-xs md:text-sm font-mono uppercase tracking-[0.2em] bg-slate-900/90 text-slate-400">
-              <div className="px-4 py-4 text-left text-red-400">Typical designer</div>
+              <div className="px-4 py-4 text-left text-red-400">
+                Typical designer
+              </div>
               <div className="px-4 py-4 text-left text-emerald-400 bg-gradient-to-r from-emerald-500/15 via-cyan-500/10 to-transparent">
                 Kaizen
               </div>
@@ -554,15 +691,24 @@ export default function WebDesignWirral() {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: 0.1 + index * 0.05 }}
-                  whileHover={{ backgroundColor: "rgba(15,23,42,0.9)", scale: 1.01 }}
+                  whileHover={{
+                    backgroundColor: "rgba(15,23,42,0.9)",
+                    scale: 1.01,
+                  }}
                   className="grid grid-cols-2 text-slate-200"
                 >
                   <div className="px-4 py-5 border-r border-slate-800/80">
-                    <p className="text-xs font-semibold text-slate-400 mb-1">{row.label}</p>
-                    <p className="text-sm md:text-base text-slate-300">{row.typical}</p>
+                    <p className="text-xs font-semibold text-slate-400 mb-1">
+                      {row.label}
+                    </p>
+                    <p className="text-sm md:text-base text-slate-300">
+                      {row.typical}
+                    </p>
                   </div>
                   <div className="px-4 py-5 bg-gradient-to-r from-emerald-500/12 via-cyan-500/12 to-transparent">
-                    <p className="text-sm md:text-base text-emerald-100">{row.kaizen}</p>
+                    <p className="text-sm md:text-base text-emerald-100">
+                      {row.kaizen}
+                    </p>
                   </div>
                 </motion.div>
               ))}
@@ -606,7 +752,8 @@ export default function WebDesignWirral() {
               Why Kaizen is Different
             </h2>
             <p className="text-lg text-slate-300 leading-relaxed">
-              Most Wirral web designers are stuck in 2015. They use slow themes, generic templates, and forget about mobile speed.
+              Most Wirral web designers are stuck in 2015. They use slow themes,
+              generic templates, and forget about mobile speed.
             </p>
           </div>
 
@@ -614,10 +761,20 @@ export default function WebDesignWirral() {
             <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(45,212,191,0.12),_transparent_55%),radial-gradient(circle_at_bottom,_rgba(56,189,248,0.12),_transparent_55%)]" />
             <div className="relative">
               <p className="hidden md:block text-lg md:text-xl text-white leading-relaxed mb-6">
-                <span className="font-semibold text-cyan-300">Kaizen is different.</span> We bring Enterprise-Grade React & Headless WordPress tech to local businesses. You get the same tech stack used by major brands, built by a local team that understands the difference between West Kirby and Wallasey.
+                <span className="font-semibold text-cyan-300">
+                  Kaizen is different.
+                </span>{" "}
+                We bring Enterprise-Grade React & Headless WordPress tech to
+                local businesses. You get the same tech stack used by major
+                brands, built by a local team that understands the difference
+                between West Kirby and Wallasey.
               </p>
               <p className="md:hidden text-base text-white leading-relaxed mb-6">
-                <span className="font-semibold text-cyan-300">Kaizen is different.</span> Enterprise-grade React & headless WordPress, built locally for Wirral businesses.
+                <span className="font-semibold text-cyan-300">
+                  Kaizen is different.
+                </span>{" "}
+                Enterprise-grade React & headless WordPress, built locally for
+                Wirral businesses.
               </p>
             </div>
             <div className="relative grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
@@ -628,8 +785,12 @@ export default function WebDesignWirral() {
                   </div>
                 </div>
                 <div>
-                  <h3 className="font-semibold text-white mb-1">Enterprise Tech</h3>
-                  <p className="text-sm text-slate-400">React & Headless architecture that scales</p>
+                  <h3 className="font-semibold text-white mb-1">
+                    Enterprise Tech
+                  </h3>
+                  <p className="text-sm text-slate-400">
+                    React & Headless architecture that scales
+                  </p>
                 </div>
               </div>
               <div className="flex gap-4">
@@ -639,8 +800,12 @@ export default function WebDesignWirral() {
                   </div>
                 </div>
                 <div>
-                  <h3 className="font-semibold text-white mb-1">AI-Augmented</h3>
-                  <p className="text-sm text-slate-400">Smarter, faster development process</p>
+                  <h3 className="font-semibold text-white mb-1">
+                    AI-Augmented
+                  </h3>
+                  <p className="text-sm text-slate-400">
+                    Smarter, faster development process
+                  </p>
                 </div>
               </div>
               <div className="flex gap-4">
@@ -650,13 +815,16 @@ export default function WebDesignWirral() {
                   </div>
                 </div>
                 <div>
-                  <h3 className="font-semibold text-white mb-1">Local Knowledge</h3>
-                  <p className="text-sm text-slate-400">We understand Wirral businesses</p>
+                  <h3 className="font-semibold text-white mb-1">
+                    Local Knowledge
+                  </h3>
+                  <p className="text-sm text-slate-400">
+                    We understand Wirral businesses
+                  </p>
                 </div>
               </div>
             </div>
           </div>
-
         </div>
       </section>
 

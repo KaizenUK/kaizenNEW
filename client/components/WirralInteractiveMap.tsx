@@ -171,7 +171,9 @@ export function WirralInteractiveMap() {
                   strokeWidth="2"
                   className={`text-${area.color}-400 dark:text-${area.color}-300`}
                   opacity="0.5"
-                  style={{ animation: "pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite" }}
+                  style={{
+                    animation: "pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite",
+                  }}
                 />
                 <circle
                   cx={area.x}
@@ -198,7 +200,10 @@ export function WirralInteractiveMap() {
                   : "text-slate-500 dark:text-slate-500"
               } transition-all duration-200`}
               style={{
-                filter: hoveredArea === area.id ? "drop-shadow(0 0 4px currentColor)" : "none",
+                filter:
+                  hoveredArea === area.id
+                    ? "drop-shadow(0 0 4px currentColor)"
+                    : "none",
               }}
             />
 
@@ -220,8 +225,22 @@ export function WirralInteractiveMap() {
         ))}
 
         {/* Decorative elements for visual interest */}
-        <circle cx="40" cy="80" r="3" fill="currentColor" className="text-cyan-400/40" opacity="0.4" />
-        <circle cx="290" cy="380" r="2" fill="currentColor" className="text-lime-400/40" opacity="0.4" />
+        <circle
+          cx="40"
+          cy="80"
+          r="3"
+          fill="currentColor"
+          className="text-cyan-400/40"
+          opacity="0.4"
+        />
+        <circle
+          cx="290"
+          cy="380"
+          r="2"
+          fill="currentColor"
+          className="text-lime-400/40"
+          opacity="0.4"
+        />
       </svg>
 
       {/* Info cards for hovered area */}

@@ -47,7 +47,14 @@ export function TypewriterEffect({
     }
 
     return () => clearTimeout(timeout);
-  }, [displayedText, currentWordIndex, isDeleting, words, speed, delayBetweenWords]);
+  }, [
+    displayedText,
+    currentWordIndex,
+    isDeleting,
+    words,
+    speed,
+    delayBetweenWords,
+  ]);
 
   return (
     <span className={className}>
