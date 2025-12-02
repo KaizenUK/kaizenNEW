@@ -228,6 +228,19 @@ const pageMeta: Record<string, Partial<PageMeta>> = {
       "our ai policy",
     ],
   },
+  "/web-design-wirral": {
+    title: "Web Design Wirral | High-Performance Wirral Websites | Kaizen",
+    description:
+      "We build fast, bespoke websites for Wirral businesses. From Heswall to Birkenhead, get a site that ranks #1 and converts. Enterprise React tech, local service.",
+    keywords: [
+      "web design wirral",
+      "wirral websites",
+      "wirral web design",
+      "web design heswall",
+      "web design west kirby",
+      "web design birkenhead",
+    ],
+  },
   "/case-studies": {
     title: "Case Studies | Liverpool Web Design Results | Kaizen",
     description:

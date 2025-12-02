@@ -87,7 +87,7 @@ export default function WebDesignWirral() {
               </p>
 
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-heading font-black leading-tight mb-4">
-                <p>Web Design Wirral:</p>
+                <p>Web Design Wirral</p>
                 <span className="bg-gradient-to-r from-cyan-400 to-lime-400 bg-clip-text text-transparent">
                   No fluff. Just ROI.
                 </span>
@@ -127,89 +127,183 @@ export default function WebDesignWirral() {
               </p>
             </motion.div>
 
-            <motion.div
-              variants={fadeInUp}
-              className="bg-slate-900/70 border border-white/10 rounded-2xl p-6 md:p-8 backdrop-blur-md"
-            >
-              <p className="text-xs font-mono uppercase tracking-[0.25em] text-slate-400 mb-4">
+            <motion.div variants={fadeInUp} className="space-y-4">
+              <p className="text-xs font-mono uppercase tracking-[0.25em] text-slate-400">
                 Who we serve
               </p>
 
-              <ul className="space-y-4 text-sm text-slate-200">
-                <li>
-                  <span className="font-semibold">Heswall</span> – owner-led
-                  service businesses that need enquiries, not vanity metrics.
-                </li>
-                <li>
-                  <span className="font-semibold">West Kirby</span> – cafes,
-                  salons and experience-led brands that live or die on local
-                  reputation.
-                </li>
-                <li>
-                  <span className="font-semibold">Birkenhead</span> – B2B and
-                  trades who need a site that looks credible and loads fast on
-                  tired work phones.
-                </li>
-              </ul>
+              <div className="grid grid-cols-1 gap-4">
+                {/* Heswall - Premium Service Brands */}
+                <div className="bg-slate-900/70 border border-white/10 rounded-2xl p-6 backdrop-blur-md hover:border-cyan-400/30 transition">
+                  <div className="h-32 bg-gradient-to-br from-cyan-500/10 to-slate-800 rounded-lg mb-4 flex items-center justify-center">
+                    <span className="text-xs font-mono text-slate-500">Premium Texture</span>
+                  </div>
+                  <h3 className="text-lg font-semibold text-white mb-2">Heswall</h3>
+                  <p className="text-sm text-slate-300">Premium Service Brands. Owner-led service businesses that need enquiries, not vanity metrics.</p>
+                </div>
 
-              <p className="mt-6 text-sm text-slate-300">
-                If you are based on the Wirral and your current site is slow,
-                hard to update or invisible in search, we can help you fix it
-                without a six-month "discovery" phase.
-              </p>
+                {/* West Kirby - Experience & Retail */}
+                <div className="bg-slate-900/70 border border-white/10 rounded-2xl p-6 backdrop-blur-md hover:border-cyan-400/30 transition">
+                  <div className="h-32 bg-gradient-to-br from-lime-500/10 to-slate-800 rounded-lg mb-4 flex items-center justify-center">
+                    <span className="text-xs font-mono text-slate-500">Retail Space</span>
+                  </div>
+                  <h3 className="text-lg font-semibold text-white mb-2">West Kirby</h3>
+                  <p className="text-sm text-slate-300">Experience & Retail. Cafes, salons and experience-led brands that live or die on local reputation.</p>
+                </div>
+
+                {/* Birkenhead - Industrial & B2B */}
+                <div className="bg-slate-900/70 border border-white/10 rounded-2xl p-6 backdrop-blur-md hover:border-cyan-400/30 transition">
+                  <div className="h-32 bg-gradient-to-br from-blue-500/10 to-slate-800 rounded-lg mb-4 flex items-center justify-center">
+                    <span className="text-xs font-mono text-slate-500">B2B Industrial</span>
+                  </div>
+                  <h3 className="text-lg font-semibold text-white mb-2">Birkenhead</h3>
+                  <p className="text-sm text-slate-300">Industrial & B2B. Trades who need a site that looks credible and loads fast on tired work phones.</p>
+                </div>
+              </div>
             </motion.div>
           </motion.div>
         </div>
       </section>
 
-      {/* Local case study */}
+      {/* Helen Moore Blueprint Section */}
       <section className="bg-slate-50 dark:bg-slate-950 py-20 px-4 border-t border-slate-200/60 dark:border-slate-800/80">
         <div className="container mx-auto max-w-5xl grid grid-cols-1 md:grid-cols-[minmax(0,3fr)_minmax(0,2fr)] gap-10 items-center">
           <div>
             <p className="text-xs font-mono uppercase tracking-[0.25em] text-slate-500 dark:text-slate-400 mb-3">
-              Trusted by Wirral businesses
+              Trusted by Wirral Businesses (Work in Progress)
             </p>
-            <h2 className="text-3xl md:text-4xl font-heading font-bold text-slate-900 dark:text-white mb-4">
-              Helen Moore Hairdressing, Wallasey Village.
+            <h2 className="text-3xl md:text-4xl font-heading font-bold text-slate-900 dark:text-white mb-2">
+              A Sneak Peek: Transforming Helen Moore Hairdressing, Wallasey.
             </h2>
+            <p className="text-lg text-slate-600 dark:text-slate-400 mb-6 italic">Launching Q1 2026</p>
+
             <p className="text-slate-700 dark:text-slate-300 mb-4">
-              We rebuilt Helen Moore Hairdressing&apos;s online presence so new
-              and existing clients could actually find, trust and book them from
-              their phones.
-            </p>
-            <p className="text-slate-700 dark:text-slate-300 mb-6">
-              The result: a faster site, clearer messaging, and a booking
-              journey that feels as considered as the in-salon experience.
+              We are currently rebuilding Helen Moore&apos;s digital presence from the ground up. The old site was invisible to Google and hard for clients to use on mobile.
             </p>
 
-            <Link
-              to="/case-studies/helen-moore-hairdressing"
-              className="inline-flex items-center gap-2 text-sm font-heading text-cyan-600 dark:text-cyan-400 hover:text-cyan-500 dark:hover:text-cyan-300"
-            >
-              Read the full case study
-              <ArrowRight size={16} />
-            </Link>
-          </div>
+            <h3 className="font-semibold text-slate-900 dark:text-white text-lg mb-4">The Fix: Re-architecting the business logic.</h3>
 
-          <div className="relative rounded-2xl border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 p-6 shadow-sm">
-            <div className="absolute -top-6 left-6 h-12 w-12 rounded-full bg-gradient-to-br from-cyan-400 to-lime-400 blur-xl opacity-40" />
-            <p className="text-xs font-mono uppercase tracking-[0.25em] text-slate-500 dark:text-slate-400 mb-3 relative">
-              Snapshot
-            </p>
-            <ul className="space-y-3 text-sm text-slate-800 dark:text-slate-200 relative">
-              <li>
-                <span className="text-emerald-500 mr-1">✓</span>
-                Local SEO-friendly structure for Wirral searches.
+            <ul className="space-y-3 mb-8 text-slate-700 dark:text-slate-300">
+              <li className="flex gap-3">
+                <span className="text-cyan-400 font-bold flex-shrink-0">→</span>
+                <span><span className="font-semibold">Mobile-First Booking:</span> Creating a friction-free path from Instagram to Appointment.</span>
               </li>
-              <li>
-                <span className="text-emerald-500 mr-1">✓</span>
-                Fast-loading gallery and price list on mobile.
+              <li className="flex gap-3">
+                <span className="text-cyan-400 font-bold flex-shrink-0">→</span>
+                <span><span className="font-semibold">Local SEO Engine:</span> Structuring the site to dominate searches for 'Hairdresser Wallasey' before it even launches.</span>
               </li>
-              <li>
-                <span className="text-emerald-500 mr-1">✓</span>
-                Clear calls-to-action to call, book and find the salon.
+              <li className="flex gap-3">
+                <span className="text-cyan-400 font-bold flex-shrink-0">→</span>
+                <span><span className="font-semibold">Zero-Bloat Build:</span> Replacing heavy plugins with custom, lightweight code for instant load speeds.</span>
               </li>
             </ul>
+
+            <button
+              onClick={openCalendly}
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-gradient-to-r from-cyan-400 to-lime-400 text-slate-950 font-heading font-bold hover:shadow-lg hover:shadow-cyan-400/40 transition"
+            >
+              Want to see the blueprints? Book a demo
+              <ArrowRight size={18} />
+            </button>
+          </div>
+
+          {/* Blueprint Visual */}
+          <div className="relative rounded-2xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 p-8 shadow-lg">
+            <svg
+              className="w-full h-64"
+              viewBox="0 0 300 400"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              {/* Wireframe boxes */}
+              <rect x="20" y="20" width="260" height="60" className="stroke-slate-400 dark:stroke-slate-600" strokeWidth="2" />
+              <text x="150" y="55" textAnchor="middle" className="text-xs fill-slate-600 dark:fill-slate-400 font-mono">Hero: "Book Now"</text>
+
+              {/* Arrow down */}
+              <line x1="150" y1="80" x2="150" y2="110" className="stroke-cyan-400" strokeWidth="2" markerEnd="url(#arrowhead)" />
+
+              {/* Two columns */}
+              <rect x="20" y="110" width="120" height="80" className="stroke-slate-400 dark:stroke-slate-600" strokeWidth="2" />
+              <text x="80" y="155" textAnchor="middle" className="text-xs fill-slate-600 dark:fill-slate-400 font-mono">Services</text>
+
+              <rect x="160" y="110" width="120" height="80" className="stroke-slate-400 dark:stroke-slate-600" strokeWidth="2" />
+              <text x="220" y="155" textAnchor="middle" className="text-xs fill-slate-600 dark:fill-slate-400 font-mono">Booking</text>
+
+              {/* Arrows connecting */}
+              <line x1="80" y1="190" x2="80" y2="220" className="stroke-lime-400" strokeWidth="2" />
+              <line x1="220" y1="190" x2="220" y2="220" className="stroke-lime-400" strokeWidth="2" />
+
+              {/* Contact section */}
+              <rect x="20" y="220" width="260" height="60" className="stroke-slate-400 dark:stroke-slate-600" strokeWidth="2" />
+              <text x="150" y="255" textAnchor="middle" className="text-xs fill-slate-600 dark:fill-slate-400 font-mono">Contact & Trust</text>
+
+              {/* Decorative elements */}
+              <circle cx="290" cy="40" r="8" className="fill-cyan-400" opacity="0.5" />
+              <circle cx="20" cy="370" r="6" className="fill-lime-400" opacity="0.5" />
+              <defs>
+                <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+                  <polygon points="0 0, 10 3, 0 6" className="fill-cyan-400" />
+                </marker>
+              </defs>
+            </svg>
+            <p className="text-xs font-mono uppercase tracking-widest text-slate-500 dark:text-slate-400 mt-4 text-center">
+              Architecting the perfect booking journey.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* Why Us Section */}
+      <section className="bg-white dark:bg-slate-950 py-20 px-4">
+        <div className="container mx-auto max-w-5xl">
+          <div className="max-w-3xl mx-auto text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-heading font-bold text-slate-950 dark:text-white mb-6">
+              Why Kaizen is Different
+            </h2>
+            <p className="text-lg text-slate-700 dark:text-slate-300 leading-relaxed">
+              Most Wirral web designers are stuck in 2015. They use slow themes, generic templates, and forget about mobile speed.
+            </p>
+          </div>
+
+          <div className="bg-gradient-to-br from-cyan-50 to-lime-50 dark:from-slate-900/50 dark:to-slate-800/50 rounded-2xl p-8 md:p-12 border border-cyan-200/50 dark:border-cyan-400/20">
+            <p className="text-lg md:text-xl text-slate-900 dark:text-white leading-relaxed mb-6">
+              <span className="font-semibold">Kaizen is different.</span> We bring Enterprise-Grade React & Headless WordPress tech to local businesses. You get the same tech stack used by major brands, built by a local team that understands the difference between West Kirby and Wallasey.
+            </p>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
+              <div className="flex gap-4">
+                <div className="flex-shrink-0">
+                  <div className="flex items-center justify-center h-10 w-10 rounded-lg bg-cyan-600 text-white">
+                    <span className="text-xl font-bold">⚡</span>
+                  </div>
+                </div>
+                <div>
+                  <h3 className="font-semibold text-slate-900 dark:text-white mb-1">Enterprise Tech</h3>
+                  <p className="text-sm text-slate-700 dark:text-slate-300">React & Headless architecture that scales</p>
+                </div>
+              </div>
+              <div className="flex gap-4">
+                <div className="flex-shrink-0">
+                  <div className="flex items-center justify-center h-10 w-10 rounded-lg bg-lime-600 text-white">
+                    <span className="text-xl font-bold">🎯</span>
+                  </div>
+                </div>
+                <div>
+                  <h3 className="font-semibold text-slate-900 dark:text-white mb-1">AI-Augmented</h3>
+                  <p className="text-sm text-slate-700 dark:text-slate-300">Smarter, faster development process</p>
+                </div>
+              </div>
+              <div className="flex gap-4">
+                <div className="flex-shrink-0">
+                  <div className="flex items-center justify-center h-10 w-10 rounded-lg bg-cyan-600 text-white">
+                    <span className="text-xl font-bold">📍</span>
+                  </div>
+                </div>
+                <div>
+                  <h3 className="font-semibold text-slate-900 dark:text-white mb-1">Local Knowledge</h3>
+                  <p className="text-sm text-slate-700 dark:text-slate-300">We understand Wirral businesses</p>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -221,12 +315,12 @@ export default function WebDesignWirral() {
           {
             question: "Do you work with businesses across the Wirral?",
             answer:
-              "Yes. From West Kirby and Heswall to Birkenhead. We are local to the region and happy to meet at your offices or a local coffee shop for a consultation.",
+              "Yes. We build Wirral websites for clients from Heswall to New Brighton. We are local to the region and happy to meet at your offices or a local coffee shop for a consultation.",
           },
           {
-            question: "Why are you cheaper than other agencies?",
+            question: "Why are you cheaper than other Wirral web designers?",
             answer:
-              "Because you aren't paying for our coffee breaks or office overheads. You are paying for a Product Owner plus AI. This cost efficiency allows us to offer enterprise-grade tech to local Wirral businesses at 'freelancer' rates.",
+              "Because we use AI-Augmented development. We don't bill you for manual coding hours like other Wirral web designers. You are paying for a Product Owner plus AI. This cost efficiency allows us to offer enterprise-grade tech at 'freelancer' rates.",
           },
           {
             question: "How fast can you launch a local brochure site?",
