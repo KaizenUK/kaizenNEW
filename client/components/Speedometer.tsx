@@ -22,7 +22,7 @@ export function Speedometer() {
     return () => cancelAnimationFrame(animationFrame);
   }, [maxSpeed]);
 
-  const rotation = (speed / maxSpeed) * 180 - 90;
+  const rotation = -180 + (speed / maxSpeed) * 180;
 
   return (
     <div className="flex flex-col items-center justify-center gap-6">
