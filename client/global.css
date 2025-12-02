@@ -194,7 +194,8 @@
   a,
   [role="button"],
   input[type="button"],
-  input[type="submit"] {
+  input[type="submit"],
+  :where(button:not(.icon-only), a:not(.icon-only), [role="button"]) {
     min-height: 44px;
     min-width: 44px;
   }
