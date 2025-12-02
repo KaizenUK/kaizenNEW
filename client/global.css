@@ -129,15 +129,12 @@
   }
 
   /* Ensure Kaizen text tokens stay legible in dark mode */
-  .dark .text-kaizen-text-dark {
-    color: rgb(var(--kaizen-text-light) / 1);
-  }
-
+  .dark .text-kaizen-text-dark,
   .dark .text-kaizen-text-dark\/50,
   .dark .text-kaizen-text-dark\/60,
   .dark .text-kaizen-text-dark\/70,
   .dark .text-kaizen-text-dark\/80 {
-    color: rgb(var(--kaizen-text-light) / var(--tw-text-opacity));
+    color: rgb(var(--kaizen-text-light) / var(--tw-text-opacity, 1));
   }
 
   /* Give white panels a dark-friendly alternative background */
