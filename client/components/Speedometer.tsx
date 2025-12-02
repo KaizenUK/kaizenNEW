@@ -45,8 +45,9 @@ export function Speedometer() {
           />
 
           {/* Speed zones - Green (0-50), Yellow (50-80), Red (80-100) */}
+          {/* 0 starts at far left of the arc, 100 ends at far right */}
           <path
-            d="M 100 20 A 80 80 0 0 1 156.57 43.43"
+            d="M 20 100 A 80 80 0 0 1 100 20"
             fill="none"
             stroke="currentColor"
             strokeWidth="8"
@@ -54,7 +55,7 @@ export function Speedometer() {
             strokeLinecap="round"
           />
           <path
-            d="M 156.57 43.43 A 80 80 0 0 1 180 100"
+            d="M 100 20 A 80 80 0 0 1 169.28 60"
             fill="none"
             stroke="currentColor"
             strokeWidth="8"
@@ -62,7 +63,7 @@ export function Speedometer() {
             strokeLinecap="round"
           />
           <path
-            d="M 180 100 A 80 80 0 0 1 156.57 156.57"
+            d="M 169.28 60 A 80 80 0 0 1 180 100"
             fill="none"
             stroke="currentColor"
             strokeWidth="8"
@@ -149,9 +150,18 @@ export function Speedometer() {
 
       <div className="text-center max-w-md">
         <p className="text-sm md:text-base text-slate-300">
-          <span className="font-semibold text-cyan-400">Perfect Score.</span> We
-          build the fastest sites on the Wirral. Google loves speed. Your
-          customers love speed. We deliver it.
+          <span className="font-semibold text-cyan-400">Ready for Core Web Vitals.</span>{" "}
+          Our builds regularly score <span className="font-semibold">95%+ in Lighthouse</span>, often ahead of giants like Amazon (~90) and the BBC (~88). Learn what Google cares about in
+          {" "}
+          <a
+            href="https://developers.google.com/search/docs/appearance/core-web-vitals"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="underline decoration-dotted text-cyan-300 hover:text-cyan-200"
+          >
+            Core Web Vitals
+          </a>
+          .
         </p>
       </div>
     </div>
