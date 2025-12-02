@@ -1,25 +1,55 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 
 export function Speedometer() {
   const [speed, setSpeed] = useState(0);
   const maxSpeed = 100;
+  const containerRef = useRef<HTMLDivElement | null>(null);
+  const hasAnimatedRef = useRef(false);
+  const animationFrameRef = useRef<number | null>(null);
 
   useEffect(() => {
-    let animationFrame: number;
-    const durationMs = 2000;
-    const startTime = performance.now();
+    const startAnimation = () => {
+      const durationMs = 2000;
+      const startTime = performance.now();
 
-    const loop = (now: number) => {
-      const elapsed = (now - startTime) % durationMs;
-      const progress = elapsed / durationMs; // 0 -> 1
-      const value = Math.round(progress * maxSpeed);
-      setSpeed(value);
-      animationFrame = requestAnimationFrame(loop);
+      const animate = (now: number) => {
+        const elapsed = now - startTime;
+        const progress = Math.min(elapsed / durationMs, 1);
+        const value = Math.round(progress * maxSpeed);
+        setSpeed(value);
+
+        if (progress < 1) {
+          animationFrameRef.current = requestAnimationFrame(animate);
+        }
+      };
+
+      animationFrameRef.current = requestAnimationFrame(animate);
     };
 
-    animationFrame = requestAnimationFrame(loop);
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const entry = entries[0];
+        if (entry.isIntersecting && !hasAnimatedRef.current) {
+          hasAnimatedRef.current = true;
+          startAnimation();
+        }
+      },
+      { threshold: 0.5 },
+    );
 
-    return () => cancelAnimationFrame(animationFrame);
+    if (containerRef.current) {
+      observer.observe(containerRef.current);
+    }
+
+    return () => {
+      if (containerRef.current) {
+        observer.unobserve(containerRef.current);
+      }
+      observer.disconnect();
+      if (animationFrameRef.current !== null) {
+        cancelAnimationFrame(animationFrameRef.current);
+      }
+    };
   }, [maxSpeed]);
 
   const rotation = -180 + (speed / maxSpeed) * 180;
