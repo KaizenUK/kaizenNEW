@@ -284,8 +284,7 @@
 
   .prose th,
   .prose td {
-    @apply align-top border-none;
-    min-width: 9.375rem;
+    @apply align-top border-none min-width[9.375rem];
   }
 
   .prose th {
