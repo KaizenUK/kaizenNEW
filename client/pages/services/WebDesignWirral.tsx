@@ -1,3 +1,4 @@
+import { useState } from "react";
 import Layout from "@/components/Layout";
 import { motion } from "framer-motion";
 import { ArrowRight, Map } from "lucide-react";
@@ -31,34 +32,29 @@ const containerVariants = {
 
 const comparisonRows = [
   {
-    label: "Build approach",
-    typical: "Drag-and-drop WordPress theme with 40+ plugins",
-    kaizen: "Custom React + Headless build tuned for Core Web Vitals",
+    label: "Speed",
+    typical: "Theme site that feels slow.",
+    kaizen: "Lightning-fast on real phones.",
   },
   {
-    label: "Pricing logic",
-    typical: "£1,000–£3,000 for a template clone, then upsells for basics",
-    kaizen: "Transparent, fixed-price brochure and e‑commerce builds scoped by a Product Owner",
+    label: "Tech",
+    typical: "Basic WordPress template.",
+    kaizen: "Modern React + headless stack.",
   },
   {
-    label: "Mobile performance",
-    typical: "5–8 second load times on 4G – customers bounce before it loads",
-    kaizen: "~1.2 second loads on real devices with 90+ scores in Lighthouse & PageSpeed",
+    label: "SEO",
+    typical: "Little or no local SEO.",
+    kaizen: "Built for Wirral searches.",
   },
   {
-    label: "Local SEO",
-    typical: "Generic copy with no schema, no local landing pages, and thin blogs",
-    kaizen: "Wirral-specific content, schema, and technical SEO baked in from day one",
+    label: "Control",
+    typical: "Agency owns everything.",
+    kaizen: "You own the site and code.",
   },
   {
-    label: "Ownership",
-    typical: "Locked into proprietary hosting or a mystery CMS you never see",
-    kaizen: "You own the repo, the code, and the domain – we hand over the keys on launch day",
-  },
-  {
-    label: "Post-launch",
-    typical: "\"Launch and leave\" – no roadmap, no optimisation, no data",
-    kaizen: "Quarterly improvement cycles, analytics reviews, and test‑and‑learn experiments",
+    label: "Support",
+    typical: "Launch, then disappear.",
+    kaizen: "Ongoing tweaks and improvements.",
   },
 ];
 
@@ -100,6 +96,7 @@ function WirralTopoBackground() {
 
 export default function WebDesignWirral() {
   const { openCalendly } = useCalendly();
+  const [showMobileComparison, setShowMobileComparison] = useState(false);
 
   return (
     <Layout>
@@ -491,23 +488,62 @@ export default function WebDesignWirral() {
       {/* Comparison Section */}
       <section className="bg-slate-950 py-20 px-4 border-t border-slate-800/80">
         <div className="container mx-auto max-w-5xl">
-          <div className="text-center mb-12">
+          <div className="text-center mb-8">
             <p className="text-xs font-mono uppercase tracking-[0.25em] text-cyan-400 mb-4">
               Reality Check
             </p>
-            <h2 className="text-3xl md:text-4xl font-heading font-bold text-white mb-4">
+            <h2 className="text-3xl md:text-4xl font-heading font-bold text-white mb-3">
               Typical Wirral Web Designer vs Kaizen
             </h2>
-            <p className="text-lg text-slate-300 max-w-2xl mx-auto">
-              Same peninsula. Completely different experience.
+            <p className="text-sm md:text-base text-slate-300 max-w-xl mx-auto">
+              Simple side‑by‑side view so you can see the difference in seconds.
             </p>
           </div>
 
-          <div className="overflow-hidden rounded-2xl border border-slate-800 bg-slate-900/70 backdrop-blur-xl shadow-xl">
-            <div className="grid grid-cols-[1.2fr,1fr,1fr] text-xs md:text-sm font-mono uppercase tracking-[0.2em] bg-slate-900/90 text-slate-400">
-              <div className="px-4 py-4 text-left">Decision Point</div>
-              <div className="px-4 py-4 text-left text-red-400">Typical Designer</div>
-              <div className="px-4 py-4 text-left text-emerald-400">Kaizen</div>
+          {/* Mobile: click to reveal comparison */}
+          <div className="md:hidden mb-8">
+            <button
+              type="button"
+              onClick={() => setShowMobileComparison((prev) => !prev)}
+              className="w-full inline-flex items-center justify-center gap-2 rounded-full border border-cyan-400/60 bg-slate-900/80 px-5 py-3 text-sm font-heading text-cyan-100 hover:bg-slate-900 hover:border-cyan-300 transition"
+           >
+              Click to see the difference
+              <ArrowRight size={16} className={showMobileComparison ? "rotate-90 transition-transform" : "transition-transform"} />
+            </button>
+
+            {showMobileComparison && (
+              <div className="mt-6 space-y-4">
+                {comparisonRows.map((row) => (
+                  <div
+                    key={row.label}
+                    className="rounded-2xl border border-slate-800 bg-slate-900/80 p-4 shadow-sm"
+                  >
+                    <p className="text-xs font-mono uppercase tracking-[0.2em] text-slate-400 mb-2">
+                      {row.label}
+                    </p>
+                    <div className="grid grid-cols-1 gap-3">
+                      <div>
+                        <p className="text-xs font-semibold text-red-400 mb-1">Typical designer</p>
+                        <p className="text-sm text-slate-300">{row.typical}</p>
+                      </div>
+                      <div className="rounded-xl bg-gradient-to-r from-emerald-500/15 via-cyan-500/15 to-transparent p-3 border border-emerald-500/40">
+                        <p className="text-xs font-semibold text-emerald-300 mb-1">Kaizen</p>
+                        <p className="text-sm text-emerald-100">{row.kaizen}</p>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Desktop/tablet: full comparison table */}
+          <div className="hidden md:block overflow-hidden rounded-2xl border border-slate-800 bg-slate-900/70 backdrop-blur-xl shadow-xl">
+            <div className="grid grid-cols-2 text-xs md:text-sm font-mono uppercase tracking-[0.2em] bg-slate-900/90 text-slate-400">
+              <div className="px-4 py-4 text-left text-red-400">Typical designer</div>
+              <div className="px-4 py-4 text-left text-emerald-400 bg-gradient-to-r from-emerald-500/15 via-cyan-500/10 to-transparent">
+                Kaizen
+              </div>
             </div>
 
             <div className="divide-y divide-slate-800">
@@ -519,17 +555,14 @@ export default function WebDesignWirral() {
                   viewport={{ once: true }}
                   transition={{ delay: 0.1 + index * 0.05 }}
                   whileHover={{ backgroundColor: "rgba(15,23,42,0.9)", scale: 1.01 }}
-                  className="grid grid-cols-[1.2fr,1fr,1fr] text-slate-200"
+                  className="grid grid-cols-2 text-slate-200"
                 >
                   <div className="px-4 py-5 border-r border-slate-800/80">
-                    <p className="text-xs font-semibold text-slate-400 mb-1">{String(index + 1).padStart(2, "0")}</p>
-                    <p className="text-sm md:text-base font-medium text-white">{row.label}</p>
+                    <p className="text-xs font-semibold text-slate-400 mb-1">{row.label}</p>
+                    <p className="text-sm md:text-base text-slate-300">{row.typical}</p>
                   </div>
-                  <div className="px-4 py-5 border-r border-slate-800/80">
-                    <p className="text-xs md:text-sm text-slate-300">{row.typical}</p>
-                  </div>
-                  <div className="px-4 py-5 bg-gradient-to-r from-emerald-500/10 via-cyan-500/10 to-transparent">
-                    <p className="text-xs md:text-sm text-emerald-200">{row.kaizen}</p>
+                  <div className="px-4 py-5 bg-gradient-to-r from-emerald-500/12 via-cyan-500/12 to-transparent">
+                    <p className="text-sm md:text-base text-emerald-100">{row.kaizen}</p>
                   </div>
                 </motion.div>
               ))}
