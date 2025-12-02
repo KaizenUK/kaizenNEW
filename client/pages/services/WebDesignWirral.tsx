@@ -120,12 +120,14 @@ export default function WebDesignWirral() {
                   <ArrowRight size={18} />
                 </button>
 
-                <Link
-                  to="https://kaizenweb.co.uk/blog/bespoke-web-design-vs-templates-wirral"
+                <a
+                  href="https://kaizenweb.co.uk/blog/bespoke-web-design-vs-templates-wirral"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="inline-flex items-center justify-center gap-2 px-8 py-3 rounded-full border border-white/20 text-sm font-heading text-white/80 hover:text-white hover:bg-white/5 transition"
                 >
                   View Wirral case study
-                </Link>
+                </a>
               </div>
 
               <p className="mt-6 text-xs font-mono text-slate-400 uppercase tracking-[0.25em]">
