@@ -720,11 +720,11 @@ export default function WebDesignWirral() {
         </div>
       </section>
 
-      <div className="relative bg-slate-900 py-12">
-        <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10 pointer-events-none" />
-        <div className="absolute inset-0 bg-gradient-to-b from-slate-950 to-slate-900 pointer-events-none" />
+      <div className="relative bg-slate-50 dark:bg-slate-900 py-12">
+        <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-5 pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent to-slate-100/50 dark:to-slate-900/50 pointer-events-none" />
         <div className="container mx-auto px-4 relative z-10">
-          <div className="max-w-4xl mx-auto bg-slate-950/50 backdrop-blur-sm rounded-3xl border border-slate-800 p-8 md:p-12 shadow-2xl">
+          <div className="max-w-4xl mx-auto bg-white dark:bg-slate-950/50 backdrop-blur-sm rounded-3xl border border-slate-200 dark:border-slate-800 p-8 md:p-12 shadow-2xl">
             <FaqSection
               heading="Wirral Web Design FAQs"
               eyebrow="Common Questions"
