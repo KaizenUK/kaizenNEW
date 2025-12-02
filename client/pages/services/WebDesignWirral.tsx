@@ -7,6 +7,8 @@ import { FaqSection } from "@/components/FaqSection";
 import { TypewriterEffect } from "@/components/TypewriterEffect";
 import { WirralInteractiveMap } from "@/components/WirralInteractiveMap";
 import { WirralTownsCarousel } from "@/components/WirralTownsCarousel";
+import { WirralTicker } from "@/components/WirralTicker";
+import { Speedometer } from "@/components/Speedometer";
 import { openCrisp } from "@/lib/crisp-utils";
 
 const fadeInUp = {
@@ -119,7 +121,7 @@ export default function WebDesignWirral() {
                 </button>
 
                 <Link
-                  to="/case-studies/helen-moore-hairdressing"
+                  to="https://kaizenweb.co.uk/blog/bespoke-web-design-vs-templates-wirral"
                   className="inline-flex items-center justify-center gap-2 px-8 py-3 rounded-full border border-white/20 text-sm font-heading text-white/80 hover:text-white hover:bg-white/5 transition"
                 >
                   View Wirral case study
@@ -187,7 +189,10 @@ export default function WebDesignWirral() {
         </div>
       </section>
 
-      {/* Helen Moore Blueprint Section */}
+      {/* Scrolling Ticker */}
+      <WirralTicker />
+
+      {/* Helen Moore Blueprint Section - With Animated Flow */}
       <section className="bg-slate-50 dark:bg-slate-950 py-20 px-4 border-t border-slate-200/60 dark:border-slate-800/80">
         <div className="container mx-auto max-w-5xl grid grid-cols-1 md:grid-cols-[minmax(0,3fr)_minmax(0,2fr)] gap-10 items-center">
           <div>
@@ -247,8 +252,14 @@ export default function WebDesignWirral() {
             </button>
           </div>
 
-          {/* Blueprint Visual */}
-          <div className="relative rounded-2xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 p-8 shadow-lg">
+          {/* Blueprint Visual with Flow Animation */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+            className="relative rounded-2xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 p-8 shadow-lg"
+          >
             <svg
               className="w-full h-64"
               viewBox="0 0 300 400"
@@ -259,8 +270,41 @@ export default function WebDesignWirral() {
               <rect x="20" y="20" width="260" height="60" className="stroke-slate-400 dark:stroke-slate-600" strokeWidth="2" />
               <text x="150" y="55" textAnchor="middle" className="text-xs fill-slate-600 dark:fill-slate-400 font-mono">Hero: "Book Now"</text>
 
-              {/* Arrow down */}
-              <line x1="150" y1="80" x2="150" y2="110" className="stroke-cyan-400" strokeWidth="2" markerEnd="url(#arrowhead)" />
+              {/* Animated arrow down */}
+              <defs>
+                <linearGradient id="arrow-gradient" x1="0" x2="0" y1="0" y2="1">
+                  <stop offset="0%" stopColor="#22d3ee" />
+                  <stop offset="100%" stopColor="#22c55e" />
+                </linearGradient>
+                <marker
+                  id="arrowhead"
+                  markerWidth="10"
+                  markerHeight="10"
+                  refX="9"
+                  refY="3"
+                  orient="auto"
+                >
+                  <polygon points="0 0, 10 3, 0 6" fill="url(#arrow-gradient)" />
+                </marker>
+              </defs>
+
+              <motion.line
+                x1="150"
+                y1="80"
+                x2="150"
+                y2="110"
+                stroke="url(#arrow-gradient)"
+                strokeWidth="2"
+                markerEnd="url(#arrowhead)"
+                initial={{ opacity: 0, y1: "80", y2: "80" }}
+                animate={{ opacity: 1, y1: 80, y2: 110 }}
+                transition={{
+                  duration: 0.8,
+                  delay: 0.2,
+                  repeat: Infinity,
+                  repeatDelay: 2,
+                }}
+              />
 
               {/* Two columns */}
               <rect x="20" y="110" width="120" height="80" className="stroke-slate-400 dark:stroke-slate-600" strokeWidth="2" />
@@ -270,8 +314,41 @@ export default function WebDesignWirral() {
               <text x="220" y="155" textAnchor="middle" className="text-xs fill-slate-600 dark:fill-slate-400 font-mono">Booking</text>
 
               {/* Arrows connecting */}
-              <line x1="80" y1="190" x2="80" y2="220" className="stroke-lime-400" strokeWidth="2" />
-              <line x1="220" y1="190" x2="220" y2="220" className="stroke-lime-400" strokeWidth="2" />
+              <motion.line
+                x1="80"
+                y1="190"
+                x2="80"
+                y2="220"
+                stroke="currentColor"
+                strokeWidth="2"
+                className="text-lime-400"
+                initial={{ opacity: 0, y1: "190", y2: "190" }}
+                animate={{ opacity: 1, y1: 190, y2: 220 }}
+                transition={{
+                  duration: 0.8,
+                  delay: 0.5,
+                  repeat: Infinity,
+                  repeatDelay: 2,
+                }}
+              />
+
+              <motion.line
+                x1="220"
+                y1="190"
+                x2="220"
+                y2="220"
+                stroke="currentColor"
+                strokeWidth="2"
+                className="text-lime-400"
+                initial={{ opacity: 0, y1: "190", y2: "190" }}
+                animate={{ opacity: 1, y1: 190, y2: 220 }}
+                transition={{
+                  duration: 0.8,
+                  delay: 0.6,
+                  repeat: Infinity,
+                  repeatDelay: 2,
+                }}
+              />
 
               {/* Contact section */}
               <rect x="20" y="220" width="260" height="60" className="stroke-slate-400 dark:stroke-slate-600" strokeWidth="2" />
@@ -280,16 +357,152 @@ export default function WebDesignWirral() {
               {/* Decorative elements */}
               <circle cx="290" cy="40" r="8" className="fill-cyan-400" opacity="0.5" />
               <circle cx="20" cy="370" r="6" className="fill-lime-400" opacity="0.5" />
-              <defs>
-                <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
-                  <polygon points="0 0, 10 3, 0 6" className="fill-cyan-400" />
-                </marker>
-              </defs>
             </svg>
             <p className="text-xs font-mono uppercase tracking-widest text-slate-500 dark:text-slate-400 mt-4 text-center">
-              Architecting the perfect booking journey.
+              <TypewriterEffect
+                words={["Architecting the perfect booking journey", "Mobile-First Strategy", "Conversion Optimized"]}
+                speed={80}
+                delayBetweenWords={2000}
+              />
+            </p>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Context Section - About Different Client Types */}
+      <section className="bg-white dark:bg-slate-950 py-16 px-4 border-b border-slate-200 dark:border-slate-800">
+        <div className="container mx-auto max-w-4xl">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="prose prose-lg dark:prose-invert max-w-none"
+          >
+            <p className="text-lg text-slate-700 dark:text-slate-300 leading-relaxed">
+              Whether you're in a downtown Birkenhead office tower, a coastal village like Hoylake or New Brighton, or an industrial hub on the edge of the peninsula, Kaizen builds Wirral websites that rank, convert, and deliver real business results. We understand the unique challenges of each neighbourhood—from high street foot traffic to trade enquiries to appointment-based services—and we architect your digital presence to win in your market.
+            </p>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Comparison Section */}
+      <section className="bg-slate-50 dark:bg-slate-900 py-20 px-4 border-t border-slate-200/60 dark:border-slate-800/80">
+        <div className="container mx-auto max-w-5xl">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-heading font-bold text-slate-900 dark:text-white mb-4">
+              Typical Wirral Web Designer vs Kaizen
+            </h2>
+            <p className="text-lg text-slate-600 dark:text-slate-400">
+              We built this company around what the others got wrong.
             </p>
           </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {/* Typical Designer Column */}
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.1 }}
+              className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl p-8 shadow-sm"
+            >
+              <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-6">
+                Typical Wirral Web Designer
+              </h3>
+              <ul className="space-y-4 text-slate-700 dark:text-slate-300">
+                <li className="flex gap-3">
+                  <span className="text-red-500 font-bold flex-shrink-0">✗</span>
+                  <span>Uses drag-and-drop WordPress themes (slow, bloated)</span>
+                </li>
+                <li className="flex gap-3">
+                  <span className="text-red-500 font-bold flex-shrink-0">✗</span>
+                  <span>Charges £1,000–£3,000 for a template clone</span>
+                </li>
+                <li className="flex gap-3">
+                  <span className="text-red-500 font-bold flex-shrink-0">✗</span>
+                  <span>Site takes 5–8 seconds to load on mobile</span>
+                </li>
+                <li className="flex gap-3">
+                  <span className="text-red-500 font-bold flex-shrink-0">✗</span>
+                  <span>No local SEO strategy—generic content</span>
+                </li>
+                <li className="flex gap-3">
+                  <span className="text-red-500 font-bold flex-shrink-0">✗</span>
+                  <span>Locks you into proprietary hosting/CMS</span>
+                </li>
+                <li className="flex gap-3">
+                  <span className="text-red-500 font-bold flex-shrink-0">✗</span>
+                  <span>Disappears after launch—no roadmap for growth</span>
+                </li>
+              </ul>
+            </motion.div>
+
+            {/* Kaizen Column */}
+            <motion.div
+              initial={{ opacity: 0, x: 20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.2 }}
+              className="bg-gradient-to-br from-cyan-50 to-lime-50 dark:from-slate-800 dark:to-slate-900 border border-cyan-300 dark:border-cyan-500/30 rounded-2xl p-8 shadow-md"
+            >
+              <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-6">
+                Kaizen
+              </h3>
+              <ul className="space-y-4 text-slate-700 dark:text-slate-300">
+                <li className="flex gap-3">
+                  <span className="text-emerald-500 font-bold flex-shrink-0">✓</span>
+                  <span>Custom React builds (enterprise-grade performance)</span>
+                </li>
+                <li className="flex gap-3">
+                  <span className="text-emerald-500 font-bold flex-shrink-0">✓</span>
+                  <span>AI-augmented development = faster, smarter builds</span>
+                </li>
+                <li className="flex gap-3">
+                  <span className="text-emerald-500 font-bold flex-shrink-0">✓</span>
+                  <span>Loads in 1.2 seconds on 4G (Google 90+ score)</span>
+                </li>
+                <li className="flex gap-3">
+                  <span className="text-emerald-500 font-bold flex-shrink-0">✓</span>
+                  <span>Local SEO built in from day one (Wirral keywords, schema)</span>
+                </li>
+                <li className="flex gap-3">
+                  <span className="text-emerald-500 font-bold flex-shrink-0">✓</span>
+                  <span>You own your code, domain, and data—100%</span>
+                </li>
+                <li className="flex gap-3">
+                  <span className="text-emerald-500 font-bold flex-shrink-0">✓</span>
+                  <span>Partnership approach—we plan quarterly improvements</span>
+                </li>
+              </ul>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* Speed Visualiser Section */}
+      <section className="bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 py-24 px-4">
+        <div className="container mx-auto max-w-5xl">
+          <div className="text-center mb-12">
+            <p className="text-xs font-mono uppercase tracking-[0.25em] text-cyan-400 mb-4">
+              Performance
+            </p>
+            <h2 className="text-3xl md:text-4xl font-heading font-bold text-white mb-4">
+              We Build the Fastest Sites on the Wirral
+            </h2>
+            <p className="text-lg text-slate-300 max-w-2xl mx-auto">
+              Google loves speed. Your customers love speed. We deliver it.
+            </p>
+          </div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+            className="mt-16"
+          >
+            <Speedometer />
+          </motion.div>
         </div>
       </section>
 
@@ -363,19 +576,29 @@ export default function WebDesignWirral() {
         eyebrow="Common Questions"
         items={[
           {
-            question: "Do you work with businesses across the Wirral?",
+            question: "How much does a website cost in the Wirral?",
             answer:
-              "Yes. We build Wirral websites for clients from Heswall to New Brighton. We are local to the region and happy to meet at your offices or a local coffee shop for a consultation.",
+              "Prices vary from £500 for a template to £10,000+ for a custom build. At Kaizen, our bespoke brochure sites start from £3,500. That might not be what you need for your business—it really depends on what your business needs. However, we provide a fixed-price quote after a quick chat, so you never get hit with hidden fees. If it ends up costing more than we anticipated, that's on us. So you have peace of mind.",
           },
           {
-            question: "Why are you cheaper than other Wirral web designers?",
+            question: "Can I just use AI to build my own website?",
             answer:
-              "Because we use AI-Augmented development. We don't bill you for manual coding hours like other Wirral web designers. You are paying for a Product Owner plus AI. This cost efficiency allows us to offer enterprise-grade tech at 'freelancer' rates.",
+              "Sure you can, but AI cannot define your business strategy. Without a Product Owner to guide the architecture, DIY AI sites often end up as 'spaghetti code' that breaks in 6 months. We use AI to speed up the build, but human experts ensure it actually generates revenue.",
           },
           {
-            question: "How fast can you launch a local brochure site?",
+            question: "Do I own the website after it launches?",
             answer:
-              "Typically 4–6 weeks. We focus on getting your core services and contact details live quickly so you can start generating enquiries.",
+              "Yes. Unlike some Wirral agencies that lock you into a proprietary system, you own your code and your domain 100%. We hand over the keys (and the repo) on launch day.",
+          },
+          {
+            question: "Are you actually based in the Wirral?",
+            answer:
+              "Our registered office is in Liverpool city centre, but we work from and with clients across the peninsula—from Spital to Moreton. We are happy to meet you at your offices for a face-to-face discovery session.",
+          },
+          {
+            question: "Can you fix my existing WordPress site?",
+            answer:
+              "Yes. If your current site is slow or broken, our 'Project Rescue' team can audit the code, strip out the bloat, and move you to high-performance hosting.",
           },
         ]}
       />
@@ -399,7 +622,7 @@ export default function WebDesignWirral() {
               onClick={() => openCrisp()}
               className="inline-flex items-center justify-center gap-2 px-8 py-3 rounded-full bg-gradient-to-r from-cyan-400 to-lime-400 text-slate-950 font-heading font-bold hover:shadow-lg hover:shadow-cyan-400/40 transition"
             >
-              Start a Chat
+              Launch Chat
               <ArrowRight size={18} />
             </button>
 
