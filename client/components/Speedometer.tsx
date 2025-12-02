@@ -121,11 +121,12 @@ export function Speedometer() {
 
           {/* Tick Marks */}
           {[0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100].map((tick) => {
-            const angle = (tick / 100) * 180 - 90;
+            // Map 0-100 to 180-360 degrees for trig calculations (Left -> Top -> Right)
+            const angle = 180 + (tick / 100) * 180;
             const isMajor = tick % 20 === 0;
             const innerR = isMajor ? 65 : 70;
             const outerR = 78;
-            
+
             const startX = 100 + innerR * Math.cos((angle * Math.PI) / 180);
             const startY = 100 + innerR * Math.sin((angle * Math.PI) / 180);
             const endX = 100 + outerR * Math.cos((angle * Math.PI) / 180);
