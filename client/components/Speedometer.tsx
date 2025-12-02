@@ -52,7 +52,7 @@ export function Speedometer() {
     };
   }, [maxSpeed]);
 
-  const rotation = -180 + (speed / maxSpeed) * 180;
+  const rotation = -90 + (speed / maxSpeed) * 180;
 
   return (
     <div
