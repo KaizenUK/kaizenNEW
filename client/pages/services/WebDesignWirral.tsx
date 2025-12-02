@@ -96,8 +96,8 @@ export default function WebDesignWirral() {
 
               <div className="text-lg md:text-xl text-slate-300 max-w-2xl mb-8">
                 <p>
-                  High-Performance Websites for Bromborough, Heswall, West
-                  Kirby &amp; Birkenhead and more.{" "}
+                  High-Performance Websites for Bromborough, Heswall, West Kirby
+                  &amp; Birkenhead and more.{" "}
                 </p>
                 <p>
                   <br />
