@@ -613,8 +613,11 @@ export default function WebDesignWirral() {
           <div className="bg-gradient-to-br from-slate-900/60 to-slate-800/60 rounded-2xl p-8 md:p-12 border border-cyan-400/20 backdrop-blur-sm relative overflow-hidden">
             <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(45,212,191,0.12),_transparent_55%),radial-gradient(circle_at_bottom,_rgba(56,189,248,0.12),_transparent_55%)]" />
             <div className="relative">
-              <p className="text-lg md:text-xl text-white leading-relaxed mb-6">
+              <p className="hidden md:block text-lg md:text-xl text-white leading-relaxed mb-6">
                 <span className="font-semibold text-cyan-300">Kaizen is different.</span> We bring Enterprise-Grade React & Headless WordPress tech to local businesses. You get the same tech stack used by major brands, built by a local team that understands the difference between West Kirby and Wallasey.
+              </p>
+              <p className="md:hidden text-base text-white leading-relaxed mb-6">
+                <span className="font-semibold text-cyan-300">Kaizen is different.</span> Enterprise-grade React & headless WordPress, built locally for Wirral businesses.
               </p>
             </div>
             <div className="relative grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
