@@ -60,18 +60,7 @@ const pageMeta: Record<string, Partial<PageMeta>> = {
   "/services/web-design-liverpool": {
     title: "High-Performance Web Design Liverpool | Kaizen",
     description:
-      "Need web design in Liverpool? We build fast, high-performance websites using a modern stack and a straightforward Agile process. Get more leads, not more headaches.",
-    keywords: [
-      "web design liverpool",
-      "high-performance websites",
-      "react web design liverpool",
-      "web design agency wirral",
-    ],
-  },
-  "/web-design-liverpool": {
-    title: "High-Performance Web Design Liverpool | Kaizen",
-    description:
-      "Need web design in Liverpool? We build fast, high-performance websites using a modern stack and a straightforward Agile process. Get more leads, not more headaches.",
+      "Need web design in Liverpool? We build fast, high-performance websites with a straightforward Agile process. Get more leads, not more headaches.",
     keywords: [
       "web design liverpool",
       "high-performance websites",
@@ -308,16 +297,6 @@ const pageMeta: Record<string, Partial<PageMeta>> = {
     description:
       "Kaizen Web's GDPR commitments covering hosting, analytics, and customer data in the UK.",
     noIndex: true,
-  },
-  "/product-owner": {
-    title: "Fractional Product Owner Liverpool | Kaizen Web",
-    description:
-      "Fractional product ownership and discovery facilitation for Liverpool startups that need strategic delivery without full-time overhead.",
-  },
-  "/team-transformation": {
-    title: "Team Transformation & Delivery Coaching Liverpool | Kaizen Web",
-    description:
-      "Bridge strategy and execution with Kaizen Web's delivery coaching programmes tailored to Liverpool organisations.",
   },
   "/case-studies/as-collections": {
     title: "As Collections Case Study | Kaizen Web",
