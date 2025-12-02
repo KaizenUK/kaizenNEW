@@ -6,6 +6,7 @@ import { useCalendly } from "@/context/CalendlyContext";
 import { FaqSection } from "@/components/FaqSection";
 import { TypewriterEffect } from "@/components/TypewriterEffect";
 import { WirralInteractiveMap } from "@/components/WirralInteractiveMap";
+import { WirralTownsCarousel } from "@/components/WirralTownsCarousel";
 import { openCrisp } from "@/lib/crisp-utils";
 
 const fadeInUp = {
@@ -354,6 +355,8 @@ export default function WebDesignWirral() {
           </div>
         </div>
       </section>
+
+      <WirralTownsCarousel />
 
       <FaqSection
         heading="Wirral Web Design FAQs"
