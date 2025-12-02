@@ -255,9 +255,7 @@
     border: 2px solid #ffffff;
     box-shadow: 0 0 0 2px rgba(15, 23, 42, 0.35);
     cursor: pointer;
-    transition:
-      transform 150ms ease-out,
-      box-shadow 150ms ease-out;
+    transition: transform 150ms ease-out, box-shadow 150ms ease-out;
   }
 
   .pricing-slider::-webkit-slider-thumb:hover {
