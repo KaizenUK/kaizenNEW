@@ -330,9 +330,6 @@ export default function WebDesignWirral() {
                   <ArrowRight size={18} />
                 </button>
 
-                <span className="text-slate-400 text-sm font-medium">
-                  Read the Case Study
-                </span>
               </div>
             </motion.div>
 
