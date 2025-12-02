@@ -4,6 +4,9 @@ import { ArrowRight, Map } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useCalendly } from "@/context/CalendlyContext";
 import { FaqSection } from "@/components/FaqSection";
+import { TypewriterEffect } from "@/components/TypewriterEffect";
+import { WirralInteractiveMap } from "@/components/WirralInteractiveMap";
+import { openCrisp } from "@/lib/crisp-utils";
 
 const fadeInUp = {
   hidden: { opacity: 0, y: 20 },
@@ -134,30 +137,48 @@ export default function WebDesignWirral() {
 
               <div className="grid grid-cols-1 gap-4">
                 {/* Heswall - Premium Service Brands */}
-                <div className="bg-slate-900/70 border border-white/10 rounded-2xl p-6 backdrop-blur-md hover:border-cyan-400/30 transition">
-                  <div className="h-32 bg-gradient-to-br from-cyan-500/10 to-slate-800 rounded-lg mb-4 flex items-center justify-center">
-                    <span className="text-xs font-mono text-slate-500">Premium Texture</span>
+                <div className="bg-slate-900/70 border border-white/10 rounded-2xl overflow-hidden backdrop-blur-md hover:border-cyan-400/30 transition">
+                  <img
+                    src="https://cdn.builder.io/api/v1/image/assets%2Fe4ae46bbd81b4b95bef54d66dd9748cc%2F980902625e90433687c83e0f3aa10a5d?format=webp&width=800"
+                    alt="Premium web design for professional services in Heswall and Wirral"
+                    className="w-full h-32 object-cover"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                  <div className="p-6">
+                    <h3 className="text-lg font-semibold text-white mb-2">Heswall</h3>
+                    <p className="text-sm text-slate-300">Premium Service Brands. Owner-led service businesses that need enquiries, not vanity metrics.</p>
                   </div>
-                  <h3 className="text-lg font-semibold text-white mb-2">Heswall</h3>
-                  <p className="text-sm text-slate-300">Premium Service Brands. Owner-led service businesses that need enquiries, not vanity metrics.</p>
                 </div>
 
                 {/* West Kirby - Experience & Retail */}
-                <div className="bg-slate-900/70 border border-white/10 rounded-2xl p-6 backdrop-blur-md hover:border-cyan-400/30 transition">
-                  <div className="h-32 bg-gradient-to-br from-lime-500/10 to-slate-800 rounded-lg mb-4 flex items-center justify-center">
-                    <span className="text-xs font-mono text-slate-500">Retail Space</span>
+                <div className="bg-slate-900/70 border border-white/10 rounded-2xl overflow-hidden backdrop-blur-md hover:border-cyan-400/30 transition">
+                  <img
+                    src="https://cdn.builder.io/api/v1/image/assets%2Fe4ae46bbd81b4b95bef54d66dd9748cc%2F094cdc9be84c41ee9db80308cbe5ea73?format=webp&width=800"
+                    alt="Bespoke website design for West Kirby cafes, retail, and lifestyle brands"
+                    className="w-full h-32 object-cover"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                  <div className="p-6">
+                    <h3 className="text-lg font-semibold text-white mb-2">West Kirby</h3>
+                    <p className="text-sm text-slate-300">Experience & Retail. Cafes, salons and experience-led brands that live or die on local reputation.</p>
                   </div>
-                  <h3 className="text-lg font-semibold text-white mb-2">West Kirby</h3>
-                  <p className="text-sm text-slate-300">Experience & Retail. Cafes, salons and experience-led brands that live or die on local reputation.</p>
                 </div>
 
                 {/* Birkenhead - Industrial & B2B */}
-                <div className="bg-slate-900/70 border border-white/10 rounded-2xl p-6 backdrop-blur-md hover:border-cyan-400/30 transition">
-                  <div className="h-32 bg-gradient-to-br from-blue-500/10 to-slate-800 rounded-lg mb-4 flex items-center justify-center">
-                    <span className="text-xs font-mono text-slate-500">B2B Industrial</span>
+                <div className="bg-slate-900/70 border border-white/10 rounded-2xl overflow-hidden backdrop-blur-md hover:border-cyan-400/30 transition">
+                  <img
+                    src="https://cdn.builder.io/api/v1/image/assets%2Fe4ae46bbd81b4b95bef54d66dd9748cc%2Fbbfbdeb9f4684103a86bcdf7d0ac4d6a?format=webp&width=800"
+                    alt="B2B web development for Birkenhead industrial and trade businesses"
+                    className="w-full h-32 object-cover"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                  <div className="p-6">
+                    <h3 className="text-lg font-semibold text-white mb-2">Birkenhead</h3>
+                    <p className="text-sm text-slate-300">Industrial & B2B. Trades who need a site that looks credible and loads fast on tired work phones.</p>
                   </div>
-                  <h3 className="text-lg font-semibold text-white mb-2">Birkenhead</h3>
-                  <p className="text-sm text-slate-300">Industrial & B2B. Trades who need a site that looks credible and loads fast on tired work phones.</p>
                 </div>
               </div>
             </motion.div>
@@ -184,25 +205,43 @@ export default function WebDesignWirral() {
             <h3 className="font-semibold text-slate-900 dark:text-white text-lg mb-4">The Fix: Re-architecting the business logic.</h3>
 
             <ul className="space-y-3 mb-8 text-slate-700 dark:text-slate-300">
-              <li className="flex gap-3">
+              <motion.li
+                className="flex gap-3"
+                initial={{ opacity: 0, x: -20 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.1, duration: 0.5 }}
+              >
                 <span className="text-cyan-400 font-bold flex-shrink-0">→</span>
                 <span><span className="font-semibold">Mobile-First Booking:</span> Creating a friction-free path from Instagram to Appointment.</span>
-              </li>
-              <li className="flex gap-3">
+              </motion.li>
+              <motion.li
+                className="flex gap-3"
+                initial={{ opacity: 0, x: -20 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.2, duration: 0.5 }}
+              >
                 <span className="text-cyan-400 font-bold flex-shrink-0">→</span>
                 <span><span className="font-semibold">Local SEO Engine:</span> Structuring the site to dominate searches for 'Hairdresser Wallasey' before it even launches.</span>
-              </li>
-              <li className="flex gap-3">
+              </motion.li>
+              <motion.li
+                className="flex gap-3"
+                initial={{ opacity: 0, x: -20 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.3, duration: 0.5 }}
+              >
                 <span className="text-cyan-400 font-bold flex-shrink-0">→</span>
                 <span><span className="font-semibold">Zero-Bloat Build:</span> Replacing heavy plugins with custom, lightweight code for instant load speeds.</span>
-              </li>
+              </motion.li>
             </ul>
 
             <button
-              onClick={openCalendly}
+              onClick={() => openCrisp()}
               className="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-gradient-to-r from-cyan-400 to-lime-400 text-slate-950 font-heading font-bold hover:shadow-lg hover:shadow-cyan-400/40 transition"
             >
-              Want to see the blueprints? Book a demo
+              Want to see the blueprints? Start a chat
               <ArrowRight size={18} />
             </button>
           </div>
@@ -253,57 +292,65 @@ export default function WebDesignWirral() {
         </div>
       </section>
 
-      {/* Why Us Section */}
-      <section className="bg-white dark:bg-slate-950 py-20 px-4">
+      {/* Why Us Section - Dark Theme */}
+      <section className="bg-gradient-to-br from-slate-950 via-blue-950 to-slate-950 py-20 px-4">
         <div className="container mx-auto max-w-5xl">
           <div className="max-w-3xl mx-auto text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-heading font-bold text-slate-950 dark:text-white mb-6">
+            <h2 className="text-3xl md:text-4xl font-heading font-bold text-white mb-6">
               Why Kaizen is Different
             </h2>
-            <p className="text-lg text-slate-700 dark:text-slate-300 leading-relaxed">
+            <p className="text-lg text-slate-300 leading-relaxed">
               Most Wirral web designers are stuck in 2015. They use slow themes, generic templates, and forget about mobile speed.
             </p>
           </div>
 
-          <div className="bg-gradient-to-br from-cyan-50 to-lime-50 dark:from-slate-900/50 dark:to-slate-800/50 rounded-2xl p-8 md:p-12 border border-cyan-200/50 dark:border-cyan-400/20">
-            <p className="text-lg md:text-xl text-slate-900 dark:text-white leading-relaxed mb-6">
-              <span className="font-semibold">Kaizen is different.</span> We bring Enterprise-Grade React & Headless WordPress tech to local businesses. You get the same tech stack used by major brands, built by a local team that understands the difference between West Kirby and Wallasey.
+          <div className="bg-gradient-to-br from-slate-900/60 to-slate-800/60 rounded-2xl p-8 md:p-12 border border-cyan-400/20 backdrop-blur-sm">
+            <p className="text-lg md:text-xl text-white leading-relaxed mb-6">
+              <span className="font-semibold text-cyan-300">Kaizen is different.</span> We bring Enterprise-Grade React & Headless WordPress tech to local businesses. You get the same tech stack used by major brands, built by a local team that understands the difference between West Kirby and Wallasey.
             </p>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
               <div className="flex gap-4">
                 <div className="flex-shrink-0">
-                  <div className="flex items-center justify-center h-10 w-10 rounded-lg bg-cyan-600 text-white">
+                  <div className="flex items-center justify-center h-10 w-10 rounded-lg bg-cyan-600/30 border border-cyan-400/50 text-white">
                     <span className="text-xl font-bold">⚡</span>
                   </div>
                 </div>
                 <div>
-                  <h3 className="font-semibold text-slate-900 dark:text-white mb-1">Enterprise Tech</h3>
-                  <p className="text-sm text-slate-700 dark:text-slate-300">React & Headless architecture that scales</p>
+                  <h3 className="font-semibold text-white mb-1">Enterprise Tech</h3>
+                  <p className="text-sm text-slate-400">React & Headless architecture that scales</p>
                 </div>
               </div>
               <div className="flex gap-4">
                 <div className="flex-shrink-0">
-                  <div className="flex items-center justify-center h-10 w-10 rounded-lg bg-lime-600 text-white">
+                  <div className="flex items-center justify-center h-10 w-10 rounded-lg bg-lime-600/30 border border-lime-400/50 text-white">
                     <span className="text-xl font-bold">🎯</span>
                   </div>
                 </div>
                 <div>
-                  <h3 className="font-semibold text-slate-900 dark:text-white mb-1">AI-Augmented</h3>
-                  <p className="text-sm text-slate-700 dark:text-slate-300">Smarter, faster development process</p>
+                  <h3 className="font-semibold text-white mb-1">AI-Augmented</h3>
+                  <p className="text-sm text-slate-400">Smarter, faster development process</p>
                 </div>
               </div>
               <div className="flex gap-4">
                 <div className="flex-shrink-0">
-                  <div className="flex items-center justify-center h-10 w-10 rounded-lg bg-cyan-600 text-white">
+                  <div className="flex items-center justify-center h-10 w-10 rounded-lg bg-cyan-600/30 border border-cyan-400/50 text-white">
                     <span className="text-xl font-bold">📍</span>
                   </div>
                 </div>
                 <div>
-                  <h3 className="font-semibold text-slate-900 dark:text-white mb-1">Local Knowledge</h3>
-                  <p className="text-sm text-slate-700 dark:text-slate-300">We understand Wirral businesses</p>
+                  <h3 className="font-semibold text-white mb-1">Local Knowledge</h3>
+                  <p className="text-sm text-slate-400">We understand Wirral businesses</p>
                 </div>
               </div>
             </div>
+          </div>
+
+          {/* Interactive Wirral Map Section */}
+          <div className="mt-16">
+            <h3 className="text-2xl md:text-3xl font-heading font-bold text-white text-center mb-12">
+              Proudly Serving Businesses Throughout the Wirral
+            </h3>
+            <WirralInteractiveMap />
           </div>
         </div>
       </section>
@@ -346,10 +393,10 @@ export default function WebDesignWirral() {
 
           <div className="flex flex-col sm:flex-row gap-4">
             <button
-              onClick={openCalendly}
+              onClick={() => openCrisp()}
               className="inline-flex items-center justify-center gap-2 px-8 py-3 rounded-full bg-gradient-to-r from-cyan-400 to-lime-400 text-slate-950 font-heading font-bold hover:shadow-lg hover:shadow-cyan-400/40 transition"
             >
-              Book a 15 Minute Call
+              Start a Chat
               <ArrowRight size={18} />
             </button>
 
