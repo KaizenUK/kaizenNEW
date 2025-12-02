@@ -87,18 +87,23 @@ export default function WebDesignWirral() {
               </p>
 
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-heading font-black leading-tight mb-4">
-                Web Design on the Wirral.
-                <br />
+                <p>Web Design Wirral:</p>
                 <span className="bg-gradient-to-r from-cyan-400 to-lime-400 bg-clip-text text-transparent">
                   No fluff. Just ROI.
                 </span>
+                <br />
               </h1>
 
-              <p className="text-lg md:text-xl text-slate-300 max-w-2xl mb-8">
-                We build fast, conversion-focused sites for Heswall, West Kirby,
-                Birkenhead and the wider Wirral. Clear pricing, no retainers,
-                and a delivery process that respects your time.
-              </p>
+              <div className="text-lg md:text-xl text-slate-300 max-w-2xl mb-8">
+                <p>
+                  High-Performance Websites for Bromborough, Heswall, West
+                  Kirby &amp; Birkenhead and more.{" "}
+                </p>
+                <p>
+                  <br />
+                </p>
+                <p>Led by Contract Product Owners, not Salespeople.</p>
+              </div>
 
               <div className="flex flex-col sm:flex-row gap-4">
                 <button
