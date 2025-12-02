@@ -133,20 +133,11 @@
     color: rgb(var(--kaizen-text-light) / 1);
   }
 
+  .dark .text-kaizen-text-dark\/50,
+  .dark .text-kaizen-text-dark\/60,
+  .dark .text-kaizen-text-dark\/70,
   .dark .text-kaizen-text-dark\/80 {
-    color: rgb(var(--kaizen-text-light) / 0.8);
-  }
-
-  .dark .text-kaizen-text-dark\/70 {
-    color: rgb(var(--kaizen-text-light) / 0.7);
-  }
-
-  .dark .text-kaizen-text-dark\/60 {
-    color: rgb(var(--kaizen-text-light) / 0.6);
-  }
-
-  .dark .text-kaizen-text-dark\/50 {
-    color: rgb(var(--kaizen-text-light) / 0.5);
+    color: rgb(var(--kaizen-text-light) / var(--tw-text-opacity));
   }
 
   /* Give white panels a dark-friendly alternative background */
