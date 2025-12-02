@@ -5,23 +5,21 @@ export function Speedometer() {
   const maxSpeed = 100;
 
   useEffect(() => {
-    let currentValue = 0;
-    const durationMs = 1800;
-    const steps = 90;
-    const increment = maxSpeed / steps;
-    const intervalMs = durationMs / steps;
+    let animationFrame: number;
+    const durationMs = 2000;
+    const startTime = performance.now();
 
-    const intervalId = window.setInterval(() => {
-      currentValue += increment;
-      if (currentValue >= maxSpeed) {
-        setSpeed(maxSpeed);
-        window.clearInterval(intervalId);
-      } else {
-        setSpeed(Math.floor(currentValue));
-      }
-    }, intervalMs);
+    const loop = (now: number) => {
+      const elapsed = (now - startTime) % durationMs;
+      const progress = elapsed / durationMs; // 0 -> 1
+      const value = Math.round(progress * maxSpeed);
+      setSpeed(value);
+      animationFrame = requestAnimationFrame(loop);
+    };
 
-    return () => window.clearInterval(intervalId);
+    animationFrame = requestAnimationFrame(loop);
+
+    return () => cancelAnimationFrame(animationFrame);
   }, [maxSpeed]);
 
   const rotation = (speed / maxSpeed) * 180 - 90;
