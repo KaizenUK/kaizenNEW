@@ -52,9 +52,7 @@ $staticPaths = [
     '/contact',
 
     // policies
-    '/privacy-policy',
-    '/cookie-policy',
-    '/gdpr-policy',
+ 
 ];
 
 $urls = [];
