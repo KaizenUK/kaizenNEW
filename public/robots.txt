@@ -18,4 +18,4 @@ Disallow: /cms
 Disallow: /cms/
 Allow: /
 
-Sitemap: https://kaizenweb.co.uk/sitemap.xml
+Sitemap: https://kaizenweb.co.uk/sitemap.php
