@@ -20,44 +20,34 @@ function build_loc(string $base, string $path): string {
     $path = '/' . ltrim($path, '/');
     $loc  = $base . $path;
 
-    // Remove trailing slash (but keep homepage as "/")
     return rtrim($loc, '/');
 }
 
 // ---------------------------------------------------------------------
-// 1) Static pages – EXACT set you requested
+// 1) Static pages – EXACT set you listed
 // ---------------------------------------------------------------------
 $staticPaths = [
     '/',
-    '/services',
     '/services/web-design-liverpool',
     '/web-design-wirral',
     '/services/wordpress-web-design',
     '/services/ecommerce',
     '/web-design-liverpool-city-centre',
-    '/services/digital-transformation',
     '/project-rescue',
     '/contract-product-owner',
     '/agile-coaching',
-    '/blog',
-
-    '/case-studies',
+    '/services/digital-transformation',
     '/case-studies/as-collections',
     '/case-studies/helen-moore-hairdressing',
-    '/case-studies/independent-retailer',
     '/case-studies/kaizen-rebuild',
-
     '/pledge',
     '/about',
     '/contact',
-
-    // policies
- 
+    '/blog',
 ];
 
 $urls = [];
 
-// Build static URL entries
 foreach ($staticPaths as $path) {
     $urls[] = [
         'loc' => build_loc($base, $path),
@@ -69,7 +59,8 @@ foreach ($staticPaths as $path) {
 // ---------------------------------------------------------------------
 $endpoint = $base . '/cms/wp-json/wp/v2/posts?status=publish&per_page=100&_fields=slug,modified';
 
-$json = @file_get_contents($endpoint);
+$ctx  = stream_context_create(['http' => ['timeout' => 5]]);
+$json = @file_get_contents($endpoint, false, $ctx);
 
 if ($json !== false) {
     $posts = json_decode($json, true);
@@ -80,11 +71,7 @@ if ($json !== false) {
                 continue;
             }
 
-            $slug = $post['slug'];
-
-            // IMPORTANT: no trailing slash to avoid 301 redirects in sitemap
-            $loc = build_loc($base, '/blog/' . $slug);
-
+            $loc = build_loc($base, '/blog/' . $post['slug']);
             $entry = ['loc' => $loc];
 
             if (!empty($post['modified'])) {
