@@ -8,25 +8,26 @@
   RewriteEngine On
   RewriteBase /
 
-  # Remove trailing slashes (except for directories)
+  # 1. Remove trailing slashes (except for directories)
   RewriteCond %{REQUEST_FILENAME} !-d
   RewriteRule ^(.+)/$ $1 [L,R=301]
 
-  # Force HTTPS
+  # 2. Force HTTPS
   RewriteCond %{HTTPS} off
   RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
 
-  # Force non-www (canonical URL is kaizenweb.co.uk without www)
+  # 3. Force non-www (canonical URL is kaizenweb.co.uk without www)
   RewriteCond %{HTTP_HOST} ^www\.(.*)$ [NC]
   RewriteRule ^(.*)$ https://%1/$1 [L,R=301]
 
-  # Dynamic sitemap – serve /sitemap.xml via sitemap.php
+  # 4. SITEMAP PROXY (The "Live" Bridge)
+  # This tells server: When asked for 'sitemap.xml', serve 'sitemap.php' instead.
   RewriteRule ^sitemap\.xml$ sitemap.php [L]
 
-  # === IMPORTANT: Let /cms (WordPress) handle its own routing ===
+  # 5. EXCLUSIONS: Let /cms (WordPress) handle its own routing
   RewriteRule ^cms/ - [L]
 
-  # Route all OTHER requests to index.html for SPA
+  # 6. SPA ROUTING: Route all other requests to index.html (React)
   RewriteCond %{REQUEST_FILENAME} !-f
   RewriteCond %{REQUEST_FILENAME} !-d
   RewriteRule ^(.*)$ index.html [L]
