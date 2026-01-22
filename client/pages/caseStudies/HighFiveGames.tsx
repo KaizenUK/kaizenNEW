@@ -523,7 +523,7 @@ export default function HighFiveGamesCase() {
                 <div className="p-4 rounded-lg bg-slate-900/30 border border-slate-800">
                   <p className="font-bold text-white mb-2">Moment 1: Database Migration Planning (Month 1–2)</p>
                   <p className="text-sm text-slate-400">
-                    They migrated 10M+ player accounts to dual-wallet schema without data loss. Platform, database, and operations teams jointly planned zero-downtime migration strategy. Built shadow schema, tested in replicas, and planned rollback. Result: <strong>&lt;15 min downtime, zero data loss.</strong>
+                    I coordinated the migration of 10M+ player accounts to dual-wallet schema without data loss. I worked with platform, database, and operations teams to jointly plan the zero-downtime migration strategy. We built shadow schemas, tested in replicas, and planned rollback procedures. Result: <strong>&lt;15 min downtime, zero data loss.</strong>
                   </p>
                 </div>
 
