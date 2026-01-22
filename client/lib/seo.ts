@@ -306,6 +306,11 @@ const pageMeta: Record<string, Partial<PageMeta>> = {
     description:
       "A technical deep dive into how we migrated Kaizen Web from a legacy setup to a high-performance React + Vite + Headless architecture.",
   },
+  "/case-studies/high-five-games": {
+    title: "High 5 Games: Dual-Currency Sweepstakes Architecture Case Study",
+    description:
+      "A technical deep dive into architecting a dual-currency gaming economy: transitioning from social to regulated sweepstakes across 43 US states, delivering 42% ARPU growth with financial-grade reliability.",
+  },
 };
 
 type DynamicMetaMatcher = {
