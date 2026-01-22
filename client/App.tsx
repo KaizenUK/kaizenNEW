@@ -238,6 +238,10 @@ function AppContent() {
             path="/case-studies/kaizen-rebuild"
             element={<KaizenRebuildCase />}
           />
+          <Route
+            path="/case-studies/high-five-games"
+            element={<HighFiveGamesCase />}
+          />
           <Route path="/blog" element={<Blog />} />
           <Route path="/blog/:slug" element={<BlogDetail />} />
           <Route path="/contact" element={<Contact />} />
