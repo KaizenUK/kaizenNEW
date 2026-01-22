@@ -82,7 +82,7 @@ export default function HighFiveGamesCase() {
             </h1>
 
             <p className="text-xl md:text-2xl text-slate-400 leading-relaxed max-w-3xl font-light">
-              How High 5 Casino transitioned from a single-currency social model to a legally-compliant dual-currency sweepstakes platform across 43 US states, delivering 42% ARPU growth whilst maintaining 99.1% payment processing reliability.
+              As Technical Product Manager, I architected and led the transition of a legacy social casino platform from single-currency entertainment to a legally-compliant dual-currency sweepstakes operator across 43 US states. Result: 42% ARPU growth, 21% churn reduction, and 99.1% payment processing reliability with zero regulatory violations.
             </p>
           </motion.div>
         </div>
