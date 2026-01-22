@@ -127,10 +127,10 @@ export default function HighFiveGamesCase() {
             <h2 className="text-3xl md:text-4xl font-heading font-bold text-white mb-8">Technology Stack</h2>
             <div className="prose prose-invert prose-lg max-w-none text-slate-300 space-y-4">
               <p>
-                High 5 Games employs a broad modern web stack including JavaScript, HTML, PHP and many other common web technologies for its products and platforms.
+                The platform employed a broad modern web stack including JavaScript, HTML, PHP, and many other common web technologies. The technology foundation was built on legacy social gaming infrastructure that needed to be extended without disrupting an existing 10M+ player base.
               </p>
               <p>
-                High 5 Casino operates as a social/sweepstakes casino with web and mobile clients consuming backend services that handle accounts, dual currencies (Game Coins and Sweeps Coins), and redemptions. The architecture supports 10M+ concurrent player accounts, real-time payment processing across 43 states, and RNG-certified game logic.
+                The gaming platform operated with both web and mobile clients consuming backend services that handle accounts, dual currencies (social coins and sweepstakes coins), and real-money redemptions. The resulting architecture supports 10M+ concurrent player accounts, real-time payment processing across 43 states, RNG-certified game logic, and state-by-state compliance rule engines.
               </p>
             </div>
           </motion.div>
