@@ -105,10 +105,32 @@ export default function HighFiveGamesCase() {
                 High 5 Casino evolved from a pure social gaming platform (entertainment only, single-currency) into a hybrid dual-currency sweepstakes operator supporting both free-to-play Gold Coins and prize-redemption Sweeps Coins across 43+ regulated US states.
               </p>
               <p>
-                The transition required architectural transformation across multiple systems: player accounts, compliance frameworks, game engines, payment processing, and fraud detection. Success demanded coordinating six specialised teams, managing complex regulatory landscapes, and maintaining operational reliability whilst processing real-money transactions.
+                As Technical Product Manager, I led the transition which required architectural transformation across multiple systems: player accounts, compliance frameworks, game engines, payment processing, and fraud detection. Success demanded coordinating six specialised teams, managing complex regulatory landscapes, and maintaining operational reliability whilst processing real-money transactions.
               </p>
               <p className="text-blue-300 font-semibold">
-                Outcome: Positioned the company as the #1 sweepstakes casino operator in the United States by 2024–2026, with 42% ARPU growth, 21% churn reduction, and zero regulatory violations.
+                Outcome: High 5 Casino was positioned as the #1 sweepstakes casino operator in the United States by 2024–2026, with 42% ARPU growth, 21% churn reduction, and zero regulatory violations.
+              </p>
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Tech Stack Context */}
+      <section className="bg-slate-950 py-20 px-4 border-t border-slate-900">
+        <div className="container mx-auto max-w-4xl">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+          >
+            <h2 className="text-3xl md:text-4xl font-heading font-bold text-white mb-8">Technology Stack</h2>
+            <div className="prose prose-invert prose-lg max-w-none text-slate-300 space-y-4">
+              <p>
+                High 5 Games employs a broad modern web stack including JavaScript, HTML, PHP and many other common web technologies for its products and platforms.
+              </p>
+              <p>
+                High 5 Casino operates as a social/sweepstakes casino with web and mobile clients consuming backend services that handle accounts, dual currencies (Game Coins and Sweeps Coins), and redemptions. The architecture supports 10M+ concurrent player accounts, real-time payment processing across 43 states, and RNG-certified game logic.
               </p>
             </div>
           </motion.div>
@@ -136,10 +158,10 @@ export default function HighFiveGamesCase() {
               className="p-6 rounded-xl bg-slate-900/30 border border-slate-800"
             >
               <h3 className="text-xl font-bold text-white mb-3 flex items-center gap-2">
-                <span className="text-blue-400">●</span> What We Started With
+                <span className="text-blue-400">●</span> Starting Position
               </h3>
               <p className="text-slate-400">
-                Since 1995, High 5 Games operated as a B2B premium slot game developer for land-based casinos (Las Vegas, Atlantic City). Portfolio of 500+ titles. In 2012, we entered B2C market with High 5 Casino—a pure social casino with free-to-play coins, no real-money redemption.
+                Since 1995, High 5 Games operated as a B2B premium slot game developer for land-based casinos (Las Vegas, Atlantic City). Portfolio of 500+ titles. In 2012, they entered the B2C market with High 5 Casino—a pure social casino with free-to-play coins and no real-money redemption.
               </p>
             </motion.div>
 
@@ -151,10 +173,10 @@ export default function HighFiveGamesCase() {
               className="p-6 rounded-xl bg-slate-900/30 border border-slate-800"
             >
               <h3 className="text-xl font-bold text-white mb-3 flex items-center gap-2">
-                <span className="text-green-400">●</span> The Market Shift (2015)
+                <span className="text-green-400">●</span> Market Opportunity (2015)
               </h3>
               <p className="text-slate-400">
-                Regulatory landscape evolved. Sweepstakes model emerged as legal alternative to gambling in most US states. Players showed 15–20% higher engagement and 25% lower churn when prize incentives existed. Competitors (Caesars, FanDuel) began exploring sweepstakes. Clear market opportunity: enter 43+ regulated states with a compliant dual-currency model.
+                The regulatory landscape evolved. The sweepstakes model emerged as a legal alternative to gambling in most US states. Player data showed 15–20% higher engagement and 25% lower churn when prize incentives existed. Competitors (Caesars, FanDuel) began exploring sweepstakes. The clear market opportunity: expand into 43+ regulated states with a compliant dual-currency model.
               </p>
             </motion.div>
 
@@ -166,10 +188,10 @@ export default function HighFiveGamesCase() {
               className="p-6 rounded-xl bg-slate-900/30 border border-slate-800"
             >
               <h3 className="text-xl font-bold text-white mb-3 flex items-center gap-2">
-                <span className="text-cyan-400">●</span> The Technical Challenge
+                <span className="text-cyan-400">●</span> Technical Scope
               </h3>
               <p className="text-slate-400">
-                This was not a feature add. It required fundamental platform redesign: dual wallet ledgers, compliance rule engines, payment processor integration, RNG certification, state-by-state regulatory compliance, and game engine adaptation for two currency types. Scope: 5 sequential phases over 12 months, 6 specialised teams, 10M+ player accounts migrated without data loss.
+                This was not a feature addition. It required fundamental platform redesign: dual wallet ledgers, compliance rule engines, payment processor integration, RNG certification, state-by-state regulatory compliance, and game engine adaptation for two currency types. The scope encompassed 5 sequential phases over 12 months, coordinating 6 specialised teams, and migrating 10M+ player accounts without data loss.
               </p>
             </motion.div>
           </div>
