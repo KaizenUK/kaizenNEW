@@ -786,7 +786,7 @@ export default function HighFiveGamesCase() {
         <div className="container mx-auto max-w-5xl">
           <div className="flex items-center justify-between">
             <Link
-              to="/case-studies/kaizen-rebuild"
+              to="/case-studies/independent-retailer"
               className="group flex items-center gap-3 text-white hover:text-blue-400 transition"
             >
               <span className="group-hover:-translate-x-1 transition">←</span>
