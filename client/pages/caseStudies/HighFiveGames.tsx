@@ -108,7 +108,7 @@ export default function HighFiveGamesCase() {
                 As Technical Product Manager, I orchestrated the full transition, which required architectural transformation across six interconnected systems: player accounts, compliance frameworks, game engines, payment processing, and fraud detection. I coordinated six specialised teams across engineering, compliance, and operations—managing complex regulatory landscapes across 43 states whilst maintaining financial-grade operational reliability for real-money transactions.
               </p>
               <p className="text-blue-300 font-semibold">
-                Outcome: High 5 Casino was positioned as the #1 sweepstakes casino operator in the United States by 2024–2026, with 42% ARPU growth, 21% churn reduction, and zero regulatory violations.
+                Outcome: The platform achieved #1 market position in US sweepstakes gaming (2024–2026), with 42% ARPU growth, 21% monthly churn reduction, and zero regulatory violations across all 43 jurisdictions.
               </p>
             </div>
           </motion.div>
