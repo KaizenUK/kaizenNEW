@@ -49,6 +49,9 @@ const IndependentRetailerCase = lazy(
 const KaizenRebuildCase = lazy(
   () => import("./pages/caseStudies/KaizenRebuild"),
 );
+const HighFiveGamesCase = lazy(
+  () => import("./pages/caseStudies/HighFiveGames"),
+);
 const PrivacyPolicy = lazy(() => import("./pages/PrivacyPolicy"));
 const CookiePolicy = lazy(() => import("./pages/CookiePolicy"));
 const GDPRPolicy = lazy(() => import("./pages/GDPRPolicy"));
