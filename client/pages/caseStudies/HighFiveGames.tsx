@@ -240,15 +240,15 @@ export default function HighFiveGamesCase() {
               viewport={{ once: true }}
               transition={{ delay: 0.1 }}
             >
-              <h3 className="text-lg font-bold text-blue-400 mb-4">Step 2: Data Analysis of Existing Social Casino</h3>
+              <h3 className="text-lg font-bold text-blue-400 mb-4">Step 2: Data Analysis of Existing Platform</h3>
               <ul className="space-y-2 text-slate-400">
                 <li className="flex items-start gap-3">
                   <span className="text-blue-400 mt-1">→</span>
-                  Reviewed player lifetime value (LTV), coin purchase patterns, and session engagement metrics
+                  I reviewed player lifetime value (LTV), coin purchase patterns, and session engagement metrics
                 </li>
                 <li className="flex items-start gap-3">
                   <span className="text-blue-400 mt-1">→</span>
-                  Analysed churn rates by cohort and cost of customer acquisition (CAC)
+                  I analysed churn rates by cohort and cost of customer acquisition (CAC)
                 </li>
                 <li className="flex items-start gap-3">
                   <span className="text-blue-400 mt-1">→</span>
