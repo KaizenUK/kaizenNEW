@@ -271,7 +271,7 @@ export default function HighFiveGamesCase() {
                 </li>
                 <li className="flex items-start gap-3">
                   <span className="text-blue-400 mt-1">→</span>
-                  Identified feature gaps, UX patterns, player sentiment
+                  I identified feature gaps, UX patterns, monetisation strategies, and player sentiment across competitors
                 </li>
               </ul>
             </motion.div>
