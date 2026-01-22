@@ -544,7 +544,7 @@ export default function HighFiveGamesCase() {
                 <div className="p-4 rounded-lg bg-slate-900/30 border border-slate-800">
                   <p className="font-bold text-white mb-2">Moment 4: Payment Integration & Fraud Detection (Month 5–6)</p>
                   <p className="text-sm text-slate-400">
-                    Payment processor was unfamiliar with sweepstakes model. Their solution: partnership approach (visited processor's office), custom integration, and fallback processor identified. Result: <strong>Approved for launch; fraud detection flagged 0.3% of redemptions (industry standard).</strong>
+                    Payment processor was unfamiliar with sweepstakes model. I led the partnership approach: visited processor's office personally, negotiated custom integration terms, and identified a fallback processor to mitigate vendor risk. Result: <strong>Approved for launch; fraud detection flagged 0.3% of redemptions (industry standard).</strong>
                   </p>
                 </div>
               </div>
