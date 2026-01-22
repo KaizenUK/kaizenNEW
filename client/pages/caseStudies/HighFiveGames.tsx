@@ -537,14 +537,14 @@ export default function HighFiveGamesCase() {
                 <div className="p-4 rounded-lg bg-slate-900/30 border border-slate-800">
                   <p className="font-bold text-white mb-2">Moment 3: RNG Audit & Compliance (Month 3–5)</p>
                   <p className="text-sm text-slate-400">
-                    Third-party RNG auditor required certification (8–12 weeks). Compliance + game systems + external auditor coordinated: started audit early (Month 3), provided regular builds, addressed findings in real-time. Result: <strong>RNG certified by Week 12, no major findings.</strong>
+                    Third-party RNG auditor required certification (8–12 weeks). Their compliance and game systems teams coordinated with the external auditor: started audit early (Month 3), provided regular builds, and addressed findings in real-time. Result: <strong>RNG certified by Week 12, no major findings.</strong>
                   </p>
                 </div>
 
                 <div className="p-4 rounded-lg bg-slate-900/30 border border-slate-800">
                   <p className="font-bold text-white mb-2">Moment 4: Payment Integration & Fraud Detection (Month 5–6)</p>
                   <p className="text-sm text-slate-400">
-                    Payment processor unfamiliar with sweepstakes model. Solution: Partnership approach (visited processor's office), custom integration, fallback processor identified. Result: <strong>Approved for launch; fraud detection flagged 0.3% of redemptions (industry standard).</strong>
+                    Payment processor was unfamiliar with sweepstakes model. Their solution: partnership approach (visited processor's office), custom integration, and fallback processor identified. Result: <strong>Approved for launch; fraud detection flagged 0.3% of redemptions (industry standard).</strong>
                   </p>
                 </div>
               </div>
