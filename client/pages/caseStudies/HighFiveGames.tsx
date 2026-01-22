@@ -717,7 +717,7 @@ export default function HighFiveGamesCase() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
           >
-            Relevance to Scopely Senior Technical Product Owner
+            Relevance to Scopely Senior Technical Product Manager
           </motion.h2>
 
           <div className="space-y-6">
