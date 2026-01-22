@@ -728,11 +728,11 @@ export default function HighFiveGamesCase() {
               },
               {
                 competency: "2. Multi-Team Leadership & Coordination",
-                evidence: "Led across platform, game systems, compliance, payment, analytics, LiveOps. Resolved dependencies, sequenced work, managed critical path without direct authority.",
+                evidence: "Led coordination across their platform, game systems, compliance, payment, analytics, and LiveOps teams. Resolved dependencies, sequenced work, managed critical path without direct authority.",
               },
               {
                 competency: "3. Stakeholder Alignment in Ambiguity",
-                evidence: "Translated business value (43x market expansion, 40% ARPU lift) to technical requirements. Negotiated tradeoffs (timeline vs. quality, resources, risk appetite). Communicated to CEO, Board, Legal, Finance.",
+                evidence: "Translated business value (43x market expansion, 40% ARPU lift) to technical requirements for their stakeholders. Negotiated tradeoffs (timeline vs. quality, resources, risk appetite). Communicated strategy to their CEO, board, legal, and finance teams.",
               },
               {
                 competency: "4. Data-Driven Decision Making",
