@@ -221,15 +221,15 @@ export default function HighFiveGamesCase() {
               <ul className="space-y-2 text-slate-400">
                 <li className="flex items-start gap-3">
                   <span className="text-blue-400 mt-1">→</span>
-                  They analysed sweepstakes model success of competitors (Caesars Social, Pokerstars Play)
+                  I analysed sweepstakes model success of direct competitors (Global Poker, Chumba Casino, Luckyland Slots)
                 </li>
                 <li className="flex items-start gap-3">
                   <span className="text-blue-400 mt-1">→</span>
-                  Mapped regulatory landscape: identified 43+ compliant states, restrictions in others
+                  I mapped regulatory landscape: identified 43+ compliant states, restrictions in others
                 </li>
                 <li className="flex items-start gap-3">
                   <span className="text-blue-400 mt-1">→</span>
-                  Conducted player interviews: willingness to provide identity verification, preference for cash vs. gift cards, attitudes toward prize redemption
+                  I conducted player interviews: willingness to provide identity verification, preference for cash vs. gift cards, attitudes toward prize redemption
                 </li>
               </ul>
             </motion.div>
