@@ -221,7 +221,7 @@ export default function HighFiveGamesCase() {
               <ul className="space-y-2 text-slate-400">
                 <li className="flex items-start gap-3">
                   <span className="text-blue-400 mt-1">→</span>
-                  Analysed sweepstakes model success of competitors (Caesars Social, Pokerstars Play)
+                  They analysed sweepstakes model success of competitors (Caesars Social, Pokerstars Play)
                 </li>
                 <li className="flex items-start gap-3">
                   <span className="text-blue-400 mt-1">→</span>
