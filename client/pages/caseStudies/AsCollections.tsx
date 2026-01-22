@@ -274,7 +274,7 @@ export default function AsCollectionsCase() {
         <div className="container mx-auto max-w-5xl">
           <div className="flex items-center justify-between">
             <Link
-              to="/case-studies/independent-retailer"
+              to="/case-studies/high-five-games"
               className="group flex items-center gap-3 text-kaizen-dark dark:text-white hover:text-kaizen-cyan transition"
             >
               <span className="group-hover:-translate-x-1 transition">←</span>
