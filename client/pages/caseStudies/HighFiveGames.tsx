@@ -173,10 +173,10 @@ export default function HighFiveGamesCase() {
               className="p-6 rounded-xl bg-slate-900/30 border border-slate-800"
             >
               <h3 className="text-xl font-bold text-white mb-3 flex items-center gap-2">
-                <span className="text-green-400">●</span> Market Opportunity (2015)
+                <span className="text-green-400">●</span> Market Opportunity (2015–2016)
               </h3>
               <p className="text-slate-400">
-                The regulatory landscape evolved. The sweepstakes model emerged as a legal alternative to gambling in most US states. Player data showed 15–20% higher engagement and 25% lower churn when prize incentives existed. Competitors (Caesars, FanDuel) began exploring sweepstakes. The clear market opportunity: expand into 43+ regulated states with a compliant dual-currency model.
+                The regulatory landscape had shifted. The sweepstakes model emerged as a legal alternative to gambling across most US states. Internal player data showed 15–20% higher engagement and 25% lower churn when real prize incentives were present. Direct competitors—Global Poker, Chumba Casino, and Luckyland Slots (all owned by VGW)—were already exploring sweepstakes revenue models and gaining market share. The strategic opportunity: transition from pure social to a dual-currency sweepstakes model, legally operable in 43+ regulated states.
               </p>
             </motion.div>
 
