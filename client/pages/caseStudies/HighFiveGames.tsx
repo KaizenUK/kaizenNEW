@@ -244,15 +244,15 @@ export default function HighFiveGamesCase() {
               <ul className="space-y-2 text-slate-400">
                 <li className="flex items-start gap-3">
                   <span className="text-blue-400 mt-1">→</span>
-                  Player lifetime value (LTV), coin purchase patterns, session engagement metrics
+                  Reviewed player lifetime value (LTV), coin purchase patterns, and session engagement metrics
                 </li>
                 <li className="flex items-start gap-3">
                   <span className="text-blue-400 mt-1">→</span>
-                  Churn rates by cohort, cost of customer acquisition (CAC)
+                  Analysed churn rates by cohort and cost of customer acquisition (CAC)
                 </li>
                 <li className="flex items-start gap-3">
                   <span className="text-blue-400 mt-1">→</span>
-                  <strong>Key insight:</strong> Players believing they could win prizes showed 15–20% higher engagement and 25% lower churn
+                  <strong>Key insight:</strong> Players who believed they could win prizes showed 15–20% higher engagement and 25% lower churn
                 </li>
               </ul>
             </motion.div>
@@ -267,7 +267,7 @@ export default function HighFiveGamesCase() {
               <ul className="space-y-2 text-slate-400">
                 <li className="flex items-start gap-3">
                   <span className="text-blue-400 mt-1">→</span>
-                  Analysed FanDuel, DraftKings, emerging sweepstakes startups
+                  They analysed FanDuel, DraftKings, and emerging sweepstakes startups
                 </li>
                 <li className="flex items-start gap-3">
                   <span className="text-blue-400 mt-1">→</span>
