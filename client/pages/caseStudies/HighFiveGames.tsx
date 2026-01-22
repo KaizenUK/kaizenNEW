@@ -530,7 +530,7 @@ export default function HighFiveGamesCase() {
                 <div className="p-4 rounded-lg bg-slate-900/30 border border-slate-800">
                   <p className="font-bold text-white mb-2">Moment 2: Game Engine Adaptation (Month 3–4)</p>
                   <p className="text-sm text-slate-400">
-                    1,700+ independently-developed games needed to accept Sweeps Coins. The solution: created adapter layer (abstraction above individual games) and unified testing harness. Result: <strong>All 1,700 games supporting SC in parallel, only 5% required special handling.</strong>
+                    1,700+ independently-developed games needed to accept Sweeps Coins. I led the game systems and engineering teams to architect and build a unified solution: an adapter layer (abstraction above individual games) and unified testing harness. Result: <strong>All 1,700 games supporting SC in parallel, only 5% required special handling.</strong>
                   </p>
                 </div>
 
