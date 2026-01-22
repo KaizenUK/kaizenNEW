@@ -158,10 +158,10 @@ export default function HighFiveGamesCase() {
               className="p-6 rounded-xl bg-slate-900/30 border border-slate-800"
             >
               <h3 className="text-xl font-bold text-white mb-3 flex items-center gap-2">
-                <span className="text-blue-400">●</span> Starting Position
+                <span className="text-blue-400">●</span> Starting Position (2015)
               </h3>
               <p className="text-slate-400">
-                Since 1995, High 5 Games operated as a B2B premium slot game developer for land-based casinos (Las Vegas, Atlantic City). Portfolio of 500+ titles. In 2012, they entered the B2C market with High 5 Casino—a pure social casino with free-to-play coins and no real-money redemption.
+                The company had been a B2B premium slot game developer since 1995, supplying premium titles to land-based casinos (Las Vegas, Atlantic City) with a portfolio of 500+ games. In 2012, they entered B2C with a social casino platform—pure entertainment with free-to-play coins, no real-money component. By 2015, they had 10M+ registered players but faced stagnation: retention was declining and player monetisation had hit a ceiling.
               </p>
             </motion.div>
 
