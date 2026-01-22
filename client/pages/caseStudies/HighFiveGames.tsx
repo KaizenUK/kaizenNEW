@@ -267,7 +267,7 @@ export default function HighFiveGamesCase() {
               <ul className="space-y-2 text-slate-400">
                 <li className="flex items-start gap-3">
                   <span className="text-blue-400 mt-1">→</span>
-                  They analysed FanDuel, DraftKings, and emerging sweepstakes startups
+                  I analysed the competitive landscape (Global Poker, Chumba Casino, Luckyland Slots, and emerging startups)
                 </li>
                 <li className="flex items-start gap-3">
                   <span className="text-blue-400 mt-1">→</span>
