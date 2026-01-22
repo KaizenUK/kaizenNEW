@@ -102,7 +102,7 @@ export default function HighFiveGamesCase() {
             </h2>
             <div className="prose prose-invert prose-lg max-w-none text-slate-300 space-y-6">
               <p>
-                High 5 Casino evolved from a pure social gaming platform (entertainment only, single-currency) into a hybrid dual-currency sweepstakes operator supporting both free-to-play Gold Coins and prize-redemption Sweeps Coins across 43+ regulated US states.
+                The platform evolved from a pure social gaming product (entertainment only, single-currency) into a hybrid dual-currency sweepstakes operator supporting both free-to-play coins and prize-redemption gameplay across 43+ regulated US states.
               </p>
               <p>
                 As Technical Product Manager, I led the transition which required architectural transformation across multiple systems: player accounts, compliance frameworks, game engines, payment processing, and fraud detection. Success demanded coordinating six specialised teams, managing complex regulatory landscapes, and maintaining operational reliability whilst processing real-money transactions.
