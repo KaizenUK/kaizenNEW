@@ -105,7 +105,7 @@ export default function HighFiveGamesCase() {
                 The platform evolved from a pure social gaming product (entertainment only, single-currency) into a hybrid dual-currency sweepstakes operator supporting both free-to-play coins and prize-redemption gameplay across 43+ regulated US states.
               </p>
               <p>
-                As Technical Product Manager, I led the transition which required architectural transformation across multiple systems: player accounts, compliance frameworks, game engines, payment processing, and fraud detection. Success demanded coordinating six specialised teams, managing complex regulatory landscapes, and maintaining operational reliability whilst processing real-money transactions.
+                As Technical Product Manager, I orchestrated the full transition, which required architectural transformation across six interconnected systems: player accounts, compliance frameworks, game engines, payment processing, and fraud detection. I coordinated six specialised teams across engineering, compliance, and operations—managing complex regulatory landscapes across 43 states whilst maintaining financial-grade operational reliability for real-money transactions.
               </p>
               <p className="text-blue-300 font-semibold">
                 Outcome: High 5 Casino was positioned as the #1 sweepstakes casino operator in the United States by 2024–2026, with 42% ARPU growth, 21% churn reduction, and zero regulatory violations.
