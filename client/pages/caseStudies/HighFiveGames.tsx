@@ -537,7 +537,7 @@ export default function HighFiveGamesCase() {
                 <div className="p-4 rounded-lg bg-slate-900/30 border border-slate-800">
                   <p className="font-bold text-white mb-2">Moment 3: RNG Audit & Compliance (Month 3–5)</p>
                   <p className="text-sm text-slate-400">
-                    Third-party RNG auditor required certification (8–12 weeks). Their compliance and game systems teams coordinated with the external auditor: started audit early (Month 3), provided regular builds, and addressed findings in real-time. Result: <strong>RNG certified by Week 12, no major findings.</strong>
+                    Third-party RNG auditor required certification (8–12 weeks). I coordinated the compliance and game systems teams with the external auditor: I initiated the audit early (Month 3), managed builds, and ensured findings were addressed in real-time. Result: <strong>RNG certified by Week 12, no major findings.</strong>
                   </p>
                 </div>
 
