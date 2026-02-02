@@ -7,9 +7,9 @@ import { useCalendly } from "@/context/CalendlyContext";
 const caseStudies = [
   {
     id: "high-five-games",
-    client: "High 5 Games",
+    client: "International Sweepstakes Casino",
     summary:
-      "Architecting a dual-currency gaming economy: transitioning a social casino from single-currency to legally-compliant sweepstakes across 43 US states, delivering 42% ARPU growth whilst maintaining financial-grade reliability.",
+      "Architecting a dual-currency gaming economy for an international sweepstakes casino: moving from single-currency to legally-compliant sweepstakes across 43 US states, delivering 42% ARPU growth whilst maintaining financial-grade reliability.",
     services: ["System Economics", "Live Ops", "Complex Integrations"],
     slug: "high-five-games",
   },
