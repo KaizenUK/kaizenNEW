@@ -115,10 +115,35 @@ export default function ProjectRescue() {
               animate={{ opacity: 1 }}
               transition={{ delay: 0.3, duration: 0.8 }}
             >
-              When your build is over budget, late, or stuck, Kaizen steps in as
-              a hands-on Contract Product Owner to stabilise delivery, rebuild
-              trust, and actually ship.
+              When your build is over budget, late, or stuck, we step in as senior product leadership to stabilise delivery, restore control, and ship.
+              No theatre. No waffle. Clear decisions, clear ownership, and measurable outcomes.
             </motion.p>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.35, duration: 0.6 }}
+              className="mx-auto max-w-3xl"
+            >
+              <div className="rounded-2xl border border-white/10 bg-white/5 backdrop-blur-sm p-6 text-left">
+                <p className="text-xs font-mono tracking-widest text-kaizen-cyan uppercase mb-2">
+                  Proof, not promises
+                </p>
+                <p className="text-white/85 leading-relaxed">
+                  We led a complex rescue and transformation for an <strong>international sweepstakes casino</strong>, delivering a dual-currency economy,
+                  payments and compliance integrations, and Live Ops governance at scale.
+                </p>
+                <div className="mt-4">
+                  <Link
+                    to="/case-studies/high-five-games"
+                    className="inline-flex items-center gap-2 text-kaizen-cyan hover:text-white transition font-semibold"
+                  >
+                    Read the case study
+                    <ArrowRight size={18} />
+                  </Link>
+                </div>
+              </div>
+            </motion.div>
 
             <motion.p
               className="text-base md:text-lg text-white/80 leading-relaxed mb-10 max-w-3xl mx-auto"
