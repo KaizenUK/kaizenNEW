@@ -209,9 +209,9 @@ const Header: React.FC<HeaderProps> = ({
 
   const caseStudiesMenu: CaseStudyItem[] = [
     {
-      label: "High 5 Games",
+      label: "International Sweepstakes Casino",
       href: "/case-studies/high-five-games",
-      description: "Gaming Economy / Technical Product",
+      description: "Gaming Economy / Contract Product",
       icon: <Code2 className="w-4 h-4" />,
     },
     {
