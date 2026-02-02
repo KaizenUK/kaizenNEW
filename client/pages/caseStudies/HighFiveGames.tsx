@@ -18,12 +18,14 @@ import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useCalendly } from "@/context/CalendlyContext";
 
+const EASE_OUT = [0.16, 1, 0.3, 1] as const;
+
 const fadeInUp = {
   hidden: { opacity: 0, y: 20 },
   visible: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.6, ease: "easeOut" },
+    transition: { duration: 0.6, ease: EASE_OUT },
   },
 };
 
