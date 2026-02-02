@@ -9,7 +9,7 @@ import Layout from "@/components/Layout";
 import BlogTableModal from "@/components/BlogTableModal";
 import { fetchPostBySlug, fetchPosts } from "../../src/api/wordpress";
 import { SeoFromYoast } from "../../src/components/SeoFromYoast";
-import { decodeHtmlEntities, stripHtmlTags } from "@/lib/html-utils";
+import { stripHtmlTags } from "@/lib/html-utils";
 import { SITE_URL } from "@/lib/seo";
 
 type CoverImage = string | { url?: string } | null;

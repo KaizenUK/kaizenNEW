@@ -39,12 +39,14 @@ const caseStudies = [
   },
 ];
 
+const EASE_OUT = [0.16, 1, 0.3, 1] as const;
+
 const fadeInUp = {
   hidden: { opacity: 0, y: 20 },
   visible: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.6, ease: "easeOut" },
+    transition: { duration: 0.6, ease: EASE_OUT },
   },
 };
 
@@ -71,7 +73,7 @@ export default function CaseStudies() {
             className="text-5xl md:text-6xl lg:text-7xl font-heading font-black mb-8 leading-tight text-kaizen-dark dark:text-white"
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, ease: "easeOut" }}
+            transition={{ duration: 0.6, ease: EASE_OUT }}
           >
             Fewer Projects. Better Results.
           </motion.h1>

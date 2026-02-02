@@ -15,12 +15,14 @@ import {
 } from "lucide-react";
 
 // Animation variants
+const EASE_OUT = [0.16, 1, 0.3, 1] as const;
+
 const fadeInUp = {
   hidden: { opacity: 0, y: 20 },
   visible: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.6, ease: "easeOut" },
+    transition: { duration: 0.6, ease: EASE_OUT },
   },
 };
 
@@ -139,7 +141,7 @@ export default function AgileCoaching() {
                     transition={{
                       delay: index * 0.15,
                       duration: 0.5,
-                      ease: "easeOut",
+                      ease: EASE_OUT,
                     }}
                   >
                     {word}
