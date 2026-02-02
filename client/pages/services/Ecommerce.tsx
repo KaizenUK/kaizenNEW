@@ -19,7 +19,7 @@ const fadeInUp = {
   visible: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.6, ease: "easeOut" },
+    transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] as const },
   },
 };
 
@@ -166,7 +166,7 @@ export default function Ecommerce() {
             <motion.div
               initial={{ opacity: 0, x: -50 }}
               animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8, ease: "easeOut" }}
+              transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] as const }}
             >
               <h1 className="text-5xl md:text-6xl lg:text-7xl font-heading font-black mb-6 leading-tight text-white">
                 {["Shopify", "Experts", "&", "Custom", "Ecommerce"].map(
@@ -179,7 +179,7 @@ export default function Ecommerce() {
                       transition={{
                         delay: index * 0.2,
                         duration: 0.6,
-                        ease: "easeOut",
+                        ease: [0.16, 1, 0.3, 1] as const,
                       }}
                     >
                       {word}
@@ -249,7 +249,7 @@ export default function Ecommerce() {
             }}
             initial={{ x: 100, opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
-            transition={{ delay: 0.2, duration: 0.9, ease: "easeOut" }}
+            transition={{ delay: 0.2, duration: 0.9, ease: [0.16, 1, 0.3, 1] as const }}
           />
 
           {/* Accent overlay */}
@@ -262,7 +262,7 @@ export default function Ecommerce() {
             transition={{
               duration: 8,
               repeat: Infinity,
-              ease: "easeInOut",
+              ease: [0.65, 0, 0.35, 1] as const,
             }}
           />
         </motion.div>
@@ -281,7 +281,7 @@ export default function Ecommerce() {
           transition={{
             duration: 4,
             repeat: Infinity,
-            ease: "easeInOut",
+            ease: [0.65, 0, 0.35, 1] as const,
           }}
         />
       </section>

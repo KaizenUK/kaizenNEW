@@ -11,7 +11,7 @@ const fadeInUp = {
   visible: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.6, ease: "easeOut" },
+    transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] as const },
   },
 };
 
@@ -88,7 +88,7 @@ function KineticTypography() {
                       transition={{
                         delay: 0.5 + index * 0.08,
                         duration: 0.4,
-                        ease: "easeOut",
+                        ease: [0.16, 1, 0.3, 1] as const,
                       }}
                     >
                       {letter}
@@ -106,7 +106,7 @@ function KineticTypography() {
             className="h-24 md:h-32 lg:h-40 flex items-center"
             initial={{ opacity: 0, x: 40 }}
             animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 1.3, duration: 0.6, ease: "easeOut" }}
+            transition={{ delay: 1.3, duration: 0.6, ease: [0.16, 1, 0.3, 1] as const }}
           >
             <span className="text-kaizen-cyan">Flowing</span>
           </motion.div>
