@@ -79,7 +79,7 @@ export default function ProjectRescue() {
         />
         <meta
           name="keywords"
-          content="project rescue liverpool, contract product owner, failing web projects, agile rescue, product ownership"
+          content="project rescue liverpool, senior technical product manager, product leadership, failing software projects, agile rescue"
         />
       </Helmet>
 
@@ -254,7 +254,7 @@ export default function ProjectRescue() {
                 step: "02",
                 title: "Stabilise & Replan",
                 content:
-                  "We step in as Product Owner. Define realistic goals, tidy backlog, agree on 'Definition of Done'.",
+                  "We step in as senior product leadership. Define realistic goals, tidy the backlog, agree a Definition of Done, and set decision-making rules.",
               },
               {
                 step: "03",
@@ -303,12 +303,12 @@ export default function ProjectRescue() {
             viewport={{ once: true, margin: "-100px" }}
           >
             {[
-              "Own and prioritise the backlog as a formal Product Owner.",
+              "Own and prioritise the backlog with clear product authority.",
               "Set up sprint planning, reviews, and stand-ups.",
-              "Bridge the gap between developers and stakeholders.",
+              "Translate between stakeholders and engineers, without losing technical detail.",
               "Leave behind a sustainable way of working.",
-              "Remove blockers and make decisions quickly.",
-              "Build stakeholder confidence with visible progress.",
+              "Remove blockers and make decisions quickly (with an auditable trail).",
+              "Build stakeholder confidence with visible progress and predictable cadence.",
             ].map((item, index) => (
               <motion.div
                 key={index}
