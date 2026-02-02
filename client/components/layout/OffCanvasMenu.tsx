@@ -187,6 +187,7 @@ const OffCanvasMenu: React.FC<OffCanvasMenuProps> = ({
   ];
 
   const topLevelLinks = [
+    { label: "Project Rescue", href: "/project-rescue" },
     { label: "Our Pledge", href: "/pledge" },
     { label: "About", href: "/about" },
   ];
