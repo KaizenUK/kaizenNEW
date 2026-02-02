@@ -750,7 +750,7 @@ export default function HighFiveGamesCase() {
         </div>
       </section>
 
-      {/* Interview Relevance */}
+      {/* Client Success Proof */}
       <section className="bg-slate-950 py-20 px-4">
         <div className="container mx-auto max-w-4xl">
           <motion.h2
@@ -759,7 +759,7 @@ export default function HighFiveGamesCase() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
           >
-            Relevance to a Senior Technical Product Manager Interview
+            Client Successes: Proof of Senior Delivery
           </motion.h2>
 
           <div className="space-y-6">
