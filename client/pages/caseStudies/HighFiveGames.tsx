@@ -43,10 +43,10 @@ export default function HighFiveGamesCase() {
   return (
     <Layout>
       <Helmet>
-        <title>High 5 Games: Dual-Currency Sweepstakes Architecture Case Study</title>
+        <title>International Sweepstakes Casino: Dual-Currency Economy Case Study</title>
         <meta
           name="description"
-          content="A technical deep dive into architecting a dual-currency gaming economy: transitioning High 5 Casino from pure social to regulated sweepstakes across 43 US states."
+          content="A technical deep dive into architecting a dual-currency gaming economy for an international sweepstakes casino: moving from pure social play to regulated sweepstakes across 43 US states."
         />
       </Helmet>
 
@@ -82,7 +82,7 @@ export default function HighFiveGamesCase() {
             </h1>
 
             <p className="text-xl md:text-2xl text-slate-400 leading-relaxed max-w-3xl font-light">
-              As Technical Product Manager, I architected and led the transition of a legacy social casino platform from single-currency entertainment to a legally-compliant dual-currency sweepstakes operator across 43 US states. Result: 42% ARPU growth, 21% churn reduction, and 99.1% payment processing reliability with zero regulatory violations.
+              We were brought in as contracted product leadership (Senior Technical Product Manager) to architect and lead the transition of a legacy social casino platform into an international sweepstakes casino—moving from single-currency entertainment to a legally-compliant dual-currency economy across 43 US states. Result: 42% ARPU growth, 21% churn reduction, and 99.1% payment processing reliability with zero regulatory violations.
             </p>
           </motion.div>
         </div>
@@ -105,7 +105,7 @@ export default function HighFiveGamesCase() {
                 The platform evolved from a pure social gaming product (entertainment only, single-currency) into a hybrid dual-currency sweepstakes operator supporting both free-to-play coins and prize-redemption gameplay across 43+ regulated US states.
               </p>
               <p>
-                As Technical Product Manager, I orchestrated the full transition, which required architectural transformation across six interconnected systems: player accounts, compliance frameworks, game engines, payment processing, and fraud detection. I coordinated six specialised teams across engineering, compliance, and operations—managing complex regulatory landscapes across 43 states whilst maintaining financial-grade operational reliability for real-money transactions.
+                We were contracted as senior product and delivery leadership (Senior Technical Product Manager) to orchestrate the full transition. It required architectural transformation across six interconnected systems: player accounts, compliance frameworks, game engines, payment processing, and fraud detection. We coordinated six specialised teams across engineering, compliance, and operations—navigating complex regulatory landscapes across 43 states whilst maintaining financial-grade operational reliability for redemption transactions.
               </p>
               <p className="text-blue-300 font-semibold">
                 Outcome: The platform achieved #1 market position in US sweepstakes gaming (2024–2026), with 42% ARPU growth, 21% monthly churn reduction, and zero regulatory violations across all 43 jurisdictions.
@@ -176,7 +176,7 @@ export default function HighFiveGamesCase() {
                 <span className="text-green-400">●</span> Market Opportunity (2015–2016)
               </h3>
               <p className="text-slate-400">
-                The regulatory landscape had shifted. The sweepstakes model emerged as a legal alternative to gambling across most US states. Internal player data showed 15–20% higher engagement and 25% lower churn when real prize incentives were present. Direct competitors—Global Poker, Chumba Casino, and Luckyland Slots (all owned by VGW)—were already exploring sweepstakes revenue models and gaining market share. The strategic opportunity: transition from pure social to a dual-currency sweepstakes model, legally operable in 43+ regulated states.
+                The regulatory landscape had shifted. The <a href="https://en.wikipedia.org/wiki/Sweepstakes" target="_blank" rel="noreferrer" className="text-blue-300 hover:text-blue-200 underline">sweepstakes model</a> emerged as a legal alternative to gambling across most US states. Internal player data showed 15–20% higher engagement and 25% lower churn when real prize incentives were present. Direct competitors—Global Poker, Chumba Casino, and Luckyland Slots (all owned by <a href="https://www.vgw.co/" target="_blank" rel="noreferrer" className="text-blue-300 hover:text-blue-200 underline">VGW</a>)—were already exploring sweepstakes revenue models and gaining market share. The strategic opportunity: transition from pure social to a dual-currency sweepstakes model, legally operable in 43+ regulated states.
               </p>
             </motion.div>
 
@@ -221,15 +221,15 @@ export default function HighFiveGamesCase() {
               <ul className="space-y-2 text-slate-400">
                 <li className="flex items-start gap-3">
                   <span className="text-blue-400 mt-1">→</span>
-                  I analysed sweepstakes model success of direct competitors (Global Poker, Chumba Casino, Luckyland Slots)
+                  We analysed sweepstakes model success of direct competitors (Global Poker, Chumba Casino, Luckyland Slots)
                 </li>
                 <li className="flex items-start gap-3">
                   <span className="text-blue-400 mt-1">→</span>
-                  I mapped regulatory landscape: identified 43+ compliant states, restrictions in others
+                  We mapped the regulatory landscape: identified 43+ compliant states, restrictions in others
                 </li>
                 <li className="flex items-start gap-3">
                   <span className="text-blue-400 mt-1">→</span>
-                  I conducted player interviews: willingness to provide identity verification, preference for cash vs. gift cards, attitudes toward prize redemption
+                  We conducted player interviews: willingness to complete <a href="https://en.wikipedia.org/wiki/Know_your_customer" target="_blank" rel="noreferrer" className="text-blue-300 hover:text-blue-200 underline">KYC</a>, preference for cash vs. gift cards, attitudes toward prize redemption
                 </li>
               </ul>
             </motion.div>
@@ -244,11 +244,11 @@ export default function HighFiveGamesCase() {
               <ul className="space-y-2 text-slate-400">
                 <li className="flex items-start gap-3">
                   <span className="text-blue-400 mt-1">→</span>
-                  I reviewed player lifetime value (LTV), coin purchase patterns, and session engagement metrics
+                  We reviewed player lifetime value (LTV), coin purchase patterns, and session engagement metrics
                 </li>
                 <li className="flex items-start gap-3">
                   <span className="text-blue-400 mt-1">→</span>
-                  I analysed churn rates by cohort and cost of customer acquisition (CAC)
+                  We analysed churn rates by cohort and cost of customer acquisition (CAC)
                 </li>
                 <li className="flex items-start gap-3">
                   <span className="text-blue-400 mt-1">→</span>
@@ -267,11 +267,11 @@ export default function HighFiveGamesCase() {
               <ul className="space-y-2 text-slate-400">
                 <li className="flex items-start gap-3">
                   <span className="text-blue-400 mt-1">→</span>
-                  I analysed the competitive landscape (Global Poker, Chumba Casino, Luckyland Slots, and emerging startups)
+                  We analysed the competitive landscape (Global Poker, Chumba Casino, Luckyland Slots, and emerging startups)
                 </li>
                 <li className="flex items-start gap-3">
                   <span className="text-blue-400 mt-1">→</span>
-                  I identified feature gaps, UX patterns, monetisation strategies, and player sentiment across competitors
+                  We identified feature gaps, UX patterns, monetisation strategies, and player sentiment across competitors
                 </li>
               </ul>
             </motion.div>
@@ -717,38 +717,45 @@ export default function HighFiveGamesCase() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
           >
-            Relevance to Scopely Senior Technical Product Manager
+            Relevance to a Senior Technical Product Manager Interview
           </motion.h2>
 
           <div className="space-y-6">
             {[
               {
-                competency: "1. Technical Complexity at Scale",
-                evidence: "Multi-system integration (payment, compliance, game engines, user accounts), 99.95% uptime requirement, 47+ regulatory jurisdictions, 10x transaction throughput scaling.",
+                competency: "1. Technical complexity at scale",
+                evidence:
+                  "Multi-system integration (payments, compliance, game engines, accounts), a 99.95% uptime expectation, 43+ jurisdictional constraints, and 10× transaction-throughput scaling.",
               },
               {
-                competency: "2. Multi-Team Leadership & Coordination",
-                evidence: "Led coordination across their platform, game systems, compliance, payment, analytics, and LiveOps teams. Resolved dependencies, sequenced work, managed critical path without direct authority.",
+                competency: "2. Multi-team leadership & coordination",
+                evidence:
+                  "As contracted product leadership, we aligned platform, game systems, compliance, payments, analytics, and Live Ops teams; resolved dependencies; sequenced work; and protected the critical path without direct line management.",
               },
               {
-                competency: "3. Stakeholder Alignment in Ambiguity",
-                evidence: "Translated business value (43x market expansion, 40% ARPU lift) to technical requirements for their stakeholders. Negotiated tradeoffs (timeline vs. quality, resources, risk appetite). Communicated strategy to their CEO, board, legal, and finance teams.",
+                competency: "3. Stakeholder alignment in ambiguity",
+                evidence:
+                  "We translated business value (market expansion, ARPU uplift) into concrete technical requirements; negotiated trade-offs (time vs quality, resources vs risk); and kept executive, legal, and finance stakeholders aligned through launch.",
               },
               {
-                competency: "4. Data-Driven Decision Making",
-                evidence: "Used market data to justify business case. Monitored product (DAU, retention, ARPU, churn) and technical metrics (uptime, fraud, payment processing). Made go/no-go decisions based on data.",
+                competency: "4. Data-driven decision making",
+                evidence:
+                  "We used competitor research and internal cohort data to validate the business case, then monitored product (DAU, retention, ARPU, churn) and technical signals (uptime, fraud, payment success) to make go/no-go decisions.",
               },
               {
-                competency: "5. Operational Excellence Through Challenges",
-                evidence: "Navigated KYC friction, regulatory ambiguity, performance issues, vendor delays. Solved problems without losing sight of outcomes. Maintained timeline, stayed within budget, achieved targets.",
+                competency: "5. Operational excellence through challenges",
+                evidence:
+                  "We tackled KYC friction, regulatory ambiguity, performance issues, and vendor delays without losing sight of outcomes—shipping safely whilst maintaining service levels.",
               },
               {
-                competency: "6. Requirements & Scope Translation",
-                evidence: "Translated 'expand to 43 states' + '40% ARPU growth' into dual wallet, compliance framework, payment integration. Defined phased approach, success criteria, risk mitigation.",
+                competency: "6. Requirements & scope translation",
+                evidence:
+                  "We translated outcomes (state expansion, ARPU growth, compliance) into system requirements (dual wallet, compliance framework, payment + redemption flows), then delivered through phases with clear success criteria.",
               },
               {
-                competency: "7. Communication Clarity",
-                evidence: "Able to explain complex technical system (dual wallet, payment processing, compliance) to non-technical audiences (CEO, Board). Also technical deep dives with engineering teams.",
+                competency: "7. Communication clarity",
+                evidence:
+                  "We explained complex systems (dual wallet, payments, compliance) to non-technical stakeholders, and also ran technical deep dives with engineers to unblock implementation.",
               },
             ].map((item, idx) => (
               <motion.div
