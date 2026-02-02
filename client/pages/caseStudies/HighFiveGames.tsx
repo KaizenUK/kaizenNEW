@@ -334,7 +334,7 @@ export default function HighFiveGamesCase() {
               <h3 className="text-lg font-bold text-white mb-3">Payment Processing</h3>
               <ul className="space-y-2 text-sm text-slate-400">
                 <li>• Real-money payout gateway</li>
-                <li>• Gift card fulfillment</li>
+                <li>• Gift card fulfilment</li>
                 <li>• State-specific restrictions</li>
                 <li>
                   •{" "}
