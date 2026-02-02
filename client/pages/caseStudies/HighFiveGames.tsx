@@ -336,7 +336,28 @@ export default function HighFiveGamesCase() {
                 <li>• Real-money payout gateway</li>
                 <li>• Gift card fulfillment</li>
                 <li>• State-specific restrictions</li>
-                <li>• KYC/AML compliance</li>
+                <li>
+                  •{" "}
+                  <a
+                    href="https://en.wikipedia.org/wiki/Know_your_customer"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="text-blue-300 hover:text-blue-200 underline"
+                  >
+                    KYC
+                  </a>
+                  /
+                  <a
+                    href="https://en.wikipedia.org/wiki/Anti-money_laundering"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="text-blue-300 hover:text-blue-200 underline"
+                  >
+                    AML
+                  </a>
+                  {" "}
+                  compliance
+                </li>
               </ul>
             </motion.div>
 
