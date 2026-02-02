@@ -307,9 +307,9 @@ const pageMeta: Record<string, Partial<PageMeta>> = {
       "A technical deep dive into how we migrated Kaizen Web from a legacy setup to a high-performance React + Vite + Headless architecture.",
   },
   "/case-studies/high-five-games": {
-    title: "High 5 Games: Dual-Currency Sweepstakes Architecture Case Study",
+    title: "International Sweepstakes Casino: Dual-Currency Economy Case Study",
     description:
-      "A technical deep dive into architecting a dual-currency gaming economy: transitioning from social to regulated sweepstakes across 43 US states, delivering 42% ARPU growth with financial-grade reliability.",
+      "A technical deep dive into architecting a dual-currency gaming economy for an international sweepstakes casino: moving from pure social play to regulated sweepstakes across 43 US states, delivering 42% ARPU growth with financial-grade reliability.",
   },
 };
 
