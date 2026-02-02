@@ -153,7 +153,7 @@ export default function BlogPostDetail() {
             "data.title,data.slug,data.body,data.publishedDate,data.excerpt,data.tags,data.seoTitle,data.seoDescription",
           query: { "data.slug": slug },
           limit: 1,
-        })) as BlogPost[];
+        })) as unknown as BlogPost[];
 
         if (results && results.length > 0) {
           const loadedPost = results[0];

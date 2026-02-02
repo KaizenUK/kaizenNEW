@@ -96,7 +96,7 @@ export default function BlogPostsList() {
         // Keep full objects so we retain id and status-ish fields
         const results = (await builder.getAll("blog-post", {
           limit: 100,
-        })) as BlogPost[];
+        })) as unknown as BlogPost[];
 
         const processed: ProcessedPost[] = results
           .map((post) => {

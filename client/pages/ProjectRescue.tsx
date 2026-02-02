@@ -4,6 +4,7 @@ import { Helmet } from "react-helmet-async";
 import { FaqSection } from "@/components/FaqSection";
 import { motion } from "framer-motion";
 import { AlertTriangle, CheckCircle, XCircle, ArrowRight } from "lucide-react";
+import { Link } from "react-router-dom";
 import { useCalendly } from "@/context/CalendlyContext";
 
 const EASE_OUT = [0.16, 1, 0.3, 1] as const;

@@ -84,7 +84,8 @@ export default function AsCollectionsCase() {
               variants={fadeInUp}
               initial="hidden"
               whileInView="visible"
-              viewport={{ once: true, delay: 0.1 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.1 }}
             >
               <h3 className="text-sm font-mono font-bold text-kaizen-cyan uppercase tracking-widest mb-4">
                 The Solution
@@ -99,7 +100,8 @@ export default function AsCollectionsCase() {
               variants={fadeInUp}
               initial="hidden"
               whileInView="visible"
-              viewport={{ once: true, delay: 0.2 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.2 }}
             >
               <h3 className="text-sm font-mono font-bold text-kaizen-cyan uppercase tracking-widest mb-4">
                 Services Provided

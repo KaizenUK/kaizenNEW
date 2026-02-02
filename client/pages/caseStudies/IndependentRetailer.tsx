@@ -9,7 +9,7 @@ const fadeInUp = {
   visible: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.6, ease: "easeOut" },
+    transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] as const },
   },
 };
 
@@ -42,7 +42,7 @@ export default function IndependentRetailerCase() {
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, ease: "easeOut" }}
+            transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] as const }}
             className="space-y-6"
           >
             <span className="inline-block text-amber-200 text-sm font-mono font-bold uppercase tracking-widest">
@@ -85,7 +85,8 @@ export default function IndependentRetailerCase() {
               variants={fadeInUp}
               initial="hidden"
               whileInView="visible"
-              viewport={{ once: true, delay: 0.1 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.1 }}
             >
               <h3 className="text-sm font-mono font-bold text-kaizen-cyan uppercase tracking-widest mb-4">
                 The Solution
@@ -101,14 +102,15 @@ export default function IndependentRetailerCase() {
               variants={fadeInUp}
               initial="hidden"
               whileInView="visible"
-              viewport={{ once: true, delay: 0.2 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.2 }}
             >
               <h3 className="text-sm font-mono font-bold text-kaizen-cyan uppercase tracking-widest mb-4">
                 Services Provided
               </h3>
               <p className="text-lg text-kaizen-text-dark dark:text-white/80 leading-relaxed">
                 E-commerce Architecture, Headless (React), Performance
-                Optimization
+                Optimisation
               </p>
             </motion.div>
           </div>
