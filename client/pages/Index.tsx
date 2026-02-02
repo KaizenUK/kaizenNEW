@@ -21,7 +21,7 @@ const fadeInUp = {
   visible: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.6, ease: "easeOut" },
+    transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] as const },
   },
 };
 
@@ -97,7 +97,7 @@ const HeroSection = () => {
         src={DEFAULT_OG_IMAGE}
         alt=""
         loading="eager"
-        fetchpriority="high"
+        fetchPriority="high"
         decoding="async"
         width="1200"
         height="630"
@@ -195,7 +195,7 @@ const HeroSection = () => {
                 const slider = document.getElementById(
                   "pricing-slider-section",
                 );
-                slider?.scrollIntoView({ behaviour: "smooth" as any });
+                slider?.scrollIntoView({ behavior: "smooth" as any });
               }}
               className="px-8 py-4 rounded-lg border-2 border-white/30 text-white font-heading font-bold text-lg hover:border-kaizen-cyan hover:text-kaizen-cyan hover:shadow-lg hover:shadow-kaizen-cyan/30 transition-all inline-flex items-center justify-center gap-2"
             >
@@ -339,7 +339,7 @@ const PricingSlider = () => {
             key={tier}
             initial={{ opacity: 0, scale: 0.97 }}
             animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.45, ease: "easeOut" }}
+            transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] as const }}
             className="relative group"
           >
             <div className="absolute -inset-px bg-gradient-to-r from-kaizen-cyan via-kaizen-lime to-kaizen-cyan rounded-3xl opacity-0 group-hover:opacity-20 blur transition duration-300" />
@@ -1145,7 +1145,7 @@ const PerformanceBadge = () => {
                 animate={{
                   strokeDashoffset: 565.48 * (1 - fillPercent / 100),
                 }}
-                transition={{ duration: 2, ease: "easeOut" }}
+                transition={{ duration: 2, ease: [0.16, 1, 0.3, 1] as const }}
                 strokeLinecap="round"
               />
 
@@ -1156,7 +1156,7 @@ const PerformanceBadge = () => {
                 fill="url(#shimmer)"
                 opacity="0.3"
                 animate={{ rotate: 360 }}
-                transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
+                transition={{ duration: 3, repeat: Infinity, ease: [0, 0, 1, 1] as const }}
                 style={{ transformOrigin: "100px 100px" }}
               />
 
