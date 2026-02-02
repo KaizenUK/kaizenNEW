@@ -523,28 +523,28 @@ export default function HighFiveGamesCase() {
                 <div className="p-4 rounded-lg bg-slate-900/30 border border-slate-800">
                   <p className="font-bold text-white mb-2">Moment 1: Database Migration Planning (Month 1–2)</p>
                   <p className="text-sm text-slate-400">
-                    I coordinated the migration of 10M+ player accounts to dual-wallet schema without data loss. I worked with platform, database, and operations teams to jointly plan the zero-downtime migration strategy. We built shadow schemas, tested in replicas, and planned rollback procedures. Result: <strong>&lt;15 min downtime, zero data loss.</strong>
+                    We coordinated the migration of 10M+ player accounts to a dual-wallet schema without data loss. We partnered with platform, database, and operations teams to plan a zero-downtime migration strategy. We built shadow schemas, tested in replicas, and agreed rollback procedures. Result: <strong>&lt;15 min downtime, zero data loss.</strong>
                   </p>
                 </div>
 
                 <div className="p-4 rounded-lg bg-slate-900/30 border border-slate-800">
                   <p className="font-bold text-white mb-2">Moment 2: Game Engine Adaptation (Month 3–4)</p>
                   <p className="text-sm text-slate-400">
-                    1,700+ independently-developed games needed to accept Sweeps Coins. I led the game systems and engineering teams to architect and build a unified solution: an adapter layer (abstraction above individual games) and unified testing harness. Result: <strong>All 1,700 games supporting SC in parallel, only 5% required special handling.</strong>
+                    1,700+ independently-developed games needed to accept Sweeps Coins. We led the game systems and engineering teams to architect and build a unified solution: an adapter layer (abstraction above individual games) plus a unified testing harness. Result: <strong>All 1,700 games supporting SC in parallel; only 5% required special handling.</strong>
                   </p>
                 </div>
 
                 <div className="p-4 rounded-lg bg-slate-900/30 border border-slate-800">
                   <p className="font-bold text-white mb-2">Moment 3: RNG Audit & Compliance (Month 3–5)</p>
                   <p className="text-sm text-slate-400">
-                    Third-party RNG auditor required certification (8–12 weeks). I coordinated the compliance and game systems teams with the external auditor: I initiated the audit early (Month 3), managed builds, and ensured findings were addressed in real-time. Result: <strong>RNG certified by Week 12, no major findings.</strong>
+                    A third-party RNG auditor required certification (8–12 weeks). We coordinated compliance and game systems with the external auditor: we initiated the audit early (Month 3), managed builds, and addressed findings in real time. Result: <strong>RNG certified by Week 12, no major findings.</strong>
                   </p>
                 </div>
 
                 <div className="p-4 rounded-lg bg-slate-900/30 border border-slate-800">
                   <p className="font-bold text-white mb-2">Moment 4: Payment Integration & Fraud Detection (Month 5–6)</p>
                   <p className="text-sm text-slate-400">
-                    Payment processor was unfamiliar with sweepstakes model. I led the partnership approach: visited processor's office personally, negotiated custom integration terms, and identified a fallback processor to mitigate vendor risk. Result: <strong>Approved for launch; fraud detection flagged 0.3% of redemptions (industry standard).</strong>
+                    The payment processor was unfamiliar with the sweepstakes model. We led the partnership approach: visited the processor’s office in person, negotiated custom integration terms, and identified a fallback processor to mitigate vendor risk. Result: <strong>Approved for launch; fraud detection flagged 0.3% of redemptions (industry standard).</strong>
                   </p>
                 </div>
               </div>
