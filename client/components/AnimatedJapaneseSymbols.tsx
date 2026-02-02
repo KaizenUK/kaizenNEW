@@ -1,5 +1,7 @@
 import { motion } from "framer-motion";
 
+import { motion } from "framer-motion";
+
 export default function AnimatedJapaneseSymbols() {
   const symbols = [
     { kanji: "改", romaji: "Kai", meaning: "Change / Improvement" },
@@ -29,7 +31,7 @@ export default function AnimatedJapaneseSymbols() {
       y: 0,
       transition: {
         duration: 0.6,
-        ease: "easeOut",
+        ease: [0.16, 1, 0.3, 1] as const,
       },
     },
   };
@@ -44,7 +46,7 @@ export default function AnimatedJapaneseSymbols() {
       y: 0,
       transition: {
         duration: 0.4,
-        ease: "easeOut",
+        ease: [0.16, 1, 0.3, 1] as const,
         delay: 0.1,
       },
     },
