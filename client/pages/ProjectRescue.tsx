@@ -70,12 +70,10 @@ export default function ProjectRescue() {
   return (
     <Layout>
       <Helmet>
-        <title>
-          Project Rescue & Contract Product Ownership | Kaizen Liverpool
-        </title>
+        <title>Software Project Rescue | Senior Product Leadership | Kaizen</title>
         <meta
           name="description"
-          content="When your build is over budget, late, or stuck, Kaizen steps in as a hands-on Contract Product Owner to stabilise delivery and actually ship."
+          content="When your build is over budget, late, or stuck, Kaizen steps in as senior product leadership to stabilise delivery, restore control, and ship."
         />
         <meta
           name="keywords"
