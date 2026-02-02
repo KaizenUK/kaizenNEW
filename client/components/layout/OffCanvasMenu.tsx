@@ -75,6 +75,13 @@ const OffCanvasMenu: React.FC<OffCanvasMenuProps> = ({
           icon: <MapPin className="w-4 h-4" />,
         },
         {
+          label: "High-Performance Local Websites",
+          href: "/services/local-seo",
+          description:
+            "Local rankings powered by Core Web Vitals and local intent.",
+          icon: <MapPin className="w-4 h-4" />,
+        },
+        {
           label: "Web Design Wirral",
           href: "/web-design-wirral",
           description: "Web design for Heswall, West Kirby, and Birkenhead.",
