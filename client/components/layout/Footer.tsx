@@ -262,9 +262,14 @@ const Footer: React.FC<FooterProps> = () => {
         </div>
 
         <div className="flex flex-col md:flex-row items-center justify-between gap-4 border-t border-white/10 pt-6">
-          <p className="text-xs text-white/50">
-            © {new Date().getFullYear()} Kaizen Web. All rights reserved.
-          </p>
+          <div className="text-center md:text-left">
+            <p className="text-xs text-white/50">
+              © {new Date().getFullYear()} Kaizen Web. All rights reserved.
+            </p>
+            <p className="text-xs text-white/50 mt-1">
+              Kaizen Web Ltd t/a Kaizen Ltd (Company No. 17007703)
+            </p>
+          </div>
           <div className="flex items-center gap-4 text-xs text-white/50">
             <Link to="/privacy-policy" className="hover:text-white">
               Privacy
