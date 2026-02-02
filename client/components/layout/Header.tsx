@@ -235,6 +235,7 @@ const Header: React.FC<HeaderProps> = ({
   ];
 
   const topLevelLinks = [
+    { label: "Project Rescue", href: "/project-rescue" },
     { label: "Our Pledge", href: "/pledge" },
     { label: "About", href: "/about" },
   ];
@@ -415,7 +416,7 @@ const Header: React.FC<HeaderProps> = ({
                   initial="enter"
                   animate="center"
                   exit="exit"
-                  transition={{ duration: 0.22, ease: "easeOut" }}
+                  transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] as const }}
                   className="absolute top-full mt-2 rounded-2xl border border-white/10 bg-gray-900/95 shadow-2xl backdrop-blur-xl w-[min(720px,calc(100vw-3rem))] px-8 py-6"
                   style={{
                     left: panelLeft ?? "50%",
