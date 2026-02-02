@@ -443,6 +443,25 @@ export default function HighFiveGamesCase() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
             >
+              <p className="text-slate-400 leading-relaxed">
+                We treated this as a commercial programme as much as a technical one—modelling upside, downside,
+                and delivery risk in parallel. If you’re curious how we keep complex software work financially
+                accountable, this is the same framework we use in our{" "}
+                <Link
+                  to="/blog/fix-failing-software-project-financial-guide"
+                  className="text-blue-300 hover:text-blue-200 underline"
+                >
+                  financial guide
+                </Link>
+                .
+              </p>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+            >
               <h3 className="text-xl font-bold text-blue-400 mb-4">Key Tradeoff: Timeline vs. Quality</h3>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div className="p-4 rounded-lg bg-slate-900/30 border border-slate-800">
