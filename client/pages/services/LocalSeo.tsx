@@ -6,12 +6,14 @@ import { ArrowRight, ArrowUpRight, MapPin, FileText, Star } from "lucide-react";
 import { useCalendly } from "@/context/CalendlyContext";
 
 // Animation variants
+const EASE_OUT = [0.16, 1, 0.3, 1] as const;
+
 const fadeInUp = {
   hidden: { opacity: 0, y: 20 },
   visible: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.6, ease: "easeOut" },
+    transition: { duration: 0.6, ease: EASE_OUT },
   },
 };
 
@@ -155,7 +157,7 @@ export default function LocalSeo() {
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
             <div className="max-w-2xl">
-              <AnimatedH1 text="Local SEO Liverpool." />
+              <AnimatedH1 text="High-Performance Local Websites." />
 
               <motion.div
                 className="space-y-6 mb-12 text-xl text-kaizen-text-light/80 dark:text-white/70 leading-relaxed"
@@ -164,9 +166,12 @@ export default function LocalSeo() {
                 transition={{ delay: 0.6, duration: 0.6 }}
               >
                 <p>
-                  Your customers are searching for your services right now. If
-                  you aren't in the top 3 Google Map results, you're handing
-                  that business to your competitors. We fix that.
+                  Local SEO doesn’t start with keywords. It starts with a website that loads fast, reads clearly, and doesn’t frustrate people.
+                  If your competitors are quicker, cleaner, and easier to use, they’ll usually win the click.
+                </p>
+                <p>
+                  We build high-performance local websites (often in custom React) and then layer on the local SEO work that actually moves the needle:
+                  Google Business Profile, location pages, reviews, and authority signals.
                 </p>
               </motion.div>
 
@@ -211,7 +216,7 @@ export default function LocalSeo() {
         <div className="container mx-auto px-4">
           <ScrollReveal>
             <h2 className="text-4xl md:text-5xl font-heading font-bold mb-12 text-kaizen-dark dark:text-white">
-              Why Generic SEO Doesn't Work
+              Why Performance Wins Local Search
             </h2>
           </ScrollReveal>
 
@@ -219,14 +224,11 @@ export default function LocalSeo() {
             <ScrollReveal delay={1}>
               <div className="space-y-6">
                 <p className="text-xl text-kaizen-text-dark/70 dark:text-white/60 leading-relaxed">
-                  Most agencies sell you "national" SEO packages that waste your
-                  budget competing with giants. But you don't need to rank in
-                  London. You need to rank in Liverpool, Wirral, and Cheshire.
+                  Most “local SEO” packages fail because they try to bolt SEO onto a slow, generic website.
+                  Google increasingly rewards real user experience: speed, stability, and clarity. That’s exactly where most templated, plugin-heavy sites fall over.
                 </p>
                 <p className="text-xl text-kaizen-text-dark/70 dark:text-white/60 leading-relaxed">
-                  We focus purely on <strong>Local Intent</strong>—getting you
-                  found by customers who are ready to buy, right on your
-                  doorstep.
+                  We focus on <strong>Local Intent</strong> and <strong>Technical Advantage</strong>—getting you found by customers ready to buy, and ensuring the site performs well enough to keep them there.
                 </p>
               </div>
             </ScrollReveal>
@@ -235,20 +237,29 @@ export default function LocalSeo() {
               <div className="space-y-6 p-8 bg-kaizen-light dark:bg-slate-900/50 rounded-2xl border border-kaizen-light dark:border-slate-800/50">
                 <div>
                   <h3 className="text-sm font-bold text-kaizen-cyan dark:text-kaizen-cyan/70 uppercase tracking-wide mb-3">
-                    What Changes
+                    Why custom React often outranks WordPress
                   </h3>
-                  <p className="text-lg text-kaizen-text-dark/70 dark:text-white/60">
-                    We stop wasting money on national keywords and focus on
-                    high-intent local searches.
-                  </p>
+                  <ul className="space-y-3 text-lg text-kaizen-text-dark/70 dark:text-white/60">
+                    <li>
+                      <strong>Speed by design:</strong> fewer plugins, less bloat, and tighter control over Core Web Vitals.
+                    </li>
+                    <li>
+                      <strong>Cleaner markup:</strong> better structure (headings, internal links, schema) without fighting a theme.
+                    </li>
+                    <li>
+                      <strong>More reliable:</strong> fewer moving parts, fewer security fires, fewer "mystery" slowdowns.
+                    </li>
+                    <li>
+                      <strong>Conversion uplift:</strong> faster sites typically convert better, which improves engagement signals.
+                    </li>
+                  </ul>
                 </div>
                 <div className="border-t border-kaizen-light dark:border-slate-800/50 pt-6">
                   <h3 className="text-sm font-bold text-kaizen-cyan dark:text-kaizen-cyan/70 uppercase tracking-wide mb-3">
-                    What You Get
+                    What you get
                   </h3>
                   <p className="text-lg text-kaizen-text-dark/70 dark:text-white/60">
-                    More qualified local enquiries from customers searching in
-                    your service area, not across the country.
+                    A site that loads fast, reads well, and supports local SEO properly—then we optimise your Google Business Profile and local pages to push you into the Map Pack.
                   </p>
                 </div>
               </div>
