@@ -5,6 +5,8 @@ interface TypewriterEffectProps {
   speed?: number;
   delayBetweenWords?: number;
   className?: string;
+  /** When false (default), the animation runs once and stops on the final word. */
+  loop?: boolean;
 }
 
 export function TypewriterEffect({
@@ -12,49 +14,54 @@ export function TypewriterEffect({
   speed = 100,
   delayBetweenWords = 1500,
   className = "",
+  loop = false,
 }: TypewriterEffectProps) {
   const [displayedText, setDisplayedText] = useState("");
   const [currentWordIndex, setCurrentWordIndex] = useState(0);
-  const [isDeleting, setIsDeleting] = useState(false);
+  const [charIndex, setCharIndex] = useState(0);
 
   useEffect(() => {
-    const currentWord = words[currentWordIndex];
-    let timeout: NodeJS.Timeout;
+    const currentWord = words[currentWordIndex] ?? "";
 
-    if (!isDeleting) {
-      // Typing
-      if (displayedText.length < currentWord.length) {
-        timeout = setTimeout(() => {
-          setDisplayedText(currentWord.slice(0, displayedText.length + 1));
-        }, speed);
-      } else {
-        // Word complete, wait before deleting
-        timeout = setTimeout(() => {
-          setIsDeleting(true);
-        }, delayBetweenWords);
-      }
-    } else {
-      // Deleting
-      if (displayedText.length > 0) {
-        timeout = setTimeout(() => {
-          setDisplayedText(displayedText.slice(0, -1));
-        }, speed / 2);
-      } else {
-        // Move to next word
-        setIsDeleting(false);
-        setCurrentWordIndex((prev) => (prev + 1) % words.length);
-      }
+    // Done (non-looping): stop timers and keep the final word
+    if (!loop && currentWordIndex === words.length - 1 && charIndex >= currentWord.length) {
+      setDisplayedText(currentWord);
+      return;
     }
 
-    return () => clearTimeout(timeout);
-  }, [
-    displayedText,
-    currentWordIndex,
-    isDeleting,
-    words,
-    speed,
-    delayBetweenWords,
-  ]);
+    let timeout: ReturnType<typeof setTimeout> | null = null;
+
+    // Typing current word
+    if (charIndex < currentWord.length) {
+      timeout = setTimeout(() => {
+        const nextIndex = charIndex + 1;
+        setCharIndex(nextIndex);
+        setDisplayedText(currentWord.slice(0, nextIndex));
+      }, speed);
+      return () => {
+        if (timeout) clearTimeout(timeout);
+      };
+    }
+
+    // Move to next word
+    timeout = setTimeout(() => {
+      const isLast = currentWordIndex >= words.length - 1;
+      const nextWordIndex = isLast ? 0 : currentWordIndex + 1;
+
+      if (!loop && isLast) {
+        setDisplayedText(currentWord);
+        return;
+      }
+
+      setCurrentWordIndex(nextWordIndex);
+      setCharIndex(0);
+      setDisplayedText("");
+    }, delayBetweenWords);
+
+    return () => {
+      if (timeout) clearTimeout(timeout);
+    };
+  }, [charIndex, currentWordIndex, delayBetweenWords, loop, speed, words]);
 
   return (
     <span className={className}>
