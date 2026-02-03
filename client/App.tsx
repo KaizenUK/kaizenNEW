@@ -71,6 +71,7 @@ const PrivacyPolicy = lazy(() => import("./pages/PrivacyPolicy"));
 const CookiePolicy = lazy(() => import("./pages/CookiePolicy"));
 const GDPRPolicy = lazy(() => import("./pages/GDPRPolicy"));
 const ThankYou = lazy(() => import("./pages/ThankYou"));
+const PerformanceScanner = lazy(() => import("./pages/PerformanceScanner"));
 
 // Admin components remain in the repo but are intentionally not wired into
 // the public routing table to avoid exposing an admin surface by default.
