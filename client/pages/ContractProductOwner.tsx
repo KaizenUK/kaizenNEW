@@ -694,7 +694,7 @@ export default function ContractProductOwner() {
                 icon: BookOpen,
                 title: "Our Web Design Projects",
                 copy: "This is the same expert process we use to manage all of our web design and development projects.",
-                link: "/services/web-design-liverpool",
+                link: "/web-design-liverpool",
                 linkText: "Explore Web Design",
               },
             ].map((item, index) => (
