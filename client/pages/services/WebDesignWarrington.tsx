@@ -300,28 +300,28 @@ export default function WebDesignWarrington() {
 
   const features = [
     {
-      icon: Clock,
-      title: "Fast by Default",
-      description:
-        "Every site we build loads in under two seconds on mobile. Slow websites lose customers. Ours do not.",
-    },
-    {
       icon: Shield,
-      title: "Solid and Secure",
+      title: "Enterprise Reliability",
       description:
-        "Built to stay online and stay safe. We do not cut corners on hosting, backups, or security.",
+        "99.9% uptime SLA. We build for mission-critical operations. Your tracking system, your portal, your data—always available.",
     },
     {
-      icon: Users,
-      title: "Local and Accountable",
+      icon: Clock,
+      title: "Handles Scale",
       description:
-        "We are based in the North West. No offshoring, no call centres. You speak directly to your developer.",
+        "Built from the ground up for high traffic and complex data loads. No slowdowns when your business grows.",
+    },
+    {
+      icon: Truck,
+      title: "Real-World Engineering",
+      description:
+        "We understand logistics, distribution, and manufacturing workflows. Your website works the way your business actually operates.",
     },
     {
       icon: Zap,
-      title: "Built to Rank",
+      title: "Performance at Scale",
       description:
-        "Google rewards fast, well-built websites. Ours are designed to help you get found online.",
+        "Sub-second response times, even with heavy concurrent users. Speed matters when you are managing supply chains.",
     },
   ];
 
