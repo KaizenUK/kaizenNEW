@@ -230,7 +230,7 @@ const AuthorityBridge = () => {
               Global Tech Experience
             </p>
             <h2 className="text-3xl md:text-5xl font-heading font-black leading-tight mb-6">
-              Professional Tech. Down-to-Earth Service.
+              Professional Tech.<br />Down-to-Earth Service.
             </h2>
             <p className="text-lg text-white/80 leading-relaxed mb-6">
               We used to build massive systems for global companies. Now, we use that same powerful technology to help local Wirral businesses get more customers. You get a website that is faster, safer, and smarter than your competitors, without the corporate waffle.
