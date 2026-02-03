@@ -171,7 +171,7 @@ const HeroSection = () => {
           </p>
 
           <h1
-            className="text-5xl md:text-7xl font-heading font-black mb-8 leading-tight hero-reveal"
+            className="text-5xl md:text-7xl font-heading font-black mb-8 leading-tight hero-reveal text-white"
             style={{
               "--delay": "0s",
               background: "linear-gradient(90deg, #06b6d4 0%, #7c3aed 25%, #ff006e 50%, #7c3aed 75%, #06b6d4 100%)",
