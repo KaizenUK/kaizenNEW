@@ -177,7 +177,7 @@ const Footer: React.FC<FooterProps> = () => {
             whileHover={{ y: -2 }}
           >
             <p className="text-sm font-medium mb-3 text-white">
-              Made in Liverpool, UK
+              Made on the Wirral, UK
             </p>
             <p className="text-xs text-white/60">
               Local time:{" "}
