@@ -40,10 +40,7 @@ interface ServiceColumn {
   items: ServiceItem[];
 }
 
-const OffCanvasMenu: React.FC<OffCanvasMenuProps> = ({
-  isOpen,
-  onClose,
-}) => {
+const OffCanvasMenu: React.FC<OffCanvasMenuProps> = ({ isOpen, onClose }) => {
   const [expandedSection, setExpandedSection] = useState<string | null>(null);
 
   const servicesMenu: ServiceColumn[] = [
