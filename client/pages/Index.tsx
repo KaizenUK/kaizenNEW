@@ -230,13 +230,10 @@ const AuthorityBridge = () => {
               Global Tech Experience
             </p>
             <h2 className="text-3xl md:text-5xl font-heading font-black leading-tight mb-6">
-              Enterprise standards, without the enterprise hassle.
+              Professional Tech. Down-to-Earth Service.
             </h2>
             <p className="text-lg text-white/80 leading-relaxed mb-6">
-              We bring senior product leadership and engineering discipline from
-              high-traffic platforms into local delivery. That means clear
-              decisions, measurable performance targets, and a site that ships
-              fast and keeps improving.
+              We used to build massive systems for global companies. Now, we use that same powerful technology to help local Wirral businesses get more customers. You get a website that is faster, safer, and smarter than your competitors, without the corporate waffle.
             </p>
             <ul className="space-y-3 text-white/85">
               <li className="flex gap-3">
@@ -284,10 +281,10 @@ const AuthorityBridge = () => {
               <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="rounded-2xl bg-black/30 border border-white/10 p-4">
                   <div className="text-white font-heading font-bold">
-                    Enterprise QA mindset
+                    Performance-First Design
                   </div>
                   <div className="text-white/70 mt-1 text-sm">
-                    Clear acceptance criteria and predictable releases.
+                    Fast loading, easy navigation, built to convert.
                   </div>
                 </div>
                 <div className="rounded-2xl bg-black/30 border border-white/10 p-4">
@@ -671,6 +668,12 @@ const PricingSlider = () => {
 };
 
 const PricingCTABanner = () => {
+  const getLastModifiedDate = () => {
+    const now = new Date();
+    const monthName = now.toLocaleString('en-GB', { month: 'short', year: 'numeric' });
+    return monthName;
+  };
+
   return (
     <section className="py-16 md:py-20 bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 relative overflow-hidden border-y border-white/10">
       <div className="container mx-auto px-4 relative z-10">
@@ -702,7 +705,7 @@ const PricingCTABanner = () => {
                 </Link>
                 <div className="flex items-center justify-center">
                   <span className="text-xs font-mono tracking-widest text-kaizen-cyan/70 uppercase">
-                    Updated Nov 2025
+                    Updated {getLastModifiedDate()}
                   </span>
                 </div>
               </div>
@@ -854,25 +857,23 @@ const CoreServiceVerticals = () => {
                 Vertical Two
               </p>
               <h3 className="text-3xl md:text-4xl font-heading font-bold mb-4">
-                Contract Product Owner
+                Technical Consulting &amp; Project Rescue
               </h3>
               <p className="text-sm md:text-base text-slate-100 mb-6 max-w-md">
-                Senior contract product ownership for remote &amp; local teams.
-                We rescue failing builds, run Agile sprints, and keep budgets,
-                scope and outcomes under control.
+                For larger companies or startups who have a software project that is failing. We step in, take charge of the development team, and get the project finished.
               </p>
               <ul className="space-y-2 text-sm md:text-base text-slate-100/90 mb-8">
                 <li className="flex items-center gap-2">
                   <span className="h-1.5 w-6 rounded-full bg-lime-400" />
-                  Hands-on ownership of backlog, roadmap &amp; delivery
+                  Clear authority over the development roadmap
                 </li>
                 <li className="flex items-center gap-2">
                   <span className="h-1.5 w-6 rounded-full bg-lime-400" />
-                  Ideal for complex rebuilds and project rescue
+                  Get stalled projects moving again
                 </li>
                 <li className="flex items-center gap-2">
                   <span className="h-1.5 w-6 rounded-full bg-lime-400" />
-                  Works alongside your in-house or agency dev team
+                  Senior expertise to guide complex technical decisions
                 </li>
               </ul>
               <div className="mt-auto flex items-center justify-between gap-4">
