@@ -423,7 +423,11 @@ export default function BlogPostsList() {
                                   <img
                                     src={post.coverImageUrl || ""}
                                     alt=""
+                                    width="64"
+                                    height="40"
                                     className="h-full w-full object-cover"
+                                    loading="lazy"
+                                    decoding="async"
                                   />
                                 </div>
                                 <span className="text-xs text-gray-400 font-body">
