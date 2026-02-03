@@ -191,7 +191,7 @@ const HeroSection = () => {
           >
             <button
               onClick={() => openCrisp()}
-              className="px-8 py-4 rounded-lg bg-white text-black font-heading font-bold text-lg inline-flex items-center justify-center gap-2 transform-gpu transition-all duration-200 hover:scale-105 hover:shadow-[0_0_20px_rgba(255,255,255,0.5)]"
+              className="px-8 py-4 rounded-lg bg-white dark:bg-white text-black dark:text-black font-heading font-bold text-lg inline-flex items-center justify-center gap-2 transform-gpu transition-all duration-200 hover:scale-105 hover:shadow-[0_0_20px_rgba(255,255,255,0.5)]"
             >
               Get in Touch
               <ArrowRight size={20} />
