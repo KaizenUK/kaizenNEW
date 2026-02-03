@@ -380,12 +380,13 @@ const Header: React.FC<HeaderProps> = ({
               />
             </button>
 
-            {/* Project Rescue Link */}
+            {/* Free Speed Test Button */}
             <Link
-              to="/project-rescue"
-              className="px-4 py-2 text-base font-medium text-white/80 hover:text-white hover:bg-white/5 rounded-full transition"
+              to="/performance-scanner"
+              className="flex items-center gap-2 px-4 py-2 text-base font-medium text-emerald-400 hover:text-emerald-300 hover:bg-emerald-500/10 rounded-full transition border border-emerald-500/30"
             >
-              Project Rescue
+              <Zap size={16} />
+              Free Speed Test
             </Link>
 
             {/* Top-Level Links */}
