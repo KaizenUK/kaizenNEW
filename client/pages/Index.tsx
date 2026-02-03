@@ -404,7 +404,7 @@ const SocialMediaWarning = () => {
           <p style={{ fontSize: '0.75rem', fontWeight: '500', letterSpacing: '0.1em', color: '#fbbf24', marginBottom: '1rem', textTransform: 'uppercase' }}>
             The Social Media Warning
           </p>
-          <h2 className="text-3xl md:text-4xl font-heading font-black mb-5">
+          <h2 style={{ fontSize: '2.25rem', fontWeight: '900', marginBottom: '1.25rem', color: '#ffffff' }}>
             Is Your Business Homeless?
           </h2>
           <p className="text-lg text-white/80 leading-relaxed">
