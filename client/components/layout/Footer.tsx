@@ -4,9 +4,7 @@ import { motion } from "framer-motion";
 import { Linkedin, Instagram, Circle } from "lucide-react";
 import { useCalendly } from "@/context/CalendlyContext";
 
-interface FooterProps {
-  theme: "light" | "dark";
-}
+interface FooterProps {}
 
 const getNextQuarter = (): string => {
   const now = new Date();
