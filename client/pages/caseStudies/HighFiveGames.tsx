@@ -681,7 +681,7 @@ export default function HighFiveGamesCase() {
                       </div>
                       <div className="flex-grow">
                         <h4 className="font-bold text-white">{item.title}</h4>
-                        <p className="text-xs text-slate-500 mt-1">
+                        <p className="text-xs text-slate-400 mt-1">
                           {item.months}
                         </p>
                       </div>
@@ -854,7 +854,7 @@ export default function HighFiveGamesCase() {
                 <p className="text-3xl md:text-4xl font-bold text-white mb-2">
                   {item.value}
                 </p>
-                <p className="text-xs text-slate-500">Target: {item.target}</p>
+                <p className="text-xs text-slate-400">Target: {item.target}</p>
               </motion.div>
             ))}
 
@@ -887,7 +887,7 @@ export default function HighFiveGamesCase() {
                 <p className="text-3xl font-bold text-green-400">
                   {item.value}
                 </p>
-                <p className="text-xs text-slate-500">Target: {item.target}</p>
+                <p className="text-xs text-slate-400">Target: {item.target}</p>
               </motion.div>
             ))}
           </motion.div>
@@ -899,7 +899,7 @@ export default function HighFiveGamesCase() {
             transition={{ delay: 0.3 }}
             className="mt-12 p-8 rounded-xl bg-slate-900/50 border border-slate-800"
           >
-            <p className="text-sm text-slate-500 mb-4">
+            <p className="text-sm text-slate-400 mb-4">
               OPERATIONAL HIGHLIGHTS
             </p>
             <ul className="grid grid-cols-1 md:grid-cols-2 gap-4 text-slate-300">
@@ -1127,7 +1127,7 @@ export default function HighFiveGamesCase() {
 
             <Link
               to="/case-studies"
-              className="text-slate-500 hover:text-white transition text-sm font-medium"
+              className="text-slate-400 hover:text-white transition text-sm font-medium"
             >
               View All
             </Link>
