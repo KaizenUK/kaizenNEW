@@ -1011,7 +1011,7 @@ const LatestInsights = () => {
 const SEOFAQSection = () => {
   return (
     <FaqSection
-      heading="Common Questions from Liverpool Businesses"
+      heading="Common Questions from Wirral Businesses"
       eyebrow="Common Questions"
       items={[
         {
@@ -1020,9 +1020,9 @@ const SEOFAQSection = () => {
             "AI is the engine; we are the pilots. Our Contract Product Owners define the strategy, user journey, and business logic. We ensure the AI builds the right product that actually solves your business problem.",
         },
         {
-          question: "Are you a Liverpool agency?",
+          question: "Are you based on the Wirral?",
           answer:
-            "Yes, we are based in Liverpool and the Wirral, but we work with clients across the UK. We are happy to meet face-to-face for local projects.",
+            "Yes — we’re based in Moreton on the Wirral, and we work with clients across the UK. We’re happy to meet face-to-face for local projects.",
         },
         {
           question: "Do you provide hosting?",
