@@ -103,9 +103,65 @@ const OffCanvasMenu: React.FC<OffCanvasMenuProps> = ({
     },
   ];
 
+  const insightsMenu: ServiceColumn[] = [
+    {
+      title: "Latest Articles",
+      items: [
+        {
+          label: "Web Design Costs in Liverpool 2025",
+          href: "/blog/how-much-does-a-website-cost-in-liverpool-in-2025",
+          description: "Transparent pricing and what you actually get.",
+          icon: <BookOpen className="w-4 h-4" />,
+        },
+        {
+          label: "How to Choose a Web Agency",
+          href: "/blog/choose-web-design-agency-liverpool",
+          description: "Red flags, questions to ask, and what matters.",
+          icon: <BookOpen className="w-4 h-4" />,
+        },
+        {
+          label: "Website Mistakes to Avoid",
+          href: "/blog/website-mistakes-liverpool",
+          description: "Common errors that kill conversions.",
+          icon: <BookOpen className="w-4 h-4" />,
+        },
+        {
+          label: "All Articles",
+          href: "/blog",
+          description: "Browse our full archive of insights.",
+          icon: <BookOpen className="w-4 h-4" />,
+        },
+      ],
+    },
+  ];
+
+  const caseStudiesMenu: ServiceColumn[] = [
+    {
+      title: "Client Results",
+      items: [
+        {
+          label: "High Five Games",
+          href: "/case-studies/high-five-games",
+          description: "Dual-currency gaming platform: +180% conversion uplift.",
+          icon: <Award className="w-4 h-4" />,
+        },
+        {
+          label: "Independent Retailer",
+          href: "/case-studies/independent-retailer",
+          description: "Local business rebuild: +250% organic traffic.",
+          icon: <Award className="w-4 h-4" />,
+        },
+        {
+          label: "All Case Studies",
+          href: "/case-studies",
+          description: "See more client success stories.",
+          icon: <Award className="w-4 h-4" />,
+        },
+      ],
+    },
+  ];
+
   const topLevelLinks = [
-    { label: "Insights", href: "/blog" },
-    { label: "Case Studies", href: "/case-studies" },
     { label: "Project Rescue", href: "/project-rescue" },
   ];
 
@@ -189,6 +245,76 @@ const OffCanvasMenu: React.FC<OffCanvasMenuProps> = ({
                             ? "text-cyan-300 hover:text-cyan-200"
                             : "text-white/80 hover:text-white",
                         )}
+                        onClick={onClose}
+                      >
+                        {item.label}
+                      </Link>
+                    ))}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Insights Accordion */}
+          <div>
+            <button
+              onClick={() => toggleSection("insights")}
+              className="w-full text-left px-3 py-3 text-base font-medium text-white/90 hover:text-white hover:bg-white/5 rounded-lg transition flex items-center justify-between"
+            >
+              <span>Insights</span>
+              <ChevronDown
+                size={18}
+                className={cn(
+                  "transition-transform duration-200",
+                  expandedSection === "insights" && "rotate-180",
+                )}
+              />
+            </button>
+            {expandedSection === "insights" && (
+              <div className="mt-1 space-y-0.5">
+                {insightsMenu.map((column) => (
+                  <div key={column.title}>
+                    {column.items.map((item) => (
+                      <Link
+                        key={item.href}
+                        to={item.href}
+                        className="block px-3 py-2 text-sm font-medium rounded-lg text-white/80 hover:text-white hover:bg-white/5 transition"
+                        onClick={onClose}
+                      >
+                        {item.label}
+                      </Link>
+                    ))}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Case Studies Accordion */}
+          <div>
+            <button
+              onClick={() => toggleSection("case-studies")}
+              className="w-full text-left px-3 py-3 text-base font-medium text-white/90 hover:text-white hover:bg-white/5 rounded-lg transition flex items-center justify-between"
+            >
+              <span>Case Studies</span>
+              <ChevronDown
+                size={18}
+                className={cn(
+                  "transition-transform duration-200",
+                  expandedSection === "case-studies" && "rotate-180",
+                )}
+              />
+            </button>
+            {expandedSection === "case-studies" && (
+              <div className="mt-1 space-y-0.5">
+                {caseStudiesMenu.map((column) => (
+                  <div key={column.title}>
+                    {column.items.map((item) => (
+                      <Link
+                        key={item.href}
+                        to={item.href}
+                        className="block px-3 py-2 text-sm font-medium rounded-lg text-white/80 hover:text-white hover:bg-white/5 transition"
                         onClick={onClose}
                       >
                         {item.label}
