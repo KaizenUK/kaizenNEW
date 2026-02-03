@@ -37,7 +37,7 @@ const pageMeta: Record<string, Partial<PageMeta>> = {
   "/": {
     title: "Web Design Liverpool & Wirral | 2025 Pricing | Kaizen",
     description:
-      "Premium Web Design for Liverpool. AI-Augmented React & WordPress builds led by Contract Product Owners. Fixed price quotes, no fluff.",
+      "Transform your online identity with skilled web designers on the Wirral. We create amazing, user-friendly websites that help your business shine!",
     keywords: [
       "web design liverpool",
       "web design wirral",
