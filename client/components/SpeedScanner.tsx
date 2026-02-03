@@ -55,10 +55,22 @@ export default function SpeedScanner() {
 
       const res = await fetch(
         `/api/pagespeed?url=${encodeURIComponent(auditUrl)}`,
+        {
+          method: "GET",
+          headers: {
+            "Cache-Control": "no-cache",
+          },
+        },
       );
+
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => ({}));
+        throw new Error(errorData.error || `HTTP ${res.status}: Failed to run audit`);
+      }
+
       const data = await res.json();
 
-      if (!res.ok) throw new Error(data.error || "Failed to run audit");
+      if (data.error) throw new Error(data.error.message || "API returned an error");
 
       const lighthouseScore =
         data.lighthouseResult.categories.performance.score * 100;
