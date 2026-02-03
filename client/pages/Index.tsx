@@ -397,43 +397,13 @@ const AuthorityBridge = () => {
 };
 
 const SocialMediaWarning = () => {
-  const sectionRef = useRef<HTMLElement>(null);
-  const [isVisible, setIsVisible] = useState(false);
-
-  useEffect(() => {
-    // Set visible immediately to ensure it's always shown
-    setIsVisible(true);
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsVisible(true);
-        }
-      },
-      { threshold: 0, rootMargin: "0px" }
-    );
-
-    if (sectionRef.current) {
-      observer.observe(sectionRef.current);
-    }
-
-    return () => {
-      if (sectionRef.current) {
-        observer.unobserve(sectionRef.current);
-      }
-    };
-  }, []);
-
   return (
-    <section
-      ref={sectionRef}
-      className="py-16 md:py-20 bg-slate-900 text-white border-y border-white/10"
-    >
+    <section className="py-16 md:py-20 bg-slate-900 text-white border-y border-white/10">
       <div className="container mx-auto px-4">
         <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          animate={isVisible ? { opacity: 1, y: 0 } : { opacity: 0, y: 16 }}
-          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] as const }}
+          initial={{ opacity: 1, y: 0 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: false, amount: 0.5 }}
           className="max-w-4xl mx-auto text-center"
         >
           <p className="text-xs font-mono tracking-[0.25em] text-amber-200 uppercase mb-4">
