@@ -24,7 +24,74 @@ export default function SpeedScanner() {
   const [statusMsg, setStatusMsg] = useState("");
   const [pdfLoading, setPdfLoading] = useState(false);
 
-  // No longer need client-side API key - using server proxy instead
+  const API_KEY = useMemo(() => {
+    return (import.meta as any).env?.VITE_PAGESPEED_API_KEY as
+      | string
+      | undefined;
+  }, []);
+
+  const PROXY_ENDPOINT = "/api/pagespeed";
+
+  const isLikelyJsonResponse = (contentType: string | null) => {
+    if (!contentType) return false;
+    return contentType.toLowerCase().includes("application/json");
+  };
+
+  const buildGoogleApiUrl = (targetUrl: string) => {
+    return `https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url=${encodeURIComponent(targetUrl)}&category=PERFORMANCE&strategy=MOBILE&key=${API_KEY}`;
+  };
+
+  const fetchAuditJson = async (targetUrl: string) => {
+    // 1) Try proxy (works on Builder preview / Netlify functions / Node deployments)
+    try {
+      const proxyRes = await fetch(
+        `${PROXY_ENDPOINT}?url=${encodeURIComponent(targetUrl)}`,
+        {
+          method: "GET",
+          cache: "no-store",
+          headers: {
+            "Cache-Control": "no-cache",
+          },
+        },
+      );
+
+      const contentType = proxyRes.headers.get("content-type");
+      if (proxyRes.ok && isLikelyJsonResponse(contentType)) {
+        return await proxyRes.json();
+      }
+
+      // If proxy is misconfigured on the host it often returns index.html (text/html)
+      // In that case we just fall back to calling Google directly.
+    } catch {
+      // ignore and fall back
+    }
+
+    // 2) Fall back to calling Google directly (works on hosts without /api proxy)
+    if (!API_KEY) {
+      throw new Error(
+        "Scanner backend is not available on this host, and no PageSpeed API key is configured.",
+      );
+    }
+
+    const googleRes = await fetch(buildGoogleApiUrl(targetUrl), {
+      method: "GET",
+      cache: "no-store",
+    });
+
+    const googleJson = await googleRes.json().catch(() => ({}));
+    if (!googleRes.ok) {
+      throw new Error(
+        googleJson?.error?.message || `HTTP ${googleRes.status}: Audit failed`,
+      );
+    }
+
+    if (googleJson?.error) {
+      throw new Error(googleJson.error.message || "API returned an error");
+    }
+
+    return googleJson;
+  };
+
 
   const LOGO_BASE64 = "";
 
@@ -53,27 +120,7 @@ export default function SpeedScanner() {
       setTimeout(() => setStatusMsg("Analysing Stability..."), 2000);
       setTimeout(() => setStatusMsg("Generating Fix Plan..."), 3500);
 
-      const res = await fetch(
-        `/api/pagespeed?url=${encodeURIComponent(auditUrl)}`,
-        {
-          method: "GET",
-          headers: {
-            "Cache-Control": "no-cache",
-          },
-        },
-      );
-
-      if (!res.ok) {
-        const errorData = await res.json().catch(() => ({}));
-        throw new Error(
-          errorData.error || `HTTP ${res.status}: Failed to run audit`,
-        );
-      }
-
-      const data = await res.json();
-
-      if (data.error)
-        throw new Error(data.error.message || "API returned an error");
+      const data = await fetchAuditJson(auditUrl);
 
       const lighthouseScore =
         data.lighthouseResult.categories.performance.score * 100;
