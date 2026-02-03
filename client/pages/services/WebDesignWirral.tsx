@@ -275,7 +275,7 @@ function BlueprintAnimation() {
       </svg>
 
       <div className="absolute bottom-10 left-0 right-0 text-center">
-        <p className="text-xs font-mono uppercase tracking-widest text-slate-500 dark:text-slate-400">
+        <p className="text-xs font-mono uppercase tracking-widest text-slate-400 dark:text-slate-400">
           <AnimatePresence mode="wait">
             <motion.span
               key={activeStep}
@@ -648,7 +648,7 @@ export default function WebDesignWirral() {
                       </button>
                     </div>
                     <div className="overflow-y-auto p-0">
-                      <div className="grid grid-cols-3 bg-slate-950 p-3 text-[10px] font-mono uppercase tracking-widest text-slate-500 sticky top-0 z-10 border-b border-slate-800">
+                      <div className="grid grid-cols-3 bg-slate-950 p-3 text-[10px] font-mono uppercase tracking-widest text-slate-400 sticky top-0 z-10 border-b border-slate-800">
                         <div>Feature</div>
                         <div className="text-red-400 text-center">Typical</div>
                         <div className="text-emerald-500 font-bold text-center">
@@ -695,7 +695,7 @@ export default function WebDesignWirral() {
           {/* Desktop Table */}
           <div className="hidden md:block rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-800 shadow-2xl">
             <div className="grid grid-cols-3 bg-slate-50 dark:bg-slate-950 border-b border-slate-200 dark:border-slate-800">
-              <div className="p-6 text-xs font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400 flex items-center">
+              <div className="p-6 text-xs font-bold uppercase tracking-widest text-slate-400 dark:text-slate-400 flex items-center">
                 Feature
               </div>
               <div className="p-6 text-xs font-bold uppercase tracking-widest text-red-500 dark:text-red-400 flex items-center justify-center text-center border-l border-slate-200 dark:border-slate-800">
@@ -721,7 +721,7 @@ export default function WebDesignWirral() {
                   </div>
                   <div className="p-4 border-r border-slate-100 dark:border-slate-800 flex items-center gap-3">
                     <X size={18} className="text-red-500 flex-shrink-0" />
-                    <div className="text-slate-500 dark:text-slate-400 text-sm">
+                    <div className="text-slate-400 dark:text-slate-400 text-sm">
                       {row.typical}
                     </div>
                   </div>
