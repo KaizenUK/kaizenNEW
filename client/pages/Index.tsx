@@ -215,6 +215,116 @@ const HeroSection = () => {
   );
 };
 
+const LivingBlueprint = () => {
+  // Generate random data dots
+  const dots = Array.from({ length: 12 }, (_, i) => ({
+    id: i,
+    cx: Math.random() * 80 + 10,
+    cy: Math.random() * 60 + 20,
+    color: i % 2 === 0 ? "#f59e0b" : "#a855f7",
+    delay: i * 0.2,
+  }));
+
+  return (
+    <div className="relative w-full h-96 blueprint-grid">
+      {/* 3D Perspective Grid Background */}
+      <svg
+        viewBox="0 0 400 300"
+        className="absolute inset-0 w-full h-full"
+        style={{ perspective: "1000px" }}
+        preserveAspectRatio="xMidYMid slice"
+      >
+        <defs>
+          <linearGradient id="gridGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="rgba(6, 182, 212, 0.3)" />
+            <stop offset="100%" stopColor="rgba(6, 182, 212, 0.05)" />
+          </linearGradient>
+          <filter id="glow">
+            <feGaussianBlur stdDeviation="2" result="coloredBlur" />
+            <feMerge>
+              <feMergeNode in="coloredBlur" />
+              <feMergeNode in="SourceGraphic" />
+            </feMerge>
+          </filter>
+        </defs>
+
+        {/* Grid Lines */}
+        <g opacity="0.3" stroke="url(#gridGradient)" strokeWidth="0.5">
+          {Array.from({ length: 8 }).map((_, i) => (
+            <line key={`h-${i}`} x1="0" y1={i * 40} x2="400" y2={i * 40} />
+          ))}
+          {Array.from({ length: 10 }).map((_, i) => (
+            <line key={`v-${i}`} x1={i * 40} y1="0" x2={i * 40} y2="300" />
+          ))}
+        </g>
+
+        {/* Data Dots with Lines */}
+        {dots.map((dot, idx) => (
+          <g key={dot.id}>
+            {/* Lines to center (drawn lines) */}
+            {idx < 6 && (
+              <line
+                x1={dot.cx}
+                y1={dot.cy}
+                x2="200"
+                y2="150"
+                stroke={dot.color}
+                strokeWidth="0.8"
+                opacity="0.3"
+                style={{
+                  animation: `line-draw 4s ease-in-out infinite`,
+                  animationDelay: `${dot.delay}s`,
+                }}
+              />
+            )}
+            {/* Glowing Dot */}
+            <circle
+              cx={dot.cx}
+              cy={dot.cy}
+              r="3"
+              fill={dot.color}
+              className="blueprint-dot"
+              style={{
+                filter: "url(#glow)",
+                animationDelay: `${dot.delay}s`,
+              }}
+            />
+          </g>
+        ))}
+
+        {/* Center Floating Cube (using hexagon as proxy) */}
+        <g
+          style={{
+            transformOrigin: "200px 150px",
+            transform: "translate(200px, 150px)",
+          }}
+        >
+          {/* Hexagon shape to represent cube */}
+          <polygon
+            points="0,-25 21,-12 21,13 0,25 -21,13 -21,-12"
+            fill="none"
+            stroke="rgba(6, 182, 212, 0.6)"
+            strokeWidth="1.5"
+            className="blueprint-cube"
+            style={{ transformOrigin: "0px 0px" }}
+          />
+          <circle
+            cx="0"
+            cy="0"
+            r="8"
+            fill="rgba(245, 158, 11, 0.4)"
+            className="blueprint-cube"
+            style={{ transformOrigin: "0px 0px" }}
+          />
+        </g>
+      </svg>
+
+      {/* Gradient Overlay (bottom fade) */}
+      <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent pointer-events-none" />
+    </div>
+  );
+};
+
 const AuthorityBridge = () => {
   return (
     <section className="py-20 md:py-28 bg-slate-950 text-white relative overflow-hidden">
