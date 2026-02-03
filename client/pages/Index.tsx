@@ -387,25 +387,7 @@ const AuthorityBridge = () => {
           >
             <div className="absolute -inset-8 rounded-[2.5rem] bg-gradient-to-r from-cyan-500/20 to-emerald-500/10 blur-2xl" />
             <div className="relative rounded-[2.25rem] border border-white/10 bg-white/5 backdrop-blur-xl overflow-hidden p-8 md:p-10">
-              <div className="h-64 rounded-2xl bg-[linear-gradient(110deg,rgba(56,189,248,0.18),rgba(34,197,94,0.10)),radial-gradient(circle_at_20%_20%,rgba(56,189,248,0.22),transparent_55%),radial-gradient(circle_at_85%_70%,rgba(34,197,94,0.18),transparent_60%)]" />
-              <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div className="rounded-2xl bg-black/30 border border-white/10 p-4">
-                  <div className="text-white font-heading font-bold">
-                    Performance-First Design
-                  </div>
-                  <div className="text-white/70 mt-1 text-sm">
-                    Fast loading, easy navigation, built to convert.
-                  </div>
-                </div>
-                <div className="rounded-2xl bg-black/30 border border-white/10 p-4">
-                  <div className="text-white font-heading font-bold">
-                    Conversion-first builds
-                  </div>
-                  <div className="text-white/70 mt-1 text-sm">
-                    Pages engineered to turn visits into enquiries.
-                  </div>
-                </div>
-              </div>
+              <LivingBlueprint />
             </div>
           </motion.div>
         </div>
