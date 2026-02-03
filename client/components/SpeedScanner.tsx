@@ -1,6 +1,5 @@
 import { useMemo, useState } from "react";
-
-import { openCrisp } from "@/lib/crisp-utils";
+import { jsPDF } from "jspdf";
 
 export default function SpeedScanner() {
   const [url, setUrl] = useState("");
@@ -8,8 +7,14 @@ export default function SpeedScanner() {
   const [score, setScore] = useState<number | null>(null);
   const [screenshot, setScreenshot] = useState("");
   const [statusMsg, setStatusMsg] = useState("");
+  const [auditedUrl, setAuditedUrl] = useState("");
 
-  // Your API Key
+  // Gating State
+  const [email, setEmail] = useState("");
+  const [isEmailSubmitted, setIsEmailSubmitted] = useState(false);
+  const [emailError, setEmailError] = useState("");
+
+  // API Key (kept out of git; configured via env)
   const API_KEY = useMemo(() => {
     return (import.meta as any).env?.VITE_PAGESPEED_API_KEY as
       | string
@@ -32,8 +37,13 @@ export default function SpeedScanner() {
     setScreenshot("");
     setStatusMsg("Connecting to Google Lighthouse...");
 
+    // Reset gate on new run
+    setAuditedUrl(auditUrl);
+    setIsEmailSubmitted(false);
+    setEmailError("");
+    setEmail("");
+
     try {
-      // Fake stages to build tension/UX
       setTimeout(() => setStatusMsg("Analyzing Core Web Vitals..."), 1000);
       setTimeout(() => setStatusMsg("Capturing Screenshot..."), 2000);
 
@@ -50,12 +60,11 @@ export default function SpeedScanner() {
 
       if (data.error) throw new Error(data.error.message);
 
-      // 1. Get Score
       const lighthouseScore =
         data.lighthouseResult.categories.performance.score * 100;
       setScore(Math.round(lighthouseScore));
 
-      // 2. Get Screenshot (Base64 data from Google)
+      // Get Screenshot
       const base64Image =
         data.lighthouseResult.audits["final-screenshot"].details.data;
       setScreenshot(base64Image);
@@ -68,6 +77,90 @@ export default function SpeedScanner() {
     }
   }
 
+  function handleUnlock() {
+    const normalizedEmail = email.trim();
+
+    if (!normalizedEmail || !normalizedEmail.includes("@")) {
+      setEmailError("Please enter a valid email address.");
+      return;
+    }
+
+    // TODO: Send this email to Zapier/DB later
+    // eslint-disable-next-line no-console
+    console.log("Lead Captured:", normalizedEmail, "URL:", auditedUrl, "Score:", score);
+
+    setIsEmailSubmitted(true);
+    setEmailError("");
+  }
+
+  function downloadPDF() {
+    if (score === null) return;
+
+    const doc = new jsPDF();
+    const date = new Date().toLocaleDateString("en-GB");
+
+    // Header
+    doc.setFillColor(2, 6, 23);
+    doc.rect(0, 0, 210, 40, "F");
+    doc.setTextColor(255, 255, 255);
+    doc.setFontSize(18);
+    doc.text("Kaizen Web - Performance Audit", 20, 25);
+
+    // Meta
+    doc.setTextColor(0, 0, 0);
+    doc.setFontSize(12);
+    doc.text(`Audit Report for: ${auditedUrl || buildAuditUrl(url)}`, 20, 55);
+    doc.text(`Date: ${date}`, 20, 63);
+
+    // Score
+    doc.setFontSize(32);
+    if (score < 50) doc.setTextColor(239, 68, 68);
+    else if (score < 90) doc.setTextColor(249, 115, 22);
+    else doc.setTextColor(34, 197, 94);
+
+    doc.text(`Score: ${score}/100`, 20, 82);
+
+    // Screenshot
+    if (screenshot) {
+      const imageFormat = screenshot.startsWith("data:image/png")
+        ? "PNG"
+        : "JPEG";
+      doc.addImage(screenshot, imageFormat as any, 20, 92, 80, 110);
+    }
+
+    // Recommendations
+    doc.setTextColor(0, 0, 0);
+    doc.setFontSize(14);
+    doc.text("Immediate Fix Plan:", 110, 98);
+
+    doc.setFontSize(10);
+    const fixes = [
+      "1. Optimize Images (modern formats + compression)",
+      "2. Minimize Main-Thread Work",
+      "3. Eliminate Render-Blocking CSS",
+      "4. Reduce JavaScript Execution Time",
+      "5. Improve caching for static assets",
+    ];
+
+    let yPos = 108;
+    fixes.forEach((fix) => {
+      doc.text(fix, 110, yPos);
+      yPos += 8;
+    });
+
+    doc.setFontSize(10);
+    doc.setTextColor(90, 90, 90);
+    doc.text(
+      "Contact Kaizen Web for a full technical breakdown.",
+      110,
+      yPos + 12,
+    );
+
+    doc.save("kaizen-performance-report.pdf");
+  }
+
+  const shouldGate = score !== null && score < 90 && !isEmailSubmitted;
+
   return (
     <section
       id="live-performance-scanner"
@@ -77,7 +170,7 @@ export default function SpeedScanner() {
 
       <div className="container mx-auto px-4 relative z-10">
         <div className="w-full max-w-4xl mx-auto p-8 rounded-3xl border border-cyan-500/20 bg-slate-900/60 backdrop-blur-xl shadow-[0_0_50px_-15px_rgba(6,182,212,0.2)] relative overflow-hidden">
-          {/* Background Glow Effect */}
+          {/* Background Glow */}
           <div className="absolute top-0 left-1/2 -translate-x-1/2 w-2/3 h-1 bg-gradient-to-r from-transparent via-cyan-500 to-transparent opacity-50 blur-sm" />
 
           <div className="text-center mb-8 relative z-10">
@@ -119,23 +212,22 @@ export default function SpeedScanner() {
             </button>
           </div>
 
-          {/* Loading / Status */}
-          {(loading || statusMsg.startsWith("Error")) && statusMsg && (
-            <div
-              className={`text-center font-mono text-sm mb-4 ${
-                statusMsg.startsWith("Error")
-                  ? "text-red-300"
-                  : "text-cyan-400 animate-pulse"
-              }`}
-            >
+          {loading && statusMsg && (
+            <div className="text-center text-cyan-400 animate-pulse font-mono text-sm mb-4">
               {statusMsg}
             </div>
           )}
 
-          {/* Result Reveal Section */}
+          {!loading && statusMsg.startsWith("Error") && (
+            <div className="text-center font-mono text-sm mb-4 text-red-300">
+              {statusMsg}
+            </div>
+          )}
+
+          {/* RESULT SECTION */}
           {score !== null && (
-            <div className="animate-in fade-in slide-in-from-bottom-4 duration-700 grid grid-cols-1 md:grid-cols-2 gap-8 items-center bg-black/20 p-8 rounded-2xl border border-white/5 mt-8">
-              {/* LEFT: The Screenshot (Phone Frame) */}
+            <div className="animate-in fade-in slide-in-from-bottom-4 duration-700 grid grid-cols-1 md:grid-cols-2 gap-8 items-center bg-black/20 p-8 rounded-2xl border border-white/5 mt-8 relative overflow-hidden">
+              {/* SCREENSHOT (Always visible) */}
               <div className="relative mx-auto border-[6px] border-slate-800 rounded-[2rem] overflow-hidden shadow-2xl max-w-[200px] bg-slate-800">
                 {screenshot ? (
                   <img
@@ -146,12 +238,12 @@ export default function SpeedScanner() {
                 ) : (
                   <div className="w-full h-32 bg-slate-700 animate-pulse" />
                 )}
-                {/* Glossy Reflection overlay */}
                 <div className="absolute inset-0 bg-gradient-to-tr from-white/10 to-transparent pointer-events-none" />
               </div>
 
-              {/* RIGHT: The Score & CTA */}
-              <div className="text-center md:text-left flex flex-col items-center md:items-start">
+              {/* RIGHT SIDE */}
+              <div className="text-center md:text-left flex flex-col items-center md:items-start z-10 w-full">
+                {/* Score Always Visible */}
                 <div className="inline-flex items-center justify-center w-24 h-24 rounded-full border-4 border-slate-800 bg-slate-900 relative mb-4 shadow-lg">
                   <span
                     className={`text-4xl font-black ${
@@ -166,27 +258,93 @@ export default function SpeedScanner() {
                   </span>
                 </div>
 
-                <h3 className="text-2xl text-white font-bold mb-2">
-                  {score < 50
-                    ? "Google Penalty Detected."
-                    : score < 90
-                      ? "Needs Improvement."
-                      : "Perfect Score."}
-                </h3>
-                <p className="text-slate-400 text-sm mb-6 leading-relaxed">
-                  {score < 50
-                    ? "Your site failed the Core Web Vitals test. This hurts your ranking and costs you ad money."
-                    : score < 90
-                      ? "You are passing, but speed optimizations could double your leads."
-                      : "Your site is perfectly optimized! Great work."}
-                </p>
+                <div className="relative w-full">
+                  {/* Blurred details behind the gate */}
+                  <div
+                    className={
+                      shouldGate
+                        ? "blur-sm select-none pointer-events-none opacity-60"
+                        : ""
+                    }
+                  >
+                    <h3 className="text-2xl text-white font-bold mb-2">
+                      {score < 90 ? "Report Unlocked." : "Excellent Score!"}
+                    </h3>
+                    <p className="text-slate-400 text-sm mb-5 leading-relaxed">
+                      {score < 90
+                        ? "Download your PDF fix plan below."
+                        : "Your site is perfectly optimized. Download the proof for your records."}
+                    </p>
 
-                <button
-                  onClick={() => openCrisp()}
-                  className="px-6 py-3 rounded-lg bg-white text-black font-bold hover:bg-slate-200 transition-colors shadow-lg shadow-white/10 w-full md:w-auto"
-                >
-                  Get Full Fix Report &rarr;
-                </button>
+                    <div className="rounded-xl bg-black/25 border border-white/5 p-4 mb-5">
+                      <div className="text-xs font-mono tracking-[0.25em] text-cyan-300 uppercase mb-3">
+                        High Impact Fixes
+                      </div>
+                      <ul className="text-slate-300/90 text-sm space-y-2">
+                        <li>1. Optimize images (size + format + compression)</li>
+                        <li>2. Cut unused JavaScript</li>
+                        <li>3. Remove render-blocking CSS</li>
+                        <li>4. Improve caching + CDN delivery</li>
+                      </ul>
+                    </div>
+
+                    <button
+                      onClick={downloadPDF}
+                      className="flex items-center justify-center gap-2 w-full md:w-auto px-6 py-3 rounded-lg bg-white text-black font-bold hover:bg-slate-200 transition-colors shadow-lg shadow-white/10"
+                    >
+                      <svg
+                        className="w-5 h-5"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
+                          d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
+                        />
+                      </svg>
+                      Download PDF Report
+                    </button>
+                  </div>
+
+                  {/* THE GATE */}
+                  {shouldGate && (
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <div className="w-full rounded-2xl border border-white/10 bg-slate-950/70 backdrop-blur-md p-5 shadow-[0_0_40px_-18px_rgba(6,182,212,0.45)]">
+                        <h3 className="text-xl text-white font-bold mb-2">
+                          Detailed Report Locked
+                        </h3>
+                        <p className="text-slate-400 text-sm mb-4 leading-relaxed">
+                          Your site has critical performance issues. Unlock the
+                          full PDF breakdown to see how to fix them.
+                        </p>
+                        <div className="flex flex-col sm:flex-row gap-2">
+                          <input
+                            type="email"
+                            inputMode="email"
+                            placeholder="Enter email to unlock"
+                            className="flex-1 px-4 py-3 rounded-lg bg-slate-800/80 border border-slate-600 text-white text-sm focus:outline-none focus:ring-1 focus:ring-cyan-500"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                          />
+                          <button
+                            onClick={handleUnlock}
+                            className="px-4 py-3 bg-cyan-600 hover:bg-cyan-500 text-white text-sm font-bold rounded-lg transition-colors whitespace-nowrap"
+                          >
+                            Unlock
+                          </button>
+                        </div>
+                        {emailError && (
+                          <p className="text-red-400 text-xs mt-2">
+                            {emailError}
+                          </p>
+                        )}
+                      </div>
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
           )}
