@@ -122,7 +122,7 @@ export default function HelenMooreHairdressingCase() {
               <h3 className="text-3xl font-heading font-bold text-slate-900 dark:text-white mb-2">
                 100%
               </h3>
-              <p className="text-sm font-mono uppercase tracking-wider text-slate-500 mb-2">
+              <p className="text-sm font-mono uppercase tracking-wider text-slate-400 mb-2">
                 Performance Score
               </p>
               <p className="text-slate-600 dark:text-slate-400 text-sm">
@@ -144,7 +144,7 @@ export default function HelenMooreHairdressingCase() {
               <h3 className="text-3xl font-heading font-bold text-slate-900 dark:text-white mb-2">
                 Zero
               </h3>
-              <p className="text-sm font-mono uppercase tracking-wider text-slate-500 mb-2">
+              <p className="text-sm font-mono uppercase tracking-wider text-slate-400 mb-2">
                 Friction Booking
               </p>
               <p className="text-slate-600 dark:text-slate-400 text-sm">
@@ -166,7 +166,7 @@ export default function HelenMooreHairdressingCase() {
               <h3 className="text-3xl font-heading font-bold text-slate-900 dark:text-white mb-2">
                 #1
               </h3>
-              <p className="text-sm font-mono uppercase tracking-wider text-slate-500 mb-2">
+              <p className="text-sm font-mono uppercase tracking-wider text-slate-400 mb-2">
                 Local Ranking
               </p>
               <p className="text-slate-600 dark:text-slate-400 text-sm">
