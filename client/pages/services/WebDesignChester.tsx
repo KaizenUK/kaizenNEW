@@ -301,18 +301,18 @@ export default function WebDesignChester() {
   return (
     <Layout>
       <Helmet>
-        <title>Chester’s High-Performance Web Agency | Kaizen</title>
+        <title>Web Design Chester | High-Performance React Developers</title>
         <meta
           name="description"
-          content="Fast, professional websites for Chester businesses who want to lead their market. No templates, no jargon—just results."
+          content="Fast, secure web design for Chester. We build bespoke React websites for law firms, financial advisors, and businesses on Chester Business Park."
         />
         <meta
           name="og:title"
-          content="Chester’s High-Performance Web Agency | Kaizen"
+          content="Web Design Chester | High-Performance React Developers"
         />
         <meta
           name="og:description"
-          content="Fast, professional websites for Chester businesses who want to lead their market. No templates, no jargon—just results."
+          content="Fast, secure web design for Chester. We build bespoke React websites for law firms, financial advisors, and businesses on Chester Business Park."
         />
         <meta name="og:type" content="website" />
         <link
