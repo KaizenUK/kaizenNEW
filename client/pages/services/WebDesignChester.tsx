@@ -570,9 +570,9 @@ export default function WebDesignChester() {
 
               <div className="prose prose-lg dark:prose-invert mb-8">
                 <p className="text-slate-600 dark:text-slate-300">
-                  We work with ambitious Chester businesses — from clinics and
-                  solicitors to building firms — who want a site that looks
-                  premium, loads instantly, and generates leads.
+                  We work with Chester&apos;s established professional sector — from
+                  architects and financial advisors to heritage retail — giving
+                  you a site that reflects your reputation.
                 </p>
               </div>
 
