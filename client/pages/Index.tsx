@@ -945,7 +945,7 @@ const LatestInsights = () => {
           </h2>
           <p className="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
             Stay updated with our latest thoughts on web design, development,
-            and digital transformation for Liverpool and Wirral businesses.
+            and digital transformation for local and remote teams.
           </p>
         </motion.div>
 
@@ -965,7 +965,7 @@ const LatestInsights = () => {
                 <div className="h-40 w-full overflow-hidden rounded-t-2xl border-b border-slate-200/50 dark:border-slate-800/50">
                   <img
                     src={post.image}
-                    alt={`Featured image for ${post.title} - Kaizen Web Liverpool`}
+                    alt={`Featured image for ${post.title} - Kaizen Web`}
                     loading="lazy"
                     width="800"
                     height="600"
