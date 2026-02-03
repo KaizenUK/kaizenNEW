@@ -102,8 +102,9 @@ const OffCanvasMenu: React.FC<OffCanvasMenuProps> = ({
   ];
 
   const topLevelLinks = [
+    { label: "Insights", href: "/blog" },
+    { label: "Case Studies", href: "/case-studies" },
     { label: "Project Rescue", href: "/project-rescue" },
-    { label: "Contact", href: "/contact" },
   ];
 
   const toggleSection = (section: string) => {
