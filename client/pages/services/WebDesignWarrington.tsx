@@ -100,6 +100,8 @@ const getBgClass = (color: string) => {
 };
 
 function WarringtonDataBackground() {
+  const rows = [40, 90, 140, 190, 240, 290, 340];
+
   return (
     <svg
       className="absolute inset-0 w-full h-full opacity-30 mix-blend-screen"
@@ -109,14 +111,14 @@ function WarringtonDataBackground() {
     >
       <defs>
         <linearGradient id="warrington-lines" x1="0" x2="1" y1="0" y2="1">
-          <stop offset="0%" stopColor="#22d3ee" stopOpacity="0.4" />
-          <stop offset="50%" stopColor="#06b6d4" stopOpacity="0.3" />
-          <stop offset="100%" stopColor="#38bdf8" stopOpacity="0.4" />
+          <stop offset="0%" stopColor="#22d3ee" stopOpacity="0.35" />
+          <stop offset="50%" stopColor="#06b6d4" stopOpacity="0.28" />
+          <stop offset="100%" stopColor="#38bdf8" stopOpacity="0.35" />
         </linearGradient>
       </defs>
 
-      {[40, 90, 140, 190, 240, 290, 340].map((y, idx) => (
-        <path
+      {rows.map((y, idx) => (
+        <motion.path
           key={y}
           d={`M 40 ${y} C 200 ${y - 40}, 360 ${y + 20}, 520 ${y - 30} S 760 ${
             y + 10
@@ -125,12 +127,36 @@ function WarringtonDataBackground() {
           stroke="url(#warrington-lines)"
           strokeWidth={idx % 2 === 0 ? 1.4 : 0.8}
           strokeDasharray={idx % 3 === 0 ? "4 8" : "1 10"}
+          initial={{ strokeDashoffset: 0, opacity: 0.18 }}
+          animate={{
+            strokeDashoffset: idx % 2 === 0 ? [-60, 0] : [0, -60],
+            opacity: [0.18, 0.32, 0.18],
+          }}
+          transition={{
+            duration: 10 + idx * 0.8,
+            repeat: Infinity,
+            ease: "linear",
+          }}
         />
       ))}
 
-      <circle cx="260" cy="150" r="3" fill="#22d3ee" opacity="0.9" />
-      <circle cx="420" cy="210" r="3" fill="#06b6d4" opacity="0.9" />
-      <circle cx="560" cy="130" r="3" fill="#38bdf8" opacity="0.9" />
+      {[
+        { cx: 260, cy: 150, color: "#22d3ee" },
+        { cx: 420, cy: 210, color: "#06b6d4" },
+        { cx: 560, cy: 130, color: "#38bdf8" },
+        { cx: 640, cy: 260, color: "#22d3ee" },
+      ].map((dot, i) => (
+        <motion.circle
+          key={i}
+          cx={dot.cx}
+          cy={dot.cy}
+          r="3"
+          fill={dot.color}
+          initial={{ opacity: 0.6 }}
+          animate={{ opacity: [0.4, 0.95, 0.4] }}
+          transition={{ duration: 4 + i, repeat: Infinity, ease: "easeInOut" }}
+        />
+      ))}
     </svg>
   );
 }
@@ -340,12 +366,16 @@ export default function WebDesignWarrington() {
               </div>
 
               <h1 className="text-5xl md:text-6xl lg:text-7xl font-heading font-black leading-[1.1] mb-6 tracking-tight">
-                Warrington’s High-Performance Web Agency.
+                Web Design Warrington.
+                <span className="block text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 via-sky-300 to-cyan-200">
+                  Built for scale.
+                </span>
               </h1>
 
               <p className="text-xl text-slate-300 max-w-xl mb-8 leading-relaxed">
-                Fast, professional websites for Warrington businesses who want to
-                lead their market. No templates, no jargon—just results.
+                High-performance websites and portals for Warrington&apos;s logistics,
+                engineering, and tech teams. Fast on mobile, solid under load,
+                and built to stay reliable.
               </p>
 
               <div className="flex flex-col sm:flex-row gap-4 items-center">
@@ -399,7 +429,7 @@ export default function WebDesignWarrington() {
                 </div>
                 <div className="mt-6 pt-6 border-t border-slate-800">
                   <p className="text-sm text-slate-400 text-center font-mono">
-                    "Premium websites that load instantly — and win more work."
+                    "Fast websites. Solid systems. Clear visibility."
                   </p>
                 </div>
               </div>
@@ -579,15 +609,15 @@ export default function WebDesignWarrington() {
                 {[
                   {
                     title: "High-Impact Websites.",
-                    desc: "For businesses that need to look professional and generate leads. Perfect for solicitors, clinics, and trades.",
+                    desc: "For industrial and tech firms that need to look credible to decision-makers. Clear messaging, fast load times, and built to convert.",
                   },
                   {
                     title: "Fixing Broken Projects.",
-                    desc: "Has another developer let you down? We step in to fix slow, broken, or unfinished websites.",
+                    desc: "Stalled portal? Slow site? We stabilise what you&apos;ve got, ship fixes quickly, and bring projects back under control.",
                   },
                   {
                     title: "Custom Booking & Systems.",
-                    desc: "Need a client portal or a booking system? We build secure tools to help you run your business.",
+                    desc: "Client portals, document hubs, dashboards, and internal tools — secure, maintainable, and designed around your workflow.",
                   },
                 ].map((service) => (
                   <div
@@ -896,9 +926,9 @@ export default function WebDesignWarrington() {
           </h2>
 
           <p className="text-xl text-slate-400 mb-10 leading-relaxed max-w-2xl mx-auto">
-            Whether you're a clinic, a building firm, a consultancy, or a
-            professional service — we build websites that look premium, load
-            fast, and make it easier for customers to choose you.
+            Whether you&apos;re moving goods at scale, engineering complex products,
+            or running a multi-site operation — we build websites and portals
+            that stay fast, clear, and reliable.
           </p>
 
           <div className="flex flex-col sm:flex-row justify-center gap-6">
