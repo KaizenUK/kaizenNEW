@@ -124,7 +124,11 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
               <img
                 src="https://cdn.builder.io/api/v1/image/assets%2Fe4ae46bbd81b4b95bef54d66dd9748cc%2F6ca2caa53229445d9a63b2ab64bfede4?format=webp&width=800"
                 alt="Kaizen Web"
+                width="192"
+                height="48"
                 className="h-12 w-auto"
+                loading="lazy"
+                decoding="async"
               />
               {sidebarOpen && (
                 <span className="text-xs font-heading font-bold text-gray-400 uppercase tracking-wider">
