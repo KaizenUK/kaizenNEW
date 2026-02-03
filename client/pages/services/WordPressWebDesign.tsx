@@ -20,7 +20,7 @@ const fadeInUp = {
   visible: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.6, ease: "easeOut" },
+    transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] as const },
   },
 };
 
@@ -185,7 +185,7 @@ export default function WordPressWebDesign() {
           transition={{
             duration: 8,
             repeat: Infinity,
-            ease: "easeInOut",
+            ease: [0.65, 0, 0.35, 1] as const,
           }}
           style={{
             background:
@@ -200,7 +200,7 @@ export default function WordPressWebDesign() {
               className="bg-white/95 dark:bg-slate-900/95 backdrop-blur-sm rounded-2xl p-8 md:p-12 shadow-2xl border border-white/20 dark:border-slate-800/50"
               initial={{ opacity: 0, x: -60 }}
               animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.9, ease: "easeOut" }}
+              transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] as const }}
             >
               <motion.h1 className="text-4xl md:text-5xl lg:text-6xl font-heading font-black mb-6 leading-tight text-kaizen-dark dark:text-white">
                 {["Bespoke", "WordPress", "Development", "Liverpool."].map(
@@ -213,7 +213,7 @@ export default function WordPressWebDesign() {
                       transition={{
                         delay: 0.3 + index * 0.15,
                         duration: 0.6,
-                        ease: "easeOut",
+                        ease: [0.16, 1, 0.3, 1] as const,
                       }}
                     >
                       {word}
@@ -267,7 +267,7 @@ export default function WordPressWebDesign() {
                   transition={{
                     duration: 6,
                     repeat: Infinity,
-                    ease: "easeInOut",
+                    ease: [0.65, 0, 0.35, 1] as const,
                   }}
                 />
                 <img
