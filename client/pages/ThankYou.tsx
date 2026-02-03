@@ -97,7 +97,7 @@ const ThankYou = () => {
               </Link>
 
               <Link
-                to="/services/web-design-liverpool"
+                to="/web-design-liverpool"
                 className="inline-flex items-center justify-center gap-2 px-8 py-3 border-2 border-kaizen-cyan text-kaizen-cyan font-heading font-bold rounded-lg hover:bg-kaizen-cyan/10 transition"
               >
                 Explore Web Design Services
