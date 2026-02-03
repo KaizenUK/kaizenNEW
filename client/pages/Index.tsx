@@ -1391,6 +1391,59 @@ const PerformanceBadge = () => {
   );
 };
 
+const WhoWeHelp = () => {
+  const industries = [
+    "Solicitors",
+    "Trades",
+    "Retail",
+    "Logistics",
+    "Tech Startups"
+  ];
+
+  return (
+    <section className="py-16 md:py-24 bg-slate-900 text-white border-t border-white/10">
+      <div className="container mx-auto px-4">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="text-center mb-12"
+        >
+          <p className="text-xs font-mono tracking-[0.25em] text-kaizen-cyan uppercase mb-4">
+            Who We Work With
+          </p>
+          <h2 className="text-3xl md:text-4xl font-heading font-bold mb-6">
+            Helping Local Industry.
+          </h2>
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="flex flex-wrap justify-center items-center gap-4 md:gap-6"
+        >
+          {industries.map((industry, index) => (
+            <motion.div
+              key={industry}
+              initial={{ opacity: 0, scale: 0.8 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              transition={{ delay: index * 0.1 }}
+              whileHover={{ scale: 1.05 }}
+              className="px-6 md:px-8 py-3 rounded-full border border-white/20 bg-white/5 backdrop-blur-sm hover:border-kaizen-cyan/50 hover:bg-kaizen-cyan/10 transition-all duration-300"
+            >
+              <span className="text-sm md:text-base font-medium text-white">
+                {industry}
+              </span>
+            </motion.div>
+          ))}
+        </motion.div>
+      </div>
+    </section>
+  );
+};
+
 const LocalMap = () => {
   return (
     <section className="py-20 md:py-32 bg-gray-950 text-white relative overflow-hidden">
