@@ -618,8 +618,7 @@ export default function WebDesignLiverpool() {
               transition={{ delay: 0.1 }}
               className="text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto"
             >
-              We keep things simple. You get a website that works properly,
-              looks professional, and helps your business grow.
+              From Old Hall Street to the Baltic, Liverpool is competing on a global stage. We build the digital infrastructure that law firms, clinics, and consultants need to win high-value contracts—secure, fast, and designed to impress.
             </motion.p>
           </div>
 
