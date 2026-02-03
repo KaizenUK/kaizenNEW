@@ -16,14 +16,14 @@ export default function Services() {
       title: "Web Design Liverpool",
       description:
         "Fast, modern websites that generate leads and help your business grow online.",
-      link: "/services/web-design-liverpool",
+      link: "/web-design-liverpool",
     },
     {
       icon: Code2,
       title: "Web Design Liverpool City Centre",
       description:
         "Specialist web design for Liverpool city centre businesses with unique needs.",
-      link: "/web-design-liverpool-city-centre",
+      link: "/web-design-liverpool",
     },
     {
       icon: Code2,
