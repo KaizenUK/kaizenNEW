@@ -211,10 +211,6 @@ function AppContent() {
             path="/services/wordpress-web-design"
             element={<WordPressWebDesign />}
           />
-          <Route
-            path="/web-design-liverpool-city-centre"
-            element={<CityCentre />}
-          />
           <Route path="/web-design-wirral" element={<WebDesignWirral />} />
           <Route
             path="/contract-product-owner"
