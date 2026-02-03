@@ -400,12 +400,7 @@ const SocialMediaWarning = () => {
   return (
     <section className="py-16 md:py-20 bg-slate-900 text-white border-y border-white/10">
       <div className="container mx-auto px-4">
-        <motion.div
-          initial={{ opacity: 1, y: 0 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: false, amount: 0.5 }}
-          className="max-w-4xl mx-auto text-center"
-        >
+        <div className="max-w-4xl mx-auto text-center">
           <p className="text-xs font-mono tracking-[0.25em] text-amber-200 uppercase mb-4">
             The Social Media Warning
           </p>
@@ -419,7 +414,7 @@ const SocialMediaWarning = () => {
             you own: it builds trust, captures enquiries, and keeps working
             regardless of what social platforms decide.
           </p>
-        </motion.div>
+        </div>
       </div>
     </section>
   );
