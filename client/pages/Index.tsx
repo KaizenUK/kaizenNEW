@@ -667,9 +667,9 @@ const PricingCTABanner = () => {
                   Not sure what you need?
                 </h3>
                 <p className="text-white/80 text-lg mb-6">
-                  Read our transparent Liverpool &amp; Wirral pricing guide so
-                  you know what a serious website should cost in 2025 and what
-                  you should actually expect to pay.
+                  Read our transparent pricing guide so you know what a serious
+                  website should cost in 2025 and what you should actually
+                  expect to pay.
                 </p>
               </div>
               <div className="flex flex-col sm:flex-row gap-4">
