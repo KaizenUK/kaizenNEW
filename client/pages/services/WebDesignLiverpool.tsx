@@ -167,7 +167,7 @@ function NetworkAnimation() {
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
       >
-        {/* Step 0: Enterprise Requirement */}
+        {/* Step 0: Your Goals */}
         <rect
           x="20"
           y="20"
@@ -182,7 +182,7 @@ function NetworkAnimation() {
           textAnchor="middle"
           className={`text-xs font-mono ${getTextStyle(0)}`}
         >
-          Enterprise Requirements
+          Your Goals
         </text>
 
         {/* Arrow 1 */}
@@ -195,7 +195,7 @@ function NetworkAnimation() {
           animate={{ pathLength: activeStep >= 0 ? 1 : 0 }}
         />
 
-        {/* Step 1: Technical & Step 2: Performance */}
+        {/* Step 1: Build & Step 2: Speed */}
         <g>
           <rect
             x="20"
@@ -211,7 +211,7 @@ function NetworkAnimation() {
             textAnchor="middle"
             className={`text-xs font-mono ${getTextStyle(1)}`}
           >
-            Technical
+            Build
           </text>
 
           <rect
@@ -228,7 +228,7 @@ function NetworkAnimation() {
             textAnchor="middle"
             className={`text-xs font-mono ${getTextStyle(2)}`}
           >
-            Performance
+            Speed
           </text>
         </g>
 
@@ -250,7 +250,7 @@ function NetworkAnimation() {
           animate={{ pathLength: activeStep >= 2 ? 1 : 0 }}
         />
 
-        {/* Step 3: Regulatory Compliance */}
+        {/* Step 3: Trust & Security */}
         <rect
           x="20"
           y="220"
@@ -265,7 +265,7 @@ function NetworkAnimation() {
           textAnchor="middle"
           className={`text-xs font-mono ${getTextStyle(3)}`}
         >
-          Regulatory Compliance & Trust
+          Trust & Security
         </text>
 
         {/* Decorative dots */}
@@ -283,10 +283,10 @@ function NetworkAnimation() {
               exit={{ opacity: 0, y: -10 }}
               className="block font-bold text-cyan-500"
             >
-              {activeStep === 0 && "Capturing Enterprise Needs"}
-              {activeStep === 1 && "Building Robust Systems"}
-              {activeStep === 2 && "Ensuring World-Class Performance"}
-              {activeStep === 3 && "Meeting Regulatory Standards"}
+              {activeStep === 0 && "Understanding your business"}
+              {activeStep === 1 && "Building it properly"}
+              {activeStep === 2 && "Making it fast"}
+              {activeStep === 3 && "Keeping it secure"}
             </motion.span>
           </AnimatePresence>
         </p>
