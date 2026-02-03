@@ -64,6 +64,19 @@
     Strict-Transport-Security = "max-age=31536000; includeSubDomains; preload"
     Permissions-Policy = "camera=(), microphone=(), geolocation=()"
 
+# 301 Redirects for Liverpool Landing Page consolidation
+[[redirects]]
+  from = "/services/web-design-liverpool"
+  to = "/web-design-liverpool"
+  status = 301
+  force = false
+
+[[redirects]]
+  from = "/web-design-liverpool-city-centre"
+  to = "/web-design-liverpool"
+  status = 301
+  force = false
+
 [[redirects]]
   force = true
   from = "/api/*"
