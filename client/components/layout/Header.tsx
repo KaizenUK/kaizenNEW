@@ -310,9 +310,6 @@ const Header: React.FC<HeaderProps> = ({
               width="200"
               height="64"
               className="h-16 w-auto"
-              style={{
-                filter: theme === "dark" ? "brightness(0) invert(1)" : "none",
-              }}
             />
           </Link>
 
