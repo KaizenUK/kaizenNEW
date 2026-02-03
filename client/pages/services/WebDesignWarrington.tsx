@@ -618,8 +618,7 @@ export default function WebDesignWarrington() {
               transition={{ delay: 0.1 }}
               className="text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto"
             >
-              We keep things simple. You get a website that works properly,
-              looks professional, and helps your business grow.
+              Warrington is the industrial engine of the North West. You don&apos;t need a &apos;pretty&apos; brochure site; you need a high-performance tool that handles data, tracking, and traffic without breaking. We build systems that work as hard as your team does.
             </motion.p>
           </div>
 
