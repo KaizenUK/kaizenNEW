@@ -762,8 +762,8 @@ const CoreServiceVerticals = () => {
             Our business is split into two main verticals
           </h2>
           <p className="text-sm md:text-base text-slate-300 max-w-2xl mx-auto">
-            Web design for Liverpool &amp; Wirral, and hands-on Contract Product
-            Ownership for complex or failing digital projects.
+            High-performance websites for local businesses, and hands-on product
+            leadership for complex or failing digital projects.
           </p>
         </motion.div>
 
@@ -787,17 +787,17 @@ const CoreServiceVerticals = () => {
                 Vertical One
               </p>
               <h3 className="text-3xl md:text-4xl font-heading font-bold mb-4">
-                Liverpool &amp; Wirral Web Design
+                Wirral Web Design
               </h3>
               <p className="text-sm md:text-base text-slate-200 mb-6 max-w-md">
-                High-performance web design for Liverpool &amp; Wirral SMEs. We
-                design and build fast React and WordPress sites that turn
-                searches into leads and support long-term SEO.
+                High-performance web design for SMEs that want speed and
+                conversions. We build lean sites that turn search traffic into
+                leads and keep improving over time.
               </p>
               <ul className="space-y-2 text-sm md:text-base text-slate-200/90 mb-8">
                 <li className="flex items-center gap-2">
                   <span className="h-1.5 w-6 rounded-full bg-cyan-400" />
-                  Local-first SEO for Liverpool &amp; Wirral searches
+                  Local-first SEO built around real search intent
                 </li>
                 <li className="flex items-center gap-2">
                   <span className="h-1.5 w-6 rounded-full bg-cyan-400" />
@@ -810,17 +810,11 @@ const CoreServiceVerticals = () => {
               </ul>
               <div className="mt-auto flex items-center justify-between gap-4">
                 <Link
-                  to="/services/web-design-liverpool"
+                  to="/contact"
                   className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-cyan-300 to-cyan-200 text-slate-950 px-5 py-2.5 text-sm font-heading font-semibold shadow-lg hover:shadow-cyan-400/60 hover:-translate-y-0.5 transition-all"
                 >
-                  Explore Web Design
+                  Get a Performance Audit
                   <ArrowRight size={18} />
-                </Link>
-                <Link
-                  to="/services/web-design-wirral"
-                  className="hidden md:inline-flex text-xs font-mono tracking-widest text-cyan-300/80 hover:text-cyan-200 transition-colors uppercase"
-                >
-                  Wirral web design
                 </Link>
               </div>
             </div>
@@ -843,9 +837,9 @@ const CoreServiceVerticals = () => {
                 Contract Product Owner
               </h3>
               <p className="text-sm md:text-base text-slate-100 mb-6 max-w-md">
-                Senior Contract Product Owner for Liverpool &amp; Wirral teams.
+                Senior contract product ownership for remote &amp; local teams.
                 We rescue failing builds, run Agile sprints, and keep budgets,
-                scope and delivery under control.
+                scope and outcomes under control.
               </p>
               <ul className="space-y-2 text-sm md:text-base text-slate-100/90 mb-8">
                 <li className="flex items-center gap-2">
