@@ -845,9 +845,9 @@ export default function WebDesignChester() {
               className="bg-transparent py-0 md:py-0"
               items={[
                 {
-                  question: "Why choose a Chester City Region agency?",
+                  question: "Why choose a Chester agency?",
                   answer:
-                    "Because we understand the local market. Whether you are based in the Chester Business Park or expanding from the The Rows & City Centre, we build sites that compete with global agencies without the bloated London retainer fees. We know the difference between a Law Centre brief and a Financial Services portal.",
+                    "Because we understand the balance between heritage and modernisation. Whether you are a legal firm on the Business Park or a consultant in Hoole, we build sites that look established but perform like a tech startup.",
                 },
                 {
                   question: "Do you work with WordPress?",
