@@ -620,8 +620,8 @@ export default function WebDesignWirral() {
               transition={{ delay: 0.1 }}
               className="text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto"
             >
-              We are not just another remote agency. We are your neighbours,
-              and we understand the local market.
+              We are not just another remote agency. We are your neighbours, and
+              we understand the local market.
             </motion.p>
           </div>
 
@@ -680,7 +680,9 @@ export default function WebDesignWirral() {
                   ref={ref}
                   key={i}
                   initial={{ opacity: 0, y: 40 }}
-                  animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 40 }}
+                  animate={
+                    isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 40 }
+                  }
                   transition={{ duration: 0.6, delay: i * 0.15 }}
                   className="group relative p-8 rounded-3xl bg-gradient-to-b from-slate-800/50 to-slate-900/50 border border-slate-700/50 backdrop-blur-sm hover:border-emerald-500/30 transition-all duration-300"
                 >

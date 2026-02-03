@@ -414,7 +414,9 @@ export default function WebDesignLiverpool() {
   return (
     <Layout>
       <Helmet>
-        <title>Enterprise-Grade Web Design in Liverpool | Premium Digital Platforms</title>
+        <title>
+          Enterprise-Grade Web Design in Liverpool | Premium Digital Platforms
+        </title>
         <meta
           name="description"
           content="Bespoke digital platforms for the Commercial District and Knowledge Quarter. Stop relying on slow, insecure templates and scale with confidence."
@@ -476,7 +478,9 @@ export default function WebDesignLiverpool() {
               transition={{ duration: 0.6, delay: 0.4 }}
               className="text-xl md:text-2xl text-slate-300 mb-10 leading-relaxed max-w-2xl"
             >
-              Bespoke digital platforms for the Commercial District and Knowledge Quarter. Stop relying on slow, insecure templates and scale with confidence.
+              Bespoke digital platforms for the Commercial District and
+              Knowledge Quarter. Stop relying on slow, insecure templates and
+              scale with confidence.
             </motion.p>
 
             <motion.div
@@ -619,7 +623,10 @@ export default function WebDesignLiverpool() {
               transition={{ delay: 0.1 }}
               className="text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto"
             >
-              From Old Hall Street to the Baltic, Liverpool is competing on a global stage. We build the digital infrastructure that law firms, clinics, and consultants need to win high-value contracts—secure, fast, and designed to impress.
+              From Old Hall Street to the Baltic, Liverpool is competing on a
+              global stage. We build the digital infrastructure that law firms,
+              clinics, and consultants need to win high-value contracts—secure,
+              fast, and designed to impress.
             </motion.p>
           </div>
 
@@ -677,7 +684,9 @@ export default function WebDesignLiverpool() {
                   ref={ref}
                   key={i}
                   initial={{ opacity: 0, y: 40 }}
-                  animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 40 }}
+                  animate={
+                    isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 40 }
+                  }
                   transition={{ duration: 0.6, delay: i * 0.15 }}
                   className="group relative p-8 rounded-3xl bg-gradient-to-b from-slate-800/50 to-slate-900/50 border border-slate-700/50 backdrop-blur-sm hover:border-red-500/30 transition-all duration-300"
                 >

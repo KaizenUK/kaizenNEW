@@ -273,7 +273,8 @@ export default function PerformanceScanner() {
         "Our performance scanner uses the same Google PageSpeed Insights API that Google uses to rank your site. It measures your Core Web Vitals—LCP, CLS, and TBT—plus overall performance, accessibility, and SEO best practices. You get the same data Google sees.",
     },
     {
-      question: "How long does it take to improve Google ranking after fixing speed?",
+      question:
+        "How long does it take to improve Google ranking after fixing speed?",
       answer:
         "Google recrawls sites regularly, but you will typically see ranking improvements within 2-4 weeks after fixing your Core Web Vitals. Combined with improved website conversion rate from faster load times, clients often see ROI within the first month.",
     },
@@ -282,7 +283,9 @@ export default function PerformanceScanner() {
   return (
     <Layout>
       <Helmet>
-        <title>Free Website Speed Test | Check Your Google PageSpeed Score</title>
+        <title>
+          Free Website Speed Test | Check Your Google PageSpeed Score
+        </title>
         <meta
           name="description"
           content="Is your slow website costing you customers? Run a free Google PageSpeed test and check your Core Web Vitals. Get instant results and fix your mobile site speed today."

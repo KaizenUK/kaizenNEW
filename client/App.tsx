@@ -272,10 +272,7 @@ function AppContent() {
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
           <Route path="/cookie-policy" element={<CookiePolicy />} />
           <Route path="/gdpr-policy" element={<GDPRPolicy />} />
-          <Route
-            path="/performance-scanner"
-            element={<PerformanceScanner />}
-          />
+          <Route path="/performance-scanner" element={<PerformanceScanner />} />
 
           {/* Catch-all - ADD ALL CUSTOM ROUTES ABOVE THIS */}
           <Route path="*" element={<NotFound />} />

@@ -413,7 +413,9 @@ export default function WebDesignWarrington() {
   return (
     <Layout>
       <Helmet>
-        <title>High-Performance Web Systems for Warrington | Enterprise Solutions</title>
+        <title>
+          High-Performance Web Systems for Warrington | Enterprise Solutions
+        </title>
         <meta
           name="description"
           content="Robust, scalable websites and portals for Warrington logistics, engineering, and tech firms. Built to handle complex data and high traffic without failing."
@@ -475,7 +477,9 @@ export default function WebDesignWarrington() {
               transition={{ duration: 0.6, delay: 0.4 }}
               className="text-xl md:text-2xl text-slate-300 mb-10 leading-relaxed max-w-2xl"
             >
-              Robust, scalable websites and portals for logistics, engineering, and tech firms. Built to handle complex data and high traffic without failing.
+              Robust, scalable websites and portals for logistics, engineering,
+              and tech firms. Built to handle complex data and high traffic
+              without failing.
             </motion.p>
 
             <motion.div
@@ -618,7 +622,11 @@ export default function WebDesignWarrington() {
               transition={{ delay: 0.1 }}
               className="text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto"
             >
-              Warrington is the industrial engine of the North West. You don&apos;t need a &apos;pretty&apos; brochure site; you need a high-performance tool that handles data, tracking, and traffic without breaking. We build systems that work as hard as your team does.
+              Warrington is the industrial engine of the North West. You
+              don&apos;t need a &apos;pretty&apos; brochure site; you need a
+              high-performance tool that handles data, tracking, and traffic
+              without breaking. We build systems that work as hard as your team
+              does.
             </motion.p>
           </div>
 
@@ -677,7 +685,9 @@ export default function WebDesignWarrington() {
                   ref={ref}
                   key={i}
                   initial={{ opacity: 0, y: 40 }}
-                  animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 40 }}
+                  animate={
+                    isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 40 }
+                  }
                   transition={{ duration: 0.6, delay: i * 0.15 }}
                   className="group relative p-8 rounded-3xl bg-gradient-to-b from-slate-800/50 to-slate-900/50 border border-slate-700/50 backdrop-blur-sm hover:border-cyan-500/30 transition-all duration-300"
                 >

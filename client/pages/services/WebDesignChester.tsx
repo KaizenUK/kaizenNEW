@@ -413,7 +413,9 @@ export default function WebDesignChester() {
   return (
     <Layout>
       <Helmet>
-        <title>Web Design Chester | Professional Websites for Chester Businesses</title>
+        <title>
+          Web Design Chester | Professional Websites for Chester Businesses
+        </title>
         <meta
           name="description"
           content="Web design in Chester for law firms, financial advisors, and professional services. Fast, secure websites that look established and win client trust."
@@ -475,9 +477,9 @@ export default function WebDesignChester() {
               transition={{ duration: 0.6, delay: 0.4 }}
               className="text-xl md:text-2xl text-slate-300 mb-10 leading-relaxed max-w-2xl"
             >
-              We build websites for law firms, financial advisors, and professional
-              services who need to look established online. Fast, secure, and built
-              to win trust.
+              We build websites for law firms, financial advisors, and
+              professional services who need to look established online. Fast,
+              secure, and built to win trust.
             </motion.p>
 
             <motion.div
@@ -620,8 +622,8 @@ export default function WebDesignChester() {
               transition={{ delay: 0.1 }}
               className="text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto"
             >
-              We build websites that reflect the quality of your practice.
-              No shortcuts, no templates — just proper craftsmanship.
+              We build websites that reflect the quality of your practice. No
+              shortcuts, no templates — just proper craftsmanship.
             </motion.p>
           </div>
 
@@ -680,7 +682,9 @@ export default function WebDesignChester() {
                   ref={ref}
                   key={i}
                   initial={{ opacity: 0, y: 40 }}
-                  animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 40 }}
+                  animate={
+                    isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 40 }
+                  }
                   transition={{ duration: 0.6, delay: i * 0.15 }}
                   className="group relative p-8 rounded-3xl bg-gradient-to-b from-slate-800/50 to-slate-900/50 border border-slate-700/50 backdrop-blur-sm hover:border-amber-500/30 transition-all duration-300"
                 >
