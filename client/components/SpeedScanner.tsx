@@ -109,12 +109,27 @@ export default function SpeedScanner() {
     }
   }
 
-  function handleUnlock() {
+  async function handleUnlock() {
     const normalizedEmail = email.trim();
     if (!normalizedEmail || !normalizedEmail.includes("@")) {
       setEmailError("Please enter a valid email address.");
       return;
     }
+
+    // Save to Supabase if client is initialized
+    if (supabase) {
+      try {
+        await supabase.from("speed_scanner_submissions").insert({
+          email: normalizedEmail,
+          website_url: url || null,
+          performance_score: score,
+        });
+      } catch (error) {
+        console.error("Error saving email to Supabase:", error);
+        // Still proceed even if save fails - don't block user from getting PDF
+      }
+    }
+
     setIsEmailSubmitted(true);
     setEmailError("");
   }
