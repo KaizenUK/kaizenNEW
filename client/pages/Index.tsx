@@ -82,23 +82,8 @@ const ScrollReveal = ({
 };
 
 const HeroSection = () => {
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-
-  const handleMouseMove = (e: React.MouseEvent) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    setMousePosition({
-      x: (e.clientX - rect.left) / rect.width,
-      y: (e.clientY - rect.top) / rect.height,
-    });
-  };
-
   return (
-    <motion.section
-      onMouseMove={handleMouseMove}
-      className="relative min-h-[100vh] bg-gray-950 text-white flex items-center py-20 overflow-hidden"
-      whileHover={{ scale: 1.02 }}
-      transition={{ duration: 0.4 }}
-    >
+    <section className="relative isolate min-h-[100vh] bg-[#020617] text-white flex items-center py-20 overflow-hidden">
       {/* Hidden preload-optimized hero image for LCP */}
       <img
         src={DEFAULT_OG_IMAGE}
@@ -111,8 +96,15 @@ const HeroSection = () => {
         className="absolute inset-0 w-0 h-0 opacity-0 pointer-events-none"
         aria-hidden="true"
       />
+
+      {/* CSS-only aurora background */}
+      <div className="pointer-events-none absolute inset-0 hero-aurora">
+        <div className="hero-aurora-orb hero-aurora-orb--cyan" />
+        <div className="hero-aurora-orb hero-aurora-orb--purple" />
+      </div>
+
       <svg
-        className="absolute inset-0 w-full h-full pointer-events-none opacity-40"
+        className="absolute inset-0 w-full h-full pointer-events-none opacity-35"
         preserveAspectRatio="none"
       >
         <defs>
@@ -133,65 +125,40 @@ const HeroSection = () => {
         <rect width="100%" height="100%" fill="url(#hero-grid)" />
       </svg>
 
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-gray-950" />
-
-      <motion.div
-        className="pointer-events-none absolute inset-0"
-        animate={{
-          background: [
-            `radial-gradient(circle at ${mousePosition.x * 100}% ${
-              mousePosition.y * 100
-            }%, rgba(34, 211, 238, 0.1) 0%, transparent 50%)`,
-          ],
-        }}
-        transition={{ type: "tween", duration: 0.3 }}
-      />
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[#020617]" />
 
       <div className="container mx-auto px-4 relative z-10">
         <div className="max-w-4xl mx-auto text-center">
-          <motion.p
-            className="text-xs font-mono tracking-[0.25em] text-kaizen-cyan mb-6 uppercase"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
+          <p
+            className="text-xs font-mono tracking-[0.25em] text-kaizen-cyan mb-6 uppercase hero-reveal"
+            style={{ "--delay": "0s" } as React.CSSProperties}
           >
             Wirral Web Design
-          </motion.p>
+          </p>
 
-          <motion.h1
-            className="text-5xl md:text-7xl font-heading font-black mb-8 leading-tight"
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.1 }}
+          <h1
+            className="text-5xl md:text-7xl font-heading font-black mb-8 leading-tight hero-reveal"
+            style={{ "--delay": "0s" } as React.CSSProperties}
           >
             Web Design Wirral: Lean, Fast, &amp; Profitable Websites.
-          </motion.h1>
+          </h1>
 
-          <motion.p
-            className="text-lg md:text-xl text-white/85 leading-relaxed mb-12 max-w-3xl mx-auto"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.3, duration: 0.8 }}
+          <p
+            className="text-lg md:text-xl text-white/85 leading-relaxed mb-12 max-w-3xl mx-auto hero-reveal"
+            style={{ "--delay": "0.2s" } as React.CSSProperties}
           >
             Stop losing customers to slow loading times. We build streamlined
             sites designed to convert traffic into leads.
-          </motion.p>
+          </p>
 
-          <motion.div
-            className="flex flex-col sm:flex-row items-center justify-center gap-4"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.5, duration: 0.6 }}
+          <div
+            className="flex flex-col sm:flex-row items-center justify-center gap-4 hero-reveal"
+            style={{ "--delay": "0.4s" } as React.CSSProperties}
           >
             <button
               onClick={() => openCrisp()}
-              className="px-8 py-4 rounded-lg bg-gradient-to-r from-green-400 to-emerald-500 text-gray-950 font-heading font-bold text-lg hover:shadow-2xl hover:shadow-green-500/60 hover:scale-105 transition-all inline-flex items-center justify-center gap-2 relative group"
+              className="px-8 py-4 rounded-lg bg-white text-black font-heading font-bold text-lg inline-flex items-center justify-center gap-2 transform-gpu transition-all duration-200 hover:scale-105 hover:shadow-[0_0_20px_rgba(255,255,255,0.5)]"
             >
-              <motion.div
-                className="absolute -left-2 top-1/2 -translate-y-1/2 w-3 h-3 rounded-full bg-green-300"
-                animate={{ scale: [1, 1.5, 1], opacity: [1, 0.5, 1] }}
-                transition={{ duration: 2, repeat: Infinity }}
-              />
               Get a Performance Audit
               <ArrowRight size={20} />
             </button>
@@ -207,10 +174,10 @@ const HeroSection = () => {
               See Our Pricing
               <ArrowUpRight size={20} />
             </button>
-          </motion.div>
+          </div>
         </div>
       </div>
-    </motion.section>
+    </section>
   );
 };
 
