@@ -493,19 +493,21 @@ const Header: React.FC<HeaderProps> = ({
 
           {/* Right Actions */}
           <div className="flex items-center gap-4">
-            {/* CTA Button */}
+            {/* Free Speed Test Button */}
+            <Link
+              to="/performance-scanner"
+              className="hidden sm:flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium text-emerald-400 hover:text-emerald-300 hover:bg-emerald-500/10 transition border border-emerald-500/30"
+            >
+              <Zap size={16} />
+              Free Speed Test
+            </Link>
+
+            {/* Start a Chat Button */}
             <motion.div
               className="hidden sm:block relative group"
               whileHover={{ scale: 1.05 }}
             >
               <div className="absolute -inset-1 bg-gradient-to-r from-amber-300 via-orange-500 to-rose-500 rounded-full opacity-40 group-hover:opacity-70 blur transition duration-300" />
-              <Link
-                to="/performance-scanner"
-                className="relative mr-3 inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium text-emerald-400 hover:text-emerald-300 hover:bg-emerald-500/10 transition border border-emerald-500/30"
-              >
-                <Zap size={16} />
-                Free Speed Test
-              </Link>
               <button
                 onClick={() => openCrisp()}
                 className="relative flex items-center gap-2 px-6 py-2 rounded-full text-sm font-medium text-gray-950 bg-gradient-to-r from-amber-300 via-orange-500 to-rose-500 backdrop-blur-xl hover:shadow-2xl hover:shadow-orange-500/50 transition"
