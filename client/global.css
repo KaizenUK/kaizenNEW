@@ -1,7 +1,6 @@
 @import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap");
 
-/* Font display swap is already applied via &display=swap URL parameter above */
-
+/* Optimize Critical Rendering Path - Critical CSS loads first */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
