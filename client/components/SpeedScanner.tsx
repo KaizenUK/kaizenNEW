@@ -65,12 +65,15 @@ export default function SpeedScanner() {
 
       if (!res.ok) {
         const errorData = await res.json().catch(() => ({}));
-        throw new Error(errorData.error || `HTTP ${res.status}: Failed to run audit`);
+        throw new Error(
+          errorData.error || `HTTP ${res.status}: Failed to run audit`,
+        );
       }
 
       const data = await res.json();
 
-      if (data.error) throw new Error(data.error.message || "API returned an error");
+      if (data.error)
+        throw new Error(data.error.message || "API returned an error");
 
       const lighthouseScore =
         data.lighthouseResult.categories.performance.score * 100;

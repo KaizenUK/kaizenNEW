@@ -42,8 +42,8 @@ export function createServer() {
       // Set no-cache headers to prevent 304 responses
       res.set({
         "Cache-Control": "no-cache, no-store, must-revalidate, max-age=0",
-        "Pragma": "no-cache",
-        "Expires": "0",
+        Pragma: "no-cache",
+        Expires: "0",
       });
 
       const response = await fetch(
