@@ -785,8 +785,7 @@ const CoreServiceVerticals = () => {
             Our business is split into two main verticals
           </h2>
           <p className="text-sm md:text-base text-slate-300 max-w-2xl mx-auto">
-            High-performance websites for local businesses, and hands-on product
-            leadership for complex or failing digital projects.
+            High-performance websites for local businesses, and technical consulting for companies with failing software projects.
           </p>
         </motion.div>
 
