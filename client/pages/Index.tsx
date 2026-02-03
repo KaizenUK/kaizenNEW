@@ -877,17 +877,17 @@ const CoreServiceVerticals = () => {
               </ul>
               <div className="mt-auto flex items-center justify-between gap-4">
                 <Link
-                  to="/contract-product-owner"
+                  to="/project-rescue"
                   className="inline-flex items-center gap-2 rounded-full bg-lime-300 text-slate-950 px-5 py-2.5 text-sm font-heading font-semibold shadow-lg hover:bg-lime-200 hover:shadow-lime-300/40 hover:-translate-y-0.5 transition-all"
                 >
-                  Explore Contract PO
+                  Get Help Now
                   <ArrowRight size={18} />
                 </Link>
                 <Link
-                  to="/project-rescue"
+                  to="/technical-consulting"
                   className="hidden md:inline-flex text-xs font-mono tracking-widest text-lime-200/80 hover:text-lime-100 transition-colors uppercase"
                 >
-                  Project Rescue
+                  Learn More
                 </Link>
               </div>
             </div>
