@@ -850,9 +850,9 @@ export default function WebDesignChester() {
                     "Because we understand the balance between heritage and modernisation. Whether you are a legal firm on the Business Park or a consultant in Hoole, we build sites that look established but perform like a tech startup.",
                 },
                 {
-                  question: "Do you work with WordPress?",
+                  question: "Do you work with Wealth Management & Law?",
                   answer:
-                    "Yes — and it can be fine for some sites. But if speed, reliability, and rankings matter, we often recommend a custom-built site instead of a heavy template. If your current WordPress site is slow or broken, we can fix it or rebuild it properly.",
+                    "Yes. We specialise in high-trust industries. We build secure, fast, and compliant websites that reassure high-net-worth clients immediately.",
                 },
                 {
                   question:
