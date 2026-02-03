@@ -1,5 +1,7 @@
 import { useMemo, useState } from "react";
 
+import { useMemo, useState } from "react";
+
 type MetricsState = {
   lcp: string;
   cls: string;
@@ -23,7 +25,11 @@ export default function SpeedScanner() {
   const [statusMsg, setStatusMsg] = useState("");
   const [pdfLoading, setPdfLoading] = useState(false);
 
-  const API_KEY = "AIzaSyDSXGxDMpnliJGpRpPzahrrTSpFvaCApXc";
+  const API_KEY = useMemo(() => {
+    return (import.meta as any).env?.VITE_PAGESPEED_API_KEY as
+      | string
+      | undefined;
+  }, []);
 
   const PROXY_ENDPOINT = "/api/pagespeed";
 
@@ -153,15 +159,13 @@ export default function SpeedScanner() {
     setEmailError("");
   }
 
-  async function downloadPDF() {  // <--- 1. Changed to 'async'
+  async function downloadPDF() {
     setPdfLoading(true);
     try {
-      // 2. Import library ONLY here
       const { jsPDF } = await import("jspdf");
 
       const doc = new jsPDF("p", "mm", "a4");
 
-  // ... keep all the rest of the code below exactly as it was ...
       const pageWidth = doc.internal.pageSize.getWidth();
       const pageHeight = doc.internal.pageSize.getHeight();
 
@@ -477,12 +481,17 @@ export default function SpeedScanner() {
 
           <div className="flex flex-col md:flex-row gap-4 relative z-10 mb-8 max-w-2xl mx-auto">
             <div className="relative flex-1">
-              <div className="pointer-events-none absolute inset-y-0 left-5 flex items-center font-mono text-sm text-slate-500">
+              <label htmlFor="speed-scanner-url" className="sr-only">
+                Website URL
+              </label>
+              <div className="pointer-events-none absolute inset-y-0 left-5 flex items-center font-mono text-sm text-slate-400">
                 https://
               </div>
               <input
+                id="speed-scanner-url"
                 type="text"
                 inputMode="url"
+                aria-label="Website URL"
                 placeholder="yourwebsite.com"
                 value={url}
                 onChange={(e) => {
@@ -492,7 +501,7 @@ export default function SpeedScanner() {
                     .replace(/^\/+/, "");
                   setUrl(next);
                 }}
-                className="w-full px-6 py-4 pl-[108px] rounded-full bg-black/40 border border-slate-700 text-white focus:border-cyan-500 focus:outline-none focus:ring-1 focus:ring-cyan-500 transition-all placeholder:text-slate-600"
+                className="w-full px-6 py-4 pl-[108px] rounded-full bg-black/40 border border-slate-700 text-white focus:border-cyan-500 focus:outline-none focus:ring-1 focus:ring-cyan-500 transition-all placeholder:text-slate-500"
               />
             </div>
             <button
