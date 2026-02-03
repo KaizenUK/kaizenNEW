@@ -54,9 +54,9 @@ const comparisonFeatures = [
     highlight: true,
   },
   {
-    feature: "Local SEO Strategy",
-    typical: "Generic / None",
-    kaizen: "Liverpool-Specific Schema",
+    feature: "Built for Google",
+    typical: "Hope for the best",
+    kaizen: "Built to rank locally",
     highlight: true,
   },
   {
