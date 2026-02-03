@@ -11,7 +11,7 @@ import {
   ShoppingBag,
   BookOpen,
   Award,
-  DollarSign,
+  PoundSterling,
   Lightbulb,
   AlertCircle,
   Rocket,
