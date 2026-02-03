@@ -1,5 +1,4 @@
 import { useMemo, useState } from "react";
-import { jsPDF } from "jspdf";
 
 type MetricsState = {
   lcp: string;
@@ -119,14 +118,17 @@ export default function SpeedScanner() {
   }
 
   // --- THE MULTI-PAGE CONSULTANT REPORT ---
-  function downloadPDF() {
+  async function downloadPDF() {
     setPdfLoading(true);
     try {
+      // Dynamic import to prevent white-screen/SSR issues with jsPDF
+      const { jsPDF } = await import("jspdf");
+      
       const doc = new jsPDF('p', 'mm', 'a4');
       const pageWidth = doc.internal.pageSize.getWidth();
       const pageHeight = doc.internal.pageSize.getHeight();
 
-      // BRAND COLORS
+      // BRAND COLOURS
       const navy = [2, 6, 23];      // #020617 (Backgrounds)
       const cyan = [6, 182, 212];   // #06b6d4 (Primary Accent)
       const green = [74, 222, 128]; // #4ade80 (Success)
@@ -229,7 +231,7 @@ export default function SpeedScanner() {
 
       // --- Helper to Draw Insight Card ---
       const drawInsight = (title: string, valStr: string, valNum: number, target: number, unit: string, meaning: string, fixes: string[]) => {
-         // Status Color Logic
+         // Status Colour Logic
          let statusColor = green;
          let statusText = "GOOD";
          
@@ -289,7 +291,7 @@ export default function SpeedScanner() {
       // --- 1. LCP (Speed) ---
       const lcpFixes = lcpVal > 2.5 
         ? ["Convert images to WebP format.", "Preload the 'Hero' image.", "Upgrade server/hosting plan."] 
-        : ["Keep images optimized.", "Monitor server response times."];
+        : ["Keep images optimised.", "Monitor server response times."];
       
       drawInsight(
         "Load Speed (LCP)", 
@@ -388,7 +390,7 @@ export default function SpeedScanner() {
       doc.setTextColor(150, 150, 150);
       doc.text("Or email this PDF to sales@kaizenweb.co.uk", 30, yPos + 42);
 
-      // --- THE BUTTON (Centered & Clickable) ---
+      // --- THE BUTTON (Centred & Clickable) ---
       const btnX = 140;
       const btnY = yPos + 15;
       const btnW = 40;
@@ -405,15 +407,17 @@ export default function SpeedScanner() {
       const text = "BOOK CALL";
       const textWidth = doc.getTextWidth(text);
       const textX = btnX + (btnW / 2) - (textWidth / 2);
-      const textY = btnY + 7; // Approx vertical center
+      const textY = btnY + 7.5; // Adjusted for visual centre
       
       doc.text(text, textX, textY);
 
       // MAKE IT CLICKABLE
-      // This creates an invisible link zone over the button
       doc.link(btnX, btnY, btnW, btnH, { url: 'https://kaizenweb.co.uk/contact' });
 
       doc.save('Kaizen-Performance-Audit.pdf');
+    } catch (e) {
+      console.error("PDF generation failed:", e);
+      alert("Could not generate PDF. Please try again.");
     } finally {
       setPdfLoading(false);
     }
