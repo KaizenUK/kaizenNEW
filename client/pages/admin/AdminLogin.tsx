@@ -47,10 +47,14 @@ export default function AdminLogin() {
           <motion.img
             src="https://cdn.builder.io/api/v1/image/assets%2Fe4ae46bbd81b4b95bef54d66dd9748cc%2F6ca2caa53229445d9a63b2ab64bfede4?format=webp&width=800"
             alt="Kaizen Web"
+            width="240"
+            height="96"
             className="h-24 w-auto mx-auto mb-6"
             initial={{ scale: 0.8, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ duration: 0.5, delay: 0.2 }}
+            loading="lazy"
+            decoding="async"
           />
           <h1 className="text-3xl font-heading font-bold">Admin Login</h1>
           <p className="text-gray-400 mt-2">Manage your content</p>
