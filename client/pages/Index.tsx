@@ -376,8 +376,10 @@ const AuthorityBridge = () => {
               </Link>
               <button
                 onClick={() => {
-                  const scanner = document.getElementById('live-performance-scanner');
-                  scanner?.scrollIntoView({ behavior: 'smooth' as any });
+                  const scanner = document.getElementById(
+                    "live-performance-scanner",
+                  );
+                  scanner?.scrollIntoView({ behavior: "smooth" as any });
                 }}
                 className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg bg-gradient-to-r from-green-400 to-emerald-500 text-gray-950 font-heading font-bold hover:shadow-lg hover:shadow-green-500/50 transition"
               >
