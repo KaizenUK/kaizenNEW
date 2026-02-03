@@ -172,15 +172,7 @@ const HeroSection = () => {
 
           <h1
             className="text-5xl md:text-7xl font-heading font-black mb-8 leading-tight hero-reveal text-white"
-            style={{
-              "--delay": "0s",
-              background: "linear-gradient(90deg, #06b6d4 0%, #7c3aed 25%, #ff006e 50%, #7c3aed 75%, #06b6d4 100%)",
-              backgroundSize: "200% 100%",
-              WebkitBackgroundClip: "text" as any,
-              WebkitTextFillColor: "transparent",
-              backgroundClip: "text" as any,
-              animation: "aurora-text 8s linear infinite",
-            } as React.CSSProperties}
+            style={{ "--delay": "0s" } as React.CSSProperties}
           >
             Web Design Wirral: Lean, Fast, &amp; Profitable Websites.
           </h1>
