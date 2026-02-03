@@ -12,7 +12,7 @@ import { Link } from "react-router-dom";
 import Layout from "@/components/Layout";
 import { LeafletMap } from "@/components/LeafletMap";
 import { FaqSection } from "@/components/FaqSection";
-// import SpeedScanner from "@/components/SpeedScanner";
+import SpeedScanner from "@/components/SpeedScanner";
 import { openCrisp } from "@/lib/crisp-utils";
 import { DEFAULT_OG_IMAGE } from "@/lib/seo";
 import {
