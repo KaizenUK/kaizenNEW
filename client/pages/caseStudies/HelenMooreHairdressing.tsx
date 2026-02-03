@@ -39,6 +39,8 @@ export default function HelenMooreHairdressingCase() {
             src="https://images.unsplash.com/photo-1560066984-138dadb4c035?q=80&w=1674&auto=format&fit=crop"
             alt="Helen Moore Hairdressing Salon Interior"
             className="w-full h-full object-cover"
+            loading="lazy"
+            decoding="async"
           />
         </div>
 
