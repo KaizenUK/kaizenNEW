@@ -855,7 +855,8 @@ export default function WebDesignLiverpool() {
                     "Yes — and it can be fine for some sites. But if speed, reliability, and rankings matter, we often recommend a custom-built site instead of a heavy template. If your current WordPress site is slow or broken, we can fix it or rebuild it properly.",
                 },
                 {
-                  question: "Do you work with clinics and professional services?",
+                  question:
+                    "Do you work with clinics and professional services?",
                   answer:
                     "Yes. We work with clinics, solicitors, accountants, and other professional services who need to look trustworthy online, load fast on mobile, and turn visitors into enquiries.",
                 },
