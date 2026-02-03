@@ -430,7 +430,7 @@ export default function DigitalTransformation() {
               {
                 title: "Web Design",
                 desc: "A transformation often starts with your website. We build sites that connect to your business systems from day one.",
-                link: "/services/web-design-liverpool",
+                link: "/web-design-liverpool",
                 linkText: "Explore Web Design",
               },
             ].map((card, index) => (
