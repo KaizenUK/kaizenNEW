@@ -15,6 +15,8 @@ import {
   Info,
   ShieldCheck,
   Mail,
+  BookOpen,
+  Award,
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -27,7 +29,7 @@ interface HeaderProps {
   onMobileMenuChange: (open: boolean) => void;
 }
 
-type DesktopMenuKey = "services" | "about" | null;
+type DesktopMenuKey = "services" | "insights" | "case-studies" | "about" | null;
 
 interface ServiceItem {
   label: string;
@@ -54,6 +56,8 @@ const Header: React.FC<HeaderProps> = ({
 
   const navRef = useRef<HTMLDivElement | null>(null);
   const servicesTriggerRef = useRef<HTMLButtonElement | null>(null);
+  const insightsTriggerRef = useRef<HTMLButtonElement | null>(null);
+  const caseStudiesTriggerRef = useRef<HTMLButtonElement | null>(null);
   const aboutTriggerRef = useRef<HTMLButtonElement | null>(null);
   const location = useLocation();
 
@@ -137,9 +141,65 @@ const Header: React.FC<HeaderProps> = ({
   ];
 
   const topLevelLinks = [
-    { label: "Insights", href: "/blog" },
-    { label: "Case Studies", href: "/case-studies" },
     { label: "Project Rescue", href: "/project-rescue" },
+  ];
+
+  const insightsMenu: ServiceColumn[] = [
+    {
+      title: "Latest Articles",
+      items: [
+        {
+          label: "Web Design Costs in Liverpool 2025",
+          href: "/blog/how-much-does-a-website-cost-in-liverpool-in-2025",
+          description: "Transparent pricing and what you actually get.",
+          icon: <BookOpen className="w-4 h-4" />,
+        },
+        {
+          label: "How to Choose a Web Agency",
+          href: "/blog/choose-web-design-agency-liverpool",
+          description: "Red flags, questions to ask, and what matters.",
+          icon: <BookOpen className="w-4 h-4" />,
+        },
+        {
+          label: "Website Mistakes to Avoid",
+          href: "/blog/website-mistakes-liverpool",
+          description: "Common errors that kill conversions.",
+          icon: <BookOpen className="w-4 h-4" />,
+        },
+        {
+          label: "All Articles",
+          href: "/blog",
+          description: "Browse our full archive of insights.",
+          icon: <BookOpen className="w-4 h-4" />,
+        },
+      ],
+    },
+  ];
+
+  const caseStudiesMenu: ServiceColumn[] = [
+    {
+      title: "Client Results",
+      items: [
+        {
+          label: "High Five Games",
+          href: "/case-studies/high-five-games",
+          description: "Dual-currency gaming platform: +180% conversion uplift.",
+          icon: <Award className="w-4 h-4" />,
+        },
+        {
+          label: "Independent Retailer",
+          href: "/case-studies/independent-retailer",
+          description: "Local business rebuild: +250% organic traffic.",
+          icon: <Award className="w-4 h-4" />,
+        },
+        {
+          label: "All Case Studies",
+          href: "/case-studies",
+          description: "See more client success stories.",
+          icon: <Award className="w-4 h-4" />,
+        },
+      ],
+    },
   ];
 
   const aboutMenu: ServiceColumn[] = [
@@ -170,8 +230,17 @@ const Header: React.FC<HeaderProps> = ({
 
   const getTriggerEl = (menu: DesktopMenuKey) => {
     if (menu === "services") return servicesTriggerRef.current;
+    if (menu === "insights") return insightsTriggerRef.current;
+    if (menu === "case-studies") return caseStudiesTriggerRef.current;
     if (menu === "about") return aboutTriggerRef.current;
     return null;
+  };
+
+  const getMenuData = (menu: DesktopMenuKey) => {
+    if (menu === "insights") return insightsMenu;
+    if (menu === "case-studies") return caseStudiesMenu;
+    if (menu === "about") return aboutMenu;
+    return servicesMenu;
   };
 
   const openMenu = (menu: DesktopMenuKey) => {
@@ -273,6 +342,44 @@ const Header: React.FC<HeaderProps> = ({
               />
             </button>
 
+            {/* Insights Trigger */}
+            <button
+              ref={insightsTriggerRef}
+              type="button"
+              onMouseEnter={() => openMenu("insights")}
+              onFocus={() => openMenu("insights")}
+              onClick={() => handleTriggerClick("insights")}
+              className="flex items-center gap-2 px-4 py-2 text-base font-medium text-white/90 hover:text-white hover:bg-white/5 rounded-full transition"
+              aria-expanded={isMenuOpen && activeMenu === "insights"}
+            >
+              Insights
+              <ChevronDown
+                size={16}
+                className={`transition-transform duration-200 ${
+                  isMenuOpen && activeMenu === "insights" ? "rotate-180" : ""
+                }`}
+              />
+            </button>
+
+            {/* Case Studies Trigger */}
+            <button
+              ref={caseStudiesTriggerRef}
+              type="button"
+              onMouseEnter={() => openMenu("case-studies")}
+              onFocus={() => openMenu("case-studies")}
+              onClick={() => handleTriggerClick("case-studies")}
+              className="flex items-center gap-2 px-4 py-2 text-base font-medium text-white/90 hover:text-white hover:bg-white/5 rounded-full transition"
+              aria-expanded={isMenuOpen && activeMenu === "case-studies"}
+            >
+              Case Studies
+              <ChevronDown
+                size={16}
+                className={`transition-transform duration-200 ${
+                  isMenuOpen && activeMenu === "case-studies" ? "rotate-180" : ""
+                }`}
+              />
+            </button>
+
             {/* Top-Level Links */}
             {topLevelLinks.map((link) => (
               <Link
@@ -314,8 +421,8 @@ const Header: React.FC<HeaderProps> = ({
                   exit="exit"
                   transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] as const }}
                   className={`absolute top-full mt-2 rounded-2xl border border-white/10 bg-gray-900/95 shadow-2xl backdrop-blur-xl px-8 py-6 ${
-                    activeMenu === "about"
-                      ? "w-[min(460px,calc(100vw-3rem))]"
+                    activeMenu === "about" || activeMenu === "insights" || activeMenu === "case-studies"
+                      ? "w-[min(520px,calc(100vw-3rem))]"
                       : "w-[min(720px,calc(100vw-3rem))]"
                   }`}
                   style={{
@@ -325,52 +432,52 @@ const Header: React.FC<HeaderProps> = ({
                 >
                   <div
                     className={`grid gap-6 ${
-                      activeMenu === "about" ? "grid-cols-1" : "grid-cols-2"
+                      activeMenu === "about" || activeMenu === "insights" || activeMenu === "case-studies"
+                        ? "grid-cols-1"
+                        : "grid-cols-2"
                     }`}
                   >
-                    {(activeMenu === "about" ? aboutMenu : servicesMenu).map(
-                      (column) => (
-                        <div key={column.title}>
-                          <h3 className="text-lg font-semibold text-white mb-4">
-                            {column.title}
-                          </h3>
-                          <ul className="space-y-2">
-                            {column.items.map((item) => (
-                              <li key={item.href}>
-                                <Link
-                                  to={item.href}
-                                  className="block rounded-xl px-3 py-2 hover:bg-white/5 transition"
-                                  onClick={() => {
-                                    setIsMenuOpen(false);
-                                    setActiveMenu(null);
-                                  }}
-                                >
-                                  <div className="flex items-start gap-3">
-                                    <span className="mt-1 flex h-7 w-7 items-center justify-center rounded-full bg-white/5 text-cyan-300">
-                                      {item.icon}
-                                    </span>
-                                    <div>
-                                      <div
-                                        className={`text-base font-semibold ${
-                                          item.highlight
-                                            ? "text-cyan-300"
-                                            : "text-white"
-                                        }`}
-                                      >
-                                        {item.label}
-                                      </div>
-                                      <p className="text-sm text-gray-400 mt-1">
-                                        {item.description}
-                                      </p>
+                    {getMenuData(activeMenu).map((column) => (
+                      <div key={column.title}>
+                        <h3 className="text-lg font-semibold text-white mb-4">
+                          {column.title}
+                        </h3>
+                        <ul className="space-y-2">
+                          {column.items.map((item) => (
+                            <li key={item.href}>
+                              <Link
+                                to={item.href}
+                                className="block rounded-xl px-3 py-2 hover:bg-white/5 transition"
+                                onClick={() => {
+                                  setIsMenuOpen(false);
+                                  setActiveMenu(null);
+                                }}
+                              >
+                                <div className="flex items-start gap-3">
+                                  <span className="mt-1 flex h-7 w-7 items-center justify-center rounded-full bg-white/5 text-cyan-300">
+                                    {item.icon}
+                                  </span>
+                                  <div>
+                                    <div
+                                      className={`text-base font-semibold ${
+                                        item.highlight
+                                          ? "text-cyan-300"
+                                          : "text-white"
+                                      }`}
+                                    >
+                                      {item.label}
                                     </div>
+                                    <p className="text-sm text-gray-400 mt-1">
+                                      {item.description}
+                                    </p>
                                   </div>
-                                </Link>
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
-                      ),
-                    )}
+                                </div>
+                              </Link>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    ))}
                   </div>
                 </motion.div>
               )}
