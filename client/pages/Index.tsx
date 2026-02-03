@@ -375,7 +375,10 @@ const AuthorityBridge = () => {
                 <ArrowUpRight size={18} />
               </Link>
               <button
-                onClick={() => openCrisp()}
+                onClick={() => {
+                  const scanner = document.getElementById('live-performance-scanner');
+                  scanner?.scrollIntoView({ behavior: 'smooth' as any });
+                }}
                 className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg bg-gradient-to-r from-green-400 to-emerald-500 text-gray-950 font-heading font-bold hover:shadow-lg hover:shadow-green-500/50 transition"
               >
                 Get a Performance Audit
@@ -891,10 +894,10 @@ const CoreServiceVerticals = () => {
             What We Do
           </p>
           <h2 className="text-3xl md:text-4xl font-heading font-bold mb-3">
-            Our business is split into two main verticals
+            Two key ways we help Wirral businesses
           </h2>
           <p className="text-sm md:text-base text-slate-300 max-w-2xl mx-auto">
-            High-performance websites for local businesses, and technical
+            High-performance websites for Wirral businesses, and technical
             consulting for companies with failing software projects.
           </p>
         </motion.div>
