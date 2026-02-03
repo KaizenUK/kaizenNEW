@@ -5,106 +5,18 @@ type MetricsState = {
   lcp: string;
   cls: string;
   tbt: string;
-  lcpMs: number | null;
-  tbtMs: number | null;
-  clsValue: number | null;
 };
-
-const KAIZEN_LOGO_URL =
-  "https://cdn.builder.io/api/v1/image/assets%2Fe4ae46bbd81b4b95bef54d66dd9748cc%2Fba236b579fed416bb066c58fd3c3e06d?format=webp&width=800&height=1200";
-
-const defaultMetrics: MetricsState = {
-  lcp: "",
-  cls: "",
-  tbt: "",
-  lcpMs: null,
-  tbtMs: null,
-  clsValue: null,
-};
-
-function getScoreColor(score: number) {
-  if (score < 50) return { r: 220, g: 38, b: 38 };
-  if (score < 90) return { r: 234, g: 88, b: 12 };
-  return { r: 22, g: 163, b: 74 };
-}
-
-function safeNumber(value: unknown): number | null {
-  return typeof value === "number" && Number.isFinite(value) ? value : null;
-}
-
-function metricVerdict(
-  key: "lcp" | "tbt" | "cls",
-  metrics: MetricsState,
-): { label: string; detail: string } {
-  if (key === "lcp") {
-    const seconds = metrics.lcpMs != null ? metrics.lcpMs / 1000 : null;
-    if (seconds == null) {
-      return { label: "Unknown", detail: "Aim for 2.5s" };
-    }
-    if (seconds <= 2.5) return { label: "Fast", detail: "On target (≤ 2.5s)" };
-    if (seconds <= 4)
-      return { label: "Slow", detail: "Too slow – aim for 2.5s" };
-    return { label: "Very slow", detail: "Critical – aim for 2.5s" };
-  }
-
-  if (key === "tbt") {
-    const ms = metrics.tbtMs;
-    if (ms == null) {
-      return { label: "Unknown", detail: "Aim for 200ms" };
-    }
-    if (ms <= 200)
-      return { label: "Responsive", detail: "On target (≤ 200ms)" };
-    if (ms <= 600)
-      return { label: "Laggy", detail: "Too laggy – aim for 200ms" };
-    return { label: "Frozen", detail: "Critical – aim for 200ms" };
-  }
-
-  const cls = metrics.clsValue;
-  if (cls == null) {
-    return { label: "Unknown", detail: "Aim for 0.1" };
-  }
-  if (cls <= 0.1) return { label: "Stable", detail: "On target (≤ 0.1)" };
-  if (cls <= 0.25) return { label: "Jumpy", detail: "Too jumpy – aim for 0.1" };
-  return { label: "Chaotic", detail: "Critical – aim for 0.1" };
-}
-
-async function imageUrlToPngDataUrl(imageUrl: string) {
-  const res = await fetch(imageUrl);
-  if (!res.ok) throw new Error("Failed to download logo");
-
-  const blob = await res.blob();
-  const blobUrl = URL.createObjectURL(blob);
-
-  try {
-    const img = await new Promise<HTMLImageElement>((resolve, reject) => {
-      const el = new Image();
-      el.onload = () => resolve(el);
-      el.onerror = () => reject(new Error("Failed to load logo image"));
-      el.src = blobUrl;
-    });
-
-    const canvas = document.createElement("canvas");
-    canvas.width = img.naturalWidth || img.width;
-    canvas.height = img.naturalHeight || img.height;
-
-    const ctx = canvas.getContext("2d");
-    if (!ctx) throw new Error("Failed to create canvas context");
-
-    ctx.drawImage(img, 0, 0);
-    return canvas.toDataURL("image/png");
-  } finally {
-    URL.revokeObjectURL(blobUrl);
-  }
-}
 
 export default function SpeedScanner() {
   const [url, setUrl] = useState("");
   const [loading, setLoading] = useState(false);
-
-  // Data State
   const [score, setScore] = useState<number | null>(null);
   const [screenshot, setScreenshot] = useState("");
-  const [metrics, setMetrics] = useState<MetricsState>(defaultMetrics);
+  const [metrics, setMetrics] = useState<MetricsState>({
+    lcp: "",
+    cls: "",
+    tbt: "",
+  });
 
   // Gate State
   const [email, setEmail] = useState("");
@@ -136,7 +48,7 @@ export default function SpeedScanner() {
     setLoading(true);
     setScore(null);
     setScreenshot("");
-    setMetrics(defaultMetrics);
+    setMetrics({ lcp: "", cls: "", tbt: "" });
     setStatusMsg("Connecting to Google Lighthouse...");
 
     setAuditedUrl(auditUrl);
@@ -173,9 +85,6 @@ export default function SpeedScanner() {
         lcp: lcpAudit?.displayValue ?? "",
         cls: clsAudit?.displayValue ?? "",
         tbt: tbtAudit?.displayValue ?? "",
-        lcpMs: safeNumber(lcpAudit?.numericValue),
-        tbtMs: safeNumber(tbtAudit?.numericValue),
-        clsValue: safeNumber(clsAudit?.numericValue),
       });
 
       const base64Image =
@@ -198,360 +107,292 @@ export default function SpeedScanner() {
       return;
     }
 
-    if (import.meta.env.DEV) {
-      // eslint-disable-next-line no-console
-      console.log("Lead Captured:", normalizedEmail, {
-        url: auditedUrl,
-        score,
-        metrics,
-      });
-    }
-
+    // TODO: Send this email to Zapier/DB later
     setIsEmailSubmitted(true);
     setEmailError("");
   }
 
+  // --- THE NEW "DESIGNER GRADE" PDF GENERATOR ---
   async function downloadPDF() {
     if (score === null) return;
-
     setPdfLoading(true);
 
     try {
-      const doc = new jsPDF({ unit: "mm", format: "a4" });
-      const date = new Date().toLocaleDateString("en-GB");
-      const year = new Date().getFullYear();
+      const doc = new jsPDF("p", "mm", "a4");
+      const width = doc.internal.pageSize.getWidth();
+      const height = doc.internal.pageSize.getHeight();
 
-      const kaizenDark = { r: 2, g: 6, b: 23 };
-      const kaizenCyan = { r: 6, g: 182, b: 212 };
-      const textGrey = { r: 80, g: 80, b: 80 };
+      // COLORS
+      const navy = [2, 6, 23];
+      const cyan = [6, 182, 212];
+      const white = [255, 255, 255];
+      const lightGrey = [241, 245, 249];
+      const red = [239, 68, 68];
+      const orange = [249, 115, 22];
+      const green = [34, 197, 94];
 
-      const targetUrl = auditedUrl || buildAuditUrl(url);
-      const scoreColor = getScoreColor(score);
+      // PARSE METRICS
+      const lcpVal = parseFloat(metrics.lcp.replace(/[^\d.-]/g, ""));
+      const tbtVal = parseFloat(metrics.tbt.replace(/[^\d.-]/g, ""));
+      const clsVal = parseFloat(metrics.cls.replace(/[^\d.-]/g, ""));
 
-      let logoPng: string | null = null;
-      try {
-        logoPng = await imageUrlToPngDataUrl(KAIZEN_LOGO_URL);
-      } catch {
-        logoPng = null;
-      }
+      // --- LEFT SIDEBAR (The "Brand" Column) ---
+      doc.setFillColor(navy[0], navy[1], navy[2]);
+      doc.rect(0, 0, 70, height, "F");
 
-      const drawHeader = (pageTitle: string) => {
-        doc.setFillColor(kaizenDark.r, kaizenDark.g, kaizenDark.b);
-        doc.rect(0, 0, 210, 36, "F");
-
-        doc.setFillColor(kaizenCyan.r, kaizenCyan.g, kaizenCyan.b);
-        doc.rect(0, 36, 210, 1, "F");
-
-        doc.setTextColor(255, 255, 255);
-        doc.setFont("helvetica", "bold");
-        doc.setFontSize(20);
-        doc.text("Kaizen Web", 16, 18);
-
-        doc.setFont("helvetica", "normal");
-        doc.setFontSize(11);
-        doc.text(pageTitle, 16, 28);
-
-        doc.setFontSize(10);
-        doc.text(`Date: ${date}`, 150, 18);
-        doc.text("Status: Mobile Audit", 150, 28);
-
-        if (logoPng) {
-          doc.addImage(logoPng, "PNG", 178, 8, 22, 22);
-        }
-      };
-
-      const wrapText = (text: string, x: number, y: number, width: number) => {
-        const lines = doc.splitTextToSize(text, width);
-        doc.text(lines, x, y);
-        return lines.length;
-      };
-
-      // --- PAGE 1 ---
-      drawHeader("Performance Audit & Fix Plan");
-
-      doc.setTextColor(0, 0, 0);
+      // Branding
+      doc.setTextColor(white[0], white[1], white[2]);
       doc.setFont("helvetica", "bold");
-      doc.setFontSize(13);
-      doc.text(`Audit Target: ${targetUrl}`, 16, 52);
-
-      // Score + executive summary
-      doc.setDrawColor(220, 220, 220);
-      doc.setFillColor(255, 255, 255);
-      doc.roundedRect(16, 58, 178, 34, 5, 5, "F");
-
-      doc.setDrawColor(scoreColor.r, scoreColor.g, scoreColor.b);
-      doc.setLineWidth(1.2);
-      doc.circle(33, 75, 12, "S");
-
-      doc.setTextColor(scoreColor.r, scoreColor.g, scoreColor.b);
-      doc.setFont("helvetica", "bold");
-      doc.setFontSize(16);
-      doc.text(String(score), 33, 78, { align: "center" });
-
-      doc.setTextColor(0, 0, 0);
+      doc.setFontSize(22);
+      doc.text("KAIZEN", 10, 20);
       doc.setFontSize(10);
-      doc.text("/100", 33, 85, { align: "center" });
+      doc.setFont("helvetica", "normal");
+      doc.text("WEB AUDIT", 10, 26);
 
-      doc.setTextColor(0, 0, 0);
-      doc.setFont("helvetica", "bold");
+      // Big Score in Sidebar
       doc.setFontSize(12);
+      doc.text("OVERALL SCORE", 10, 60);
 
-      if (score < 50) {
-        doc.text("Result: CRITICAL FAIL", 52, 73);
-        doc.setFont("helvetica", "normal");
-        doc.setFontSize(10);
-        doc.setTextColor(textGrey.r, textGrey.g, textGrey.b);
-        doc.text("Google is likely penalising this page on mobile.", 52, 80);
-        doc.text("You can lose a large chunk of mobile visitors.", 52, 86);
-      } else if (score < 90) {
-        doc.text("Result: NEEDS IMPROVEMENT", 52, 73);
-        doc.setFont("helvetica", "normal");
-        doc.setFontSize(10);
-        doc.setTextColor(textGrey.r, textGrey.g, textGrey.b);
-        doc.text("Usable, but slower than it should be.", 52, 80);
-        doc.text("Speed-ups here typically lift enquiries + ranking.", 52, 86);
-      } else {
-        doc.text("Result: EXCELLENT", 52, 73);
-        doc.setFont("helvetica", "normal");
-        doc.setFontSize(10);
-        doc.setTextColor(textGrey.r, textGrey.g, textGrey.b);
-        doc.text(
-          "This page is in the top band for mobile performance.",
-          52,
-          80,
-        );
-      }
-
-      // Section: What we found
-      doc.setDrawColor(190, 190, 190);
-      doc.line(16, 102, 194, 102);
-
-      doc.setTextColor(0, 0, 0);
+      doc.setFontSize(60);
       doc.setFont("helvetica", "bold");
-      doc.setFontSize(14);
-      doc.text("1. What We Found (Plain English)", 16, 112);
+      if (score < 50) doc.setTextColor(red[0], red[1], red[2]);
+      else if (score < 90) doc.setTextColor(orange[0], orange[1], orange[2]);
+      else doc.setTextColor(green[0], green[1], green[2]);
+      doc.text(`${score}`, 10, 82);
 
-      const boxY = 118;
-      const boxH = 46;
-      const gap = 6;
-      const boxW = (178 - gap * 2) / 3;
-
-      const metricCards: Array<{
-        title: string;
-        metricKey: "lcp" | "tbt" | "cls";
-        value: string;
-        label: string;
-        helper: string;
-      }> = [
-        {
-          title: "SPEED (LCP)",
-          metricKey: "lcp",
-          value: metrics.lcp || "-",
-          label: metricVerdict("lcp", metrics).label,
-          helper: metricVerdict("lcp", metrics).detail,
-        },
-        {
-          title: "INTERACTIVITY (TBT)",
-          metricKey: "tbt",
-          value: metrics.tbt || "-",
-          label: metricVerdict("tbt", metrics).label,
-          helper: metricVerdict("tbt", metrics).detail,
-        },
-        {
-          title: "STABILITY (CLS)",
-          metricKey: "cls",
-          value: metrics.cls || "-",
-          label: metricVerdict("cls", metrics).label,
-          helper: metricVerdict("cls", metrics).detail,
-        },
-      ];
-
-      metricCards.forEach((card, idx) => {
-        const x = 16 + idx * (boxW + gap);
-
-        doc.setDrawColor(220, 220, 220);
-        doc.setFillColor(255, 255, 255);
-        doc.roundedRect(x, boxY, boxW, boxH, 4, 4, "F");
-
-        doc.setFillColor(kaizenCyan.r, kaizenCyan.g, kaizenCyan.b);
-        doc.rect(x, boxY, boxW, 2, "F");
-
-        doc.setTextColor(100, 100, 100);
-        doc.setFont("helvetica", "bold");
-        doc.setFontSize(9);
-        doc.text(card.title, x + 4, boxY + 9);
-
-        doc.setTextColor(0, 0, 0);
-        doc.setFont("helvetica", "bold");
-        doc.setFontSize(14);
-        doc.text(card.value, x + 4, boxY + 20);
-
-        doc.setTextColor(0, 0, 0);
-        doc.setFont("helvetica", "bold");
-        doc.setFontSize(10);
-        doc.text(card.label, x + 4, boxY + 30);
-
-        doc.setTextColor(textGrey.r, textGrey.g, textGrey.b);
-        doc.setFont("helvetica", "normal");
-        doc.setFontSize(9);
-        wrapText(card.helper, x + 4, boxY + 38, boxW - 8);
-      });
-
-      // Section: What this means
-      doc.setDrawColor(190, 190, 190);
-      doc.line(16, 172, 194, 172);
-
-      doc.setTextColor(0, 0, 0);
-      doc.setFont("helvetica", "bold");
-      doc.setFontSize(14);
-      doc.text("2. What This Means For You", 16, 182);
-
-      doc.setFont("helvetica", "normal");
-      doc.setFontSize(11);
-      doc.setTextColor(textGrey.r, textGrey.g, textGrey.b);
-
-      if (score < 50) {
-        wrapText(
-          "Your website is currently failing Google’s Core Web Vitals. In practice, that means lower visibility in search and more mobile visitors leaving before they become enquiries.",
-          16,
-          192,
-          178,
-        );
-      } else if (score < 90) {
-        wrapText(
-          "Your site is usable, but it’s slower than it needs to be. Speed improvements usually increase enquiries (people stay longer) and help your Google ranking.",
-          16,
-          192,
-          178,
-        );
-      } else {
-        wrapText(
-          "Your site is in great shape. This report is still useful as proof of performance and as a checklist to keep things fast as you add new pages.",
-          16,
-          192,
-          178,
-        );
-      }
-
-      // Footer
-      doc.setDrawColor(225, 225, 225);
-      doc.line(16, 287, 194, 287);
-      doc.setFontSize(9);
-      doc.setTextColor(120, 120, 120);
-      doc.text(
-        `© ${year} Kaizen Web. Confidential performance audit.`,
-        16,
-        293,
-      );
-      doc.text("Page 1 of 2", 194, 293, { align: "right" });
-
-      // --- PAGE 2 ---
-      doc.addPage();
-      drawHeader("Evidence Snapshot & Action Plan");
-
-      doc.setTextColor(0, 0, 0);
-      doc.setFont("helvetica", "bold");
-      doc.setFontSize(14);
-      doc.text("3. Evidence Snapshot", 16, 52);
-
-      // Screenshot container
-      doc.setDrawColor(220, 220, 220);
-      doc.setFillColor(255, 255, 255);
-      doc.roundedRect(16, 58, 90, 170, 6, 6, "F");
-
-      doc.setTextColor(120, 120, 120);
-      doc.setFont("helvetica", "normal");
-      doc.setFontSize(9);
-      doc.text("Mobile screenshot", 16, 236);
-
+      // Screenshot in Sidebar (Phone Frame)
       if (screenshot) {
+        const phoneX = 10;
+        const phoneY = 110;
+        const phoneW = 50;
+        const phoneH = 90;
+
+        // Draw Phone Bezel
+        doc.setDrawColor(50, 50, 50);
+        doc.setLineWidth(1);
+        doc.roundedRect(
+          phoneX - 2,
+          phoneY - 2,
+          phoneW + 4,
+          phoneH + 4,
+          3,
+          3,
+          "S",
+        ); // Outer
+        doc.setFillColor(0, 0, 0);
+        doc.roundedRect(
+          phoneX - 1,
+          phoneY - 1,
+          phoneW + 2,
+          phoneH + 2,
+          2,
+          2,
+          "F",
+        ); // Black bezel
+
+        // Image
         const imageFormat = screenshot.startsWith("data:image/png")
           ? "PNG"
           : "JPEG";
-        doc.addImage(screenshot, imageFormat as any, 20, 64, 82, 158);
+        doc.addImage(screenshot, imageFormat as any, phoneX, phoneY, phoneW, phoneH);
       }
 
-      // Action plan
-      doc.setTextColor(0, 0, 0);
-      doc.setFont("helvetica", "bold");
-      doc.setFontSize(14);
-      doc.text("4. Immediate Fix Plan", 114, 52);
+      // Footer Sidebar
+      doc.setTextColor(150, 150, 150);
+      doc.setFontSize(8);
+      doc.text("Audit Date:", 10, 260);
+      doc.setTextColor(white[0], white[1], white[2]);
+      doc.text(new Date().toLocaleDateString("en-GB"), 10, 265);
 
-      doc.setFont("helvetica", "normal");
-      doc.setFontSize(11);
-      doc.setTextColor(textGrey.r, textGrey.g, textGrey.b);
-      wrapText(
-        "These are the highest impact fixes we normally implement first. They’re chosen to improve speed quickly without breaking the design.",
-        114,
-        60,
-        80,
+      // --- RIGHT CONTENT (The "Report" Column) ---
+      const leftMargin = 80;
+      const contentWidth = 110;
+
+      // Header Info
+      doc.setTextColor(50, 50, 50);
+      doc.setFontSize(10);
+      doc.text("AUDIT REPORT FOR:", leftMargin, 20);
+      doc.setFontSize(14);
+      doc.setFont("helvetica", "bold");
+      doc.setTextColor(0, 0, 0);
+      doc.text(auditedUrl || buildAuditUrl(url) || "URL Not Provided", leftMargin, 28);
+
+      // LINE DIVIDER
+      doc.setDrawColor(200, 200, 200);
+      doc.line(leftMargin, 35, 200, 35);
+
+      // --- SECTION 1: THE METRICS (Visual Bars) ---
+      let yPos = 50;
+
+      // Helper to draw a metric card
+      const drawMetric = (
+        label: string,
+        valueStr: string,
+        valueNum: number,
+        target: number,
+        unit: string,
+        desc: string,
+      ) => {
+        // Background Card
+        doc.setFillColor(lightGrey[0], lightGrey[1], lightGrey[2]);
+        doc.roundedRect(leftMargin, yPos, contentWidth, 35, 2, 2, "F");
+
+        // Label
+        doc.setFontSize(9);
+        doc.setFont("helvetica", "bold");
+        doc.setTextColor(100, 100, 100);
+        doc.text(label, leftMargin + 5, yPos + 8);
+
+        // Value
+        doc.setFontSize(14);
+        doc.setTextColor(0, 0, 0);
+        doc.text(valueStr, leftMargin + 5, yPos + 16);
+
+        // Progress Bar Background
+        doc.setFillColor(220, 220, 220);
+        doc.rect(leftMargin + 5, yPos + 22, 60, 4, "F");
+
+        // Progress Bar Fill (Logic)
+        let percent = 0;
+        let color = green;
+
+        // Logic for "Lower is Better" metrics
+        if (label.includes("SPEED")) {
+          // LCP
+          percent = Math.min(100, (target / valueNum) * 100);
+          if (valueNum > 4) color = red;
+          else if (valueNum > 2.5) color = orange;
+        } else if (label.includes("STABILITY")) {
+          // CLS
+          percent = Math.min(100, (1 - valueNum) * 100); // 0.1 is good
+          if (valueNum > 0.25) color = red;
+          else if (valueNum > 0.1) color = orange;
+        } else {
+          // TBT
+          percent = Math.min(100, (target / valueNum) * 100);
+          if (valueNum > 600) color = red;
+          else if (valueNum > 200) color = orange;
+        }
+
+        // Safety for weird values
+        if (percent < 5) percent = 5;
+        if (isNaN(percent)) percent = 100;
+
+        doc.setFillColor(color[0], color[1], color[2]);
+        doc.rect(leftMargin + 5, yPos + 22, 60 * (percent / 100), 4, "F");
+
+        // Description
+        doc.setFontSize(8);
+        doc.setFont("helvetica", "normal");
+        doc.setTextColor(80, 80, 80);
+        doc.text(desc, leftMargin + 5, yPos + 31);
+
+        yPos += 40;
+      };
+
+      // Draw the 3 metrics
+      drawMetric(
+        "LOAD SPEED (LCP)",
+        metrics.lcp,
+        lcpVal,
+        2.5,
+        "s",
+        "Time until the main content is visible.",
+      );
+      drawMetric(
+        "INTERACTIVITY (TBT)",
+        metrics.tbt,
+        tbtVal,
+        200,
+        "ms",
+        "Time the browser is blocked by code.",
+      );
+      drawMetric(
+        "VISUAL STABILITY (CLS)",
+        metrics.cls,
+        clsVal,
+        0.1,
+        "",
+        "How much the layout shifts while loading.",
       );
 
-      const planStartY = 80;
-      doc.setFillColor(245, 247, 250);
-      doc.roundedRect(114, planStartY, 80, 110, 6, 6, "F");
-
-      doc.setTextColor(0, 0, 0);
+      // --- SECTION 2: DYNAMIC ACTION PLAN ---
+      doc.setFontSize(12);
       doc.setFont("helvetica", "bold");
-      doc.setFontSize(10);
-      doc.text("Priority actions", 118, planStartY + 12);
+      doc.setTextColor(0, 0, 0);
+      doc.text("IMMEDIATE FIX PLAN", leftMargin, yPos + 5);
 
+      yPos += 15;
+      doc.setFontSize(10);
       doc.setFont("helvetica", "normal");
-      doc.setFontSize(10);
-      doc.setTextColor(textGrey.r, textGrey.g, textGrey.b);
+      doc.setTextColor(50, 50, 50);
 
-      const fixes =
-        score < 50
-          ? [
-              "• Replace oversized images with WebP/AVIF",
-              "• Remove heavy scripts & tracking bloat",
-              "• Fix layout shifts (image sizes, fonts)",
-              "• Reduce render-blocking CSS",
-              "• Improve server response / caching",
-            ]
-          : score < 90
-            ? [
-                "• Compress + modernise images (WebP)",
-                "• Split JavaScript and remove unused code",
-                "• Defer non-critical scripts",
-                "• Preload key fonts to prevent jumping",
-                "• Cache static assets aggressively",
-              ]
-            : [
-                "• Keep images compressed and sized",
-                "• Audit new plugins/scripts regularly",
-                "• Keep animations lightweight",
-                "• Maintain cache headers",
-                "• Re-test monthly after updates",
-              ];
+      // Logic: What to say?
+      const bullets: string[] = [];
 
-      let fixY = planStartY + 22;
-      fixes.forEach((fix) => {
-        const lines = doc.splitTextToSize(fix, 74);
-        doc.text(lines, 118, fixY);
-        fixY += lines.length * 5.5 + 2;
+      // LCP Advice
+      if (lcpVal > 2.5) {
+        bullets.push(
+          "• Your Hero Image is too slow. Convert to WebP & Preload it.",
+        );
+        bullets.push("• Your server response time is lagging. Check hosting.");
+      } else {
+        bullets.push("• Load speed is good. Keep images compressed.");
+      }
+
+      // TBT Advice
+      if (tbtVal > 200) {
+        bullets.push("• Remove unused JavaScript (e.g. old chat widgets).");
+        bullets.push("• Defer third-party scripts to run after load.");
+      }
+
+      // CLS Advice
+      if (clsVal > 0.1) {
+        bullets.push("• Add explicit width/height to all images.");
+        bullets.push("• Reserve space for dynamic ads/banners.");
+      }
+
+      // Generic filler if they pass everything
+      if (bullets.length < 3) {
+        bullets.push("• Set up caching for static assets.");
+      }
+
+      // Print Bullets
+      bullets.forEach((b) => {
+        doc.text(b, leftMargin, yPos);
+        yPos += 8;
       });
 
-      // CTA box
-      doc.setFillColor(240, 248, 255);
-      doc.roundedRect(114, 200, 80, 28, 6, 6, "F");
-      doc.setTextColor(0, 0, 0);
-      doc.setFont("helvetica", "bold");
-      doc.setFontSize(11);
-      doc.text("Want this fixed for you?", 118, 212);
-      doc.setFont("helvetica", "normal");
-      doc.setFontSize(10);
-      doc.setTextColor(textGrey.r, textGrey.g, textGrey.b);
-      doc.text("Reply with this PDF and we'll", 118, 219);
-      doc.text("send a clear, fixed-price plan.", 118, 225);
+      // --- SECTION 3: CTA BOX ---
+      yPos += 10;
+      doc.setDrawColor(cyan[0], cyan[1], cyan[2]);
+      doc.setLineWidth(0.5);
+      doc.roundedRect(leftMargin, yPos, contentWidth, 30, 2, 2, "S");
 
-      // Footer
-      doc.setDrawColor(225, 225, 225);
-      doc.line(16, 287, 194, 287);
+      doc.setFontSize(11);
+      doc.setFont("helvetica", "bold");
+      doc.setTextColor(navy[0], navy[1], navy[2]);
+      doc.text("Want this fixed for you?", leftMargin + 5, yPos + 8);
+
       doc.setFontSize(9);
-      doc.setTextColor(120, 120, 120);
-      doc.text(`© ${year} Kaizen Web. All rights reserved.`, 16, 293);
-      doc.text("Page 2 of 2", 194, 293, { align: "right" });
+      doc.setFont("helvetica", "normal");
+      doc.setTextColor(80, 80, 80);
+      doc.text(
+        "Reply to our email with this PDF attached.",
+        leftMargin + 5,
+        yPos + 16,
+      );
+      doc.text("We will provide a fixed-price quote.", leftMargin + 5, yPos + 21);
+
+      // --- COPYRIGHT FOOTER ---
+      doc.setFontSize(8);
+      doc.setTextColor(150, 150, 150);
+      doc.text("© 2026 Kaizen Web. All rights reserved.", leftMargin, 280);
+      doc.text(
+        "Kaizen Web Ltd t/a Kaizen Ltd (Company No. 17007703)",
+        leftMargin,
+        285,
+      );
 
       doc.save("kaizen-audit-report.pdf");
     } finally {
@@ -560,10 +401,6 @@ export default function SpeedScanner() {
   }
 
   const shouldGate = score !== null && score < 90 && !isEmailSubmitted;
-
-  const speedVerdict = metricVerdict("lcp", metrics);
-  const tbtVerdict = metricVerdict("tbt", metrics);
-  const clsVerdict = metricVerdict("cls", metrics);
 
   return (
     <section
@@ -694,9 +531,6 @@ export default function SpeedScanner() {
                           <div className="text-white font-bold">
                             {metrics.lcp || "-"}
                           </div>
-                          <div className="text-slate-400 text-xs">
-                            {speedVerdict.label} · {speedVerdict.detail}
-                          </div>
                         </div>
                         <div className="rounded-lg border border-white/5 bg-black/20 p-3">
                           <div className="text-[11px] text-slate-400 font-mono">
@@ -705,9 +539,6 @@ export default function SpeedScanner() {
                           <div className="text-white font-bold">
                             {metrics.tbt || "-"}
                           </div>
-                          <div className="text-slate-400 text-xs">
-                            {tbtVerdict.label} · {tbtVerdict.detail}
-                          </div>
                         </div>
                         <div className="rounded-lg border border-white/5 bg-black/20 p-3">
                           <div className="text-[11px] text-slate-400 font-mono">
@@ -715,9 +546,6 @@ export default function SpeedScanner() {
                           </div>
                           <div className="text-white font-bold">
                             {metrics.cls || "-"}
-                          </div>
-                          <div className="text-slate-400 text-xs">
-                            {clsVerdict.label} · {clsVerdict.detail}
                           </div>
                         </div>
                       </div>
