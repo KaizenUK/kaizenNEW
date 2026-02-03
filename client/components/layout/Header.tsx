@@ -380,15 +380,6 @@ const Header: React.FC<HeaderProps> = ({
               />
             </button>
 
-            {/* Free Speed Test Button */}
-            <Link
-              to="/performance-scanner"
-              className="flex items-center gap-2 px-4 py-2 text-base font-medium text-emerald-400 hover:text-emerald-300 hover:bg-emerald-500/10 rounded-full transition border border-emerald-500/30"
-            >
-              <Zap size={16} />
-              Free Speed Test
-            </Link>
-
             {/* Top-Level Links */}
             {topLevelLinks.map((link) => (
               <Link
