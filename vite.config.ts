@@ -23,6 +23,26 @@ export default defineConfig(({ mode }) => ({
     // Explicitly disable browser sourcemaps in production builds to avoid
     // leaking internal file structure in the browser devtools.
     sourcemap: mode === "development",
+    // Minification settings
+    minify: "terser",
+    terserOptions: {
+      compress: {
+        drop_console: mode === "production",
+      },
+    },
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          // Split vendor code for better caching
+          "vendor-react": ["react", "react-dom", "react-router-dom"],
+          "vendor-ui": [
+            "@radix-ui/react-accordion",
+            "@radix-ui/react-alert-dialog",
+            "@radix-ui/react-aspect-ratio",
+          ],
+        },
+      },
+    },
   },
   plugins: [
     react(),
