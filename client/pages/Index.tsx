@@ -397,23 +397,58 @@ const AuthorityBridge = () => {
 };
 
 const SocialMediaWarning = () => {
-  console.log('SocialMediaWarning rendering');
   return (
-    <section style={{ backgroundColor: '#1e293b', color: '#ffffff', padding: '64px 16px', borderTop: '1px solid rgba(255, 255, 255, 0.1)', borderBottom: '1px solid rgba(255, 255, 255, 0.1)' }}>
-      <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 16px' }}>
-        <div style={{ maxWidth: '56rem', margin: '0 auto', textAlign: 'center' }}>
-          <p style={{ fontSize: '0.75rem', fontWeight: '500', letterSpacing: '0.1em', color: '#fbbf24', marginBottom: '1rem', textTransform: 'uppercase' }}>
+    <section
+      id="social-media-warning"
+      style={{
+        position: "relative",
+        zIndex: 10,
+        backgroundColor: "#1e293b",
+        color: "#ffffff",
+        padding: "64px 16px",
+        borderTop: "1px solid rgba(255, 255, 255, 0.1)",
+        borderBottom: "1px solid rgba(255, 255, 255, 0.1)",
+      }}
+    >
+      <div style={{ maxWidth: "1200px", margin: "0 auto", padding: "0 16px" }}>
+        <div style={{ maxWidth: "56rem", margin: "0 auto", textAlign: "center" }}>
+          <p
+            style={{
+              fontSize: "0.75rem",
+              fontWeight: "500",
+              letterSpacing: "0.1em",
+              color: "#fbbf24",
+              marginBottom: "1rem",
+              textTransform: "uppercase",
+            }}
+          >
             The Social Media Warning
           </p>
-          <h2 style={{ fontSize: '2.25rem', fontWeight: '900', marginBottom: '1.25rem', color: '#ffffff' }}>
+          <h2
+            style={{
+              fontSize: "2.25rem",
+              fontWeight: "900",
+              marginBottom: "1.25rem",
+              color: "#ffffff",
+              WebkitTextFillColor: "#ffffff",
+            }}
+          >
             Is Your Business Homeless?
           </h2>
-          <p style={{ fontSize: '1.125rem', color: 'rgba(255, 255, 255, 0.85)', lineHeight: '1.625', margin: '0' }}>
-            If your whole presence lives on Facebook or Instagram, you’re
-            renting attention. Algorithms change, reach disappears, accounts get
-            locked, and your leads vanish overnight. A fast website is the asset
-            you own: it builds trust, captures enquiries, and keeps working
-            regardless of what social platforms decide.
+          <p
+            style={{
+              fontSize: "1.125rem",
+              color: "rgba(255, 255, 255, 0.85)",
+              WebkitTextFillColor: "rgba(255, 255, 255, 0.85)",
+              lineHeight: "1.625",
+              margin: 0,
+            }}
+          >
+            If your whole presence lives on Facebook or Instagram, you’re renting
+            attention. Algorithms change, reach disappears, accounts get locked,
+            and your leads vanish overnight. A fast website is the asset you own:
+            it builds trust, captures enquiries, and keeps working regardless of
+            what social platforms decide.
           </p>
         </div>
       </div>
