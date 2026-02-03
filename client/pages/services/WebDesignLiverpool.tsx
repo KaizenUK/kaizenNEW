@@ -300,28 +300,28 @@ export default function WebDesignLiverpool() {
 
   const features = [
     {
-      icon: Clock,
-      title: "Fast by Default",
-      description:
-        "Every site we build loads in under two seconds on mobile. Slow websites lose customers. Ours do not.",
-    },
-    {
       icon: Shield,
-      title: "Solid and Secure",
+      title: "Enterprise-Grade Security",
       description:
-        "Built to stay online and stay safe. We do not cut corners on hosting, backups, or security.",
+        "Compliance-first architecture. GDPR, data protection, secure authentication. Your clients&apos; trust is your most valuable asset.",
     },
     {
-      icon: Users,
-      title: "Local and Accountable",
+      icon: Clock,
+      title: "Premium Performance",
       description:
-        "We are based in the City Region. No offshoring, no call centres. You speak directly to your developer.",
+        "Every millisecond matters. First-class load times, seamless user experience. Your site works as hard as your practice.",
+    },
+    {
+      icon: Briefcase,
+      title: "Built for Law and Finance",
+      description:
+        "We understand the requirements of high-trust industries. Secure document handling, compliance logging, client management.",
     },
     {
       icon: Zap,
-      title: "Built to Rank",
+      title: "Scalable Architecture",
       description:
-        "Google rewards fast, well-built websites. Ours are designed to help Liverpool businesses get found.",
+        "Built to grow with your practice. Add features, handle more clients, scale your operations without rebuilding.",
     },
   ];
 
