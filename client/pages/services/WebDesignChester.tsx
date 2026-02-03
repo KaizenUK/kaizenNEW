@@ -492,7 +492,7 @@ export default function WebDesignChester() {
               City Region Expertise
             </span>
             <h2 className="text-3xl md:text-4xl font-heading font-bold text-white mt-4 mb-6">
-              Serving the City Region.
+              Modern Tech for a Historic City.
             </h2>
             <p className="text-slate-400 max-w-2xl mx-auto text-lg">
               From the Chester Business Park to the The Rows & City Centre, Chester
