@@ -506,21 +506,21 @@ export default function WebDesignChester() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {[
               {
-                area: "Old Hall Street & Chester Business Park",
-                title: "Financial & Legal Excellence",
-                desc: "Professional websites for teams, client areas, and document-heavy services — built to load fast and feel trustworthy.",
+                area: "Chester Business Park",
+                title: "Professional Services",
+                desc: "High-trust websites for law firms, accountancy, and wealth management — built to look established and load instantly.",
                 color: "cyan",
               },
               {
                 area: "The Rows & City Centre",
-                title: "Innovation & Research",
-                desc: "Clear, professional websites for clinics, consultants, and organisations who need to explain complex services simply.",
+                title: "Heritage Brands & Retail",
+                desc: "Elegant sites for heritage retail, hospitality, and long-standing local brands — polished design with modern speed.",
                 color: "sky",
               },
               {
-                area: "Logistics & Industrial Hub",
-                title: "Supply Chain Visibility",
-                desc: "Lead-generation sites and custom tools for building, trades, and logistics — built to win enquiries and keep things running smoothly.",
+                area: "Hoole, Handbridge & Cheshire",
+                title: "Consultants & Specialists",
+                desc: "Clear, conversion-focused sites for consultants, architects, and specialist services — built to win high-value enquiries.",
                 color: "lime",
               },
             ].map((item, i) => (
