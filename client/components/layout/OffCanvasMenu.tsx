@@ -192,7 +192,11 @@ const OffCanvasMenu: React.FC<OffCanvasMenuProps> = ({ isOpen, onClose }) => {
             <img
               src="https://cdn.builder.io/api/v1/image/assets%2Fe4ae46bbd81b4b95bef54d66dd9748cc%2F03f6c5dd481449d297c430cab962412e?format=webp&width=800"
               alt="Kaizen Web"
+              width="120"
+              height="32"
               className="h-8 w-auto"
+              loading="lazy"
+              decoding="async"
             />
           </Link>
           <button
