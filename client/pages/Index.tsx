@@ -312,7 +312,7 @@ const SocialMediaWarning = () => {
     <section className="py-16 md:py-20 bg-slate-900 text-white border-y border-white/10">
       <div className="container mx-auto px-4">
         <motion.div
-          initial={{ opacity: 0, y: 16 }}
+          initial={{ opacity: 1, y: 0 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.3 }}
           className="max-w-4xl mx-auto text-center"
