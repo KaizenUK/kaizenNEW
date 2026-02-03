@@ -192,9 +192,14 @@ function AppContent() {
           {/* Public Routes */}
           <Route path="/" element={<Index />} />
           <Route path="/services" element={<Services />} />
+          <Route path="/web-design-liverpool" element={<WebDesignLiverpool />} />
           <Route
             path="/services/web-design-liverpool"
-            element={<WebDesign />}
+            element={<Navigate to="/web-design-liverpool" replace />}
+          />
+          <Route
+            path="/web-design-liverpool-city-centre"
+            element={<Navigate to="/web-design-liverpool" replace />}
           />
           <Route path="/services/local-seo" element={<LocalSeo />} />
           <Route
