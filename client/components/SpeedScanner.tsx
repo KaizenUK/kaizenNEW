@@ -531,6 +531,8 @@ export default function SpeedScanner() {
                   <img
                     src={screenshot}
                     alt="Site Screenshot"
+                    width="200"
+                    height="400"
                     className="w-full h-auto object-cover"
                   />
                 ) : (
