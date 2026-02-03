@@ -138,7 +138,7 @@ const OffCanvasMenu: React.FC<OffCanvasMenuProps> = ({ isOpen, onClose }) => {
       title: "Client Results",
       items: [
         {
-          label: "High Five Games",
+          label: "Sweep Stakes Casino",
           href: "/case-studies/high-five-games",
           description:
             "Dual-currency gaming platform: +180% conversion uplift.",
