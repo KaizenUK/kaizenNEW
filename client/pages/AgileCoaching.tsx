@@ -354,7 +354,7 @@ export default function AgileCoaching() {
                 icon: CheckCircle,
                 title: "Our Web Design Process",
                 copy: "We use this *exact* Agile method to build our websites. It's how we launch on time, every time.",
-                link: "/services/web-design-liverpool",
+                link: "/web-design-liverpool",
                 linkText: "Explore Web Design",
               },
               {
