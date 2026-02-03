@@ -198,6 +198,48 @@ const OffCanvasMenu: React.FC<OffCanvasMenuProps> = ({
             )}
           </div>
 
+          {/* About Accordion */}
+          <div>
+            <button
+              onClick={() => toggleSection("about")}
+              className="w-full text-left px-3 py-3 text-base font-medium text-white/90 hover:text-white hover:bg-white/5 rounded-lg transition flex items-center justify-between"
+            >
+              <span>About</span>
+              <ChevronDown
+                size={18}
+                className={cn(
+                  "transition-transform duration-200",
+                  expandedSection === "about" && "rotate-180",
+                )}
+              />
+            </button>
+            {expandedSection === "about" && (
+              <div className="mt-1 space-y-0.5">
+                <Link
+                  to="/about"
+                  className="block px-3 py-2 text-sm font-medium rounded-lg text-white/80 hover:text-white hover:bg-white/5 transition"
+                  onClick={onClose}
+                >
+                  About Kaizen
+                </Link>
+                <Link
+                  to="/pledge"
+                  className="block px-3 py-2 text-sm font-medium rounded-lg text-white/80 hover:text-white hover:bg-white/5 transition"
+                  onClick={onClose}
+                >
+                  Our Pledge
+                </Link>
+                <Link
+                  to="/contact"
+                  className="block px-3 py-2 text-sm font-medium rounded-lg text-white/80 hover:text-white hover:bg-white/5 transition"
+                  onClick={onClose}
+                >
+                  Contact
+                </Link>
+              </div>
+            )}
+          </div>
+
           {/* Divider */}
           <div className="my-2 border-t border-white/10" />
 
