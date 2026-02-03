@@ -35,6 +35,9 @@ const WebDesignWirral = lazy(() => import("./pages/services/WebDesignWirral"));
 const WebDesignLiverpool = lazy(
   () => import("./pages/services/WebDesignLiverpool"),
 );
+const WebDesignChester = lazy(
+  () => import("./pages/services/WebDesignChester"),
+);
 const ContractProductOwner = lazy(() => import("./pages/ContractProductOwner"));
 const ProjectRescue = lazy(() => import("./pages/ProjectRescue"));
 const CaseStudies = lazy(() => import("./pages/CaseStudies"));
