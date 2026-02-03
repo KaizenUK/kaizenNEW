@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { Suspense, useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import {
   ArrowRight,
@@ -10,7 +10,6 @@ import {
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import Layout from "@/components/Layout";
-import { LeafletMap } from "@/components/LeafletMap";
 import { FaqSection } from "@/components/FaqSection";
 import SpeedScanner from "@/components/SpeedScanner";
 import { openCrisp } from "@/lib/crisp-utils";
@@ -81,6 +80,12 @@ const ScrollReveal = ({
     </motion.div>
   );
 };
+
+const LazyLeafletMap = React.lazy(() =>
+  import("@/components/LeafletMap").then((module) => ({
+    default: module.LeafletMap,
+  })),
+);
 
 const HeroSection = () => {
   const [spotlightPos, setSpotlightPos] = useState({ x: 0, y: 0 });
@@ -1562,6 +1567,27 @@ const WhoWeHelp = () => {
 };
 
 const LocalMap = () => {
+  const [isMapVisible, setIsMapVisible] = useState(false);
+  const mapContainerRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsMapVisible(true);
+          observer.disconnect();
+        }
+      },
+      { rootMargin: "200px" },
+    );
+
+    if (mapContainerRef.current) {
+      observer.observe(mapContainerRef.current);
+    }
+
+    return () => observer.disconnect();
+  }, []);
+
   return (
     <section className="py-20 md:py-32 bg-gray-950 text-white relative overflow-hidden">
       <div className="container mx-auto px-4 relative z-10">
@@ -1619,8 +1645,21 @@ const LocalMap = () => {
             viewport={{ once: true }}
           >
             <div className="absolute -inset-6 bg-gradient-to-r from-kaizen-cyan/20 to-kaizen-lime/10 blur-2xl rounded-3xl" />
-            <div className="relative h-96 rounded-2xl overflow-hidden border-2 border-white/10 shadow-2xl">
-              <LeafletMap className="w-full h-full" />
+            <div
+              ref={mapContainerRef}
+              className="relative h-96 rounded-2xl overflow-hidden border-2 border-white/10 shadow-2xl"
+            >
+              {isMapVisible ? (
+                <Suspense
+                  fallback={
+                    <div className="w-full h-full bg-slate-900/40" />
+                  }
+                >
+                  <LazyLeafletMap className="w-full h-full" />
+                </Suspense>
+              ) : (
+                <div className="w-full h-full bg-slate-900/40" aria-hidden />
+              )}
             </div>
           </motion.div>
         </div>
