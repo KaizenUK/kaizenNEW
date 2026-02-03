@@ -51,7 +51,7 @@ export default function HelenMooreHairdressingCase() {
           <div className="max-w-xl">
             <Link
               to="/case-studies"
-              className="inline-flex items-center gap-2 text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white transition mb-8 text-sm font-medium"
+              className="inline-flex items-center gap-2 text-slate-400 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white transition mb-8 text-sm font-medium"
             >
               <ArrowLeft size={16} />
               Back to Case Studies
