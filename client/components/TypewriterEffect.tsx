@@ -24,7 +24,11 @@ export function TypewriterEffect({
     const currentWord = words[currentWordIndex] ?? "";
 
     // Done (non-looping): stop timers and keep the final word
-    if (!loop && currentWordIndex === words.length - 1 && charIndex >= currentWord.length) {
+    if (
+      !loop &&
+      currentWordIndex === words.length - 1 &&
+      charIndex >= currentWord.length
+    ) {
       setDisplayedText(currentWord);
       return;
     }

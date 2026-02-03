@@ -2,7 +2,13 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route, useLocation, Navigate } from "react-router-dom";
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+  useLocation,
+  Navigate,
+} from "react-router-dom";
 import { HelmetProvider } from "react-helmet-async";
 import { Suspense, lazy, useEffect } from "react";
 import { CalendlyProvider, useCalendly } from "@/context/CalendlyContext";
@@ -26,7 +32,9 @@ const WordPressWebDesign = lazy(
 );
 const CityCentre = lazy(() => import("./pages/services/CityCentre"));
 const WebDesignWirral = lazy(() => import("./pages/services/WebDesignWirral"));
-const WebDesignLiverpool = lazy(() => import("./pages/services/WebDesignLiverpool"));
+const WebDesignLiverpool = lazy(
+  () => import("./pages/services/WebDesignLiverpool"),
+);
 const ContractProductOwner = lazy(() => import("./pages/ContractProductOwner"));
 const ProjectRescue = lazy(() => import("./pages/ProjectRescue"));
 const CaseStudies = lazy(() => import("./pages/CaseStudies"));
@@ -192,7 +200,10 @@ function AppContent() {
           {/* Public Routes */}
           <Route path="/" element={<Index />} />
           <Route path="/services" element={<Services />} />
-          <Route path="/web-design-liverpool" element={<WebDesignLiverpool />} />
+          <Route
+            path="/web-design-liverpool"
+            element={<WebDesignLiverpool />}
+          />
           <Route
             path="/services/web-design-liverpool"
             element={<Navigate to="/web-design-liverpool" replace />}

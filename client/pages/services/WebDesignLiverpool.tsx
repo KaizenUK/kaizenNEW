@@ -304,18 +304,26 @@ export default function WebDesignLiverpool() {
   return (
     <Layout>
       <Helmet>
-        <title>Enterprise Web Design Liverpool | React & Next.js Developers</title>
+        <title>
+          Enterprise Web Design Liverpool | React & Next.js Developers
+        </title>
         <meta
           name="description"
           content="We build high-performance React websites for Liverpool's Commercial District and Knowledge Quarter. Faster, safer, and more profitable than WordPress."
         />
-        <meta name="og:title" content="Enterprise Web Design Liverpool | React & Next.js Developers" />
+        <meta
+          name="og:title"
+          content="Enterprise Web Design Liverpool | React & Next.js Developers"
+        />
         <meta
           name="og:description"
           content="We build high-performance React websites for Liverpool's Commercial District and Knowledge Quarter. Faster, safer, and more profitable than WordPress."
         />
         <meta name="og:type" content="website" />
-        <link rel="canonical" href="https://kaizenweb.dev/web-design-liverpool" />
+        <link
+          rel="canonical"
+          href="https://kaizenweb.dev/web-design-liverpool"
+        />
       </Helmet>
 
       {/* Hero */}
@@ -349,7 +357,9 @@ export default function WebDesignLiverpool() {
               </h1>
 
               <p className="text-xl text-slate-300 max-w-xl mb-8 leading-relaxed">
-                We bring high-performance React development to Liverpool's Commercial District. Stop relying on slow WordPress themes and scale with confidence.
+                We bring high-performance React development to Liverpool's
+                Commercial District. Stop relying on slow WordPress themes and
+                scale with confidence.
               </p>
 
               <div className="flex flex-col sm:flex-row gap-4 items-center">
@@ -420,7 +430,10 @@ export default function WebDesignLiverpool() {
               Is Google Hiding You?
             </h2>
             <p className="text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
-              Google hates slow websites. If your site is slow, they bury you on Page 2 or worse—where nobody looks. You could be paying for SEO or Ads, but if your site fails this test, you are sending customers straight to your competitors. Are you invisible?
+              Google hates slow websites. If your site is slow, they bury you on
+              Page 2 or worse—where nobody looks. You could be paying for SEO or
+              Ads, but if your site fails this test, you are sending customers
+              straight to your competitors. Are you invisible?
             </p>
           </div>
 
@@ -438,7 +451,8 @@ export default function WebDesignLiverpool() {
               Why Liverpool Businesses Choose Us
             </h2>
             <p className="text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
-              We understand the demands of the Commercial District and Knowledge Quarter. Your site needs to work as hard as you do.
+              We understand the demands of the Commercial District and Knowledge
+              Quarter. Your site needs to work as hard as you do.
             </p>
           </div>
 
@@ -501,7 +515,11 @@ export default function WebDesignLiverpool() {
               Serving the City Region.
             </h2>
             <p className="text-slate-400 max-w-2xl mx-auto text-lg">
-              From the Commercial District to the Knowledge Quarter, Liverpool businesses are world-class. Your digital presence should be too. We provide the technical architecture required by law firms, financial consultancies, and logistics groups who cannot afford downtime.
+              From the Commercial District to the Knowledge Quarter, Liverpool
+              businesses are world-class. Your digital presence should be too.
+              We provide the technical architecture required by law firms,
+              financial consultancies, and logistics groups who cannot afford
+              downtime.
             </p>
           </div>
 
@@ -572,7 +590,11 @@ export default function WebDesignLiverpool() {
 
               <div className="prose prose-lg dark:prose-invert mb-8">
                 <p className="text-slate-600 dark:text-slate-300">
-                  We specialise in building sophisticated digital solutions for Liverpool's most demanding businesses. Whether you need a new corporate portal, a complete modernisation of legacy systems, or ongoing technical support for SMEs and professional services, we have the expertise.
+                  We specialise in building sophisticated digital solutions for
+                  Liverpool's most demanding businesses. Whether you need a new
+                  corporate portal, a complete modernisation of legacy systems,
+                  or ongoing technical support for SMEs and professional
+                  services, we have the expertise.
                 </p>
               </div>
 
@@ -778,7 +800,8 @@ export default function WebDesignLiverpool() {
               Built for Enterprise Demands
             </h2>
             <p className="text-lg text-slate-400 max-w-2xl mx-auto">
-              Your Liverpool business deserves world-class performance. We deliver it.
+              Your Liverpool business deserves world-class performance. We
+              deliver it.
             </p>
           </div>
 
@@ -800,7 +823,9 @@ export default function WebDesignLiverpool() {
                 security and performance tests.
               </p>
               <p className="text-slate-400 mb-6 leading-relaxed">
-                We achieve this with world-class GTMetrix scores and a relentless focus on code quality, compliance, and architectural excellence.
+                We achieve this with world-class GTMetrix scores and a
+                relentless focus on code quality, compliance, and architectural
+                excellence.
               </p>
               <a
                 href="https://developers.google.com/search/docs/appearance/core-web-vitals"
@@ -874,7 +899,10 @@ export default function WebDesignLiverpool() {
           </h2>
 
           <p className="text-xl text-slate-400 mb-10 leading-relaxed max-w-2xl mx-auto">
-            Whether you're a law firm on Old Hall Street, a knowledge worker in the Innovation District, or a logistics operation at the edge of the city region, we build digital systems that don't just look sharp—they perform at enterprise grade.
+            Whether you're a law firm on Old Hall Street, a knowledge worker in
+            the Innovation District, or a logistics operation at the edge of the
+            city region, we build digital systems that don't just look
+            sharp—they perform at enterprise grade.
           </p>
 
           <div className="flex flex-col sm:flex-row justify-center gap-6">
