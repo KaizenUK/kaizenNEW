@@ -352,6 +352,24 @@ const pageMeta: Record<string, Partial<PageMeta>> = {
     description:
       "A technical deep dive into architecting a dual-currency gaming economy for an international sweepstakes casino: moving from pure social play to regulated sweepstakes across 43 US states, delivering 42% ARPU growth with financial-grade reliability.",
   },
+  "/performance-scanner": {
+    title: "Free Website Speed Test | Check Your Google PageSpeed Score",
+    description:
+      "Is your slow website costing you customers? Run a free Google PageSpeed test and check your Core Web Vitals. Get instant results and fix your mobile site speed today.",
+    keywords: [
+      "google pagespeed insights",
+      "core web vitals",
+      "mobile site speed",
+      "fix slow website",
+      "wordpress speed optimization",
+      "improve google ranking",
+      "lcp score",
+      "website conversion rate",
+      "seo audit tool",
+      "free speed test",
+      "website performance",
+    ],
+  },
 };
 
 type DynamicMetaMatcher = {
