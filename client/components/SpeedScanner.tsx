@@ -53,16 +53,12 @@ export default function SpeedScanner() {
       setTimeout(() => setStatusMsg("Analysing Stability..."), 2000);
       setTimeout(() => setStatusMsg("Generating Fix Plan..."), 3500);
 
-      if (!API_KEY) {
-        throw new Error("Missing API key");
-      }
-
       const res = await fetch(
-        `https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url=${encodeURIComponent(auditUrl)}&category=PERFORMANCE&strategy=MOBILE&key=${API_KEY}`,
+        `/api/pagespeed?url=${encodeURIComponent(auditUrl)}`,
       );
       const data = await res.json();
 
-      if (data.error) throw new Error(data.error.message);
+      if (!res.ok) throw new Error(data.error || "Failed to run audit");
 
       const lighthouseScore =
         data.lighthouseResult.categories.performance.score * 100;
