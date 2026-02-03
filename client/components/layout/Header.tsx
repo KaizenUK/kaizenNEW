@@ -17,6 +17,12 @@ import {
   Mail,
   BookOpen,
   Award,
+  DollarSign,
+  Lightbulb,
+  AlertCircle,
+  Rocket,
+  TrendingUp,
+  Grid,
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -140,9 +146,7 @@ const Header: React.FC<HeaderProps> = ({
     },
   ];
 
-  const topLevelLinks = [
-    { label: "Project Rescue", href: "/project-rescue" },
-  ];
+  const topLevelLinks: Array<{ label: string; href: string }> = [];
 
   const insightsMenu: ServiceColumn[] = [
     {
@@ -152,19 +156,19 @@ const Header: React.FC<HeaderProps> = ({
           label: "Web Design Costs in Liverpool 2025",
           href: "/blog/how-much-does-a-website-cost-in-liverpool-in-2025",
           description: "Transparent pricing and what you actually get.",
-          icon: <BookOpen className="w-4 h-4" />,
+          icon: <DollarSign className="w-4 h-4" />,
         },
         {
           label: "How to Choose a Web Agency",
           href: "/blog/choose-web-design-agency-liverpool",
           description: "Red flags, questions to ask, and what matters.",
-          icon: <BookOpen className="w-4 h-4" />,
+          icon: <Lightbulb className="w-4 h-4" />,
         },
         {
           label: "Website Mistakes to Avoid",
           href: "/blog/website-mistakes-liverpool",
           description: "Common errors that kill conversions.",
-          icon: <BookOpen className="w-4 h-4" />,
+          icon: <AlertCircle className="w-4 h-4" />,
         },
         {
           label: "All Articles",
@@ -184,19 +188,19 @@ const Header: React.FC<HeaderProps> = ({
           label: "High Five Games",
           href: "/case-studies/high-five-games",
           description: "Dual-currency gaming platform: +180% conversion uplift.",
-          icon: <Award className="w-4 h-4" />,
+          icon: <Rocket className="w-4 h-4" />,
         },
         {
           label: "Independent Retailer",
           href: "/case-studies/independent-retailer",
           description: "Local business rebuild: +250% organic traffic.",
-          icon: <Award className="w-4 h-4" />,
+          icon: <TrendingUp className="w-4 h-4" />,
         },
         {
           label: "All Case Studies",
           href: "/case-studies",
           description: "See more client success stories.",
-          icon: <Award className="w-4 h-4" />,
+          icon: <Grid className="w-4 h-4" />,
         },
       ],
     },
@@ -379,6 +383,14 @@ const Header: React.FC<HeaderProps> = ({
                 }`}
               />
             </button>
+
+            {/* Project Rescue Link */}
+            <Link
+              to="/project-rescue"
+              className="px-4 py-2 text-base font-medium text-white/80 hover:text-white hover:bg-white/5 rounded-full transition"
+            >
+              Project Rescue
+            </Link>
 
             {/* Top-Level Links */}
             {topLevelLinks.map((link) => (
