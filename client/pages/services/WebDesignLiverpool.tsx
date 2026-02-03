@@ -445,17 +445,17 @@ export default function WebDesignLiverpool() {
             {[
               {
                 icon: Users,
-                title: "Local & Accountable",
+                title: "Local & Accountable:",
                 desc: "We are right here in the City Region. No offshoring, no hiding behind emails. You get direct access to your developer.",
               },
               {
                 icon: Zap,
-                title: "Built for Google",
+                title: "Built for Google:",
                 desc: "We don't just make it look good. We build it to rank high and load fast on mobile.",
               },
               {
                 icon: BarChart3,
-                title: "Asset, Not Expense",
+                title: "Asset, Not Expense:",
                 desc: "A cheap website costs you lost customers. Our sites are built to pay for themselves.",
               },
             ].map((item, i) => (
