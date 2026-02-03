@@ -523,6 +523,20 @@ export default function BlogDetail() {
   // Update reading progress AND TOC active state based on scroll position
   useEffect(() => {
     let rafId: number | null = null;
+    let cachedHeadings: HTMLElement[] = [];
+
+    const refreshHeadings = () => {
+      if (!contentRef.current) {
+        cachedHeadings = [];
+        return;
+      }
+      cachedHeadings = Array.from(
+        contentRef.current.querySelectorAll("h2[id]"),
+      ) as HTMLElement[];
+    };
+
+    // Headings are injected HTML, so cache after paint
+    const cacheTimer = window.setTimeout(refreshHeadings, 0);
 
     const handleScroll = () => {
       if (rafId !== null) {
@@ -540,27 +554,17 @@ export default function BlogDetail() {
         scaleX.set(clampedProgress);
 
         // Update TOC active section based on scroll position
-        if (!contentRef.current) return;
-
-        const headings = Array.from(
-          contentRef.current.querySelectorAll("h2[id]"),
-        ) as HTMLElement[];
-
-        if (headings.length === 0) {
+        if (cachedHeadings.length === 0) {
           setActiveSection("content");
           return;
         }
 
-        // Find the heading that is closest to the top of the viewport
-        // We look for the last heading that is above the visual center (around 150px from top)
-        let activeId = headings[0]?.id || "content";
-        const triggerPoint = 150; // Heading becomes active when it reaches 150px from top
+        let activeId = cachedHeadings[0]?.id || "content";
+        const triggerPoint = 150;
 
-        for (let i = headings.length - 1; i >= 0; i--) {
-          const heading = headings[i];
+        for (let i = cachedHeadings.length - 1; i >= 0; i--) {
+          const heading = cachedHeadings[i];
           const rect = heading.getBoundingClientRect();
-
-          // If heading is above the trigger point, it's our active heading
           if (rect.top <= triggerPoint) {
             activeId = heading.id;
             break;
@@ -572,13 +576,17 @@ export default function BlogDetail() {
     };
 
     window.addEventListener("scroll", handleScroll, { passive: true });
+    window.addEventListener("resize", refreshHeadings, { passive: true });
+
     return () => {
       window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("resize", refreshHeadings);
+      window.clearTimeout(cacheTimer);
       if (rafId !== null) {
         cancelAnimationFrame(rafId);
       }
     };
-  }, [scaleX]);
+  }, [scaleX, post?.id]);
 
   if (isLoading) {
     return (
