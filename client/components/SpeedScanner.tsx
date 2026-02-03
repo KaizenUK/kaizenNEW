@@ -11,7 +11,9 @@ export default function SpeedScanner() {
 
   // Your API Key
   const API_KEY = useMemo(() => {
-    return (import.meta as any).env?.VITE_PAGESPEED_API_KEY as string | undefined;
+    return (import.meta as any).env?.VITE_PAGESPEED_API_KEY as
+      | string
+      | undefined;
   }, []);
 
   const buildAuditUrl = (raw: string) => {
