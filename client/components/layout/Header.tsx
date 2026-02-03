@@ -5,23 +5,16 @@ import {
   Sun,
   Moon,
   ChevronDown,
-  Monitor,
   ShoppingBag,
   MapPin,
-  Map,
   LifeBuoy,
   Briefcase,
   Users,
-  BookOpen,
-  FileText,
   FileCode2,
-  Wrench,
   Zap,
-  Code2,
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useCalendly } from "@/context/CalendlyContext";
 import { openCrisp } from "@/lib/crisp-utils";
 
 interface HeaderProps {
@@ -31,7 +24,7 @@ interface HeaderProps {
   onMobileMenuChange: (open: boolean) => void;
 }
 
-type DesktopMenuKey = "services" | "insights" | "case-studies" | null;
+type DesktopMenuKey = "services" | null;
 
 interface ServiceItem {
   label: string;
@@ -46,26 +39,6 @@ interface ServiceColumn {
   items: ServiceItem[];
 }
 
-interface InsightItem {
-  label: string;
-  href: string;
-  description?: string;
-  icon: JSX.Element;
-}
-
-interface CaseStudyItem {
-  label: string;
-  href: string;
-  description: string;
-  icon: JSX.Element;
-}
-
-const desktopMenuOrder: DesktopMenuKey[] = [
-  "services",
-  "insights",
-  "case-studies",
-];
-
 const Header: React.FC<HeaderProps> = ({
   theme,
   onThemeChange,
@@ -74,25 +47,16 @@ const Header: React.FC<HeaderProps> = ({
 }) => {
   const [activeMenu, setActiveMenu] = useState<DesktopMenuKey>(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [lastMenu, setLastMenu] = useState<DesktopMenuKey>(null);
-  const [direction, setDirection] = useState<1 | -1>(1);
   const [panelLeft, setPanelLeft] = useState<number | null>(null);
+
   const navRef = useRef<HTMLDivElement | null>(null);
   const servicesTriggerRef = useRef<HTMLButtonElement | null>(null);
-  const insightsTriggerRef = useRef<HTMLButtonElement | null>(null);
-  const caseStudiesTriggerRef = useRef<HTMLButtonElement | null>(null);
   const location = useLocation();
 
   useEffect(() => {
     setIsMenuOpen(false);
     setActiveMenu(null);
   }, [location.pathname]);
-
-  useEffect(() => {
-    return () => {
-      // no-op cleanup
-    };
-  }, []);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -116,24 +80,10 @@ const Header: React.FC<HeaderProps> = ({
       title: "Web & Growth",
       items: [
         {
-          label: "Web Design Liverpool",
-          href: "/services/web-design-liverpool",
-          description:
-            "Fast, conversion-focused sites for Liverpool businesses.",
-          icon: <MapPin className="w-4 h-4" />,
-        },
-        {
           label: "High-Performance Local Websites",
           href: "/services/local-seo",
-          description:
-            "Local rankings powered by Core Web Vitals and local intent.",
+          description: "Local rankings powered by Core Web Vitals and local intent.",
           icon: <MapPin className="w-4 h-4" />,
-        },
-        {
-          label: "Web Design Wirral",
-          href: "/web-design-wirral",
-          description: "Web design for Heswall, West Kirby, and Birkenhead.",
-          icon: <Map className="w-4 h-4" />,
         },
         {
           label: "WordPress Web Design",
@@ -146,12 +96,6 @@ const Header: React.FC<HeaderProps> = ({
           href: "/services/ecommerce",
           description: "Shopify and custom stores that actually sell.",
           icon: <ShoppingBag className="w-4 h-4" />,
-        },
-        {
-          label: "Liverpool City Centre",
-          href: "/web-design-liverpool-city-centre",
-          description: "Web design for Liverpool city centre businesses.",
-          icon: <MapPin className="w-4 h-4" />,
         },
       ],
     },
@@ -188,63 +132,9 @@ const Header: React.FC<HeaderProps> = ({
     },
   ];
 
-  const insightsMenu: InsightItem[] = [
-    {
-      label: "The Price Guide",
-      description: "How much a serious website really costs in Liverpool.",
-      href: "/blog/how-much-does-a-website-cost-in-liverpool-in-2025",
-      icon: <FileText className="w-4 h-4" />,
-    },
-    {
-      label: "The Selection Guide",
-      description: "How to choose a web agency without the fluff.",
-      href: "/blog/choose-web-design-agency-liverpool",
-      icon: <BookOpen className="w-4 h-4" />,
-    },
-    {
-      label: "The Fixer Guide",
-      description: "Five website mistakes that quietly kill sales.",
-      href: "/blog/website-mistakes-liverpool",
-      icon: <Wrench className="w-4 h-4" />,
-    },
-    {
-      label: "View All Articles",
-      href: "/blog",
-      icon: <BookOpen className="w-4 h-4" />,
-    },
-  ];
-
-  const caseStudiesMenu: CaseStudyItem[] = [
-    {
-      label: "International Sweepstakes Casino",
-      href: "/case-studies/high-five-games",
-      description: "Gaming Economy / Contract Product",
-      icon: <Code2 className="w-4 h-4" />,
-    },
-    {
-      label: "A.S. Collections",
-      href: "/case-studies/as-collections",
-      description: "Commercial Debt Recovery",
-      icon: <Briefcase className="w-4 h-4" />,
-    },
-    {
-      label: "Helen Moore",
-      href: "/case-studies/helen-moore-hairdressing",
-      description: "Local Business / Salon",
-      icon: <MapPin className="w-4 h-4" />,
-    },
-    {
-      label: "Kaizen Web",
-      href: "/case-studies/kaizen-rebuild",
-      description: "Agency Rebuild / Tech Deep Dive",
-      icon: <Code2 className="w-4 h-4" />,
-    },
-  ];
-
   const topLevelLinks = [
     { label: "Project Rescue", href: "/project-rescue" },
-    { label: "Our Pledge", href: "/pledge" },
-    { label: "About", href: "/about" },
+    { label: "Contact", href: "/contact" },
   ];
 
   const openMenu = (menu: DesktopMenuKey) => {
@@ -254,23 +144,8 @@ const Header: React.FC<HeaderProps> = ({
       return;
     }
 
-    if (lastMenu && lastMenu !== menu) {
-      const fromIndex = desktopMenuOrder.indexOf(lastMenu);
-      const toIndex = desktopMenuOrder.indexOf(menu);
-      if (fromIndex !== -1 && toIndex !== -1) {
-        setDirection(toIndex > fromIndex ? 1 : -1);
-      }
-    }
-
     const nav = navRef.current;
-    const triggerEl =
-      menu === "services"
-        ? servicesTriggerRef.current
-        : menu === "insights"
-          ? insightsTriggerRef.current
-          : menu === "case-studies"
-            ? caseStudiesTriggerRef.current
-            : null;
+    const triggerEl = servicesTriggerRef.current;
 
     if (nav && triggerEl) {
       const navRect = nav.getBoundingClientRect();
@@ -281,7 +156,6 @@ const Header: React.FC<HeaderProps> = ({
       setPanelLeft(null);
     }
 
-    setLastMenu(menu);
     setActiveMenu(menu);
     setIsMenuOpen(true);
   };
@@ -304,9 +178,9 @@ const Header: React.FC<HeaderProps> = ({
   };
 
   const panelVariants = {
-    enter: (dir: number) => ({ opacity: 0, y: -8, x: dir * 32 }),
-    center: { opacity: 1, y: 0, x: 0 },
-    exit: (dir: number) => ({ opacity: 0, y: -8, x: dir * -32 }),
+    enter: { opacity: 0, y: -8 },
+    center: { opacity: 1, y: 0 },
+    exit: { opacity: 0, y: -8 },
   };
 
   return (
@@ -325,7 +199,7 @@ const Header: React.FC<HeaderProps> = ({
           >
             <img
               src="https://cdn.builder.io/api/v1/image/assets%2Fe4ae46bbd81b4b95bef54d66dd9748cc%2F03f6c5dd481449d297c430cab962412e?format=webp&width=800"
-              alt="Kaizen Web - Liverpool Web Design Agency"
+              alt="Kaizen Web"
               width="200"
               height="64"
               className="h-16 w-auto"
@@ -362,46 +236,6 @@ const Header: React.FC<HeaderProps> = ({
               />
             </button>
 
-            {/* Insights Trigger */}
-            <button
-              ref={insightsTriggerRef}
-              type="button"
-              onMouseEnter={() => openMenu("insights")}
-              onFocus={() => openMenu("insights")}
-              onClick={() => handleTriggerClick("insights")}
-              className="flex items-center gap-2 px-4 py-2 text-base font-medium text-white/90 hover:text-white hover:bg-white/5 rounded-full transition"
-              aria-expanded={isMenuOpen && activeMenu === "insights"}
-            >
-              Insights
-              <ChevronDown
-                size={16}
-                className={`transition-transform duration-200 ${
-                  isMenuOpen && activeMenu === "insights" ? "rotate-180" : ""
-                }`}
-              />
-            </button>
-
-            {/* Case Studies Trigger */}
-            <button
-              ref={caseStudiesTriggerRef}
-              type="button"
-              onMouseEnter={() => openMenu("case-studies")}
-              onFocus={() => openMenu("case-studies")}
-              onClick={() => handleTriggerClick("case-studies")}
-              className="flex items-center gap-2 px-4 py-2 text-base font-medium text-white/90 hover:text-white hover:bg-white/5 rounded-full transition"
-              aria-expanded={isMenuOpen && activeMenu === "case-studies"}
-            >
-              Case Studies
-              <ChevronDown
-                size={16}
-                className={`transition-transform duration-200 ${
-                  isMenuOpen && activeMenu === "case-studies"
-                    ? "rotate-180"
-                    : ""
-                }`}
-              />
-            </button>
-
             {/* Top-Level Links */}
             {topLevelLinks.map((link) => (
               <Link
@@ -413,12 +247,11 @@ const Header: React.FC<HeaderProps> = ({
               </Link>
             ))}
 
-            {/* Shared Dropdown Panel */}
-            <AnimatePresence mode="wait">
-              {isMenuOpen && activeMenu && (
+            {/* Services Dropdown Panel */}
+            <AnimatePresence>
+              {isMenuOpen && activeMenu === "services" && (
                 <motion.div
-                  key={activeMenu}
-                  custom={direction}
+                  key="services"
                   variants={panelVariants}
                   initial="enter"
                   animate="center"
@@ -430,117 +263,49 @@ const Header: React.FC<HeaderProps> = ({
                     transform: "translateX(-50%)",
                   }}
                 >
-                  {activeMenu === "services" && (
-                    <div className="grid grid-cols-2 gap-6">
-                      {servicesMenu.map((column) => (
-                        <div key={column.title}>
-                          <h3 className="text-lg font-semibold text-white mb-4">
-                            {column.title}
-                          </h3>
-                          <ul className="space-y-2">
-                            {column.items.map((item) => (
-                              <li key={item.href}>
-                                <Link
-                                  to={item.href}
-                                  className="block rounded-xl px-3 py-2 hover:bg-white/5 transition"
-                                  onClick={() => {
-                                    setIsMenuOpen(false);
-                                    setActiveMenu(null);
-                                  }}
-                                >
-                                  <div className="flex items-start gap-3">
-                                    <span
-                                      className={`mt-1 flex h-7 w-7 items-center justify-center rounded-full bg-white/5 text-cyan-300`}
+                  <div className="grid grid-cols-2 gap-6">
+                    {servicesMenu.map((column) => (
+                      <div key={column.title}>
+                        <h3 className="text-lg font-semibold text-white mb-4">
+                          {column.title}
+                        </h3>
+                        <ul className="space-y-2">
+                          {column.items.map((item) => (
+                            <li key={item.href}>
+                              <Link
+                                to={item.href}
+                                className="block rounded-xl px-3 py-2 hover:bg-white/5 transition"
+                                onClick={() => {
+                                  setIsMenuOpen(false);
+                                  setActiveMenu(null);
+                                }}
+                              >
+                                <div className="flex items-start gap-3">
+                                  <span className="mt-1 flex h-7 w-7 items-center justify-center rounded-full bg-white/5 text-cyan-300">
+                                    {item.icon}
+                                  </span>
+                                  <div>
+                                    <div
+                                      className={`text-base font-semibold ${
+                                        item.highlight
+                                          ? "text-cyan-300"
+                                          : "text-white"
+                                      }`}
                                     >
-                                      {item.icon}
-                                    </span>
-                                    <div>
-                                      <div
-                                        className={`text-base font-semibold ${
-                                          item.highlight
-                                            ? "text-cyan-300"
-                                            : "text-white"
-                                        }`}
-                                      >
-                                        {item.label}
-                                      </div>
-                                      <p className="text-sm text-gray-400 mt-1">
-                                        {item.description}
-                                      </p>
+                                      {item.label}
                                     </div>
+                                    <p className="text-sm text-gray-400 mt-1">
+                                      {item.description}
+                                    </p>
                                   </div>
-                                </Link>
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-
-                  {activeMenu === "insights" && (
-                    <div className="grid grid-cols-1 gap-3">
-                      {insightsMenu.map((item) => (
-                        <Link
-                          key={item.href}
-                          to={item.href}
-                          className="block rounded-xl px-3 py-2 hover:bg-white/5 transition"
-                          onClick={() => {
-                            setIsMenuOpen(false);
-                            setActiveMenu(null);
-                          }}
-                        >
-                          <div className="flex items-start gap-3">
-                            <span className="mt-1 flex h-7 w-7 items-center justify-center rounded-full bg-white/5 text-cyan-300">
-                              {item.icon}
-                            </span>
-                            <div>
-                              <div className="text-base font-semibold text-white">
-                                {item.label}
-                              </div>
-                              {item.description && (
-                                <p className="text-sm text-gray-400 mt-0.5">
-                                  {item.description}
-                                </p>
-                              )}
-                            </div>
-                          </div>
-                        </Link>
-                      ))}
-                    </div>
-                  )}
-
-                  {activeMenu === "case-studies" && (
-                    <div className="grid grid-cols-1 gap-3">
-                      {caseStudiesMenu.map((item) => (
-                        <Link
-                          key={item.href}
-                          to={item.href}
-                          className="block rounded-xl px-3 py-2 hover:bg-white/5 transition"
-                          onClick={() => {
-                            setIsMenuOpen(false);
-                            setActiveMenu(null);
-                          }}
-                        >
-                          <div className="flex items-start gap-3">
-                            <span className="mt-1 flex h-7 w-7 items-center justify-center rounded-full bg-white/5 text-cyan-300">
-                              {item.icon}
-                            </span>
-                            <div>
-                              <div className="text-base font-semibold text-white">
-                                {item.label}
-                              </div>
-                              {item.description && (
-                                <p className="text-sm text-gray-400 mt-0.5">
-                                  {item.description}
-                                </p>
-                              )}
-                            </div>
-                          </div>
-                        </Link>
-                      ))}
-                    </div>
-                  )}
+                                </div>
+                              </Link>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    ))}
+                  </div>
                 </motion.div>
               )}
             </AnimatePresence>

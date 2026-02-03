@@ -1,20 +1,15 @@
-import { Link, useLocation } from "react-router-dom";
+import { Link } from "react-router-dom";
 import {
   X,
   Sun,
   Moon,
   ChevronDown,
   MapPin,
-  Map,
   LifeBuoy,
   Briefcase,
   Users,
-  BookOpen,
-  FileText,
   FileCode2,
-  Wrench,
   Zap,
-  Code2,
   ShoppingBag,
 } from "lucide-react";
 import { useState } from "react";
@@ -41,20 +36,6 @@ interface ServiceColumn {
   items: ServiceItem[];
 }
 
-interface InsightItem {
-  label: string;
-  href: string;
-  description?: string;
-  icon: JSX.Element;
-}
-
-interface CaseStudyItem {
-  label: string;
-  href: string;
-  description: string;
-  icon: JSX.Element;
-}
-
 const OffCanvasMenu: React.FC<OffCanvasMenuProps> = ({
   isOpen,
   onClose,
@@ -68,24 +49,10 @@ const OffCanvasMenu: React.FC<OffCanvasMenuProps> = ({
       title: "Web & Growth",
       items: [
         {
-          label: "Web Design Liverpool",
-          href: "/services/web-design-liverpool",
-          description:
-            "Fast, conversion-focused sites for Liverpool businesses.",
-          icon: <MapPin className="w-4 h-4" />,
-        },
-        {
           label: "High-Performance Local Websites",
           href: "/services/local-seo",
-          description:
-            "Local rankings powered by Core Web Vitals and local intent.",
+          description: "Local rankings powered by Core Web Vitals and local intent.",
           icon: <MapPin className="w-4 h-4" />,
-        },
-        {
-          label: "Web Design Wirral",
-          href: "/web-design-wirral",
-          description: "Web design for Heswall, West Kirby, and Birkenhead.",
-          icon: <Map className="w-4 h-4" />,
         },
         {
           label: "WordPress Web Design",
@@ -98,12 +65,6 @@ const OffCanvasMenu: React.FC<OffCanvasMenuProps> = ({
           href: "/services/ecommerce",
           description: "Shopify and custom stores that actually sell.",
           icon: <ShoppingBag className="w-4 h-4" />,
-        },
-        {
-          label: "Liverpool City Centre",
-          href: "/web-design-liverpool-city-centre",
-          description: "Web design for Liverpool city centre businesses.",
-          icon: <MapPin className="w-4 h-4" />,
         },
       ],
     },
@@ -140,63 +101,9 @@ const OffCanvasMenu: React.FC<OffCanvasMenuProps> = ({
     },
   ];
 
-  const insightsMenu: InsightItem[] = [
-    {
-      label: "The Price Guide",
-      description: "How much a serious website really costs in Liverpool.",
-      href: "/blog/how-much-does-a-website-cost-in-liverpool-in-2025",
-      icon: <FileText className="w-4 h-4" />,
-    },
-    {
-      label: "The Selection Guide",
-      description: "How to choose a web agency without the fluff.",
-      href: "/blog/choose-web-design-agency-liverpool",
-      icon: <BookOpen className="w-4 h-4" />,
-    },
-    {
-      label: "The Fixer Guide",
-      description: "Five website mistakes that quietly kill sales.",
-      href: "/blog/website-mistakes-liverpool",
-      icon: <Wrench className="w-4 h-4" />,
-    },
-    {
-      label: "View All Articles",
-      href: "/blog",
-      icon: <BookOpen className="w-4 h-4" />,
-    },
-  ];
-
-  const caseStudiesMenu: CaseStudyItem[] = [
-    {
-      label: "International Sweepstakes Casino",
-      href: "/case-studies/high-five-games",
-      description: "Gaming Economy / Contract Product",
-      icon: <Code2 className="w-4 h-4" />,
-    },
-    {
-      label: "A.S. Collections",
-      href: "/case-studies/as-collections",
-      description: "Commercial Debt Recovery",
-      icon: <Briefcase className="w-4 h-4" />,
-    },
-    {
-      label: "Helen Moore",
-      href: "/case-studies/helen-moore-hairdressing",
-      description: "Local Business / Salon",
-      icon: <MapPin className="w-4 h-4" />,
-    },
-    {
-      label: "Kaizen Web",
-      href: "/case-studies/kaizen-rebuild",
-      description: "Agency Rebuild / Tech Deep Dive",
-      icon: <Code2 className="w-4 h-4" />,
-    },
-  ];
-
   const topLevelLinks = [
     { label: "Project Rescue", href: "/project-rescue" },
-    { label: "Our Pledge", href: "/pledge" },
-    { label: "About", href: "/about" },
+    { label: "Contact", href: "/contact" },
   ];
 
   const toggleSection = (section: string) => {
@@ -285,78 +192,6 @@ const OffCanvasMenu: React.FC<OffCanvasMenuProps> = ({
                       </Link>
                     ))}
                   </div>
-                ))}
-              </div>
-            )}
-          </div>
-
-          {/* Insights Accordion */}
-          <div>
-            <button
-              onClick={() => toggleSection("insights")}
-              className="w-full text-left px-3 py-3 text-base font-medium text-white/90 hover:text-white hover:bg-white/5 rounded-lg transition flex items-center justify-between"
-            >
-              <span>Insights</span>
-              <ChevronDown
-                size={18}
-                className={cn(
-                  "transition-transform duration-200",
-                  expandedSection === "insights" && "rotate-180",
-                )}
-              />
-            </button>
-            {expandedSection === "insights" && (
-              <div className="mt-1 space-y-0.5">
-                {insightsMenu.map((item) => (
-                  <Link
-                    key={item.href}
-                    to={item.href}
-                    className="block px-3 py-2 text-sm font-medium text-white/80 hover:text-white hover:bg-white/5 rounded-lg transition"
-                    onClick={onClose}
-                  >
-                    <div className="font-semibold">{item.label}</div>
-                    {item.description && (
-                      <div className="text-xs text-white/50 mt-0.5">
-                        {item.description}
-                      </div>
-                    )}
-                  </Link>
-                ))}
-              </div>
-            )}
-          </div>
-
-          {/* Case Studies Accordion */}
-          <div>
-            <button
-              onClick={() => toggleSection("case-studies")}
-              className="w-full text-left px-3 py-3 text-base font-medium text-white/90 hover:text-white hover:bg-white/5 rounded-lg transition flex items-center justify-between"
-            >
-              <span>Case Studies</span>
-              <ChevronDown
-                size={18}
-                className={cn(
-                  "transition-transform duration-200",
-                  expandedSection === "case-studies" && "rotate-180",
-                )}
-              />
-            </button>
-            {expandedSection === "case-studies" && (
-              <div className="mt-1 space-y-0.5">
-                {caseStudiesMenu.map((item) => (
-                  <Link
-                    key={item.href}
-                    to={item.href}
-                    className="block px-3 py-2 text-sm font-medium text-white/80 hover:text-white hover:bg-white/5 rounded-lg transition"
-                    onClick={onClose}
-                  >
-                    <div className="font-semibold">{item.label}</div>
-                    {item.description && (
-                      <div className="text-xs text-white/50 mt-0.5">
-                        {item.description}
-                      </div>
-                    )}
-                  </Link>
                 ))}
               </div>
             )}
