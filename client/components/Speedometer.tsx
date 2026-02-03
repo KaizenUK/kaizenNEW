@@ -7,7 +7,6 @@ export function Speedometer() {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const hasAnimatedRef = useRef(false);
   const animationFrameRef = useRef<number | null>(null);
-  const [isWobbling, setIsWobbling] = useState(false);
 
   useEffect(() => {
     const startAnimation = () => {
@@ -24,8 +23,6 @@ export function Speedometer() {
 
         if (progress < 1) {
           animationFrameRef.current = requestAnimationFrame(animate);
-        } else {
-          setIsWobbling(true);
         }
       };
 
@@ -60,19 +57,7 @@ export function Speedometer() {
   }, []);
 
   // Map 0-100 to -90 to 90 degrees
-  // Add wobble if animation is done
-  const wobble = isWobbling ? Math.sin(Date.now() / 100) * 2 : 0;
-  const rotation = -90 + (speed / maxSpeed) * 180 + wobble;
-
-  // Force re-render for wobble
-  useEffect(() => {
-    if (isWobbling) {
-      const interval = setInterval(() => {
-        setSpeed((s) => s); // Trigger re-render
-      }, 50);
-      return () => clearInterval(interval);
-    }
-  }, [isWobbling]);
+  const rotation = -90 + (speed / maxSpeed) * 180;
 
   return (
     <div
@@ -184,7 +169,7 @@ export function Speedometer() {
           <g
             transform={`rotate(${rotation} 100 100)`}
             style={{
-              transition: isWobbling ? "none" : "transform 0.1s ease-out",
+              transition: "transform 0.1s ease-out",
             }}
           >
             {/* Needle Shadow */}
