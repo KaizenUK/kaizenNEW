@@ -252,7 +252,7 @@ const AuthorityBridge = () => {
 
             <div className="mt-8 flex flex-col sm:flex-row gap-3">
               <Link
-                to="/case-studies/high-five-games"
+                to="/case-studies/helen-moore-hairdressing"
                 className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg border border-white/15 bg-white/5 text-white font-heading font-semibold hover:bg-white/10 transition"
               >
                 See proof in a case study
