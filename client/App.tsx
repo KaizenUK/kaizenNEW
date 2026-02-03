@@ -163,8 +163,6 @@ function AppContent() {
     }
   }, [isAdminRoute]);
 
-  // Optional: in production, strip any data-builder-* attributes from the
-  // rendered DOM to make it harder to infer underlying tooling.
   useEffect(() => {
     if (import.meta.env.DEV) return;
     if (typeof document === "undefined") return;
