@@ -373,9 +373,9 @@ export default function WebDesignWarrington() {
               </h1>
 
               <p className="text-xl text-slate-300 max-w-xl mb-8 leading-relaxed">
-                High-performance websites and portals for Warrington&apos;s logistics,
-                engineering, and tech teams. Fast on mobile, solid under load,
-                and built to stay reliable.
+                High-performance websites and portals for Warrington&apos;s
+                logistics, engineering, and tech teams. Fast on mobile, solid
+                under load, and built to stay reliable.
               </p>
 
               <div className="flex flex-col sm:flex-row gap-4 items-center">
@@ -525,10 +525,10 @@ export default function WebDesignWarrington() {
               Powering the North West's Hub.
             </h2>
             <p className="text-slate-400 max-w-2xl mx-auto text-lg">
-              Warrington is the engine room of the North West. Whether you are in
-              logistics at Omega or engineering at Birchwood, you need systems
-              that work. We build robust, high-performance websites and portals
-              that handle data as well as they handle traffic.
+              Warrington is the engine room of the North West. Whether you are
+              in logistics at Omega or engineering at Birchwood, you need
+              systems that work. We build robust, high-performance websites and
+              portals that handle data as well as they handle traffic.
             </p>
           </div>
 
@@ -599,9 +599,9 @@ export default function WebDesignWarrington() {
 
               <div className="prose prose-lg dark:prose-invert mb-8">
                 <p className="text-slate-600 dark:text-slate-300">
-                  We work with Warrington&apos;s industrial and tech sectors — from
-                  logistics giants to specialised engineering firms — building
-                  digital tools that improve efficiency and visibility.
+                  We work with Warrington&apos;s industrial and tech sectors —
+                  from logistics giants to specialised engineering firms —
+                  building digital tools that improve efficiency and visibility.
                 </p>
               </div>
 
@@ -926,9 +926,9 @@ export default function WebDesignWarrington() {
           </h2>
 
           <p className="text-xl text-slate-400 mb-10 leading-relaxed max-w-2xl mx-auto">
-            Whether you&apos;re moving goods at scale, engineering complex products,
-            or running a multi-site operation — we build websites and portals
-            that stay fast, clear, and reliable.
+            Whether you&apos;re moving goods at scale, engineering complex
+            products, or running a multi-site operation — we build websites and
+            portals that stay fast, clear, and reliable.
           </p>
 
           <div className="flex flex-col sm:flex-row justify-center gap-6">

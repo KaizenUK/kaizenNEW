@@ -315,10 +315,7 @@ export default function WebDesignChester() {
           content="Fast, secure web design for Chester. We build bespoke React websites for law firms, financial advisors, and businesses on Chester Business Park."
         />
         <meta name="og:type" content="website" />
-        <link
-          rel="canonical"
-          href="https://kaizenweb.dev/web-design-chester"
-        />
+        <link rel="canonical" href="https://kaizenweb.dev/web-design-chester" />
       </Helmet>
 
       {/* Hero */}
@@ -497,9 +494,9 @@ export default function WebDesignChester() {
             <p className="text-slate-400 max-w-2xl mx-auto text-lg">
               Chester businesses have a reputation for excellence, from the
               professional firms on the Business Park to the heritage brands
-              inside the Roman walls. Don&apos;t let a slow website hold you back.
-              We provide the modern, secure infrastructure that Cheshire&apos;s
-              leading businesses rely on.
+              inside the Roman walls. Don&apos;t let a slow website hold you
+              back. We provide the modern, secure infrastructure that
+              Cheshire&apos;s leading businesses rely on.
             </p>
           </div>
 
@@ -570,9 +567,9 @@ export default function WebDesignChester() {
 
               <div className="prose prose-lg dark:prose-invert mb-8">
                 <p className="text-slate-600 dark:text-slate-300">
-                  We work with Chester&apos;s established professional sector — from
-                  architects and financial advisors to heritage retail — giving
-                  you a site that reflects your reputation.
+                  We work with Chester&apos;s established professional sector —
+                  from architects and financial advisors to heritage retail —
+                  giving you a site that reflects your reputation.
                 </p>
               </div>
 
@@ -797,8 +794,8 @@ export default function WebDesignChester() {
               Websites that load instantly
             </h2>
             <p className="text-lg text-slate-400 max-w-2xl mx-auto">
-              Your Chester business deserves world-class performance. We
-              deliver it.
+              Your Chester business deserves world-class performance. We deliver
+              it.
             </p>
           </div>
 

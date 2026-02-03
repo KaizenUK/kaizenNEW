@@ -210,10 +210,7 @@ function AppContent() {
             path="/web-design-liverpool"
             element={<WebDesignLiverpool />}
           />
-          <Route
-            path="/web-design-chester"
-            element={<WebDesignChester />}
-          />
+          <Route path="/web-design-chester" element={<WebDesignChester />} />
           <Route
             path="/web-design-warrington"
             element={<WebDesignWarrington />}
