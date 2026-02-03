@@ -62,9 +62,9 @@ export default function SpeedScanner() {
     setEmail("");
 
     try {
-      setTimeout(() => setStatusMsg('Measuring Load Speeds...'), 1000);
-      setTimeout(() => setStatusMsg('Analyzing Stability...'), 2000);
-      setTimeout(() => setStatusMsg('Generating Fix Plan...'), 3500);
+      setTimeout(() => setStatusMsg("Measuring Load Speeds..."), 1000);
+      setTimeout(() => setStatusMsg("Analyzing Stability..."), 2000);
+      setTimeout(() => setStatusMsg("Generating Fix Plan..."), 3500);
 
       if (!API_KEY) {
         throw new Error("Missing API key");
@@ -122,36 +122,36 @@ export default function SpeedScanner() {
   function downloadPDF() {
     setPdfLoading(true);
     try {
-      const doc = new jsPDF('p', 'mm', 'a4');
+      const doc = new jsPDF("p", "mm", "a4");
       const pageWidth = doc.internal.pageSize.getWidth();
       const pageHeight = doc.internal.pageSize.getHeight();
 
       // BRAND COLORS
-      const navy = [2, 6, 23];      // #020617 (Backgrounds)
-      const cyan = [6, 182, 212];   // #06b6d4 (Primary Accent)
+      const navy = [2, 6, 23]; // #020617 (Backgrounds)
+      const cyan = [6, 182, 212]; // #06b6d4 (Primary Accent)
       const green = [74, 222, 128]; // #4ade80 (Success)
-      const red = [239, 68, 68];    // Error
+      const red = [239, 68, 68]; // Error
       const orange = [249, 115, 22]; // Warning
       const white = [255, 255, 255];
       const lightGrey = [248, 250, 252];
 
       // PARSE METRICS
-      const lcpVal = parseFloat(metrics.lcp.replace(/[^\d.-]/g, ''));
-      const tbtVal = parseFloat(metrics.tbt.replace(/[^\d.-]/g, ''));
-      const clsVal = parseFloat(metrics.cls.replace(/[^\d.-]/g, ''));
+      const lcpVal = parseFloat(metrics.lcp.replace(/[^\d.-]/g, ""));
+      const tbtVal = parseFloat(metrics.tbt.replace(/[^\d.-]/g, ""));
+      const clsVal = parseFloat(metrics.cls.replace(/[^\d.-]/g, ""));
 
       // ===========================
       // PAGE 1: THE COVER (Dark Mode)
       // ===========================
-      
+
       // Background
       doc.setFillColor(navy[0], navy[1], navy[2]);
-      doc.rect(0, 0, pageWidth, pageHeight, 'F');
+      doc.rect(0, 0, pageWidth, pageHeight, "F");
 
       // Logo
       if (LOGO_BASE64) {
         try {
-          doc.addImage(LOGO_BASE64, 'PNG', 20, 20, 40, 40); // Adjust size as needed
+          doc.addImage(LOGO_BASE64, "PNG", 20, 20, 40, 40); // Adjust size as needed
         } catch (e) {
           // Fallback if logo fails
           doc.setTextColor(cyan[0], cyan[1], cyan[2]);
@@ -160,10 +160,10 @@ export default function SpeedScanner() {
           doc.text("KAIZEN", 20, 40);
         }
       } else {
-          doc.setTextColor(cyan[0], cyan[1], cyan[2]);
-          doc.setFontSize(30);
-          doc.setFont("helvetica", "bold");
-          doc.text("KAIZEN", 20, 40);
+        doc.setTextColor(cyan[0], cyan[1], cyan[2]);
+        doc.setFontSize(30);
+        doc.setFont("helvetica", "bold");
+        doc.text("KAIZEN", 20, 40);
       }
 
       // Title
@@ -171,23 +171,24 @@ export default function SpeedScanner() {
       doc.setFontSize(12);
       doc.setFont("helvetica", "normal");
       doc.text("PERFORMANCE AUDIT REPORT", 20, 70);
-      
+
       doc.setFontSize(22);
       doc.setFont("helvetica", "bold");
       doc.text(url || "Website Audit", 20, 80);
 
       // The Score Ring
-      const scoreColor = (score && score < 50 ? red : score && score < 90 ? orange : green);
+      const scoreColor =
+        score && score < 50 ? red : score && score < 90 ? orange : green;
       doc.setDrawColor(scoreColor[0], scoreColor[1], scoreColor[2]);
       doc.setLineWidth(3);
-      doc.circle(150, 50, 20, 'S');
+      doc.circle(150, 50, 20, "S");
       doc.setFontSize(20);
       doc.setTextColor(white[0], white[1], white[2]);
       doc.text(`${score}`, 144, 53);
 
       // Phone Frame with Screenshot
       if (screenshot) {
-        const phoneX = (pageWidth / 2) - 40;
+        const phoneX = pageWidth / 2 - 40;
         const phoneY = 110;
         const phoneW = 80;
         const phoneH = 140; // Approx 16:9 ratio adjusted
@@ -196,13 +197,23 @@ export default function SpeedScanner() {
         doc.setDrawColor(cyan[0], cyan[1], cyan[2]);
         doc.setLineWidth(0);
         doc.setFillColor(6, 182, 212, 0.2); // Not supported in all jsPDF versions, simulating with solid
-        
+
         // Device Bezel
         doc.setFillColor(20, 20, 20);
-        doc.roundedRect(phoneX - 3, phoneY - 3, phoneW + 6, phoneH + 6, 6, 6, 'F');
-        
+        doc.roundedRect(
+          phoneX - 3,
+          phoneY - 3,
+          phoneW + 6,
+          phoneH + 6,
+          6,
+          6,
+          "F",
+        );
+
         // Screen
-        const imageFormat = screenshot.startsWith("data:image/png") ? "PNG" : "JPEG";
+        const imageFormat = screenshot.startsWith("data:image/png")
+          ? "PNG"
+          : "JPEG";
         doc.addImage(screenshot, imageFormat, phoneX, phoneY, phoneW, phoneH);
       }
 
@@ -216,10 +227,10 @@ export default function SpeedScanner() {
       // PAGE 2: DEEP DIVE (White Mode)
       // ===========================
       doc.addPage();
-      
+
       // Header
       doc.setFillColor(navy[0], navy[1], navy[2]);
-      doc.rect(0, 0, pageWidth, 30, 'F');
+      doc.rect(0, 0, pageWidth, 30, "F");
       doc.setTextColor(white[0], white[1], white[2]);
       doc.setFontSize(16);
       doc.setFont("helvetica", "bold");
@@ -228,114 +239,158 @@ export default function SpeedScanner() {
       let yPos = 50;
 
       // --- Helper to Draw Insight Card ---
-      const drawInsight = (title: string, valStr: string, valNum: number, target: number, unit: string, meaning: string, fixes: string[]) => {
-         // Status Color Logic
-         let statusColor = green;
-         let statusText = "GOOD";
-         
-         if (title.includes("LCP")) {
-            if (valNum > 4) { statusColor = red; statusText = "CRITICAL"; }
-            else if (valNum > 2.5) { statusColor = orange; statusText = "NEEDS WORK"; }
-         } else if (title.includes("CLS")) {
-            if (valNum > 0.25) { statusColor = red; statusText = "CRITICAL"; }
-            else if (valNum > 0.1) { statusColor = orange; statusText = "NEEDS WORK"; }
-         } else {
-            if (valNum > 600) { statusColor = red; statusText = "CRITICAL"; }
-            else if (valNum > 200) { statusColor = orange; statusText = "NEEDS WORK"; }
-         }
+      const drawInsight = (
+        title: string,
+        valStr: string,
+        valNum: number,
+        target: number,
+        unit: string,
+        meaning: string,
+        fixes: string[],
+      ) => {
+        // Status Color Logic
+        let statusColor = green;
+        let statusText = "GOOD";
 
-         // Container
-         doc.setFillColor(lightGrey[0], lightGrey[1], lightGrey[2]);
-         doc.roundedRect(15, yPos, pageWidth - 30, 60, 3, 3, 'F');
-         
-         // Left Border (Status)
-         doc.setFillColor(statusColor[0], statusColor[1], statusColor[2]);
-         doc.rect(15, yPos, 2, 60, 'F');
+        if (title.includes("LCP")) {
+          if (valNum > 4) {
+            statusColor = red;
+            statusText = "CRITICAL";
+          } else if (valNum > 2.5) {
+            statusColor = orange;
+            statusText = "NEEDS WORK";
+          }
+        } else if (title.includes("CLS")) {
+          if (valNum > 0.25) {
+            statusColor = red;
+            statusText = "CRITICAL";
+          } else if (valNum > 0.1) {
+            statusColor = orange;
+            statusText = "NEEDS WORK";
+          }
+        } else {
+          if (valNum > 600) {
+            statusColor = red;
+            statusText = "CRITICAL";
+          } else if (valNum > 200) {
+            statusColor = orange;
+            statusText = "NEEDS WORK";
+          }
+        }
 
-         // Title & Value
-         doc.setFontSize(14);
-         doc.setTextColor(navy[0], navy[1], navy[2]);
-         doc.setFont("helvetica", "bold");
-         doc.text(title, 25, yPos + 10);
-         
-         doc.setFontSize(24);
-         doc.text(valStr, 25, yPos + 25);
-         
-         doc.setFontSize(10);
-         doc.setTextColor(statusColor[0], statusColor[1], statusColor[2]);
-         doc.text(statusText, 25, yPos + 32);
+        // Container
+        doc.setFillColor(lightGrey[0], lightGrey[1], lightGrey[2]);
+        doc.roundedRect(15, yPos, pageWidth - 30, 60, 3, 3, "F");
 
-         // Right Side: Meaning & Fixes
-         doc.setFontSize(10);
-         doc.setTextColor(80, 80, 80);
-         doc.setFont("helvetica", "bold");
-         doc.text("WHAT IT MEANS:", 80, yPos + 10);
-         doc.setFont("helvetica", "normal");
-         doc.text(meaning, 80, yPos + 16, { maxWidth: 100 });
+        // Left Border (Status)
+        doc.setFillColor(statusColor[0], statusColor[1], statusColor[2]);
+        doc.rect(15, yPos, 2, 60, "F");
 
-         doc.setFont("helvetica", "bold");
-         doc.text("HOW TO FIX:", 80, yPos + 32);
-         doc.setFont("helvetica", "normal");
-         
-         let fixY = yPos + 38;
-         fixes.forEach(fix => {
-           doc.text(`• ${fix}`, 80, fixY);
-           fixY += 5;
-         });
+        // Title & Value
+        doc.setFontSize(14);
+        doc.setTextColor(navy[0], navy[1], navy[2]);
+        doc.setFont("helvetica", "bold");
+        doc.text(title, 25, yPos + 10);
 
-         yPos += 70; // Move down for next card
+        doc.setFontSize(24);
+        doc.text(valStr, 25, yPos + 25);
+
+        doc.setFontSize(10);
+        doc.setTextColor(statusColor[0], statusColor[1], statusColor[2]);
+        doc.text(statusText, 25, yPos + 32);
+
+        // Right Side: Meaning & Fixes
+        doc.setFontSize(10);
+        doc.setTextColor(80, 80, 80);
+        doc.setFont("helvetica", "bold");
+        doc.text("WHAT IT MEANS:", 80, yPos + 10);
+        doc.setFont("helvetica", "normal");
+        doc.text(meaning, 80, yPos + 16, { maxWidth: 100 });
+
+        doc.setFont("helvetica", "bold");
+        doc.text("HOW TO FIX:", 80, yPos + 32);
+        doc.setFont("helvetica", "normal");
+
+        let fixY = yPos + 38;
+        fixes.forEach((fix) => {
+          doc.text(`• ${fix}`, 80, fixY);
+          fixY += 5;
+        });
+
+        yPos += 70; // Move down for next card
       };
 
       // --- 1. LCP (Speed) ---
-      const lcpFixes = lcpVal > 2.5 
-        ? ["Convert images to WebP format.", "Preload the 'Hero' image.", "Upgrade server/hosting plan."] 
-        : ["Keep images optimized.", "Monitor server response times."];
-      
+      const lcpFixes =
+        lcpVal > 2.5
+          ? [
+              "Convert images to WebP format.",
+              "Preload the 'Hero' image.",
+              "Upgrade server/hosting plan.",
+            ]
+          : ["Keep images optimized.", "Monitor server response times."];
+
       drawInsight(
-        "Load Speed (LCP)", 
-        metrics.lcp, 
-        lcpVal, 
-        2.5, "s", 
-        "The time it takes for the largest content (image or text) to appear. Users leave if this > 3s.", 
-        lcpFixes
+        "Load Speed (LCP)",
+        metrics.lcp,
+        lcpVal,
+        2.5,
+        "s",
+        "The time it takes for the largest content (image or text) to appear. Users leave if this > 3s.",
+        lcpFixes,
       );
 
       // --- 2. TBT (Interactivity) ---
-      const tbtFixes = tbtVal > 200 
-        ? ["Remove unused JavaScript.", "Defer chat widgets/tracking scripts.", "Code-split large bundles."] 
-        : ["Maintain low JS payload.", "Avoid heavy third-party scripts."];
+      const tbtFixes =
+        tbtVal > 200
+          ? [
+              "Remove unused JavaScript.",
+              "Defer chat widgets/tracking scripts.",
+              "Code-split large bundles.",
+            ]
+          : ["Maintain low JS payload.", "Avoid heavy third-party scripts."];
 
       drawInsight(
-        "Responsiveness (TBT)", 
-        metrics.tbt, 
-        tbtVal, 
-        200, "ms", 
-        "How long the browser is 'frozen' while loading code. If high, users click but nothing happens.", 
-        tbtFixes
+        "Responsiveness (TBT)",
+        metrics.tbt,
+        tbtVal,
+        200,
+        "ms",
+        "How long the browser is 'frozen' while loading code. If high, users click but nothing happens.",
+        tbtFixes,
       );
 
       // --- 3. CLS (Stability) ---
-      const clsFixes = clsVal > 0.1 
-        ? ["Add width/height to images.", "Reserve space for ads/banners.", "Use CSS aspect-ratio."] 
-        : ["Ensure all media has dimensions.", "Avoid inserting content above fold."];
+      const clsFixes =
+        clsVal > 0.1
+          ? [
+              "Add width/height to images.",
+              "Reserve space for ads/banners.",
+              "Use CSS aspect-ratio.",
+            ]
+          : [
+              "Ensure all media has dimensions.",
+              "Avoid inserting content above fold.",
+            ];
 
       drawInsight(
-        "Visual Stability (CLS)", 
-        metrics.cls, 
-        clsVal, 
-        0.1, "", 
-        "Measures if content jumps around while loading. High scores frustrate users and cause mis-clicks.", 
-        clsFixes
+        "Visual Stability (CLS)",
+        metrics.cls,
+        clsVal,
+        0.1,
+        "",
+        "Measures if content jumps around while loading. High scores frustrate users and cause mis-clicks.",
+        clsFixes,
       );
 
       // ===========================
       // PAGE 3: ACTION PLAN
       // ===========================
       doc.addPage();
-      
+
       // Header
       doc.setFillColor(navy[0], navy[1], navy[2]);
-      doc.rect(0, 0, pageWidth, 30, 'F');
+      doc.rect(0, 0, pageWidth, 30, "F");
       doc.setTextColor(white[0], white[1], white[2]);
       doc.setFontSize(16);
       doc.setFont("helvetica", "bold");
@@ -347,16 +402,20 @@ export default function SpeedScanner() {
       doc.setTextColor(0, 0, 0);
       doc.setFontSize(12);
       doc.setFont("helvetica", "normal");
-      doc.text("Based on your score, we recommend the following sprint plan:", 20, yPos);
+      doc.text(
+        "Based on your score, we recommend the following sprint plan:",
+        20,
+        yPos,
+      );
       yPos += 15;
 
       // Checkboxes
       const drawCheckbox = (text: string) => {
-          doc.setDrawColor(200, 200, 200);
-          doc.rect(20, yPos, 6, 6);
-          doc.setTextColor(50, 50, 50);
-          doc.text(text, 35, yPos + 4);
-          yPos += 12;
+        doc.setDrawColor(200, 200, 200);
+        doc.rect(20, yPos, 6, 6);
+        doc.setTextColor(50, 50, 50);
+        doc.text(text, 35, yPos + 4);
+        yPos += 12;
       };
 
       drawCheckbox("Optimize and compress all images (WebP)");
@@ -368,28 +427,36 @@ export default function SpeedScanner() {
       // CTA Box
       yPos += 30;
       doc.setFillColor(navy[0], navy[1], navy[2]); // Navy Box
-      doc.roundedRect(20, yPos, pageWidth - 40, 50, 4, 4, 'F');
-      
+      doc.roundedRect(20, yPos, pageWidth - 40, 50, 4, 4, "F");
+
       doc.setTextColor(cyan[0], cyan[1], cyan[2]);
       doc.setFontSize(16);
       doc.setFont("helvetica", "bold");
       doc.text("Need a hand with this?", 30, yPos + 15);
-      
+
       doc.setTextColor(white[0], white[1], white[2]);
       doc.setFontSize(11);
       doc.setFont("helvetica", "normal");
-      doc.text("We specialize in fixing these exact issues for Wirral businesses.", 30, yPos + 25);
-      doc.text("Book a 15-minute discovery call to discuss a fixed-price fix.", 30, yPos + 32);
+      doc.text(
+        "We specialize in fixing these exact issues for Wirral businesses.",
+        30,
+        yPos + 25,
+      );
+      doc.text(
+        "Book a 15-minute discovery call to discuss a fixed-price fix.",
+        30,
+        yPos + 32,
+      );
 
       doc.setFillColor(green[0], green[1], green[2]);
-      doc.roundedRect(140, yPos + 15, 40, 12, 2, 2, 'F');
+      doc.roundedRect(140, yPos + 15, 40, 12, 2, 2, "F");
       doc.setTextColor(navy[0], navy[1], navy[2]);
       doc.setFontSize(10);
       doc.setFont("helvetica", "bold");
       doc.text("BOOK CALL", 145, yPos + 22);
 
       // Save
-      doc.save('Kaizen-Performance-Audit.pdf');
+      doc.save("Kaizen-Performance-Audit.pdf");
     } finally {
       setPdfLoading(false);
     }
@@ -576,7 +643,9 @@ export default function SpeedScanner() {
                           Detailed Report Locked
                         </h3>
                         <p className="text-slate-400 text-sm mb-4 leading-relaxed">
-                          Your site has critical performance issues. Unlock the full PDF fix plan (this is written in plain English + metrics).
+                          Your site has critical performance issues. Unlock the
+                          full PDF fix plan (this is written in plain English +
+                          metrics).
                         </p>
                         <div className="flex flex-col sm:flex-row gap-2">
                           <input
