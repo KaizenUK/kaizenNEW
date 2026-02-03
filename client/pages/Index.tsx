@@ -1630,7 +1630,7 @@ export default function Home() {
       <HeroSection />
       <AuthorityBridge />
       <SocialMediaWarning />
-      <SpeedScanner />
+      {/* <SpeedScanner /> */}
       <ServicePillars />
       <PerformanceBadge />
       <LocalMap />
