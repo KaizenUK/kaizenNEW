@@ -48,7 +48,7 @@ const comparisonFeatures = [
     highlight: true,
   },
   {
-    feature: "Reliability",
+    feature: "Reliability.",
     typical: "Generic Template",
     kaizen: "Unbreakable Custom Code",
     highlight: true,
