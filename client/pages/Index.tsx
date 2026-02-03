@@ -1651,9 +1651,7 @@ const LocalMap = () => {
             >
               {isMapVisible ? (
                 <Suspense
-                  fallback={
-                    <div className="w-full h-full bg-slate-900/40" />
-                  }
+                  fallback={<div className="w-full h-full bg-slate-900/40" />}
                 >
                   <LazyLeafletMap className="w-full h-full" />
                 </Suspense>
