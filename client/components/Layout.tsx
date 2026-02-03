@@ -144,20 +144,16 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             telephone: "",
             address: {
               "@type": "PostalAddress",
-              addressLocality: "Liverpool",
-              addressRegion: "Merseyside",
-              addressCountry: "UK",
+              addressLocality: "Moreton",
+              addressRegion: "Wirral",
+              addressCountry: "GB",
             },
             geo: {
               "@type": "GeoCoordinates",
-              latitude: "53.4084",
-              longitude: "-2.9916",
+              latitude: "53.4108",
+              longitude: "-3.1135",
             },
             areaServed: [
-              {
-                "@type": "City",
-                name: "Liverpool",
-              },
               {
                 "@type": "City",
                 name: "Wirral",
@@ -183,15 +179,15 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             logo: "https://cdn.builder.io/api/v1/image/assets%2Fe4ae46bbd81b4b95bef54d66dd9748cc%2F19f6366118ef41298050443945090b5f?format=webp&width=800",
             address: {
               "@type": "PostalAddress",
-              addressLocality: "Liverpool",
-              addressRegion: "Merseyside",
+              addressLocality: "Moreton",
+              addressRegion: "Wirral",
               addressCountry: "GB",
             },
             contactPoint: {
               "@type": "ContactPoint",
               contactType: "Customer Support",
               email: "hello@kaizenweb.co.uk",
-              areaServed: ["Liverpool", "Wirral", "Merseyside", "Chester"],
+              areaServed: ["Wirral", "Merseyside", "Chester"],
             },
             sameAs: ["https://www.linkedin.com/company/kaizen-web"],
           })}
