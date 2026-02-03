@@ -231,7 +231,7 @@ export default function AsCollectionsCase() {
               {
                 title: "View Our Web Design Services",
                 desc: "Explore our complete web design process and packages.",
-                link: "/services/web-design-liverpool",
+                link: "/web-design-liverpool",
               },
               {
                 title: "Read Our 'No-BS' Pledge",
