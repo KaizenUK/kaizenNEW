@@ -23,12 +23,10 @@ export default defineConfig(({ mode }) => ({
     // Explicitly disable browser sourcemaps in production builds to avoid
     // leaking internal file structure in the browser devtools.
     sourcemap: mode === "development",
-    // Minification settings
-    minify: "terser",
-    terserOptions: {
-      compress: {
-        drop_console: mode === "production",
-      },
+    // Minification settings (esbuild is built-in and avoids requiring terser types)
+    minify: "esbuild",
+    esbuild: {
+      drop: mode === "production" ? ["console", "debugger"] : [],
     },
     rollupOptions: {
       output: {
