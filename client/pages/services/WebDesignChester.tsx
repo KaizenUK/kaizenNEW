@@ -495,11 +495,11 @@ export default function WebDesignChester() {
               Modern Tech for a Historic City.
             </h2>
             <p className="text-slate-400 max-w-2xl mx-auto text-lg">
-              From the Chester Business Park to the The Rows & City Centre, Chester
-              businesses are world-class. Your digital presence should be too.
-              Whether you're a clinic, a building firm, a consultancy, or a law
-              office — we build websites that look premium and perform on
-              mobile.
+              Chester businesses have a reputation for excellence, from the
+              professional firms on the Business Park to the heritage brands
+              inside the Roman walls. Don&apos;t let a slow website hold you back.
+              We provide the modern, secure infrastructure that Cheshire&apos;s
+              leading businesses rely on.
             </p>
           </div>
 
