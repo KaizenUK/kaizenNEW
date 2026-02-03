@@ -568,7 +568,6 @@ export default function BlogDetail() {
         }
 
         setActiveSection(activeId);
-        console.log("Active Section:", activeId);
       });
     };
 
