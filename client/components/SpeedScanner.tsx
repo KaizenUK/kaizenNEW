@@ -24,11 +24,7 @@ export default function SpeedScanner() {
   const [statusMsg, setStatusMsg] = useState("");
   const [pdfLoading, setPdfLoading] = useState(false);
 
-  const API_KEY = useMemo(() => {
-    return (import.meta as any).env?.VITE_PAGESPEED_API_KEY as
-      | string
-      | undefined;
-  }, []);
+  // No longer need client-side API key - using server proxy instead
 
   const LOGO_BASE64 = "";
 
