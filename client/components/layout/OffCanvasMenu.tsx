@@ -109,7 +109,7 @@ const OffCanvasMenu: React.FC<OffCanvasMenuProps> = ({ isOpen, onClose }) => {
           label: "Web Design Costs in Liverpool 2025",
           href: "/blog/how-much-does-a-website-cost-in-liverpool-in-2025",
           description: "Transparent pricing and what you actually get.",
-          icon: <DollarSign className="w-4 h-4" />,
+          icon: <PoundSterling className="w-4 h-4" />,
         },
         {
           label: "How to Choose a Web Agency",
