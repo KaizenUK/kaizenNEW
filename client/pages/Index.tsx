@@ -1448,17 +1448,8 @@ const LocalMap = () => {
       <div className="container mx-auto px-4 relative z-10">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           <motion.div
+            className="lg:order-1"
             initial={{ opacity: 0, x: -20 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-          >
-            <div className="relative h-96 rounded-2xl overflow-hidden border-2 border-white/10 shadow-2xl">
-              <LeafletMap className="w-full h-full" />
-            </div>
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, x: 20 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
           >
@@ -1477,15 +1468,11 @@ const LocalMap = () => {
             <div className="space-y-4 mb-8">
               <div className="flex items-center gap-3">
                 <div className="w-3 h-3 rounded-full bg-kaizen-cyan" />
-                <span className="text-white/90">
-                  Moreton (Wirral) based
-                </span>
+                <span className="text-white/90">Moreton (Wirral) based</span>
               </div>
               <div className="flex items-center gap-3">
                 <div className="w-3 h-3 rounded-full bg-kaizen-lime" />
-                <span className="text-white/90">
-                  Serving Wirral & the North West
-                </span>
+                <span className="text-white/90">Serving Wirral & the North West</span>
               </div>
               <div className="flex items-center gap-3">
                 <div className="w-3 h-3 rounded-full bg-white/50" />
@@ -1499,9 +1486,21 @@ const LocalMap = () => {
               onClick={() => openCrisp()}
               className="px-8 py-4 rounded-lg bg-gradient-to-r from-kaizen-cyan to-kaizen-lime text-gray-950 font-heading font-bold hover:shadow-lg hover:scale-105 transition-all inline-flex items-center gap-2"
             >
-              Ready to Build? Start a Chat
+              Get a Performance Audit
               <ArrowRight size={20} />
             </button>
+          </motion.div>
+
+          <motion.div
+            className="relative lg:order-2 lg:translate-x-6"
+            initial={{ opacity: 0, x: 20 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+          >
+            <div className="absolute -inset-6 bg-gradient-to-r from-kaizen-cyan/20 to-kaizen-lime/10 blur-2xl rounded-3xl" />
+            <div className="relative h-96 rounded-2xl overflow-hidden border-2 border-white/10 shadow-2xl">
+              <LeafletMap className="w-full h-full" />
+            </div>
           </motion.div>
         </div>
       </div>
