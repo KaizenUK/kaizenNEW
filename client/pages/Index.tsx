@@ -399,8 +399,8 @@ const AuthorityBridge = () => {
 const SocialMediaWarning = () => {
   return (
     <section style={{ backgroundColor: '#1e293b', color: '#ffffff', padding: '64px 16px', borderTop: '1px solid rgba(255, 255, 255, 0.1)', borderBottom: '1px solid rgba(255, 255, 255, 0.1)' }}>
-      <div className="container mx-auto px-4">
-        <div className="max-w-4xl mx-auto text-center">
+      <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 16px' }}>
+        <div style={{ maxWidth: '56rem', margin: '0 auto', textAlign: 'center' }}>
           <p className="text-xs font-mono tracking-[0.25em] text-amber-200 uppercase mb-4">
             The Social Media Warning
           </p>
