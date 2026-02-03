@@ -649,6 +649,68 @@
     will-change: opacity, transform;
   }
 
+  /* Living Blueprint animations */
+  @keyframes grid-scroll {
+    0% {
+      transform: translateZ(0) translateY(0);
+    }
+    100% {
+      transform: translateZ(-500px) translateY(50px);
+    }
+  }
+
+  @keyframes dot-pulse {
+    0%, 100% {
+      opacity: 0.4;
+      r: 3px;
+    }
+    50% {
+      opacity: 1;
+      r: 5px;
+    }
+  }
+
+  @keyframes cube-rotate {
+    0% {
+      transform: rotate3d(1, 1, 1, 0deg);
+    }
+    100% {
+      transform: rotate3d(1, 1, 1, 360deg);
+    }
+  }
+
+  @keyframes cube-breathe {
+    0%, 100% {
+      transform: rotate3d(1, 1, 1, 0deg) scale(1);
+    }
+    50% {
+      transform: rotate3d(1, 1, 1, 0deg) scale(1.1);
+    }
+  }
+
+  @keyframes line-draw {
+    0%, 100% {
+      stroke-dashoffset: 1000;
+    }
+    50% {
+      stroke-dashoffset: 0;
+    }
+  }
+
+  .blueprint-grid {
+    perspective: 1000px;
+    position: relative;
+  }
+
+  .blueprint-dot {
+    animation: dot-pulse 3s ease-in-out infinite;
+  }
+
+  .blueprint-cube {
+    animation: cube-breathe 4s ease-in-out infinite;
+    transform-style: preserve-3d;
+  }
+
   @media (prefers-reduced-motion: reduce) {
     .hero-mesh-blob {
       animation: none;
@@ -661,6 +723,15 @@
 
     .glass-card:hover {
       transform: none;
+    }
+
+    .blueprint-dot {
+      animation: none;
+      opacity: 0.6 !important;
+    }
+
+    .blueprint-cube {
+      animation: none !important;
     }
   }
 }
