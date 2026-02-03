@@ -14,6 +14,7 @@ import {
   Building2,
   Cog,
   ChevronDown,
+  type LucideIcon,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import SpeedScanner from "@/components/SpeedScanner";
@@ -153,7 +154,7 @@ function FeatureCard({
   description,
   index,
 }: {
-  icon: React.ComponentType<{ size?: number; className?: string }>;
+  icon: LucideIcon;
   title: string;
   description: string;
   index: number;
