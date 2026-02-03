@@ -413,9 +413,6 @@ export default function SpeedScanner() {
       doc.link(btnX, btnY, btnW, btnH, { url: 'https://kaizenweb.co.uk/contact' });
 
       doc.save('Kaizen-Performance-Audit.pdf');
-    } catch (e) {
-      console.error("PDF generation failed:", e);
-      alert("Could not generate PDF. Please try again.");
     } finally {
       setPdfLoading(false);
     }
