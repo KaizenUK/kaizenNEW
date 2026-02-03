@@ -4,6 +4,7 @@ import cors from "cors";
 import { handleDemo } from "./routes/demo";
 
 const BUILDER_API_KEY = process.env.VITE_BUILDER_API_KEY || "";
+const PAGESPEED_API_KEY = process.env.VITE_PAGESPEED_API_KEY || "";
 
 export function createServer() {
   const app = express();
