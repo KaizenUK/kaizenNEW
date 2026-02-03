@@ -13,6 +13,7 @@ import {
   Building2,
   Stethoscope,
   HardHat,
+  Briefcase,
   ChevronDown,
   type LucideIcon,
 } from "lucide-react";
