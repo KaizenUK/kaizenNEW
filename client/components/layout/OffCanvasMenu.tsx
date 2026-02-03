@@ -384,6 +384,14 @@ const OffCanvasMenu: React.FC<OffCanvasMenuProps> = ({ isOpen, onClose }) => {
 
         {/* Footer */}
         <div className="px-4 py-4 border-t border-white/10 space-y-3">
+          <Link
+            to="/performance-scanner"
+            onClick={onClose}
+            className="w-full px-4 py-3 rounded-full text-sm font-medium text-white bg-gradient-to-r from-amber-500 to-orange-500 hover:shadow-lg transition flex items-center justify-center gap-2"
+          >
+            <Zap size={16} />
+            Free Speed Test
+          </Link>
           <button
             onClick={() => {
               openCrisp();
