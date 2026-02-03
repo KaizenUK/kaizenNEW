@@ -1,7 +1,5 @@
 import { useMemo, useState } from "react";
 
-import { useMemo, useState } from "react";
-
 type MetricsState = {
   lcp: string;
   cls: string;
