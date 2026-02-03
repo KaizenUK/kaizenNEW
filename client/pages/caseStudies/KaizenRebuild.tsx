@@ -335,7 +335,7 @@ export default function KaizenRebuildCase() {
 
             <Link
               to="/case-studies"
-              className="text-slate-500 hover:text-white transition text-sm font-medium"
+              className="text-slate-400 hover:text-white transition text-sm font-medium"
             >
               View All
             </Link>
