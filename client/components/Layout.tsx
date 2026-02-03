@@ -17,23 +17,7 @@ interface LayoutProps {
   children: React.ReactNode;
 }
 
-type ThemeMode = "light" | "dark";
-
-const THEME_STORAGE_KEY = "kaizen-theme";
-
-const getPreferredTheme = (): ThemeMode => {
-  if (typeof window === "undefined") return "light";
-  const savedTheme = window.localStorage.getItem(THEME_STORAGE_KEY);
-  if (savedTheme === "dark" || savedTheme === "light") {
-    return savedTheme;
-  }
-  return window.matchMedia("(prefers-color-scheme: dark)").matches
-    ? "dark"
-    : "light";
-};
-
 const Layout: React.FC<LayoutProps> = ({ children }) => {
-  const [theme, setTheme] = useState<ThemeMode>(() => getPreferredTheme());
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const location = useLocation();
 
@@ -57,29 +41,10 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   const ogImage = meta.image ?? DEFAULT_OG_IMAGE;
 
   useEffect(() => {
-    if (typeof document === "undefined") return;
-    const root = document.documentElement;
-    if (theme === "dark") {
-      root.classList.add("dark");
-    } else {
-      root.classList.remove("dark");
-    }
-    root.dataset.theme = theme;
-
-    if (typeof window !== "undefined") {
-      window.localStorage.setItem(THEME_STORAGE_KEY, theme);
-    }
-  }, [theme]);
-
-  useEffect(() => {
     if (typeof window !== "undefined") {
       window.scrollTo(0, 0);
     }
   }, [location.pathname]);
-
-  const toggleTheme = () => {
-    setTheme((prev) => (prev === "light" ? "dark" : "light"));
-  };
 
   return (
     <>
@@ -196,8 +161,6 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 
       <div className="min-h-screen flex flex-col bg-background text-foreground transition-colors">
         <Header
-          theme={theme}
-          onThemeChange={toggleTheme}
           mobileMenuOpen={mobileMenuOpen}
           onMobileMenuChange={setMobileMenuOpen}
         />
@@ -205,14 +168,12 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         {/* Main Content */}
         <main className="flex-grow">{children}</main>
 
-        <Footer theme={theme} />
+        <Footer />
       </div>
 
       <OffCanvasMenu
         isOpen={mobileMenuOpen}
         onClose={() => setMobileMenuOpen(false)}
-        theme={theme}
-        onThemeChange={toggleTheme}
       />
     </>
   );
