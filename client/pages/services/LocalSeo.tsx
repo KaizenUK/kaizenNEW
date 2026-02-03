@@ -207,7 +207,11 @@ export default function LocalSeo() {
                 <img
                   src="https://cdn.builder.io/api/v1/image/assets%2Fe4ae46bbd81b4b95bef54d66dd9748cc%2F2bcd66303b6e425ab616ce3ad62975b8?format=webp&width=800"
                   alt="Google search results for local business"
+                  width="800"
+                  height="600"
                   className="w-full h-full object-cover"
+                  loading="lazy"
+                  decoding="async"
                 />
               </div>
             </motion.div>
