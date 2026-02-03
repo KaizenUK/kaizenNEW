@@ -571,36 +571,42 @@
   @keyframes mesh-violet {
     0% {
       transform: translate3d(0, 0, 0) scale(1);
+      will-change: transform;
     }
     50% {
       transform: translate3d(40px, 60px, 0) scale(1.1);
     }
     100% {
       transform: translate3d(20px, 30px, 0) scale(0.95);
+      will-change: auto;
     }
   }
 
   @keyframes mesh-teal {
     0% {
       transform: translate3d(0, 0, 0) scale(1);
+      will-change: transform;
     }
     50% {
       transform: translate3d(-60px, 40px, 0) scale(1.08);
     }
     100% {
       transform: translate3d(-30px, 20px, 0) scale(0.98);
+      will-change: auto;
     }
   }
 
   @keyframes mesh-gold {
     0% {
       transform: translate3d(0, 0, 0) scale(1);
+      will-change: transform;
     }
     50% {
       transform: translate3d(50px, -40px, 0) scale(1.05);
     }
     100% {
       transform: translate3d(25px, -20px, 0) scale(1);
+      will-change: auto;
     }
   }
 
