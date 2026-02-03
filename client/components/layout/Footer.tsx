@@ -95,7 +95,7 @@ const Footer: React.FC<FooterProps> = () => {
   const cta = getDynamicCTA();
 
   const services = [
-    { label: "Web Design", href: "/services/web-design-liverpool" },
+    { label: "Web Design", href: "/web-design-liverpool" },
     { label: "Project Rescue", href: "/project-rescue" },
     { label: "Agile Coaching", href: "/agile-coaching" },
     { label: "Contract PO", href: "/contract-product-owner" },
