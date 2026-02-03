@@ -413,18 +413,18 @@ export default function WebDesignLiverpool() {
   return (
     <Layout>
       <Helmet>
-        <title>Web Design Liverpool | Fast, Professional Websites</title>
+        <title>Enterprise-Grade Web Design in Liverpool | Premium Digital Platforms</title>
         <meta
           name="description"
-          content="Web design in Liverpool for businesses who want a fast, professional website. We build sites that load quickly, rank well, and bring in work."
+          content="Bespoke digital platforms for the Commercial District and Knowledge Quarter. Stop relying on slow, insecure templates and scale with confidence."
         />
         <meta
           property="og:title"
-          content="Web Design Liverpool | Fast, Professional Websites"
+          content="Enterprise-Grade Web Design in Liverpool | Premium Digital Platforms"
         />
         <meta
           property="og:description"
-          content="Web design in Liverpool for businesses who want a fast, professional website. We build sites that load quickly, rank well, and bring in work."
+          content="Bespoke digital platforms for the Commercial District and Knowledge Quarter. Stop relying on slow, insecure templates and scale with confidence."
         />
         <meta property="og:type" content="website" />
         <link
