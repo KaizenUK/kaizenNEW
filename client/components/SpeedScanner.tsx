@@ -92,7 +92,6 @@ export default function SpeedScanner() {
     return googleJson;
   };
 
-
   const LOGO_BASE64 = "";
 
   const buildAuditUrl = (raw: string) => {
