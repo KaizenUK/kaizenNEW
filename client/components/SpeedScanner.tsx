@@ -14,8 +14,16 @@ export default function SpeedScanner() {
     return (import.meta as any).env?.VITE_PAGESPEED_API_KEY as string | undefined;
   }, []);
 
+  const buildAuditUrl = (raw: string) => {
+    const trimmed = raw.trim();
+    if (!trimmed) return "";
+    if (/^https?:\/\//i.test(trimmed)) return trimmed;
+    return `https://${trimmed}`;
+  };
+
   async function runAudit() {
-    if (!url) return;
+    const auditUrl = buildAuditUrl(url);
+    if (!auditUrl) return;
 
     setLoading(true);
     setScore(null);
@@ -33,7 +41,7 @@ export default function SpeedScanner() {
 
       const res = await fetch(
         `https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url=${encodeURIComponent(
-          url,
+          auditUrl,
         )}&category=PERFORMANCE&strategy=MOBILE&key=${API_KEY}`,
       );
       const data = await res.json();
@@ -81,13 +89,25 @@ export default function SpeedScanner() {
 
           {/* Input Section */}
           <div className="flex flex-col md:flex-row gap-4 relative z-10 mb-8 max-w-2xl mx-auto">
-            <input
-              type="text"
-              placeholder="https://yourcompetitor.com"
-              value={url}
-              onChange={(e) => setUrl(e.target.value)}
-              className="flex-1 px-6 py-4 rounded-full bg-black/40 border border-slate-700 text-white focus:border-cyan-500 focus:outline-none focus:ring-1 focus:ring-cyan-500 transition-all placeholder:text-slate-600"
-            />
+            <div className="relative flex-1">
+              <div className="pointer-events-none absolute inset-y-0 left-5 flex items-center font-mono text-sm text-slate-500">
+                https://
+              </div>
+              <input
+                type="text"
+                inputMode="url"
+                placeholder="yourwebsite.com"
+                value={url}
+                onChange={(e) => {
+                  const next = e.target.value
+                    .trimStart()
+                    .replace(/^https?:\/\//i, "")
+                    .replace(/^\/+/, "");
+                  setUrl(next);
+                }}
+                className="w-full px-6 py-4 pl-[108px] rounded-full bg-black/40 border border-slate-700 text-white focus:border-cyan-500 focus:outline-none focus:ring-1 focus:ring-cyan-500 transition-all placeholder:text-slate-600"
+              />
+            </div>
             <button
               onClick={runAudit}
               disabled={loading}
