@@ -82,8 +82,23 @@ const ScrollReveal = ({
 };
 
 const HeroSection = () => {
+  const [spotlightPos, setSpotlightPos] = useState({ x: 0, y: 0 });
+  const heroRef = useRef<HTMLElement | null>(null);
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLElement>) => {
+    if (!heroRef.current) return;
+    const rect = heroRef.current.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    setSpotlightPos({ x, y });
+  };
+
   return (
-    <section className="relative isolate min-h-[100vh] bg-[#020617] text-white flex items-center py-20 overflow-hidden">
+    <section
+      ref={heroRef}
+      onMouseMove={handleMouseMove}
+      className="relative isolate min-h-[100vh] text-white flex items-center py-20 overflow-hidden"
+    >
       {/* Hidden preload-optimized hero image for LCP */}
       <img
         src={DEFAULT_OG_IMAGE}
@@ -97,14 +112,19 @@ const HeroSection = () => {
         aria-hidden="true"
       />
 
-      {/* CSS-only aurora background */}
-      <div className="pointer-events-none absolute inset-0 hero-aurora">
-        <div className="hero-aurora-orb hero-aurora-orb--cyan" />
-        <div className="hero-aurora-orb hero-aurora-orb--purple" />
+      {/* Fixed mesh gradient background */}
+      <div className="hero-mesh-bg absolute inset-0 -z-10">
+        <div className="hero-mesh-blob hero-mesh-blob--violet" />
+        <div className="hero-mesh-blob hero-mesh-blob--teal" />
+        <div className="hero-mesh-blob hero-mesh-blob--gold" />
       </div>
 
+      {/* Noise texture overlay */}
+      <div className="hero-noise absolute inset-0 -z-10" />
+
+      {/* Grid pattern */}
       <svg
-        className="absolute inset-0 w-full h-full pointer-events-none opacity-35"
+        className="absolute inset-0 w-full h-full pointer-events-none opacity-20 -z-10"
         preserveAspectRatio="none"
       >
         <defs>
@@ -117,7 +137,7 @@ const HeroSection = () => {
             <path
               d="M 60 0 L 0 0 0 60"
               fill="none"
-              stroke="rgba(0, 255, 255, 0.08)"
+              stroke="rgba(6, 182, 212, 0.08)"
               strokeWidth="0.5"
             />
           </pattern>
@@ -125,7 +145,21 @@ const HeroSection = () => {
         <rect width="100%" height="100%" fill="url(#hero-grid)" />
       </svg>
 
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[#020617]" />
+      {/* Cursor spotlight effect */}
+      <div
+        className="hero-spotlight absolute -z-10 opacity-60"
+        style={{
+          width: "600px",
+          height: "600px",
+          left: `${spotlightPos.x - 300}px`,
+          top: `${spotlightPos.y - 300}px`,
+          background: `radial-gradient(circle, rgba(6, 182, 212, 0.15) 0%, rgba(124, 58, 237, 0.08) 50%, transparent 100%)`,
+          transform: "translate3d(0, 0, 0)",
+        }}
+      />
+
+      {/* Fade to base color at bottom */}
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-[#020617] to-transparent -z-10" />
 
       <div className="container mx-auto px-4 relative z-10">
         <div className="max-w-4xl mx-auto text-center">
@@ -137,7 +171,7 @@ const HeroSection = () => {
           </p>
 
           <h1
-            className="text-5xl md:text-7xl font-heading font-black mb-8 leading-tight hero-reveal"
+            className="text-5xl md:text-7xl font-heading font-black mb-8 leading-tight hero-reveal hero-text-aurora"
             style={{ "--delay": "0s" } as React.CSSProperties}
           >
             Web Design Wirral: Lean, Fast, &amp; Profitable Websites.
