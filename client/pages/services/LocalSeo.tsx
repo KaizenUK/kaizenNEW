@@ -503,7 +503,7 @@ export default function LocalSeo() {
               {
                 title: "Web Design",
                 copy: "Traffic is useless if your site doesn't convert. Check out our high-performance web design services.",
-                link: "/services/web-design-liverpool",
+                link: "/web-design-liverpool",
               },
               {
                 title: "Agile Coaching",
