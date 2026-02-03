@@ -407,7 +407,7 @@ const SocialMediaWarning = () => {
           <h2 style={{ fontSize: '2.25rem', fontWeight: '900', marginBottom: '1.25rem', color: '#ffffff' }}>
             Is Your Business Homeless?
           </h2>
-          <p className="text-lg text-white/80 leading-relaxed">
+          <p style={{ fontSize: '1.125rem', color: 'rgba(255, 255, 255, 0.85)', lineHeight: '1.625', margin: '0' }}>
             If your whole presence lives on Facebook or Instagram, you’re
             renting attention. Algorithms change, reach disappears, accounts get
             locked, and your leads vanish overnight. A fast website is the asset
