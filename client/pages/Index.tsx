@@ -1463,28 +1463,28 @@ const LocalMap = () => {
             viewport={{ once: true }}
           >
             <p className="text-xs font-mono tracking-[0.25em] text-kaizen-cyan uppercase mb-6">
-              Local Authority
+              Local Trust
             </p>
             <h2 className="text-4xl md:text-5xl font-heading font-bold mb-8 leading-tight">
-              Made Local, For Local.
+              Your Neighbours in Tech
             </h2>
             <p className="text-lg text-white/80 mb-8 leading-relaxed">
-              Kaizen is based in Liverpool city centre. We serve businesses
-              across Liverpool, Wirral, and Merseyside. We understand how locals
-              search, what they need, and how to get them found.
+              We’re based in Moreton on the Wirral. You get enterprise delivery
+              standards with local accountability — and we can work face-to-face
+              or fully remote depending on what your team needs.
             </p>
 
             <div className="space-y-4 mb-8">
               <div className="flex items-center gap-3">
                 <div className="w-3 h-3 rounded-full bg-kaizen-cyan" />
                 <span className="text-white/90">
-                  Liverpool city centre based
+                  Moreton (Wirral) based
                 </span>
               </div>
               <div className="flex items-center gap-3">
                 <div className="w-3 h-3 rounded-full bg-kaizen-lime" />
                 <span className="text-white/90">
-                  Serving all Merseyside locations
+                  Serving Wirral & the North West
                 </span>
               </div>
               <div className="flex items-center gap-3">
