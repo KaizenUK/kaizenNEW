@@ -496,7 +496,7 @@ export default function WordPressWebDesign() {
             viewport={{ once: true, margin: "-100px" }}
           >
             <Link
-              to="/services/web-design-liverpool"
+              to="/web-design-liverpool"
               className="block p-8 md:p-12 bg-white dark:bg-slate-950 rounded-2xl border border-kaizen-light dark:border-slate-800/50 hover:border-kaizen-cyan dark:hover:border-kaizen-cyan/50 transition group"
             >
               <h3 className="text-3xl md:text-4xl font-heading font-bold mb-4 text-kaizen-dark dark:text-white group-hover:text-kaizen-cyan transition">
