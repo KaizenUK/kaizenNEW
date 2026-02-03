@@ -2,8 +2,6 @@ import { Link, useLocation } from "react-router-dom";
 import {
   Menu,
   X,
-  Sun,
-  Moon,
   ChevronDown,
   ShoppingBag,
   MapPin,
@@ -29,8 +27,6 @@ import { motion, AnimatePresence } from "framer-motion";
 import { openCrisp } from "@/lib/crisp-utils";
 
 interface HeaderProps {
-  theme: "light" | "dark";
-  onThemeChange: () => void;
   mobileMenuOpen: boolean;
   onMobileMenuChange: (open: boolean) => void;
 }
@@ -51,8 +47,6 @@ interface ServiceColumn {
 }
 
 const Header: React.FC<HeaderProps> = ({
-  theme,
-  onThemeChange,
   mobileMenuOpen,
   onMobileMenuChange,
 }) => {
@@ -510,16 +504,6 @@ const Header: React.FC<HeaderProps> = ({
 
           {/* Right Actions */}
           <div className="flex items-center gap-4">
-            {/* Theme Toggle */}
-            <motion.button
-              onClick={onThemeChange}
-              whileHover={{ scale: 1.05 }}
-              className="hidden sm:inline-flex items-center justify-center w-10 h-10 rounded-full text-white/70 hover:text-white hover:bg-white/10 transition"
-              aria-label="Toggle theme"
-            >
-              {theme === "dark" ? <Sun size={18} /> : <Moon size={18} />}
-            </motion.button>
-
             {/* CTA Button */}
             <motion.div
               className="hidden sm:block relative group"
