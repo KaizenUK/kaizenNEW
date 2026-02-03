@@ -59,7 +59,10 @@ export default function SpeedScanner() {
   }
 
   return (
-    <section className="relative py-16 md:py-20 bg-gray-950 text-white overflow-hidden">
+    <section
+      id="live-performance-scanner"
+      className="relative py-16 md:py-20 bg-gray-950 text-white overflow-hidden"
+    >
       <div className="pointer-events-none absolute inset-0 opacity-70 bg-[radial-gradient(circle_at_10%_10%,rgba(6,182,212,0.12),transparent_55%),radial-gradient(circle_at_90%_90%,rgba(59,130,246,0.10),transparent_60%)]" />
 
       <div className="container mx-auto px-4 relative z-10">
