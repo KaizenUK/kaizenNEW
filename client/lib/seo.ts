@@ -69,6 +69,20 @@ const pageMeta: Record<string, Partial<PageMeta>> = {
       "commercial district web design",
     ],
   },
+  "/web-design-chester": {
+    title: "Web Design Chester | High-Performance React Developers",
+    description:
+      "Fast, secure web design for Chester. We build bespoke React websites for law firms, financial advisors, and businesses on Chester Business Park.",
+    keywords: [
+      "web design chester",
+      "chester web design",
+      "web designer chester",
+      "chester business park web design",
+      "react developers chester",
+      "law firm web design chester",
+      "wealth management web design",
+    ],
+  },
   "/services/web-design-liverpool": {
     title: "Enterprise Web Design Liverpool | React & Next.js Developers",
     description:
