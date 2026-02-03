@@ -24,6 +24,42 @@ export function createServer() {
 
   app.get("/api/demo", handleDemo);
 
+  // PageSpeed Insights API proxy
+  app.get("/api/pagespeed", async (req, res) => {
+    try {
+      const url = req.query.url as string;
+
+      if (!url) {
+        return res.status(400).json({ error: "URL parameter is required" });
+      }
+
+      if (!PAGESPEED_API_KEY) {
+        return res
+          .status(500)
+          .json({ error: "PageSpeed API key not configured" });
+      }
+
+      const response = await fetch(
+        `https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url=${encodeURIComponent(url)}&category=PERFORMANCE&strategy=MOBILE&key=${PAGESPEED_API_KEY}`,
+      );
+
+      if (!response.ok) {
+        const error = await response.json();
+        return res.status(response.status).json({
+          error: error.error?.message || "Failed to run PageSpeed audit",
+        });
+      }
+
+      const data = await response.json();
+      res.json(data);
+    } catch (error) {
+      console.error("Error running PageSpeed audit:", error);
+      res.status(500).json({
+        error: error instanceof Error ? error.message : "Internal server error",
+      });
+    }
+  });
+
   // Admin API route for creating blog posts
   app.post("/api/admin/builder/blog-posts", async (req, res) => {
     try {
