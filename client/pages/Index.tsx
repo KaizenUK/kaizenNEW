@@ -340,10 +340,15 @@ const AuthorityBridge = () => {
               Global Tech Experience
             </p>
             <h2 className="text-3xl md:text-5xl font-heading font-black leading-tight mb-6">
-              Professional Tech.<br />Down-to-Earth Service.
+              Professional Tech.
+              <br />
+              Down-to-Earth Service.
             </h2>
             <p className="text-lg text-white/80 leading-relaxed mb-6">
-              We used to build massive systems for global companies. Now, we use that same powerful technology to help local Wirral businesses get more customers. You get a website that is faster, safer, and smarter than your competitors, without the corporate waffle.
+              We used to build massive systems for global companies. Now, we use
+              that same powerful technology to help local Wirral businesses get
+              more customers. You get a website that is faster, safer, and
+              smarter than your competitors, without the corporate waffle.
             </p>
             <ul className="space-y-3 text-white/85">
               <li className="flex gap-3">
@@ -411,7 +416,9 @@ const SocialMediaWarning = () => {
       }}
     >
       <div style={{ maxWidth: "1200px", margin: "0 auto", padding: "0 16px" }}>
-        <div style={{ maxWidth: "56rem", margin: "0 auto", textAlign: "center" }}>
+        <div
+          style={{ maxWidth: "56rem", margin: "0 auto", textAlign: "center" }}
+        >
           <p
             style={{
               fontSize: "0.75rem",
@@ -444,11 +451,11 @@ const SocialMediaWarning = () => {
               margin: 0,
             }}
           >
-            If your whole presence lives on Facebook or Instagram, you’re renting
-            attention. Algorithms change, reach disappears, accounts get locked,
-            and your leads vanish overnight. A fast website is the asset you own:
-            it builds trust, captures enquiries, and keeps working regardless of
-            what social platforms decide.
+            If your whole presence lives on Facebook or Instagram, you’re
+            renting attention. Algorithms change, reach disappears, accounts get
+            locked, and your leads vanish overnight. A fast website is the asset
+            you own: it builds trust, captures enquiries, and keeps working
+            regardless of what social platforms decide.
           </p>
         </div>
       </div>
@@ -768,7 +775,10 @@ const PricingSlider = () => {
 const PricingCTABanner = () => {
   const getLastModifiedDate = () => {
     const now = new Date();
-    const monthName = now.toLocaleString('en-GB', { month: 'short', year: 'numeric' });
+    const monthName = now.toLocaleString("en-GB", {
+      month: "short",
+      year: "numeric",
+    });
     return monthName;
   };
 
@@ -883,7 +893,8 @@ const CoreServiceVerticals = () => {
             Our business is split into two main verticals
           </h2>
           <p className="text-sm md:text-base text-slate-300 max-w-2xl mx-auto">
-            High-performance websites for local businesses, and technical consulting for companies with failing software projects.
+            High-performance websites for local businesses, and technical
+            consulting for companies with failing software projects.
           </p>
         </motion.div>
 
@@ -957,7 +968,9 @@ const CoreServiceVerticals = () => {
                 Technical Consulting &amp; Project Rescue
               </h3>
               <p className="text-sm md:text-base text-slate-100 mb-6 max-w-md">
-                For larger companies or startups who have a software project that is failing. We step in, take charge of the development team, and get the project finished.
+                For larger companies or startups who have a software project
+                that is failing. We step in, take charge of the development
+                team, and get the project finished.
               </p>
               <ul className="space-y-2 text-sm md:text-base text-slate-100/90 mb-8">
                 <li className="flex items-center gap-2">
@@ -1495,7 +1508,7 @@ const WhoWeHelp = () => {
     "Trades",
     "Retail",
     "Logistics",
-    "Tech Startups"
+    "Tech Startups",
   ];
 
   return (

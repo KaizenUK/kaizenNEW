@@ -658,7 +658,8 @@
   }
 
   @keyframes dot-pulse {
-    0%, 100% {
+    0%,
+    100% {
       opacity: 0.4;
       r: 3px;
     }
@@ -678,7 +679,8 @@
   }
 
   @keyframes cube-breathe {
-    0%, 100% {
+    0%,
+    100% {
       transform: rotate3d(1, 1, 1, 0deg) scale(1);
     }
     50% {
@@ -687,7 +689,8 @@
   }
 
   @keyframes line-draw {
-    0%, 100% {
+    0%,
+    100% {
       stroke-dashoffset: 1000;
     }
     50% {
