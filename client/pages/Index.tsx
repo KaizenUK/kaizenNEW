@@ -397,28 +397,22 @@ const ServicePillars = () => {
             >
               <Link
                 to={pill.href}
-                className="group block h-full rounded-3xl border border-white/10 bg-white/5 backdrop-blur-xl p-7 hover:bg-white/10 transition"
+                className="group block h-full glass-card rounded-3xl p-7 flex flex-col"
               >
-                <div
-                  className={`h-full rounded-2xl bg-gradient-to-br ${pill.accent} p-0.5`}
-                >
-                  <div className="h-full rounded-2xl bg-black/25 border border-white/10 p-6 flex flex-col">
-                    <div className="flex items-center gap-3 mb-4">
-                      <span className="flex items-center justify-center h-10 w-10 rounded-xl bg-white/10 text-cyan-200">
-                        {pill.icon}
-                      </span>
-                      <h3 className="text-xl font-heading font-bold">
-                        {pill.title}
-                      </h3>
-                    </div>
-                    <p className="text-white/75 leading-relaxed flex-1">
-                      {pill.description}
-                    </p>
-                    <div className="mt-6 inline-flex items-center gap-2 text-cyan-200 font-heading font-semibold group-hover:gap-3 transition-all">
-                      Learn more
-                      <ArrowRight size={18} />
-                    </div>
-                  </div>
+                <div className="flex items-center gap-3 mb-4">
+                  <span className="flex items-center justify-center h-10 w-10 rounded-xl bg-white/10 text-cyan-200">
+                    {pill.icon}
+                  </span>
+                  <h3 className="text-xl font-heading font-bold">
+                    {pill.title}
+                  </h3>
+                </div>
+                <p className="text-white/75 leading-relaxed flex-1">
+                  {pill.description}
+                </p>
+                <div className="mt-6 inline-flex items-center gap-2 text-cyan-200 font-heading font-semibold group-hover:gap-3 transition-all">
+                  Learn more
+                  <ArrowRight size={18} />
                 </div>
               </Link>
             </motion.div>
