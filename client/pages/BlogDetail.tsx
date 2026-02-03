@@ -172,6 +172,8 @@ function ImageWithSkeleton({ src, alt }: ImageWithSkeletonProps) {
       <img
         src={src}
         alt={alt}
+        width="1200"
+        height="675"
         onLoad={() => setIsLoading(false)}
         onError={() => {
           setIsLoading(false);
@@ -269,6 +271,8 @@ function Author({ name, role, image }: AuthorProps) {
         <img
           src={image}
           alt={name}
+          width="48"
+          height="48"
           className="w-12 h-12 rounded-full object-cover"
           loading="lazy"
           decoding="async"
