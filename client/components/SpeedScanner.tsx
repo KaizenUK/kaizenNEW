@@ -92,7 +92,9 @@ export default function SpeedScanner() {
       setLoading(false);
       setStatusMsg("");
     } catch (err) {
-      setStatusMsg("Error: Could not scan URL. Please check the link.");
+      const errMsg = err instanceof Error ? err.message : "Unknown error";
+      console.error("SpeedScanner error:", errMsg);
+      setStatusMsg(`Error: ${errMsg}`);
       setLoading(false);
     }
   }
