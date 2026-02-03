@@ -218,7 +218,7 @@ export function Speedometer() {
               {speed}
             </div>
           </div>
-          <div className="text-xs font-bold uppercase tracking-widest text-slate-500 mt-2">
+          <div className="text-xs font-bold uppercase tracking-widest text-slate-400 mt-2">
             Average Performance
           </div>
         </div>
