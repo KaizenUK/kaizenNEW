@@ -310,6 +310,8 @@ export default function Blog() {
                     <img
                       src={featuredPost.image}
                       alt={featuredPost.title}
+                      width="1200"
+                      height="720"
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                       loading="lazy"
                       decoding="async"
@@ -384,6 +386,8 @@ export default function Blog() {
                         <img
                           src={post.image}
                           alt={post.title}
+                          width="800"
+                          height="480"
                           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                           loading="lazy"
                           decoding="async"
@@ -441,6 +445,8 @@ export default function Blog() {
                       <img
                         src={filteredPosts[1]?.image}
                         alt={filteredPosts[1]?.title}
+                        width="1400"
+                        height="900"
                         className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                         loading="lazy"
                         decoding="async"
@@ -499,6 +505,8 @@ export default function Blog() {
                           <img
                             src={post.image}
                             alt={post.title}
+                            width="64"
+                            height="64"
                             className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
                             loading="lazy"
                             decoding="async"
@@ -557,6 +565,8 @@ export default function Blog() {
                           <img
                             src={post.image}
                             alt={post.title}
+                            width="800"
+                            height="480"
                             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                             loading="lazy"
                             decoding="async"
