@@ -83,6 +83,20 @@ const pageMeta: Record<string, Partial<PageMeta>> = {
       "wealth management web design",
     ],
   },
+  "/web-design-warrington": {
+    title: "Web Design Warrington | React Development & Systems",
+    description:
+      "High-performance web design for Warrington. We build robust sites and custom portals for logistics, tech, and engineering firms in Birchwood and Omega.",
+    keywords: [
+      "web design warrington",
+      "warrington web design",
+      "react development warrington",
+      "birchwood park web design",
+      "omega warrington web design",
+      "logistics portal development",
+      "engineering web development",
+    ],
+  },
   "/services/web-design-liverpool": {
     title: "Enterprise Web Design Liverpool | React & Next.js Developers",
     description:

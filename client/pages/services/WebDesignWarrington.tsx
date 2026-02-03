@@ -327,18 +327,18 @@ export default function WebDesignWarrington() {
   return (
     <Layout>
       <Helmet>
-        <title>Warrington’s High-Performance Web Agency | Kaizen</title>
+        <title>Web Design Warrington | React Development & Systems</title>
         <meta
           name="description"
-          content="Fast, professional websites for Warrington businesses who want to lead their market. No templates, no jargon—just results."
+          content="High-performance web design for Warrington. We build robust sites and custom portals for logistics, tech, and engineering firms in Birchwood and Omega."
         />
         <meta
           name="og:title"
-          content="Warrington’s High-Performance Web Agency | Kaizen"
+          content="Web Design Warrington | React Development & Systems"
         />
         <meta
           name="og:description"
-          content="Fast, professional websites for Warrington businesses who want to lead their market. No templates, no jargon—just results."
+          content="High-performance web design for Warrington. We build robust sites and custom portals for logistics, tech, and engineering firms in Birchwood and Omega."
         />
         <meta name="og:type" content="website" />
         <link

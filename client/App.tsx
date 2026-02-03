@@ -38,6 +38,9 @@ const WebDesignLiverpool = lazy(
 const WebDesignChester = lazy(
   () => import("./pages/services/WebDesignChester"),
 );
+const WebDesignWarrington = lazy(
+  () => import("./pages/services/WebDesignWarrington"),
+);
 const ContractProductOwner = lazy(() => import("./pages/ContractProductOwner"));
 const ProjectRescue = lazy(() => import("./pages/ProjectRescue"));
 const CaseStudies = lazy(() => import("./pages/CaseStudies"));
@@ -210,6 +213,10 @@ function AppContent() {
           <Route
             path="/web-design-chester"
             element={<WebDesignChester />}
+          />
+          <Route
+            path="/web-design-warrington"
+            element={<WebDesignWarrington />}
           />
           <Route
             path="/services/web-design-liverpool"
