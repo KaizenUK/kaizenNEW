@@ -467,7 +467,7 @@ export default function WebDesignWarrington() {
               Why Warrington Businesses Choose Us
             </h2>
             <p className="text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
-              Premium build quality — explained in plain English.
+              Engineering-grade build quality — explained in plain English.
             </p>
           </div>
 
