@@ -84,17 +84,17 @@ const pageMeta: Record<string, Partial<PageMeta>> = {
     ],
   },
   "/web-design-warrington": {
-    title: "Web Design Warrington | React Development & Systems",
+    title: "Web Design Warrington | Fast, Professional Websites",
     description:
-      "High-performance web design for Warrington. We build robust sites and custom portals for logistics, tech, and engineering firms in Birchwood and Omega.",
+      "Web design in Warrington for businesses who want a fast, professional website. We build sites that load quickly, rank well, and bring in work.",
     keywords: [
       "web design warrington",
       "warrington web design",
-      "react development warrington",
+      "web designer warrington",
+      "website design warrington",
       "birchwood park web design",
-      "omega warrington web design",
-      "logistics portal development",
-      "engineering web development",
+      "omega warrington",
+      "warrington website",
     ],
   },
   "/services/web-design-liverpool": {
