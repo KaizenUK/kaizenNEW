@@ -15,9 +15,7 @@ import {
   XCircle,
 } from "lucide-react";
 import { Link } from "react-router-dom";
-import { useCalendly } from "@/context/CalendlyContext";
 import { FaqSection } from "@/components/FaqSection";
-import { TypewriterEffect } from "@/components/TypewriterEffect";
 import { Speedometer } from "@/components/Speedometer";
 import SpeedScanner from "@/components/SpeedScanner";
 import { openCrisp } from "@/lib/crisp-utils";
@@ -44,15 +42,15 @@ const containerVariants = {
 
 const comparisonFeatures = [
   {
-    feature: "Mobile Load Speed",
-    typical: "5-8 seconds (Slow)",
-    kaizen: "1.2 seconds (Instant)",
+    feature: "Time to Load",
+    typical: "5–8 seconds (slow)",
+    kaizen: "1.2 seconds (instant)",
     highlight: true,
   },
   {
-    feature: "Technology Stack",
-    typical: "Bloated WordPress Theme",
-    kaizen: "Custom React + Headless",
+    feature: "Reliability",
+    typical: "Generic Template",
+    kaizen: "Unbreakable Custom Code",
     highlight: true,
   },
   {
@@ -298,26 +296,23 @@ function NetworkAnimation() {
 }
 
 export default function WebDesignLiverpool() {
-  const { openCalendly } = useCalendly();
   const [showMobileComparison, setShowMobileComparison] = useState(false);
 
   return (
     <Layout>
       <Helmet>
-        <title>
-          Enterprise Web Design Liverpool | React & Next.js Developers
-        </title>
+        <title>Liverpool’s High-Performance Web Agency | Kaizen</title>
         <meta
           name="description"
-          content="We build high-performance React websites for Liverpool's Commercial District and Knowledge Quarter. Faster, safer, and more profitable than WordPress."
+          content="Fast, professional websites for Liverpool businesses who want to lead their market. No templates, no jargon—just results."
         />
         <meta
           name="og:title"
-          content="Enterprise Web Design Liverpool | React & Next.js Developers"
+          content="Liverpool’s High-Performance Web Agency | Kaizen"
         />
         <meta
           name="og:description"
-          content="We build high-performance React websites for Liverpool's Commercial District and Knowledge Quarter. Faster, safer, and more profitable than WordPress."
+          content="Fast, professional websites for Liverpool businesses who want to lead their market. No templates, no jargon—just results."
         />
         <meta name="og:type" content="website" />
         <link
@@ -341,33 +336,24 @@ export default function WebDesignLiverpool() {
             <motion.div variants={fadeInUp} className="relative z-10">
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-950/50 border border-cyan-800/50 text-cyan-300 text-xs font-mono uppercase tracking-wider mb-6">
                 <Briefcase className="w-3 h-3" />
-                <span>Enterprise Web Design Liverpool</span>
+                <span>Web Design Liverpool</span>
               </div>
 
               <h1 className="text-5xl md:text-6xl lg:text-7xl font-heading font-black leading-[1.1] mb-6 tracking-tight">
-                London-Grade Tech. <br />
-                <span className="bg-gradient-to-r from-cyan-400 via-teal-300 to-sky-400 bg-clip-text text-transparent">
-                  <TypewriterEffect
-                    words={["Liverpool", "Accountability.", "Expertise."]}
-                    speed={80}
-                    delayBetweenWords={1600}
-                    className="inline-block"
-                  />
-                </span>
+                Liverpool’s High-Performance Web Agency.
               </h1>
 
               <p className="text-xl text-slate-300 max-w-xl mb-8 leading-relaxed">
-                We bring high-performance React development to Liverpool's
-                Commercial District. Stop relying on slow WordPress themes and
-                scale with confidence.
+                Fast, professional websites for Liverpool businesses who want to
+                lead their market. No templates, no jargon—just results.
               </p>
 
               <div className="flex flex-col sm:flex-row gap-4 items-center">
                 <button
-                  onClick={openCalendly}
+                  onClick={() => openCrisp()}
                   className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full bg-cyan-500 text-white font-heading font-bold hover:bg-cyan-400 hover:shadow-[0_0_20px_rgba(34,211,238,0.4)] transition-all duration-300 transform hover:-translate-y-1"
                 >
-                  Consulting & Development
+                  start a chat
                   <ArrowRight size={18} />
                 </button>
               </div>
@@ -413,7 +399,7 @@ export default function WebDesignLiverpool() {
                 </div>
                 <div className="mt-6 pt-6 border-t border-slate-800">
                   <p className="text-sm text-slate-400 text-center font-mono">
-                    "React + Headless: Enterprise-grade at startup speed."
+                    "Premium websites that load instantly — and win more work."
                   </p>
                 </div>
               </div>
@@ -451,32 +437,26 @@ export default function WebDesignLiverpool() {
               Why Liverpool Businesses Choose Us
             </h2>
             <p className="text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
-              We understand the demands of the Commercial District and Knowledge
-              Quarter. Your site needs to work as hard as you do.
+              Premium build quality — explained in plain English.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {[
               {
                 icon: Users,
-                title: "Enterprise Understanding",
-                desc: "We build sites for law firms, financial consultancies, and logistics groups who cannot afford downtime.",
+                title: "Local & Accountable",
+                desc: "We are right here in the City Region. No offshoring, no hiding behind emails. You get direct access to your developer.",
               },
               {
                 icon: Zap,
-                title: "Regulated Industry Focus",
-                desc: "GDPR-ready, compliant architecture. We speak the language of regulated industries.",
-              },
-              {
-                icon: Briefcase,
-                title: "B2B & Professional Services",
-                desc: "We know how to build funnels that convert corporate enquiries into signed contracts.",
+                title: "Built for Google",
+                desc: "We don't just make it look good. We build it to rank high and load fast on mobile.",
               },
               {
                 icon: BarChart3,
-                title: "Measurable ROI",
-                desc: "Every page is built to generate leads, contracts, or bookings. We track what matters.",
+                title: "Asset, Not Expense",
+                desc: "A cheap website costs you lost customers. Our sites are built to pay for themselves.",
               },
             ].map((item, i) => (
               <motion.div
@@ -517,9 +497,9 @@ export default function WebDesignLiverpool() {
             <p className="text-slate-400 max-w-2xl mx-auto text-lg">
               From the Commercial District to the Knowledge Quarter, Liverpool
               businesses are world-class. Your digital presence should be too.
-              We provide the technical architecture required by law firms,
-              financial consultancies, and logistics groups who cannot afford
-              downtime.
+              Whether you're a clinic, a building firm, a consultancy, or a law
+              office — we build websites that look premium and perform on
+              mobile.
             </p>
           </div>
 
@@ -528,19 +508,19 @@ export default function WebDesignLiverpool() {
               {
                 area: "Old Hall Street & Commercial District",
                 title: "Financial & Legal Excellence",
-                desc: "Multi-tenant corporate sites with SSO, secure document handling, and institutional-grade performance.",
+                desc: "Professional websites for teams, client areas, and document-heavy services — built to load fast and feel trustworthy.",
                 color: "cyan",
               },
               {
                 area: "Knowledge Quarter",
                 title: "Innovation & Research",
-                desc: "Complex data dashboards, research publication portals, and collaboration tools for forward-thinking enterprises.",
+                desc: "Clear, professional websites for clinics, consultants, and organisations who need to explain complex services simply.",
                 color: "sky",
               },
               {
                 area: "Logistics & Industrial Hub",
                 title: "Supply Chain Visibility",
-                desc: "Real-time tracking portals, RFQ engines, and ERP integrations that move goods and information seamlessly.",
+                desc: "Lead-generation sites and custom tools for building, trades, and logistics — built to win enquiries and keep things running smoothly.",
                 color: "lime",
               },
             ].map((item, i) => (
@@ -581,37 +561,54 @@ export default function WebDesignLiverpool() {
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
                   <span className="relative inline-flex rounded-full h-2 w-2 bg-blue-500"></span>
                 </span>
-                Enterprise Services
+                Services
               </div>
 
               <h2 className="text-3xl md:text-4xl font-heading font-bold text-slate-900 dark:text-white mb-6">
-                Services Built for Enterprise.
+                What we build for Liverpool businesses
               </h2>
 
               <div className="prose prose-lg dark:prose-invert mb-8">
                 <p className="text-slate-600 dark:text-slate-300">
-                  We specialise in building sophisticated digital solutions for
-                  Liverpool's most demanding businesses. Whether you need a new
-                  corporate portal, a complete modernisation of legacy systems,
-                  or ongoing technical support for SMEs and professional
-                  services, we have the expertise.
+                  We work with ambitious Liverpool businesses — from clinics and
+                  solicitors to building firms — who want a site that looks
+                  premium, loads instantly, and generates leads.
                 </p>
               </div>
 
-              <div className="space-y-4 mb-8">
+              <div className="grid grid-cols-1 gap-4 mb-8">
                 {[
-                  "SME & Professional Services: Custom websites for accountants, solicitors, and consultancies",
-                  "Legacy Software Modernisation: Rescue aging PHP/WordPress systems and rebuild with React",
-                  "Enterprise Portal Development: Secure, scalable platforms for large teams",
-                ].map((item, i) => (
-                  <div key={i} className="flex items-start gap-3">
-                    <CheckCircle2
-                      className="text-cyan-500 flex-shrink-0 mt-1"
-                      size={20}
-                    />
-                    <span className="text-slate-700 dark:text-slate-200 font-medium">
-                      {item}
-                    </span>
+                  {
+                    title: "High-Impact Websites.",
+                    desc: "For businesses that need to look professional and generate leads. Perfect for solicitors, clinics, and trades.",
+                  },
+                  {
+                    title: "Fixing Broken Projects.",
+                    desc: "Has another developer let you down? We step in to fix slow, broken, or unfinished websites.",
+                  },
+                  {
+                    title: "Custom Booking & Systems.",
+                    desc: "Need a client portal or a booking system? We build secure tools to help you run your business.",
+                  },
+                ].map((service) => (
+                  <div
+                    key={service.title}
+                    className="rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900/40 p-5"
+                  >
+                    <div className="flex items-start gap-3">
+                      <CheckCircle2
+                        className="text-cyan-500 flex-shrink-0 mt-1"
+                        size={20}
+                      />
+                      <div>
+                        <h3 className="font-heading font-bold text-slate-900 dark:text-white">
+                          {service.title}
+                        </h3>
+                        <p className="text-sm text-slate-600 dark:text-slate-400 mt-1 leading-relaxed">
+                          {service.desc}
+                        </p>
+                      </div>
+                    </div>
                   </div>
                 ))}
               </div>
@@ -620,7 +617,7 @@ export default function WebDesignLiverpool() {
                 onClick={() => openCrisp()}
                 className="inline-flex items-center gap-2 text-cyan-600 dark:text-cyan-400 font-bold hover:gap-3 transition-all"
               >
-                Book a Technical Consultation
+                Start a chat
                 <ArrowRight size={18} />
               </button>
             </div>
@@ -631,7 +628,7 @@ export default function WebDesignLiverpool() {
                 <div className="absolute -bottom-4 -left-4 w-32 h-32 bg-sky-500/10 rounded-full blur-xl" />
 
                 <h3 className="text-sm font-mono uppercase tracking-widest text-slate-400 text-center mb-8">
-                  Enterprise Development Pipeline
+                  How we deliver
                 </h3>
 
                 <NetworkAnimation />
@@ -794,10 +791,10 @@ export default function WebDesignLiverpool() {
           <div className="text-center mb-16">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-900/30 text-cyan-400 text-xs font-mono uppercase tracking-wider mb-6">
               <Zap size={14} />
-              <span>Enterprise Performance</span>
+              <span>Performance</span>
             </div>
             <h2 className="text-3xl md:text-4xl font-heading font-bold text-white mb-4">
-              Built for Enterprise Demands
+              Websites that load instantly
             </h2>
             <p className="text-lg text-slate-400 max-w-2xl mx-auto">
               Your Liverpool business deserves world-class performance. We
@@ -811,21 +808,16 @@ export default function WebDesignLiverpool() {
             </div>
             <div className="text-center lg:text-left">
               <h3 className="text-2xl font-bold text-white mb-4">
-                Ready for Institutional Standards
+                Built for real customers (and Google)
               </h3>
               <p className="text-slate-400 mb-6 leading-relaxed">
-                Our enterprise builds regularly score{" "}
-                <span className="text-sky-400 font-bold">
-                  95%+ in AHREFS site audits
-                </span>
-                , and consistently achieve{" "}
-                <span className="text-sky-400 font-bold">A Grades</span> in
-                security and performance tests.
+                We build for speed on mobile because that’s what customers (and
+                Google) care about. The result: quicker load times, better user
+                experience, and more enquiries.
               </p>
               <p className="text-slate-400 mb-6 leading-relaxed">
-                We achieve this with world-class GTMetrix scores and a
-                relentless focus on code quality, compliance, and architectural
-                excellence.
+                No buzzwords. Just a clean build, a clear message, and a site
+                that performs.
               </p>
               <a
                 href="https://developers.google.com/search/docs/appearance/core-web-vitals"
@@ -860,12 +852,12 @@ export default function WebDesignLiverpool() {
                 {
                   question: "Do you work with WordPress?",
                   answer:
-                    "For high-performance corporate sites, we recommend Next.js (React). It offers superior security and speed compared to standard WordPress builds, which is critical for regulated industries. If your legacy site is WordPress-based and underperforming, our 'Legacy Software Modernisation' service can rescue and rebuild it.",
+                    "Yes — and it can be fine for some sites. But if speed, reliability, and rankings matter, we often recommend a custom-built site instead of a heavy template. If your current WordPress site is slow or broken, we can fix it or rebuild it properly.",
                 },
                 {
-                  question: "Can you handle regulated industry requirements?",
+                  question: "Do you work with clinics and professional services?",
                   answer:
-                    "Yes. We build for law firms, financial consultancies, and regulated industries that require GDPR compliance, secure authentication, and audit trails. Our architecture meets institutional standards and can integrate with enterprise SSO systems.",
+                    "Yes. We work with clinics, solicitors, accountants, and other professional services who need to look trustworthy online, load fast on mobile, and turn visitors into enquiries.",
                 },
                 {
                   question: "What about ongoing support?",
@@ -873,9 +865,9 @@ export default function WebDesignLiverpool() {
                     "We provide 30-day post-launch snagging, and we offer retainer-based support packages for SMEs and professional services. We are happy to meet at your Liverpool office to discuss ongoing technical needs.",
                 },
                 {
-                  question: "Can you integrate with our existing systems?",
+                  question: "Can you build booking systems or client portals?",
                   answer:
-                    "Absolutely. Whether you need API integrations, CRM connections, or ERP linking, we build headless architectures designed for enterprise integration. This is what 'React development' means in a corporate context.",
+                    "Yes. If you need a booking flow, a secure client area, or a simple portal for customers, we can build it. We'll explain your options clearly and recommend the simplest solution that gets the job done.",
                 },
               ]}
             />
@@ -891,18 +883,17 @@ export default function WebDesignLiverpool() {
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
               <span className="relative inline-flex rounded-full h-2 w-2 bg-cyan-500"></span>
             </span>
-            Enterprise Digital Solutions
+            Ready when you are
           </div>
 
           <h2 className="text-4xl md:text-5xl font-heading font-bold mb-6">
-            Ready to Scale Your Liverpool Enterprise?
+            Ready for a website that actually wins work?
           </h2>
 
           <p className="text-xl text-slate-400 mb-10 leading-relaxed max-w-2xl mx-auto">
-            Whether you're a law firm on Old Hall Street, a knowledge worker in
-            the Innovation District, or a logistics operation at the edge of the
-            city region, we build digital systems that don't just look
-            sharp—they perform at enterprise grade.
+            Whether you're a clinic, a building firm, a consultancy, or a
+            professional service — we build websites that look premium, load
+            fast, and make it easier for customers to choose you.
           </p>
 
           <div className="flex flex-col sm:flex-row justify-center gap-6">
@@ -910,7 +901,7 @@ export default function WebDesignLiverpool() {
               onClick={() => openCrisp()}
               className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full bg-cyan-500 text-white font-heading font-bold hover:bg-cyan-400 hover:shadow-[0_0_20px_rgba(34,211,238,0.4)] transition-all duration-300 transform hover:-translate-y-1"
             >
-              Start Your Project
+              Start a chat
               <ArrowRight size={18} />
             </button>
 
