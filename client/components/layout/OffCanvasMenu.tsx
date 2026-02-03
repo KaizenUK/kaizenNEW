@@ -59,7 +59,8 @@ const OffCanvasMenu: React.FC<OffCanvasMenuProps> = ({
         {
           label: "High-Performance Local Websites",
           href: "/services/local-seo",
-          description: "Local rankings powered by Core Web Vitals and local intent.",
+          description:
+            "Local rankings powered by Core Web Vitals and local intent.",
           icon: <MapPin className="w-4 h-4" />,
         },
         {
@@ -148,7 +149,8 @@ const OffCanvasMenu: React.FC<OffCanvasMenuProps> = ({
         {
           label: "High Five Games",
           href: "/case-studies/high-five-games",
-          description: "Dual-currency gaming platform: +180% conversion uplift.",
+          description:
+            "Dual-currency gaming platform: +180% conversion uplift.",
           icon: <Rocket className="w-4 h-4" />,
         },
         {
@@ -167,9 +169,7 @@ const OffCanvasMenu: React.FC<OffCanvasMenuProps> = ({
     },
   ];
 
-  const topLevelLinks = [
-    { label: "Project Rescue", href: "/project-rescue" },
-  ];
+  const topLevelLinks = [{ label: "Project Rescue", href: "/project-rescue" }];
 
   const toggleSection = (section: string) => {
     setExpandedSection((current) => (current === section ? null : section));

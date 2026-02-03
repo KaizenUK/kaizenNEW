@@ -166,12 +166,16 @@ export default function LocalSeo() {
                 transition={{ delay: 0.6, duration: 0.6 }}
               >
                 <p>
-                  Local SEO doesn’t start with keywords. It starts with a website that loads fast, reads clearly, and doesn’t frustrate people.
-                  If your competitors are quicker, cleaner, and easier to use, they’ll usually win the click.
+                  Local SEO doesn’t start with keywords. It starts with a
+                  website that loads fast, reads clearly, and doesn’t frustrate
+                  people. If your competitors are quicker, cleaner, and easier
+                  to use, they’ll usually win the click.
                 </p>
                 <p>
-                  We build high-performance local websites (often in custom React) and then layer on the local SEO work that actually moves the needle:
-                  Google Business Profile, location pages, reviews, and authority signals.
+                  We build high-performance local websites (often in custom
+                  React) and then layer on the local SEO work that actually
+                  moves the needle: Google Business Profile, location pages,
+                  reviews, and authority signals.
                 </p>
               </motion.div>
 
@@ -224,11 +228,16 @@ export default function LocalSeo() {
             <ScrollReveal delay={1}>
               <div className="space-y-6">
                 <p className="text-xl text-kaizen-text-dark/70 dark:text-white/60 leading-relaxed">
-                  Most “local SEO” packages fail because they try to bolt SEO onto a slow, generic website.
-                  Google increasingly rewards real user experience: speed, stability, and clarity. That’s exactly where most templated, plugin-heavy sites fall over.
+                  Most “local SEO” packages fail because they try to bolt SEO
+                  onto a slow, generic website. Google increasingly rewards real
+                  user experience: speed, stability, and clarity. That’s exactly
+                  where most templated, plugin-heavy sites fall over.
                 </p>
                 <p className="text-xl text-kaizen-text-dark/70 dark:text-white/60 leading-relaxed">
-                  We focus on <strong>Local Intent</strong> and <strong>Technical Advantage</strong>—getting you found by customers ready to buy, and ensuring the site performs well enough to keep them there.
+                  We focus on <strong>Local Intent</strong> and{" "}
+                  <strong>Technical Advantage</strong>—getting you found by
+                  customers ready to buy, and ensuring the site performs well
+                  enough to keep them there.
                 </p>
               </div>
             </ScrollReveal>
@@ -241,16 +250,21 @@ export default function LocalSeo() {
                   </h3>
                   <ul className="space-y-3 text-lg text-kaizen-text-dark/70 dark:text-white/60">
                     <li>
-                      <strong>Speed by design:</strong> fewer plugins, less bloat, and tighter control over Core Web Vitals.
+                      <strong>Speed by design:</strong> fewer plugins, less
+                      bloat, and tighter control over Core Web Vitals.
                     </li>
                     <li>
-                      <strong>Cleaner markup:</strong> better structure (headings, internal links, schema) without fighting a theme.
+                      <strong>Cleaner markup:</strong> better structure
+                      (headings, internal links, schema) without fighting a
+                      theme.
                     </li>
                     <li>
-                      <strong>More reliable:</strong> fewer moving parts, fewer security fires, fewer "mystery" slowdowns.
+                      <strong>More reliable:</strong> fewer moving parts, fewer
+                      security fires, fewer "mystery" slowdowns.
                     </li>
                     <li>
-                      <strong>Conversion uplift:</strong> faster sites typically convert better, which improves engagement signals.
+                      <strong>Conversion uplift:</strong> faster sites typically
+                      convert better, which improves engagement signals.
                     </li>
                   </ul>
                 </div>
@@ -259,7 +273,9 @@ export default function LocalSeo() {
                     What you get
                   </h3>
                   <p className="text-lg text-kaizen-text-dark/70 dark:text-white/60">
-                    A site that loads fast, reads well, and supports local SEO properly—then we optimise your Google Business Profile and local pages to push you into the Map Pack.
+                    A site that loads fast, reads well, and supports local SEO
+                    properly—then we optimise your Google Business Profile and
+                    local pages to push you into the Map Pack.
                   </p>
                 </div>
               </div>

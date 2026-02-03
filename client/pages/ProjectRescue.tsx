@@ -73,7 +73,9 @@ export default function ProjectRescue() {
   return (
     <Layout>
       <Helmet>
-        <title>Software Project Rescue | Senior Product Leadership | Kaizen</title>
+        <title>
+          Software Project Rescue | Senior Product Leadership | Kaizen
+        </title>
         <meta
           name="description"
           content="When your build is over budget, late, or stuck, Kaizen steps in as senior product leadership to stabilise delivery, restore control, and ship."
@@ -116,8 +118,10 @@ export default function ProjectRescue() {
               animate={{ opacity: 1 }}
               transition={{ delay: 0.3, duration: 0.8 }}
             >
-              When your build is over budget, late, or stuck, we step in as senior product leadership to stabilise delivery, restore control, and ship.
-              No theatre. No waffle. Clear decisions, clear ownership, and measurable outcomes.
+              When your build is over budget, late, or stuck, we step in as
+              senior product leadership to stabilise delivery, restore control,
+              and ship. No theatre. No waffle. Clear decisions, clear ownership,
+              and measurable outcomes.
             </motion.p>
 
             <motion.div
@@ -131,8 +135,10 @@ export default function ProjectRescue() {
                   Proof, not promises
                 </p>
                 <p className="text-white/85 leading-relaxed">
-                  We led a complex rescue and transformation for an <strong>international sweepstakes casino</strong>, delivering a dual-currency economy,
-                  payments and compliance integrations, and Live Ops governance at scale.
+                  We led a complex rescue and transformation for an{" "}
+                  <strong>international sweepstakes casino</strong>, delivering
+                  a dual-currency economy, payments and compliance integrations,
+                  and Live Ops governance at scale.
                 </p>
                 <div className="mt-4">
                   <Link

@@ -249,7 +249,11 @@ export default function Ecommerce() {
             }}
             initial={{ x: 100, opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
-            transition={{ delay: 0.2, duration: 0.9, ease: [0.16, 1, 0.3, 1] as const }}
+            transition={{
+              delay: 0.2,
+              duration: 0.9,
+              ease: [0.16, 1, 0.3, 1] as const,
+            }}
           />
 
           {/* Accent overlay */}

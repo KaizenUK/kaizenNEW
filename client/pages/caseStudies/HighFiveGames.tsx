@@ -45,7 +45,9 @@ export default function HighFiveGamesCase() {
   return (
     <Layout>
       <Helmet>
-        <title>International Sweepstakes Casino: Dual-Currency Economy Case Study</title>
+        <title>
+          International Sweepstakes Casino: Dual-Currency Economy Case Study
+        </title>
         <meta
           name="description"
           content="A technical deep dive into architecting a dual-currency gaming economy for an international sweepstakes casino: moving from pure social play to regulated sweepstakes across 43 US states."
@@ -84,7 +86,13 @@ export default function HighFiveGamesCase() {
             </h1>
 
             <p className="text-xl md:text-2xl text-slate-400 leading-relaxed max-w-3xl font-light">
-              We were brought in as contracted product leadership (Senior Technical Product Manager) to architect and lead the transition of a legacy social casino platform into an international sweepstakes casino—moving from single-currency entertainment to a legally-compliant dual-currency economy across 43 US states. Result: 42% ARPU growth, 21% churn reduction, and 99.1% payment processing reliability with zero regulatory violations.
+              We were brought in as contracted product leadership (Senior
+              Technical Product Manager) to architect and lead the transition of
+              a legacy social casino platform into an international sweepstakes
+              casino—moving from single-currency entertainment to a
+              legally-compliant dual-currency economy across 43 US states.
+              Result: 42% ARPU growth, 21% churn reduction, and 99.1% payment
+              processing reliability with zero regulatory violations.
             </p>
           </motion.div>
         </div>
@@ -104,13 +112,28 @@ export default function HighFiveGamesCase() {
             </h2>
             <div className="prose prose-invert prose-lg max-w-none text-slate-300 space-y-6">
               <p>
-                The platform evolved from a pure social gaming product (entertainment only, single-currency) into a hybrid dual-currency sweepstakes operator supporting both free-to-play coins and prize-redemption gameplay across 43+ regulated US states.
+                The platform evolved from a pure social gaming product
+                (entertainment only, single-currency) into a hybrid
+                dual-currency sweepstakes operator supporting both free-to-play
+                coins and prize-redemption gameplay across 43+ regulated US
+                states.
               </p>
               <p>
-                We were contracted as senior product and delivery leadership (Senior Technical Product Manager) to orchestrate the full transition. It required architectural transformation across six interconnected systems: player accounts, compliance frameworks, game engines, payment processing, and fraud detection. We coordinated six specialised teams across engineering, compliance, and operations—navigating complex regulatory landscapes across 43 states whilst maintaining financial-grade operational reliability for redemption transactions.
+                We were contracted as senior product and delivery leadership
+                (Senior Technical Product Manager) to orchestrate the full
+                transition. It required architectural transformation across six
+                interconnected systems: player accounts, compliance frameworks,
+                game engines, payment processing, and fraud detection. We
+                coordinated six specialised teams across engineering,
+                compliance, and operations—navigating complex regulatory
+                landscapes across 43 states whilst maintaining financial-grade
+                operational reliability for redemption transactions.
               </p>
               <p className="text-blue-300 font-semibold">
-                Outcome: The platform achieved #1 market position in US sweepstakes gaming (2024–2026), with 42% ARPU growth, 21% monthly churn reduction, and zero regulatory violations across all 43 jurisdictions.
+                Outcome: The platform achieved #1 market position in US
+                sweepstakes gaming (2024–2026), with 42% ARPU growth, 21%
+                monthly churn reduction, and zero regulatory violations across
+                all 43 jurisdictions.
               </p>
             </div>
           </motion.div>
@@ -126,13 +149,25 @@ export default function HighFiveGamesCase() {
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
           >
-            <h2 className="text-3xl md:text-4xl font-heading font-bold text-white mb-8">Technology Stack</h2>
+            <h2 className="text-3xl md:text-4xl font-heading font-bold text-white mb-8">
+              Technology Stack
+            </h2>
             <div className="prose prose-invert prose-lg max-w-none text-slate-300 space-y-4">
               <p>
-                The platform employed a broad modern web stack including JavaScript, HTML, PHP, and many other common web technologies. The technology foundation was built on legacy social gaming infrastructure that needed to be extended without disrupting an existing 10M+ player base.
+                The platform employed a broad modern web stack including
+                JavaScript, HTML, PHP, and many other common web technologies.
+                The technology foundation was built on legacy social gaming
+                infrastructure that needed to be extended without disrupting an
+                existing 10M+ player base.
               </p>
               <p>
-                The gaming platform operated with both web and mobile clients consuming backend services that handle accounts, dual currencies (social coins and sweepstakes coins), and real-money redemptions. The resulting architecture supports 10M+ concurrent player accounts, real-time payment processing across 43 states, RNG-certified game logic, and state-by-state compliance rule engines.
+                The gaming platform operated with both web and mobile clients
+                consuming backend services that handle accounts, dual currencies
+                (social coins and sweepstakes coins), and real-money
+                redemptions. The resulting architecture supports 10M+ concurrent
+                player accounts, real-time payment processing across 43 states,
+                RNG-certified game logic, and state-by-state compliance rule
+                engines.
               </p>
             </div>
           </motion.div>
@@ -160,10 +195,17 @@ export default function HighFiveGamesCase() {
               className="p-6 rounded-xl bg-slate-900/30 border border-slate-800"
             >
               <h3 className="text-xl font-bold text-white mb-3 flex items-center gap-2">
-                <span className="text-blue-400">●</span> Starting Position (2015)
+                <span className="text-blue-400">●</span> Starting Position
+                (2015)
               </h3>
               <p className="text-slate-400">
-                The company had been a B2B premium slot game developer since 1995, supplying premium titles to land-based casinos (Las Vegas, Atlantic City) with a portfolio of 500+ games. In 2012, they entered B2C with a social casino platform—pure entertainment with free-to-play coins, no real-money component. By 2015, they had 10M+ registered players but faced stagnation: retention was declining and player monetisation had hit a ceiling.
+                The company had been a B2B premium slot game developer since
+                1995, supplying premium titles to land-based casinos (Las Vegas,
+                Atlantic City) with a portfolio of 500+ games. In 2012, they
+                entered B2C with a social casino platform—pure entertainment
+                with free-to-play coins, no real-money component. By 2015, they
+                had 10M+ registered players but faced stagnation: retention was
+                declining and player monetisation had hit a ceiling.
               </p>
             </motion.div>
 
@@ -175,10 +217,36 @@ export default function HighFiveGamesCase() {
               className="p-6 rounded-xl bg-slate-900/30 border border-slate-800"
             >
               <h3 className="text-xl font-bold text-white mb-3 flex items-center gap-2">
-                <span className="text-green-400">●</span> Market Opportunity (2015–2016)
+                <span className="text-green-400">●</span> Market Opportunity
+                (2015–2016)
               </h3>
               <p className="text-slate-400">
-                The regulatory landscape had shifted. The <a href="https://en.wikipedia.org/wiki/Sweepstakes" target="_blank" rel="noreferrer" className="text-blue-300 hover:text-blue-200 underline">sweepstakes model</a> emerged as a legal alternative to gambling across most US states. Internal player data showed 15–20% higher engagement and 25% lower churn when real prize incentives were present. Direct competitors—Global Poker, Chumba Casino, and Luckyland Slots (all owned by <a href="https://www.vgw.co/" target="_blank" rel="noreferrer" className="text-blue-300 hover:text-blue-200 underline">VGW</a>)—were already exploring sweepstakes revenue models and gaining market share. The strategic opportunity: transition from pure social to a dual-currency sweepstakes model, legally operable in 43+ regulated states.
+                The regulatory landscape had shifted. The{" "}
+                <a
+                  href="https://en.wikipedia.org/wiki/Sweepstakes"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-blue-300 hover:text-blue-200 underline"
+                >
+                  sweepstakes model
+                </a>{" "}
+                emerged as a legal alternative to gambling across most US
+                states. Internal player data showed 15–20% higher engagement and
+                25% lower churn when real prize incentives were present. Direct
+                competitors—Global Poker, Chumba Casino, and Luckyland Slots
+                (all owned by{" "}
+                <a
+                  href="https://www.vgw.co/"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-blue-300 hover:text-blue-200 underline"
+                >
+                  VGW
+                </a>
+                )—were already exploring sweepstakes revenue models and gaining
+                market share. The strategic opportunity: transition from pure
+                social to a dual-currency sweepstakes model, legally operable in
+                43+ regulated states.
               </p>
             </motion.div>
 
@@ -193,7 +261,13 @@ export default function HighFiveGamesCase() {
                 <span className="text-cyan-400">●</span> Technical Scope
               </h3>
               <p className="text-slate-400">
-                This was not a feature addition. It required fundamental platform redesign: dual wallet ledgers, compliance rule engines, payment processor integration, RNG certification, state-by-state regulatory compliance, and game engine adaptation for two currency types. The scope encompassed 5 sequential phases over 12 months, coordinating 6 specialised teams, and migrating 10M+ player accounts without data loss.
+                This was not a feature addition. It required fundamental
+                platform redesign: dual wallet ledgers, compliance rule engines,
+                payment processor integration, RNG certification, state-by-state
+                regulatory compliance, and game engine adaptation for two
+                currency types. The scope encompassed 5 sequential phases over
+                12 months, coordinating 6 specialised teams, and migrating 10M+
+                player accounts without data loss.
               </p>
             </motion.div>
           </div>
@@ -219,19 +293,33 @@ export default function HighFiveGamesCase() {
               viewport={{ once: true }}
               transition={{ delay: 0 }}
             >
-              <h3 className="text-lg font-bold text-blue-400 mb-4">Step 1: Market & Regulatory Analysis</h3>
+              <h3 className="text-lg font-bold text-blue-400 mb-4">
+                Step 1: Market & Regulatory Analysis
+              </h3>
               <ul className="space-y-2 text-slate-400">
                 <li className="flex items-start gap-3">
                   <span className="text-blue-400 mt-1">→</span>
-                  We analysed sweepstakes model success of direct competitors (Global Poker, Chumba Casino, Luckyland Slots)
+                  We analysed sweepstakes model success of direct competitors
+                  (Global Poker, Chumba Casino, Luckyland Slots)
                 </li>
                 <li className="flex items-start gap-3">
                   <span className="text-blue-400 mt-1">→</span>
-                  We mapped the regulatory landscape: identified 43+ compliant states, restrictions in others
+                  We mapped the regulatory landscape: identified 43+ compliant
+                  states, restrictions in others
                 </li>
                 <li className="flex items-start gap-3">
                   <span className="text-blue-400 mt-1">→</span>
-                  We conducted player interviews: willingness to complete <a href="https://en.wikipedia.org/wiki/Know_your_customer" target="_blank" rel="noreferrer" className="text-blue-300 hover:text-blue-200 underline">KYC</a>, preference for cash vs. gift cards, attitudes toward prize redemption
+                  We conducted player interviews: willingness to complete{" "}
+                  <a
+                    href="https://en.wikipedia.org/wiki/Know_your_customer"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="text-blue-300 hover:text-blue-200 underline"
+                  >
+                    KYC
+                  </a>
+                  , preference for cash vs. gift cards, attitudes toward prize
+                  redemption
                 </li>
               </ul>
             </motion.div>
@@ -242,19 +330,24 @@ export default function HighFiveGamesCase() {
               viewport={{ once: true }}
               transition={{ delay: 0.1 }}
             >
-              <h3 className="text-lg font-bold text-blue-400 mb-4">Step 2: Data Analysis of Existing Platform</h3>
+              <h3 className="text-lg font-bold text-blue-400 mb-4">
+                Step 2: Data Analysis of Existing Platform
+              </h3>
               <ul className="space-y-2 text-slate-400">
                 <li className="flex items-start gap-3">
                   <span className="text-blue-400 mt-1">→</span>
-                  We reviewed player lifetime value (LTV), coin purchase patterns, and session engagement metrics
+                  We reviewed player lifetime value (LTV), coin purchase
+                  patterns, and session engagement metrics
                 </li>
                 <li className="flex items-start gap-3">
                   <span className="text-blue-400 mt-1">→</span>
-                  We analysed churn rates by cohort and cost of customer acquisition (CAC)
+                  We analysed churn rates by cohort and cost of customer
+                  acquisition (CAC)
                 </li>
                 <li className="flex items-start gap-3">
                   <span className="text-blue-400 mt-1">→</span>
-                  <strong>Key insight:</strong> Players who believed they could win prizes showed 15–20% higher engagement and 25% lower churn
+                  <strong>Key insight:</strong> Players who believed they could
+                  win prizes showed 15–20% higher engagement and 25% lower churn
                 </li>
               </ul>
             </motion.div>
@@ -265,15 +358,19 @@ export default function HighFiveGamesCase() {
               viewport={{ once: true }}
               transition={{ delay: 0.2 }}
             >
-              <h3 className="text-lg font-bold text-blue-400 mb-4">Step 3: Competitive Benchmarking</h3>
+              <h3 className="text-lg font-bold text-blue-400 mb-4">
+                Step 3: Competitive Benchmarking
+              </h3>
               <ul className="space-y-2 text-slate-400">
                 <li className="flex items-start gap-3">
                   <span className="text-blue-400 mt-1">→</span>
-                  We analysed the competitive landscape (Global Poker, Chumba Casino, Luckyland Slots, and emerging startups)
+                  We analysed the competitive landscape (Global Poker, Chumba
+                  Casino, Luckyland Slots, and emerging startups)
                 </li>
                 <li className="flex items-start gap-3">
                   <span className="text-blue-400 mt-1">→</span>
-                  We identified feature gaps, UX patterns, monetisation strategies, and player sentiment across competitors
+                  We identified feature gaps, UX patterns, monetisation
+                  strategies, and player sentiment across competitors
                 </li>
               </ul>
             </motion.div>
@@ -305,7 +402,9 @@ export default function HighFiveGamesCase() {
               className="p-6 rounded-xl bg-slate-900/30 border border-slate-800"
             >
               <Database className="w-8 h-8 text-blue-400 mb-4" />
-              <h3 className="text-lg font-bold text-white mb-3">Platform Architecture</h3>
+              <h3 className="text-lg font-bold text-white mb-3">
+                Platform Architecture
+              </h3>
               <ul className="space-y-2 text-sm text-slate-400">
                 <li>• Dual wallet system per player</li>
                 <li>• Independent transaction ledgers</li>
@@ -319,7 +418,9 @@ export default function HighFiveGamesCase() {
               className="p-6 rounded-xl bg-slate-900/30 border border-slate-800"
             >
               <Lock className="w-8 h-8 text-green-400 mb-4" />
-              <h3 className="text-lg font-bold text-white mb-3">Compliance & Audit</h3>
+              <h3 className="text-lg font-bold text-white mb-3">
+                Compliance & Audit
+              </h3>
               <ul className="space-y-2 text-sm text-slate-400">
                 <li>• Sweepstakes-specific rule engine</li>
                 <li>• Regulatory reporting per state (43+ jurisdictions)</li>
@@ -333,7 +434,9 @@ export default function HighFiveGamesCase() {
               className="p-6 rounded-xl bg-slate-900/30 border border-slate-800"
             >
               <TrendingUp className="w-8 h-8 text-cyan-400 mb-4" />
-              <h3 className="text-lg font-bold text-white mb-3">Payment Processing</h3>
+              <h3 className="text-lg font-bold text-white mb-3">
+                Payment Processing
+              </h3>
               <ul className="space-y-2 text-sm text-slate-400">
                 <li>• Real-money payout gateway</li>
                 <li>• Gift card fulfilment</li>
@@ -356,8 +459,7 @@ export default function HighFiveGamesCase() {
                     className="text-blue-300 hover:text-blue-200 underline"
                   >
                     AML
-                  </a>
-                  {" "}
+                  </a>{" "}
                   compliance
                 </li>
               </ul>
@@ -368,7 +470,9 @@ export default function HighFiveGamesCase() {
               className="p-6 rounded-xl bg-slate-900/30 border border-slate-800"
             >
               <Code2 className="w-8 h-8 text-purple-400 mb-4" />
-              <h3 className="text-lg font-bold text-white mb-3">Game Engine Adaptation</h3>
+              <h3 className="text-lg font-bold text-white mb-3">
+                Game Engine Adaptation
+              </h3>
               <ul className="space-y-2 text-sm text-slate-400">
                 <li>• Dual-currency gameplay support</li>
                 <li>• Paytable modifications</li>
@@ -437,7 +541,9 @@ export default function HighFiveGamesCase() {
                   <TrendingUp className="w-6 h-6 text-blue-400" />
                 </div>
                 <div>
-                  <h3 className="text-lg font-bold text-white mb-1">{item.goal}</h3>
+                  <h3 className="text-lg font-bold text-white mb-1">
+                    {item.goal}
+                  </h3>
                   <p className="text-sm text-slate-400">
                     <strong>{item.target}</strong> · {item.metric}
                   </p>
@@ -467,8 +573,9 @@ export default function HighFiveGamesCase() {
               viewport={{ once: true }}
             >
               <p className="text-slate-400 leading-relaxed">
-                We treated this as a commercial programme as much as a technical one—modelling upside, downside,
-                and delivery risk in parallel. If you’re curious how we keep complex software work financially
+                We treated this as a commercial programme as much as a technical
+                one—modelling upside, downside, and delivery risk in parallel.
+                If you’re curious how we keep complex software work financially
                 accountable, this is the same framework we use in our{" "}
                 <Link
                   to="/blog/fix-failing-software-project-financial-guide"
@@ -485,19 +592,35 @@ export default function HighFiveGamesCase() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
             >
-              <h3 className="text-xl font-bold text-blue-400 mb-4">Key Tradeoff: Timeline vs. Quality</h3>
+              <h3 className="text-xl font-bold text-blue-400 mb-4">
+                Key Tradeoff: Timeline vs. Quality
+              </h3>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div className="p-4 rounded-lg bg-slate-900/30 border border-slate-800">
-                  <p className="text-sm font-bold text-slate-300 mb-2">PROPOSAL</p>
-                  <p className="text-slate-400">12-month aggressive timeline to be first-to-market</p>
+                  <p className="text-sm font-bold text-slate-300 mb-2">
+                    PROPOSAL
+                  </p>
+                  <p className="text-slate-400">
+                    12-month aggressive timeline to be first-to-market
+                  </p>
                 </div>
                 <div className="p-4 rounded-lg bg-slate-900/30 border border-slate-800">
-                  <p className="text-sm font-bold text-slate-300 mb-2">NEGOTIATION</p>
-                  <p className="text-slate-400">Phased approach extends to 18 months, reduces catastrophic failure risk</p>
+                  <p className="text-sm font-bold text-slate-300 mb-2">
+                    NEGOTIATION
+                  </p>
+                  <p className="text-slate-400">
+                    Phased approach extends to 18 months, reduces catastrophic
+                    failure risk
+                  </p>
                 </div>
                 <div className="p-4 rounded-lg bg-slate-900/30 border border-slate-800">
-                  <p className="text-sm font-bold text-slate-300 mb-2">RESOLUTION</p>
-                  <p className="text-slate-400">Launch hybrid in 12 months, full payment integration by month 18</p>
+                  <p className="text-sm font-bold text-slate-300 mb-2">
+                    RESOLUTION
+                  </p>
+                  <p className="text-slate-400">
+                    Launch hybrid in 12 months, full payment integration by
+                    month 18
+                  </p>
                 </div>
               </div>
             </motion.div>
@@ -508,14 +631,41 @@ export default function HighFiveGamesCase() {
               viewport={{ once: true }}
               transition={{ delay: 0.1 }}
             >
-              <h3 className="text-xl font-bold text-blue-400 mb-4">Five-Phase Execution Plan</h3>
+              <h3 className="text-xl font-bold text-blue-400 mb-4">
+                Five-Phase Execution Plan
+              </h3>
               <div className="space-y-4">
                 {[
-                  { phase: "Phase 1", title: "Dual Wallet Foundation", months: "Months 1–2", outcome: "Dual ledger system, zero data loss" },
-                  { phase: "Phase 2", title: "Compliance Framework", months: "Months 2–3", outcome: "100% regulatory compliance across 43+ states" },
-                  { phase: "Phase 3", title: "Game Integration", months: "Months 3–5", outcome: "1,700 games support Sweeps Coins, RNG certified" },
-                  { phase: "Phase 4", title: "Payment & Redemption", months: "Months 5–6", outcome: ">98% redemption success rate" },
-                  { phase: "Phase 5", title: "Launch & Scaling", months: "Months 6+", outcome: "43 states live, monitoring & optimisation" },
+                  {
+                    phase: "Phase 1",
+                    title: "Dual Wallet Foundation",
+                    months: "Months 1–2",
+                    outcome: "Dual ledger system, zero data loss",
+                  },
+                  {
+                    phase: "Phase 2",
+                    title: "Compliance Framework",
+                    months: "Months 2–3",
+                    outcome: "100% regulatory compliance across 43+ states",
+                  },
+                  {
+                    phase: "Phase 3",
+                    title: "Game Integration",
+                    months: "Months 3–5",
+                    outcome: "1,700 games support Sweeps Coins, RNG certified",
+                  },
+                  {
+                    phase: "Phase 4",
+                    title: "Payment & Redemption",
+                    months: "Months 5–6",
+                    outcome: ">98% redemption success rate",
+                  },
+                  {
+                    phase: "Phase 5",
+                    title: "Launch & Scaling",
+                    months: "Months 6+",
+                    outcome: "43 states live, monitoring & optimisation",
+                  },
                 ].map((item, idx) => (
                   <motion.div
                     key={idx}
@@ -526,12 +676,18 @@ export default function HighFiveGamesCase() {
                     className="p-4 rounded-lg bg-slate-900/50 border border-slate-700 hover:border-blue-500/50 transition"
                   >
                     <div className="flex items-start gap-4">
-                      <div className="flex-shrink-0 font-mono text-sm font-bold text-blue-400">{item.phase}</div>
+                      <div className="flex-shrink-0 font-mono text-sm font-bold text-blue-400">
+                        {item.phase}
+                      </div>
                       <div className="flex-grow">
                         <h4 className="font-bold text-white">{item.title}</h4>
-                        <p className="text-xs text-slate-500 mt-1">{item.months}</p>
+                        <p className="text-xs text-slate-500 mt-1">
+                          {item.months}
+                        </p>
                       </div>
-                      <div className="text-right text-sm text-slate-300">{item.outcome}</div>
+                      <div className="text-right text-sm text-slate-300">
+                        {item.outcome}
+                      </div>
                     </div>
                   </motion.div>
                 ))}
@@ -559,34 +715,71 @@ export default function HighFiveGamesCase() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
             >
-              <h3 className="text-lg font-bold text-blue-400 mb-4">Key Collaboration Moments</h3>
+              <h3 className="text-lg font-bold text-blue-400 mb-4">
+                Key Collaboration Moments
+              </h3>
 
               <div className="space-y-4">
                 <div className="p-4 rounded-lg bg-slate-900/30 border border-slate-800">
-                  <p className="font-bold text-white mb-2">Moment 1: Database Migration Planning (Month 1–2)</p>
+                  <p className="font-bold text-white mb-2">
+                    Moment 1: Database Migration Planning (Month 1–2)
+                  </p>
                   <p className="text-sm text-slate-400">
-                    We coordinated the migration of 10M+ player accounts to a dual-wallet schema without data loss. We partnered with platform, database, and operations teams to plan a zero-downtime migration strategy. We built shadow schemas, tested in replicas, and agreed rollback procedures. Result: <strong>&lt;15 min downtime, zero data loss.</strong>
+                    We coordinated the migration of 10M+ player accounts to a
+                    dual-wallet schema without data loss. We partnered with
+                    platform, database, and operations teams to plan a
+                    zero-downtime migration strategy. We built shadow schemas,
+                    tested in replicas, and agreed rollback procedures. Result:{" "}
+                    <strong>&lt;15 min downtime, zero data loss.</strong>
                   </p>
                 </div>
 
                 <div className="p-4 rounded-lg bg-slate-900/30 border border-slate-800">
-                  <p className="font-bold text-white mb-2">Moment 2: Game Engine Adaptation (Month 3–4)</p>
+                  <p className="font-bold text-white mb-2">
+                    Moment 2: Game Engine Adaptation (Month 3–4)
+                  </p>
                   <p className="text-sm text-slate-400">
-                    1,700+ independently-developed games needed to accept Sweeps Coins. We led the game systems and engineering teams to architect and build a unified solution: an adapter layer (abstraction above individual games) plus a unified testing harness. Result: <strong>All 1,700 games supporting SC in parallel; only 5% required special handling.</strong>
+                    1,700+ independently-developed games needed to accept Sweeps
+                    Coins. We led the game systems and engineering teams to
+                    architect and build a unified solution: an adapter layer
+                    (abstraction above individual games) plus a unified testing
+                    harness. Result:{" "}
+                    <strong>
+                      All 1,700 games supporting SC in parallel; only 5%
+                      required special handling.
+                    </strong>
                   </p>
                 </div>
 
                 <div className="p-4 rounded-lg bg-slate-900/30 border border-slate-800">
-                  <p className="font-bold text-white mb-2">Moment 3: RNG Audit & Compliance (Month 3–5)</p>
+                  <p className="font-bold text-white mb-2">
+                    Moment 3: RNG Audit & Compliance (Month 3–5)
+                  </p>
                   <p className="text-sm text-slate-400">
-                    A third-party RNG auditor required certification (8–12 weeks). We coordinated compliance and game systems with the external auditor: we initiated the audit early (Month 3), managed builds, and addressed findings in real time. Result: <strong>RNG certified by Week 12, no major findings.</strong>
+                    A third-party RNG auditor required certification (8–12
+                    weeks). We coordinated compliance and game systems with the
+                    external auditor: we initiated the audit early (Month 3),
+                    managed builds, and addressed findings in real time. Result:{" "}
+                    <strong>
+                      RNG certified by Week 12, no major findings.
+                    </strong>
                   </p>
                 </div>
 
                 <div className="p-4 rounded-lg bg-slate-900/30 border border-slate-800">
-                  <p className="font-bold text-white mb-2">Moment 4: Payment Integration & Fraud Detection (Month 5–6)</p>
+                  <p className="font-bold text-white mb-2">
+                    Moment 4: Payment Integration & Fraud Detection (Month 5–6)
+                  </p>
                   <p className="text-sm text-slate-400">
-                    The payment processor was unfamiliar with the sweepstakes model. We led the partnership approach: visited the processor’s office in person, negotiated custom integration terms, and identified a fallback processor to mitigate vendor risk. Result: <strong>Approved for launch; fraud detection flagged 0.3% of redemptions (industry standard).</strong>
+                    The payment processor was unfamiliar with the sweepstakes
+                    model. We led the partnership approach: visited the
+                    processor’s office in person, negotiated custom integration
+                    terms, and identified a fallback processor to mitigate
+                    vendor risk. Result:{" "}
+                    <strong>
+                      Approved for launch; fraud detection flagged 0.3% of
+                      redemptions (industry standard).
+                    </strong>
                   </p>
                 </div>
               </div>
@@ -615,12 +808,42 @@ export default function HighFiveGamesCase() {
             className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
           >
             {[
-              { label: "DAU Growth", value: "+10.8%", target: "+10%", status: "✓" },
-              { label: "Session Length", value: "+17%", target: "+15%", status: "✓" },
-              { label: "Retention (D7)", value: "+19%", target: "+20%", status: "✓" },
-              { label: "ARPU Growth", value: "+42%", target: "+40%", status: "✓" },
-              { label: "Churn Reduction", value: "-21%", target: "-20%", status: "✓" },
-              { label: "Sweeps Adoption", value: "61% of DAU", target: "60%", status: "✓" },
+              {
+                label: "DAU Growth",
+                value: "+10.8%",
+                target: "+10%",
+                status: "✓",
+              },
+              {
+                label: "Session Length",
+                value: "+17%",
+                target: "+15%",
+                status: "✓",
+              },
+              {
+                label: "Retention (D7)",
+                value: "+19%",
+                target: "+20%",
+                status: "✓",
+              },
+              {
+                label: "ARPU Growth",
+                value: "+42%",
+                target: "+40%",
+                status: "✓",
+              },
+              {
+                label: "Churn Reduction",
+                value: "-21%",
+                target: "-20%",
+                status: "✓",
+              },
+              {
+                label: "Sweeps Adoption",
+                value: "61% of DAU",
+                target: "60%",
+                status: "✓",
+              },
             ].map((item, idx) => (
               <motion.div
                 key={idx}
@@ -628,15 +851,32 @@ export default function HighFiveGamesCase() {
                 className="p-6 rounded-xl bg-gradient-to-br from-slate-900 to-slate-950 border border-blue-500/30 hover:border-blue-400 transition"
               >
                 <p className="text-sm text-slate-400 mb-2">{item.label}</p>
-                <p className="text-3xl md:text-4xl font-bold text-white mb-2">{item.value}</p>
+                <p className="text-3xl md:text-4xl font-bold text-white mb-2">
+                  {item.value}
+                </p>
                 <p className="text-xs text-slate-500">Target: {item.target}</p>
               </motion.div>
             ))}
 
             {[
-              { label: "Payment Processing Success", value: "99.1%", target: ">98%", status: "✓" },
-              { label: "Redemption Success Rate", value: "98.7%", target: "98%", status: "✓" },
-              { label: "Fraud Rate", value: "0.3%", target: "<0.5%", status: "✓" },
+              {
+                label: "Payment Processing Success",
+                value: "99.1%",
+                target: ">98%",
+                status: "✓",
+              },
+              {
+                label: "Redemption Success Rate",
+                value: "98.7%",
+                target: "98%",
+                status: "✓",
+              },
+              {
+                label: "Fraud Rate",
+                value: "0.3%",
+                target: "<0.5%",
+                status: "✓",
+              },
             ].map((item, idx) => (
               <motion.div
                 key={`tech-${idx}`}
@@ -644,7 +884,9 @@ export default function HighFiveGamesCase() {
                 className="p-6 rounded-xl bg-gradient-to-br from-green-900/30 to-slate-950 border border-green-500/30 hover:border-green-400 transition"
               >
                 <p className="text-sm text-slate-400 mb-2">{item.label}</p>
-                <p className="text-3xl font-bold text-green-400">{item.value}</p>
+                <p className="text-3xl font-bold text-green-400">
+                  {item.value}
+                </p>
                 <p className="text-xs text-slate-500">Target: {item.target}</p>
               </motion.div>
             ))}
@@ -657,19 +899,25 @@ export default function HighFiveGamesCase() {
             transition={{ delay: 0.3 }}
             className="mt-12 p-8 rounded-xl bg-slate-900/50 border border-slate-800"
           >
-            <p className="text-sm text-slate-500 mb-4">OPERATIONAL HIGHLIGHTS</p>
+            <p className="text-sm text-slate-500 mb-4">
+              OPERATIONAL HIGHLIGHTS
+            </p>
             <ul className="grid grid-cols-1 md:grid-cols-2 gap-4 text-slate-300">
               <li className="flex items-center gap-3">
-                <span className="text-green-400 font-bold">✓</span> Zero major regulatory incidents
+                <span className="text-green-400 font-bold">✓</span> Zero major
+                regulatory incidents
               </li>
               <li className="flex items-center gap-3">
-                <span className="text-green-400 font-bold">✓</span> Zero data security breaches
+                <span className="text-green-400 font-bold">✓</span> Zero data
+                security breaches
               </li>
               <li className="flex items-center gap-3">
-                <span className="text-green-400 font-bold">✓</span> Player satisfaction (NPS) +8 points
+                <span className="text-green-400 font-bold">✓</span> Player
+                satisfaction (NPS) +8 points
               </li>
               <li className="flex items-center gap-3">
-                <span className="text-green-400 font-bold">✓</span> #1 market position maintained (2024–2026)
+                <span className="text-green-400 font-bold">✓</span> #1 market
+                position maintained (2024–2026)
               </li>
             </ul>
           </motion.div>
@@ -693,32 +941,41 @@ export default function HighFiveGamesCase() {
               {
                 title: "Player Identity Verification Friction",
                 problem: "KYC process caused 12–15% drop-off at redemption",
-                solution: "UX redesign with educational flow, tiered verification, incentive adjustment",
+                solution:
+                  "UX redesign with educational flow, tiered verification, incentive adjustment",
                 result: "Reduced to 3–4% acceptable friction",
               },
               {
                 title: "Regulatory Ambiguity in 3 States",
                 problem: "Two states signalled potential regulation mid-launch",
-                solution: "Paused launch in those states, enhanced compliance documentation, relaunched 6 months later",
+                solution:
+                  "Paused launch in those states, enhanced compliance documentation, relaunched 6 months later",
                 result: "Zero regulatory violations, established precedent",
               },
               {
                 title: "Game Engine Performance Degradation",
                 problem: "Adapter layer added 8–12% latency to game loads",
-                solution: "Architecture refactor, async wallet queries, caching strategy, optimisation sprint",
+                solution:
+                  "Architecture refactor, async wallet queries, caching strategy, optimisation sprint",
                 result: "Reduced to <2% latency; imperceptible to players",
               },
               {
                 title: "Payment Processor Integration Delays",
-                problem: "Processor took 8 weeks instead of 5 weeks to integrate",
-                solution: "Partnership approach, custom integration, fallback processor identified",
-                result: "Integrated successfully; mitigated single point of failure",
+                problem:
+                  "Processor took 8 weeks instead of 5 weeks to integrate",
+                solution:
+                  "Partnership approach, custom integration, fallback processor identified",
+                result:
+                  "Integrated successfully; mitigated single point of failure",
               },
               {
                 title: "LiveOps Promotion Design Challenges",
-                problem: "SC promotions caused server spikes and arbitrage opportunities",
-                solution: "Promotion playbook with governance rules, simulation before launch, team training",
-                result: "Subsequent promotions successful, stable SC earning metrics",
+                problem:
+                  "SC promotions caused server spikes and arbitrage opportunities",
+                solution:
+                  "Promotion playbook with governance rules, simulation before launch, team training",
+                result:
+                  "Subsequent promotions successful, stable SC earning metrics",
               },
             ].map((item, idx) => (
               <motion.div
@@ -808,7 +1065,9 @@ export default function HighFiveGamesCase() {
                 transition={{ delay: idx * 0.08 }}
                 className="p-6 rounded-xl bg-slate-900/30 border border-slate-800"
               >
-                <h3 className="font-bold text-blue-400 mb-3">{item.competency}</h3>
+                <h3 className="font-bold text-blue-400 mb-3">
+                  {item.competency}
+                </h3>
                 <p className="text-slate-400 text-sm">{item.evidence}</p>
               </motion.div>
             ))}
@@ -835,7 +1094,9 @@ export default function HighFiveGamesCase() {
             viewport={{ once: true }}
             transition={{ delay: 0.1 }}
           >
-            At Kaizen Web, we approach complex transformations with the same rigour: clear requirements, phased rollout, stakeholder alignment, and relentless monitoring.
+            At Kaizen Web, we approach complex transformations with the same
+            rigour: clear requirements, phased rollout, stakeholder alignment,
+            and relentless monitoring.
           </motion.p>
 
           <motion.button

@@ -324,11 +324,11 @@ const SocialMediaWarning = () => {
             Is Your Business Homeless?
           </h2>
           <p className="text-lg text-white/80 leading-relaxed">
-            If your whole presence lives on Facebook or Instagram, you’re renting
-            attention. Algorithms change, reach disappears, accounts get locked,
-            and your leads vanish overnight. A fast website is the asset you own:
-            it builds trust, captures enquiries, and keeps working regardless of
-            what social platforms decide.
+            If your whole presence lives on Facebook or Instagram, you’re
+            renting attention. Algorithms change, reach disappears, accounts get
+            locked, and your leads vanish overnight. A fast website is the asset
+            you own: it builds trust, captures enquiries, and keeps working
+            regardless of what social platforms decide.
           </p>
         </motion.div>
       </div>
@@ -1254,7 +1254,11 @@ const PerformanceBadge = () => {
                 fill="url(#shimmer)"
                 opacity="0.3"
                 animate={{ rotate: 360 }}
-                transition={{ duration: 3, repeat: Infinity, ease: [0, 0, 1, 1] as const }}
+                transition={{
+                  duration: 3,
+                  repeat: Infinity,
+                  ease: [0, 0, 1, 1] as const,
+                }}
                 style={{ transformOrigin: "100px 100px" }}
               />
 
@@ -1392,7 +1396,9 @@ const LocalMap = () => {
               </div>
               <div className="flex items-center gap-3">
                 <div className="w-3 h-3 rounded-full bg-kaizen-lime" />
-                <span className="text-white/90">Serving Wirral & the North West</span>
+                <span className="text-white/90">
+                  Serving Wirral & the North West
+                </span>
               </div>
               <div className="flex items-center gap-3">
                 <div className="w-3 h-3 rounded-full bg-white/50" />

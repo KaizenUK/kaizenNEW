@@ -96,7 +96,8 @@ const Header: React.FC<HeaderProps> = ({
         {
           label: "High-Performance Local Websites",
           href: "/services/local-seo",
-          description: "Local rankings powered by Core Web Vitals and local intent.",
+          description:
+            "Local rankings powered by Core Web Vitals and local intent.",
           icon: <MapPin className="w-4 h-4" />,
         },
         {
@@ -187,7 +188,8 @@ const Header: React.FC<HeaderProps> = ({
         {
           label: "High Five Games",
           href: "/case-studies/high-five-games",
-          description: "Dual-currency gaming platform: +180% conversion uplift.",
+          description:
+            "Dual-currency gaming platform: +180% conversion uplift.",
           icon: <Rocket className="w-4 h-4" />,
         },
         {
@@ -213,7 +215,8 @@ const Header: React.FC<HeaderProps> = ({
         {
           label: "About Kaizen",
           href: "/about",
-          description: "What we do, how we work, and why performance comes first.",
+          description:
+            "What we do, how we work, and why performance comes first.",
           icon: <Info className="w-4 h-4" />,
         },
         {
@@ -379,7 +382,9 @@ const Header: React.FC<HeaderProps> = ({
               <ChevronDown
                 size={16}
                 className={`transition-transform duration-200 ${
-                  isMenuOpen && activeMenu === "case-studies" ? "rotate-180" : ""
+                  isMenuOpen && activeMenu === "case-studies"
+                    ? "rotate-180"
+                    : ""
                 }`}
               />
             </button>
@@ -431,9 +436,14 @@ const Header: React.FC<HeaderProps> = ({
                   initial="enter"
                   animate="center"
                   exit="exit"
-                  transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] as const }}
+                  transition={{
+                    duration: 0.22,
+                    ease: [0.16, 1, 0.3, 1] as const,
+                  }}
                   className={`absolute top-full mt-2 rounded-2xl border border-white/10 bg-gray-900/95 shadow-2xl backdrop-blur-xl px-8 py-6 ${
-                    activeMenu === "about" || activeMenu === "insights" || activeMenu === "case-studies"
+                    activeMenu === "about" ||
+                    activeMenu === "insights" ||
+                    activeMenu === "case-studies"
                       ? "w-[min(520px,calc(100vw-3rem))]"
                       : "w-[min(720px,calc(100vw-3rem))]"
                   }`}
@@ -444,7 +454,9 @@ const Header: React.FC<HeaderProps> = ({
                 >
                   <div
                     className={`grid gap-6 ${
-                      activeMenu === "about" || activeMenu === "insights" || activeMenu === "case-studies"
+                      activeMenu === "about" ||
+                      activeMenu === "insights" ||
+                      activeMenu === "case-studies"
                         ? "grid-cols-1"
                         : "grid-cols-2"
                     }`}
