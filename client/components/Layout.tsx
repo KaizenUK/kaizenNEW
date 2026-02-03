@@ -89,7 +89,6 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
           rel="preload"
           as="image"
           href={DEFAULT_OG_IMAGE}
-          fetchPriority="high"
         />
         <script type="application/ld+json">
           {JSON.stringify(structuredData)}

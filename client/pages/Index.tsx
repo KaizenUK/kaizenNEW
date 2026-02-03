@@ -110,7 +110,6 @@ const HeroSection = () => {
         src={DEFAULT_OG_IMAGE}
         alt=""
         loading="eager"
-        fetchPriority="high"
         decoding="async"
         width="1200"
         height="630"
