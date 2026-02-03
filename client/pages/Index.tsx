@@ -1526,6 +1526,7 @@ export default function Home() {
       <PricingCTABanner />
       <LatestInsights />
       <SEOFAQSection />
+      <WhoWeHelp />
     </Layout>
   );
 }
