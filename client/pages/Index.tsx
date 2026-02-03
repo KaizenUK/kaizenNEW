@@ -1,6 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { ArrowRight, ArrowUpRight, ChevronRight } from "lucide-react";
+import {
+  ArrowRight,
+  ArrowUpRight,
+  ChevronRight,
+  Zap,
+  LifeBuoy,
+  MapPin,
+} from "lucide-react";
 import { Link } from "react-router-dom";
 import Layout from "@/components/Layout";
 import { LeafletMap } from "@/components/LeafletMap";
@@ -148,7 +155,7 @@ const HeroSection = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
           >
-            Product Owner-Led Web Design
+            Wirral Web Design
           </motion.p>
 
           <motion.h1
@@ -157,8 +164,7 @@ const HeroSection = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.1 }}
           >
-            Liverpool &amp; Wirral Web Design: 2025 Pricing That Actually Makes
-            Sense.
+            Web Design Wirral: Lean, Fast, &amp; Profitable Websites.
           </motion.h1>
 
           <motion.p
@@ -167,9 +173,8 @@ const HeroSection = () => {
             animate={{ opacity: 1 }}
             transition={{ delay: 0.3, duration: 0.8 }}
           >
-            Premium Web Design for Liverpool &amp; Wirral Businesses. We build
-            high-performance websites with a dedicated Product Owner. Fast
-            timelines. Protected budgets. Zero fluff.
+            Stop losing customers to slow loading times. We build streamlined
+            sites designed to convert traffic into leads.
           </motion.p>
 
           <motion.div
@@ -187,7 +192,7 @@ const HeroSection = () => {
                 animate={{ scale: [1, 1.5, 1], opacity: [1, 0.5, 1] }}
                 transition={{ duration: 2, repeat: Infinity }}
               />
-              Get a Starter Quote
+              Get a Performance Audit
               <ArrowRight size={20} />
             </button>
             <button
@@ -209,35 +214,214 @@ const HeroSection = () => {
   );
 };
 
-const RescueStrip = () => {
+const AuthorityBridge = () => {
   return (
-    <section className="bg-black text-white py-10 border-y border-white/10">
-      <div className="container mx-auto px-4 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
-        <div className="max-w-2xl">
-          <p className="text-xs font-mono tracking-[0.3em] text-lime-300 mb-3 uppercase">
-            Project Rescue
-          </p>
-          <h2 className="text-2xl md:text-3xl font-heading font-bold mb-3">
-            Stalled project? We fix what other agencies broke.
-          </h2>
-          <p className="text-sm md:text-base text-white/80">
-            If your software build is over budget, buggy, or stuck in endless
-            sprints, we audit the code, stabilise delivery, and get it live so
-            it can start paying you back.
-          </p>
-        </div>
-        <div className="flex flex-col items-start gap-3 min-w-[220px]">
-          <Link
-            to="/project-rescue"
-            className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-gradient-to-r from-lime-400 to-emerald-400 text-gray-950 font-heading font-semibold text-sm hover:shadow-lg hover:shadow-lime-400/50 transition"
-            onClick={() => window.scrollTo(0, 0)}
+    <section className="py-20 md:py-28 bg-slate-950 text-white relative overflow-hidden">
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_10%_0,rgba(56,189,248,0.20),transparent_55%),radial-gradient(circle_at_100%_90%,rgba(34,197,94,0.16),transparent_60%)]" />
+      <div className="container mx-auto px-4 relative z-10">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+          <motion.div
+            initial={{ opacity: 0, y: 18 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.25 }}
           >
-            Project Rescue Triage
-            <ArrowRight size={18} />
-          </Link>
-          <p className="text-[11px] text-white/60 font-mono uppercase tracking-[0.2em]">
-            No obligation. Straight talk.
+            <p className="text-xs font-mono tracking-[0.25em] text-cyan-300 uppercase mb-4">
+              Global Tech Experience
+            </p>
+            <h2 className="text-3xl md:text-5xl font-heading font-black leading-tight mb-6">
+              Enterprise standards, without the enterprise hassle.
+            </h2>
+            <p className="text-lg text-white/80 leading-relaxed mb-6">
+              We bring senior product leadership and engineering discipline from
+              high-traffic platforms into local delivery. That means clear
+              decisions, measurable performance targets, and a site that ships
+              fast and keeps improving.
+            </p>
+            <ul className="space-y-3 text-white/85">
+              <li className="flex gap-3">
+                <span className="mt-2 h-1.5 w-1.5 rounded-full bg-cyan-300" />
+                Performance budgets agreed up front
+              </li>
+              <li className="flex gap-3">
+                <span className="mt-2 h-1.5 w-1.5 rounded-full bg-cyan-300" />
+                Release discipline: staging, QA, and safe rollbacks
+              </li>
+              <li className="flex gap-3">
+                <span className="mt-2 h-1.5 w-1.5 rounded-full bg-cyan-300" />
+                Senior ownership: no hand-offs, no vague timelines
+              </li>
+            </ul>
+
+            <div className="mt-8 flex flex-col sm:flex-row gap-3">
+              <Link
+                to="/case-studies/high-five-games"
+                className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg border border-white/15 bg-white/5 text-white font-heading font-semibold hover:bg-white/10 transition"
+              >
+                See proof in a case study
+                <ArrowUpRight size={18} />
+              </Link>
+              <button
+                onClick={() => openCrisp()}
+                className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg bg-gradient-to-r from-green-400 to-emerald-500 text-gray-950 font-heading font-bold hover:shadow-lg hover:shadow-green-500/50 transition"
+              >
+                Get a Performance Audit
+                <ArrowRight size={18} />
+              </button>
+            </div>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 18 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.25 }}
+            transition={{ delay: 0.1 }}
+            className="relative"
+          >
+            <div className="absolute -inset-8 rounded-[2.5rem] bg-gradient-to-r from-cyan-500/20 to-emerald-500/10 blur-2xl" />
+            <div className="relative rounded-[2.25rem] border border-white/10 bg-white/5 backdrop-blur-xl overflow-hidden p-8 md:p-10">
+              <div className="h-64 rounded-2xl bg-[linear-gradient(110deg,rgba(56,189,248,0.18),rgba(34,197,94,0.10)),radial-gradient(circle_at_20%_20%,rgba(56,189,248,0.22),transparent_55%),radial-gradient(circle_at_85%_70%,rgba(34,197,94,0.18),transparent_60%)]" />
+              <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="rounded-2xl bg-black/30 border border-white/10 p-4">
+                  <div className="text-white font-heading font-bold">
+                    Enterprise QA mindset
+                  </div>
+                  <div className="text-white/70 mt-1 text-sm">
+                    Clear acceptance criteria and predictable releases.
+                  </div>
+                </div>
+                <div className="rounded-2xl bg-black/30 border border-white/10 p-4">
+                  <div className="text-white font-heading font-bold">
+                    Conversion-first builds
+                  </div>
+                  <div className="text-white/70 mt-1 text-sm">
+                    Pages engineered to turn visits into enquiries.
+                  </div>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        </div>
+      </div>
+    </section>
+  );
+};
+
+const SocialMediaWarning = () => {
+  return (
+    <section className="py-16 md:py-20 bg-slate-900 text-white border-y border-white/10">
+      <div className="container mx-auto px-4">
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.3 }}
+          className="max-w-4xl mx-auto text-center"
+        >
+          <p className="text-xs font-mono tracking-[0.25em] text-amber-200 uppercase mb-4">
+            The Social Media Warning
           </p>
+          <h2 className="text-3xl md:text-4xl font-heading font-black mb-5">
+            Is Your Business Homeless?
+          </h2>
+          <p className="text-lg text-white/80 leading-relaxed">
+            If your whole presence lives on Facebook or Instagram, you’re renting
+            attention. Algorithms change, reach disappears, accounts get locked,
+            and your leads vanish overnight. A fast website is the asset you own:
+            it builds trust, captures enquiries, and keeps working regardless of
+            what social platforms decide.
+          </p>
+        </motion.div>
+      </div>
+    </section>
+  );
+};
+
+const ServicePillars = () => {
+  const pillars = [
+    {
+      title: "High-Speed Websites",
+      description:
+        "Lean React/modern builds that load fast, rank better, and convert more visitors.",
+      icon: <Zap className="w-5 h-5" />,
+      href: "/services/local-seo",
+      accent: "from-cyan-300/25 to-transparent",
+    },
+    {
+      title: "Project Rescue",
+      description:
+        "When a build is late, over budget, or stuck: we stabilise delivery and ship.",
+      icon: <LifeBuoy className="w-5 h-5" />,
+      href: "/project-rescue",
+      accent: "from-lime-300/25 to-transparent",
+    },
+    {
+      title: "Google Visibility",
+      description:
+        "Local intent + technical SEO fundamentals, backed by performance and clean architecture.",
+      icon: <MapPin className="w-5 h-5" />,
+      href: "/services/local-seo",
+      accent: "from-amber-200/25 to-transparent",
+    },
+  ];
+
+  return (
+    <section className="py-20 md:py-28 bg-gray-950 text-white relative overflow-hidden">
+      <div className="pointer-events-none absolute inset-0 opacity-60 bg-[radial-gradient(circle_at_0_0,rgba(56,189,248,0.14),transparent_55%),radial-gradient(circle_at_100%_100%,rgba(34,197,94,0.12),transparent_60%)]" />
+      <div className="container mx-auto px-4 relative z-10">
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.3 }}
+          className="max-w-3xl mx-auto text-center mb-12"
+        >
+          <p className="text-xs font-mono tracking-[0.25em] text-cyan-300 uppercase mb-4">
+            What We Actually Do
+          </p>
+          <h2 className="text-3xl md:text-4xl font-heading font-black mb-4">
+            Speed, control, and visibility.
+          </h2>
+          <p className="text-white/75 text-lg">
+            Three pillars that keep your site fast, profitable, and independent.
+          </p>
+        </motion.div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {pillars.map((pill, index) => (
+            <motion.div
+              key={pill.title}
+              initial={{ opacity: 0, y: 18 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.3 }}
+              transition={{ delay: index * 0.08 }}
+              className="h-full"
+            >
+              <Link
+                to={pill.href}
+                className="group block h-full rounded-3xl border border-white/10 bg-white/5 backdrop-blur-xl p-7 hover:bg-white/10 transition"
+              >
+                <div
+                  className={`h-full rounded-2xl bg-gradient-to-br ${pill.accent} p-0.5`}
+                >
+                  <div className="h-full rounded-2xl bg-black/25 border border-white/10 p-6 flex flex-col">
+                    <div className="flex items-center gap-3 mb-4">
+                      <span className="flex items-center justify-center h-10 w-10 rounded-xl bg-white/10 text-cyan-200">
+                        {pill.icon}
+                      </span>
+                      <h3 className="text-xl font-heading font-bold">
+                        {pill.title}
+                      </h3>
+                    </div>
+                    <p className="text-white/75 leading-relaxed flex-1">
+                      {pill.description}
+                    </p>
+                    <div className="mt-6 inline-flex items-center gap-2 text-cyan-200 font-heading font-semibold group-hover:gap-3 transition-all">
+                      Learn more
+                      <ArrowRight size={18} />
+                    </div>
+                  </div>
+                </div>
+              </Link>
+            </motion.div>
+          ))}
         </div>
       </div>
     </section>
