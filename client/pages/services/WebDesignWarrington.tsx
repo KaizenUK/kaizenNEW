@@ -462,10 +462,10 @@ export default function WebDesignWarrington() {
             </motion.div>
 
             <h1 className="text-5xl md:text-6xl lg:text-7xl font-heading font-black text-white leading-[1.05] mb-8">
-              <TextReveal delay={0.1}>Fast websites</TextReveal>
-              <TextReveal delay={0.2}>for Warrington</TextReveal>
+              <TextReveal delay={0.1}>High-Performance</TextReveal>
+              <TextReveal delay={0.2}>Web Systems for</TextReveal>
               <span className="block text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-sky-400 to-cyan-300">
-                <TextReveal delay={0.3}>businesses.</TextReveal>
+                <TextReveal delay={0.3}>Warrington.</TextReveal>
               </span>
             </h1>
 
@@ -475,9 +475,7 @@ export default function WebDesignWarrington() {
               transition={{ duration: 0.6, delay: 0.4 }}
               className="text-xl md:text-2xl text-slate-300 mb-10 leading-relaxed max-w-2xl"
             >
-              We build professional websites that load quickly, look great on
-              mobile, and help you get found on Google. No jargon. No fuss. Just
-              results.
+              Robust, scalable websites and portals for logistics, engineering, and tech firms. Built to handle complex data and high traffic without failing.
             </motion.p>
 
             <motion.div
