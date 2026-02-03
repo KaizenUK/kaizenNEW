@@ -844,9 +844,14 @@ export default function WebDesignWarrington() {
               className="bg-transparent py-0 md:py-0"
               items={[
                 {
-                  question: "Why choose a Warrington City Region agency?",
+                  question: "Why choose a Warrington agency?",
                   answer:
-                    "Because we understand the local market. Whether you are based in the Birchwood Park or expanding from the Omega & Winwick, we build sites that compete with global agencies without the bloated London retainer fees. We know the difference between a Law Centre brief and a Financial Services portal.",
+                    "Because we understand scale. Warrington is home to logistics, nuclear, and high-tech engineering. We don&apos;t just build pretty brochures; we build critical systems that keep your operations visible and your clients informed.",
+                },
+                {
+                  question: "Can you build portals for logistics/supply chain?",
+                  answer:
+                    "Yes. We specialise in data-heavy platforms. If you need a client portal to track orders, manage documents, or visualise data, we can build it securely using React.",
                 },
                 {
                   question: "Do you work with WordPress?",
@@ -855,9 +860,9 @@ export default function WebDesignWarrington() {
                 },
                 {
                   question:
-                    "Do you work with clinics and professional services?",
+                    "Do you work with logistics, engineering, and professional services?",
                   answer:
-                    "Yes. We work with clinics, solicitors, accountants, and other professional services who need to look trustworthy online, load fast on mobile, and turn visitors into enquiries.",
+                    "Yes. We build for operations-led teams who need a site that&apos;s fast, clear, and trustworthy — and when needed, we can extend it into portals and internal tools.",
                 },
                 {
                   question: "What about ongoing support?",
@@ -865,9 +870,9 @@ export default function WebDesignWarrington() {
                     "We provide 30-day post-launch snagging, and we offer retainer-based support packages for SMEs and professional services. We are happy to meet at your Warrington office to discuss ongoing technical needs.",
                 },
                 {
-                  question: "Can you build booking systems or client portals?",
+                  question: "Can you connect it to our existing systems?",
                   answer:
-                    "Yes. If you need a booking flow, a secure client area, or a simple portal for customers, we can build it. We'll explain your options clearly and recommend the simplest solution that gets the job done.",
+                    "Yes. If you need your site or portal to pull data from existing tools (orders, documents, reporting), we can integrate it safely. We&apos;ll keep it simple and only add complexity where it genuinely improves efficiency.",
                 },
               ]}
             />
