@@ -1,8 +1,6 @@
 import { Link } from "react-router-dom";
 import {
   X,
-  Sun,
-  Moon,
   ChevronDown,
   MapPin,
   LifeBuoy,
@@ -27,8 +25,6 @@ import { openCrisp } from "@/lib/crisp-utils";
 interface OffCanvasMenuProps {
   isOpen: boolean;
   onClose: () => void;
-  theme: "light" | "dark";
-  onThemeChange: () => void;
 }
 
 interface ServiceItem {
@@ -47,8 +43,6 @@ interface ServiceColumn {
 const OffCanvasMenu: React.FC<OffCanvasMenuProps> = ({
   isOpen,
   onClose,
-  theme,
-  onThemeChange,
 }) => {
   const [expandedSection, setExpandedSection] = useState<string | null>(null);
 
@@ -392,16 +386,6 @@ const OffCanvasMenu: React.FC<OffCanvasMenuProps> = ({
 
         {/* Footer */}
         <div className="px-4 py-4 border-t border-white/10 space-y-3">
-          <button
-            onClick={() => {
-              onThemeChange();
-              onClose();
-            }}
-            className="w-full px-3 py-3 text-sm font-medium text-white/80 hover:text-white hover:bg-white/5 rounded-lg transition flex items-center justify-center gap-2"
-          >
-            {theme === "dark" ? <Sun size={16} /> : <Moon size={16} />}
-            {theme === "dark" ? "Light Mode" : "Dark Mode"}
-          </button>
           <button
             onClick={() => {
               openCrisp();
