@@ -208,6 +208,10 @@ function AppContent() {
             element={<WebDesignLiverpool />}
           />
           <Route
+            path="/web-design-chester"
+            element={<WebDesignChester />}
+          />
+          <Route
             path="/services/web-design-liverpool"
             element={<Navigate to="/web-design-liverpool" replace />}
           />
