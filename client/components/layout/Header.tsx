@@ -15,7 +15,7 @@ import {
   Mail,
   BookOpen,
   Award,
-  DollarSign,
+  PoundSterling,
   Lightbulb,
   AlertCircle,
   Rocket,
