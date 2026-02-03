@@ -492,35 +492,34 @@ export default function WebDesignWarrington() {
               City Region Expertise
             </span>
             <h2 className="text-3xl md:text-4xl font-heading font-bold text-white mt-4 mb-6">
-              Serving the City Region.
+              Powering the North West's Hub.
             </h2>
             <p className="text-slate-400 max-w-2xl mx-auto text-lg">
-              From the Birchwood Park to the Omega & Winwick, Warrington
-              businesses are world-class. Your digital presence should be too.
-              Whether you're a clinic, a building firm, a consultancy, or a law
-              office — we build websites that look premium and perform on
-              mobile.
+              Warrington is the engine room of the North West. Whether you are in
+              logistics at Omega or engineering at Birchwood, you need systems
+              that work. We build robust, high-performance websites and portals
+              that handle data as well as they handle traffic.
             </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {[
               {
-                area: "Old Hall Street & Birchwood Park",
-                title: "Financial & Legal Excellence",
-                desc: "Professional websites for teams, client areas, and document-heavy services — built to load fast and feel trustworthy.",
+                area: "Omega & Winwick",
+                title: "Logistics at Scale",
+                desc: "Portals and websites that keep clients informed — tracking, updates, documents, and real-time visibility without the bloat.",
                 color: "cyan",
               },
               {
-                area: "Omega & Winwick",
-                title: "Innovation & Research",
-                desc: "Clear, professional websites for clinics, consultants, and organisations who need to explain complex services simply.",
+                area: "Birchwood Park",
+                title: "Engineering & Nuclear Tech",
+                desc: "Secure, reliable builds for regulated industries — clear information architecture, fast performance, and hardened delivery.",
                 color: "sky",
               },
               {
-                area: "Logistics & Industrial Hub",
-                title: "Supply Chain Visibility",
-                desc: "Lead-generation sites and custom tools for building, trades, and logistics — built to win enquiries and keep things running smoothly.",
+                area: "Warrington + North West",
+                title: "High-Volume B2B",
+                desc: "From complex service lines to multi-site operations — we build systems that scale with teams, data, and demand.",
                 color: "lime",
               },
             ].map((item, i) => (
@@ -570,9 +569,9 @@ export default function WebDesignWarrington() {
 
               <div className="prose prose-lg dark:prose-invert mb-8">
                 <p className="text-slate-600 dark:text-slate-300">
-                  We work with ambitious Warrington businesses — from clinics and
-                  solicitors to building firms — who want a site that looks
-                  premium, loads instantly, and generates leads.
+                  We work with Warrington&apos;s industrial and tech sectors — from
+                  logistics giants to specialised engineering firms — building
+                  digital tools that improve efficiency and visibility.
                 </p>
               </div>
 
