@@ -401,7 +401,7 @@ const SocialMediaWarning = () => {
     <section style={{ backgroundColor: '#1e293b', color: '#ffffff', padding: '64px 16px', borderTop: '1px solid rgba(255, 255, 255, 0.1)', borderBottom: '1px solid rgba(255, 255, 255, 0.1)' }}>
       <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 16px' }}>
         <div style={{ maxWidth: '56rem', margin: '0 auto', textAlign: 'center' }}>
-          <p className="text-xs font-mono tracking-[0.25em] text-amber-200 uppercase mb-4">
+          <p style={{ fontSize: '0.75rem', fontWeight: '500', letterSpacing: '0.1em', color: '#fbbf24', marginBottom: '1rem', textTransform: 'uppercase' }}>
             The Social Media Warning
           </p>
           <h2 className="text-3xl md:text-4xl font-heading font-black mb-5">
