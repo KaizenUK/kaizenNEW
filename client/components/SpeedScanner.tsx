@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { jsPDF } from "jspdf";
 
 type MetricsState = {
   lcp: string;
@@ -118,12 +119,9 @@ export default function SpeedScanner() {
   }
 
   // --- THE MULTI-PAGE CONSULTANT REPORT ---
-  async function downloadPDF() {
+  function downloadPDF() {
     setPdfLoading(true);
     try {
-      // Dynamic import to prevent white-screen/SSR issues with jsPDF
-      const { jsPDF } = await import("jspdf");
-      
       const doc = new jsPDF('p', 'mm', 'a4');
       const pageWidth = doc.internal.pageSize.getWidth();
       const pageHeight = doc.internal.pageSize.getHeight();
