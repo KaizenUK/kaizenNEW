@@ -11,6 +11,8 @@ import {
   FileCode2,
   Zap,
   ShoppingBag,
+  BookOpen,
+  Award,
 } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
