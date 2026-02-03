@@ -52,7 +52,8 @@ function metricVerdict(
     if (ms == null) {
       return { label: "Unknown", detail: "Aim for 200ms" };
     }
-    if (ms <= 200) return { label: "Responsive", detail: "On target (≤ 200ms)" };
+    if (ms <= 200)
+      return { label: "Responsive", detail: "On target (≤ 200ms)" };
     if (ms <= 600)
       return { label: "Laggy", detail: "Too laggy – aim for 200ms" };
     return { label: "Frozen", detail: "Critical – aim for 200ms" };
@@ -164,9 +165,7 @@ export default function SpeedScanner() {
         data.lighthouseResult.categories.performance.score * 100;
       setScore(Math.round(lighthouseScore));
 
-      const lcpAudit = data.lighthouseResult.audits[
-        "largest-contentful-paint"
-      ];
+      const lcpAudit = data.lighthouseResult.audits["largest-contentful-paint"];
       const clsAudit = data.lighthouseResult.audits["cumulative-layout-shift"];
       const tbtAudit = data.lighthouseResult.audits["total-blocking-time"];
 
@@ -316,7 +315,11 @@ export default function SpeedScanner() {
         doc.setFont("helvetica", "normal");
         doc.setFontSize(10);
         doc.setTextColor(textGrey.r, textGrey.g, textGrey.b);
-        doc.text("This page is in the top band for mobile performance.", 52, 80);
+        doc.text(
+          "This page is in the top band for mobile performance.",
+          52,
+          80,
+        );
       }
 
       // Section: What we found
@@ -547,11 +550,7 @@ export default function SpeedScanner() {
       doc.line(16, 287, 194, 287);
       doc.setFontSize(9);
       doc.setTextColor(120, 120, 120);
-      doc.text(
-        `© ${year} Kaizen Web. All rights reserved.`,
-        16,
-        293,
-      );
+      doc.text(`© ${year} Kaizen Web. All rights reserved.`, 16, 293);
       doc.text("Page 2 of 2", 194, 293, { align: "right" });
 
       doc.save("kaizen-audit-report.pdf");
@@ -673,7 +672,9 @@ export default function SpeedScanner() {
                     }
                   >
                     <h3 className="text-2xl text-white font-bold mb-2">
-                      {score < 90 ? "Consultant Report Ready" : "Excellent Score!"}
+                      {score < 90
+                        ? "Consultant Report Ready"
+                        : "Excellent Score!"}
                     </h3>
                     <p className="text-slate-400 text-sm mb-5 leading-relaxed">
                       {score < 90
