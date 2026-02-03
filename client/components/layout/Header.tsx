@@ -12,6 +12,9 @@ import {
   Users,
   FileCode2,
   Zap,
+  Info,
+  ShieldCheck,
+  Mail,
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -24,7 +27,7 @@ interface HeaderProps {
   onMobileMenuChange: (open: boolean) => void;
 }
 
-type DesktopMenuKey = "services" | null;
+type DesktopMenuKey = "services" | "about" | null;
 
 interface ServiceItem {
   label: string;
@@ -51,6 +54,7 @@ const Header: React.FC<HeaderProps> = ({
 
   const navRef = useRef<HTMLDivElement | null>(null);
   const servicesTriggerRef = useRef<HTMLButtonElement | null>(null);
+  const aboutTriggerRef = useRef<HTMLButtonElement | null>(null);
   const location = useLocation();
 
   useEffect(() => {
@@ -133,9 +137,42 @@ const Header: React.FC<HeaderProps> = ({
   ];
 
   const topLevelLinks = [
+    { label: "Insights", href: "/blog" },
+    { label: "Case Studies", href: "/case-studies" },
     { label: "Project Rescue", href: "/project-rescue" },
-    { label: "Contact", href: "/contact" },
   ];
+
+  const aboutMenu: ServiceColumn[] = [
+    {
+      title: "About",
+      items: [
+        {
+          label: "About Kaizen",
+          href: "/about",
+          description: "What we do, how we work, and why performance comes first.",
+          icon: <Info className="w-4 h-4" />,
+        },
+        {
+          label: "Our Pledge",
+          href: "/pledge",
+          description: "No jargon. No black box. A transparent partnership.",
+          icon: <ShieldCheck className="w-4 h-4" />,
+        },
+        {
+          label: "Contact",
+          href: "/contact",
+          description: "Say hello, ask a question, or request an audit.",
+          icon: <Mail className="w-4 h-4" />,
+        },
+      ],
+    },
+  ];
+
+  const getTriggerEl = (menu: DesktopMenuKey) => {
+    if (menu === "services") return servicesTriggerRef.current;
+    if (menu === "about") return aboutTriggerRef.current;
+    return null;
+  };
 
   const openMenu = (menu: DesktopMenuKey) => {
     if (!menu) {
@@ -145,7 +182,7 @@ const Header: React.FC<HeaderProps> = ({
     }
 
     const nav = navRef.current;
-    const triggerEl = servicesTriggerRef.current;
+    const triggerEl = getTriggerEl(menu);
 
     if (nav && triggerEl) {
       const navRect = nav.getBoundingClientRect();
@@ -247,64 +284,93 @@ const Header: React.FC<HeaderProps> = ({
               </Link>
             ))}
 
-            {/* Services Dropdown Panel */}
+            {/* About Trigger */}
+            <button
+              ref={aboutTriggerRef}
+              type="button"
+              onMouseEnter={() => openMenu("about")}
+              onFocus={() => openMenu("about")}
+              onClick={() => handleTriggerClick("about")}
+              className="flex items-center gap-2 px-4 py-2 text-base font-medium text-white/90 hover:text-white hover:bg-white/5 rounded-full transition"
+              aria-expanded={isMenuOpen && activeMenu === "about"}
+            >
+              About
+              <ChevronDown
+                size={16}
+                className={`transition-transform duration-200 ${
+                  isMenuOpen && activeMenu === "about" ? "rotate-180" : ""
+                }`}
+              />
+            </button>
+
+            {/* Dropdown Panel */}
             <AnimatePresence>
-              {isMenuOpen && activeMenu === "services" && (
+              {isMenuOpen && activeMenu && (
                 <motion.div
-                  key="services"
+                  key={activeMenu}
                   variants={panelVariants}
                   initial="enter"
                   animate="center"
                   exit="exit"
                   transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] as const }}
-                  className="absolute top-full mt-2 rounded-2xl border border-white/10 bg-gray-900/95 shadow-2xl backdrop-blur-xl w-[min(720px,calc(100vw-3rem))] px-8 py-6"
+                  className={`absolute top-full mt-2 rounded-2xl border border-white/10 bg-gray-900/95 shadow-2xl backdrop-blur-xl px-8 py-6 ${
+                    activeMenu === "about"
+                      ? "w-[min(460px,calc(100vw-3rem))]"
+                      : "w-[min(720px,calc(100vw-3rem))]"
+                  }`}
                   style={{
                     left: panelLeft ?? "50%",
                     transform: "translateX(-50%)",
                   }}
                 >
-                  <div className="grid grid-cols-2 gap-6">
-                    {servicesMenu.map((column) => (
-                      <div key={column.title}>
-                        <h3 className="text-lg font-semibold text-white mb-4">
-                          {column.title}
-                        </h3>
-                        <ul className="space-y-2">
-                          {column.items.map((item) => (
-                            <li key={item.href}>
-                              <Link
-                                to={item.href}
-                                className="block rounded-xl px-3 py-2 hover:bg-white/5 transition"
-                                onClick={() => {
-                                  setIsMenuOpen(false);
-                                  setActiveMenu(null);
-                                }}
-                              >
-                                <div className="flex items-start gap-3">
-                                  <span className="mt-1 flex h-7 w-7 items-center justify-center rounded-full bg-white/5 text-cyan-300">
-                                    {item.icon}
-                                  </span>
-                                  <div>
-                                    <div
-                                      className={`text-base font-semibold ${
-                                        item.highlight
-                                          ? "text-cyan-300"
-                                          : "text-white"
-                                      }`}
-                                    >
-                                      {item.label}
+                  <div
+                    className={`grid gap-6 ${
+                      activeMenu === "about" ? "grid-cols-1" : "grid-cols-2"
+                    }`}
+                  >
+                    {(activeMenu === "about" ? aboutMenu : servicesMenu).map(
+                      (column) => (
+                        <div key={column.title}>
+                          <h3 className="text-lg font-semibold text-white mb-4">
+                            {column.title}
+                          </h3>
+                          <ul className="space-y-2">
+                            {column.items.map((item) => (
+                              <li key={item.href}>
+                                <Link
+                                  to={item.href}
+                                  className="block rounded-xl px-3 py-2 hover:bg-white/5 transition"
+                                  onClick={() => {
+                                    setIsMenuOpen(false);
+                                    setActiveMenu(null);
+                                  }}
+                                >
+                                  <div className="flex items-start gap-3">
+                                    <span className="mt-1 flex h-7 w-7 items-center justify-center rounded-full bg-white/5 text-cyan-300">
+                                      {item.icon}
+                                    </span>
+                                    <div>
+                                      <div
+                                        className={`text-base font-semibold ${
+                                          item.highlight
+                                            ? "text-cyan-300"
+                                            : "text-white"
+                                        }`}
+                                      >
+                                        {item.label}
+                                      </div>
+                                      <p className="text-sm text-gray-400 mt-1">
+                                        {item.description}
+                                      </p>
                                     </div>
-                                    <p className="text-sm text-gray-400 mt-1">
-                                      {item.description}
-                                    </p>
                                   </div>
-                                </div>
-                              </Link>
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    ))}
+                                </Link>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      ),
+                    )}
                   </div>
                 </motion.div>
               )}
