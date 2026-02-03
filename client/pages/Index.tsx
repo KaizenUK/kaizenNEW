@@ -1512,15 +1512,14 @@ export default function Home() {
   return (
     <Layout>
       <HeroSection />
-      <RescueStrip />
-      <PricingSlider />
-      <PricingCTABanner />
-      <AIPriceNarrative />
-      <CoreServiceVerticals />
-      <KaizenPhilosophy />
-      <AIValueProp />
+      <AuthorityBridge />
+      <SocialMediaWarning />
+      <ServicePillars />
       <PerformanceBadge />
       <LocalMap />
+      <CoreServiceVerticals />
+      <PricingSlider />
+      <PricingCTABanner />
       <LatestInsights />
       <SEOFAQSection />
     </Layout>
