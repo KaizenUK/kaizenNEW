@@ -397,6 +397,7 @@ const AuthorityBridge = () => {
 };
 
 const SocialMediaWarning = () => {
+  console.log('SocialMediaWarning rendering');
   return (
     <section style={{ backgroundColor: '#1e293b', color: '#ffffff', padding: '64px 16px', borderTop: '1px solid rgba(255, 255, 255, 0.1)', borderBottom: '1px solid rgba(255, 255, 255, 0.1)' }}>
       <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 16px' }}>
