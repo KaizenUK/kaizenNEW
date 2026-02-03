@@ -57,15 +57,28 @@ const pageMeta: Record<string, Partial<PageMeta>> = {
     description:
       "A product-led digital agency. Specialising in React Development, Software Rescue, and Agile Consultancy for Liverpool & Wirral SMEs.",
   },
-  "/services/web-design-liverpool": {
-    title: "High-Performance Web Design Liverpool | Kaizen",
+  "/web-design-liverpool": {
+    title: "Enterprise Web Design Liverpool | React & Next.js Developers",
     description:
-      "Need web design in Liverpool? We build fast, high-performance websites with a straightforward Agile process. Get more leads, not more headaches.",
+      "We build high-performance React websites for Liverpool's Commercial District and Knowledge Quarter. Faster, safer, and more profitable than WordPress.",
     keywords: [
       "web design liverpool",
+      "enterprise web design",
+      "react development liverpool",
       "high-performance websites",
-      "react web design liverpool",
-      "web design agency wirral",
+      "commercial district web design",
+    ],
+  },
+  "/services/web-design-liverpool": {
+    title: "Enterprise Web Design Liverpool | React & Next.js Developers",
+    description:
+      "We build high-performance React websites for Liverpool's Commercial District and Knowledge Quarter. Faster, safer, and more profitable than WordPress.",
+    keywords: [
+      "web design liverpool",
+      "enterprise web design",
+      "react development liverpool",
+      "high-performance websites",
+      "commercial district web design",
     ],
   },
   "/web-design-liverpool-city-centre": {
