@@ -1,5 +1,4 @@
 import { useMemo, useState } from "react";
-import { jsPDF } from "jspdf";
 
 type MetricsState = {
   lcp: string;
@@ -24,11 +23,7 @@ export default function SpeedScanner() {
   const [statusMsg, setStatusMsg] = useState("");
   const [pdfLoading, setPdfLoading] = useState(false);
 
-  const API_KEY = useMemo(() => {
-    return (import.meta as any).env?.VITE_PAGESPEED_API_KEY as
-      | string
-      | undefined;
-  }, []);
+  const API_KEY = "AIzaSyDSXGxDMpnliJGpRpPzahrrTSpFvaCApXc";
 
   const PROXY_ENDPOINT = "/api/pagespeed";
 
@@ -158,10 +153,15 @@ export default function SpeedScanner() {
     setEmailError("");
   }
 
-  function downloadPDF() {
+  async function downloadPDF() {  // <--- 1. Changed to 'async'
     setPdfLoading(true);
     try {
+      // 2. Import library ONLY here
+      const { jsPDF } = await import("jspdf");
+
       const doc = new jsPDF("p", "mm", "a4");
+
+  // ... keep all the rest of the code below exactly as it was ...
       const pageWidth = doc.internal.pageSize.getWidth();
       const pageHeight = doc.internal.pageSize.getHeight();
 
