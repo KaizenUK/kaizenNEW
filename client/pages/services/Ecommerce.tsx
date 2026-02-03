@@ -243,6 +243,8 @@ export default function Ecommerce() {
           <motion.img
             src="https://cdn.builder.io/api/v1/image/assets%2Fe4ae46bbd81b4b95bef54d66dd9748cc%2F85912ce9f05a4f7cb336598a47962b01?format=webp&width=800"
             alt="Delivery professional delivering online store products from e-commerce platform"
+            width="800"
+            height="600"
             className="w-full h-full object-cover"
             style={{
               clipPath: "polygon(0 0, 100% 0, 85% 100%, 0 100%)",
@@ -254,6 +256,8 @@ export default function Ecommerce() {
               duration: 0.9,
               ease: [0.16, 1, 0.3, 1] as const,
             }}
+            loading="lazy"
+            decoding="async"
           />
 
           {/* Accent overlay */}
