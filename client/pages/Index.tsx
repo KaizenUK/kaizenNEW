@@ -171,8 +171,16 @@ const HeroSection = () => {
           </p>
 
           <h1
-            className="text-5xl md:text-7xl font-heading font-black mb-8 leading-tight hero-reveal hero-text-aurora"
-            style={{ "--delay": "0s" } as React.CSSProperties}
+            className="text-5xl md:text-7xl font-heading font-black mb-8 leading-tight hero-reveal"
+            style={{
+              "--delay": "0s",
+              background: "linear-gradient(90deg, #06b6d4 0%, #7c3aed 25%, #ff006e 50%, #7c3aed 75%, #06b6d4 100%)",
+              backgroundSize: "200% 100%",
+              WebkitBackgroundClip: "text" as any,
+              WebkitTextFillColor: "transparent",
+              backgroundClip: "text" as any,
+              animation: "aurora-text 8s linear infinite",
+            } as React.CSSProperties}
           >
             Web Design Wirral: Lean, Fast, &amp; Profitable Websites.
           </h1>
@@ -193,7 +201,7 @@ const HeroSection = () => {
               onClick={() => openCrisp()}
               className="px-8 py-4 rounded-lg bg-white text-black font-heading font-bold text-lg inline-flex items-center justify-center gap-2 transform-gpu transition-all duration-200 hover:scale-105 hover:shadow-[0_0_20px_rgba(255,255,255,0.5)]"
             >
-              Get a Performance Audit
+              Get in Touch
               <ArrowRight size={20} />
             </button>
             <button
