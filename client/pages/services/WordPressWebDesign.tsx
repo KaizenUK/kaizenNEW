@@ -273,6 +273,8 @@ export default function WordPressWebDesign() {
                 <img
                   src="https://cdn.builder.io/api/v1/image/assets%2Fe4ae46bbd81b4b95bef54d66dd9748cc%2Fa18f81c064614dceb4a9d1fcb2c9f64b?format=webp&width=800"
                   alt="WordPress block editor interface for easy content management"
+                  width="800"
+                  height="600"
                   className="w-full h-full object-cover rounded-2xl"
                   loading="lazy"
                   decoding="async"
