@@ -303,6 +303,21 @@ export default function WebDesignLiverpool() {
 
   return (
     <Layout>
+      <Helmet>
+        <title>Enterprise Web Design Liverpool | React & Next.js Developers</title>
+        <meta
+          name="description"
+          content="We build high-performance React websites for Liverpool's Commercial District and Knowledge Quarter. Faster, safer, and more profitable than WordPress."
+        />
+        <meta name="og:title" content="Enterprise Web Design Liverpool | React & Next.js Developers" />
+        <meta
+          name="og:description"
+          content="We build high-performance React websites for Liverpool's Commercial District and Knowledge Quarter. Faster, safer, and more profitable than WordPress."
+        />
+        <meta name="og:type" content="website" />
+        <link rel="canonical" href="https://kaizenweb.dev/web-design-liverpool" />
+      </Helmet>
+
       {/* Hero */}
       <section className="relative overflow-hidden bg-slate-950 text-white py-24 lg:py-32 px-4">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-slate-900 via-slate-950 to-slate-950" />
