@@ -196,9 +196,6 @@ const OffCanvasMenu: React.FC<OffCanvasMenuProps> = ({
               src="https://cdn.builder.io/api/v1/image/assets%2Fe4ae46bbd81b4b95bef54d66dd9748cc%2F03f6c5dd481449d297c430cab962412e?format=webp&width=800"
               alt="Kaizen Web"
               className="h-8 w-auto"
-              style={{
-                filter: theme === "dark" ? "brightness(0) invert(1)" : "none",
-              }}
             />
           </Link>
           <button
