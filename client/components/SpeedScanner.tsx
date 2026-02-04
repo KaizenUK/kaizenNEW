@@ -451,10 +451,10 @@ export default function SpeedScanner() {
 
       // Screenshot
       if (screenshot) {
-        const phoneX = pageWidth / 2 - 35;
+        const phoneX = pageWidth / 2 - 18;
         const phoneY = 160;
-        const phoneW = 70;
-        const phoneH = 100;
+        const phoneW = 36;
+        const phoneH = 78;
         doc.setFillColor(20, 20, 20);
         doc.roundedRect(
           phoneX - 3,
