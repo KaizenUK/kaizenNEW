@@ -604,10 +604,7 @@ export default function SpeedScanner() {
         "Time until the main content is visible. Usually your hero image or headline.",
         "Users won't wait. 53% leave if a page takes over 3 seconds to show content.",
         lcpVal > 2.5
-          ? [
-              "Compress & resize images",
-              "Use WebP format",
-            ]
+          ? ["Compress & resize images", "Use WebP format"]
           : ["Maintain current optimizations"],
         2.5,
         4.0,
@@ -623,10 +620,7 @@ export default function SpeedScanner() {
         "Time the page is frozen while loading JavaScript. Users can't click or scroll.",
         "A frozen page feels broken. High TBT kills conversions and frustrates users.",
         tbtVal > 200
-          ? [
-              "Remove unused JavaScript",
-              "Defer non-critical scripts",
-            ]
+          ? ["Remove unused JavaScript", "Defer non-critical scripts"]
           : ["Keep JavaScript minimal"],
         200,
         600,
@@ -642,10 +636,7 @@ export default function SpeedScanner() {
         "How much the page layout jumps around as it loads. Higher = more annoying.",
         "Users click wrong buttons when content shifts. It looks unprofessional.",
         clsVal > 0.1
-          ? [
-              "Add width/height to images",
-              "Reserve space for ads",
-            ]
+          ? ["Add width/height to images", "Reserve space for ads"]
           : ["Ensure all images have dimensions"],
         0.1,
         0.25,
