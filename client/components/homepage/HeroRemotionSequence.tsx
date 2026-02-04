@@ -1,11 +1,10 @@
 import React, { useState, useRef } from 'react';
-import { motion } from 'framer-motion';
 import { ArrowRight, ArrowUpRight } from 'lucide-react';
 import { openCrisp } from '@/lib/crisp-utils';
 import { DEFAULT_OG_IMAGE } from '@/lib/seo';
 
 /**
- * Enhanced Hero Section with Remotion, Particles, GSAP, and Framer Motion
+ * Hero Section - optimized for performance with CSS animations
  */
 export const HeroRemotionSequence: React.FC = () => {
   const [spotlightPos, setSpotlightPos] = useState({ x: 0, y: 0 });
