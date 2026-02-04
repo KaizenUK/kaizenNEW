@@ -607,12 +607,11 @@ export default function SpeedScanner() {
           ? [
               "Compress & resize images",
               "Use WebP format",
-              "Preload hero image",
-              "Upgrade hosting",
             ]
-          : ["Maintain current optimizations", "Monitor for regressions"],
-        "≤ 2.5s",
-        "> 4.0s",
+          : ["Maintain current optimizations"],
+        2.5,
+        4.0,
+        "s",
       );
 
       // TBT Card
@@ -627,12 +626,11 @@ export default function SpeedScanner() {
           ? [
               "Remove unused JavaScript",
               "Defer non-critical scripts",
-              "Delay chat widgets",
-              "Split code bundles",
             ]
-          : ["Keep JavaScript minimal", "Monitor third-party scripts"],
-        "≤ 200ms",
-        "> 600ms",
+          : ["Keep JavaScript minimal"],
+        200,
+        600,
+        "ms",
       );
 
       // CLS Card
@@ -647,12 +645,11 @@ export default function SpeedScanner() {
           ? [
               "Add width/height to images",
               "Reserve space for ads",
-              "Avoid inserting content above",
-              "Use font-display: swap",
             ]
-          : ["Ensure all images have dimensions", "Test on slow connections"],
-        "≤ 0.1",
-        "> 0.25",
+          : ["Ensure all images have dimensions"],
+        0.1,
+        0.25,
+        "",
       );
 
       // Additional metrics section
