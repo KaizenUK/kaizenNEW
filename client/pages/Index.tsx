@@ -1,5 +1,6 @@
 import React, { Suspense, useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
+import { lazy, Suspense } from "react";
 import {
   ArrowRight,
   ArrowUpRight,
@@ -10,9 +11,11 @@ import {
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import Layout from "@/components/Layout";
-import { FaqSection } from "@/components/FaqSection";
-import SpeedScanner from "@/components/SpeedScanner";
 import { openCrisp } from "@/lib/crisp-utils";
+
+// Lazy-load below-the-fold components to reduce initial bundle size
+const SpeedScanner = lazy(() => import("@/components/SpeedScanner"));
+const FaqSection = lazy(() => import("@/components/FaqSection").then(m => ({ default: m.FaqSection })));
 import { DEFAULT_OG_IMAGE } from "@/lib/seo";
 import {
   Accordion,
