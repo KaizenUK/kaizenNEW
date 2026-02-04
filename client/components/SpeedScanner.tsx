@@ -46,6 +46,16 @@ export default function SpeedScanner() {
     lcp: "",
     cls: "",
     tbt: "",
+    fcp: "",
+    si: "",
+    tti: "",
+    lcpValue: 0,
+    clsValue: 0,
+    tbtValue: 0,
+    fcpValue: 0,
+    siValue: 0,
+    opportunities: [],
+    diagnostics: [],
   });
 
   // Gate State
