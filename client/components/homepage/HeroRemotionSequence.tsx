@@ -114,43 +114,24 @@ export const HeroRemotionSequence: React.FC = () => {
             className="flex flex-col sm:flex-row items-center justify-center gap-4 hero-reveal"
             style={{ '--delay': '0.4s' } as React.CSSProperties}
           >
-            {/* Framer Motion 3D tilt on CTA buttons */}
-            <motion.button
+            <button
               onClick={() => openCrisp()}
-              className="px-8 py-4 rounded-lg bg-white dark:bg-white text-black dark:text-black font-heading font-bold text-lg inline-flex items-center justify-center gap-2 transform-gpu"
-              whileHover={{
-                scale: 1.05,
-                rotateX: 5,
-                rotateY: 5,
-                boxShadow: '0 0 20px rgba(255,255,255,0.5)',
-              }}
-              whileTap={{ scale: 0.95 }}
-              transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+              className="px-8 py-4 rounded-lg bg-white text-black font-heading font-bold text-lg inline-flex items-center justify-center gap-2 transform-gpu transition-all duration-200 hover:scale-105 hover:shadow-[0_0_20px_rgba(255,255,255,0.5)] active:scale-95"
             >
               Get in Touch
               <ArrowRight size={20} />
-            </motion.button>
+            </button>
 
-            <motion.button
+            <button
               onClick={() => {
-                const slider = document.getElementById(
-                  'pricing-slider-section'
-                );
-                slider?.scrollIntoView({ behavior: 'smooth' as any });
+                const slider = document.getElementById('pricing-slider-section');
+                slider?.scrollIntoView({ behavior: 'smooth' });
               }}
-              className="px-8 py-4 rounded-lg border-2 border-white/30 text-white font-heading font-bold text-lg inline-flex items-center justify-center gap-2"
-              whileHover={{
-                scale: 1.05,
-                borderColor: '#06b6d4',
-                color: '#06b6d4',
-                boxShadow: '0 0 20px rgba(6,182,212,0.3)',
-              }}
-              whileTap={{ scale: 0.95 }}
-              transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+              className="px-8 py-4 rounded-lg border-2 border-white/30 text-white font-heading font-bold text-lg inline-flex items-center justify-center gap-2 transition-all duration-200 hover:scale-105 hover:border-cyan-400 hover:text-cyan-400 hover:shadow-[0_0_20px_rgba(6,182,212,0.3)] active:scale-95"
             >
               See Our Pricing
               <ArrowUpRight size={20} />
-            </motion.button>
+            </button>
           </div>
         </div>
       </div>
