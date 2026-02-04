@@ -590,69 +590,215 @@ console.log("⚠️ KAIZEN SCANNER V2 - UPDATED CODE LOADED"); // Add this line
       doc.setTextColor(siStatus.color[0], siStatus.color[1], siStatus.color[2]);
       doc.text(`(${siStatus.text})`, 150, yPos + 18);
 
-      // PAGE 3: ACTION PLAN
+      // ============================================
+      // PAGE 3: OPPORTUNITIES FOR IMPROVEMENT
+      // ============================================
       doc.addPage();
-      doc.setFillColor(navy[0], navy[1], navy[2]);
-      doc.rect(0, 0, pageWidth, 30, "F");
+      addPageHeader("Opportunities for Improvement");
 
-      doc.setTextColor(white[0], white[1], white[2]);
-      doc.setFontSize(16);
-      doc.setFont("helvetica", "bold");
-      doc.text("Your Immediate Action Plan", 20, 20);
-
-      yPos = 50;
-      doc.setTextColor(0, 0, 0);
-      doc.setFontSize(12);
+      yPos = 35;
+      doc.setTextColor(darkGrey[0], darkGrey[1], darkGrey[2]);
+      doc.setFontSize(9);
       doc.setFont("helvetica", "normal");
-      doc.text(
-        "Based on your score, we recommend the following sprint plan:",
-        20,
-        yPos,
-      );
-      yPos += 15;
+      doc.text("These are specific issues Google found on your site. Fixing them will improve your score and user experience.", 15, yPos);
+      yPos += 12;
 
-      const drawCheckbox = (text: string) => {
-        doc.setDrawColor(200, 200, 200);
-        doc.rect(20, yPos, 6, 6);
-        doc.setTextColor(50, 50, 50);
-        doc.text(text, 35, yPos + 4);
-        yPos += 12;
+      // Opportunity explanations (plain English)
+      const opportunityExplanations: Record<string, { what: string; why: string; fix: string }> = {
+        "render-blocking-resources": {
+          what: "CSS and JavaScript files that block the page from showing content",
+          why: "Your visitors stare at a blank screen while these files load",
+          fix: "Move non-critical CSS/JS to load after the page appears"
+        },
+        "unused-javascript": {
+          what: "JavaScript code that's downloaded but never used",
+          why: "Wastes bandwidth and slows down your site for no benefit",
+          fix: "Remove unused libraries or use code-splitting"
+        },
+        "unused-css-rules": {
+          what: "CSS styles that are downloaded but never applied to any element",
+          why: "Extra bytes that slow loading without adding any visual value",
+          fix: "Use PurgeCSS or audit your stylesheets"
+        },
+        "offscreen-images": {
+          what: "Images below the fold that load immediately instead of when needed",
+          why: "Delays the important content above the fold",
+          fix: "Add loading='lazy' to images below the fold"
+        },
+        "uses-optimized-images": {
+          what: "Images that could be compressed without losing visible quality",
+          why: "Large images are the #1 cause of slow websites",
+          fix: "Compress images using TinyPNG or Squoosh"
+        },
+        "uses-webp-images": {
+          what: "Images in older formats (JPEG/PNG) instead of modern WebP",
+          why: "WebP is 25-35% smaller than JPEG with the same quality",
+          fix: "Convert images to WebP format"
+        },
+        "server-response-time": {
+          what: "Your server takes too long to respond to requests",
+          why: "Everything waits for the server - this is a fundamental bottleneck",
+          fix: "Upgrade hosting, add caching, or optimise your database"
+        },
+        "mainthread-work-breakdown": {
+          what: "Too much JavaScript running on the main browser thread",
+          why: "The page feels frozen and unresponsive while this runs",
+          fix: "Defer non-critical JavaScript, remove unused code"
+        },
+        "third-party-summary": {
+          what: "External scripts (analytics, chat widgets, ads) slowing your site",
+          why: "You don't control these - they can change and slow you down anytime",
+          fix: "Delay loading of non-essential third-party scripts"
+        },
+        "dom-size": {
+          what: "Too many HTML elements on the page",
+          why: "More elements = more work for the browser = slower page",
+          fix: "Simplify your page structure, remove unnecessary wrappers"
+        },
+        "font-display": {
+          what: "Custom fonts blocking text from appearing",
+          why: "Visitors see nothing or placeholder text while fonts load",
+          fix: "Add font-display: swap to your font declarations"
+        }
       };
 
-      drawCheckbox("Optimise and compress all images (WebP)");
-      drawCheckbox("Minify CSS and JavaScript files");
-      drawCheckbox("Configure server-side caching");
-      drawCheckbox("Audit third-party plugins/scripts");
-      drawCheckbox("Implement 'Lazy Loading' for off-screen media");
+      // Draw opportunities from actual PageSpeed results
+      const topOpportunities = metrics.opportunities.slice(0, 6);
 
-      yPos += 30;
+      if (topOpportunities.length > 0) {
+        topOpportunities.forEach((opp, i) => {
+          if (yPos > 250) return; // Prevent overflow
+
+          const explanation = opportunityExplanations[opp.id] || {
+            what: opp.title,
+            why: "This affects your page performance",
+            fix: "Consult with a developer to resolve this"
+          };
+
+          // Opportunity card
+          doc.setFillColor(lightGrey[0], lightGrey[1], lightGrey[2]);
+          doc.roundedRect(15, yPos, pageWidth - 30, 32, 2, 2, "F");
+
+          // Priority indicator
+          const priority = opp.score < 0.5 ? red : orange;
+          doc.setFillColor(priority[0], priority[1], priority[2]);
+          doc.rect(15, yPos, 3, 32, "F");
+
+          // Title and savings
+          doc.setFontSize(9);
+          doc.setTextColor(navy[0], navy[1], navy[2]);
+          doc.setFont("helvetica", "bold");
+          doc.text(`${i + 1}. ${explanation.what}`, 23, yPos + 7);
+
+          if (opp.savings) {
+            doc.setTextColor(red[0], red[1], red[2]);
+            doc.setFontSize(8);
+            doc.text(`Potential savings: ${opp.savings}`, pageWidth - 70, yPos + 7);
+          }
+
+          // Why and Fix
+          doc.setFontSize(8);
+          doc.setTextColor(darkGrey[0], darkGrey[1], darkGrey[2]);
+          doc.setFont("helvetica", "normal");
+          doc.text(`Why it matters: ${explanation.why}`, 23, yPos + 15, { maxWidth: 165 });
+          doc.setTextColor(green[0], green[1], green[2]);
+          doc.text(`How to fix: ${explanation.fix}`, 23, yPos + 23, { maxWidth: 165 });
+
+          yPos += 37;
+        });
+      } else {
+        doc.setFontSize(10);
+        doc.setTextColor(green[0], green[1], green[2]);
+        doc.text("Great news! No major opportunities for improvement were found.", 15, yPos + 10);
+        yPos += 25;
+      }
+
+      // ============================================
+      // PAGE 4: ACTION PLAN & NEXT STEPS
+      // ============================================
+      doc.addPage();
+      addPageHeader("Your Action Plan");
+
+      yPos = 35;
+      doc.setTextColor(darkGrey[0], darkGrey[1], darkGrey[2]);
+      doc.setFontSize(10);
+      doc.setFont("helvetica", "normal");
+      doc.text("Based on your results, here's a prioritised checklist to improve your site's performance:", 15, yPos);
+      yPos += 15;
+
+      // Priority actions based on score
+      const priorityActions = [];
+
+      if (lcpVal > 2.5) {
+        priorityActions.push({ priority: "HIGH", action: "Fix LCP: Optimise your hero image and preload it", impact: "Major" });
+      }
+      if (tbtVal > 200) {
+        priorityActions.push({ priority: "HIGH", action: "Reduce JavaScript: Defer non-critical scripts", impact: "Major" });
+      }
+      if (clsVal > 0.1) {
+        priorityActions.push({ priority: "MEDIUM", action: "Fix layout shifts: Add dimensions to all images", impact: "Moderate" });
+      }
+      if (fcpVal > 1.8) {
+        priorityActions.push({ priority: "MEDIUM", action: "Improve FCP: Inline critical CSS above the fold", impact: "Moderate" });
+      }
+
+      // Always include these
+      priorityActions.push({ priority: "ONGOING", action: "Convert all images to WebP format", impact: "Moderate" });
+      priorityActions.push({ priority: "ONGOING", action: "Enable browser caching for static assets", impact: "Moderate" });
+      priorityActions.push({ priority: "ONGOING", action: "Delay loading of chat widgets by 3-5 seconds", impact: "Minor" });
+
+      // Draw action items
+      priorityActions.forEach((item, i) => {
+        const priorityColor = item.priority === "HIGH" ? red : item.priority === "MEDIUM" ? orange : green;
+
+        doc.setFillColor(lightGrey[0], lightGrey[1], lightGrey[2]);
+        doc.roundedRect(15, yPos, pageWidth - 30, 14, 2, 2, "F");
+
+        // Checkbox
+        doc.setDrawColor(180, 180, 180);
+        doc.rect(20, yPos + 4, 5, 5, "S");
+
+        // Priority badge
+        doc.setFillColor(priorityColor[0], priorityColor[1], priorityColor[2]);
+        doc.roundedRect(30, yPos + 3, 18, 7, 1, 1, "F");
+        doc.setFontSize(6);
+        doc.setTextColor(white[0], white[1], white[2]);
+        doc.text(item.priority, 32, yPos + 8);
+
+        // Action text
+        doc.setFontSize(9);
+        doc.setTextColor(navy[0], navy[1], navy[2]);
+        doc.setFont("helvetica", "normal");
+        doc.text(item.action, 52, yPos + 9);
+
+        // Impact
+        doc.setFontSize(7);
+        doc.setTextColor(darkGrey[0], darkGrey[1], darkGrey[2]);
+        doc.text(`Impact: ${item.impact}`, pageWidth - 45, yPos + 9);
+
+        yPos += 17;
+      });
+
+      yPos += 10;
 
       // CTA Box
       doc.setFillColor(navy[0], navy[1], navy[2]);
-      doc.roundedRect(20, yPos, pageWidth - 40, 50, 4, 4, "F");
+      doc.roundedRect(15, yPos, pageWidth - 30, 55, 4, 4, "F");
 
       doc.setTextColor(cyan[0], cyan[1], cyan[2]);
-      doc.setFontSize(16);
+      doc.setFontSize(14);
       doc.setFont("helvetica", "bold");
-      doc.text("Need a hand with this?", 30, yPos + 15);
+      doc.text("Need Help Implementing These Fixes?", 22, yPos + 15);
 
       doc.setTextColor(white[0], white[1], white[2]);
-      doc.setFontSize(11);
+      doc.setFontSize(10);
       doc.setFont("helvetica", "normal");
-      doc.text(
-        "We specialise in fixing these exact issues for high-performance brands.",
-        30,
-        yPos + 25,
-      );
-      doc.text(
-        "Book a 15-minute discovery call to discuss a fixed-price fix.",
-        30,
-        yPos + 32,
-      );
+      doc.text("We specialise in performance optimisation for high-converting websites.", 22, yPos + 26);
+      doc.text("Book a free 15-minute discovery call and we'll create a fixed-price quote.", 22, yPos + 34);
 
       doc.setFontSize(9);
       doc.setTextColor(150, 150, 150);
-      doc.text("Or email this PDF to sales@kaizenweb.co.uk", 30, yPos + 42);
+      doc.text("Email: hello@kaizenweb.co.uk  |  Web: kaizenweb.co.uk/contact", 22, yPos + 46);
 
       // Button
       const btnX = 140;
