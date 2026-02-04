@@ -291,6 +291,11 @@ const Footer: React.FC<FooterProps> = () => {
             </p>
             <p className="text-xs text-white/50 mt-1">
               Kaizen Web Ltd t/a Kaizen Ltd (Company No. 17007703)
+              {buildVersion && (
+                <span className="ml-2 text-white/30" title="Build version">
+                  • Build: {buildVersion}
+                </span>
+              )}
             </p>
           </div>
           <div className="flex items-center gap-4 text-xs text-white/50">
