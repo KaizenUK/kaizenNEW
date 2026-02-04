@@ -33,7 +33,7 @@ type MetricsState = {
 // Initialize Supabase client
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || "";
 // FIX: Changed from VITE_SUPABASE_KEY to VITE_SUPABASE_ANON_KEY to match your .env
-const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY || ""; 
+const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY || "";
 
 const supabase =
   supabaseUrl && supabaseKey ? createClient(supabaseUrl, supabaseKey) : null;
@@ -89,7 +89,21 @@ export default function SpeedScanner() {
     setLoading(true);
     setScore(null);
     setScreenshot("");
-    setMetrics({ lcp: "", cls: "", tbt: "", fcp: "", si: "", tti: "", lcpValue: 0, clsValue: 0, tbtValue: 0, fcpValue: 0, siValue: 0, opportunities: [], diagnostics: [] });
+    setMetrics({
+      lcp: "",
+      cls: "",
+      tbt: "",
+      fcp: "",
+      si: "",
+      tti: "",
+      lcpValue: 0,
+      clsValue: 0,
+      tbtValue: 0,
+      fcpValue: 0,
+      siValue: 0,
+      opportunities: [],
+      diagnostics: [],
+    });
     setStatusMsg("Connecting to Google Lighthouse...");
     setIsEmailSubmitted(false);
     setEmailError("");
@@ -221,9 +235,9 @@ export default function SpeedScanner() {
     }
   }
 
-async function handleUnlock() {
-console.log("⚠️ KAIZEN SCANNER V2 - UPDATED CODE LOADED"); // Add this line
-  const normalizedEmail = email.trim();
+  async function handleUnlock() {
+    console.log("⚠️ KAIZEN SCANNER V2 - UPDATED CODE LOADED"); // Add this line
+    const normalizedEmail = email.trim();
 
     // 1. Validation
     if (!normalizedEmail || !normalizedEmail.includes("@")) {
@@ -237,17 +251,19 @@ console.log("⚠️ KAIZEN SCANNER V2 - UPDATED CODE LOADED"); // Add this line
     if (supabase) {
       try {
         // FIX 1: Table name changed from 'leads' to 'speed_scanner_submissions'
-        const { error } = await supabase.from("speed_scanner_submissions").insert([
-          {
-            email: normalizedEmail,
-            // FIX 2: Mapped 'url' to 'website_url' (to match your DB column)
-            website_url: url || null,
-            // FIX 3: Mapped 'score' to 'performance_score' (to match your DB column)
-            performance_score: score, 
-            // FIX 4: Removed 'lcp' because your table doesn't have that column
-            // created_at is handled automatically by Supabase
-          },
-        ]);
+        const { error } = await supabase
+          .from("speed_scanner_submissions")
+          .insert([
+            {
+              email: normalizedEmail,
+              // FIX 2: Mapped 'url' to 'website_url' (to match your DB column)
+              website_url: url || null,
+              // FIX 3: Mapped 'score' to 'performance_score' (to match your DB column)
+              performance_score: score,
+              // FIX 4: Removed 'lcp' because your table doesn't have that column
+              // created_at is handled automatically by Supabase
+            },
+          ]);
 
         if (error) {
           console.error("Supabase Error:", error.message);
@@ -305,7 +321,8 @@ console.log("⚠️ KAIZEN SCANNER V2 - UPDATED CODE LOADED"); // Add this line
         };
         const t = thresholds[metric] || { good: 0, ok: 0 };
         if (value <= t.good) return { color: green, text: "GOOD", emoji: "✓" };
-        if (value <= t.ok) return { color: orange, text: "NEEDS IMPROVEMENT", emoji: "!" };
+        if (value <= t.ok)
+          return { color: orange, text: "NEEDS IMPROVEMENT", emoji: "!" };
         return { color: red, text: "POOR", emoji: "✕" };
       };
 
@@ -326,7 +343,12 @@ console.log("⚠️ KAIZEN SCANNER V2 - UPDATED CODE LOADED"); // Add this line
       const addFooter = (pageNum: number, totalPages: number) => {
         doc.setFontSize(8);
         doc.setTextColor(150, 150, 150);
-        doc.text(`Page ${pageNum} of ${totalPages}`, pageWidth / 2, pageHeight - 8, { align: "center" });
+        doc.text(
+          `Page ${pageNum} of ${totalPages}`,
+          pageWidth / 2,
+          pageHeight - 8,
+          { align: "center" },
+        );
       };
 
       // ============================================
@@ -357,21 +379,27 @@ console.log("⚠️ KAIZEN SCANNER V2 - UPDATED CODE LOADED"); // Add this line
       doc.text(displayUrl || "Website Audit", 20, 72);
 
       // Score Section
-      const scoreColor = score && score < 50 ? red : score && score < 90 ? orange : green;
+      const scoreColor =
+        score && score < 50 ? red : score && score < 90 ? orange : green;
       doc.setFillColor(scoreColor[0], scoreColor[1], scoreColor[2]);
       doc.circle(pageWidth - 40, 50, 22, "F");
       doc.setTextColor(white[0], white[1], white[2]);
       doc.setFontSize(24);
       doc.setFont("helvetica", "bold");
       const scoreText = `${score}`;
-      doc.text(scoreText, pageWidth - 40 - (scoreText.length * 3.5), 56);
+      doc.text(scoreText, pageWidth - 40 - scoreText.length * 3.5, 56);
       doc.setFontSize(8);
       doc.text("/ 100", pageWidth - 40 + 8, 56);
 
       // Score interpretation
       doc.setFontSize(9);
       doc.setTextColor(scoreColor[0], scoreColor[1], scoreColor[2]);
-      const interpretation = score && score >= 90 ? "Excellent" : score && score >= 50 ? "Needs Work" : "Poor";
+      const interpretation =
+        score && score >= 90
+          ? "Excellent"
+          : score && score >= 50
+            ? "Needs Work"
+            : "Poor";
       doc.text(interpretation, pageWidth - 50, 80);
 
       // Quick Summary Box
@@ -388,7 +416,9 @@ console.log("⚠️ KAIZEN SCANNER V2 - UPDATED CODE LOADED"); // Add this line
 
       // Summary metrics in columns
       const summaryY = 120;
-      const col1 = 22, col2 = 75, col3 = 128;
+      const col1 = 22,
+        col2 = 75,
+        col3 = 128;
 
       doc.setFont("helvetica", "bold");
       doc.text("LCP", col1, summaryY);
@@ -400,11 +430,23 @@ console.log("⚠️ KAIZEN SCANNER V2 - UPDATED CODE LOADED"); // Add this line
       const clsStatus = getStatus("cls", clsVal);
       const tbtStatus = getStatus("tbt", tbtVal);
 
-      doc.setTextColor(lcpStatus.color[0], lcpStatus.color[1], lcpStatus.color[2]);
+      doc.setTextColor(
+        lcpStatus.color[0],
+        lcpStatus.color[1],
+        lcpStatus.color[2],
+      );
       doc.text(metrics.lcp || "-", col1, summaryY + 12);
-      doc.setTextColor(clsStatus.color[0], clsStatus.color[1], clsStatus.color[2]);
+      doc.setTextColor(
+        clsStatus.color[0],
+        clsStatus.color[1],
+        clsStatus.color[2],
+      );
       doc.text(metrics.cls || "-", col2, summaryY + 12);
-      doc.setTextColor(tbtStatus.color[0], tbtStatus.color[1], tbtStatus.color[2]);
+      doc.setTextColor(
+        tbtStatus.color[0],
+        tbtStatus.color[1],
+        tbtStatus.color[2],
+      );
       doc.text(metrics.tbt || "-", col3, summaryY + 12);
 
       // Screenshot
@@ -414,9 +456,19 @@ console.log("⚠️ KAIZEN SCANNER V2 - UPDATED CODE LOADED"); // Add this line
         const phoneW = 70;
         const phoneH = 100;
         doc.setFillColor(20, 20, 20);
-        doc.roundedRect(phoneX - 3, phoneY - 3, phoneW + 6, phoneH + 6, 4, 4, "F");
+        doc.roundedRect(
+          phoneX - 3,
+          phoneY - 3,
+          phoneW + 6,
+          phoneH + 6,
+          4,
+          4,
+          "F",
+        );
         try {
-          const imageFormat = screenshot.startsWith("data:image/png") ? "PNG" : "JPEG";
+          const imageFormat = screenshot.startsWith("data:image/png")
+            ? "PNG"
+            : "JPEG";
           doc.addImage(screenshot, imageFormat, phoneX, phoneY, phoneW, phoneH);
         } catch (e) {
           // Screenshot failed to load
@@ -426,7 +478,11 @@ console.log("⚠️ KAIZEN SCANNER V2 - UPDATED CODE LOADED"); // Add this line
       // Footer
       doc.setFontSize(9);
       doc.setTextColor(100, 100, 100);
-      doc.text(`Generated: ${new Date().toLocaleDateString("en-GB")} at ${new Date().toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" })}`, 20, 275);
+      doc.text(
+        `Generated: ${new Date().toLocaleDateString("en-GB")} at ${new Date().toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" })}`,
+        20,
+        275,
+      );
       doc.text("Powered by Google Lighthouse", 20, 282);
       doc.setTextColor(cyan[0], cyan[1], cyan[2]);
       doc.text("kaizenweb.co.uk", pageWidth - 45, 282);
@@ -443,8 +499,16 @@ console.log("⚠️ KAIZEN SCANNER V2 - UPDATED CODE LOADED"); // Add this line
       doc.setTextColor(darkGrey[0], darkGrey[1], darkGrey[2]);
       doc.setFontSize(10);
       doc.setFont("helvetica", "normal");
-      doc.text("Google uses these three metrics to determine if your website provides a good user experience.", 15, yPos);
-      doc.text("They directly impact your search rankings and conversion rates.", 15, yPos + 5);
+      doc.text(
+        "Google uses these three metrics to determine if your website provides a good user experience.",
+        15,
+        yPos,
+      );
+      doc.text(
+        "They directly impact your search rankings and conversion rates.",
+        15,
+        yPos + 5,
+      );
       yPos += 18;
 
       // Helper to draw metric cards with comprehensive explanations
@@ -457,7 +521,7 @@ console.log("⚠️ KAIZEN SCANNER V2 - UPDATED CODE LOADED"); // Add this line
         whyItMatters: string,
         howToFix: string[],
         goodThreshold: string,
-        poorThreshold: string
+        poorThreshold: string,
       ) => {
         const status = getStatus(metricKey, numValue);
         const cardHeight = 62;
@@ -517,7 +581,11 @@ console.log("⚠️ KAIZEN SCANNER V2 - UPDATED CODE LOADED"); // Add this line
         // Thresholds
         doc.setFontSize(7);
         doc.setTextColor(100, 100, 100);
-        doc.text(`Good: ${goodThreshold} | Poor: ${poorThreshold}`, 23, yPos + cardHeight - 3);
+        doc.text(
+          `Good: ${goodThreshold} | Poor: ${poorThreshold}`,
+          23,
+          yPos + cardHeight - 3,
+        );
 
         yPos += cardHeight + 5;
       };
@@ -531,10 +599,15 @@ console.log("⚠️ KAIZEN SCANNER V2 - UPDATED CODE LOADED"); // Add this line
         "Time until the main content is visible. Usually your hero image or headline.",
         "Users won't wait. 53% leave if a page takes over 3 seconds to show content.",
         lcpVal > 2.5
-          ? ["Compress & resize images", "Use WebP format", "Preload hero image", "Upgrade hosting"]
+          ? [
+              "Compress & resize images",
+              "Use WebP format",
+              "Preload hero image",
+              "Upgrade hosting",
+            ]
           : ["Maintain current optimizations", "Monitor for regressions"],
         "≤ 2.5s",
-        "> 4.0s"
+        "> 4.0s",
       );
 
       // TBT Card
@@ -546,10 +619,15 @@ console.log("⚠️ KAIZEN SCANNER V2 - UPDATED CODE LOADED"); // Add this line
         "Time the page is frozen while loading JavaScript. Users can't click or scroll.",
         "A frozen page feels broken. High TBT kills conversions and frustrates users.",
         tbtVal > 200
-          ? ["Remove unused JavaScript", "Defer non-critical scripts", "Delay chat widgets", "Split code bundles"]
+          ? [
+              "Remove unused JavaScript",
+              "Defer non-critical scripts",
+              "Delay chat widgets",
+              "Split code bundles",
+            ]
           : ["Keep JavaScript minimal", "Monitor third-party scripts"],
         "≤ 200ms",
-        "> 600ms"
+        "> 600ms",
       );
 
       // CLS Card
@@ -561,10 +639,15 @@ console.log("⚠️ KAIZEN SCANNER V2 - UPDATED CODE LOADED"); // Add this line
         "How much the page layout jumps around as it loads. Higher = more annoying.",
         "Users click wrong buttons when content shifts. It looks unprofessional.",
         clsVal > 0.1
-          ? ["Add width/height to images", "Reserve space for ads", "Avoid inserting content above", "Use font-display: swap"]
+          ? [
+              "Add width/height to images",
+              "Reserve space for ads",
+              "Avoid inserting content above",
+              "Use font-display: swap",
+            ]
           : ["Ensure all images have dimensions", "Test on slow connections"],
         "≤ 0.1",
-        "> 0.25"
+        "> 0.25",
       );
 
       // Additional metrics section
@@ -582,7 +665,11 @@ console.log("⚠️ KAIZEN SCANNER V2 - UPDATED CODE LOADED"); // Add this line
       const siStatus = getStatus("si", siVal);
 
       doc.text(`First Contentful Paint: ${metrics.fcp}`, 20, yPos + 18);
-      doc.setTextColor(fcpStatus.color[0], fcpStatus.color[1], fcpStatus.color[2]);
+      doc.setTextColor(
+        fcpStatus.color[0],
+        fcpStatus.color[1],
+        fcpStatus.color[2],
+      );
       doc.text(`(${fcpStatus.text})`, 75, yPos + 18);
 
       doc.setTextColor(white[0], white[1], white[2]);
@@ -600,66 +687,73 @@ console.log("⚠️ KAIZEN SCANNER V2 - UPDATED CODE LOADED"); // Add this line
       doc.setTextColor(darkGrey[0], darkGrey[1], darkGrey[2]);
       doc.setFontSize(9);
       doc.setFont("helvetica", "normal");
-      doc.text("These are specific issues Google found on your site. Fixing them will improve your score and user experience.", 15, yPos);
+      doc.text(
+        "These are specific issues Google found on your site. Fixing them will improve your score and user experience.",
+        15,
+        yPos,
+      );
       yPos += 12;
 
       // Opportunity explanations (plain English)
-      const opportunityExplanations: Record<string, { what: string; why: string; fix: string }> = {
+      const opportunityExplanations: Record<
+        string,
+        { what: string; why: string; fix: string }
+      > = {
         "render-blocking-resources": {
           what: "CSS and JavaScript files that block the page from showing content",
           why: "Your visitors stare at a blank screen while these files load",
-          fix: "Move non-critical CSS/JS to load after the page appears"
+          fix: "Move non-critical CSS/JS to load after the page appears",
         },
         "unused-javascript": {
           what: "JavaScript code that's downloaded but never used",
           why: "Wastes bandwidth and slows down your site for no benefit",
-          fix: "Remove unused libraries or use code-splitting"
+          fix: "Remove unused libraries or use code-splitting",
         },
         "unused-css-rules": {
           what: "CSS styles that are downloaded but never applied to any element",
           why: "Extra bytes that slow loading without adding any visual value",
-          fix: "Use PurgeCSS or audit your stylesheets"
+          fix: "Use PurgeCSS or audit your stylesheets",
         },
         "offscreen-images": {
           what: "Images below the fold that load immediately instead of when needed",
           why: "Delays the important content above the fold",
-          fix: "Add loading='lazy' to images below the fold"
+          fix: "Add loading='lazy' to images below the fold",
         },
         "uses-optimized-images": {
           what: "Images that could be compressed without losing visible quality",
           why: "Large images are the #1 cause of slow websites",
-          fix: "Compress images using TinyPNG or Squoosh"
+          fix: "Compress images using TinyPNG or Squoosh",
         },
         "uses-webp-images": {
           what: "Images in older formats (JPEG/PNG) instead of modern WebP",
           why: "WebP is 25-35% smaller than JPEG with the same quality",
-          fix: "Convert images to WebP format"
+          fix: "Convert images to WebP format",
         },
         "server-response-time": {
           what: "Your server takes too long to respond to requests",
           why: "Everything waits for the server - this is a fundamental bottleneck",
-          fix: "Upgrade hosting, add caching, or optimise your database"
+          fix: "Upgrade hosting, add caching, or optimise your database",
         },
         "mainthread-work-breakdown": {
           what: "Too much JavaScript running on the main browser thread",
           why: "The page feels frozen and unresponsive while this runs",
-          fix: "Defer non-critical JavaScript, remove unused code"
+          fix: "Defer non-critical JavaScript, remove unused code",
         },
         "third-party-summary": {
           what: "External scripts (analytics, chat widgets, ads) slowing your site",
           why: "You don't control these - they can change and slow you down anytime",
-          fix: "Delay loading of non-essential third-party scripts"
+          fix: "Delay loading of non-essential third-party scripts",
         },
         "dom-size": {
           what: "Too many HTML elements on the page",
           why: "More elements = more work for the browser = slower page",
-          fix: "Simplify your page structure, remove unnecessary wrappers"
+          fix: "Simplify your page structure, remove unnecessary wrappers",
         },
         "font-display": {
           what: "Custom fonts blocking text from appearing",
           why: "Visitors see nothing or placeholder text while fonts load",
-          fix: "Add font-display: swap to your font declarations"
-        }
+          fix: "Add font-display: swap to your font declarations",
+        },
       };
 
       // Draw opportunities from actual PageSpeed results
@@ -672,7 +766,7 @@ console.log("⚠️ KAIZEN SCANNER V2 - UPDATED CODE LOADED"); // Add this line
           const explanation = opportunityExplanations[opp.id] || {
             what: opp.title,
             why: "This affects your page performance",
-            fix: "Consult with a developer to resolve this"
+            fix: "Consult with a developer to resolve this",
           };
 
           // Opportunity card
@@ -693,23 +787,35 @@ console.log("⚠️ KAIZEN SCANNER V2 - UPDATED CODE LOADED"); // Add this line
           if (opp.savings) {
             doc.setTextColor(red[0], red[1], red[2]);
             doc.setFontSize(8);
-            doc.text(`Potential savings: ${opp.savings}`, pageWidth - 70, yPos + 7);
+            doc.text(
+              `Potential savings: ${opp.savings}`,
+              pageWidth - 70,
+              yPos + 7,
+            );
           }
 
           // Why and Fix
           doc.setFontSize(8);
           doc.setTextColor(darkGrey[0], darkGrey[1], darkGrey[2]);
           doc.setFont("helvetica", "normal");
-          doc.text(`Why it matters: ${explanation.why}`, 23, yPos + 15, { maxWidth: 165 });
+          doc.text(`Why it matters: ${explanation.why}`, 23, yPos + 15, {
+            maxWidth: 165,
+          });
           doc.setTextColor(green[0], green[1], green[2]);
-          doc.text(`How to fix: ${explanation.fix}`, 23, yPos + 23, { maxWidth: 165 });
+          doc.text(`How to fix: ${explanation.fix}`, 23, yPos + 23, {
+            maxWidth: 165,
+          });
 
           yPos += 37;
         });
       } else {
         doc.setFontSize(10);
         doc.setTextColor(green[0], green[1], green[2]);
-        doc.text("Great news! No major opportunities for improvement were found.", 15, yPos + 10);
+        doc.text(
+          "Great news! No major opportunities for improvement were found.",
+          15,
+          yPos + 10,
+        );
         yPos += 25;
       }
 
@@ -723,33 +829,70 @@ console.log("⚠️ KAIZEN SCANNER V2 - UPDATED CODE LOADED"); // Add this line
       doc.setTextColor(darkGrey[0], darkGrey[1], darkGrey[2]);
       doc.setFontSize(10);
       doc.setFont("helvetica", "normal");
-      doc.text("Based on your results, here's a prioritised checklist to improve your site's performance:", 15, yPos);
+      doc.text(
+        "Based on your results, here's a prioritised checklist to improve your site's performance:",
+        15,
+        yPos,
+      );
       yPos += 15;
 
       // Priority actions based on score
       const priorityActions = [];
 
       if (lcpVal > 2.5) {
-        priorityActions.push({ priority: "HIGH", action: "Fix LCP: Optimise your hero image and preload it", impact: "Major" });
+        priorityActions.push({
+          priority: "HIGH",
+          action: "Fix LCP: Optimise your hero image and preload it",
+          impact: "Major",
+        });
       }
       if (tbtVal > 200) {
-        priorityActions.push({ priority: "HIGH", action: "Reduce JavaScript: Defer non-critical scripts", impact: "Major" });
+        priorityActions.push({
+          priority: "HIGH",
+          action: "Reduce JavaScript: Defer non-critical scripts",
+          impact: "Major",
+        });
       }
       if (clsVal > 0.1) {
-        priorityActions.push({ priority: "MEDIUM", action: "Fix layout shifts: Add dimensions to all images", impact: "Moderate" });
+        priorityActions.push({
+          priority: "MEDIUM",
+          action: "Fix layout shifts: Add dimensions to all images",
+          impact: "Moderate",
+        });
       }
       if (fcpVal > 1.8) {
-        priorityActions.push({ priority: "MEDIUM", action: "Improve FCP: Inline critical CSS above the fold", impact: "Moderate" });
+        priorityActions.push({
+          priority: "MEDIUM",
+          action: "Improve FCP: Inline critical CSS above the fold",
+          impact: "Moderate",
+        });
       }
 
       // Always include these
-      priorityActions.push({ priority: "ONGOING", action: "Convert all images to WebP format", impact: "Moderate" });
-      priorityActions.push({ priority: "ONGOING", action: "Enable browser caching for static assets", impact: "Moderate" });
-      priorityActions.push({ priority: "ONGOING", action: "Delay loading of chat widgets by 3-5 seconds", impact: "Minor" });
+      priorityActions.push({
+        priority: "ONGOING",
+        action: "Convert all images to WebP format",
+        impact: "Moderate",
+      });
+      priorityActions.push({
+        priority: "ONGOING",
+        action: "Enable browser caching for static assets",
+        impact: "Moderate",
+      });
+      priorityActions.push({
+        priority: "ONGOING",
+        action: "Delay loading of chat widgets by 3-5 seconds",
+        impact: "Minor",
+      });
 
       // Draw action items
       priorityActions.forEach((item, i) => {
-        const priorityColor = item.priority === "HIGH" ? red : item.priority === "MEDIUM" ? orange : green;
+        const priorityColor =
+          item.priority === "HIGH"
+            ? red
+            : item.priority === "MEDIUM"
+              ? orange
+              : green;
 
         doc.setFillColor(lightGrey[0], lightGrey[1], lightGrey[2]);
         doc.roundedRect(15, yPos, pageWidth - 30, 14, 2, 2, "F");
@@ -793,12 +936,24 @@ console.log("⚠️ KAIZEN SCANNER V2 - UPDATED CODE LOADED"); // Add this line
       doc.setTextColor(white[0], white[1], white[2]);
       doc.setFontSize(10);
       doc.setFont("helvetica", "normal");
-      doc.text("We specialise in performance optimisation for high-converting websites.", 22, yPos + 26);
-      doc.text("Book a free 15-minute discovery call and we'll create a fixed-price quote.", 22, yPos + 34);
+      doc.text(
+        "We specialise in performance optimisation for high-converting websites.",
+        22,
+        yPos + 26,
+      );
+      doc.text(
+        "Book a free 15-minute discovery call and we'll create a fixed-price quote.",
+        22,
+        yPos + 34,
+      );
 
       doc.setFontSize(9);
       doc.setTextColor(150, 150, 150);
-      doc.text("Email: hello@kaizenweb.co.uk  |  Web: kaizenweb.co.uk/contact", 22, yPos + 46);
+      doc.text(
+        "Email: hello@kaizenweb.co.uk  |  Web: kaizenweb.co.uk/contact",
+        22,
+        yPos + 46,
+      );
 
       // Button
       const btnX = 140;

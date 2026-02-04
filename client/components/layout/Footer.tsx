@@ -58,7 +58,7 @@ const Footer: React.FC<FooterProps> = () => {
   useEffect(() => {
     // Fetch build timestamp for version verification
     fetch("/build-timestamp.txt")
-      .then((res) => res.ok ? res.text() : null)
+      .then((res) => (res.ok ? res.text() : null))
       .then((timestamp) => {
         if (timestamp) {
           const date = new Date(timestamp.trim());

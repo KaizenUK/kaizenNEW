@@ -1,7 +1,7 @@
-import React, { useState, useRef } from 'react';
-import { ArrowRight, ArrowUpRight } from 'lucide-react';
-import { openCrisp } from '@/lib/crisp-utils';
-import { DEFAULT_OG_IMAGE } from '@/lib/seo';
+import React, { useState, useRef } from "react";
+import { ArrowRight, ArrowUpRight } from "lucide-react";
+import { openCrisp } from "@/lib/crisp-utils";
+import { DEFAULT_OG_IMAGE } from "@/lib/seo";
 
 /**
  * Hero Section - optimized for performance with CSS animations
@@ -35,7 +35,6 @@ export const HeroRemotionSequence: React.FC = () => {
         className="absolute inset-0 w-0 h-0 opacity-0 pointer-events-none"
         aria-hidden="true"
       />
-
 
       {/* Fixed mesh gradient background */}
       <div className="hero-mesh-bg absolute inset-0 -z-10">
@@ -74,12 +73,12 @@ export const HeroRemotionSequence: React.FC = () => {
       <div
         className="hero-spotlight absolute -z-10 opacity-60"
         style={{
-          width: '600px',
-          height: '600px',
+          width: "600px",
+          height: "600px",
           left: `${spotlightPos.x - 300}px`,
           top: `${spotlightPos.y - 300}px`,
           background: `radial-gradient(circle, rgba(6, 182, 212, 0.15) 0%, rgba(124, 58, 237, 0.08) 50%, transparent 100%)`,
-          transform: 'translate3d(0, 0, 0)',
+          transform: "translate3d(0, 0, 0)",
         }}
       />
 
@@ -90,21 +89,23 @@ export const HeroRemotionSequence: React.FC = () => {
         <div className="max-w-4xl mx-auto text-center">
           <p
             className="text-xs font-mono tracking-[0.25em] text-kaizen-cyan mb-6 uppercase hero-reveal"
-            style={{ '--delay': '0s' } as React.CSSProperties}
+            style={{ "--delay": "0s" } as React.CSSProperties}
           >
             Wirral Web Design
           </p>
 
           <h1
             className="text-5xl md:text-7xl font-heading font-black mb-8 leading-tight hero-reveal text-white"
-            style={{ '--delay': '0s' } as React.CSSProperties}
+            style={{ "--delay": "0s" } as React.CSSProperties}
           >
-            Web Design Wirral:<br />Lean, Fast, &amp; Profitable Websites
+            Web Design Wirral:
+            <br />
+            Lean, Fast, &amp; Profitable Websites
           </h1>
 
           <p
             className="text-lg md:text-xl text-white/85 leading-relaxed mb-12 max-w-3xl mx-auto hero-reveal"
-            style={{ '--delay': '0.2s' } as React.CSSProperties}
+            style={{ "--delay": "0.2s" } as React.CSSProperties}
           >
             Stop losing customers to slow loading times. We build streamlined
             sites designed to convert traffic into leads.
@@ -112,7 +113,7 @@ export const HeroRemotionSequence: React.FC = () => {
 
           <div
             className="flex flex-col sm:flex-row items-center justify-center gap-4 hero-reveal"
-            style={{ '--delay': '0.4s' } as React.CSSProperties}
+            style={{ "--delay": "0.4s" } as React.CSSProperties}
           >
             <button
               onClick={() => openCrisp()}
@@ -124,8 +125,10 @@ export const HeroRemotionSequence: React.FC = () => {
 
             <button
               onClick={() => {
-                const slider = document.getElementById('pricing-slider-section');
-                slider?.scrollIntoView({ behavior: 'smooth' });
+                const slider = document.getElementById(
+                  "pricing-slider-section",
+                );
+                slider?.scrollIntoView({ behavior: "smooth" });
               }}
               className="px-8 py-4 rounded-lg border-2 border-white/30 text-white font-heading font-bold text-lg inline-flex items-center justify-center gap-2 transition-all duration-200 hover:scale-105 hover:border-cyan-400 hover:text-cyan-400 hover:shadow-[0_0_20px_rgba(6,182,212,0.3)] active:scale-95"
             >
