@@ -10,10 +10,11 @@ type MetricsState = {
 
 // Initialize Supabase client
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || "";
-const supabaseKey = import.meta.env.VITE_SUPABASE_KEY || "";
+// FIX: Changed from VITE_SUPABASE_KEY to VITE_SUPABASE_ANON_KEY to match your .env
+const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY || ""; 
+
 const supabase =
   supabaseUrl && supabaseKey ? createClient(supabaseUrl, supabaseKey) : null;
-
 export default function SpeedScanner() {
   const [url, setUrl] = useState("");
   const [loading, setLoading] = useState(false);
@@ -111,28 +112,49 @@ export default function SpeedScanner() {
     }
   }
 
-  async function handleUnlock() {
-    const normalizedEmail = email.trim();
+async function handleUnlock() {
+console.log("⚠️ KAIZEN SCANNER V2 - UPDATED CODE LOADED"); // Add this line
+  const normalizedEmail = email.trim();
+
+    // 1. Validation
     if (!normalizedEmail || !normalizedEmail.includes("@")) {
       setEmailError("Please enter a valid email address.");
       return;
     }
 
-    // Save to Supabase if client is initialized
+    setStatusMsg("Saving results...");
+
+    // 2. Save to Supabase (Client-Side)
     if (supabase) {
       try {
-        await supabase.from("speed_scanner_submissions").insert({
-          email: normalizedEmail,
-          website_url: url || null,
-          performance_score: score,
-        });
-      } catch (error) {
-        console.error("Error saving email to Supabase:", error);
-        // Still proceed even if save fails - don't block user from getting PDF
+        // FIX 1: Table name changed from 'leads' to 'speed_scanner_submissions'
+        const { error } = await supabase.from("speed_scanner_submissions").insert([
+          {
+            email: normalizedEmail,
+            // FIX 2: Mapped 'url' to 'website_url' (to match your DB column)
+            website_url: url || null,
+            // FIX 3: Mapped 'score' to 'performance_score' (to match your DB column)
+            performance_score: score, 
+            // FIX 4: Removed 'lcp' because your table doesn't have that column
+            // created_at is handled automatically by Supabase
+          },
+        ]);
+
+        if (error) {
+          console.error("Supabase Error:", error.message);
+        } else {
+          console.log("Saved successfully!");
+        }
+      } catch (err) {
+        console.error("Save failed:", err);
       }
+    } else {
+      console.warn("Supabase not connected. Check .env keys.");
     }
 
+    // 3. Success - Unlock the view regardless of save status
     setIsEmailSubmitted(true);
+    setStatusMsg("Success! Report Unlocked.");
     setEmailError("");
   }
 

@@ -48,7 +48,24 @@ export default defineConfig(({ mode }) => ({
             "@radix-ui/react-tabs",
             "@radix-ui/react-toggle",
           ],
-          "vendor-animations": ["framer-motion"],
+          "vendor-animations": [
+            "framer-motion",
+            "gsap",
+            "@react-spring/web",
+          ],
+          // Split heavy animation libraries separately
+          "vendor-particles": [
+            "@tsparticles/react",
+            "@tsparticles/slim",
+            "@tsparticles/engine",
+          ],
+          "vendor-remotion": [
+            "remotion",
+            "@remotion/player",
+          ],
+          "vendor-lottie": [
+            "lottie-react",
+          ],
           "vendor-charts": ["recharts"],
           "vendor-maps": ["leaflet", "react-leaflet"],
         },

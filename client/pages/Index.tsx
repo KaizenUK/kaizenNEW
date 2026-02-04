@@ -1156,19 +1156,54 @@ const SEOFAQSection = () => {
       eyebrow="Common Questions"
       items={[
         {
-          question: "What is your role if AI does the coding?",
+          question: "How quickly can you build my website?",
           answer:
-            "AI is the engine; we are the pilots. Our Contract Product Owners define the strategy, user journey, and business logic. We ensure the AI builds the right product that actually solves your business problem.",
+            "Most websites are delivered within 2-4 weeks depending on complexity. We focus on rapid deployment of core functionality first, then iterate based on real user feedback rather than building everything upfront.",
         },
         {
           question: "Are you based on the Wirral?",
           answer:
-            "Yes — we’re based in Moreton on the Wirral, and we work with clients across the UK. We’re happy to meet face-to-face for local projects.",
+            "Yes — we're based in Moreton on the Wirral, and we work with clients across the UK. We're happy to meet face-to-face for local projects.",
         },
         {
           question: "Do you provide hosting?",
           answer:
             "We provide high-performance VPS hosting for clients on our maintenance plans. We do not use cheap shared hosting as it compromises speed and security.",
+        },
+        {
+          question: "What makes your websites faster than competitors?",
+          answer:
+            "We use modern frameworks like React and headless architecture, implement aggressive code splitting, optimize all images, use CDN delivery, and follow Google's Core Web Vitals guidelines. Most agencies still build slow WordPress sites.",
+        },
+        {
+          question: "Can you redesign my existing website?",
+          answer:
+            "Absolutely. We specialize in rescuing and rebuilding underperforming websites. We'll audit your current site, identify performance bottlenecks, and deliver a faster, conversion-optimized replacement.",
+        },
+        {
+          question: "Do you offer SEO services?",
+          answer:
+            "Yes. We focus on technical SEO fundamentals: fast page speeds, mobile optimization, structured data, and clean architecture. We don't do keyword stuffing — we build sites that Google naturally wants to rank.",
+        },
+        {
+          question: "What happens after my website launches?",
+          answer:
+            "We offer ongoing maintenance plans that include security updates, performance monitoring, content updates, and technical support. You're never locked into a contract — month-to-month only.",
+        },
+        {
+          question: "Can I update the website myself?",
+          answer:
+            "Yes. We provide an intuitive content management system (headless CMS) that lets you update text, images, and pages without touching code. We also provide training and documentation.",
+        },
+        {
+          question: "What if I need help with my existing web developer's work?",
+          answer:
+            "We offer project rescue services. If your current build is late, over budget, or stuck, we can step in to stabilize the project, fix technical issues, and get you launched.",
+        },
+        {
+          question: "Do you work with e-commerce sites?",
+          answer:
+            "Yes. We build high-performance e-commerce stores using modern platforms like Shopify Plus, headless Commerce.js, or custom React solutions. We focus on conversion optimization and fast checkout experiences.",
         },
       ]}
     />
@@ -1665,19 +1700,26 @@ const LocalMap = () => {
   );
 };
 
+// Enhanced components with advanced animations
+import { HeroRemotionSequence } from "@/components/homepage/HeroRemotionSequence";
+import { ValueProposition } from "@/components/homepage/ValueProposition";
+import { PerformanceShowcase } from "@/components/homepage/PerformanceShowcase";
+import { ServiceShowcase } from "@/components/homepage/ServiceShowcase";
+
 export default function Home() {
   return (
     <Layout>
-      <HeroSection />
-      <AuthorityBridge />
-      <SocialMediaWarning />
-      <SpeedScanner />
-      <ServicePillars />
-      <PerformanceBadge />
+      {/* Enhanced sections with Remotion, GSAP, React Spring, Particles, Framer Motion */}
+      <HeroRemotionSequence />
+      <ValueProposition />
+      <PerformanceShowcase />
+      <ServiceShowcase />
+
+      {/* Existing sections */}
       <LocalMap />
-      <CoreServiceVerticals />
       <PricingSlider />
       <PricingCTABanner />
+      <AIPriceNarrative />
       <LatestInsights />
       <SEOFAQSection />
       <WhoWeHelp />

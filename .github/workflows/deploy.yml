@@ -1,0 +1,33 @@
+name: Deploy to cPanel
+
+on:
+  push:
+    branches:
+      - main  # Or 'master', whichever is your default
+
+jobs:
+  web-deploy:
+    name: 🎉 Deploy
+    runs-on: ubuntu-latest
+    steps:
+      # 1. Get the latest code
+      - name: 🚚 Get latest code
+        uses: actions/checkout@v4
+
+      # 2. Install Node and Build the site
+      - name: 🔨 Install & Build
+        run: |
+          npm install
+          npm run build
+        # This creates the fresh 'dist' folder in the cloud
+
+      # 3. Upload 'dist' to cPanel via FTP
+      - name: 📂 Sync files
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          local-dir: ./dist/      # We only upload the build folder
+          server-dir: ./public_html/  # Where it goes on the server
+          dangerous-clean-slate: true # DELETES old files on server first (The "Scorched Earth" method)
