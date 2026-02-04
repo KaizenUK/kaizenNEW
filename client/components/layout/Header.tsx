@@ -305,7 +305,7 @@ const Header: React.FC<HeaderProps> = ({
             className="flex items-center gap-3 hover:opacity-90 transition flex-shrink-0"
           >
             <img
-              src="https://cdn.builder.io/api/v1/image/assets%2Fe4ae46bbd81b4b95bef54d66dd9748cc%2F03f6c5dd481449d297c430cab962412e?format=webp&width=400"
+              src="https://cdn.builder.io/api/v1/image/assets%2Fe4ae46bbd81b4b95bef54d66dd9748cc%2F03f6c5dd481449d297c430cab962412e?format=webp&width=200&quality=80"
               alt="Kaizen Web"
               width="200"
               height="64"
