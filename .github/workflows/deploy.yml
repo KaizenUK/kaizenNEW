@@ -27,12 +27,12 @@ jobs:
           npm run build
 
       # 4. Deploy via Rsync (The "Unblockable" Method)
-      - name: 🚀 Deploy to cPanel
+- name: 🚀 Deploy to cPanel
         uses: easingthemes/ssh-deploy@v5.1.0
         with:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
           REMOTE_HOST: ${{ secrets.FTP_SERVER }}
           REMOTE_USER: ${{ secrets.FTP_USERNAME }}
-          SOURCE: "dist/"           # The folder we built
-          TARGET: "public_html/"    # Where it goes on the server
-          ARGS: "-rltgoDzvO"        # Standard copy flags (O = no time checks, safer for cPanel)
+          SOURCE: "dist/spa/"       # 👈 CHANGED: Point deeper to the client folder
+          TARGET: "public_html/"    
+          ARGS: "-rltgoDzvO"
