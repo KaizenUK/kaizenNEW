@@ -1,6 +1,5 @@
-import React, { Suspense, useEffect, useRef, useState } from "react";
+import React, { Suspense, useEffect, useRef, useState, lazy } from "react";
 import { motion } from "framer-motion";
-import { lazy } from "react";
 import {
   ArrowRight,
   ArrowUpRight,
