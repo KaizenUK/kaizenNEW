@@ -329,75 +329,107 @@ console.log("⚠️ KAIZEN SCANNER V2 - UPDATED CODE LOADED"); // Add this line
         doc.text(`Page ${pageNum} of ${totalPages}`, pageWidth / 2, pageHeight - 8, { align: "center" });
       };
 
-      // PAGE 1: COVER
+      // ============================================
+      // PAGE 1: COVER PAGE
+      // ============================================
       doc.setFillColor(navy[0], navy[1], navy[2]);
       doc.rect(0, 0, pageWidth, pageHeight, "F");
 
       // Brand
-      if (LOGO_BASE64) {
-        try {
-          doc.addImage(LOGO_BASE64, "PNG", 20, 20, 40, 40);
-        } catch (e) {
-          doc.setTextColor(cyan[0], cyan[1], cyan[2]);
-          doc.setFontSize(30);
-          doc.setFont("helvetica", "bold");
-          doc.text("KAIZEN", 20, 40);
-        }
-      } else {
-        doc.setTextColor(cyan[0], cyan[1], cyan[2]);
-        doc.setFontSize(30);
-        doc.setFont("helvetica", "bold");
-        doc.text("KAIZEN", 20, 40);
-      }
-
-      doc.setTextColor(white[0], white[1], white[2]);
-      doc.setFontSize(12);
-      doc.setFont("helvetica", "normal");
-      doc.text("PERFORMANCE AUDIT REPORT", 20, 70);
-
-      doc.setFontSize(22);
+      doc.setTextColor(cyan[0], cyan[1], cyan[2]);
+      doc.setFontSize(28);
       doc.setFont("helvetica", "bold");
-      doc.text(url || "Website Audit", 20, 80);
-
-      // Score Circle
-      const scoreColor =
-        score && score < 50 ? red : score && score < 90 ? orange : green;
-      doc.setDrawColor(scoreColor[0], scoreColor[1], scoreColor[2]);
-      doc.setLineWidth(3);
-      doc.circle(150, 50, 20, "S");
-
-      doc.setFontSize(20);
+      doc.text("KAIZEN", 20, 30);
+      doc.setFontSize(10);
       doc.setTextColor(white[0], white[1], white[2]);
-      doc.text(`${score}`, 144, 53);
+      doc.setFont("helvetica", "normal");
+      doc.text("Performance Web Design", 20, 38);
 
-      // Screenshot Phone Frame
+      // Report Title
+      doc.setFontSize(10);
+      doc.setTextColor(cyan[0], cyan[1], cyan[2]);
+      doc.text("WEBSITE PERFORMANCE AUDIT", 20, 60);
+
+      doc.setFontSize(18);
+      doc.setTextColor(white[0], white[1], white[2]);
+      doc.setFont("helvetica", "bold");
+      const displayUrl = url.length > 40 ? url.substring(0, 40) + "..." : url;
+      doc.text(displayUrl || "Website Audit", 20, 72);
+
+      // Score Section
+      const scoreColor = score && score < 50 ? red : score && score < 90 ? orange : green;
+      doc.setFillColor(scoreColor[0], scoreColor[1], scoreColor[2]);
+      doc.circle(pageWidth - 40, 50, 22, "F");
+      doc.setTextColor(white[0], white[1], white[2]);
+      doc.setFontSize(24);
+      doc.setFont("helvetica", "bold");
+      const scoreText = `${score}`;
+      doc.text(scoreText, pageWidth - 40 - (scoreText.length * 3.5), 56);
+      doc.setFontSize(8);
+      doc.text("/ 100", pageWidth - 40 + 8, 56);
+
+      // Score interpretation
+      doc.setFontSize(9);
+      doc.setTextColor(scoreColor[0], scoreColor[1], scoreColor[2]);
+      const interpretation = score && score >= 90 ? "Excellent" : score && score >= 50 ? "Needs Work" : "Poor";
+      doc.text(interpretation, pageWidth - 50, 80);
+
+      // Quick Summary Box
+      doc.setFillColor(30, 41, 59);
+      doc.roundedRect(15, 95, pageWidth - 30, 55, 3, 3, "F");
+      doc.setTextColor(cyan[0], cyan[1], cyan[2]);
+      doc.setFontSize(10);
+      doc.setFont("helvetica", "bold");
+      doc.text("QUICK SUMMARY", 22, 108);
+
+      doc.setTextColor(white[0], white[1], white[2]);
+      doc.setFontSize(9);
+      doc.setFont("helvetica", "normal");
+
+      // Summary metrics in columns
+      const summaryY = 120;
+      const col1 = 22, col2 = 75, col3 = 128;
+
+      doc.setFont("helvetica", "bold");
+      doc.text("LCP", col1, summaryY);
+      doc.text("CLS", col2, summaryY);
+      doc.text("TBT", col3, summaryY);
+
+      doc.setFontSize(14);
+      const lcpStatus = getStatus("lcp", lcpVal);
+      const clsStatus = getStatus("cls", clsVal);
+      const tbtStatus = getStatus("tbt", tbtVal);
+
+      doc.setTextColor(lcpStatus.color[0], lcpStatus.color[1], lcpStatus.color[2]);
+      doc.text(metrics.lcp || "-", col1, summaryY + 12);
+      doc.setTextColor(clsStatus.color[0], clsStatus.color[1], clsStatus.color[2]);
+      doc.text(metrics.cls || "-", col2, summaryY + 12);
+      doc.setTextColor(tbtStatus.color[0], tbtStatus.color[1], tbtStatus.color[2]);
+      doc.text(metrics.tbt || "-", col3, summaryY + 12);
+
+      // Screenshot
       if (screenshot) {
-        const phoneX = pageWidth / 2 - 40;
-        const phoneY = 110;
-        const phoneW = 80;
-        const phoneH = 140;
-
+        const phoneX = pageWidth / 2 - 35;
+        const phoneY = 160;
+        const phoneW = 70;
+        const phoneH = 100;
         doc.setFillColor(20, 20, 20);
-        doc.roundedRect(
-          phoneX - 3,
-          phoneY - 3,
-          phoneW + 6,
-          phoneH + 6,
-          6,
-          6,
-          "F",
-        );
-
-        const imageFormat = screenshot.startsWith("data:image/png")
-          ? "PNG"
-          : "JPEG";
-        doc.addImage(screenshot, imageFormat, phoneX, phoneY, phoneW, phoneH);
+        doc.roundedRect(phoneX - 3, phoneY - 3, phoneW + 6, phoneH + 6, 4, 4, "F");
+        try {
+          const imageFormat = screenshot.startsWith("data:image/png") ? "PNG" : "JPEG";
+          doc.addImage(screenshot, imageFormat, phoneX, phoneY, phoneW, phoneH);
+        } catch (e) {
+          // Screenshot failed to load
+        }
       }
 
-      doc.setFontSize(10);
-      doc.setTextColor(150, 150, 150);
-      doc.text(`Generated: ${new Date().toLocaleDateString()}`, 20, 280);
-      doc.text("kaizenweb.co.uk", 160, 280);
+      // Footer
+      doc.setFontSize(9);
+      doc.setTextColor(100, 100, 100);
+      doc.text(`Generated: ${new Date().toLocaleDateString("en-GB")} at ${new Date().toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" })}`, 20, 275);
+      doc.text("Powered by Google Lighthouse", 20, 282);
+      doc.setTextColor(cyan[0], cyan[1], cyan[2]);
+      doc.text("kaizenweb.co.uk", pageWidth - 45, 282);
 
       // PAGE 2: ANALYSIS
       doc.addPage();
