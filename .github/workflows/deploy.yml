@@ -27,13 +27,15 @@ jobs:
           npm run build
         # The build will now succeed because it can read the keys from the .env file we just made.
 
-      # 4. Upload 'dist' to cPanel via FTP
+# 4. Upload 'dist' to cPanel via SFTP (Secure)
       - name: 📂 Sync files
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
           server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
-          local-dir: ./dist/      # Uploads only the build folder
-          server-dir: ./public_html/  # Puts it in the main folder
-          dangerous-clean-slate: true # Wipes old files first for a clean deploy
+          protocol: sftp             # 👈 ADD THIS
+          port: 22                   # 👈 ADD THIS
+          local-dir: ./dist/
+          server-dir: ./public_html/
+          dangerous-clean-slate: true
