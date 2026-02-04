@@ -55,6 +55,30 @@ const Footer: React.FC<FooterProps> = () => {
     setNextQuarter(getNextQuarter());
   }, []);
 
+  useEffect(() => {
+    // Fetch build timestamp for version verification
+    fetch("/build-timestamp.txt")
+      .then((res) => res.ok ? res.text() : null)
+      .then((timestamp) => {
+        if (timestamp) {
+          const date = new Date(timestamp.trim());
+          // Format as "DD/MM/YY HH:mm"
+          const formatted = date.toLocaleDateString("en-GB", {
+            day: "2-digit",
+            month: "2-digit",
+            year: "2-digit",
+            hour: "2-digit",
+            minute: "2-digit",
+            timeZone: "Europe/London",
+          });
+          setBuildVersion(formatted);
+        }
+      })
+      .catch(() => {
+        // Silently fail - build version is optional
+      });
+  }, []);
+
   const getDynamicCTA = () => {
     const path = location.pathname.toLowerCase();
 
