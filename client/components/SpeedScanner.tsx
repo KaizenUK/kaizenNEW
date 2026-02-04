@@ -1,11 +1,33 @@
 import { useState } from "react";
 import { createClient } from "@supabase/supabase-js";
 
-// Define the metrics type to stop TypeScript errors
+// Define the metrics type for comprehensive reporting
 type MetricsState = {
   lcp: string;
   cls: string;
   tbt: string;
+  fcp: string;
+  si: string;
+  tti: string;
+  // Raw values for calculations
+  lcpValue: number;
+  clsValue: number;
+  tbtValue: number;
+  fcpValue: number;
+  siValue: number;
+  // Opportunities and diagnostics from PageSpeed
+  opportunities: Array<{
+    id: string;
+    title: string;
+    description: string;
+    savings: string;
+    score: number;
+  }>;
+  diagnostics: Array<{
+    id: string;
+    title: string;
+    description: string;
+  }>;
 };
 
 // Initialize Supabase client
