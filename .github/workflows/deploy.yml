@@ -3,33 +3,36 @@ name: Deploy to cPanel
 on:
   push:
     branches:
-      - main  # ⚠️ Check main vs master
+      - main  # ⚠️ Double-check: 'main' or 'master'
 
 jobs:
   web-deploy:
     name: 🎉 Deploy
     runs-on: ubuntu-latest
     steps:
+      # 1. Get the latest code
       - name: 🚚 Get latest code
         uses: actions/checkout@v4
 
+      # 2. Create the .env file
       - name: 🔑 Make .env file
         run: |
           echo "VITE_SUPABASE_URL=${{ secrets.VITE_SUPABASE_URL }}" >> .env
           echo "VITE_SUPABASE_ANON_KEY=${{ secrets.VITE_SUPABASE_ANON_KEY }}" >> .env
 
+      # 3. Install Node and Build
       - name: 🔨 Install & Build
         run: |
           npm install
           npm run build
 
-      - name: 📂 Sync files via SFTP (Key Auth)
-        uses: wlixcc/SFTP-Deploy-Action@v1.2.4
+      # 4. Deploy via Rsync (The "Unblockable" Method)
+      - name: 🚀 Deploy to cPanel
+        uses: easingthemes/ssh-deploy@v5.1.0
         with:
-          server: ${{ secrets.FTP_SERVER }}
-          username: ${{ secrets.FTP_USERNAME }}
-          ssh_private_key: ${{ secrets.SSH_PRIVATE_KEY }} # 👈 Using Key now
-          port: 22 
-          local_path: './dist/*'
-          remote_path: '/public_html/'
-          sftp_only: true
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          REMOTE_HOST: ${{ secrets.FTP_SERVER }}
+          REMOTE_USER: ${{ secrets.FTP_USERNAME }}
+          SOURCE: "dist/"           # The folder we built
+          TARGET: "public_html/"    # Where it goes on the server
+          ARGS: "-rltgoDzvO"        # Standard copy flags (O = no time checks, safer for cPanel)
