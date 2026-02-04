@@ -117,23 +117,100 @@ export default function SpeedScanner() {
       }
 
       // 3. Extract Data
+      const audits = data.lighthouseResult.audits;
       const lighthouseScore =
         data.lighthouseResult.categories.performance.score * 100;
       setScore(Math.round(lighthouseScore));
 
-      const lcpAudit = data.lighthouseResult.audits["largest-contentful-paint"];
-      const clsAudit = data.lighthouseResult.audits["cumulative-layout-shift"];
-      const tbtAudit = data.lighthouseResult.audits["total-blocking-time"];
+      // Core Web Vitals
+      const lcpAudit = audits["largest-contentful-paint"];
+      const clsAudit = audits["cumulative-layout-shift"];
+      const tbtAudit = audits["total-blocking-time"];
+      const fcpAudit = audits["first-contentful-paint"];
+      const siAudit = audits["speed-index"];
+      const ttiAudit = audits["interactive"];
+
+      // Extract opportunities (things that can be fixed)
+      const opportunityIds = [
+        "render-blocking-resources",
+        "unused-javascript",
+        "unused-css-rules",
+        "offscreen-images",
+        "unminified-javascript",
+        "unminified-css",
+        "uses-optimized-images",
+        "uses-webp-images",
+        "uses-text-compression",
+        "uses-responsive-images",
+        "efficient-animated-content",
+        "duplicated-javascript",
+        "legacy-javascript",
+        "total-byte-weight",
+        "dom-size",
+        "critical-request-chains",
+        "redirects",
+        "uses-rel-preconnect",
+        "server-response-time",
+        "mainthread-work-breakdown",
+        "bootup-time",
+        "font-display",
+        "third-party-summary",
+      ];
+
+      const opportunities = opportunityIds
+        .map((id) => {
+          const audit = audits[id];
+          if (!audit || audit.score === 1 || audit.score === null) return null;
+          return {
+            id,
+            title: audit.title || id,
+            description: audit.description || "",
+            savings: audit.displayValue || "",
+            score: audit.score || 0,
+          };
+        })
+        .filter(Boolean) as MetricsState["opportunities"];
+
+      // Extract diagnostics
+      const diagnosticIds = [
+        "layout-shifts",
+        "long-tasks",
+        "non-composited-animations",
+        "unsized-images",
+        "lcp-element",
+        "largest-contentful-paint-element",
+      ];
+
+      const diagnostics = diagnosticIds
+        .map((id) => {
+          const audit = audits[id];
+          if (!audit) return null;
+          return {
+            id,
+            title: audit.title || id,
+            description: audit.description || "",
+          };
+        })
+        .filter(Boolean) as MetricsState["diagnostics"];
 
       setMetrics({
         lcp: lcpAudit?.displayValue ?? "-",
         cls: clsAudit?.displayValue ?? "-",
         tbt: tbtAudit?.displayValue ?? "-",
+        fcp: fcpAudit?.displayValue ?? "-",
+        si: siAudit?.displayValue ?? "-",
+        tti: ttiAudit?.displayValue ?? "-",
+        lcpValue: lcpAudit?.numericValue ? lcpAudit.numericValue / 1000 : 0,
+        clsValue: clsAudit?.numericValue ?? 0,
+        tbtValue: tbtAudit?.numericValue ?? 0,
+        fcpValue: fcpAudit?.numericValue ? fcpAudit.numericValue / 1000 : 0,
+        siValue: siAudit?.numericValue ? siAudit.numericValue / 1000 : 0,
+        opportunities,
+        diagnostics,
       });
 
-      const base64Image =
-        data.lighthouseResult.audits["final-screenshot"].details.data;
-      setScreenshot(base64Image);
+      const base64Image = audits["final-screenshot"]?.details?.data;
+      setScreenshot(base64Image || "");
 
       setLoading(false);
       setStatusMsg(""); // Clear status
