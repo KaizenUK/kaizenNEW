@@ -1153,7 +1153,8 @@ const LatestInsights = () => {
 
 const SEOFAQSection = () => {
   return (
-    <FaqSection
+    <Suspense fallback={<div className="py-16 bg-slate-900" />}>
+      <FaqSection
       heading="Common Questions from Wirral Businesses"
       eyebrow="Common Questions"
       items={[
@@ -1208,7 +1209,8 @@ const SEOFAQSection = () => {
             "Yes. We build high-performance e-commerce stores using modern platforms like Shopify Plus, headless Commerce.js, or custom React solutions. We focus on conversion optimization and fast checkout experiences.",
         },
       ]}
-    />
+      />
+    </Suspense>
   );
 };
 
