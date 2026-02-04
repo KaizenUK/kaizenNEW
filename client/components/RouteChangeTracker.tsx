@@ -13,11 +13,7 @@ export function RouteChangeTracker() {
   const pendingPageview = useRef<string | null>(null);
 
   useEffect(() => {
-    if (
-      initialized ||
-      process.env.NODE_ENV !== "production" ||
-      isAdminRoute
-    ) {
+    if (initialized || process.env.NODE_ENV !== "production" || isAdminRoute) {
       return;
     }
 

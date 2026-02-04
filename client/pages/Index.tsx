@@ -13,7 +13,9 @@ import Layout from "@/components/Layout";
 import { openCrisp } from "@/lib/crisp-utils";
 
 // Lazy-load below-the-fold components to reduce initial bundle size
-const FaqSection = lazy(() => import("@/components/FaqSection").then(m => ({ default: m.FaqSection })));
+const FaqSection = lazy(() =>
+  import("@/components/FaqSection").then((m) => ({ default: m.FaqSection })),
+);
 import { DEFAULT_OG_IMAGE } from "@/lib/seo";
 import {
   Accordion,
@@ -1154,60 +1156,61 @@ const SEOFAQSection = () => {
   return (
     <Suspense fallback={<div className="py-16 bg-slate-900" />}>
       <FaqSection
-      heading="Common Questions from Wirral Businesses"
-      eyebrow="Common Questions"
-      items={[
-        {
-          question: "How quickly can you build my website?",
-          answer:
-            "Most websites are delivered within 2-4 weeks depending on complexity. We focus on rapid deployment of core functionality first, then iterate based on real user feedback rather than building everything upfront.",
-        },
-        {
-          question: "Are you based on the Wirral?",
-          answer:
-            "Yes — we're based in Moreton on the Wirral, and we work with clients across the UK. We're happy to meet face-to-face for local projects.",
-        },
-        {
-          question: "Do you provide hosting?",
-          answer:
-            "We provide high-performance VPS hosting for clients on our maintenance plans. We do not use cheap shared hosting as it compromises speed and security.",
-        },
-        {
-          question: "What makes your websites faster than competitors?",
-          answer:
-            "We use modern frameworks like React and headless architecture, implement aggressive code splitting, optimize all images, use CDN delivery, and follow Google's Core Web Vitals guidelines. Most agencies still build slow WordPress sites.",
-        },
-        {
-          question: "Can you redesign my existing website?",
-          answer:
-            "Absolutely. We specialize in rescuing and rebuilding underperforming websites. We'll audit your current site, identify performance bottlenecks, and deliver a faster, conversion-optimized replacement.",
-        },
-        {
-          question: "Do you offer SEO services?",
-          answer:
-            "Yes. We focus on technical SEO fundamentals: fast page speeds, mobile optimization, structured data, and clean architecture. We don't do keyword stuffing — we build sites that Google naturally wants to rank.",
-        },
-        {
-          question: "What happens after my website launches?",
-          answer:
-            "We offer ongoing maintenance plans that include security updates, performance monitoring, content updates, and technical support. You're never locked into a contract — month-to-month only.",
-        },
-        {
-          question: "Can I update the website myself?",
-          answer:
-            "Yes. We provide an intuitive content management system (headless CMS) that lets you update text, images, and pages without touching code. We also provide training and documentation.",
-        },
-        {
-          question: "What if I need help with my existing web developer's work?",
-          answer:
-            "We offer project rescue services. If your current build is late, over budget, or stuck, we can step in to stabilize the project, fix technical issues, and get you launched.",
-        },
-        {
-          question: "Do you work with e-commerce sites?",
-          answer:
-            "Yes. We build high-performance e-commerce stores using modern platforms like Shopify Plus, headless Commerce.js, or custom React solutions. We focus on conversion optimization and fast checkout experiences.",
-        },
-      ]}
+        heading="Common Questions from Wirral Businesses"
+        eyebrow="Common Questions"
+        items={[
+          {
+            question: "How quickly can you build my website?",
+            answer:
+              "Most websites are delivered within 2-4 weeks depending on complexity. We focus on rapid deployment of core functionality first, then iterate based on real user feedback rather than building everything upfront.",
+          },
+          {
+            question: "Are you based on the Wirral?",
+            answer:
+              "Yes — we're based in Moreton on the Wirral, and we work with clients across the UK. We're happy to meet face-to-face for local projects.",
+          },
+          {
+            question: "Do you provide hosting?",
+            answer:
+              "We provide high-performance VPS hosting for clients on our maintenance plans. We do not use cheap shared hosting as it compromises speed and security.",
+          },
+          {
+            question: "What makes your websites faster than competitors?",
+            answer:
+              "We use modern frameworks like React and headless architecture, implement aggressive code splitting, optimize all images, use CDN delivery, and follow Google's Core Web Vitals guidelines. Most agencies still build slow WordPress sites.",
+          },
+          {
+            question: "Can you redesign my existing website?",
+            answer:
+              "Absolutely. We specialize in rescuing and rebuilding underperforming websites. We'll audit your current site, identify performance bottlenecks, and deliver a faster, conversion-optimized replacement.",
+          },
+          {
+            question: "Do you offer SEO services?",
+            answer:
+              "Yes. We focus on technical SEO fundamentals: fast page speeds, mobile optimization, structured data, and clean architecture. We don't do keyword stuffing — we build sites that Google naturally wants to rank.",
+          },
+          {
+            question: "What happens after my website launches?",
+            answer:
+              "We offer ongoing maintenance plans that include security updates, performance monitoring, content updates, and technical support. You're never locked into a contract — month-to-month only.",
+          },
+          {
+            question: "Can I update the website myself?",
+            answer:
+              "Yes. We provide an intuitive content management system (headless CMS) that lets you update text, images, and pages without touching code. We also provide training and documentation.",
+          },
+          {
+            question:
+              "What if I need help with my existing web developer's work?",
+            answer:
+              "We offer project rescue services. If your current build is late, over budget, or stuck, we can step in to stabilize the project, fix technical issues, and get you launched.",
+          },
+          {
+            question: "Do you work with e-commerce sites?",
+            answer:
+              "Yes. We build high-performance e-commerce stores using modern platforms like Shopify Plus, headless Commerce.js, or custom React solutions. We focus on conversion optimization and fast checkout experiences.",
+          },
+        ]}
       />
     </Suspense>
   );
