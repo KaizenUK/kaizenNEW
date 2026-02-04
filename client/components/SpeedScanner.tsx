@@ -525,7 +525,7 @@ export default function SpeedScanner() {
         unit: string,
       ) => {
         const status = getStatus(metricKey, numValue);
-        const cardHeight = 85;
+        const cardHeight = 80;
 
         // Card background
         doc.setFillColor(lightGrey[0], lightGrey[1], lightGrey[2]);
@@ -550,43 +550,35 @@ export default function SpeedScanner() {
         doc.setTextColor(status.color[0], status.color[1], status.color[2]);
         doc.text(status.text, leftColX, yPos + 30);
 
-        // Thresholds below value
-        doc.setFontSize(7);
-        doc.setTextColor(100, 100, 100);
-        doc.text(
-          `Good: ≤${goodThreshold}${unit} | Poor: >${poorThreshold}${unit}`,
-          leftColX,
-          yPos + 37,
-        );
-
         // MIDDLE & RIGHT COLUMNS: Explanation text
         const contentX = 65;
         const contentWidth = pageWidth - 30 - contentX - 15;
 
-        // What it is
+        // What it is (with threshold info integrated)
         doc.setFontSize(8);
         doc.setTextColor(navy[0], navy[1], navy[2]);
         doc.setFont("helvetica", "bold");
         doc.text("WHAT IT IS:", contentX, yPos + 7);
         doc.setFont("helvetica", "normal");
         doc.setTextColor(darkGrey[0], darkGrey[1], darkGrey[2]);
-        doc.text(whatItIs, contentX, yPos + 12, { maxWidth: contentWidth });
+        const thresholdText = `${whatItIs} Ideally this should be less than ${goodThreshold}${unit}.`;
+        doc.text(thresholdText, contentX, yPos + 12, { maxWidth: contentWidth });
 
         // Why it matters
         doc.setFont("helvetica", "bold");
         doc.setTextColor(navy[0], navy[1], navy[2]);
-        doc.text("WHY IT MATTERS:", contentX, yPos + 32);
+        doc.text("WHY IT MATTERS:", contentX, yPos + 28);
         doc.setFont("helvetica", "normal");
         doc.setTextColor(darkGrey[0], darkGrey[1], darkGrey[2]);
-        doc.text(whyItMatters, contentX, yPos + 37, { maxWidth: contentWidth });
+        doc.text(whyItMatters, contentX, yPos + 33, { maxWidth: contentWidth });
 
         // How to fix
         doc.setFont("helvetica", "bold");
         doc.setTextColor(navy[0], navy[1], navy[2]);
-        doc.text("HOW TO FIX:", contentX, yPos + 57);
+        doc.text("HOW TO FIX:", contentX, yPos + 53);
         doc.setFont("helvetica", "normal");
         doc.setTextColor(darkGrey[0], darkGrey[1], darkGrey[2]);
-        let fixY = yPos + 62;
+        let fixY = yPos + 58;
         howToFix.slice(0, 2).forEach((fix) => {
           doc.text(`• ${fix}`, contentX, fixY, { maxWidth: contentWidth - 5 });
           fixY += 5;
