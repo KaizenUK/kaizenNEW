@@ -562,7 +562,9 @@ export default function SpeedScanner() {
         doc.setFont("helvetica", "normal");
         doc.setTextColor(darkGrey[0], darkGrey[1], darkGrey[2]);
         const thresholdText = `${whatItIs} Ideally this should be less than ${goodThreshold}${unit}.`;
-        doc.text(thresholdText, contentX, yPos + 12, { maxWidth: contentWidth });
+        doc.text(thresholdText, contentX, yPos + 12, {
+          maxWidth: contentWidth,
+        });
 
         // Why it matters
         doc.setFont("helvetica", "bold");
