@@ -3,7 +3,7 @@ name: Deploy to cPanel
 on:
   push:
     branches:
-      - main  # Or 'master', whichever is your default
+      - main  # ⚠️ FINAL CHECK: Look at your VS Code bottom-left corner. If it says 'master', change this word to 'master'.
 
 jobs:
   web-deploy:
@@ -14,20 +14,26 @@ jobs:
       - name: 🚚 Get latest code
         uses: actions/checkout@v4
 
-      # 2. Install Node and Build the site
+      # 2. Create the .env file (The Magic Step 🪄)
+      - name: 🔑 Make .env file
+        run: |
+          echo "VITE_SUPABASE_URL=${{ secrets.VITE_SUPABASE_URL }}" >> .env
+          echo "VITE_SUPABASE_ANON_KEY=${{ secrets.VITE_SUPABASE_ANON_KEY }}" >> .env
+
+      # 3. Install Node and Build the site
       - name: 🔨 Install & Build
         run: |
           npm install
           npm run build
-        # This creates the fresh 'dist' folder in the cloud
+        # The build will now succeed because it can read the keys from the .env file we just made.
 
-      # 3. Upload 'dist' to cPanel via FTP
+      # 4. Upload 'dist' to cPanel via FTP
       - name: 📂 Sync files
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
           server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
-          local-dir: ./dist/      # We only upload the build folder
-          server-dir: ./public_html/  # Where it goes on the server
-          dangerous-clean-slate: true # DELETES old files on server first (The "Scorched Earth" method)
+          local-dir: ./dist/      # Uploads only the build folder
+          server-dir: ./public_html/  # Puts it in the main folder
+          dangerous-clean-slate: true # Wipes old files first for a clean deploy
