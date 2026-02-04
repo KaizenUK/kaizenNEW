@@ -89,7 +89,7 @@ export default function SpeedScanner() {
     setLoading(true);
     setScore(null);
     setScreenshot("");
-    setMetrics({ lcp: "", cls: "", tbt: "" });
+    setMetrics({ lcp: "", cls: "", tbt: "", fcp: "", si: "", tti: "", lcpValue: 0, clsValue: 0, tbtValue: 0, fcpValue: 0, siValue: 0, opportunities: [], diagnostics: [] });
     setStatusMsg("Connecting to Google Lighthouse...");
     setIsEmailSubmitted(false);
     setEmailError("");
