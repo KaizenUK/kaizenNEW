@@ -14,7 +14,6 @@ import Layout from "@/components/Layout";
 import { openCrisp } from "@/lib/crisp-utils";
 
 // Lazy-load below-the-fold components to reduce initial bundle size
-const SpeedScanner = lazy(() => import("@/components/SpeedScanner"));
 const FaqSection = lazy(() => import("@/components/FaqSection").then(m => ({ default: m.FaqSection })));
 import { DEFAULT_OG_IMAGE } from "@/lib/seo";
 import {
