@@ -483,7 +483,7 @@ export default function SpeedScanner() {
         20,
         275,
       );
-      doc.text("Powered by Google Lighthouse", 20, 282);
+      doc.text("Powered by Kaizen Performance Scanner", 20, 282);
       doc.setTextColor(cyan[0], cyan[1], cyan[2]);
       doc.text("kaizenweb.co.uk", pageWidth - 45, 282);
 
