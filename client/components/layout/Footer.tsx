@@ -33,6 +33,7 @@ const Footer: React.FC<FooterProps> = () => {
   const { openCalendly } = useCalendly();
   const [liverpoolTime, setLiverpoolTime] = useState("");
   const [nextQuarter, setNextQuarter] = useState("");
+  const [buildVersion, setBuildVersion] = useState("");
 
   useEffect(() => {
     const updateTime = () => {
