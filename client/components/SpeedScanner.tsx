@@ -1041,12 +1041,12 @@ export default function SpeedScanner() {
           {score !== null && (
             <div className="animate-in fade-in slide-in-from-bottom-4 duration-700 grid grid-cols-1 md:grid-cols-2 gap-8 items-center bg-black/20 p-8 rounded-2xl border border-white/5 mt-8 relative overflow-hidden">
               {/* Screenshot */}
-              <div className="relative mx-auto border-[6px] border-slate-800 rounded-[2rem] overflow-hidden shadow-2xl w-full max-w-[160px] aspect-[9/16] bg-slate-800">
+              <div className="relative mx-auto border-[6px] border-slate-800 rounded-[2rem] overflow-hidden shadow-2xl w-full max-w-[120px] aspect-[393/852] bg-slate-800">
                 {screenshot ? (
                   <img
                     src={screenshot}
                     alt="Site Screenshot"
-                    className="w-full h-full object-contain"
+                    className="w-full h-full object-cover"
                   />
                 ) : (
                   <div className="w-full h-full bg-slate-700 animate-pulse" />
