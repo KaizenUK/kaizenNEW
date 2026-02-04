@@ -431,131 +431,164 @@ console.log("⚠️ KAIZEN SCANNER V2 - UPDATED CODE LOADED"); // Add this line
       doc.setTextColor(cyan[0], cyan[1], cyan[2]);
       doc.text("kaizenweb.co.uk", pageWidth - 45, 282);
 
-      // PAGE 2: ANALYSIS
+      // ============================================
+      // PAGE 2: CORE WEB VITALS EXPLAINED
+      // ============================================
       doc.addPage();
-      doc.setFillColor(navy[0], navy[1], navy[2]);
-      doc.rect(0, 0, pageWidth, 30, "F");
+      addPageHeader("Core Web Vitals - What Google Measures");
 
-      doc.setTextColor(white[0], white[1], white[2]);
-      doc.setFontSize(16);
-      doc.setFont("helvetica", "bold");
-      doc.text("Detailed Analysis", 20, 20);
+      let yPos = 35;
 
-      let yPos = 50;
+      // Intro text
+      doc.setTextColor(darkGrey[0], darkGrey[1], darkGrey[2]);
+      doc.setFontSize(10);
+      doc.setFont("helvetica", "normal");
+      doc.text("Google uses these three metrics to determine if your website provides a good user experience.", 15, yPos);
+      doc.text("They directly impact your search rankings and conversion rates.", 15, yPos + 5);
+      yPos += 18;
 
-      // Analysis Helper
-      const drawInsight = (
-        title: string,
-        valStr: string,
-        valNum: number,
-        meaning: string,
-        fixes: string[],
+      // Helper to draw metric cards with comprehensive explanations
+      const drawMetricCard = (
+        metricName: string,
+        value: string,
+        numValue: number,
+        metricKey: string,
+        whatItIs: string,
+        whyItMatters: string,
+        howToFix: string[],
+        goodThreshold: string,
+        poorThreshold: string
       ) => {
-        let statusColor = green;
-        let statusText = "GOOD";
+        const status = getStatus(metricKey, numValue);
+        const cardHeight = 62;
 
-        // Traffic Light Logic
-        if (title.includes("LCP")) {
-          if (valNum > 4) {
-            statusColor = red;
-            statusText = "CRITICAL";
-          } else if (valNum > 2.5) {
-            statusColor = orange;
-            statusText = "NEEDS WORK";
-          }
-        } else if (title.includes("CLS")) {
-          if (valNum > 0.25) {
-            statusColor = red;
-            statusText = "CRITICAL";
-          } else if (valNum > 0.1) {
-            statusColor = orange;
-            statusText = "NEEDS WORK";
-          }
-        } else {
-          // TBT
-          if (valNum > 600) {
-            statusColor = red;
-            statusText = "CRITICAL";
-          } else if (valNum > 200) {
-            statusColor = orange;
-            statusText = "NEEDS WORK";
-          }
-        }
-
-        // Card UI
+        // Card background
         doc.setFillColor(lightGrey[0], lightGrey[1], lightGrey[2]);
-        doc.roundedRect(15, yPos, pageWidth - 30, 60, 3, 3, "F");
-        doc.setFillColor(statusColor[0], statusColor[1], statusColor[2]);
-        doc.rect(15, yPos, 2, 60, "F");
+        doc.roundedRect(15, yPos, pageWidth - 30, cardHeight, 2, 2, "F");
 
-        // Content
-        doc.setFontSize(14);
+        // Status indicator bar
+        doc.setFillColor(status.color[0], status.color[1], status.color[2]);
+        doc.rect(15, yPos, 3, cardHeight, "F");
+
+        // Metric name and value
+        doc.setFontSize(11);
         doc.setTextColor(navy[0], navy[1], navy[2]);
         doc.setFont("helvetica", "bold");
-        doc.text(title, 25, yPos + 10);
+        doc.text(metricName, 23, yPos + 8);
 
-        doc.setFontSize(24);
-        doc.text(valStr, 25, yPos + 25);
+        doc.setFontSize(16);
+        doc.setTextColor(status.color[0], status.color[1], status.color[2]);
+        doc.text(value || "-", 23, yPos + 18);
 
-        doc.setFontSize(10);
-        doc.setTextColor(statusColor[0], statusColor[1], statusColor[2]);
-        doc.text(statusText, 25, yPos + 32);
+        doc.setFontSize(8);
+        doc.text(status.text, 23, yPos + 24);
 
-        // Explainer
-        doc.setFontSize(10);
-        doc.setTextColor(80, 80, 80);
+        // What it is
+        const col2X = 70;
+        doc.setFontSize(8);
+        doc.setTextColor(navy[0], navy[1], navy[2]);
         doc.setFont("helvetica", "bold");
-        doc.text("WHAT IT MEANS:", 80, yPos + 10);
+        doc.text("WHAT IT IS:", col2X, yPos + 7);
         doc.setFont("helvetica", "normal");
-        doc.text(meaning, 80, yPos + 16, { maxWidth: 100 });
+        doc.setTextColor(darkGrey[0], darkGrey[1], darkGrey[2]);
+        doc.text(whatItIs, col2X, yPos + 12, { maxWidth: 55 });
 
-        // Fixes
+        // Why it matters
         doc.setFont("helvetica", "bold");
-        doc.text("HOW TO FIX:", 80, yPos + 32);
+        doc.setTextColor(navy[0], navy[1], navy[2]);
+        doc.text("WHY IT MATTERS:", col2X, yPos + 28);
         doc.setFont("helvetica", "normal");
-        let fixY = yPos + 38;
-        fixes.forEach((fix) => {
-          doc.text(`• ${fix}`, 80, fixY);
+        doc.setTextColor(darkGrey[0], darkGrey[1], darkGrey[2]);
+        doc.text(whyItMatters, col2X, yPos + 33, { maxWidth: 55 });
+
+        // How to fix
+        const col3X = 130;
+        doc.setFont("helvetica", "bold");
+        doc.setTextColor(navy[0], navy[1], navy[2]);
+        doc.text("HOW TO FIX:", col3X, yPos + 7);
+        doc.setFont("helvetica", "normal");
+        doc.setTextColor(darkGrey[0], darkGrey[1], darkGrey[2]);
+        let fixY = yPos + 12;
+        howToFix.slice(0, 4).forEach((fix) => {
+          doc.text(`• ${fix}`, col3X, fixY, { maxWidth: 60 });
           fixY += 5;
         });
 
-        yPos += 70;
+        // Thresholds
+        doc.setFontSize(7);
+        doc.setTextColor(100, 100, 100);
+        doc.text(`Good: ${goodThreshold} | Poor: ${poorThreshold}`, 23, yPos + cardHeight - 3);
+
+        yPos += cardHeight + 5;
       };
 
-      // Call Helper for 3 metrics
-      drawInsight(
-        "Load Speed (LCP)",
+      // LCP Card
+      drawMetricCard(
+        "Largest Contentful Paint (LCP)",
         metrics.lcp,
         lcpVal,
-        "The time it takes for the largest content to appear. Users leave if this > 3s.",
+        "lcp",
+        "Time until the main content is visible. Usually your hero image or headline.",
+        "Users won't wait. 53% leave if a page takes over 3 seconds to show content.",
         lcpVal > 2.5
-          ? [
-              "Convert images to WebP.",
-              "Preload the 'Hero' image.",
-              "Check hosting speed.",
-            ]
-          : ["Keep images optimised."],
+          ? ["Compress & resize images", "Use WebP format", "Preload hero image", "Upgrade hosting"]
+          : ["Maintain current optimizations", "Monitor for regressions"],
+        "≤ 2.5s",
+        "> 4.0s"
       );
 
-      drawInsight(
-        "Responsiveness (TBT)",
+      // TBT Card
+      drawMetricCard(
+        "Total Blocking Time (TBT)",
         metrics.tbt,
         tbtVal,
-        "How long the browser is 'frozen' while loading code.",
+        "tbt",
+        "Time the page is frozen while loading JavaScript. Users can't click or scroll.",
+        "A frozen page feels broken. High TBT kills conversions and frustrates users.",
         tbtVal > 200
-          ? ["Remove unused JavaScript.", "Defer chat widgets."]
-          : ["Maintain low JS payload."],
+          ? ["Remove unused JavaScript", "Defer non-critical scripts", "Delay chat widgets", "Split code bundles"]
+          : ["Keep JavaScript minimal", "Monitor third-party scripts"],
+        "≤ 200ms",
+        "> 600ms"
       );
 
-      drawInsight(
-        "Visual Stability (CLS)",
+      // CLS Card
+      drawMetricCard(
+        "Cumulative Layout Shift (CLS)",
         metrics.cls,
         clsVal,
-        "Measures if content jumps around while loading.",
+        "cls",
+        "How much the page layout jumps around as it loads. Higher = more annoying.",
+        "Users click wrong buttons when content shifts. It looks unprofessional.",
         clsVal > 0.1
-          ? ["Add width/height to images.", "Reserve space for ads."]
-          : ["Ensure all media has dimensions."],
+          ? ["Add width/height to images", "Reserve space for ads", "Avoid inserting content above", "Use font-display: swap"]
+          : ["Ensure all images have dimensions", "Test on slow connections"],
+        "≤ 0.1",
+        "> 0.25"
       );
+
+      // Additional metrics section
+      yPos += 5;
+      doc.setFillColor(navy[0], navy[1], navy[2]);
+      doc.roundedRect(15, yPos, pageWidth - 30, 30, 2, 2, "F");
+      doc.setTextColor(white[0], white[1], white[2]);
+      doc.setFontSize(9);
+      doc.setFont("helvetica", "bold");
+      doc.text("ADDITIONAL METRICS", 20, yPos + 8);
+
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(8);
+      const fcpStatus = getStatus("fcp", fcpVal);
+      const siStatus = getStatus("si", siVal);
+
+      doc.text(`First Contentful Paint: ${metrics.fcp}`, 20, yPos + 18);
+      doc.setTextColor(fcpStatus.color[0], fcpStatus.color[1], fcpStatus.color[2]);
+      doc.text(`(${fcpStatus.text})`, 75, yPos + 18);
+
+      doc.setTextColor(white[0], white[1], white[2]);
+      doc.text(`Speed Index: ${metrics.si}`, 110, yPos + 18);
+      doc.setTextColor(siStatus.color[0], siStatus.color[1], siStatus.color[2]);
+      doc.text(`(${siStatus.text})`, 150, yPos + 18);
 
       // PAGE 3: ACTION PLAN
       doc.addPage();
