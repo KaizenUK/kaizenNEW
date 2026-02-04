@@ -267,29 +267,67 @@ console.log("⚠️ KAIZEN SCANNER V2 - UPDATED CODE LOADED"); // Add this line
     setEmailError("");
   }
 
-  // --- PDF GENERATION (Dynamic Import to fix Build Error) ---
+  // --- PDF GENERATION - Comprehensive Lighthouse-Style Report ---
   async function downloadPDF() {
     setPdfLoading(true);
     try {
-      // Dynamically load jsPDF so it doesn't break the build
       const { jsPDF } = await import("jspdf");
 
       const doc = new jsPDF("p", "mm", "a4");
       const pageWidth = doc.internal.pageSize.getWidth();
       const pageHeight = doc.internal.pageSize.getHeight();
 
-      const navy = [2, 6, 23];
-      const cyan = [6, 182, 212];
-      const green = [74, 222, 128];
-      const red = [239, 68, 68];
-      const orange = [249, 115, 22];
-      const white = [255, 255, 255];
-      const lightGrey = [248, 250, 252];
+      // Color palette
+      const navy = [2, 6, 23] as const;
+      const cyan = [6, 182, 212] as const;
+      const green = [34, 197, 94] as const;
+      const red = [239, 68, 68] as const;
+      const orange = [249, 115, 22] as const;
+      const white = [255, 255, 255] as const;
+      const lightGrey = [248, 250, 252] as const;
+      const darkGrey = [71, 85, 105] as const;
 
-      // Parse values for logic
-      const lcpVal = parseFloat(metrics.lcp.replace(/[^\d.-]/g, ""));
-      const tbtVal = parseFloat(metrics.tbt.replace(/[^\d.-]/g, ""));
-      const clsVal = parseFloat(metrics.cls.replace(/[^\d.-]/g, ""));
+      // Use stored numeric values
+      const lcpVal = metrics.lcpValue;
+      const tbtVal = metrics.tbtValue;
+      const clsVal = metrics.clsValue;
+      const fcpVal = metrics.fcpValue;
+      const siVal = metrics.siValue;
+
+      // Helper: Get status color and text
+      const getStatus = (metric: string, value: number) => {
+        const thresholds: Record<string, { good: number; ok: number }> = {
+          lcp: { good: 2.5, ok: 4 },
+          fcp: { good: 1.8, ok: 3 },
+          si: { good: 3.4, ok: 5.8 },
+          tbt: { good: 200, ok: 600 },
+          cls: { good: 0.1, ok: 0.25 },
+        };
+        const t = thresholds[metric] || { good: 0, ok: 0 };
+        if (value <= t.good) return { color: green, text: "GOOD", emoji: "✓" };
+        if (value <= t.ok) return { color: orange, text: "NEEDS IMPROVEMENT", emoji: "!" };
+        return { color: red, text: "POOR", emoji: "✕" };
+      };
+
+      // Helper: Add page header
+      const addPageHeader = (title: string) => {
+        doc.setFillColor(navy[0], navy[1], navy[2]);
+        doc.rect(0, 0, pageWidth, 25, "F");
+        doc.setTextColor(white[0], white[1], white[2]);
+        doc.setFontSize(14);
+        doc.setFont("helvetica", "bold");
+        doc.text(title, 15, 16);
+        doc.setFontSize(8);
+        doc.setFont("helvetica", "normal");
+        doc.text("kaizenweb.co.uk", pageWidth - 35, 16);
+      };
+
+      // Helper: Add footer
+      const addFooter = (pageNum: number, totalPages: number) => {
+        doc.setFontSize(8);
+        doc.setTextColor(150, 150, 150);
+        doc.text(`Page ${pageNum} of ${totalPages}`, pageWidth / 2, pageHeight - 8, { align: "center" });
+      };
 
       // PAGE 1: COVER
       doc.setFillColor(navy[0], navy[1], navy[2]);
