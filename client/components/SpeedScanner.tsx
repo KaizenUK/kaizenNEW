@@ -248,8 +248,8 @@ export default function SpeedScanner() {
 
     setStatusMsg("Saving results...");
 
-    // 2. Save to Supabase (Client-Side)
-    if (supabase) {
+    // 2. Save to Supabase (Client-Side) - ONLY if they consent to marketing
+    if (consentToMarketing && supabase) {
       try {
         // FIX 1: Table name changed from 'leads' to 'speed_scanner_results'
         const { error } = await supabase
@@ -263,6 +263,7 @@ export default function SpeedScanner() {
               performance_score: score,
               // FIX 4: Removed 'lcp' because your table doesn't have that column
               // created_at is handled automatically by Supabase
+              consent_to_marketing: consentToMarketing,
             },
           ]);
 
@@ -274,6 +275,8 @@ export default function SpeedScanner() {
       } catch (err) {
         console.error("Save failed:", err);
       }
+    } else if (!consentToMarketing) {
+      console.log("User opted out of marketing - data not saved to Supabase");
     } else {
       console.warn("Supabase not connected. Check .env keys.");
     }
