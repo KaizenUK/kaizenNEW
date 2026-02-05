@@ -338,7 +338,7 @@ const pageMeta: Record<string, Partial<PageMeta>> = {
       "Local hairdressing salon case study—how we built their online booking system and improved local visibility.",
   },
   "/case-studies/independent-retailer": {
-    title: "Independent Retailer Case Study | Kaizen Web",
+    title: "Independent Retailer Case Study | Kaizen",
     description:
       "How we helped an independent retailer increase online sales and streamline their operations.",
   },
