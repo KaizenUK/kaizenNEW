@@ -333,7 +333,7 @@ const pageMeta: Record<string, Partial<PageMeta>> = {
       "How we helped As Collections improve their online presence and streamline operations.",
   },
   "/case-studies/helen-moore-hairdressing": {
-    title: "Helen Moore Hairdressing Case Study | Kaizen Web",
+    title: "Helen Moore Hairdressing Case Study | Kaizen",
     description:
       "Local hairdressing salon case study—how we built their online booking system and improved local visibility.",
   },
