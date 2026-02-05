@@ -3,7 +3,7 @@ name: Deploy to cPanel
 on:
   push:
     branches:
-      - main  # ⚠️ Double-check: 'main' or 'master'
+      - main
 
 jobs:
   web-deploy:
@@ -14,20 +14,17 @@ jobs:
       - name: 🚚 Get latest code
         uses: actions/checkout@v4
 
-      # 2. Create the .env file
-      - name: 🔑 Make .env file
-        run: |
-          echo "VITE_SUPABASE_URL=${{ secrets.VITE_SUPABASE_URL }}" >> .env
-          echo "VITE_SUPABASE_ANON_KEY=${{ secrets.VITE_SUPABASE_ANON_KEY }}" >> .env
-
-      # 3. Install Node and Build
+      # 2. Install & Build (With Environment Variables)
       - name: 🔨 Install & Build
+        # 👇 This is where the secrets go (aligned with 'run', NOT inside it)
+        env:
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
         run: |
           npm install
           npm run build
-          env:
 
-# 4. Deploy via Rsync
+      # 3. Deploy via Rsync
       - name: 🚀 Deploy to cPanel
         uses: easingthemes/ssh-deploy@v5.1.0
         with:
