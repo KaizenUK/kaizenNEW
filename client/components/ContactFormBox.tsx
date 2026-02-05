@@ -3,10 +3,10 @@ import { motion } from "framer-motion";
 import { Mail, Check, AlertCircle } from "lucide-react";
 import { createClient } from "@supabase/supabase-js";
 
-const supabase = createClient(
-  import.meta.env.VITE_SUPABASE_URL || "",
-  import.meta.env.VITE_SUPABASE_ANON_KEY || "",
-);
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || "";
+const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY || "";
+const supabase =
+  supabaseUrl && supabaseKey ? createClient(supabaseUrl, supabaseKey) : null;
 
 type SubmitStatus = "idle" | "submitting" | "success" | "error";
 
@@ -37,6 +37,12 @@ export const ContactFormBox = () => {
     }
 
     setStatus("submitting");
+
+    if (!supabase) {
+      setErrorMessage("Database connection unavailable. Please try again later.");
+      setStatus("error");
+      return;
+    }
 
     try {
       const { error } = await supabase.from("contact_form_submissions").insert({
