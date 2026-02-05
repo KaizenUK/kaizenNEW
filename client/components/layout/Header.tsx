@@ -21,6 +21,7 @@ import {
   Rocket,
   TrendingUp,
   Grid,
+  ArrowRight,
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -52,7 +53,6 @@ const Header: React.FC<HeaderProps> = ({
 }) => {
   const [activeMenu, setActiveMenu] = useState<DesktopMenuKey>(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [panelLeft, setPanelLeft] = useState<number | null>(null);
 
   const navRef = useRef<HTMLDivElement | null>(null);
   const servicesTriggerRef = useRef<HTMLButtonElement | null>(null);
@@ -90,8 +90,7 @@ const Header: React.FC<HeaderProps> = ({
         {
           label: "High-Performance Local Websites",
           href: "/services/local-seo",
-          description:
-            "Local rankings powered by Core Web Vitals and local intent.",
+          description: "Local rankings powered by Core Web Vitals.",
           icon: <MapPin className="w-4 h-4" />,
         },
         {
@@ -103,7 +102,7 @@ const Header: React.FC<HeaderProps> = ({
         {
           label: "E-commerce Development",
           href: "/services/ecommerce",
-          description: "Shopify and custom stores that actually sell.",
+          description: "Shopify and custom stores that convert.",
           icon: <ShoppingBag className="w-4 h-4" />,
         },
       ],
@@ -114,34 +113,31 @@ const Header: React.FC<HeaderProps> = ({
         {
           label: "Project Rescue",
           href: "/project-rescue",
-          description: "Fix broken web projects and get shipping again.",
+          description: "Fix broken web projects fast.",
           icon: <LifeBuoy className="w-4 h-4" />,
           highlight: true,
         },
         {
           label: "Contract Product Owner",
           href: "/contract-product-owner",
-          description: "Hands-on product leadership without the hiring risk.",
+          description: "Hands-on product leadership.",
           icon: <Briefcase className="w-4 h-4" />,
         },
         {
           label: "Agile Coaching",
           href: "/agile-coaching",
-          description: "Turn chaos into a predictable delivery process.",
+          description: "Turn chaos into predictable delivery.",
           icon: <Users className="w-4 h-4" />,
         },
         {
           label: "Digital Transformation",
           href: "/services/digital-transformation",
-          description:
-            "Automate manual work and connect your systems across the business.",
+          description: "Automate work and connect systems.",
           icon: <Zap className="w-4 h-4" />,
         },
       ],
     },
   ];
-
-  const topLevelLinks: Array<{ label: string; href: string }> = [];
 
   const insightsMenu: ServiceColumn[] = [
     {
@@ -150,25 +146,25 @@ const Header: React.FC<HeaderProps> = ({
         {
           label: "Web Design Costs in Liverpool 2025",
           href: "/blog/how-much-does-a-website-cost-in-liverpool-in-2025",
-          description: "Transparent pricing and what you actually get.",
+          description: "Transparent pricing breakdown.",
           icon: <PoundSterling className="w-4 h-4" />,
         },
         {
           label: "How to Choose a Web Agency",
           href: "/blog/choose-web-design-agency-liverpool",
-          description: "Red flags, questions to ask, and what matters.",
+          description: "Red flags and what matters.",
           icon: <Lightbulb className="w-4 h-4" />,
         },
         {
           label: "Website Mistakes to Avoid",
           href: "/blog/website-mistakes-liverpool",
-          description: "Common errors that kill conversions.",
+          description: "Errors that kill conversions.",
           icon: <AlertCircle className="w-4 h-4" />,
         },
         {
           label: "All Articles",
           href: "/blog",
-          description: "Browse our full archive of insights.",
+          description: "Browse our full archive.",
           icon: <BookOpen className="w-4 h-4" />,
         },
       ],
@@ -182,20 +178,19 @@ const Header: React.FC<HeaderProps> = ({
         {
           label: "Sweep Stakes Casino",
           href: "/case-studies/high-five-games",
-          description:
-            "Dual-currency gaming platform: +180% conversion uplift.",
+          description: "+180% conversion uplift.",
           icon: <Rocket className="w-4 h-4" />,
         },
         {
           label: "Independent Retailer",
           href: "/case-studies/independent-retailer",
-          description: "Local business rebuild: +250% organic traffic.",
+          description: "+250% organic traffic.",
           icon: <TrendingUp className="w-4 h-4" />,
         },
         {
           label: "All Case Studies",
           href: "/case-studies",
-          description: "See more client success stories.",
+          description: "See more success stories.",
           icon: <Grid className="w-4 h-4" />,
         },
       ],
@@ -209,33 +204,24 @@ const Header: React.FC<HeaderProps> = ({
         {
           label: "About Kaizen",
           href: "/about",
-          description:
-            "What we do, how we work, and why performance comes first.",
+          description: "What we do and how we work.",
           icon: <Info className="w-4 h-4" />,
         },
         {
           label: "Our Pledge",
           href: "/pledge",
-          description: "No jargon. No black box. A transparent partnership.",
+          description: "No jargon. Transparent partnership.",
           icon: <ShieldCheck className="w-4 h-4" />,
         },
         {
           label: "Contact",
           href: "/contact",
-          description: "Say hello, ask a question, or request an audit.",
+          description: "Say hello or request an audit.",
           icon: <Mail className="w-4 h-4" />,
         },
       ],
     },
   ];
-
-  const getTriggerEl = (menu: DesktopMenuKey) => {
-    if (menu === "services") return servicesTriggerRef.current;
-    if (menu === "insights") return insightsTriggerRef.current;
-    if (menu === "case-studies") return caseStudiesTriggerRef.current;
-    if (menu === "about") return aboutTriggerRef.current;
-    return null;
-  };
 
   const getMenuData = (menu: DesktopMenuKey) => {
     if (menu === "insights") return insightsMenu;
@@ -250,19 +236,6 @@ const Header: React.FC<HeaderProps> = ({
       setActiveMenu(null);
       return;
     }
-
-    const nav = navRef.current;
-    const triggerEl = getTriggerEl(menu);
-
-    if (nav && triggerEl) {
-      const navRect = nav.getBoundingClientRect();
-      const triggerRect = triggerEl.getBoundingClientRect();
-      const centerX = triggerRect.left + triggerRect.width / 2 - navRect.left;
-      setPanelLeft(centerX);
-    } else {
-      setPanelLeft(null);
-    }
-
     setActiveMenu(menu);
     setIsMenuOpen(true);
   };
@@ -276,14 +249,6 @@ const Header: React.FC<HeaderProps> = ({
     openMenu(menu);
   };
 
-  const cancelCloseMenu = () => {
-    // menu remains open while moving between trigger and panel
-  };
-
-  const scheduleCloseMenu = () => {
-    // rely on click outside or route change to close the menu
-  };
-
   const panelVariants = {
     enter: { opacity: 0, y: -8 },
     center: { opacity: 1, y: 0 },
@@ -291,18 +256,13 @@ const Header: React.FC<HeaderProps> = ({
   };
 
   return (
-    <header className="sticky top-4 z-50 w-full px-4 h-20">
-      <div
-        className="max-w-7xl mx-auto rounded-full bg-gray-950/80 border-t border-white/10 backdrop-blur-xl h-full"
-        style={{
-          boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.5)",
-        }}
-      >
-        <div className="flex items-center justify-between px-6 py-3 h-full">
+    <header className="sticky top-0 z-50 w-full bg-white border-b border-gray-100">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link
             to="/"
-            className="flex items-center gap-3 hover:opacity-90 transition flex-shrink-0"
+            className="flex items-center gap-2 hover:opacity-90 transition flex-shrink-0"
           >
             <img
               src="https://cdn.builder.io/api/v1/image/assets%2Fe4ae46bbd81b4b95bef54d66dd9748cc%2F03f6c5dd481449d297c430cab962412e?format=webp&width=200&quality=80"
@@ -311,7 +271,7 @@ const Header: React.FC<HeaderProps> = ({
               height="64"
               fetchPriority="high"
               loading="eager"
-              className="h-16 w-auto"
+              className="h-12 w-auto"
             />
           </Link>
 
@@ -319,8 +279,6 @@ const Header: React.FC<HeaderProps> = ({
           <nav
             ref={navRef}
             className="relative hidden lg:flex items-center gap-1"
-            onMouseEnter={cancelCloseMenu}
-            onMouseLeave={scheduleCloseMenu}
             aria-label="Main navigation"
           >
             {/* Services Trigger */}
@@ -328,14 +286,13 @@ const Header: React.FC<HeaderProps> = ({
               ref={servicesTriggerRef}
               type="button"
               onMouseEnter={() => openMenu("services")}
-              onFocus={() => openMenu("services")}
               onClick={() => handleTriggerClick("services")}
-              className="flex items-center gap-2 px-4 py-2 text-base font-medium text-white/90 hover:text-white hover:bg-white/5 rounded-full transition"
+              className="flex items-center gap-1 px-4 py-3 text-sm font-medium text-gray-700 hover:text-gray-900 transition"
               aria-expanded={isMenuOpen && activeMenu === "services"}
             >
               Services
               <ChevronDown
-                size={16}
+                size={14}
                 className={`transition-transform duration-200 ${
                   isMenuOpen && activeMenu === "services" ? "rotate-180" : ""
                 }`}
@@ -347,14 +304,13 @@ const Header: React.FC<HeaderProps> = ({
               ref={insightsTriggerRef}
               type="button"
               onMouseEnter={() => openMenu("insights")}
-              onFocus={() => openMenu("insights")}
               onClick={() => handleTriggerClick("insights")}
-              className="flex items-center gap-2 px-4 py-2 text-base font-medium text-white/90 hover:text-white hover:bg-white/5 rounded-full transition"
+              className="flex items-center gap-1 px-4 py-3 text-sm font-medium text-gray-700 hover:text-gray-900 transition"
               aria-expanded={isMenuOpen && activeMenu === "insights"}
             >
               Insights
               <ChevronDown
-                size={16}
+                size={14}
                 className={`transition-transform duration-200 ${
                   isMenuOpen && activeMenu === "insights" ? "rotate-180" : ""
                 }`}
@@ -366,46 +322,31 @@ const Header: React.FC<HeaderProps> = ({
               ref={caseStudiesTriggerRef}
               type="button"
               onMouseEnter={() => openMenu("case-studies")}
-              onFocus={() => openMenu("case-studies")}
               onClick={() => handleTriggerClick("case-studies")}
-              className="flex items-center gap-2 px-4 py-2 text-base font-medium text-white/90 hover:text-white hover:bg-white/5 rounded-full transition"
+              className="flex items-center gap-1 px-4 py-3 text-sm font-medium text-gray-700 hover:text-gray-900 transition"
               aria-expanded={isMenuOpen && activeMenu === "case-studies"}
             >
               Case Studies
               <ChevronDown
-                size={16}
+                size={14}
                 className={`transition-transform duration-200 ${
-                  isMenuOpen && activeMenu === "case-studies"
-                    ? "rotate-180"
-                    : ""
+                  isMenuOpen && activeMenu === "case-studies" ? "rotate-180" : ""
                 }`}
               />
             </button>
-
-            {/* Top-Level Links */}
-            {topLevelLinks.map((link) => (
-              <Link
-                key={link.href}
-                to={link.href}
-                className="px-4 py-2 text-base font-medium text-white/80 hover:text-white hover:bg-white/5 rounded-full transition"
-              >
-                {link.label}
-              </Link>
-            ))}
 
             {/* About Trigger */}
             <button
               ref={aboutTriggerRef}
               type="button"
               onMouseEnter={() => openMenu("about")}
-              onFocus={() => openMenu("about")}
               onClick={() => handleTriggerClick("about")}
-              className="flex items-center gap-2 px-4 py-2 text-base font-medium text-white/90 hover:text-white hover:bg-white/5 rounded-full transition"
+              className="flex items-center gap-1 px-4 py-3 text-sm font-medium text-gray-700 hover:text-gray-900 transition"
               aria-expanded={isMenuOpen && activeMenu === "about"}
             >
               About
               <ChevronDown
-                size={16}
+                size={14}
                 className={`transition-transform duration-200 ${
                   isMenuOpen && activeMenu === "about" ? "rotate-180" : ""
                 }`}
@@ -422,65 +363,57 @@ const Header: React.FC<HeaderProps> = ({
                   animate="center"
                   exit="exit"
                   transition={{
-                    duration: 0.22,
-                    ease: [0.16, 1, 0.3, 1] as const,
+                    duration: 0.2,
+                    ease: [0.25, 1, 0.5, 1],
                   }}
-                  className={`absolute top-full mt-2 rounded-2xl border border-white/10 bg-gray-900/95 shadow-2xl backdrop-blur-xl px-8 py-6 ${
-                    activeMenu === "about" ||
-                    activeMenu === "insights" ||
-                    activeMenu === "case-studies"
-                      ? "w-[min(520px,calc(100vw-3rem))]"
-                      : "w-[min(720px,calc(100vw-3rem))]"
+                  onMouseLeave={() => {
+                    setIsMenuOpen(false);
+                    setActiveMenu(null);
+                  }}
+                  className={`absolute left-0 top-full mt-0 bg-white rounded-lg border border-gray-200 shadow-xl px-6 py-5 ${
+                    activeMenu === "services"
+                      ? "w-[600px]"
+                      : "w-[380px]"
                   }`}
-                  style={{
-                    left: panelLeft ?? "50%",
-                    transform: "translateX(-50%)",
-                  }}
+                  style={{ minWidth: "320px" }}
                 >
                   <div
-                    className={`grid gap-6 ${
-                      activeMenu === "about" ||
-                      activeMenu === "insights" ||
-                      activeMenu === "case-studies"
-                        ? "grid-cols-1"
-                        : "grid-cols-2"
+                    className={`grid gap-8 ${
+                      activeMenu === "services" ? "grid-cols-2" : "grid-cols-1"
                     }`}
                   >
                     {getMenuData(activeMenu).map((column) => (
                       <div key={column.title}>
-                        <h3 className="text-lg font-semibold text-white mb-4">
+                        <h3 className="text-xs font-medium text-gray-400 uppercase tracking-wider mb-4">
                           {column.title}
                         </h3>
-                        <ul className="space-y-2">
+                        <ul className="space-y-1">
                           {column.items.map((item) => (
                             <li key={item.href}>
                               <Link
                                 to={item.href}
-                                className="block rounded-xl px-3 py-2 hover:bg-white/5 transition"
+                                className="group flex flex-col gap-1 rounded-lg px-3 py-2.5 hover:bg-gray-50 transition"
                                 onClick={() => {
                                   setIsMenuOpen(false);
                                   setActiveMenu(null);
                                 }}
                               >
-                                <div className="flex items-start gap-3">
-                                  <span className="mt-1 flex h-7 w-7 items-center justify-center rounded-full bg-white/5 text-cyan-300">
-                                    {item.icon}
-                                  </span>
-                                  <div>
-                                    <div
-                                      className={`text-base font-semibold ${
-                                        item.highlight
-                                          ? "text-cyan-300"
-                                          : "text-white"
-                                      }`}
-                                    >
-                                      {item.label}
-                                    </div>
-                                    <p className="text-sm text-gray-400 mt-1">
-                                      {item.description}
-                                    </p>
-                                  </div>
-                                </div>
+                                <span
+                                  className={`text-sm font-medium flex items-center gap-1 ${
+                                    item.highlight
+                                      ? "text-cyan-600"
+                                      : "text-gray-900"
+                                  } group-hover:text-cyan-600 transition-colors`}
+                                >
+                                  {item.label}
+                                  <ArrowRight
+                                    size={12}
+                                    className="opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-200"
+                                  />
+                                </span>
+                                <span className="text-xs text-gray-500">
+                                  {item.description}
+                                </span>
                               </Link>
                             </li>
                           ))}
@@ -494,34 +427,28 @@ const Header: React.FC<HeaderProps> = ({
           </nav>
 
           {/* Right Actions */}
-          <div className="flex items-center gap-4">
-            {/* Free Speed Test Button */}
+          <div className="flex items-center gap-3">
+            {/* Free Speed Test */}
             <Link
               to="/performance-scanner"
-              className="hidden sm:flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium text-emerald-400 hover:text-emerald-300 hover:bg-emerald-500/10 transition border border-emerald-500/30"
+              className="hidden md:flex items-center gap-2 px-4 py-2 text-sm font-medium text-cyan-600 hover:text-cyan-700 hover:bg-cyan-50 rounded-lg transition"
             >
               <Zap size={16} />
               Free Speed Test
             </Link>
 
-            {/* Start a Chat Button */}
-            <motion.div
-              className="hidden sm:block relative group"
-              whileHover={{ scale: 1.05 }}
+            {/* Start a Chat - Primary CTA */}
+            <button
+              onClick={() => openCrisp()}
+              className="hidden sm:flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-semibold text-white bg-gradient-to-r from-cyan-500 to-teal-500 hover:from-cyan-600 hover:to-teal-600 shadow-lg shadow-cyan-500/20 hover:shadow-cyan-500/30 transition-all"
             >
-              <div className="absolute -inset-1 bg-gradient-to-r from-amber-300 via-orange-500 to-rose-500 rounded-full opacity-40 group-hover:opacity-70 blur transition duration-300" />
-              <button
-                onClick={() => openCrisp()}
-                className="relative flex items-center gap-2 px-6 py-2 rounded-full text-sm font-medium text-gray-950 bg-gradient-to-r from-amber-300 via-orange-500 to-rose-500 backdrop-blur-xl hover:shadow-2xl hover:shadow-orange-500/50 transition"
-              >
-                <span className="w-2 h-2 rounded-full bg-amber-100 animate-pulse" />
-                Start a Chat
-              </button>
-            </motion.div>
+              Start a Chat
+              <ArrowRight size={14} />
+            </button>
 
             {/* Mobile Menu Button */}
             <button
-              className="lg:hidden text-white/80 hover:text-white transition"
+              className="lg:hidden p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition"
               onClick={() => onMobileMenuChange(!mobileMenuOpen)}
               aria-label="Toggle mobile menu"
             >
