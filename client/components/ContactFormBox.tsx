@@ -9,17 +9,23 @@ const supabase =
   supabaseUrl && supabaseKey ? createClient(supabaseUrl, supabaseKey) : null;
 
 type SubmitStatus = "idle" | "submitting" | "success" | "error";
+type FormStep = 1 | 2 | 3 | 4 | 5;
 
 export const ContactFormBox = () => {
+  // Form data
   const [name, setName] = useState("");
   const [surname, setSurname] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [website, setWebsite] = useState("");
   const [message, setMessage] = useState("");
+  const [hasWebsite, setHasWebsite] = useState<boolean | null>(null);
   const [consentToMarketing, setConsentToMarketing] = useState(false);
   const [consentToGDPR, setConsentToGDPR] = useState(false);
   const [honeypot, setHoneypot] = useState("");
+
+  // Form state
+  const [currentStep, setCurrentStep] = useState<FormStep>(1);
   const [status, setStatus] = useState<SubmitStatus>("idle");
   const [errorMessage, setErrorMessage] = useState("");
 
