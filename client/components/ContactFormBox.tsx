@@ -151,6 +151,23 @@ export const ContactFormBox = () => {
     }
   };
 
+  const resetForm = () => {
+    setName("");
+    setSurname("");
+    setEmail("");
+    setPhone("");
+    setWebsite("");
+    setMessage("");
+    setHasWebsite(null);
+    setConsentToMarketing(false);
+    setConsentToGDPR(false);
+    setHoneypot("");
+    setEmailError("");
+    setPhoneError("");
+    setWebsiteError("");
+    setErrorMessage("");
+  };
+
   const handleFinalSubmit = async () => {
     // Bot Detection: If honeypot field has any value, it's a bot
     if (honeypot.trim()) {
