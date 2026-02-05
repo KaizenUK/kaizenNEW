@@ -21,11 +21,11 @@ jobs:
           echo "VITE_SUPABASE_ANON_KEY=${{ secrets.VITE_SUPABASE_ANON_KEY }}" >> .env
 
       # 3. Install Node and Build
-     - name: 🔨 Build Site
-        run: npm run build
-        env:  # 👈 THIS IS THE MISSING PIECE
-          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
-          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
+      - name: 🔨 Install & Build
+        run: |
+          npm install
+          npm run build
+          env:
 
 # 4. Deploy via Rsync
       - name: 🚀 Deploy to cPanel
