@@ -52,9 +52,16 @@ const Header: React.FC<HeaderProps> = ({
 }) => {
   const [activeMenu, setActiveMenu] = useState<DesktopMenuKey>(null);
   const [hoveredColumn, setHoveredColumn] = useState<string | null>(null);
+  const [buttonPosition, setButtonPosition] = useState(0);
   const closeTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const navRef = useRef<HTMLDivElement | null>(null);
+  const buttonRefs = useRef<Record<DesktopMenuKey, HTMLButtonElement | null>>({
+    services: null,
+    insights: null,
+    "case-studies": null,
+    about: null,
+  });
   const location = useLocation();
 
   // Clear timeout helper
