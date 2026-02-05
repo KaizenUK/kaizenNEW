@@ -304,7 +304,7 @@ const Footer: React.FC = () => {
             </div>
 
             {/* Newsletter */}
-            <div className="lg:col-span-1">
+            <div className="lg:col-span-1 transform lg:-translate-x-6">
               <h3 className="text-xs font-medium uppercase tracking-widest text-white mb-6">
                 Stay up to date
               </h3>
