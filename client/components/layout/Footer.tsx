@@ -6,10 +6,10 @@ import { openCrisp } from "@/lib/crisp-utils";
 import { createClient } from "@supabase/supabase-js";
 
 // Newsletter Supabase client (unified)
-const newsletterSupabase = createClient(
-  import.meta.env.VITE_SUPABASE_URL || "",
-  import.meta.env.VITE_SUPABASE_ANON_KEY || "",
-);
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || "";
+const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY || "";
+const newsletterSupabase =
+  supabaseUrl && supabaseKey ? createClient(supabaseUrl, supabaseKey) : null;
 
 const CONSENT_TEXT =
   "I consent to receiving marketing emails from Kaizen Web Ltd about services, insights, and offers. I understand I can unsubscribe at any time.";
