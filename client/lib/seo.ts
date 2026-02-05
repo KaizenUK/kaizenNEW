@@ -430,7 +430,7 @@ export const buildLocalBusinessSchema = (description: string) => ({
   "@type": ["ProfessionalService", "LocalBusiness", "Organization"],
   name: SITE_NAME,
   alternateName: "Kaizen",
-  legalName: "Kaizen Web",
+  legalName: "Kaizen",
   image: DEFAULT_OG_IMAGE,
   logo: {
     "@type": "ImageObject",
