@@ -1010,7 +1010,7 @@ export default function SpeedScanner() {
               <input
                 type="text"
                 inputMode="url"
-                placeholder="yourwebsite.com"
+                placeholder="yourwebsite.co.uk"
                 value={url}
                 onChange={(e) => {
                   const next = e.target.value
