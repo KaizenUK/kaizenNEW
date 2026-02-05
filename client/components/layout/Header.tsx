@@ -391,8 +391,9 @@ const Header: React.FC<HeaderProps> = ({
                   exit="exit"
                   onMouseEnter={handlePanelEnter}
                   onMouseLeave={handlePanelLeave}
-                  className="absolute left-0 top-full bg-white rounded-xl border border-gray-200 shadow-2xl shadow-gray-200/50 overflow-hidden"
+                  className="absolute top-full bg-white rounded-xl border border-gray-200 shadow-2xl shadow-gray-200/50 overflow-hidden"
                   style={{
+                    left: `${buttonPosition}px`,
                     minWidth: activeMenu === "services" ? "560px" : "320px",
                   }}
                 >
