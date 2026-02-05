@@ -240,13 +240,21 @@ export default function SpeedScanner() {
     console.log("⚠️ KAIZEN SCANNER V2 - UPDATED CODE LOADED"); // Add this line
     const normalizedEmail = email.trim();
 
-    // 1. Validation
-    if (!normalizedEmail || !normalizedEmail.includes("@")) {
+    // Email format validation (must include TLD)
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!normalizedEmail || !emailRegex.test(normalizedEmail)) {
       setEmailError("Please enter a valid email address.");
       return;
     }
 
     setStatusMsg("Saving results...");
+
+    // Normalize website for DB (allow user to enter without scheme)
+    const normalizedWebsite = url
+      ? /^https?:\/\//i.test(url)
+        ? url
+        : `https://${url}`
+      : null;
 
     // 2. Save to Supabase (Client-Side) - ONLY if they consent to marketing
     if (consentToMarketing && supabase) {
@@ -255,11 +263,10 @@ export default function SpeedScanner() {
         const { error } = await supabase.from("speed_scanner_results").insert([
           {
             email: normalizedEmail,
-            // FIX 2: Mapped 'url' to 'website_url' (to match your DB column)
-            website_url: url || null,
-            // FIX 3: Mapped 'score' to 'performance_score' (to match your DB column)
+            // Mapped 'url' to 'website_url' (to match your DB column)
+            website_url: normalizedWebsite,
+            // Mapped 'score' to 'performance_score' (to match your DB column)
             performance_score: score,
-            // FIX 4: Removed 'lcp' because your table doesn't have that column
             // created_at is handled automatically by Supabase
             consent_to_marketing: consentToMarketing,
           },
