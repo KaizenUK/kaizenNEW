@@ -12,8 +12,14 @@ type SubmitStatus = "idle" | "submitting" | "success" | "error";
 
 export const ContactFormBox = () => {
   const [name, setName] = useState("");
+  const [surname, setSurname] = useState("");
   const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [website, setWebsite] = useState("");
   const [message, setMessage] = useState("");
+  const [consentToMarketing, setConsentToMarketing] = useState(false);
+  const [consentToGDPR, setConsentToGDPR] = useState(false);
+  const [honeypot, setHoneypot] = useState("");
   const [status, setStatus] = useState<SubmitStatus>("idle");
   const [errorMessage, setErrorMessage] = useState("");
 
