@@ -61,7 +61,7 @@ const Footer: React.FC = () => {
 
     if (!newsletterSupabase) {
       setErrorMessage(
-        "Database connection unavailable. Please try again later."
+        "Database connection unavailable. Please try again later.",
       );
       return;
     }

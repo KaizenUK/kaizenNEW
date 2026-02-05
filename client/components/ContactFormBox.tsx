@@ -39,7 +39,9 @@ export const ContactFormBox = () => {
     setStatus("submitting");
 
     if (!supabase) {
-      setErrorMessage("Database connection unavailable. Please try again later.");
+      setErrorMessage(
+        "Database connection unavailable. Please try again later.",
+      );
       setStatus("error");
       return;
     }
