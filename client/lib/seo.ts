@@ -322,9 +322,9 @@ const pageMeta: Record<string, Partial<PageMeta>> = {
     keywords: ["cookie policy", "cookie notice", "gdpr", "analytics cookies"],
   },
   "/gdpr-policy": {
-    title: "GDPR Policy | Kaizen Web Liverpool",
+    title: "GDPR Policy | Kaizen",
     description:
-      "Kaizen Web's GDPR commitments covering hosting, analytics, and customer data in the UK.",
+      "Kaizen's GDPR commitments covering hosting, analytics, and customer data in the UK.",
     noIndex: true,
   },
   "/case-studies/as-collections": {
