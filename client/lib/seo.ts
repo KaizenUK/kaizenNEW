@@ -381,16 +381,16 @@ const dynamicMeta: DynamicMetaMatcher[] = [
   {
     test: (pathname) => pathname.startsWith("/blog/"),
     meta: {
-      title: "Liverpool Web Design Insights | Kaizen Web Blog",
+      title: "Liverpool Web Design Insights | Kaizen Blog",
       description:
-        "Articles and guides from the Kaizen Web Liverpool team covering SEO, UX, content design, and agile ways of working.",
+        "Articles and guides from the Kaizen Liverpool team covering SEO, UX, content design, and agile ways of working.",
     },
   },
   {
     test: (pathname) => pathname.startsWith("/admin"),
     meta: {
-      title: "Admin | Kaizen Web",
-      description: "Restricted Kaizen Web admin tools.",
+      title: "Admin | Kaizen",
+      description: "Restricted Kaizen admin tools.",
       noIndex: true,
     },
   },
