@@ -328,7 +328,7 @@ const pageMeta: Record<string, Partial<PageMeta>> = {
     noIndex: true,
   },
   "/case-studies/as-collections": {
-    title: "As Collections Case Study | Kaizen Web",
+    title: "As Collections Case Study | Kaizen",
     description:
       "How we helped As Collections improve their online presence and streamline operations.",
   },
