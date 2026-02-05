@@ -1,26 +1,107 @@
 import { Resend } from "npm:resend";
 
 const resend = new Resend(Deno.env.get("RESEND_API_KEY"));
+const hubspotToken = Deno.env.get("HUBSPOT_ACCESS_TOKEN");
+
+const logoUrl = "https://kaizenweb.co.uk/assets/kaizenweb-logo-light-mode-260x50.png";
 
 Deno.serve(async (req) => {
   const payload = await req.json();
   const record = payload.record;
 
-  const { data, error } = await resend.emails.send({
+  // Split Name for HubSpot (e.g. "Sean Murray" -> First: Sean, Last: Murray)
+  const nameParts = (record.name || "").split(" ");
+  const firstName = nameParts[0];
+  const lastName = nameParts.slice(1).join(" ");
+
+  // 1. The Design
+  const emailHtml = `
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <style>
+        body { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; background-color: #f4f4f5; margin: 0; padding: 0; }
+        .container { max-width: 600px; margin: 40px auto; background-color: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+        .header { background-color: #000000; padding: 30px; text-align: center; }
+        .header img { max-height: 40px; }
+        .content { padding: 40px; color: #333333; line-height: 1.6; }
+        .h1 { font-size: 22px; font-weight: 700; margin-bottom: 20px; color: #111111; }
+        .data-box { background-color: #f9fafb; border: 1px solid #e5e7eb; border-radius: 8px; padding: 20px; margin: 20px 0; }
+        .data-row { display: flex; justify-content: space-between; margin-bottom: 10px; border-bottom: 1px dashed #e5e7eb; padding-bottom: 10px; }
+        .data-row:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+        .label { font-weight: 600; color: #666666; font-size: 14px; }
+        .value { font-weight: 500; color: #111111; font-size: 14px; text-align: right; }
+        .message-box { background-color: #f3f4f6; padding: 15px; border-left: 4px solid #000000; border-radius: 4px; font-style: italic; color: #4b5563; margin-top: 20px; }
+        .btn { display: inline-block; background-color: #000000; color: #ffffff; text-decoration: none; padding: 12px 24px; border-radius: 6px; font-weight: 600; margin-top: 20px; }
+        .footer { background-color: #f4f4f5; padding: 20px; text-align: center; font-size: 12px; color: #888888; }
+      </style>
+    </head>
+    <body>
+      <div class="container">
+        <div class="header">
+          <img src="${logoUrl}" alt="Kaizen Web" />
+        </div>
+        <div class="content">
+          <div class="h1">📩 New Enquiry</div>
+          <p><strong>${record.name}</strong> has sent a message via the website.</p>
+          
+          <div class="data-box">
+            <div class="data-row">
+              <span class="label">Name</span>
+              <span class="value">${record.name}</span>
+            </div>
+            <div class="data-row">
+              <span class="label">Email</span>
+              <span class="value"><a href="mailto:${record.email}" style="color: #2563eb;">${record.email}</a></span>
+            </div>
+            <div class="data-row">
+              <span class="label">Source</span>
+              <span class="value">${record.source_page || "Contact Page"}</span>
+            </div>
+          </div>
+
+          <div class="message-box">
+            "${record.message}"
+          </div>
+
+          <center>
+            <a href="mailto:${record.email}" class="btn">Reply to Lead</a>
+          </center>
+        </div>
+        <div class="footer">
+          Automated Alert • Kaizen Web Bot
+        </div>
+      </div>
+    </body>
+    </html>
+  `;
+
+  // 2. Send Email
+  const emailReq = resend.emails.send({
     from: "Kaizen Bot <system@kaizenweb.co.uk>",
     to: ["sales@kaizenweb.co.uk"],
-    reply_to: record.email, // 👈 Ensures 'Reply' goes to the customer
+    reply_to: record.email,
     subject: `📩 Contact: ${record.name}`,
-    html: `
-      <h2>New Enquiry from ${record.name}</h2>
-      <p><strong>Email:</strong> ${record.email}</p>
-      <p><strong>Source:</strong> ${record.source_page || "Contact Page"}</p>
-      <hr />
-      <h3>Message:</h3>
-      <p style="background: #f4f4f5; padding: 15px; border-radius: 5px;">${record.message}</p>
-    `,
+    html: emailHtml,
   });
 
-  if (error) return new Response(JSON.stringify(error), { status: 500 });
-  return new Response(JSON.stringify(data), { status: 200 });
+  // 3. Sync to HubSpot
+  const hubspotReq = fetch("https://api.hubapi.com/crm/v3/objects/contacts", {
+    method: "POST",
+    headers: {
+      "Authorization": `Bearer ${hubspotToken}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      properties: {
+        email: record.email,
+        firstname: firstName,
+        lastname: lastName,
+        lifecycle_stage: "lead",
+      },
+    }),
+  });
+
+  const [emailResult] = await Promise.all([emailReq, hubspotReq]);
+  return new Response(JSON.stringify(emailResult), { status: 200 });
 });
