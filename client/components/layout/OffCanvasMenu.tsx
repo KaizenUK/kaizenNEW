@@ -190,11 +190,11 @@ const OffCanvasMenu: React.FC<OffCanvasMenuProps> = ({ isOpen, onClose }) => {
         <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100">
           <Link to="/" className="flex items-center gap-2" onClick={onClose}>
             <img
-              src="https://cdn.builder.io/api/v1/image/assets%2Fe4ae46bbd81b4b95bef54d66dd9748cc%2F03f6c5dd481449d297c430cab962412e?format=webp&width=100&quality=80"
-              alt="Kaizen Web"
-              width="120"
-              height="32"
-              className="h-8 w-auto"
+              src="https://cdn.builder.io/api/v1/image/assets%2Fe4ae46bbd81b4b95bef54d66dd9748cc%2F326ffc7c8bf9463f93847a3777cf16eb"
+              alt="Kaizen"
+              width="100"
+              height="30"
+              className="h-6 w-auto"
               loading="lazy"
               decoding="async"
             />
