@@ -27,8 +27,24 @@ export const ContactFormBox = () => {
     e.preventDefault();
     setErrorMessage("");
 
+    // Bot Detection: If honeypot field has any value, it's a bot
+    if (honeypot.trim()) {
+      console.warn("Honeypot field filled - likely a bot submission");
+      // Silently fail or show success to confuse bots
+      setStatus("success");
+      setName("");
+      setSurname("");
+      setEmail("");
+      setPhone("");
+      setWebsite("");
+      setMessage("");
+      setHoneypot("");
+      setTimeout(() => setStatus("idle"), 5000);
+      return;
+    }
+
     if (!name.trim()) {
-      setErrorMessage("Please enter your name.");
+      setErrorMessage("Please enter your first name.");
       return;
     }
 
@@ -39,6 +55,13 @@ export const ContactFormBox = () => {
 
     if (!message.trim()) {
       setErrorMessage("Please enter a message.");
+      return;
+    }
+
+    if (!consentToGDPR) {
+      setErrorMessage(
+        "Please confirm you understand your data will be processed according to our privacy policy.",
+      );
       return;
     }
 
@@ -55,8 +78,13 @@ export const ContactFormBox = () => {
     try {
       const { error } = await supabase.from("contact_form_submissions").insert({
         name: name.trim(),
+        surname: surname.trim() || null,
         email: email.toLowerCase().trim(),
+        phone: phone.trim() || null,
+        website: website.trim() || null,
         message: message.trim(),
+        consent_to_marketing: consentToMarketing,
+        consent_to_gdpr: consentToGDPR,
         source_page: window.location.pathname,
         user_agent:
           typeof navigator !== "undefined" ? navigator.userAgent : null,
@@ -68,8 +96,14 @@ export const ContactFormBox = () => {
       } else {
         setStatus("success");
         setName("");
+        setSurname("");
         setEmail("");
+        setPhone("");
+        setWebsite("");
         setMessage("");
+        setConsentToMarketing(false);
+        setConsentToGDPR(false);
+        setHoneypot("");
         setTimeout(() => setStatus("idle"), 5000);
       }
     } catch {
