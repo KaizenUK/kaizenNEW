@@ -1158,7 +1158,7 @@ export default function SpeedScanner() {
                           Your site has critical performance issues. Unlock the
                           full PDF fix plan.
                         </p>
-                        <div className="flex flex-col sm:flex-row gap-2">
+                        <div className="flex flex-col sm:flex-row gap-2 mb-4">
                           <input
                             type="email"
                             inputMode="email"
@@ -1174,6 +1174,26 @@ export default function SpeedScanner() {
                             Unlock
                           </button>
                         </div>
+
+                        {/* Consent Checkbox */}
+                        <div className="mb-4 p-3 bg-slate-800/50 rounded-lg border border-slate-700">
+                          <label className="flex items-start gap-3 cursor-pointer">
+                            <input
+                              type="checkbox"
+                              checked={consentToMarketing}
+                              onChange={(e) =>
+                                setConsentToMarketing(e.target.checked)
+                              }
+                              className="mt-1 rounded border-slate-600 cursor-pointer accent-cyan-500"
+                            />
+                            <span className="text-xs text-slate-300 leading-relaxed">
+                              I consent to receiving marketing emails from
+                              Kaizen about performance optimisation tips and
+                              services.
+                            </span>
+                          </label>
+                        </div>
+
                         {emailError && (
                           <p className="text-red-400 text-xs mt-2">
                             {emailError}
