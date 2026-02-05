@@ -241,34 +241,32 @@ export const ContactFormBox = () => {
           </div>
 
           {/* Consent Checkboxes */}
-          <div className="space-y-3 pt-2">
+          <div className="space-y-2 pt-1">
             {/* Marketing Consent */}
-            <label className="flex items-start gap-3 cursor-pointer">
+            <label className="flex items-start gap-2 cursor-pointer">
               <input
                 type="checkbox"
                 checked={consentToMarketing}
                 onChange={(e) => setConsentToMarketing(e.target.checked)}
                 disabled={status === "submitting"}
-                className="mt-1 rounded border-gray-600 cursor-pointer accent-cyan-500 disabled:opacity-50"
+                className="mt-0.5 rounded border-gray-600 cursor-pointer accent-cyan-500 disabled:opacity-50"
               />
               <span className="text-xs text-white/70 leading-relaxed">
-                I consent to receiving marketing emails about newsletters and
-                promotions from Kaizen.
+                I consent to marketing emails about newsletters and promotions.
               </span>
             </label>
 
             {/* GDPR Consent - MANDATORY */}
-            <label className="flex items-start gap-3 cursor-pointer">
+            <label className="flex items-start gap-2 cursor-pointer">
               <input
                 type="checkbox"
                 checked={consentToGDPR}
                 onChange={(e) => setConsentToGDPR(e.target.checked)}
                 disabled={status === "submitting"}
-                className="mt-1 rounded border-gray-600 cursor-pointer accent-cyan-500 disabled:opacity-50"
+                className="mt-0.5 rounded border-gray-600 cursor-pointer accent-cyan-500 disabled:opacity-50"
               />
               <span className="text-xs text-white/70 leading-relaxed">
-                I understand that my data will be processed and stored in
-                accordance with GDPR regulations and our privacy policy.{" "}
+                I understand my data will be processed per GDPR and privacy policy.{" "}
                 <span className="text-red-400">*</span>
               </span>
             </label>
