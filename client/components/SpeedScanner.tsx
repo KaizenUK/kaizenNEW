@@ -64,6 +64,7 @@ export default function SpeedScanner() {
   const [emailError, setEmailError] = useState("");
   const [statusMsg, setStatusMsg] = useState("");
   const [pdfLoading, setPdfLoading] = useState(false);
+  const [consentToMarketing, setConsentToMarketing] = useState(false);
 
   // --- CONFIGURATION ---
   // Safe to expose because you restricted it to kaizenweb.co.uk in Google Cloud
