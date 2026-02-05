@@ -358,6 +358,9 @@ const Header: React.FC<HeaderProps> = ({
               {menuTriggers.map(({ key, label }) => (
                 <button
                   key={key}
+                  ref={(el) => {
+                    if (el) buttonRefs.current[key] = el;
+                  }}
                   type="button"
                   onMouseEnter={() => handleMenuEnter(key)}
                   className={`flex items-center gap-1 px-4 py-3 text-[15px] font-medium transition-colors duration-150 ${
