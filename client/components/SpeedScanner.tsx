@@ -250,9 +250,9 @@ export default function SpeedScanner() {
     // 2. Save to Supabase (Client-Side)
     if (supabase) {
       try {
-        // FIX 1: Table name changed from 'leads' to 'speed_scanner_submissions'
+        // FIX 1: Table name changed from 'leads' to 'speed_scanner_results'
         const { error } = await supabase
-          .from("speed_scanner_submissions")
+          .from("speed_scanner_results")
           .insert([
             {
               email: normalizedEmail,
