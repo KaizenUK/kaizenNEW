@@ -9,6 +9,30 @@ const logoUrl = "https://kaizenweb.co.uk/assets/kaizenweb-logo-light-mode-260x50
 Deno.serve(async (req) => {
   const payload = await req.json();
   const record = payload.record;
+  // --- 🛡️ SPAM FILTER START ---
+  const emailDomain = record.email.split("@")[1].toLowerCase();
+  
+  // The "Trash List" - Domains that are 100% fake/disposable
+  const trashDomains = [
+    "yopmail.com", "guerrillamail.com", "10minutemail.com", "tempmail.com", 
+    "mailinator.com", "throwawaymail.com", "fake-email.com", "superrito.com",
+    "sharklasers.com", "test.com", "example.com" 
+  ];
+
+  // The "Spam Pattern" Check - Blocks "test@test.com" or "a@a.com"
+  const localPart = record.email.split("@")[0];
+  if (
+    trashDomains.includes(emailDomain) || 
+    localPart.length < 2 ||       // e.g. "a@gmail.com"
+    localPart === "test" ||       // e.g. "test@gmail.com"
+    record.email === "test@test.com"
+  ) {
+    console.log(`🚫 Spam blocked: ${record.email}`);
+    // We return 200 OK so the frontend/bot thinks it succeeded (Shadow Ban)
+    // But we actually do nothing.
+    return new Response(JSON.stringify({ message: "Blocked" }), { status: 200 });
+  }
+  // --- 🛡️ SPAM FILTER END ---
 
   const nameParts = (record.name || "").split(" ");
   const firstName = nameParts[0];
