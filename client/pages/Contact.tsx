@@ -122,6 +122,28 @@ export default function Contact() {
           </motion.div>
         </div>
       </section>
+
+      {/* Contact Form Section */}
+      <section className="py-20 md:py-32 bg-gradient-to-br from-kaizen-dark via-slate-900 to-kaizen-dark dark:from-slate-950 dark:via-slate-900 dark:to-black">
+        <div className="container mx-auto px-4">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-100px" }}
+            transition={{ duration: 0.6 }}
+            className="max-w-2xl mx-auto"
+          >
+            <h2 className="text-4xl md:text-5xl font-heading font-bold mb-4 text-white text-center">
+              Or Drop Us a Line
+            </h2>
+            <p className="text-center text-white/70 mb-12">
+              Prefer to reach out via email? Send us a message and we'll get back
+              to you shortly.
+            </p>
+            <ContactFormBox />
+          </motion.div>
+        </div>
+      </section>
     </Layout>
   );
 }
