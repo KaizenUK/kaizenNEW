@@ -10,13 +10,13 @@ import {
   Zap,
   ShoppingBag,
   BookOpen,
-  Award,
   PoundSterling,
   Lightbulb,
   AlertCircle,
   Rocket,
   TrendingUp,
   Grid,
+  ArrowRight,
 } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
@@ -171,7 +171,7 @@ const OffCanvasMenu: React.FC<OffCanvasMenuProps> = ({ isOpen, onClose }) => {
       {/* Backdrop */}
       <div
         className={cn(
-          "fixed inset-0 z-40 bg-black/40 backdrop-blur-md transition-opacity duration-200",
+          "fixed inset-0 z-40 bg-black/20 backdrop-blur-sm transition-opacity duration-200",
           isOpen
             ? "opacity-100 pointer-events-auto"
             : "opacity-0 pointer-events-none",
@@ -182,12 +182,12 @@ const OffCanvasMenu: React.FC<OffCanvasMenuProps> = ({ isOpen, onClose }) => {
       {/* Sidebar */}
       <div
         className={cn(
-          "fixed top-0 bottom-0 left-0 z-50 w-80 max-w-[85vw] bg-gray-950 border-r border-white/10 flex flex-col overflow-hidden transform transition-transform duration-300 ease-out",
+          "fixed top-0 bottom-0 left-0 z-50 w-80 max-w-[85vw] bg-white border-r border-gray-200 flex flex-col overflow-hidden transform transition-transform duration-300 ease-out shadow-xl",
           isOpen ? "translate-x-0" : "-translate-x-full",
         )}
       >
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-white/10">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100">
           <Link to="/" className="flex items-center gap-2" onClick={onClose}>
             <img
               src="https://cdn.builder.io/api/v1/image/assets%2Fe4ae46bbd81b4b95bef54d66dd9748cc%2F03f6c5dd481449d297c430cab962412e?format=webp&width=100&quality=80"
@@ -202,7 +202,7 @@ const OffCanvasMenu: React.FC<OffCanvasMenuProps> = ({ isOpen, onClose }) => {
           <button
             type="button"
             aria-label="Close menu"
-            className="p-2 rounded-full text-white/70 hover:text-white hover:bg-white/10 transition"
+            className="p-2 rounded-full text-gray-500 hover:text-gray-700 hover:bg-gray-100 transition"
             onClick={onClose}
           >
             <X size={20} />
@@ -215,13 +215,13 @@ const OffCanvasMenu: React.FC<OffCanvasMenuProps> = ({ isOpen, onClose }) => {
           <div>
             <button
               onClick={() => toggleSection("services")}
-              className="w-full text-left px-3 py-3 text-base font-medium text-white/90 hover:text-white hover:bg-white/5 rounded-lg transition flex items-center justify-between"
+              className="w-full text-left px-3 py-3 text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50 rounded-lg transition flex items-center justify-between"
             >
               <span>Services</span>
               <ChevronDown
                 size={18}
                 className={cn(
-                  "transition-transform duration-200",
+                  "text-gray-400 transition-transform duration-200",
                   expandedSection === "services" && "rotate-180",
                 )}
               />
@@ -230,7 +230,7 @@ const OffCanvasMenu: React.FC<OffCanvasMenuProps> = ({ isOpen, onClose }) => {
               <div className="mt-1 space-y-0.5">
                 {servicesMenu.map((column) => (
                   <div key={column.title}>
-                    <p className="text-xs font-semibold text-white/40 uppercase tracking-wider px-3 py-2 mb-1">
+                    <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider px-3 py-2 mb-1">
                       {column.title}
                     </p>
                     {column.items.map((item) => (
@@ -238,10 +238,10 @@ const OffCanvasMenu: React.FC<OffCanvasMenuProps> = ({ isOpen, onClose }) => {
                         key={item.href}
                         to={item.href}
                         className={cn(
-                          "block px-3 py-2 text-sm font-medium rounded-lg hover:bg-white/5 transition",
+                          "block px-3 py-2 text-sm font-medium rounded-lg hover:bg-gray-50 transition",
                           item.highlight
-                            ? "text-cyan-300 hover:text-cyan-200"
-                            : "text-white/80 hover:text-white",
+                            ? "text-cyan-600 hover:text-cyan-700"
+                            : "text-gray-600 hover:text-gray-900",
                         )}
                         onClick={onClose}
                       >
@@ -258,13 +258,13 @@ const OffCanvasMenu: React.FC<OffCanvasMenuProps> = ({ isOpen, onClose }) => {
           <div>
             <button
               onClick={() => toggleSection("insights")}
-              className="w-full text-left px-3 py-3 text-base font-medium text-white/90 hover:text-white hover:bg-white/5 rounded-lg transition flex items-center justify-between"
+              className="w-full text-left px-3 py-3 text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50 rounded-lg transition flex items-center justify-between"
             >
               <span>Insights</span>
               <ChevronDown
                 size={18}
                 className={cn(
-                  "transition-transform duration-200",
+                  "text-gray-400 transition-transform duration-200",
                   expandedSection === "insights" && "rotate-180",
                 )}
               />
@@ -277,7 +277,7 @@ const OffCanvasMenu: React.FC<OffCanvasMenuProps> = ({ isOpen, onClose }) => {
                       <Link
                         key={item.href}
                         to={item.href}
-                        className="block px-3 py-2 text-sm font-medium rounded-lg text-white/80 hover:text-white hover:bg-white/5 transition"
+                        className="block px-3 py-2 text-sm font-medium rounded-lg text-gray-600 hover:text-gray-900 hover:bg-gray-50 transition"
                         onClick={onClose}
                       >
                         {item.label}
@@ -293,13 +293,13 @@ const OffCanvasMenu: React.FC<OffCanvasMenuProps> = ({ isOpen, onClose }) => {
           <div>
             <button
               onClick={() => toggleSection("case-studies")}
-              className="w-full text-left px-3 py-3 text-base font-medium text-white/90 hover:text-white hover:bg-white/5 rounded-lg transition flex items-center justify-between"
+              className="w-full text-left px-3 py-3 text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50 rounded-lg transition flex items-center justify-between"
             >
               <span>Case Studies</span>
               <ChevronDown
                 size={18}
                 className={cn(
-                  "transition-transform duration-200",
+                  "text-gray-400 transition-transform duration-200",
                   expandedSection === "case-studies" && "rotate-180",
                 )}
               />
@@ -312,7 +312,7 @@ const OffCanvasMenu: React.FC<OffCanvasMenuProps> = ({ isOpen, onClose }) => {
                       <Link
                         key={item.href}
                         to={item.href}
-                        className="block px-3 py-2 text-sm font-medium rounded-lg text-white/80 hover:text-white hover:bg-white/5 transition"
+                        className="block px-3 py-2 text-sm font-medium rounded-lg text-gray-600 hover:text-gray-900 hover:bg-gray-50 transition"
                         onClick={onClose}
                       >
                         {item.label}
@@ -328,13 +328,13 @@ const OffCanvasMenu: React.FC<OffCanvasMenuProps> = ({ isOpen, onClose }) => {
           <div>
             <button
               onClick={() => toggleSection("about")}
-              className="w-full text-left px-3 py-3 text-base font-medium text-white/90 hover:text-white hover:bg-white/5 rounded-lg transition flex items-center justify-between"
+              className="w-full text-left px-3 py-3 text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50 rounded-lg transition flex items-center justify-between"
             >
               <span>About</span>
               <ChevronDown
                 size={18}
                 className={cn(
-                  "transition-transform duration-200",
+                  "text-gray-400 transition-transform duration-200",
                   expandedSection === "about" && "rotate-180",
                 )}
               />
@@ -343,21 +343,21 @@ const OffCanvasMenu: React.FC<OffCanvasMenuProps> = ({ isOpen, onClose }) => {
               <div className="mt-1 space-y-0.5">
                 <Link
                   to="/about"
-                  className="block px-3 py-2 text-sm font-medium rounded-lg text-white/80 hover:text-white hover:bg-white/5 transition"
+                  className="block px-3 py-2 text-sm font-medium rounded-lg text-gray-600 hover:text-gray-900 hover:bg-gray-50 transition"
                   onClick={onClose}
                 >
                   About Kaizen
                 </Link>
                 <Link
                   to="/pledge"
-                  className="block px-3 py-2 text-sm font-medium rounded-lg text-white/80 hover:text-white hover:bg-white/5 transition"
+                  className="block px-3 py-2 text-sm font-medium rounded-lg text-gray-600 hover:text-gray-900 hover:bg-gray-50 transition"
                   onClick={onClose}
                 >
                   Our Pledge
                 </Link>
                 <Link
                   to="/contact"
-                  className="block px-3 py-2 text-sm font-medium rounded-lg text-white/80 hover:text-white hover:bg-white/5 transition"
+                  className="block px-3 py-2 text-sm font-medium rounded-lg text-gray-600 hover:text-gray-900 hover:bg-gray-50 transition"
                   onClick={onClose}
                 >
                   Contact
@@ -367,14 +367,14 @@ const OffCanvasMenu: React.FC<OffCanvasMenuProps> = ({ isOpen, onClose }) => {
           </div>
 
           {/* Divider */}
-          <div className="my-2 border-t border-white/10" />
+          <div className="my-2 border-t border-gray-100" />
 
           {/* Top-Level Links */}
           {topLevelLinks.map((link) => (
             <Link
               key={link.href}
               to={link.href}
-              className="block px-3 py-3 text-base font-medium text-white/90 hover:text-white hover:bg-white/5 rounded-lg transition"
+              className="block px-3 py-3 text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50 rounded-lg transition"
               onClick={onClose}
             >
               {link.label}
@@ -383,11 +383,11 @@ const OffCanvasMenu: React.FC<OffCanvasMenuProps> = ({ isOpen, onClose }) => {
         </div>
 
         {/* Footer */}
-        <div className="px-4 py-4 border-t border-white/10 space-y-3">
+        <div className="px-4 py-4 border-t border-gray-100 space-y-3 bg-gray-50">
           <Link
             to="/performance-scanner"
             onClick={onClose}
-            className="w-full px-4 py-3 rounded-full text-sm font-medium text-white bg-gradient-to-r from-amber-500 to-orange-500 hover:shadow-lg transition flex items-center justify-center gap-2"
+            className="w-full px-4 py-3 rounded-lg text-sm font-medium text-cyan-600 bg-cyan-50 hover:bg-cyan-100 transition flex items-center justify-center gap-2"
           >
             <Zap size={16} />
             Free Speed Test
@@ -397,10 +397,10 @@ const OffCanvasMenu: React.FC<OffCanvasMenuProps> = ({ isOpen, onClose }) => {
               openCrisp();
               onClose();
             }}
-            className="w-full px-4 py-3 rounded-full text-sm font-medium text-gray-950 bg-gradient-to-r from-green-400 to-emerald-500 hover:shadow-lg transition flex items-center justify-center gap-2"
+            className="w-full px-4 py-3 rounded-lg text-sm font-semibold text-white bg-gradient-to-r from-cyan-500 to-teal-500 hover:from-cyan-600 hover:to-teal-600 shadow-lg shadow-cyan-500/20 transition flex items-center justify-center gap-2"
           >
-            <span className="w-2 h-2 rounded-full bg-green-200 animate-pulse" />
             Start a Chat
+            <ArrowRight size={14} />
           </button>
         </div>
       </div>
