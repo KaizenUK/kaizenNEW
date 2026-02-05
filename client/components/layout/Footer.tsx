@@ -59,6 +59,13 @@ const Footer: React.FC = () => {
       return;
     }
 
+    if (!newsletterSupabase) {
+      setErrorMessage(
+        "Database connection unavailable. Please try again later."
+      );
+      return;
+    }
+
     setIsSubmitting(true);
 
     try {
