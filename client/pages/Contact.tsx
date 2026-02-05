@@ -137,8 +137,8 @@ export default function Contact() {
               Or Drop Us a Line
             </h2>
             <p className="text-center text-white/70 mb-12">
-              Prefer to reach out via email? Send us a message and we'll get back
-              to you shortly.
+              Prefer to reach out via email? Send us a message and we'll get
+              back to you shortly.
             </p>
             <ContactFormBox />
           </motion.div>

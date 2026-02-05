@@ -8,7 +8,7 @@ import { createClient } from "@supabase/supabase-js";
 // Newsletter Supabase client (unified)
 const newsletterSupabase = createClient(
   import.meta.env.VITE_SUPABASE_URL || "",
-  import.meta.env.VITE_SUPABASE_ANON_KEY || ""
+  import.meta.env.VITE_SUPABASE_ANON_KEY || "",
 );
 
 const CONSENT_TEXT =
