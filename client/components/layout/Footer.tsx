@@ -315,18 +315,18 @@ const Footer: React.FC = () => {
                 </div>
               ) : (
                 <form onSubmit={handleNewsletterSubmit} className="space-y-3">
-                  <div className="relative">
+                  <div className="flex gap-2 border border-white/20 focus-within:border-cyan-500 transition">
                     <input
                       type="email"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       placeholder="Enter your email"
-                      className="w-full bg-transparent border border-white/20 text-white placeholder:text-white/40 px-4 py-3 pr-24 text-sm focus:outline-none focus:border-cyan-500 transition"
+                      className="flex-1 bg-transparent text-white placeholder:text-white/40 px-4 py-3 text-sm focus:outline-none"
                     />
                     <button
                       type="submit"
                       disabled={isSubmitting}
-                      className="absolute right-1 top-1 bottom-1 px-4 bg-white text-gray-950 text-xs font-medium uppercase tracking-wider hover:bg-white/90 transition disabled:opacity-50"
+                      className="px-4 py-3 bg-white text-gray-950 text-xs font-medium uppercase tracking-wider hover:bg-white/90 transition disabled:opacity-50 whitespace-nowrap"
                     >
                       {isSubmitting ? "..." : "Submit"}
                     </button>
