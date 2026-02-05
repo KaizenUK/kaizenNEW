@@ -6,7 +6,7 @@ export interface PageMeta {
   noIndex?: boolean;
 }
 
-export const SITE_NAME = "Kaizen Web";
+export const SITE_NAME = "Kaizen";
 export const SITE_URL = "https://kaizenweb.co.uk";
 export const BUSINESS_PHONE = "+44 151 808 1100";
 export const BUSINESS_EMAIL = "hello@kaizenweb.co.uk";
