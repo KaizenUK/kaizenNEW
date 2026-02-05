@@ -212,16 +212,11 @@ export const ContactFormBox = () => {
         setStatus("error");
       } else {
         setStatus("success");
-        setName("");
-        setSurname("");
-        setEmail("");
-        setPhone("");
-        setWebsite("");
-        setMessage("");
-        setConsentToMarketing(false);
-        setConsentToGDPR(false);
-        setHoneypot("");
-        setTimeout(() => setStatus("idle"), 5000);
+        resetForm();
+        setTimeout(() => {
+          setStatus("idle");
+          setCurrentStep(1);
+        }, 5000);
       }
     } catch {
       setErrorMessage("Something went wrong. Please try again.");
