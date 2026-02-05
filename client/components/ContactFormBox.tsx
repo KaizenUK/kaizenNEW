@@ -23,6 +23,56 @@ export const ContactFormBox = () => {
   const [status, setStatus] = useState<SubmitStatus>("idle");
   const [errorMessage, setErrorMessage] = useState("");
 
+  // Field-level errors
+  const [emailError, setEmailError] = useState("");
+  const [phoneError, setPhoneError] = useState("");
+  const [websiteError, setWebsiteError] = useState("");
+
+  // Validation functions
+  const validateEmail = (value: string) => {
+    const trimmed = value.trim();
+    if (!trimmed) {
+      return "Email is required.";
+    }
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(trimmed)) {
+      return "Email must include a domain (e.g., name@example.co.uk).";
+    }
+    return "";
+  };
+
+  const validatePhone = (value: string) => {
+    const trimmed = value.trim();
+    if (!trimmed) return ""; // Phone is optional
+    const digits = trimmed.replace(/\D/g, "");
+    if (digits.length < 10 || digits.length > 13) {
+      return "Phone must be 10-13 digits (e.g., +441234567890 or 01234 567890).";
+    }
+    return "";
+  };
+
+  const validateWebsite = (value: string) => {
+    const trimmed = value.trim();
+    if (!trimmed) return ""; // Website is optional
+    // Just check that it looks like a domain (not validation for https)
+    if (!trimmed.includes(".")) {
+      return "Website must include a domain (e.g., example.co.uk).";
+    }
+    return "";
+  };
+
+  const handleEmailBlur = () => {
+    setEmailError(validateEmail(email));
+  };
+
+  const handlePhoneBlur = () => {
+    setPhoneError(validatePhone(phone));
+  };
+
+  const handleWebsiteBlur = () => {
+    setWebsiteError(validateWebsite(website));
+  };
+
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setErrorMessage("");
