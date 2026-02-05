@@ -271,23 +271,39 @@ export const ContactFormBox = () => {
                 type="tel"
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
+                onBlur={handlePhoneBlur}
                 placeholder="+44"
                 disabled={status === "submitting"}
-                className="w-full bg-gray-800/50 border border-white/10 text-white placeholder:text-white/40 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-cyan-500 transition disabled:opacity-50"
+                className={`w-full bg-gray-800/50 border text-white placeholder:text-white/40 rounded-lg px-3 py-2 text-sm focus:outline-none transition disabled:opacity-50 ${
+                  phoneError
+                    ? "border-red-500 focus:border-red-500"
+                    : "border-white/10 focus:border-cyan-500"
+                }`}
               />
+              {phoneError && (
+                <p className="text-red-400 text-xs mt-1">{phoneError}</p>
+              )}
             </div>
             <div>
               <label className="block text-xs font-medium text-white mb-1">
                 Website
               </label>
               <input
-                type="url"
+                type="text"
                 value={website}
                 onChange={(e) => setWebsite(e.target.value)}
-                placeholder="yoursite.co.uk"
+                onBlur={handleWebsiteBlur}
+                placeholder="example.co.uk"
                 disabled={status === "submitting"}
-                className="w-full bg-gray-800/50 border border-white/10 text-white placeholder:text-white/40 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-cyan-500 transition disabled:opacity-50"
+                className={`w-full bg-gray-800/50 border text-white placeholder:text-white/40 rounded-lg px-3 py-2 text-sm focus:outline-none transition disabled:opacity-50 ${
+                  websiteError
+                    ? "border-red-500 focus:border-red-500"
+                    : "border-white/10 focus:border-cyan-500"
+                }`}
               />
+              {websiteError && (
+                <p className="text-red-400 text-xs mt-1">{websiteError}</p>
+              )}
             </div>
           </div>
 
