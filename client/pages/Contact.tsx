@@ -2,6 +2,7 @@ import Layout from "@/components/Layout";
 import { motion } from "framer-motion";
 import { MessageCircle, Calendar } from "lucide-react";
 import { useCalendly } from "@/context/CalendlyContext";
+import { ContactFormBox } from "@/components/ContactFormBox";
 
 const fadeInUp = {
   hidden: { opacity: 0, y: 20 },
