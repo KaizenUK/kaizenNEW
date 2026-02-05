@@ -137,7 +137,7 @@ export const ContactFormBox = () => {
           </div>
         </motion.div>
       ) : (
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-3">
           {/* Honeypot Field - Hidden from real users */}
           <input
             type="email"
@@ -150,84 +150,84 @@ export const ContactFormBox = () => {
             aria-hidden="true"
           />
 
-          {/* Name Field */}
-          <div>
-            <label className="block text-sm font-medium text-white mb-2">
-              First Name <span className="text-red-400">*</span>
-            </label>
-            <input
-              type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              placeholder="Your first name"
-              disabled={status === "submitting"}
-              className="w-full bg-gray-800/50 border border-white/10 text-white placeholder:text-white/40 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-cyan-500 transition disabled:opacity-50"
-            />
-          </div>
-
-          {/* Surname Field */}
-          <div>
-            <label className="block text-sm font-medium text-white mb-2">
-              Surname
-            </label>
-            <input
-              type="text"
-              value={surname}
-              onChange={(e) => setSurname(e.target.value)}
-              placeholder="Your surname (optional)"
-              disabled={status === "submitting"}
-              className="w-full bg-gray-800/50 border border-white/10 text-white placeholder:text-white/40 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-cyan-500 transition disabled:opacity-50"
-            />
+          {/* Name & Surname Row */}
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="block text-xs font-medium text-white mb-1">
+                First Name <span className="text-red-400">*</span>
+              </label>
+              <input
+                type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder="First name"
+                disabled={status === "submitting"}
+                className="w-full bg-gray-800/50 border border-white/10 text-white placeholder:text-white/40 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-cyan-500 transition disabled:opacity-50"
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-medium text-white mb-1">
+                Surname
+              </label>
+              <input
+                type="text"
+                value={surname}
+                onChange={(e) => setSurname(e.target.value)}
+                placeholder="Surname"
+                disabled={status === "submitting"}
+                className="w-full bg-gray-800/50 border border-white/10 text-white placeholder:text-white/40 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-cyan-500 transition disabled:opacity-50"
+              />
+            </div>
           </div>
 
           {/* Email Field */}
           <div>
-            <label className="block text-sm font-medium text-white mb-2">
+            <label className="block text-xs font-medium text-white mb-1">
               Email <span className="text-red-400">*</span>
             </label>
             <input
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="your@email.com"
+              placeholder="your@email.co.uk"
               disabled={status === "submitting"}
-              className="w-full bg-gray-800/50 border border-white/10 text-white placeholder:text-white/40 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-cyan-500 transition disabled:opacity-50"
+              className="w-full bg-gray-800/50 border border-white/10 text-white placeholder:text-white/40 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-cyan-500 transition disabled:opacity-50"
             />
           </div>
 
-          {/* Phone Field */}
-          <div>
-            <label className="block text-sm font-medium text-white mb-2">
-              Phone Number
-            </label>
-            <input
-              type="tel"
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
-              placeholder="+44 (optional)"
-              disabled={status === "submitting"}
-              className="w-full bg-gray-800/50 border border-white/10 text-white placeholder:text-white/40 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-cyan-500 transition disabled:opacity-50"
-            />
-          </div>
-
-          {/* Website Field */}
-          <div>
-            <label className="block text-sm font-medium text-white mb-2">
-              Current Website
-            </label>
-            <input
-              type="url"
-              value={website}
-              onChange={(e) => setWebsite(e.target.value)}
-              placeholder="https://yoursite.com (optional)"
-              disabled={status === "submitting"}
-              className="w-full bg-gray-800/50 border border-white/10 text-white placeholder:text-white/40 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-cyan-500 transition disabled:opacity-50"
-            />
+          {/* Phone & Website Row */}
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="block text-xs font-medium text-white mb-1">
+                Phone
+              </label>
+              <input
+                type="tel"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                placeholder="+44"
+                disabled={status === "submitting"}
+                className="w-full bg-gray-800/50 border border-white/10 text-white placeholder:text-white/40 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-cyan-500 transition disabled:opacity-50"
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-medium text-white mb-1">
+                Website
+              </label>
+              <input
+                type="url"
+                value={website}
+                onChange={(e) => setWebsite(e.target.value)}
+                placeholder="yoursite.co.uk"
+                disabled={status === "submitting"}
+                className="w-full bg-gray-800/50 border border-white/10 text-white placeholder:text-white/40 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-cyan-500 transition disabled:opacity-50"
+              />
+            </div>
           </div>
 
           {/* Message Field */}
           <div>
-            <label className="block text-sm font-medium text-white mb-2">
+            <label className="block text-xs font-medium text-white mb-1">
               Message <span className="text-red-400">*</span>
             </label>
             <textarea
@@ -235,8 +235,8 @@ export const ContactFormBox = () => {
               onChange={(e) => setMessage(e.target.value)}
               placeholder="Tell us about your project..."
               disabled={status === "submitting"}
-              rows={5}
-              className="w-full bg-gray-800/50 border border-white/10 text-white placeholder:text-white/40 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-cyan-500 transition disabled:opacity-50 resize-none"
+              rows={4}
+              className="w-full bg-gray-800/50 border border-white/10 text-white placeholder:text-white/40 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-cyan-500 transition disabled:opacity-50 resize-none"
             />
           </div>
 
