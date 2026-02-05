@@ -78,12 +78,12 @@ export const ContactFormBox = () => {
     try {
       const { error } = await supabase.from("contact_form_submissions").insert({
         name: name.trim(),
-        surname: surname.trim() || null,
+        last_name: surname.trim() || null,
         email: email.toLowerCase().trim(),
         phone: phone.trim() || null,
         website: website.trim() || null,
         message: message.trim(),
-        consent_to_marketing: consentToMarketing,
+        marketing_consent: consentToMarketing,
         consent_to_gdpr: consentToGDPR,
         source_page: window.location.pathname,
         user_agent:
