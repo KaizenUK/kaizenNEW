@@ -14,6 +14,10 @@ Deno.serve(async (req) => {
   const firstName = nameParts[0];
   const lastName = nameParts.slice(1).join(" ");
 
+  // Check consent (default to false if missing)
+  const hasConsented = record.marketing_consent || false;
+  const consentStatus = hasConsented ? "✅ Opted-in" : "❌ No Marketing";
+
   // 1. Email Logic
   const emailHtml = `
     <!DOCTYPE html>
@@ -43,20 +47,24 @@ Deno.serve(async (req) => {
         </div>
         <div class="content">
           <div class="h1">📩 New Enquiry</div>
-          <p><strong>${record.name}</strong> has sent a message via the website.</p>
+          <p><strong>${firstName} ${lastName}</strong> has sent a message via the website.</p>
           
           <div class="data-box">
             <div class="data-row">
               <span class="label">Name</span>
-              <span class="value">${record.name}</span>
+              <span class="value">${firstName} ${lastName}</span>
             </div>
             <div class="data-row">
               <span class="label">Email</span>
               <span class="value"><a href="mailto:${record.email}" style="color: #2563eb;">${record.email}</a></span>
             </div>
             <div class="data-row">
-              <span class="label">Source</span>
-              <span class="value">${record.source_page || "Contact Page"}</span>
+              <span class="label">Phone</span>
+              <span class="value">${record.phone || "Not provided"}</span>
+            </div>
+            <div class="data-row">
+              <span class="label">Marketing</span>
+              <span class="value">${consentStatus}</span>
             </div>
           </div>
 
@@ -80,29 +88,32 @@ Deno.serve(async (req) => {
     from: "Kaizen Bot <system@kaizenweb.co.uk>",
     to: ["sales@kaizenweb.co.uk"],
     reply_to: record.email,
-    subject: `📩 Contact: ${record.name}`,
+    subject: `📩 Contact: ${firstName} ${lastName}`,
     html: emailHtml,
   });
 
   // 2. HubSpot Logic
+  const hubspotProps: any = {
+    email: record.email,
+    firstname: firstName,
+    lastname: lastName,
+    lifecyclestage: "lead",
+    kaizen_source: "Contact Form",
+    source_page: record.source_page,
+    contact_message: record.message,
+    marketing_consent: hasConsented.toString() // Sends "true" or "false"
+  };
+
+  if (record.phone) hubspotProps.phone = record.phone;
+  if (record.website) hubspotProps.website = record.website;
+
   const hubspotReq = fetch("https://api.hubapi.com/crm/v3/objects/contacts", {
     method: "POST",
     headers: {
       "Authorization": `Bearer ${hubspotToken}`,
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({
-      properties: {
-        email: record.email,
-        firstname: firstName,
-        lastname: lastName,
-        lifecyclestage: "lead",
-        kaizen_source: "Contact Form",
-        source_page: record.source_page,
-        contact_message: record.message, // 👈 Clean custom field
-        description: `Message from lead:\n${record.message}` // Backup in notes
-      },
-    }),
+    body: JSON.stringify({ properties: hubspotProps }),
   });
 
   const [emailResult] = await Promise.all([emailReq, hubspotReq]);
