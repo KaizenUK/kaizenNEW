@@ -139,7 +139,7 @@ export const ContactFormBox = () => {
         last_name: surname.trim() || null,
         email: email.toLowerCase().trim(),
         phone: phone.trim() || null,
-        website: website.trim() || null,
+        website: website.trim() || null, // Store as user entered (no scheme required)
         message: message.trim(),
         marketing_consent: consentToMarketing,
         consent_to_gdpr: consentToGDPR,
