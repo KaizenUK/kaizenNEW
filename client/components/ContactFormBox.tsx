@@ -138,23 +138,52 @@ export const ContactFormBox = () => {
         </motion.div>
       ) : (
         <form onSubmit={handleSubmit} className="space-y-4">
+          {/* Honeypot Field - Hidden from real users */}
+          <input
+            type="email"
+            name="confirm_email"
+            value={honeypot}
+            onChange={(e) => setHoneypot(e.target.value)}
+            style={{ display: "none" }}
+            tabIndex={-1}
+            autoComplete="off"
+            aria-hidden="true"
+          />
+
+          {/* Name Field */}
           <div>
             <label className="block text-sm font-medium text-white mb-2">
-              Name
+              First Name <span className="text-red-400">*</span>
             </label>
             <input
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              placeholder="Your name"
+              placeholder="Your first name"
               disabled={status === "submitting"}
               className="w-full bg-gray-800/50 border border-white/10 text-white placeholder:text-white/40 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-cyan-500 transition disabled:opacity-50"
             />
           </div>
 
+          {/* Surname Field */}
           <div>
             <label className="block text-sm font-medium text-white mb-2">
-              Email
+              Surname
+            </label>
+            <input
+              type="text"
+              value={surname}
+              onChange={(e) => setSurname(e.target.value)}
+              placeholder="Your surname (optional)"
+              disabled={status === "submitting"}
+              className="w-full bg-gray-800/50 border border-white/10 text-white placeholder:text-white/40 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-cyan-500 transition disabled:opacity-50"
+            />
+          </div>
+
+          {/* Email Field */}
+          <div>
+            <label className="block text-sm font-medium text-white mb-2">
+              Email <span className="text-red-400">*</span>
             </label>
             <input
               type="email"
@@ -166,9 +195,40 @@ export const ContactFormBox = () => {
             />
           </div>
 
+          {/* Phone Field */}
           <div>
             <label className="block text-sm font-medium text-white mb-2">
-              Message
+              Phone Number
+            </label>
+            <input
+              type="tel"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              placeholder="+44 (optional)"
+              disabled={status === "submitting"}
+              className="w-full bg-gray-800/50 border border-white/10 text-white placeholder:text-white/40 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-cyan-500 transition disabled:opacity-50"
+            />
+          </div>
+
+          {/* Website Field */}
+          <div>
+            <label className="block text-sm font-medium text-white mb-2">
+              Current Website
+            </label>
+            <input
+              type="url"
+              value={website}
+              onChange={(e) => setWebsite(e.target.value)}
+              placeholder="https://yoursite.com (optional)"
+              disabled={status === "submitting"}
+              className="w-full bg-gray-800/50 border border-white/10 text-white placeholder:text-white/40 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-cyan-500 transition disabled:opacity-50"
+            />
+          </div>
+
+          {/* Message Field */}
+          <div>
+            <label className="block text-sm font-medium text-white mb-2">
+              Message <span className="text-red-400">*</span>
             </label>
             <textarea
               value={message}
@@ -178,6 +238,40 @@ export const ContactFormBox = () => {
               rows={5}
               className="w-full bg-gray-800/50 border border-white/10 text-white placeholder:text-white/40 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-cyan-500 transition disabled:opacity-50 resize-none"
             />
+          </div>
+
+          {/* Consent Checkboxes */}
+          <div className="space-y-3 pt-2">
+            {/* Marketing Consent */}
+            <label className="flex items-start gap-3 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={consentToMarketing}
+                onChange={(e) => setConsentToMarketing(e.target.checked)}
+                disabled={status === "submitting"}
+                className="mt-1 rounded border-gray-600 cursor-pointer accent-cyan-500 disabled:opacity-50"
+              />
+              <span className="text-xs text-white/70 leading-relaxed">
+                I consent to receiving marketing emails about newsletters and
+                promotions from Kaizen.
+              </span>
+            </label>
+
+            {/* GDPR Consent - MANDATORY */}
+            <label className="flex items-start gap-3 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={consentToGDPR}
+                onChange={(e) => setConsentToGDPR(e.target.checked)}
+                disabled={status === "submitting"}
+                className="mt-1 rounded border-gray-600 cursor-pointer accent-cyan-500 disabled:opacity-50"
+              />
+              <span className="text-xs text-white/70 leading-relaxed">
+                I understand that my data will be processed and stored in
+                accordance with GDPR regulations and our privacy policy.{" "}
+                <span className="text-red-400">*</span>
+              </span>
+            </label>
           </div>
 
           {errorMessage && (
