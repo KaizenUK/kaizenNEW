@@ -247,10 +247,18 @@ export const ContactFormBox = () => {
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
+              onBlur={handleEmailBlur}
               placeholder="your@email.co.uk"
               disabled={status === "submitting"}
-              className="w-full bg-gray-800/50 border border-white/10 text-white placeholder:text-white/40 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-cyan-500 transition disabled:opacity-50"
+              className={`w-full bg-gray-800/50 border text-white placeholder:text-white/40 rounded-lg px-3 py-2 text-sm focus:outline-none transition disabled:opacity-50 ${
+                emailError
+                  ? "border-red-500 focus:border-red-500"
+                  : "border-white/10 focus:border-cyan-500"
+              }`}
             />
+            {emailError && (
+              <p className="text-red-400 text-xs mt-1">{emailError}</p>
+            )}
           </div>
 
           {/* Phone & Website Row */}
