@@ -54,6 +54,13 @@ const Footer: React.FC = () => {
       return;
     }
 
+    // Email format validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email.trim())) {
+      setErrorMessage("Please enter a valid email address.");
+      return;
+    }
+
     if (!consent) {
       setErrorMessage("You must consent to receive marketing emails.");
       return;
