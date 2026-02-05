@@ -286,7 +286,7 @@ export const ContactFormBox = () => {
           <button
             type="submit"
             disabled={status === "submitting"}
-            className="w-full px-6 py-3 rounded-lg bg-gradient-to-r from-cyan-500 to-cyan-600 text-white font-semibold hover:from-cyan-600 hover:to-cyan-700 transition disabled:opacity-50 disabled:cursor-not-allowed mt-2"
+            className="w-full px-6 py-2.5 rounded-lg bg-gradient-to-r from-cyan-500 to-cyan-600 text-white font-semibold text-sm hover:from-cyan-600 hover:to-cyan-700 transition disabled:opacity-50 disabled:cursor-not-allowed mt-1"
           >
             {status === "submitting" ? "Sending..." : "Send Message"}
           </button>
