@@ -279,11 +279,11 @@ const pageMeta: Record<string, Partial<PageMeta>> = {
     keywords: ["contact kaizen", "book a call", "liverpool web design contact"],
   },
   "/thank-you": {
-    title: "Thank You | Kaizen Web Liverpool",
+    title: "Thank You | Kaizen",
     description:
-      "Thanks for getting in touch with Kaizen Web. We'll respond quickly with practical next steps for your Liverpool or Wirral project.",
+      "Thanks for getting in touch with Kaizen. We'll respond quickly with practical next steps for your Liverpool or Wirral project.",
     noIndex: true,
-    keywords: ["thank you", "enquiry received", "kaizen web"],
+    keywords: ["thank you", "enquiry received", "kaizen"],
   },
   "/blog": {
     title: "Blog | Kaizen | Web Design & Agile Insights",
