@@ -237,37 +237,30 @@ export default function SpeedScanner() {
   }
 
   async function handleUnlock() {
-    console.log("⚠️ KAIZEN SCANNER V2 - UPDATED CODE LOADED"); // Add this line
+    console.log("⚠️ KAIZEN SCANNER V2 - UPDATED CODE LOADED");
     const normalizedEmail = email.trim();
 
     // Email format validation (must include TLD)
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!normalizedEmail || !emailRegex.test(normalizedEmail)) {
-      setEmailError("Please enter a valid email address.");
+    if (!normalizedEmail) {
+      setEmailError("Please enter an email address.");
+      return;
+    }
+    if (!emailRegex.test(normalizedEmail)) {
+      setEmailError("Email must include a domain (e.g., name@example.co.uk).");
       return;
     }
 
     setStatusMsg("Saving results...");
 
-    // Normalize website for DB (allow user to enter without scheme)
-    const normalizedWebsite = url
-      ? /^https?:\/\//i.test(url)
-        ? url
-        : `https://${url}`
-      : null;
-
     // 2. Save to Supabase (Client-Side) - ONLY if they consent to marketing
     if (consentToMarketing && supabase) {
       try {
-        // FIX 1: Table name changed from 'leads' to 'speed_scanner_results'
         const { error } = await supabase.from("speed_scanner_results").insert([
           {
             email: normalizedEmail,
-            // Mapped 'url' to 'website_url' (to match your DB column)
-            website_url: normalizedWebsite,
-            // Mapped 'score' to 'performance_score' (to match your DB column)
+            website_url: url || null,
             performance_score: score,
-            // created_at is handled automatically by Supabase
             consent_to_marketing: consentToMarketing,
           },
         ]);
