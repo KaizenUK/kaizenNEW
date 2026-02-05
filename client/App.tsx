@@ -157,27 +157,17 @@ function AppContent() {
     }
   }, [isAdminRoute]);
 
-  // Apply theme based on stored preference for public routes
+  // Force light mode across the entire site
+  // Dark backgrounds are handled explicitly per-section, not via dark mode toggle
   useEffect(() => {
     if (typeof document === "undefined") return;
-    if (isAdminRoute) {
-      document.documentElement.classList.remove("dark");
-      document.documentElement.dataset.theme = "light";
-      return;
+    document.documentElement.classList.remove("dark");
+    document.documentElement.dataset.theme = "light";
+    // Clear any stored dark theme preference to prevent future issues
+    if (typeof window !== "undefined") {
+      window.localStorage.removeItem("kaizen-theme");
     }
-
-    const storedTheme =
-      typeof window !== "undefined"
-        ? window.localStorage.getItem("kaizen-theme")
-        : null;
-    if (storedTheme === "dark") {
-      document.documentElement.classList.add("dark");
-      document.documentElement.dataset.theme = "dark";
-    } else {
-      document.documentElement.classList.remove("dark");
-      document.documentElement.dataset.theme = "light";
-    }
-  }, [isAdminRoute]);
+  }, []);
 
   useEffect(() => {
     if (import.meta.env.DEV) return;
