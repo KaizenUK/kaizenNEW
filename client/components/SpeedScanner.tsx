@@ -252,20 +252,18 @@ export default function SpeedScanner() {
     if (consentToMarketing && supabase) {
       try {
         // FIX 1: Table name changed from 'leads' to 'speed_scanner_results'
-        const { error } = await supabase
-          .from("speed_scanner_results")
-          .insert([
-            {
-              email: normalizedEmail,
-              // FIX 2: Mapped 'url' to 'website_url' (to match your DB column)
-              website_url: url || null,
-              // FIX 3: Mapped 'score' to 'performance_score' (to match your DB column)
-              performance_score: score,
-              // FIX 4: Removed 'lcp' because your table doesn't have that column
-              // created_at is handled automatically by Supabase
-              consent_to_marketing: consentToMarketing,
-            },
-          ]);
+        const { error } = await supabase.from("speed_scanner_results").insert([
+          {
+            email: normalizedEmail,
+            // FIX 2: Mapped 'url' to 'website_url' (to match your DB column)
+            website_url: url || null,
+            // FIX 3: Mapped 'score' to 'performance_score' (to match your DB column)
+            performance_score: score,
+            // FIX 4: Removed 'lcp' because your table doesn't have that column
+            // created_at is handled automatically by Supabase
+            consent_to_marketing: consentToMarketing,
+          },
+        ]);
 
         if (error) {
           console.error("Supabase Error:", error.message);

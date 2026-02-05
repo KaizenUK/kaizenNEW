@@ -266,8 +266,8 @@ export const ContactFormBox = () => {
                 className="mt-0.5 rounded border-gray-600 cursor-pointer accent-cyan-500 disabled:opacity-50"
               />
               <span className="text-xs text-white/70 leading-relaxed">
-                I understand my data will be processed per GDPR and privacy policy.{" "}
-                <span className="text-red-400">*</span>
+                I understand my data will be processed per GDPR and privacy
+                policy. <span className="text-red-400">*</span>
               </span>
             </label>
           </div>
