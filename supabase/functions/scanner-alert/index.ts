@@ -3,18 +3,17 @@ import { Resend } from "npm:resend";
 const resend = new Resend(Deno.env.get("RESEND_API_KEY"));
 const hubspotToken = Deno.env.get("HUBSPOT_ACCESS_TOKEN");
 
-// 👇 REPLACE THIS with your actual logo URL (Right click logo on your site -> Copy Image Link)
-const logoUrl = "https://kaizenweb.co.uk/assets/logo.png"; 
+// 👇 REPLACE with your logo URL
+const logoUrl = "https://kaizenweb.co.uk/assets/kaizenweb-logo-light-mode-260x50.png";
 
 Deno.serve(async (req) => {
   const payload = await req.json();
   const record = payload.record;
 
-  // 1. Fix URL & Prepare Data
   const url = record.website_url.startsWith('http') ? record.website_url : `https://${record.website_url}`;
   const score = record.performance_score || "Pending";
   
-  // 2. The "Sexy" HTML Template
+  // 1. Email Logic
   const emailHtml = `
     <!DOCTYPE html>
     <html>
@@ -23,7 +22,7 @@ Deno.serve(async (req) => {
         body { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; background-color: #f4f4f5; margin: 0; padding: 0; }
         .container { max-width: 600px; margin: 40px auto; background-color: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
         .header { background-color: #000000; padding: 30px; text-align: center; }
-        .header img { max-height: 50px; }
+        .header img { max-height: 40px; }
         .content { padding: 40px; color: #333333; line-height: 1.6; }
         .h1 { font-size: 24px; font-weight: 700; margin-bottom: 20px; color: #111111; }
         .data-box { background-color: #f9fafb; border: 1px solid #e5e7eb; border-radius: 8px; padding: 20px; margin: 20px 0; }
@@ -73,37 +72,35 @@ Deno.serve(async (req) => {
     </html>
   `;
 
-  // 3. Send to Resend
   const emailReq = resend.emails.send({
-    from: "Kai Bot <system@kaizenweb.co.uk>",
+    from: "Kaizen Bot <system@kaizenweb.co.uk>",
     to: ["sales@kaizenweb.co.uk"],
     subject: `🚀 Speed Scan: ${record.website_url}`,
     html: emailHtml,
   });
 
-  // 4. Send to HubSpot
+  // 2. HubSpot Logic
+  const hubspotProps: any = {
+    email: record.email,
+    website: url,           // Standard HubSpot field
+    tested_url: url,        // Custom field (specific to this scan)
+    lifecyclestage: "lead",
+    kaizen_source: "Speed Scanner"
+  };
+
+  if (record.performance_score) {
+    hubspotProps.speed_score = record.performance_score;
+  }
+
   const hubspotReq = fetch("https://api.hubapi.com/crm/v3/objects/contacts", {
     method: "POST",
     headers: {
       "Authorization": `Bearer ${hubspotToken}`,
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({
-      properties: {
-        email: record.email,
-        website: url,
-        lifecycle_stage: "lead", 
-      },
-    }),
+    body: JSON.stringify({ properties: hubspotProps }),
   });
 
-  // 5. Wait & Finish
-  const [emailResult, hubspotResult] = await Promise.all([emailReq, hubspotReq]);
-
-  if (!hubspotResult.ok) {
-    const err = await hubspotResult.json();
-    console.error("HubSpot Error:", err); 
-  }
-
+  const [emailResult] = await Promise.all([emailReq, hubspotReq]);
   return new Response(JSON.stringify(emailResult), { status: 200 });
 });

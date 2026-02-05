@@ -3,18 +3,18 @@ import { Resend } from "npm:resend";
 const resend = new Resend(Deno.env.get("RESEND_API_KEY"));
 const hubspotToken = Deno.env.get("HUBSPOT_ACCESS_TOKEN");
 
+// 👇 REPLACE with your logo URL
 const logoUrl = "https://kaizenweb.co.uk/assets/kaizenweb-logo-light-mode-260x50.png";
 
 Deno.serve(async (req) => {
   const payload = await req.json();
   const record = payload.record;
 
-  // Split Name for HubSpot (e.g. "Sean Murray" -> First: Sean, Last: Murray)
   const nameParts = (record.name || "").split(" ");
   const firstName = nameParts[0];
   const lastName = nameParts.slice(1).join(" ");
 
-  // 1. The Design
+  // 1. Email Logic
   const emailHtml = `
     <!DOCTYPE html>
     <html>
@@ -76,7 +76,6 @@ Deno.serve(async (req) => {
     </html>
   `;
 
-  // 2. Send Email
   const emailReq = resend.emails.send({
     from: "Kaizen Bot <system@kaizenweb.co.uk>",
     to: ["sales@kaizenweb.co.uk"],
@@ -85,7 +84,7 @@ Deno.serve(async (req) => {
     html: emailHtml,
   });
 
-  // 3. Sync to HubSpot
+  // 2. HubSpot Logic
   const hubspotReq = fetch("https://api.hubapi.com/crm/v3/objects/contacts", {
     method: "POST",
     headers: {
@@ -97,7 +96,11 @@ Deno.serve(async (req) => {
         email: record.email,
         firstname: firstName,
         lastname: lastName,
-        lifecycle_stage: "lead",
+        lifecyclestage: "lead",
+        kaizen_source: "Contact Form",
+        source_page: record.source_page,
+        contact_message: record.message, // 👈 Clean custom field
+        description: `Message from lead:\n${record.message}` // Backup in notes
       },
     }),
   });

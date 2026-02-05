@@ -3,7 +3,7 @@ import { Resend } from "npm:resend";
 const resend = new Resend(Deno.env.get("RESEND_API_KEY"));
 const hubspotToken = Deno.env.get("HUBSPOT_ACCESS_TOKEN");
 
-// ✅ Your specific logo
+// 👇 REPLACE with your logo URL
 const logoUrl = "https://kaizenweb.co.uk/assets/kaizenweb-logo-light-mode-260x50.png";
 
 Deno.serve(async (req) => {
@@ -12,7 +12,7 @@ Deno.serve(async (req) => {
 
   const marketingStatus = record.marketing_consent ? "✅ Subscribed" : "❌ No Consent";
 
-  // 1. The Design
+  // 1. Email Logic
   const emailHtml = `
     <!DOCTYPE html>
     <html>
@@ -21,7 +21,7 @@ Deno.serve(async (req) => {
         body { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; background-color: #f4f4f5; margin: 0; padding: 0; }
         .container { max-width: 600px; margin: 40px auto; background-color: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
         .header { background-color: #000000; padding: 30px; text-align: center; }
-        .header img { max-height: 40px; } /* Adjusted for your 50px height logo */
+        .header img { max-height: 40px; }
         .content { padding: 40px; color: #333333; line-height: 1.6; }
         .h1 { font-size: 22px; font-weight: 700; margin-bottom: 20px; color: #111111; }
         .data-box { background-color: #f9fafb; border: 1px solid #e5e7eb; border-radius: 8px; padding: 20px; margin: 20px 0; }
@@ -67,7 +67,6 @@ Deno.serve(async (req) => {
     </html>
   `;
 
-  // 2. Send Email
   const emailReq = resend.emails.send({
     from: "Kaizen Bot <system@kaizenweb.co.uk>",
     to: ["sales@kaizenweb.co.uk"],
@@ -75,7 +74,7 @@ Deno.serve(async (req) => {
     html: emailHtml,
   });
 
-  // 3. Sync to HubSpot
+  // 2. HubSpot Logic
   const hubspotReq = fetch("https://api.hubapi.com/crm/v3/objects/contacts", {
     method: "POST",
     headers: {
@@ -85,7 +84,11 @@ Deno.serve(async (req) => {
     body: JSON.stringify({
       properties: {
         email: record.email,
-        lifecycle_stage: "subscriber", // 👈 Sets them as a subscriber
+        lifecyclestage: "subscriber",
+        kaizen_source: "Newsletter",
+        marketing_consent: "true",
+        consent_text: record.consent_text, // 👈 Explicit GDPR text
+        source_page: record.source_page
       },
     }),
   });
