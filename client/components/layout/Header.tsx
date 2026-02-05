@@ -249,6 +249,15 @@ const Header: React.FC<HeaderProps> = ({
   const handleMenuEnter = (menu: DesktopMenuKey) => {
     clearCloseTimeout();
     setActiveMenu(menu);
+
+    // Calculate button position for dropdown alignment
+    const button = buttonRefs.current[menu];
+    if (button && navRef.current) {
+      const navRect = navRef.current.getBoundingClientRect();
+      const buttonRect = button.getBoundingClientRect();
+      const relativeLeft = buttonRect.left - navRect.left;
+      setButtonPosition(relativeLeft);
+    }
   };
 
   const handleMenuLeave = () => {
