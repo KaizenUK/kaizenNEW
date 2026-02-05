@@ -79,53 +79,89 @@ export const ContactFormBox = () => {
     setWebsiteError(validateWebsite(website));
   };
 
-  const handleSubmit = async (e: FormEvent) => {
-    e.preventDefault();
+  const handleNextStep = () => {
     setErrorMessage("");
 
+    // Step 1: Name and Surname
+    if (currentStep === 1) {
+      if (!name.trim()) {
+        setErrorMessage("Please enter your first name.");
+        return;
+      }
+      setCurrentStep(2);
+      return;
+    }
+
+    // Step 2: Email and Phone
+    if (currentStep === 2) {
+      const emailErr = validateEmail(email);
+      const phoneErr = validatePhone(phone);
+      setEmailError(emailErr);
+      setPhoneError(phoneErr);
+      if (emailErr || phoneErr) {
+        return;
+      }
+      setCurrentStep(3);
+      return;
+    }
+
+    // Step 3: Website decision
+    if (currentStep === 3) {
+      if (hasWebsite === null) {
+        setErrorMessage("Please select yes or no.");
+        return;
+      }
+      setCurrentStep(4);
+      return;
+    }
+
+    // Step 4: Website field or straight to message
+    if (currentStep === 4) {
+      if (hasWebsite) {
+        const websiteErr = validateWebsite(website);
+        setWebsiteError(websiteErr);
+        if (websiteErr) {
+          return;
+        }
+      }
+      setCurrentStep(5);
+      return;
+    }
+
+    // Step 5: Message and consent
+    if (currentStep === 5) {
+      if (!message.trim()) {
+        setErrorMessage("Please enter a message.");
+        return;
+      }
+      if (!consentToGDPR) {
+        setErrorMessage(
+          "Please confirm you understand your data will be processed according to our privacy policy.",
+        );
+        return;
+      }
+      handleFinalSubmit();
+    }
+  };
+
+  const handlePrevStep = () => {
+    if (currentStep > 1) {
+      setCurrentStep((currentStep - 1) as FormStep);
+      setErrorMessage("");
+    }
+  };
+
+  const handleFinalSubmit = async () => {
     // Bot Detection: If honeypot field has any value, it's a bot
     if (honeypot.trim()) {
       console.warn("Honeypot field filled - likely a bot submission");
       // Silently fail or show success to confuse bots
       setStatus("success");
-      setName("");
-      setSurname("");
-      setEmail("");
-      setPhone("");
-      setWebsite("");
-      setMessage("");
-      setHoneypot("");
-      setTimeout(() => setStatus("idle"), 5000);
-      return;
-    }
-
-    if (!name.trim()) {
-      setErrorMessage("Please enter your first name.");
-      return;
-    }
-
-    // Validate all fields
-    const emailErr = validateEmail(email);
-    const phoneErr = validatePhone(phone);
-    const websiteErr = validateWebsite(website);
-
-    setEmailError(emailErr);
-    setPhoneError(phoneErr);
-    setWebsiteError(websiteErr);
-
-    if (emailErr || phoneErr || websiteErr) {
-      return;
-    }
-
-    if (!message.trim()) {
-      setErrorMessage("Please enter a message.");
-      return;
-    }
-
-    if (!consentToGDPR) {
-      setErrorMessage(
-        "Please confirm you understand your data will be processed according to our privacy policy.",
-      );
+      resetForm();
+      setTimeout(() => {
+        setStatus("idle");
+        setCurrentStep(1);
+      }, 5000);
       return;
     }
 
