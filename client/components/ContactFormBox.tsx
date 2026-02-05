@@ -98,15 +98,16 @@ export const ContactFormBox = () => {
       return;
     }
 
-    if (!email.trim()) {
-      setErrorMessage("Please enter your email address.");
-      return;
-    }
+    // Validate all fields
+    const emailErr = validateEmail(email);
+    const phoneErr = validatePhone(phone);
+    const websiteErr = validateWebsite(website);
 
-    // Email format validation (must include TLD)
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email.trim())) {
-      setErrorMessage("Please enter a valid email address (including a domain like .co.uk).");
+    setEmailError(emailErr);
+    setPhoneError(phoneErr);
+    setWebsiteError(websiteErr);
+
+    if (emailErr || phoneErr || websiteErr) {
       return;
     }
 
@@ -122,21 +123,7 @@ export const ContactFormBox = () => {
       return;
     }
 
-    // Phone validation (UK-ish): allow empty, otherwise check digits length between 10 and 13
-    const digits = phone.replace(/\D/g, "");
-    if (digits && (digits.length < 10 || digits.length > 13)) {
-      setErrorMessage("Please enter a valid UK phone number.");
-      return;
-    }
-
     setStatus("submitting");
-
-    // Normalize website: allow user to enter without scheme
-    const normalizedWebsite = website.trim()
-      ? /^https?:\/\//i.test(website.trim())
-        ? website.trim()
-        : `https://${website.trim()}`
-      : null;
 
     if (!supabase) {
       setErrorMessage(
