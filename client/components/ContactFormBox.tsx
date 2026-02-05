@@ -254,8 +254,8 @@ export const ContactFormBox = () => {
           </div>
         </motion.div>
       ) : (
-        <form onSubmit={handleSubmit} className="space-y-3">
-          {/* Honeypot Field - Hidden from real users */}
+        <form className="space-y-3">
+          {/* Honeypot Field */}
           <input
             type="email"
             name="confirm_email"
@@ -267,151 +267,221 @@ export const ContactFormBox = () => {
             aria-hidden="true"
           />
 
-          {/* Name & Surname Row */}
-          <div className="grid grid-cols-2 gap-3">
-            <div>
-              <label className="block text-xs font-medium text-white mb-1">
-                First Name <span className="text-red-400">*</span>
-              </label>
-              <input
-                type="text"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                placeholder="First name"
-                disabled={status === "submitting"}
-                className="w-full bg-gray-800/50 border border-white/10 text-white placeholder:text-white/40 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-cyan-500 transition disabled:opacity-50"
+          {/* Step Progress */}
+          <div className="flex gap-1 mb-6">
+            {[1, 2, 3, 4, 5].map((step) => (
+              <div
+                key={step}
+                className={`h-1 flex-1 rounded ${
+                  step <= currentStep ? "bg-cyan-500" : "bg-white/10"
+                }`}
               />
-            </div>
-            <div>
-              <label className="block text-xs font-medium text-white mb-1">
-                Surname
-              </label>
-              <input
-                type="text"
-                value={surname}
-                onChange={(e) => setSurname(e.target.value)}
-                placeholder="Surname"
-                disabled={status === "submitting"}
-                className="w-full bg-gray-800/50 border border-white/10 text-white placeholder:text-white/40 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-cyan-500 transition disabled:opacity-50"
-              />
-            </div>
+            ))}
           </div>
 
-          {/* Email Field */}
-          <div>
-            <label className="block text-xs font-medium text-white mb-1">
-              Email <span className="text-red-400">*</span>
-            </label>
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              onBlur={handleEmailBlur}
-              placeholder="your@email.co.uk"
-              disabled={status === "submitting"}
-              className={`w-full bg-gray-800/50 border text-white placeholder:text-white/40 rounded-lg px-3 py-2 text-sm focus:outline-none transition disabled:opacity-50 ${
-                emailError
-                  ? "border-red-500 focus:border-red-500"
-                  : "border-white/10 focus:border-cyan-500"
-              }`}
-            />
-            {emailError && (
-              <p className="text-red-400 text-xs mt-1">{emailError}</p>
+          <motion.div
+            key={currentStep}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.3 }}
+          >
+            {/* Step 1: Name & Surname */}
+            {currentStep === 1 && (
+              <div className="space-y-3">
+                <h4 className="text-white font-semibold mb-4">
+                  What do we call you?
+                </h4>
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="block text-xs font-medium text-white mb-1">
+                      First Name <span className="text-red-400">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                      placeholder="First name"
+                      className="w-full bg-gray-800/50 border border-white/10 text-white placeholder:text-white/40 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-cyan-500 transition"
+                      autoFocus
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-medium text-white mb-1">
+                      Surname
+                    </label>
+                    <input
+                      type="text"
+                      value={surname}
+                      onChange={(e) => setSurname(e.target.value)}
+                      placeholder="Surname"
+                      className="w-full bg-gray-800/50 border border-white/10 text-white placeholder:text-white/40 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-cyan-500 transition"
+                    />
+                  </div>
+                </div>
+              </div>
             )}
-          </div>
 
-          {/* Phone & Website Row */}
-          <div className="grid grid-cols-2 gap-3">
-            <div>
-              <label className="block text-xs font-medium text-white mb-1">
-                Phone
-              </label>
-              <input
-                type="tel"
-                value={phone}
-                onChange={(e) => setPhone(e.target.value)}
-                onBlur={handlePhoneBlur}
-                placeholder="+44"
-                disabled={status === "submitting"}
-                className={`w-full bg-gray-800/50 border text-white placeholder:text-white/40 rounded-lg px-3 py-2 text-sm focus:outline-none transition disabled:opacity-50 ${
-                  phoneError
-                    ? "border-red-500 focus:border-red-500"
-                    : "border-white/10 focus:border-cyan-500"
-                }`}
-              />
-              {phoneError && (
-                <p className="text-red-400 text-xs mt-1">{phoneError}</p>
-              )}
-            </div>
-            <div>
-              <label className="block text-xs font-medium text-white mb-1">
-                Website
-              </label>
-              <input
-                type="text"
-                value={website}
-                onChange={(e) => setWebsite(e.target.value)}
-                onBlur={handleWebsiteBlur}
-                placeholder="example.co.uk"
-                disabled={status === "submitting"}
-                className={`w-full bg-gray-800/50 border text-white placeholder:text-white/40 rounded-lg px-3 py-2 text-sm focus:outline-none transition disabled:opacity-50 ${
-                  websiteError
-                    ? "border-red-500 focus:border-red-500"
-                    : "border-white/10 focus:border-cyan-500"
-                }`}
-              />
-              {websiteError && (
-                <p className="text-red-400 text-xs mt-1">{websiteError}</p>
-              )}
-            </div>
-          </div>
+            {/* Step 2: Email & Phone */}
+            {currentStep === 2 && (
+              <div className="space-y-3">
+                <h4 className="text-white font-semibold mb-4">
+                  How do we reach you?
+                </h4>
+                <div>
+                  <label className="block text-xs font-medium text-white mb-1">
+                    Email <span className="text-red-400">*</span>
+                  </label>
+                  <input
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    onBlur={handleEmailBlur}
+                    placeholder="your@email.co.uk"
+                    className={`w-full bg-gray-800/50 border text-white placeholder:text-white/40 rounded-lg px-3 py-2 text-sm focus:outline-none transition ${
+                      emailError
+                        ? "border-red-500 focus:border-red-500"
+                        : "border-white/10 focus:border-cyan-500"
+                    }`}
+                    autoFocus
+                  />
+                  {emailError && (
+                    <p className="text-red-400 text-xs mt-1">{emailError}</p>
+                  )}
+                </div>
+                <div>
+                  <label className="block text-xs font-medium text-white mb-1">
+                    Phone
+                  </label>
+                  <input
+                    type="tel"
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
+                    onBlur={handlePhoneBlur}
+                    placeholder="+44"
+                    className={`w-full bg-gray-800/50 border text-white placeholder:text-white/40 rounded-lg px-3 py-2 text-sm focus:outline-none transition ${
+                      phoneError
+                        ? "border-red-500 focus:border-red-500"
+                        : "border-white/10 focus:border-cyan-500"
+                    }`}
+                  />
+                  {phoneError && (
+                    <p className="text-red-400 text-xs mt-1">{phoneError}</p>
+                  )}
+                </div>
+              </div>
+            )}
 
-          {/* Message Field */}
-          <div>
-            <label className="block text-xs font-medium text-white mb-1">
-              Message <span className="text-red-400">*</span>
-            </label>
-            <textarea
-              value={message}
-              onChange={(e) => setMessage(e.target.value)}
-              placeholder="Tell us about your project..."
-              disabled={status === "submitting"}
-              rows={4}
-              className="w-full bg-gray-800/50 border border-white/10 text-white placeholder:text-white/40 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-cyan-500 transition disabled:opacity-50 resize-none"
-            />
-          </div>
+            {/* Step 3: Website Decision */}
+            {currentStep === 3 && (
+              <div className="space-y-4">
+                <h4 className="text-white font-semibold">
+                  Do you have a website right now?
+                </h4>
+                <div className="flex gap-3">
+                  <button
+                    type="button"
+                    onClick={() => setHasWebsite(true)}
+                    className={`flex-1 py-3 rounded-lg font-semibold transition ${
+                      hasWebsite === true
+                        ? "bg-cyan-500 text-white"
+                        : "bg-gray-800/50 text-white/60 hover:bg-gray-800"
+                    }`}
+                  >
+                    Yes
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setHasWebsite(false)}
+                    className={`flex-1 py-3 rounded-lg font-semibold transition ${
+                      hasWebsite === false
+                        ? "bg-cyan-500 text-white"
+                        : "bg-gray-800/50 text-white/60 hover:bg-gray-800"
+                    }`}
+                  >
+                    No
+                  </button>
+                </div>
+              </div>
+            )}
 
-          {/* Consent Checkboxes */}
-          <div className="space-y-2 pt-1">
-            {/* Marketing Consent */}
-            <label className="flex items-start gap-2 cursor-pointer">
-              <input
-                type="checkbox"
-                checked={consentToMarketing}
-                onChange={(e) => setConsentToMarketing(e.target.checked)}
-                disabled={status === "submitting"}
-                className="mt-0.5 rounded border-gray-600 cursor-pointer accent-cyan-500 disabled:opacity-50"
-              />
-              <span className="text-xs text-white/70 leading-relaxed">
-                I consent to marketing emails about newsletters and promotions.
-              </span>
-            </label>
+            {/* Step 4: Website (if yes) */}
+            {currentStep === 4 && hasWebsite && (
+              <div className="space-y-3">
+                <h4 className="text-white font-semibold mb-4">
+                  What's the website?
+                </h4>
+                <div>
+                  <label className="block text-xs font-medium text-white mb-1">
+                    Website
+                  </label>
+                  <input
+                    type="text"
+                    value={website}
+                    onChange={(e) => setWebsite(e.target.value)}
+                    onBlur={handleWebsiteBlur}
+                    placeholder="example.co.uk"
+                    className={`w-full bg-gray-800/50 border text-white placeholder:text-white/40 rounded-lg px-3 py-2 text-sm focus:outline-none transition ${
+                      websiteError
+                        ? "border-red-500 focus:border-red-500"
+                        : "border-white/10 focus:border-cyan-500"
+                    }`}
+                    autoFocus
+                  />
+                  {websiteError && (
+                    <p className="text-red-400 text-xs mt-1">{websiteError}</p>
+                  )}
+                </div>
+              </div>
+            )}
 
-            {/* GDPR Consent - MANDATORY */}
-            <label className="flex items-start gap-2 cursor-pointer">
-              <input
-                type="checkbox"
-                checked={consentToGDPR}
-                onChange={(e) => setConsentToGDPR(e.target.checked)}
-                disabled={status === "submitting"}
-                className="mt-0.5 rounded border-gray-600 cursor-pointer accent-cyan-500 disabled:opacity-50"
-              />
-              <span className="text-xs text-white/70 leading-relaxed">
-                I understand my data will be processed per GDPR and privacy
-                policy. <span className="text-red-400">*</span>
-              </span>
-            </label>
-          </div>
+            {/* Step 5: Message & Consent */}
+            {currentStep === 5 && (
+              <div className="space-y-3">
+                <h4 className="text-white font-semibold mb-4">
+                  How can we help?
+                </h4>
+                <div>
+                  <textarea
+                    value={message}
+                    onChange={(e) => setMessage(e.target.value)}
+                    placeholder="Tell us about your project..."
+                    rows={4}
+                    className="w-full bg-gray-800/50 border border-white/10 text-white placeholder:text-white/40 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-cyan-500 transition resize-none"
+                    autoFocus
+                  />
+                </div>
+
+                {/* Consent Checkboxes */}
+                <div className="space-y-2 pt-2">
+                  <label className="flex items-start gap-2 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={consentToMarketing}
+                      onChange={(e) => setConsentToMarketing(e.target.checked)}
+                      className="mt-0.5 rounded border-gray-600 cursor-pointer accent-cyan-500"
+                    />
+                    <span className="text-xs text-white/70 leading-relaxed">
+                      I consent to marketing emails about newsletters and promotions.
+                    </span>
+                  </label>
+
+                  <label className="flex items-start gap-2 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={consentToGDPR}
+                      onChange={(e) => setConsentToGDPR(e.target.checked)}
+                      className="mt-0.5 rounded border-gray-600 cursor-pointer accent-cyan-500"
+                    />
+                    <span className="text-xs text-white/70 leading-relaxed">
+                      I understand my data will be processed per GDPR and privacy
+                      policy. <span className="text-red-400">*</span>
+                    </span>
+                  </label>
+                </div>
+              </div>
+            )}
+          </motion.div>
 
           {errorMessage && (
             <motion.div
@@ -424,13 +494,30 @@ export const ContactFormBox = () => {
             </motion.div>
           )}
 
-          <button
-            type="submit"
-            disabled={status === "submitting"}
-            className="w-full px-6 py-2.5 rounded-lg bg-gradient-to-r from-cyan-500 to-cyan-600 text-white font-semibold text-sm hover:from-cyan-600 hover:to-cyan-700 transition disabled:opacity-50 disabled:cursor-not-allowed mt-1"
-          >
-            {status === "submitting" ? "Sending..." : "Send Message"}
-          </button>
+          {/* Buttons */}
+          <div className="flex gap-2 mt-6">
+            {currentStep > 1 && (
+              <button
+                type="button"
+                onClick={handlePrevStep}
+                className="flex-1 px-4 py-2.5 rounded-lg border border-white/20 text-white font-semibold text-sm hover:bg-white/10 transition"
+              >
+                Back
+              </button>
+            )}
+            <button
+              type="button"
+              onClick={handleNextStep}
+              disabled={status === "submitting"}
+              className="flex-1 px-6 py-2.5 rounded-lg bg-gradient-to-r from-cyan-500 to-cyan-600 text-white font-semibold text-sm hover:from-cyan-600 hover:to-cyan-700 transition disabled:opacity-50"
+            >
+              {status === "submitting"
+                ? "Sending..."
+                : currentStep === 5
+                  ? "Send Message"
+                  : "Next"}
+            </button>
+          </div>
         </form>
       )}
     </motion.div>
