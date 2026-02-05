@@ -248,7 +248,7 @@ const Footer: React.FC = () => {
           </div>
 
           {/* Content Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 lg:gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 lg:gap-2">
             {/* Tagline */}
             <div className="lg:col-span-1">
               <p className="text-lg text-white/60 leading-relaxed">
