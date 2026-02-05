@@ -110,7 +110,7 @@ const pageMeta: Record<string, Partial<PageMeta>> = {
     ],
   },
   "/web-design-liverpool-city-centre": {
-    title: "Web Design Liverpool City Centre | Kaizen Web",
+    title: "Web Design Liverpool City Centre | Kaizen",
     description:
       "City centre web design for Liverpool businesses that need fast, conversion-focused sites with clear messaging and transparent pricing.",
     keywords: [
