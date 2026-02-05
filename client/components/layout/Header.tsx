@@ -14,7 +14,6 @@ import {
   ShieldCheck,
   Mail,
   BookOpen,
-  Award,
   PoundSterling,
   Lightbulb,
   AlertCircle,
@@ -23,7 +22,7 @@ import {
   Grid,
   ArrowRight,
 } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { openCrisp } from "@/lib/crisp-utils";
 
@@ -52,36 +51,46 @@ const Header: React.FC<HeaderProps> = ({
   onMobileMenuChange,
 }) => {
   const [activeMenu, setActiveMenu] = useState<DesktopMenuKey>(null);
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [hoveredColumn, setHoveredColumn] = useState<string | null>(null);
+  const closeTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const navRef = useRef<HTMLDivElement | null>(null);
-  const servicesTriggerRef = useRef<HTMLButtonElement | null>(null);
-  const insightsTriggerRef = useRef<HTMLButtonElement | null>(null);
-  const caseStudiesTriggerRef = useRef<HTMLButtonElement | null>(null);
-  const aboutTriggerRef = useRef<HTMLButtonElement | null>(null);
   const location = useLocation();
 
+  // Clear timeout helper
+  const clearCloseTimeout = useCallback(() => {
+    if (closeTimeoutRef.current) {
+      clearTimeout(closeTimeoutRef.current);
+      closeTimeoutRef.current = null;
+    }
+  }, []);
+
   useEffect(() => {
-    setIsMenuOpen(false);
     setActiveMenu(null);
+    setHoveredColumn(null);
   }, [location.pathname]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (!navRef.current) return;
       if (!navRef.current.contains(event.target as Node)) {
-        setIsMenuOpen(false);
         setActiveMenu(null);
+        setHoveredColumn(null);
       }
     };
 
-    if (isMenuOpen) {
+    if (activeMenu) {
       document.addEventListener("mousedown", handleClickOutside);
       return () => {
         document.removeEventListener("mousedown", handleClickOutside);
       };
     }
-  }, [isMenuOpen]);
+  }, [activeMenu]);
+
+  // Cleanup timeout on unmount
+  useEffect(() => {
+    return () => clearCloseTimeout();
+  }, [clearCloseTimeout]);
 
   const servicesMenu: ServiceColumn[] = [
     {
@@ -230,204 +239,232 @@ const Header: React.FC<HeaderProps> = ({
     return servicesMenu;
   };
 
-  const openMenu = (menu: DesktopMenuKey) => {
-    if (!menu) {
-      setIsMenuOpen(false);
-      setActiveMenu(null);
-      return;
-    }
+  const handleMenuEnter = (menu: DesktopMenuKey) => {
+    clearCloseTimeout();
     setActiveMenu(menu);
-    setIsMenuOpen(true);
   };
 
-  const handleTriggerClick = (menu: DesktopMenuKey) => {
-    if (activeMenu === menu && isMenuOpen) {
-      setIsMenuOpen(false);
+  const handleMenuLeave = () => {
+    // Small delay before closing to allow moving between triggers and panel
+    closeTimeoutRef.current = setTimeout(() => {
       setActiveMenu(null);
-      return;
-    }
-    openMenu(menu);
+      setHoveredColumn(null);
+    }, 100);
   };
 
-  const panelVariants = {
-    enter: { opacity: 0, y: -8 },
-    center: { opacity: 1, y: 0 },
-    exit: { opacity: 0, y: -8 },
+  const handlePanelEnter = () => {
+    clearCloseTimeout();
   };
+
+  const handlePanelLeave = () => {
+    handleMenuLeave();
+  };
+
+  // Stripe-style fold animation
+  const panelVariants = {
+    hidden: {
+      opacity: 0,
+      y: -10,
+      scaleY: 0.95,
+      transformOrigin: "top",
+    },
+    visible: {
+      opacity: 1,
+      y: 0,
+      scaleY: 1,
+      transformOrigin: "top",
+      transition: {
+        duration: 0.25,
+        ease: [0.16, 1, 0.3, 1],
+      },
+    },
+    exit: {
+      opacity: 0,
+      y: -5,
+      scaleY: 0.98,
+      transformOrigin: "top",
+      transition: {
+        duration: 0.15,
+        ease: [0.4, 0, 1, 1],
+      },
+    },
+  };
+
+  // Content fade for switching between menus
+  const contentVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: { duration: 0.15, ease: "easeOut" },
+    },
+    exit: {
+      opacity: 0,
+      transition: { duration: 0.1, ease: "easeIn" },
+    },
+  };
+
+  const menuTriggers: { key: DesktopMenuKey; label: string }[] = [
+    { key: "services", label: "Services" },
+    { key: "insights", label: "Insights" },
+    { key: "case-studies", label: "Case Studies" },
+    { key: "about", label: "About" },
+  ];
 
   return (
     <header className="sticky top-0 z-50 w-full bg-white border-b border-gray-100">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
+        <div className="flex items-center h-16">
           {/* Logo */}
           <Link
             to="/"
-            className="flex items-center gap-2 hover:opacity-90 transition flex-shrink-0"
+            className="flex items-center gap-2 hover:opacity-80 transition flex-shrink-0 mr-8"
           >
             <img
-              src="https://cdn.builder.io/api/v1/image/assets%2Fe4ae46bbd81b4b95bef54d66dd9748cc%2F03f6c5dd481449d297c430cab962412e?format=webp&width=200&quality=80"
-              alt="Kaizen Web"
-              width="200"
-              height="64"
+              src="https://cdn.builder.io/api/v1/image/assets%2Fe4ae46bbd81b4b95bef54d66dd9748cc%2F326ffc7c8bf9463f93847a3777cf16eb"
+              alt="Kaizen"
+              width="120"
+              height="36"
               fetchPriority="high"
               loading="eager"
-              className="h-12 w-auto"
+              className="h-7 w-auto"
             />
           </Link>
 
-          {/* Desktop Navigation */}
+          {/* Desktop Navigation - positioned right after logo */}
           <nav
             ref={navRef}
-            className="relative hidden lg:flex items-center gap-1"
+            className="relative hidden lg:flex items-center flex-1"
             aria-label="Main navigation"
+            onMouseLeave={handleMenuLeave}
           >
-            {/* Services Trigger */}
-            <button
-              ref={servicesTriggerRef}
-              type="button"
-              onMouseEnter={() => openMenu("services")}
-              onClick={() => handleTriggerClick("services")}
-              className="flex items-center gap-1 px-4 py-3 text-sm font-medium text-gray-700 hover:text-gray-900 transition"
-              aria-expanded={isMenuOpen && activeMenu === "services"}
-            >
-              Services
-              <ChevronDown
-                size={14}
-                className={`transition-transform duration-200 ${
-                  isMenuOpen && activeMenu === "services" ? "rotate-180" : ""
-                }`}
-              />
-            </button>
-
-            {/* Insights Trigger */}
-            <button
-              ref={insightsTriggerRef}
-              type="button"
-              onMouseEnter={() => openMenu("insights")}
-              onClick={() => handleTriggerClick("insights")}
-              className="flex items-center gap-1 px-4 py-3 text-sm font-medium text-gray-700 hover:text-gray-900 transition"
-              aria-expanded={isMenuOpen && activeMenu === "insights"}
-            >
-              Insights
-              <ChevronDown
-                size={14}
-                className={`transition-transform duration-200 ${
-                  isMenuOpen && activeMenu === "insights" ? "rotate-180" : ""
-                }`}
-              />
-            </button>
-
-            {/* Case Studies Trigger */}
-            <button
-              ref={caseStudiesTriggerRef}
-              type="button"
-              onMouseEnter={() => openMenu("case-studies")}
-              onClick={() => handleTriggerClick("case-studies")}
-              className="flex items-center gap-1 px-4 py-3 text-sm font-medium text-gray-700 hover:text-gray-900 transition"
-              aria-expanded={isMenuOpen && activeMenu === "case-studies"}
-            >
-              Case Studies
-              <ChevronDown
-                size={14}
-                className={`transition-transform duration-200 ${
-                  isMenuOpen && activeMenu === "case-studies" ? "rotate-180" : ""
-                }`}
-              />
-            </button>
-
-            {/* About Trigger */}
-            <button
-              ref={aboutTriggerRef}
-              type="button"
-              onMouseEnter={() => openMenu("about")}
-              onClick={() => handleTriggerClick("about")}
-              className="flex items-center gap-1 px-4 py-3 text-sm font-medium text-gray-700 hover:text-gray-900 transition"
-              aria-expanded={isMenuOpen && activeMenu === "about"}
-            >
-              About
-              <ChevronDown
-                size={14}
-                className={`transition-transform duration-200 ${
-                  isMenuOpen && activeMenu === "about" ? "rotate-180" : ""
-                }`}
-              />
-            </button>
-
-            {/* Dropdown Panel */}
-            <AnimatePresence>
-              {isMenuOpen && activeMenu && (
-                <motion.div
-                  key={activeMenu}
-                  variants={panelVariants}
-                  initial="enter"
-                  animate="center"
-                  exit="exit"
-                  transition={{
-                    duration: 0.2,
-                    ease: [0.25, 1, 0.5, 1],
-                  }}
-                  onMouseLeave={() => {
-                    setIsMenuOpen(false);
-                    setActiveMenu(null);
-                  }}
-                  className={`absolute left-0 top-full mt-0 bg-white rounded-lg border border-gray-200 shadow-xl px-6 py-5 ${
-                    activeMenu === "services"
-                      ? "w-[600px]"
-                      : "w-[380px]"
+            {/* Menu Triggers */}
+            <div className="flex items-center">
+              {menuTriggers.map(({ key, label }) => (
+                <button
+                  key={key}
+                  type="button"
+                  onMouseEnter={() => handleMenuEnter(key)}
+                  className={`flex items-center gap-1 px-4 py-3 text-[15px] font-medium transition-colors duration-150 ${
+                    activeMenu === key
+                      ? "text-gray-500"
+                      : "text-black hover:text-gray-500"
                   }`}
-                  style={{ minWidth: "320px" }}
+                  aria-expanded={activeMenu === key}
                 >
-                  <div
-                    className={`grid gap-8 ${
-                      activeMenu === "services" ? "grid-cols-2" : "grid-cols-1"
+                  {label}
+                  <ChevronDown
+                    size={14}
+                    className={`transition-transform duration-200 ${
+                      activeMenu === key ? "rotate-180" : ""
                     }`}
-                  >
-                    {getMenuData(activeMenu).map((column) => (
-                      <div key={column.title}>
-                        <h3 className="text-xs font-medium text-gray-400 uppercase tracking-wider mb-4">
-                          {column.title}
-                        </h3>
-                        <ul className="space-y-1">
-                          {column.items.map((item) => (
-                            <li key={item.href}>
-                              <Link
-                                to={item.href}
-                                className="group flex flex-col gap-1 rounded-lg px-3 py-2.5 hover:bg-gray-50 transition"
-                                onClick={() => {
-                                  setIsMenuOpen(false);
-                                  setActiveMenu(null);
-                                }}
-                              >
-                                <span
-                                  className={`text-sm font-medium flex items-center gap-1 ${
-                                    item.highlight
-                                      ? "text-cyan-600"
-                                      : "text-gray-900"
-                                  } group-hover:text-cyan-600 transition-colors`}
-                                >
-                                  {item.label}
-                                  <ArrowRight
-                                    size={12}
-                                    className="opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-200"
-                                  />
-                                </span>
-                                <span className="text-xs text-gray-500">
-                                  {item.description}
-                                </span>
-                              </Link>
-                            </li>
-                          ))}
-                        </ul>
+                  />
+                </button>
+              ))}
+            </div>
+
+            {/* Dropdown Panel Container - Stripe-style fold animation */}
+            <AnimatePresence>
+              {activeMenu && (
+                <motion.div
+                  variants={panelVariants}
+                  initial="hidden"
+                  animate="visible"
+                  exit="exit"
+                  onMouseEnter={handlePanelEnter}
+                  onMouseLeave={handlePanelLeave}
+                  className="absolute left-0 top-full bg-white rounded-xl border border-gray-200 shadow-2xl shadow-gray-200/50 overflow-hidden"
+                  style={{
+                    minWidth: activeMenu === "services" ? "560px" : "320px",
+                  }}
+                >
+                  {/* Animated content switching */}
+                  <AnimatePresence mode="wait">
+                    <motion.div
+                      key={activeMenu}
+                      variants={contentVariants}
+                      initial="hidden"
+                      animate="visible"
+                      exit="exit"
+                      className="p-6"
+                    >
+                      <div
+                        className={`grid gap-8 ${
+                          activeMenu === "services"
+                            ? "grid-cols-2"
+                            : "grid-cols-1"
+                        }`}
+                      >
+                        {getMenuData(activeMenu).map((column) => (
+                          <div
+                            key={column.title}
+                            onMouseEnter={() => setHoveredColumn(column.title)}
+                            onMouseLeave={() => setHoveredColumn(null)}
+                          >
+                            {/* Column Header with animated underline */}
+                            <div className="relative mb-4">
+                              <h3 className="text-sm font-semibold text-cyan-600 hover:text-black transition-colors duration-150 cursor-default">
+                                {column.title}
+                              </h3>
+                              {/* Animated underline */}
+                              <div className="absolute bottom-0 left-0 right-0 h-px bg-gray-200 mt-2">
+                                <motion.div
+                                  className="h-full bg-cyan-500"
+                                  initial={{ width: 0 }}
+                                  animate={{
+                                    width:
+                                      hoveredColumn === column.title
+                                        ? "100%"
+                                        : 0,
+                                  }}
+                                  transition={{
+                                    duration: 0.3,
+                                    ease: [0.16, 1, 0.3, 1],
+                                  }}
+                                />
+                              </div>
+                            </div>
+
+                            {/* Menu Items */}
+                            <ul className="space-y-0.5">
+                              {column.items.map((item) => (
+                                <li key={item.href}>
+                                  <Link
+                                    to={item.href}
+                                    className="group flex flex-col gap-0.5 rounded-lg px-3 py-2.5 -mx-3 hover:bg-gray-50 transition-colors duration-150"
+                                    onClick={() => {
+                                      setActiveMenu(null);
+                                      setHoveredColumn(null);
+                                    }}
+                                    onMouseEnter={() =>
+                                      setHoveredColumn(column.title)
+                                    }
+                                  >
+                                    <span className="text-sm font-medium flex items-center gap-1.5 text-gray-900 group-hover:text-cyan-600 transition-colors duration-150">
+                                      {item.label}
+                                      <ArrowRight
+                                        size={12}
+                                        className="opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-200"
+                                      />
+                                    </span>
+                                    <span className="text-xs text-gray-500 group-hover:text-gray-600 transition-colors duration-150">
+                                      {item.description}
+                                    </span>
+                                  </Link>
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        ))}
                       </div>
-                    ))}
-                  </div>
+                    </motion.div>
+                  </AnimatePresence>
                 </motion.div>
               )}
             </AnimatePresence>
           </nav>
 
-          {/* Right Actions */}
-          <div className="flex items-center gap-3">
+          {/* Right Actions - pushed to the right */}
+          <div className="flex items-center gap-3 ml-auto">
             {/* Free Speed Test */}
             <Link
               to="/performance-scanner"
@@ -440,7 +477,7 @@ const Header: React.FC<HeaderProps> = ({
             {/* Start a Chat - Primary CTA */}
             <button
               onClick={() => openCrisp()}
-              className="hidden sm:flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-semibold text-white bg-gradient-to-r from-cyan-500 to-teal-500 hover:from-cyan-600 hover:to-teal-600 shadow-lg shadow-cyan-500/20 hover:shadow-cyan-500/30 transition-all"
+              className="hidden sm:flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-semibold text-white bg-gradient-to-r from-cyan-500 to-teal-500 hover:from-cyan-600 hover:to-teal-600 shadow-lg shadow-cyan-500/20 hover:shadow-cyan-500/30 transition-all"
             >
               Start a Chat
               <ArrowRight size={14} />
