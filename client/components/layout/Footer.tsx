@@ -1,5 +1,6 @@
 import { useEffect, useState, FormEvent } from "react";
 import { Link, useLocation } from "react-router-dom";
+import KaizenLogo from "@/components/KaizenLogo";
 import { motion } from "framer-motion";
 import { ArrowRight, Linkedin, Instagram, Check } from "lucide-react";
 import { createClient } from "@supabase/supabase-js";
@@ -242,13 +243,8 @@ const Footer: React.FC = () => {
         {/* Main Footer Content */}
         <div className="py-12 flex flex-col gap-12">
           {/* Logo */}
-          <div className="flex">
-            <img
-              src="/logo.svg"
-              alt="Kaizen"
-              className="h-6 md:h-8 w-auto invert brightness-0 filter"
-              loading="lazy"
-            />
+          <div className="flex text-white">
+            <KaizenLogo className="h-6 md:h-8 w-[120px]" />
           </div>
 
           {/* Content Grid */}
