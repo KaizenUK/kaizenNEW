@@ -2,7 +2,6 @@ import { useEffect, useState, FormEvent } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
 import { ArrowRight, Linkedin, Instagram, Check } from "lucide-react";
-import { openCrisp } from "@/lib/crisp-utils";
 import { createClient } from "@supabase/supabase-js";
 
 // Newsletter Supabase client (unified)
@@ -223,14 +222,12 @@ const Footer: React.FC = () => {
             <h2 className="text-4xl sm:text-5xl lg:text-6xl font-medium tracking-tight text-white max-w-xl">
               Get started today
             </h2>
-            <motion.button
-              onClick={() => openCrisp()}
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
+            <Link
+              to="/contact"
               className="group flex items-center gap-0"
             >
               <span className="px-6 py-5 bg-cyan-500 text-white text-xs font-medium uppercase tracking-widest border border-cyan-500 transition-colors hover:bg-cyan-600 hover:border-cyan-600">
-                Start a Chat
+                Start Your Project
               </span>
               <span className="w-14 h-14 bg-cyan-500 border border-cyan-500 flex items-center justify-center transition-colors hover:bg-cyan-600 hover:border-cyan-600 overflow-hidden relative">
                 <ArrowRight
@@ -238,7 +235,7 @@ const Footer: React.FC = () => {
                   className="transition-transform group-hover:translate-x-1"
                 />
               </span>
-            </motion.button>
+            </Link>
           </div>
         </div>
 
@@ -274,12 +271,12 @@ const Footer: React.FC = () => {
                   <span className="block">Wirral, Merseyside</span>
                   <span className="block">United Kingdom</span>
                 </address>
-                <button
-                  onClick={() => openCrisp()}
+                <Link
+                  to="/contact"
                   className="text-white/60 hover:text-white transition text-sm text-left underline underline-offset-2"
                 >
-                  Chat with us
-                </button>
+                  Contact us
+                </Link>
               </div>
             </div>
 
