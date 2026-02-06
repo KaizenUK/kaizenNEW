@@ -198,7 +198,7 @@ export const ValueProposition: React.FC = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.25 }}
               transition={{ delay: 0.1 }}
-              className="relative"
+              className="relative hidden lg:block"
             >
               <div className="absolute -inset-8 rounded-[2.5rem] bg-gradient-to-r from-cyan-500/20 to-emerald-500/10 blur-2xl" />
               <div className="relative rounded-[2.25rem] border border-white/10 bg-white/5 backdrop-blur-xl overflow-hidden p-8 md:p-10">
