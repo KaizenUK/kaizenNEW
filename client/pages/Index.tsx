@@ -539,7 +539,7 @@ const PricingSlider = () => {
       description: "Broken Project?",
       price: "Custom Triage",
       detail: "We fix what others broke.",
-      cta: "Start a Rescue Chat",
+      cta: "Get Help Now",
     },
   ];
 
