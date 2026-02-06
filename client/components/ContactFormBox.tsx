@@ -503,12 +503,12 @@ export const ContactFormBox = () => {
           )}
 
           {/* Buttons */}
-          <div className="flex gap-2 mt-6">
+          <div className="flex gap-3 mt-8">
             {currentStep > 1 && (
               <button
                 type="button"
                 onClick={handlePrevStep}
-                className="flex-1 px-4 py-2.5 rounded-lg border border-white/20 text-white font-semibold text-sm hover:bg-white/10 transition"
+                className="flex-1 px-4 py-3 rounded-lg border border-white/20 text-white font-semibold text-sm hover:bg-white/10 transition"
               >
                 Back
               </button>
@@ -517,7 +517,7 @@ export const ContactFormBox = () => {
               type="button"
               onClick={handleNextStep}
               disabled={status === "submitting"}
-              className="flex-1 px-6 py-2.5 rounded-lg bg-gradient-to-r from-cyan-500 to-cyan-600 text-white font-semibold text-sm hover:from-cyan-600 hover:to-cyan-700 transition disabled:opacity-50"
+              className="flex-1 px-6 py-3 rounded-lg bg-gradient-to-r from-cyan-500 to-cyan-600 text-white font-semibold text-sm hover:from-cyan-600 hover:to-cyan-700 transition disabled:opacity-50"
             >
               {status === "submitting"
                 ? "Sending..."
