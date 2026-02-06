@@ -851,12 +851,9 @@ const AIPriceNarrative = () => {
           <p className="text-xs font-mono tracking-[0.25em] text-kaizen-cyan uppercase mb-4">
             AI-Augmented Delivery
           </p>
-          <h2 className="text-3xl md:text-4xl font-heading font-bold mb-3 text-slate-900 dark:text-white">
-            Enterprise Tech. Freelancer Prices.
+          <h2 className="text-3xl md:text-5xl font-heading font-bold mb-3 text-slate-900 dark:text-white">
+            £15k Websites. Fraction of the Price.
           </h2>
-          <p className="text-lg md:text-xl text-slate-700 dark:text-slate-300">
-            How we build £15k React platforms for £4k.
-          </p>
         </motion.div>
 
         <motion.div
@@ -864,24 +861,17 @@ const AIPriceNarrative = () => {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ delay: 0.1 }}
-          className="space-y-4 text-slate-800 dark:text-slate-200 text-base md:text-lg max-w-3xl"
+          className="space-y-6 text-slate-800 dark:text-slate-200 text-base md:text-lg max-w-3xl"
         >
           <p>
-            Most agencies bill you for manual labour. They charge for every hour
-            a developer spends typing syntax.
-          </p>
-          <p>We don't.</p>
-          <p>Kaizen is an AI-augmented agency.</p>
-          <p>
-            We use proprietary AI workflows to handle the heavy lifting of code
-            generation. This cuts development time by around 70%.
+            Most agencies charge you for typing. Every hour a developer spends writing code, you pay for.
           </p>
           <p>
-            You get the blistering speed of React, the security of headless
-            architecture, and the polish of a custom build, but you only pay for
-            the product strategy, not the typing.
+            We automate the repetitive work with AI. Same architecture. Same security. Same performance. You just don't pay for the boring bits.
           </p>
-          <p>Same code. Same quality. Unfair price.</p>
+          <p className="text-xl md:text-2xl font-heading font-bold text-slate-900 dark:text-white">
+            Enterprise tech. Freelancer prices. That's the deal.
+          </p>
         </motion.div>
       </div>
     </section>
