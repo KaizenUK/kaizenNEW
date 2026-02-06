@@ -374,11 +374,11 @@ export const ContactFormBox = () => {
 
             {/* Step 3: Website Decision */}
             {currentStep === 3 && (
-              <div className="space-y-4">
-                <h4 className="text-white font-semibold">
+              <div className="space-y-5">
+                <h4 className="text-white font-semibold text-lg">
                   Do you have a website right now?
                 </h4>
-                <div className="flex gap-3">
+                <div className="flex gap-4">
                   <button
                     type="button"
                     onClick={() => {
