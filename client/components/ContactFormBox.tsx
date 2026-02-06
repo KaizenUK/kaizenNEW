@@ -146,7 +146,12 @@ export const ContactFormBox = () => {
 
   const handlePrevStep = () => {
     if (currentStep > 1) {
-      setCurrentStep((currentStep - 1) as FormStep);
+      // If on Step 5 and hasWebsite is false, go back to Step 3 (skip Step 4)
+      if (currentStep === 5 && hasWebsite === false) {
+        setCurrentStep(3);
+      } else {
+        setCurrentStep((currentStep - 1) as FormStep);
+      }
       setErrorMessage("");
     }
   };
