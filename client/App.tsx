@@ -146,16 +146,6 @@ function AppContent() {
     };
   }, []);
 
-  // Hide/show Crisp widget based on route
-  useEffect(() => {
-    if (typeof window !== "undefined" && (window as any).$crisp) {
-      if (isAdminRoute) {
-        (window as any).$crisp.push(["do", "chat:hide"]);
-      } else {
-        (window as any).$crisp.push(["do", "chat:show"]);
-      }
-    }
-  }, [isAdminRoute]);
 
   // Force light mode across the entire site
   // Dark backgrounds are handled explicitly per-section, not via dark mode toggle
