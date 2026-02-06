@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Layout from "@/components/Layout";
 import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
@@ -62,6 +62,7 @@ const containerVariants = {
 };
 
 export default function CaseStudies() {
+  const navigate = useNavigate();
   const { openCalendly: openCalendlyFromContext } = useCalendly();
 
   return (
@@ -195,14 +196,10 @@ export default function CaseStudies() {
             transition={{ duration: 0.6, delay: 0.2 }}
           >
             <button
-              onClick={() => {
-                if (typeof window !== "undefined" && (window as any).$crisp) {
-                  (window as any).$crisp.push(["do", "chat:open"]);
-                }
-              }}
+              onClick={() => navigate("/contact")}
               className="px-8 py-3 rounded-lg bg-gradient-to-r from-kaizen-cyan to-kaizen-lime text-kaizen-dark font-heading font-bold hover:shadow-lg hover:shadow-kaizen-cyan/50 transition"
             >
-              Start a Live Chat
+              Get in Touch
             </button>
 
             <button
