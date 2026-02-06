@@ -64,10 +64,9 @@ export default function AnimatedJapaneseSymbols() {
           variants={symbolVariants}
         >
           <motion.div
-            className="text-7xl md:text-8xl lg:text-9xl font-bold text-transparent bg-clip-text bg-gradient-to-b from-kaizen-cyan to-kaizen-lime"
+            className="text-7xl md:text-8xl lg:text-9xl font-bold text-kaizen-dark dark:text-white"
             whileHover={{
               scale: 1.1,
-              textShadow: "0 0 20px rgba(34, 211, 238, 0.5)",
             }}
             transition={{ type: "spring", stiffness: 200 }}
           >
