@@ -101,26 +101,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
                 >
                   <Icon size={20} />
                   {sidebarOpen && (
-                    <>
-                      <span className="font-medium">{item.name}</span>
-                      {item.name === "Crisp inbox" &&
-                        (typeof crispOpen === "number" ||
-                          typeof crispUnread === "number") && (
-                          <div className="ml-auto flex items-center gap-1">
-                            {typeof crispOpen === "number" && crispOpen > 0 && (
-                              <span className="inline-flex items-center rounded-full bg-slate-800 text-slate-200 text-[11px] px-2 py-0.5">
-                                Open: {crispOpen}
-                              </span>
-                            )}
-                            {typeof crispUnread === "number" &&
-                              crispUnread > 0 && (
-                                <span className="inline-flex items-center rounded-full bg-red-500/80 text-white text-[11px] px-2 py-0.5">
-                                  {crispUnread}
-                                </span>
-                              )}
-                          </div>
-                        )}
-                    </>
+                    <span className="font-medium">{item.name}</span>
                   )}
                 </a>
               ) : (
