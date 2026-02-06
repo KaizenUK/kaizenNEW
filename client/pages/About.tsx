@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import Layout from "@/components/Layout";
 import { motion } from "framer-motion";
 import { ArrowRight, Zap, TrendingUp, MessageSquare } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import AnimatedJapaneseSymbols from "@/components/AnimatedJapaneseSymbols";
 
 const fadeInUp = {
@@ -52,6 +53,7 @@ const ScrollReveal = ({
 };
 
 export default function About() {
+  const navigate = useNavigate();
   return (
     <Layout>
       {/* HERO - The Promise */}
@@ -75,11 +77,7 @@ export default function About() {
               </motion.div>
 
               <motion.button
-                onClick={() => {
-                  if (typeof window !== "undefined" && (window as any).$crisp) {
-                    (window as any).$crisp.push(["do", "chat:open"]);
-                  }
-                }}
+                onClick={() => navigate("/contact")}
                 className="mt-8 px-8 py-3 rounded-lg bg-gradient-to-r from-kaizen-cyan to-kaizen-lime text-kaizen-dark font-heading font-bold hover:shadow-lg hover:shadow-kaizen-cyan/50 transition inline-flex items-center justify-center gap-2"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
@@ -255,11 +253,7 @@ export default function About() {
               </h2>
 
               <motion.button
-                onClick={() => {
-                  if (typeof window !== "undefined" && (window as any).$crisp) {
-                    (window as any).$crisp.push(["do", "chat:open"]);
-                  }
-                }}
+                onClick={() => navigate("/contact")}
                 className="px-8 py-3 rounded-lg bg-gradient-to-r from-kaizen-cyan to-kaizen-lime text-kaizen-dark font-heading font-bold hover:shadow-lg hover:shadow-kaizen-cyan/50 transition inline-flex items-center justify-center gap-2"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
