@@ -51,38 +51,38 @@ export default function Contact() {
               className="grid grid-cols-1 lg:grid-cols-3 gap-12 mb-16 w-full"
             >
               {/* Column 1: Chat Now */}
-              <div className="p-8 bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl hover:border-kaizen-cyan/30 transition flex flex-col">
-                <div className="flex items-start gap-3 mb-6">
-                  <MessageCircle className="w-8 h-8 text-kaizen-cyan flex-shrink-0 mt-0.5" />
-                  <h2 className="text-2xl font-heading font-bold text-white">
+              <div className="p-6 bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl hover:border-kaizen-cyan/30 transition flex flex-col">
+                <div className="flex items-start gap-3 mb-4">
+                  <MessageCircle className="w-6 h-6 text-kaizen-cyan flex-shrink-0 mt-0.5" />
+                  <h2 className="text-lg font-heading font-bold text-white">
                     Want to chat now?
                   </h2>
                 </div>
-                <p className="text-base text-white/70 leading-relaxed mb-6 flex-grow">
+                <p className="text-sm text-white/70 leading-relaxed mb-4 flex-grow">
                   Got a quick question? We're available on live chat.
                 </p>
                 <button
                   onClick={handleChatClick}
-                  className="w-full px-4 py-3 rounded-lg bg-kaizen-cyan text-kaizen-dark font-semibold text-base hover:shadow-lg hover:shadow-kaizen-cyan/50 transition"
+                  className="w-full px-4 py-2.5 rounded-lg bg-kaizen-cyan text-kaizen-dark font-semibold text-sm hover:shadow-lg hover:shadow-kaizen-cyan/50 transition"
                 >
                   Open Chat
                 </button>
               </div>
 
               {/* Column 2: Schedule */}
-              <div className="p-8 bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl hover:border-kaizen-cyan/30 transition flex flex-col">
-                <div className="flex items-start gap-3 mb-6">
-                  <Calendar className="w-8 h-8 text-kaizen-cyan flex-shrink-0 mt-0.5" />
-                  <h2 className="text-2xl font-heading font-bold text-white">
+              <div className="p-6 bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl hover:border-kaizen-cyan/30 transition flex flex-col">
+                <div className="flex items-start gap-3 mb-4">
+                  <Calendar className="w-6 h-6 text-kaizen-cyan flex-shrink-0 mt-0.5" />
+                  <h2 className="text-lg font-heading font-bold text-white">
                     Prefer to schedule?
                   </h2>
                 </div>
-                <p className="text-base text-white/70 leading-relaxed mb-6 flex-grow">
+                <p className="text-sm text-white/70 leading-relaxed mb-4 flex-grow">
                   Pick a 15-minute call that works for your schedule.
                 </p>
                 <button
                   onClick={openCalendly}
-                  className="w-full px-4 py-3 rounded-lg bg-kaizen-cyan text-kaizen-dark font-semibold text-base hover:shadow-lg hover:shadow-kaizen-cyan/50 transition"
+                  className="w-full px-4 py-2.5 rounded-lg bg-kaizen-cyan text-kaizen-dark font-semibold text-sm hover:shadow-lg hover:shadow-kaizen-cyan/50 transition"
                 >
                   Book a Call
                 </button>
