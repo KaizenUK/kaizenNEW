@@ -1,11 +1,79 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { ArrowRight, ArrowUpRight } from "lucide-react";
 import { openCrisp } from "@/lib/crisp-utils";
 import { DEFAULT_OG_IMAGE } from "@/lib/seo";
 
-/**
- * Hero Section - optimized for performance with CSS animations
- */
+const LighthouseGauge: React.FC = () => {
+  const [score, setScore] = useState(0);
+  const gaugeRef = useRef<HTMLDivElement>(null);
+  const hasAnimated = useRef(false);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting && !hasAnimated.current) {
+        hasAnimated.current = true;
+        let current = 0;
+        const target = 96;
+        const timer = setInterval(() => {
+          current += 1.5;
+          if (current >= target) {
+            setScore(target);
+            clearInterval(timer);
+          } else {
+            setScore(Math.floor(current));
+          }
+        }, 20);
+      }
+    });
+
+    if (gaugeRef.current) observer.observe(gaugeRef.current);
+    return () => observer.disconnect();
+  }, []);
+
+  const radius = 80;
+  const circumference = 2 * Math.PI * radius;
+  const offset = circumference * (1 - score / 100);
+
+  return (
+    <div ref={gaugeRef} className="relative w-48 h-48 md:w-56 md:h-56 mx-auto">
+      <svg className="w-full h-full -rotate-90" viewBox="0 0 200 200">
+        {/* Track */}
+        <circle
+          cx="100"
+          cy="100"
+          r={radius}
+          fill="none"
+          stroke="rgba(255,255,255,0.08)"
+          strokeWidth="10"
+        />
+        {/* Progress */}
+        <circle
+          cx="100"
+          cy="100"
+          r={radius}
+          fill="none"
+          stroke="#22c55e"
+          strokeWidth="10"
+          strokeDasharray={circumference}
+          strokeDashoffset={offset}
+          strokeLinecap="round"
+          style={{ transition: "stroke-dashoffset 1.5s ease-out" }}
+        />
+      </svg>
+
+      {/* Score text */}
+      <div className="absolute inset-0 flex flex-col items-center justify-center">
+        <span className="text-5xl md:text-6xl font-heading font-black text-green-400 tabular-nums">
+          {score}
+        </span>
+        <span className="text-xs text-white/50 uppercase tracking-widest mt-1">
+          Performance
+        </span>
+      </div>
+    </div>
+  );
+};
+
 export const HeroRemotionSequence: React.FC = () => {
   const [spotlightPos, setSpotlightPos] = useState({ x: 0, y: 0 });
   const heroRef = useRef<HTMLElement>(null);
@@ -13,9 +81,7 @@ export const HeroRemotionSequence: React.FC = () => {
   const handleMouseMove = (e: React.MouseEvent<HTMLElement>) => {
     if (!heroRef.current) return;
     const rect = heroRef.current.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-    setSpotlightPos({ x, y });
+    setSpotlightPos({ x: e.clientX - rect.left, y: e.clientY - rect.top });
   };
 
   return (
@@ -43,10 +109,8 @@ export const HeroRemotionSequence: React.FC = () => {
         <div className="hero-mesh-blob hero-mesh-blob--gold" />
       </div>
 
-      {/* Noise texture overlay */}
       <div className="hero-noise absolute inset-0 -z-10" />
 
-      {/* Grid pattern */}
       <svg
         className="absolute inset-0 w-full h-full pointer-events-none opacity-20 -z-10"
         preserveAspectRatio="none"
@@ -69,7 +133,6 @@ export const HeroRemotionSequence: React.FC = () => {
         <rect width="100%" height="100%" fill="url(#hero-grid)" />
       </svg>
 
-      {/* Cursor spotlight effect */}
       <div
         className="hero-spotlight absolute -z-10 opacity-60"
         style={{
@@ -82,59 +145,79 @@ export const HeroRemotionSequence: React.FC = () => {
         }}
       />
 
-      {/* Fade to base color at bottom */}
       <div className="pointer-events-none absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-[#020617] to-transparent -z-10" />
 
       <div className="container mx-auto px-4 relative z-10">
-        <div className="max-w-4xl mx-auto text-center">
-          <p
-            className="text-xs font-mono tracking-[0.25em] text-kaizen-cyan mb-6 uppercase hero-reveal"
-            style={{ "--delay": "0s" } as React.CSSProperties}
-          >
-            Wirral Web Design
-          </p>
-
-          <h1
-            className="text-5xl md:text-7xl font-heading font-black mb-8 leading-tight hero-reveal text-white"
-            style={{ "--delay": "0s" } as React.CSSProperties}
-          >
-            Web Design Wirral:
-            <br />
-            Lean, Fast, &amp; Profitable Websites
-          </h1>
-
-          <p
-            className="text-lg md:text-xl text-white/85 leading-relaxed mb-12 max-w-3xl mx-auto hero-reveal"
-            style={{ "--delay": "0.2s" } as React.CSSProperties}
-          >
-            Stop losing customers to slow loading times. We build streamlined
-            sites designed to convert traffic into leads.
-          </p>
-
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center max-w-7xl mx-auto">
+          {/* Left: Copy */}
           <div
-            className="flex flex-col sm:flex-row items-center justify-center gap-4 hero-reveal"
-            style={{ "--delay": "0.4s" } as React.CSSProperties}
+            className="hero-reveal"
+            style={{ "--delay": "0s" } as React.CSSProperties}
           >
-            <button
-              onClick={() => openCrisp()}
-              className="px-8 py-4 rounded-lg bg-white text-black font-heading font-bold text-lg inline-flex items-center justify-center gap-2 transform-gpu transition-all duration-200 hover:scale-105 hover:shadow-[0_0_20px_rgba(255,255,255,0.5)] active:scale-95"
-            >
-              Get in Touch
-              <ArrowRight size={20} />
-            </button>
+            <p className="text-xs font-mono tracking-[0.25em] text-kaizen-cyan mb-6 uppercase">
+              Wirral Web Design
+            </p>
 
-            <button
-              onClick={() => {
-                const slider = document.getElementById(
-                  "pricing-slider-section",
-                );
-                slider?.scrollIntoView({ behavior: "smooth" });
-              }}
-              className="px-8 py-4 rounded-lg border-2 border-white/30 text-white font-heading font-bold text-lg inline-flex items-center justify-center gap-2 transition-all duration-200 hover:scale-105 hover:border-cyan-400 hover:text-cyan-400 hover:shadow-[0_0_20px_rgba(6,182,212,0.3)] active:scale-95"
+            <h1 className="text-5xl md:text-6xl lg:text-7xl font-heading font-black mb-8 leading-tight text-white">
+              Sites That Actually Make You Money
+            </h1>
+
+            <p
+              className="text-lg md:text-xl text-white/85 leading-relaxed mb-10 max-w-xl hero-reveal"
+              style={{ "--delay": "0.2s" } as React.CSSProperties}
             >
-              See Our Pricing
-              <ArrowUpRight size={20} />
-            </button>
+              Slow sites lose customers. We build fast, lean websites that turn visitors into paying leads. Enterprise-grade. No corporate nonsense.
+            </p>
+
+            <div
+              className="flex flex-col sm:flex-row items-start gap-4 mb-8 hero-reveal"
+              style={{ "--delay": "0.4s" } as React.CSSProperties}
+            >
+              <button
+                onClick={() => openCrisp()}
+                className="px-8 py-4 rounded-lg bg-white text-black font-heading font-bold text-lg inline-flex items-center justify-center gap-2 transform-gpu transition-all duration-200 hover:scale-105 hover:shadow-[0_0_20px_rgba(255,255,255,0.5)] active:scale-95"
+              >
+                Start Your Project
+                <ArrowRight size={20} />
+              </button>
+
+              <button
+                onClick={() => {
+                  const slider = document.getElementById(
+                    "pricing-slider-section",
+                  );
+                  slider?.scrollIntoView({ behavior: "smooth" });
+                }}
+                className="px-8 py-4 rounded-lg border-2 border-white/30 text-white font-heading font-bold text-lg inline-flex items-center justify-center gap-2 transition-all duration-200 hover:scale-105 hover:border-cyan-400 hover:text-cyan-400 hover:shadow-[0_0_20px_rgba(6,182,212,0.3)] active:scale-95"
+              >
+                See Our Pricing
+                <ArrowUpRight size={20} />
+              </button>
+            </div>
+
+            {/* Social proof line */}
+            <p
+              className="text-sm text-white/50 hero-reveal"
+              style={{ "--delay": "0.6s" } as React.CSSProperties}
+            >
+              Trusted by Wirral trades, small shops, e-commerce brands, and SaaS teams.
+            </p>
+          </div>
+
+          {/* Right: Lighthouse Gauge */}
+          <div
+            className="hidden lg:block hero-reveal"
+            style={{ "--delay": "0.3s" } as React.CSSProperties}
+          >
+            <div className="relative">
+              <div className="absolute -inset-12 bg-green-500/10 rounded-full blur-3xl" />
+              <div className="relative text-center">
+                <LighthouseGauge />
+                <p className="text-sm text-white/40 mt-4">
+                  This site. Right now. Tested today.
+                </p>
+              </div>
+            </div>
           </div>
         </div>
       </div>
