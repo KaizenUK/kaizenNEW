@@ -50,7 +50,7 @@ export default function CityCentre() {
               addressCountry: "GB",
             },
             areaServed: "Liverpool City Centre",
-            image: "https://kaizenweb.co.uk/kaizen-logo.png",
+            image: "https://kaizenweb.co.uk/logo.svg",
           })}
         </script>
       </Helmet>
