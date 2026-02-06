@@ -268,11 +268,11 @@ export const ContactFormBox = () => {
           />
 
           {/* Step Progress */}
-          <div className="flex gap-1 mb-6">
+          <div className="flex gap-1.5 mb-8">
             {[1, 2, 3, 4, 5].map((step) => (
               <div
                 key={step}
-                className={`h-1 flex-1 rounded ${
+                className={`h-1.5 flex-1 rounded ${
                   step <= currentStep ? "bg-cyan-500" : "bg-white/10"
                 }`}
               />
