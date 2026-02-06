@@ -6,71 +6,19 @@ import {
   FileText,
   LayoutDashboard,
   ExternalLink,
-  MessageCircle,
 } from "lucide-react";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useAdminAuth } from "@/hooks/useAdminAuth";
-import { CrispProvider } from "@/context/CrispContext";
 
 interface AdminLayoutProps {
-  children:
-    | React.ReactNode
-    | ((props: {
-        crispUnread: number | null;
-        crispOpen: number | null;
-        crispLatest: string | null;
-      }) => React.ReactNode);
+  children: React.ReactNode;
 }
 
 export default function AdminLayout({ children }: AdminLayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(true);
-  const [crispUnread, setCrispUnread] = useState<number | null>(null);
-  const [crispOpen, setCrispOpen] = useState<number | null>(null);
-  const [crispLatest, setCrispLatest] = useState<string | null>(null);
   const location = useLocation();
   const { logout } = useAdminAuth();
-
-  // Fetch Crisp summary data
-  useEffect(() => {
-    let cancelled = false;
-
-    const loadCrispData = async () => {
-      try {
-        const res = await fetch("/api/admin/crisp/summary");
-        if (!res.ok) return;
-        const json = await res.json();
-        if (cancelled || !json || json.ok !== true) return;
-
-        if (typeof json.unreadCount === "number") {
-          setCrispUnread(json.unreadCount);
-        }
-        if (typeof json.openConversations === "number") {
-          setCrispOpen(json.openConversations);
-        }
-
-        // Derive latest message snippet from raw.data[0]
-        const data =
-          json.raw && Array.isArray(json.raw.data) ? json.raw.data : null;
-        if (data && data.length > 0) {
-          const first = data[0];
-          const excerpt =
-            first?.preview_message?.excerpt || first?.last_message || null;
-          if (typeof excerpt === "string" && excerpt.length > 0) {
-            setCrispLatest(excerpt);
-          }
-        }
-      } catch {
-        // Silently ignore errors - leave Crisp items as null
-      }
-    };
-
-    loadCrispData();
-
-    return () => {
-      cancelled = true;
-    };
-  }, []);
 
   const navItems = [
     {
@@ -84,12 +32,6 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
       href: "/admin/blog-posts",
       icon: FileText,
       external: false,
-    },
-    {
-      name: "Crisp inbox",
-      href: "https://app.crisp.chat/website/9d827b35-3e4e-494f-8c0b-72d233fc92bb/inbox/",
-      icon: MessageCircle,
-      external: true,
     },
   ];
 
@@ -229,19 +171,9 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
           </div>
 
           {/* Content Area */}
-          <CrispProvider
-            crispUnread={crispUnread}
-            crispOpen={crispOpen}
-            crispLatest={crispLatest}
-          >
-            <div className="flex-1 overflow-auto">
-              <main className="p-6">
-                {typeof children === "function"
-                  ? children({ crispUnread, crispOpen, crispLatest })
-                  : children}
-              </main>
-            </div>
-          </CrispProvider>
+          <div className="flex-1 overflow-auto">
+            <main className="p-6">{children}</main>
+          </div>
         </div>
       </div>
     </>
