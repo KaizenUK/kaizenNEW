@@ -445,8 +445,8 @@ export const ContactFormBox = () => {
 
             {/* Step 5: Message & Consent */}
             {currentStep === 5 && (
-              <div className="space-y-3">
-                <h4 className="text-white font-semibold mb-4">
+              <div className="space-y-4">
+                <h4 className="text-white font-semibold mb-5">
                   How can we help?
                 </h4>
                 <div>
@@ -455,31 +455,31 @@ export const ContactFormBox = () => {
                     onChange={(e) => setMessage(e.target.value)}
                     placeholder="Tell us about your project..."
                     rows={4}
-                    className="w-full bg-gray-800/50 border border-white/10 text-white placeholder:text-white/40 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-cyan-500 transition resize-none"
+                    className="w-full bg-gray-800/50 border border-white/10 text-white placeholder:text-white/40 placeholder:text-xs rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-cyan-500 transition resize-none"
                     autoFocus
                   />
                 </div>
 
                 {/* Consent Checkboxes */}
-                <div className="space-y-2 pt-2">
-                  <label className="flex items-start gap-2 cursor-pointer">
+                <div className="space-y-3 pt-2">
+                  <label className="flex items-start gap-3 cursor-pointer">
                     <input
                       type="checkbox"
                       checked={consentToMarketing}
                       onChange={(e) => setConsentToMarketing(e.target.checked)}
-                      className="mt-0.5 rounded border-gray-600 cursor-pointer accent-cyan-500"
+                      className="mt-1 rounded border-gray-600 cursor-pointer accent-cyan-500"
                     />
                     <span className="text-xs text-white/70 leading-relaxed">
                       I consent to marketing emails about newsletters and promotions.
                     </span>
                   </label>
 
-                  <label className="flex items-start gap-2 cursor-pointer">
+                  <label className="flex items-start gap-3 cursor-pointer">
                     <input
                       type="checkbox"
                       checked={consentToGDPR}
                       onChange={(e) => setConsentToGDPR(e.target.checked)}
-                      className="mt-0.5 rounded border-gray-600 cursor-pointer accent-cyan-500"
+                      className="mt-1 rounded border-gray-600 cursor-pointer accent-cyan-500"
                     />
                     <span className="text-xs text-white/70 leading-relaxed">
                       I understand my data will be processed per GDPR and privacy
