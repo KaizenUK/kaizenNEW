@@ -1,7 +1,7 @@
-import React from 'react';
-import { motion } from 'framer-motion';
-import { Link } from 'react-router-dom';
-import { ArrowRight } from 'lucide-react';
+import React from "react";
+import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
+import { ArrowRight } from "lucide-react";
 
 /**
  * Section 5: Two Verticals
@@ -38,7 +38,7 @@ export const ServiceShowcase: React.FC = () => {
             whileInView={{ opacity: 1, x: 0, rotate: 0 }}
             viewport={{ once: true, amount: 0.4 }}
             whileHover={{ y: -6, rotate: -0.6 }}
-            transition={{ type: 'spring', stiffness: 140, damping: 18 }}
+            transition={{ type: "spring", stiffness: 140, damping: 18 }}
             className="relative rounded-3xl border border-cyan-400/40 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 overflow-hidden shadow-[0_24px_70px_rgba(8,47,73,0.9)]"
           >
             <div className="absolute inset-0 opacity-30 bg-[radial-gradient(circle_at_10%_0,rgba(56,189,248,0.5),transparent_55%),radial-gradient(circle_at_90%_100%,rgba(45,212,191,0.4),transparent_55%)]" />
@@ -50,7 +50,9 @@ export const ServiceShowcase: React.FC = () => {
                 Websites That Work for a Living
               </h3>
               <p className="text-base text-slate-200 mb-6 max-w-md">
-                For Wirral businesses that want leads, not just a web presence. Fast on mobile. Clean for Google. Built to convert visitors into enquiries.
+                For Wirral businesses that want leads, not just a web presence.
+                Fast on mobile. Clean for Google. Built to convert visitors into
+                enquiries.
               </p>
               <ul className="space-y-3 text-base text-slate-200/90 mb-8">
                 <li className="flex items-center gap-3">
@@ -84,7 +86,7 @@ export const ServiceShowcase: React.FC = () => {
             whileInView={{ opacity: 1, x: 0, rotate: 0 }}
             viewport={{ once: true, amount: 0.4 }}
             whileHover={{ y: -6, rotate: 0.6 }}
-            transition={{ type: 'spring', stiffness: 140, damping: 18 }}
+            transition={{ type: "spring", stiffness: 140, damping: 18 }}
             className="relative rounded-3xl border border-lime-400/40 bg-gradient-to-br from-slate-900 via-slate-950 to-slate-900 overflow-hidden shadow-[0_24px_70px_rgba(22,101,52,0.9)]"
           >
             <div className="absolute inset-0 opacity-30 bg-[radial-gradient(circle_at_15%_0,rgba(190,242,100,0.5),transparent_55%),radial-gradient(circle_at_90%_100%,rgba(22,163,74,0.5),transparent_55%)]" />
@@ -96,7 +98,8 @@ export const ServiceShowcase: React.FC = () => {
                 Stuck Project? We'll Get It Shipped.
               </h3>
               <p className="text-base text-slate-100 mb-6 max-w-md">
-                Late, over budget, or falling apart. We step in, find the problems, fix the architecture, and get you to launch.
+                Late, over budget, or falling apart. We step in, find the
+                problems, fix the architecture, and get you to launch.
               </p>
               <ul className="space-y-3 text-base text-slate-100/90 mb-8">
                 <li className="flex items-center gap-3">

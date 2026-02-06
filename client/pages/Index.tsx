@@ -864,10 +864,12 @@ const AIPriceNarrative = () => {
           className="space-y-6 text-slate-800 dark:text-slate-200 text-base md:text-lg max-w-3xl"
         >
           <p>
-            Most agencies charge you for typing. Every hour a developer spends writing code, you pay for.
+            Most agencies charge you for typing. Every hour a developer spends
+            writing code, you pay for.
           </p>
           <p>
-            We automate the repetitive work with AI. Same architecture. Same security. Same performance. You just don't pay for the boring bits.
+            We automate the repetitive work with AI. Same architecture. Same
+            security. Same performance. You just don't pay for the boring bits.
           </p>
           <p className="text-xl md:text-2xl font-heading font-bold text-slate-900 dark:text-white">
             Enterprise tech. Freelancer prices. That's the deal.
@@ -1636,7 +1638,9 @@ const LocalMap = () => {
             </h2>
             <p className="text-lg text-white/80 mb-8 leading-relaxed">
               We’re based in Moreton on the Wirral. You get enterprise delivery
-              We're your neighbours, not a faceless agency. Face-to-face or fully remote — whatever gets the job done. Enterprise delivery standards with someone you can actually ring.
+              We're your neighbours, not a faceless agency. Face-to-face or
+              fully remote — whatever gets the job done. Enterprise delivery
+              standards with someone you can actually ring.
             </p>
 
             <div className="space-y-4 mb-8">
@@ -1661,8 +1665,10 @@ const LocalMap = () => {
             <div className="flex flex-col sm:flex-row gap-3">
               <button
                 onClick={() => {
-                  const scanner = document.getElementById('live-performance-scanner');
-                  scanner?.scrollIntoView({ behavior: 'smooth' });
+                  const scanner = document.getElementById(
+                    "live-performance-scanner",
+                  );
+                  scanner?.scrollIntoView({ behavior: "smooth" });
                 }}
                 className="px-8 py-4 rounded-lg bg-gradient-to-r from-kaizen-cyan to-kaizen-lime text-gray-950 font-heading font-bold hover:shadow-lg hover:scale-105 transition-all inline-flex items-center gap-2"
               >
@@ -1709,7 +1715,10 @@ const LocalMap = () => {
 
 // Enhanced components with advanced animations
 import { HeroRemotionSequence } from "@/components/homepage/HeroRemotionSequence";
-import { SocialMediaWarning, CredibilitySection } from "@/components/homepage/ValueProposition";
+import {
+  SocialMediaWarning,
+  CredibilitySection,
+} from "@/components/homepage/ValueProposition";
 import { PerformanceShowcase } from "@/components/homepage/PerformanceShowcase";
 import { ServiceShowcase } from "@/components/homepage/ServiceShowcase";
 

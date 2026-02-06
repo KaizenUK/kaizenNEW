@@ -1,8 +1,8 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { motion } from 'framer-motion';
-import { ArrowUpRight } from 'lucide-react';
+import React, { useState, useEffect, useRef } from "react";
+import { motion } from "framer-motion";
+import { ArrowUpRight } from "lucide-react";
 
-import SpeedScanner from '@/components/SpeedScanner';
+import SpeedScanner from "@/components/SpeedScanner";
 
 /**
  * Section 3: Combined Audit Tool + Core Web Vitals
@@ -60,7 +60,8 @@ export const PerformanceShowcase: React.FC = () => {
               How Does Google See Your Site?
             </h2>
             <p className="text-lg text-white/80 max-w-2xl mx-auto">
-              Enter your URL. Get a real-time audit of load speed, Core Web Vitals, and what's costing you rankings.
+              Enter your URL. Get a real-time audit of load speed, Core Web
+              Vitals, and what's costing you rankings.
             </p>
           </motion.div>
 
@@ -120,7 +121,7 @@ export const PerformanceShowcase: React.FC = () => {
                   strokeDasharray={circumference}
                   strokeDashoffset={offset}
                   strokeLinecap="round"
-                  style={{ transition: 'stroke-dashoffset 1.5s ease-out' }}
+                  style={{ transition: "stroke-dashoffset 1.5s ease-out" }}
                 />
               </svg>
               <div className="absolute inset-0 flex flex-col items-center justify-center">
@@ -142,9 +143,9 @@ export const PerformanceShowcase: React.FC = () => {
               className="grid grid-cols-3 gap-4 text-center mb-12"
             >
               {[
-                { label: 'LCP', value: '0.8s' },
-                { label: 'TBT', value: '0ms' },
-                { label: 'CLS', value: '0.01' },
+                { label: "LCP", value: "0.8s" },
+                { label: "TBT", value: "0ms" },
+                { label: "CLS", value: "0.01" },
               ].map((metric) => (
                 <div
                   key={metric.label}
@@ -169,7 +170,10 @@ export const PerformanceShowcase: React.FC = () => {
               className="text-center"
             >
               <p className="text-gray-700 dark:text-gray-300 mb-6 leading-relaxed">
-                Core Web Vitals are how Google measures whether your site is any good. Load speed, responsiveness, visual stability — if these are poor, Google pushes you down the results. We hit 96% on our own site. We build yours to the same standard.
+                Core Web Vitals are how Google measures whether your site is any
+                good. Load speed, responsiveness, visual stability — if these
+                are poor, Google pushes you down the results. We hit 96% on our
+                own site. We build yours to the same standard.
               </p>
               <motion.a
                 href="https://gtmetrix.com/reports/kaizenweb.co.uk/e2VJJsxv/"
@@ -178,8 +182,8 @@ export const PerformanceShowcase: React.FC = () => {
                 className="inline-flex items-center gap-2 px-6 py-3 rounded-lg border-2 border-kaizen-cyan/50 text-kaizen-cyan font-heading font-bold transition-all duration-300"
                 whileHover={{
                   scale: 1.05,
-                  borderColor: '#06b6d4',
-                  backgroundColor: 'rgba(6, 182, 212, 0.1)',
+                  borderColor: "#06b6d4",
+                  backgroundColor: "rgba(6, 182, 212, 0.1)",
                 }}
                 whileTap={{ scale: 0.95 }}
               >

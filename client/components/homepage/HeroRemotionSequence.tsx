@@ -166,7 +166,9 @@ export const HeroRemotionSequence: React.FC = () => {
               className="text-lg md:text-xl text-white/85 leading-relaxed mb-10 max-w-xl hero-reveal"
               style={{ "--delay": "0.2s" } as React.CSSProperties}
             >
-              Slow sites lose customers. We build fast, lean websites that turn visitors into paying leads. Enterprise-grade. No corporate nonsense.
+              Slow sites lose customers. We build fast, lean websites that turn
+              visitors into paying leads. Enterprise-grade. No corporate
+              nonsense.
             </p>
 
             <div
@@ -200,7 +202,8 @@ export const HeroRemotionSequence: React.FC = () => {
               className="text-sm text-white/50 hero-reveal"
               style={{ "--delay": "0.6s" } as React.CSSProperties}
             >
-              Trusted by Wirral trades, small shops, e-commerce brands, and SaaS teams.
+              Trusted by Wirral trades, small shops, e-commerce brands, and SaaS
+              teams.
             </p>
           </div>
 
