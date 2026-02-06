@@ -1,4 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
+import KaizenLogo from "@/components/KaizenLogo";
 import {
   Menu,
   X,
@@ -334,15 +335,7 @@ const Header: React.FC<HeaderProps> = ({
             to="/"
             className="flex items-center gap-2 hover:opacity-80 transition flex-shrink-0 mr-8"
           >
-            <img
-              src="/logo.svg"
-              alt="Kaizen"
-              width="120"
-              height="36"
-              fetchPriority="high"
-              loading="eager"
-              className="h-7 w-auto"
-            />
+            <KaizenLogo className="h-7 w-[120px] text-black" />
           </Link>
 
           {/* Desktop Navigation - positioned right after logo */}
