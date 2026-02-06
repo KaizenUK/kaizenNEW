@@ -470,7 +470,8 @@ export const ContactFormBox = () => {
                       className="mt-1 rounded border-gray-600 cursor-pointer accent-cyan-500"
                     />
                     <span className="text-xs text-white/70 leading-relaxed">
-                      I consent to marketing emails about newsletters and promotions.
+                      I consent to marketing emails about newsletters and
+                      promotions.
                     </span>
                   </label>
 
@@ -482,8 +483,8 @@ export const ContactFormBox = () => {
                       className="mt-1 rounded border-gray-600 cursor-pointer accent-cyan-500"
                     />
                     <span className="text-xs text-white/70 leading-relaxed">
-                      I understand my data will be processed per GDPR and privacy
-                      policy. <span className="text-red-400">*</span>
+                      I understand my data will be processed per GDPR and
+                      privacy policy. <span className="text-red-400">*</span>
                     </span>
                   </label>
                 </div>

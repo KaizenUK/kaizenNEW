@@ -1709,27 +1709,40 @@ const LocalMap = () => {
 
 // Enhanced components with advanced animations
 import { HeroRemotionSequence } from "@/components/homepage/HeroRemotionSequence";
-import { ValueProposition } from "@/components/homepage/ValueProposition";
+import { SocialMediaWarning, CredibilitySection } from "@/components/homepage/ValueProposition";
 import { PerformanceShowcase } from "@/components/homepage/PerformanceShowcase";
 import { ServiceShowcase } from "@/components/homepage/ServiceShowcase";
 
 export default function Home() {
   return (
     <Layout>
-      {/* Enhanced sections with Remotion, GSAP, React Spring, Particles, Framer Motion */}
+      {/* 1. Hero — hook them with the outcome + live proof */}
       <HeroRemotionSequence />
-      <ValueProposition />
+
+      {/* 2. Pain — make them feel the risk of doing nothing */}
+      <SocialMediaWarning />
+
+      {/* 3. Audit Tool + Vitals — let them prove the problem, then show our standard */}
       <PerformanceShowcase />
+
+      {/* 4. Credibility — explain why we can deliver */}
+      <CredibilitySection />
+
+      {/* 5. Two Verticals — show what we offer */}
       <ServiceShowcase />
 
-      {/* Existing sections */}
-      <LocalMap />
+      {/* 6. Pricing — remove the cost objection */}
       <PricingSlider />
       <PricingCTABanner />
+
+      {/* 7. AI USP — explain why the price is so low */}
       <AIPriceNarrative />
-      <LatestInsights />
+
+      {/* 8. Local Trust + Map — warm close */}
+      <LocalMap />
+
+      {/* Supporting content */}
       <SEOFAQSection />
-      <WhoWeHelp />
     </Layout>
   );
 }
