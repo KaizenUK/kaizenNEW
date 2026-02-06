@@ -99,7 +99,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             "@context": "https://schema.org",
             "@type": "ProfessionalService",
             name: "Kaizen",
-            image: "https://kaizenweb.co.uk/assets/logo.png",
+            image: "https://kaizenweb.co.uk/logo.svg",
             url: "https://kaizenweb.co.uk",
             telephone: "",
             address: {
@@ -136,7 +136,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             "@type": "LocalBusiness",
             name: "Kaizen",
             url: "https://kaizenweb.co.uk",
-            logo: "https://cdn.builder.io/api/v1/image/assets%2Fe4ae46bbd81b4b95bef54d66dd9748cc%2F19f6366118ef41298050443945090b5f?format=webp&width=800",
+            logo: "https://kaizenweb.co.uk/logo.svg",
             address: {
               "@type": "PostalAddress",
               addressLocality: "Moreton",
