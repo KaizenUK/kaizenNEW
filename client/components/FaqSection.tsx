@@ -2,13 +2,14 @@ import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import { Helmet } from "react-helmet-async";
 
+import { Link } from "react-router-dom";
+
 import {
   Accordion,
   AccordionItem,
   AccordionTrigger,
   AccordionContent,
 } from "@/components/ui/accordion";
-import { openCrisp } from "@/lib/crisp-utils";
 
 export interface FaqItem {
   question: string;
@@ -95,15 +96,15 @@ export function FaqSection({
           className="text-center mt-12"
         >
           <p className="text-gray-700 dark:text-gray-300 mb-6">
-            Still have questions? Let's chat.
+            Still have questions? We're here to help.
           </p>
-          <button
-            onClick={() => openCrisp()}
+          <Link
+            to="/contact"
             className="px-8 py-4 rounded-lg bg-gradient-to-r from-kaizen-cyan to-kaizen-lime text-gray-950 font-heading font-bold hover:shadow-lg hover:scale-105 transition-all inline-flex items-center gap-2"
           >
-            Start a Conversation
+            Get in Touch
             <ArrowRight size={20} />
-          </button>
+          </Link>
         </motion.div>
       </div>
     </section>
