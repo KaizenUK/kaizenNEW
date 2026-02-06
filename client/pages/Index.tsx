@@ -8,9 +8,8 @@ import {
   LifeBuoy,
   MapPin,
 } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Layout from "@/components/Layout";
-import { openCrisp } from "@/lib/crisp-utils";
 
 // Lazy-load below-the-fold components to reduce initial bundle size
 const FaqSection = lazy(() =>
@@ -93,6 +92,7 @@ const LazyLeafletMap = React.lazy(() =>
 const HeroSection = () => {
   const [spotlightPos, setSpotlightPos] = useState({ x: 0, y: 0 });
   const heroRef = useRef<HTMLElement | null>(null);
+  const navigate = useNavigate();
 
   const handleMouseMove = (e: React.MouseEvent<HTMLElement>) => {
     if (!heroRef.current) return;
@@ -198,7 +198,7 @@ const HeroSection = () => {
             style={{ "--delay": "0.4s" } as React.CSSProperties}
           >
             <button
-              onClick={() => openCrisp()}
+              onClick={() => navigate("/contact")}
               className="px-8 py-4 rounded-lg bg-white dark:bg-white text-black dark:text-black font-heading font-bold text-lg inline-flex items-center justify-center gap-2 transform-gpu transition-all duration-200 hover:scale-105 hover:shadow-[0_0_20px_rgba(255,255,255,0.5)]"
             >
               Get in Touch
@@ -503,6 +503,7 @@ const ServicePillars = () => {
 
 const PricingSlider = () => {
   const [tier, setTier] = useState(0);
+  const navigate = useNavigate();
 
   const tiers = [
     {
@@ -707,7 +708,7 @@ const PricingSlider = () => {
                   </div>
 
                   <button
-                    onClick={() => openCrisp()}
+                    onClick={() => navigate("/contact")}
                     className="mt-6 w-full px-6 py-3 rounded-lg bg-gradient-to-r from-kaizen-cyan to-kaizen-lime text-gray-950 font-heading font-bold hover:shadow-lg hover:scale-105 transition-all inline-flex items-center justify-center gap-2"
                   >
                     {currentTier.cta}
@@ -1539,6 +1540,7 @@ const WhoWeHelp = () => {
 const LocalMap = () => {
   const [isMapVisible, setIsMapVisible] = useState(false);
   const mapContainerRef = useRef<HTMLDivElement | null>(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -1614,7 +1616,7 @@ const LocalMap = () => {
                 <ArrowRight size={20} />
               </button>
               <button
-                onClick={() => openCrisp()}
+                onClick={() => navigate("/contact")}
                 className="px-8 py-4 rounded-lg border-2 border-white/20 text-white font-heading font-bold hover:border-kaizen-cyan hover:text-kaizen-cyan transition-all inline-flex items-center gap-2"
               >
                 Start Your Project
