@@ -244,7 +244,7 @@ const Footer: React.FC = () => {
           {/* Logo */}
           <div className="flex">
             <img
-              src="https://cdn.builder.io/api/v1/image/assets%2Fe4ae46bbd81b4b95bef54d66dd9748cc%2F326ffc7c8bf9463f93847a3777cf16eb?format=webp"
+              src="/logo.svg"
               alt="Kaizen"
               className="h-6 md:h-8 w-auto invert brightness-0 filter"
               loading="lazy"
