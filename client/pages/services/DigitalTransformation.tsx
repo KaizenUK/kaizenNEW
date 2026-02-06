@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import Layout from "@/components/Layout";
 import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useCalendly } from "@/context/CalendlyContext";
 import { FaqSection } from "@/components/FaqSection";
 
@@ -134,6 +134,7 @@ function KineticTypography() {
 
 export default function DigitalTransformation() {
   const { openCalendly } = useCalendly();
+  const navigate = useNavigate();
 
   return (
     <Layout>
@@ -187,18 +188,15 @@ export default function DigitalTransformation() {
                 <ArrowRight size={18} />
               </button>
 
-              <a
-                href="#"
+              <button
                 onClick={(e) => {
                   e.preventDefault();
-                  if (typeof window !== "undefined" && (window as any).$crisp) {
-                    (window as any).$crisp.push(["do", "chat:open"]);
-                  }
+                  navigate("/contact");
                 }}
                 className="px-8 py-3 rounded-lg border-2 border-kaizen-cyan text-kaizen-cyan font-heading font-bold hover:bg-kaizen-cyan/10 transition"
               >
-                Start a Chat
-              </a>
+                Get in Touch
+              </button>
             </motion.div>
           </motion.div>
         </div>
@@ -521,18 +519,15 @@ export default function DigitalTransformation() {
               Book a Process Audit
             </button>
 
-            <a
-              href="#"
+            <button
               onClick={(e) => {
                 e.preventDefault();
-                if (typeof window !== "undefined" && (window as any).$crisp) {
-                  (window as any).$crisp.push(["do", "chat:open"]);
-                }
+                navigate("/contact");
               }}
               className="px-8 py-3 rounded-lg border-2 border-white/30 text-white font-heading font-bold hover:border-kaizen-cyan hover:text-kaizen-cyan transition"
             >
-              Start a Live Chat
-            </a>
+              Get in Touch
+            </button>
           </motion.div>
         </div>
       </section>
