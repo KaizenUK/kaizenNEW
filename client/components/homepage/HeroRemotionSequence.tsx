@@ -217,7 +217,7 @@ export const HeroRemotionSequence: React.FC = () => {
               <div className="relative text-center">
                 <LighthouseGauge />
                 <p className="text-sm text-white/40 mt-4">
-                  This site. Right now. Tested today.
+                  Our Zero Bloat Score
                 </p>
               </div>
             </div>
