@@ -4,49 +4,45 @@ const resend = new Resend(Deno.env.get("RESEND_API_KEY"));
 const hubspotToken = Deno.env.get("HUBSPOT_ACCESS_TOKEN");
 
 // 👇 REPLACE with your logo URL
-const logoUrl = "https://kaizenweb.co.uk/logo.svg";
+const logoUrl = "https://kaizenweb.co.uk/assets/kaizenweb-logo-light-mode-260x50.png";
 
 Deno.serve(async (req) => {
   const payload = await req.json();
   const record = payload.record;
-  // --- 🛡️ SPAM FILTER START ---
-  const emailDomain = record.email.split("@")[1].toLowerCase();
 
+  // --- 🛡️ SPAM FILTER START ---
+  // 1. Check for garbage emails
+  const emailDomain = record.email.split("@")[1]?.toLowerCase() || "";
+  
   // The "Trash List" - Domains that are 100% fake/disposable
   const trashDomains = [
-    "yopmail.com",
-    "guerrillamail.com",
-    "10minutemail.com",
-    "tempmail.com",
-    "mailinator.com",
-    "throwawaymail.com",
-    "fake-email.com",
-    "superrito.com",
-    "sharklasers.com",
-    "test.com",
-    "example.com",
+    "yopmail.com", "guerrillamail.com", "10minutemail.com", "tempmail.com", 
+    "mailinator.com", "throwawaymail.com", "fake-email.com", "superrito.com",
+    "sharklasers.com", "test.com", "example.com"
   ];
 
-  // The "Spam Pattern" Check - Blocks "test@test.com" or "a@a.com"
+  // 2. The "Spam Pattern" Check - Blocks "test@test.com" or "a@a.com"
   const localPart = record.email.split("@")[0];
+  
   if (
-    trashDomains.includes(emailDomain) ||
-    localPart.length < 2 || // e.g. "a@gmail.com"
-    localPart === "test" || // e.g. "test@gmail.com"
+    trashDomains.includes(emailDomain) || 
+    localPart.length < 2 ||       
+    localPart === "test" ||       
     record.email === "test@test.com"
   ) {
     console.log(`🚫 Spam blocked: ${record.email}`);
-    // We return 200 OK so the frontend/bot thinks it succeeded (Shadow Ban)
-    // But we actually do nothing.
-    return new Response(JSON.stringify({ message: "Blocked" }), {
-      status: 200,
-    });
+    // Return 200 OK to trick the bot (Shadow Ban)
+    return new Response(JSON.stringify({ message: "Blocked" }), { status: 200 });
   }
   // --- 🛡️ SPAM FILTER END ---
 
-  const nameParts = (record.name || "").split(" ");
-  const firstName = nameParts[0];
-  const lastName = nameParts.slice(1).join(" ");
+  // Handle Name Logic
+  // We use record.last_name if it exists. 
+  // If not, we fall back to splitting the 'name' field just in case.
+  const firstName = record.name;
+  const lastName = record.last_name || ""; 
+  
+  const displayName = lastName ? `${firstName} ${lastName}` : firstName;
 
   // Check consent (default to false if missing)
   const hasConsented = record.marketing_consent || false;
@@ -81,12 +77,12 @@ Deno.serve(async (req) => {
         </div>
         <div class="content">
           <div class="h1">📩 New Enquiry</div>
-          <p><strong>${firstName} ${lastName}</strong> has sent a message via the website.</p>
+          <p><strong>${displayName}</strong> has sent a message via the website.</p>
           
           <div class="data-box">
             <div class="data-row">
               <span class="label">Name</span>
-              <span class="value">${firstName} ${lastName}</span>
+              <span class="value">${displayName}</span>
             </div>
             <div class="data-row">
               <span class="label">Email</span>
@@ -95,6 +91,10 @@ Deno.serve(async (req) => {
             <div class="data-row">
               <span class="label">Phone</span>
               <span class="value">${record.phone || "Not provided"}</span>
+            </div>
+            <div class="data-row">
+              <span class="label">Website</span>
+              <span class="value">${record.website || "Not provided"}</span>
             </div>
             <div class="data-row">
               <span class="label">Marketing</span>
@@ -122,29 +122,31 @@ Deno.serve(async (req) => {
     from: "Kaizen Bot <system@kaizenweb.co.uk>",
     to: ["sales@kaizenweb.co.uk"],
     reply_to: record.email,
-    subject: `📩 Contact: ${firstName} ${lastName}`,
+    subject: `📩 Contact: ${displayName}`,
     html: emailHtml,
   });
 
   // 2. HubSpot Logic
+  // ⚠️ CRITICAL: Ensure 'firstname' and 'lastname' keys are correct for HubSpot
   const hubspotProps: any = {
     email: record.email,
-    firstname: firstName,
-    lastname: lastName,
+    firstname: firstName,           
+    lastname: lastName,            // 👈 Maps Supabase 'last_name' to HubSpot 'lastname'
     lifecyclestage: "lead",
     kaizen_source: "Contact Form",
     source_page: record.source_page,
     contact_message: record.message,
-    marketing_consent: hasConsented.toString(), // Sends "true" or "false"
+    marketing_consent: hasConsented.toString() // Sends "true" or "false"
   };
 
+  // Only add phone/website if they exist to keep data clean
   if (record.phone) hubspotProps.phone = record.phone;
   if (record.website) hubspotProps.website = record.website;
 
   const hubspotReq = fetch("https://api.hubapi.com/crm/v3/objects/contacts", {
     method: "POST",
     headers: {
-      Authorization: `Bearer ${hubspotToken}`,
+      "Authorization": `Bearer ${hubspotToken}`,
       "Content-Type": "application/json",
     },
     body: JSON.stringify({ properties: hubspotProps }),
