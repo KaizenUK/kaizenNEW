@@ -17,7 +17,7 @@ export const BUSINESS_ADDRESS = {
   postalCode: "L1 0AX",
   country: "GB",
 };
-export const DEFAULT_OG_IMAGE = `${SITE_URL}/og-image.jpg`;
+export const DEFAULT_OG_IMAGE = `${SITE_URL}/og-image.webp`;
 
 const defaultMeta: PageMeta = {
   title: "Web Design Liverpool & Wirral | Kaizen – Agile Web Development",
