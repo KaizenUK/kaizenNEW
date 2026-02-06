@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Layout from "@/components/Layout";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useCalendly } from "@/context/CalendlyContext";
 import {
@@ -188,6 +188,7 @@ const FlipCard = ({
 };
 
 export default function ContractProductOwner() {
+  const navigate = useNavigate();
   const { openCalendly: openCalendlyFromContext } = useCalendly();
 
   const comparisonRows = [
@@ -280,14 +281,10 @@ export default function ContractProductOwner() {
                 <ArrowRight size={18} />
               </button>
               <button
-                onClick={() => {
-                  if (typeof window !== "undefined" && (window as any).$crisp) {
-                    (window as any).$crisp.push(["do", "chat:open"]);
-                  }
-                }}
+                onClick={() => navigate("/contact")}
                 className="px-8 py-3 rounded-lg border-2 border-kaizen-cyan text-kaizen-cyan dark:text-kaizen-cyan/70 font-heading font-bold hover:bg-kaizen-cyan/10 dark:hover:bg-kaizen-cyan/5 transition inline-flex items-center justify-center gap-2"
               >
-                Start a Chat
+                Get in Touch
                 <ArrowUpRight size={18} />
               </button>
             </motion.div>
@@ -754,14 +751,10 @@ export default function ContractProductOwner() {
               <ArrowRight size={18} />
             </button>
             <button
-              onClick={() => {
-                if (typeof window !== "undefined" && (window as any).$crisp) {
-                  (window as any).$crisp.push(["do", "chat:open"]);
-                }
-              }}
+              onClick={() => navigate("/contact")}
               className="px-8 py-3 rounded-lg border-2 border-kaizen-text-light/30 dark:border-white/20 text-kaizen-text-light dark:text-white/85 font-heading font-bold hover:border-kaizen-cyan dark:hover:border-kaizen-cyan transition inline-flex items-center justify-center gap-2"
             >
-              Start a Live Chat
+              Get in Touch
               <ArrowUpRight size={18} />
             </button>
           </motion.div>
