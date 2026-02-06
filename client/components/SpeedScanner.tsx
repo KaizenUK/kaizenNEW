@@ -253,28 +253,24 @@ export default function SpeedScanner() {
 
     setStatusMsg("Saving results...");
 
-    // 2. Save to Supabase (Client-Side) - ONLY if they consent to marketing
-    if (consentToMarketing && supabase) {
+    // 2. Save to Supabase (Client-Side)
+    if (supabase) {
       try {
         const { error } = await supabase.from("speed_scanner_results").insert([
           {
             email: normalizedEmail,
-            website_url: url || null,
-            performance_score: score,
-            consent_to_marketing: consentToMarketing,
+            website_url: buildAuditUrl(url) || null,
+            performance_score: typeof score === "number" ? score : null,
+            marketing_consent: consentToMarketing,
           },
         ]);
 
         if (error) {
           console.error("Supabase Error:", error.message);
-        } else {
-          console.log("Saved successfully!");
         }
       } catch (err) {
         console.error("Save failed:", err);
       }
-    } else if (!consentToMarketing) {
-      console.log("User opted out of marketing - data not saved to Supabase");
     } else {
       console.warn("Supabase not connected. Check .env keys.");
     }
