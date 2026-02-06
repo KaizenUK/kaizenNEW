@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
 import Layout from "@/components/Layout";
-import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { ArrowRight, ArrowUpRight } from "lucide-react";
+import { ArrowRight, Zap, TrendingUp, MessageSquare } from "lucide-react";
 import AnimatedJapaneseSymbols from "@/components/AnimatedJapaneseSymbols";
 
 const fadeInUp = {
@@ -55,24 +54,21 @@ const ScrollReveal = ({
 export default function About() {
   return (
     <Layout>
-      {/* HERO - The Hook */}
+      {/* HERO - The Promise */}
       <section className="min-h-screen bg-white dark:bg-slate-950 flex items-center py-20">
         <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
             <div className="max-w-2xl">
               <motion.div
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6 }}
               >
-                <p className="text-sm font-mono tracking-[0.25em] text-kaizen-cyan uppercase mb-6">
-                  A Different Kind of Agency
-                </p>
-                <h1 className="text-6xl md:text-7xl lg:text-8xl font-heading font-black mb-8 leading-tight text-kaizen-dark dark:text-white">
-                  We were built by accident.
+                <h1 className="text-6xl md:text-7xl lg:text-8xl font-heading font-black mb-6 leading-tight text-kaizen-dark dark:text-white">
+                  Stop overcomplicating your website.
                 </h1>
-                <p className="text-xl md:text-2xl text-kaizen-dark/70 dark:text-white/70 leading-relaxed mb-8">
-                  A decade of chaos in global tech. Three redundancies in two years. A decision to stop running from burnout and start building something real.
+                <p className="text-xl md:text-2xl text-kaizen-dark/70 dark:text-white/70 leading-relaxed">
+                  Traditional agencies are slow, expensive, and love jargon. We use modern technology to build fast, effective websites that just work.
                 </p>
               </motion.div>
 
@@ -85,11 +81,11 @@ export default function About() {
                     (window as any).$crisp.push(["do", "chat:open"]);
                   }
                 }}
-                className="px-8 py-3 rounded-lg bg-gradient-to-r from-kaizen-cyan to-kaizen-lime text-kaizen-dark font-heading font-bold hover:shadow-lg hover:shadow-kaizen-cyan/50 transition inline-flex items-center justify-center gap-2"
+                className="mt-8 px-8 py-3 rounded-lg bg-gradient-to-r from-kaizen-cyan to-kaizen-lime text-kaizen-dark font-heading font-bold hover:shadow-lg hover:shadow-kaizen-cyan/50 transition inline-flex items-center justify-center gap-2"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
               >
-                Let's chat
+                Let's talk
                 <ArrowRight size={18} />
               </motion.button>
             </div>
@@ -102,34 +98,22 @@ export default function About() {
         </div>
       </section>
 
-      {/* THE REAL STORY - Full Width Narrative */}
+      {/* PHILOSOPHY - Kaizen for Business */}
       <section className="py-20 md:py-32 bg-kaizen-light dark:bg-slate-900/50">
         <div className="container mx-auto px-4">
           <ScrollReveal>
             <div className="max-w-3xl mx-auto">
-              <h2 className="text-5xl md:text-6xl font-heading font-black mb-12 text-kaizen-dark dark:text-white leading-tight">
-                The bit about me.
+              <h2 className="text-4xl md:text-5xl font-heading font-black mb-8 text-kaizen-dark dark:text-white">
+                Continuous improvement. For your business.
               </h2>
 
-              <div className="space-y-8 text-lg text-kaizen-dark/70 dark:text-white/70 leading-relaxed">
+              <div className="text-xl text-kaizen-dark/70 dark:text-white/70 leading-relaxed space-y-6">
                 <p>
-                  I'm Sean, and honestly, I'm not what you'd expect from an "agency owner". For over a decade, I lived in the high-octane world of global tech—iGaming, FinTech, massive platforms handling millions of transactions. I worked in Canada, Ireland, Malta, Spain, Bulgaria, Romania. Managed teams. Shipped things that mattered. And got made redundant three times in two years because that's the nature of that world.
+                  Kaizen means "continuous improvement". Most agencies launch your site and disappear. That's not how we work.
                 </p>
 
                 <p>
-                  That level of instability breaks something in you. You stop investing in anything. You become disposable. And you realise that despite all the scale and prestige, you're actually quite replaceable in a system designed to burn people out.
-                </p>
-
-                <p>
-                  So I came home to Wirral. Met Kiko (my husband). Got a dog. And started asking a different question: what if I built something for businesses who needed stability, not chaos? Something built by someone who'd worked at scale but actually cared about the work?
-                </p>
-
-                <p>
-                  That's Kaizen. The name comes from the Japanese concept of continuous improvement—but that's not corporate jargon when you've actually lived it. It means we're never done learning. Never happy with "good enough". Always looking for the smarter way.
-                </p>
-
-                <p>
-                  It also means we embrace AI. Not as some trendy thing, but because it's how serious teams operate now. We use AI to do the grunt work a room full of developers would've done, then put a senior person (me) in charge so the decisions stay human. Cheaper. Faster. Better. That's Kaizen.
+                  Your website should grow with your business. We stick around to make sure you keep winning. Better speed. Better conversions. Better results.
                 </p>
               </div>
             </div>
@@ -137,151 +121,127 @@ export default function About() {
         </div>
       </section>
 
-      {/* HOW WE WORK - Three Principles, No Boxes */}
+      {/* WHY US - Three Cards, No Borders */}
       <section className="py-20 md:py-32 bg-white dark:bg-slate-950">
         <div className="container mx-auto px-4">
           <ScrollReveal>
-            <h2 className="text-5xl md:text-6xl font-heading font-black mb-20 text-kaizen-dark dark:text-white text-center">
-              Three things we actually believe.
+            <h2 className="text-4xl md:text-5xl font-heading font-black mb-16 text-kaizen-dark dark:text-white text-center">
+              Here's what's different.
             </h2>
           </ScrollReveal>
 
-          <div className="max-w-5xl mx-auto space-y-24">
-            {/* Principle 1 */}
+          <motion.div
+            className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto"
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-100px" }}
+            variants={{
+              visible: {
+                transition: {
+                  staggerChildren: 0.1,
+                },
+              },
+            }}
+          >
+            {/* Card 1 */}
             <motion.div
-              className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center"
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
-              viewport={{ once: true, margin: "-100px" }}
+              className="p-8 md:p-10 rounded-3xl bg-kaizen-light/50 dark:bg-slate-900/50"
+              variants={fadeInUp}
             >
-              <div>
-                <h3 className="text-3xl md:text-4xl font-heading font-bold mb-6 text-kaizen-dark dark:text-white">
-                  Get better at everything.
-                </h3>
-                <p className="text-xl text-kaizen-dark/70 dark:text-white/70 leading-relaxed">
-                  Kaizen—continuous improvement—isn't a buzzword. It's how we operate. There's always a smarter way. Always a detail we missed. We're obsessed with finding it. We'll spend an evening perfecting something most people won't even notice, because that's what separates good from exceptional.
-                </p>
+              <div className="mb-8">
+                <Zap className="w-8 h-8 text-kaizen-cyan" />
               </div>
-              <div className="h-80 rounded-2xl bg-gradient-to-br from-kaizen-cyan/10 to-kaizen-lime/10 dark:from-kaizen-cyan/5 dark:to-kaizen-lime/5 border border-kaizen-cyan/20 dark:border-kaizen-cyan/10" />
+              <h3 className="text-2xl font-heading font-bold mb-4 text-kaizen-dark dark:text-white">
+                We don't guess.
+              </h3>
+              <p className="text-lg text-kaizen-dark/70 dark:text-white/70 leading-relaxed">
+                We use data to see exactly what's working and what isn't. That's how we know if your site is actually generating leads.
+              </p>
             </motion.div>
 
-            {/* Principle 2 */}
+            {/* Card 2 */}
             <motion.div
-              className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center"
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
-              viewport={{ once: true, margin: "-100px" }}
+              className="p-8 md:p-10 rounded-3xl bg-kaizen-light/50 dark:bg-slate-900/50"
+              variants={fadeInUp}
             >
-              <div className="h-80 rounded-2xl bg-gradient-to-br from-kaizen-lime/10 to-kaizen-cyan/10 dark:from-kaizen-lime/5 dark:to-kaizen-cyan/5 border border-kaizen-lime/20 dark:border-kaizen-lime/10 lg:order-2" />
-              <div className="lg:order-1">
-                <h3 className="text-3xl md:text-4xl font-heading font-bold mb-6 text-kaizen-dark dark:text-white">
-                  No chaotic projects.
-                </h3>
-                <p className="text-xl text-kaizen-dark/70 dark:text-white/70 leading-relaxed">
-                  I spent a decade managing teams through email threads at 2am, miscommunications, and vague timelines. You don't have to live like that. We run tight projects with staging, QA, rollbacks, and a single point of contact who actually knows your business. That's not luxury—that's just how it should be.
-                </p>
+              <div className="mb-8">
+                <TrendingUp className="w-8 h-8 text-kaizen-cyan" />
               </div>
+              <h3 className="text-2xl font-heading font-bold mb-4 text-kaizen-dark dark:text-white">
+                Speed wins.
+              </h3>
+              <p className="text-lg text-kaizen-dark/70 dark:text-white/70 leading-relaxed">
+                Fast sites convert. Slow sites lose customers. We make sure your site loads instantly so people stay.
+              </p>
             </motion.div>
 
-            {/* Principle 3 */}
+            {/* Card 3 */}
             <motion.div
-              className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center"
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
-              viewport={{ once: true, margin: "-100px" }}
+              className="p-8 md:p-10 rounded-3xl bg-kaizen-light/50 dark:bg-slate-900/50"
+              variants={fadeInUp}
             >
-              <div>
-                <h3 className="text-3xl md:text-4xl font-heading font-bold mb-6 text-kaizen-dark dark:text-white">
-                  Train people so they can leave.
-                </h3>
-                <p className="text-xl text-kaizen-dark/70 dark:text-white/70 leading-relaxed">
-                  We don't lock you in. We hand over control. Your team will understand the platform, the process, and the reasoning. You'll never be dependent on us. That's harder than keeping people locked in—but it's the right way.
-                </p>
+              <div className="mb-8">
+                <MessageSquare className="w-8 h-8 text-kaizen-cyan" />
               </div>
-              <div className="h-80 rounded-2xl bg-gradient-to-br from-kaizen-cyan/10 to-kaizen-lime/10 dark:from-kaizen-cyan/5 dark:to-kaizen-lime/5 border border-kaizen-cyan/20 dark:border-kaizen-cyan/10" />
+              <h3 className="text-2xl font-heading font-bold mb-4 text-kaizen-dark dark:text-white">
+                No tech-talk.
+              </h3>
+              <p className="text-lg text-kaizen-dark/70 dark:text-white/70 leading-relaxed">
+                We speak plain English. We handle the complex stuff so you can focus on running your business.
+              </p>
             </motion.div>
-          </div>
+          </motion.div>
         </div>
       </section>
 
-      {/* WHO WE ARE - Simple Statement */}
+      {/* THE SHIFT - Effort vs Outcome */}
       <section className="py-20 md:py-32 bg-kaizen-light dark:bg-slate-900/50">
         <div className="container mx-auto px-4">
           <ScrollReveal>
-            <div className="max-w-3xl mx-auto text-center">
-              <h2 className="text-5xl md:text-6xl font-heading font-black mb-8 text-kaizen-dark dark:text-white leading-tight">
-                When we're not building websites
+            <div className="max-w-3xl mx-auto">
+              <h2 className="text-4xl md:text-5xl font-heading font-black mb-8 text-kaizen-dark dark:text-white">
+                You don't pay for the hours. You pay for the result.
               </h2>
 
-              <p className="text-xl text-kaizen-dark/70 dark:text-white/70 leading-relaxed mb-8">
-                you'll find us gaming on the PS5, producing music, or being pulled around the Wirral by Rikki—our 5-year-old Border Collie who has absolutely no chill. We're local. We're here to stay. And we actually care about the work.
+              <div className="text-xl text-kaizen-dark/70 dark:text-white/70 leading-relaxed space-y-6">
+                <p>
+                  Old agencies charge by the hour. More hours, more money. We use modern tools—AI, automation—so we can work faster and cheaper, and you get a better site.
+                </p>
+
+                <p>
+                  Don't pay us for the time we spent typing. Pay us because we took your site from a score of 40 to a score of 98. That's our Speed Scanner. That's proof.
+                </p>
+              </div>
+            </div>
+          </ScrollReveal>
+        </div>
+      </section>
+
+      {/* MODERN ADVANTAGE - The Tech Edge */}
+      <section className="py-20 md:py-32 bg-white dark:bg-slate-950">
+        <div className="container mx-auto px-4">
+          <ScrollReveal>
+            <div className="max-w-3xl mx-auto text-center">
+              <h2 className="text-4xl md:text-5xl font-heading font-black mb-8 text-kaizen-dark dark:text-white">
+                We're operators. Not coders.
+              </h2>
+
+              <p className="text-xl text-kaizen-dark/70 dark:text-white/70 leading-relaxed">
+                We use AI and modern automation to do work that used to take a team of developers. We focus on results. Faster builds. Better performance. Lower cost. That's your modern advantage.
               </p>
             </div>
           </ScrollReveal>
         </div>
       </section>
 
-      {/* WHAT WE'VE LEARNED - Two Big Insights */}
-      <section className="py-20 md:py-32 bg-white dark:bg-slate-950">
-        <div className="container mx-auto px-4">
-          <ScrollReveal>
-            <h2 className="text-5xl md:text-6xl font-heading font-black mb-20 text-kaizen-dark dark:text-white text-center">
-              The things we've figured out.
-            </h2>
-          </ScrollReveal>
-
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 max-w-5xl mx-auto">
-            {/* Insight 1 */}
-            <motion.div
-              className="lg:pt-12"
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-100px" }}
-            >
-              <h3 className="text-2xl md:text-3xl font-heading font-bold mb-6 text-kaizen-dark dark:text-white">
-                Expert focus beats cheap labour.
-              </h3>
-              <p className="text-lg text-kaizen-dark/70 dark:text-white/70 leading-relaxed mb-8">
-                When you work with Kaizen, you're not handed off to a junior account manager waiting for their big break. You work with me. A Senior Product Owner who's managed £150m platforms. I bring that same obsessive detail to your project—whether it's £15k or £150k.
-              </p>
-              <p className="text-lg text-kaizen-dark/70 dark:text-white/70 leading-relaxed">
-                We're small. We take on fewer projects. That's intentional. It means we actually care.
-              </p>
-            </motion.div>
-
-            {/* Insight 2 */}
-            <motion.div
-              className="lg:pt-12"
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-100px" }}
-              transition={{ delay: 0.2 }}
-            >
-              <h3 className="text-2xl md:text-3xl font-heading font-bold mb-6 text-kaizen-dark dark:text-white">
-                Your website is an asset, not rent.
-              </h3>
-              <p className="text-lg text-kaizen-dark/70 dark:text-white/70 leading-relaxed mb-8">
-                If your whole presence lives on Facebook or Instagram, you're renting attention. Algorithms change. Reach disappears. A fast, reliable website is something you own. It captures leads. Builds trust. Works regardless of what social media decides.
-              </p>
-              <p className="text-lg text-kaizen-dark/70 dark:text-white/70 leading-relaxed">
-                That's not a nice-to-have. That's fundamental.
-              </p>
-            </motion.div>
-          </div>
-        </div>
-      </section>
-
-      {/* FINAL CTA - Bold */}
+      {/* FINAL CTA */}
       <section className="py-20 md:py-32 bg-kaizen-dark dark:bg-gradient-to-b dark:from-slate-900 dark:to-slate-950 text-white">
         <div className="container mx-auto px-4">
           <ScrollReveal>
             <div className="max-w-3xl mx-auto text-center">
-              <h2 className="text-5xl md:text-6xl lg:text-7xl font-heading font-black mb-8 leading-tight">
-                Let's talk.
+              <h2 className="text-5xl md:text-6xl font-heading font-black mb-8">
+                Ready for something different?
               </h2>
-              <p className="text-xl md:text-2xl text-white/80 mb-12 leading-relaxed">
-                You know our story. We'd love to hear yours.
-              </p>
 
               <motion.button
                 onClick={() => {
@@ -296,7 +256,7 @@ export default function About() {
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
               >
-                Start a conversation
+                Let's build
                 <ArrowRight size={18} />
               </motion.button>
             </div>
