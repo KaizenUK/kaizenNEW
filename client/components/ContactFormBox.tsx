@@ -324,12 +324,12 @@ export const ContactFormBox = () => {
 
             {/* Step 2: Email & Phone */}
             {currentStep === 2 && (
-              <div className="space-y-3">
-                <h4 className="text-white font-semibold mb-4">
+              <div className="space-y-4">
+                <h4 className="text-white font-semibold mb-5">
                   How do we reach you?
                 </h4>
                 <div>
-                  <label className="block text-xs font-medium text-white mb-1">
+                  <label className="block text-xs font-medium text-white mb-2">
                     Email <span className="text-red-400">*</span>
                   </label>
                   <input
@@ -337,8 +337,8 @@ export const ContactFormBox = () => {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     onBlur={handleEmailBlur}
-                    placeholder="your@email.co.uk"
-                    className={`w-full bg-gray-800/50 border text-white placeholder:text-white/40 rounded-lg px-3 py-2 text-sm focus:outline-none transition ${
+                    placeholder="you@email.co.uk"
+                    className={`w-full bg-gray-800/50 border text-white placeholder:text-white/40 placeholder:text-xs rounded-lg px-4 py-3 text-sm focus:outline-none transition ${
                       emailError
                         ? "border-red-500 focus:border-red-500"
                         : "border-white/10 focus:border-cyan-500"
@@ -346,11 +346,11 @@ export const ContactFormBox = () => {
                     autoFocus
                   />
                   {emailError && (
-                    <p className="text-red-400 text-xs mt-1">{emailError}</p>
+                    <p className="text-red-400 text-xs mt-2">{emailError}</p>
                   )}
                 </div>
                 <div>
-                  <label className="block text-xs font-medium text-white mb-1">
+                  <label className="block text-xs font-medium text-white mb-2">
                     Phone
                   </label>
                   <input
@@ -359,14 +359,14 @@ export const ContactFormBox = () => {
                     onChange={(e) => setPhone(e.target.value)}
                     onBlur={handlePhoneBlur}
                     placeholder="+44"
-                    className={`w-full bg-gray-800/50 border text-white placeholder:text-white/40 rounded-lg px-3 py-2 text-sm focus:outline-none transition ${
+                    className={`w-full bg-gray-800/50 border text-white placeholder:text-white/40 placeholder:text-xs rounded-lg px-4 py-3 text-sm focus:outline-none transition ${
                       phoneError
                         ? "border-red-500 focus:border-red-500"
                         : "border-white/10 focus:border-cyan-500"
                     }`}
                   />
                   {phoneError && (
-                    <p className="text-red-400 text-xs mt-1">{phoneError}</p>
+                    <p className="text-red-400 text-xs mt-2">{phoneError}</p>
                   )}
                 </div>
               </div>
