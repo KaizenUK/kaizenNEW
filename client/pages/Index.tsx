@@ -1636,8 +1636,7 @@ const LocalMap = () => {
             </h2>
             <p className="text-lg text-white/80 mb-8 leading-relaxed">
               We’re based in Moreton on the Wirral. You get enterprise delivery
-              standards with local accountability — and we can work face-to-face
-              or fully remote depending on what your team needs.
+              We're your neighbours, not a faceless agency. Face-to-face or fully remote — whatever gets the job done. Enterprise delivery standards with someone you can actually ring.
             </p>
 
             <div className="space-y-4 mb-8">
@@ -1648,7 +1647,7 @@ const LocalMap = () => {
               <div className="flex items-center gap-3">
                 <div className="w-3 h-3 rounded-full bg-kaizen-lime" />
                 <span className="text-white/90">
-                  Serving Wirral & the North West
+                  Serving Wirral &amp; the North West
                 </span>
               </div>
               <div className="flex items-center gap-3">
@@ -1659,13 +1658,25 @@ const LocalMap = () => {
               </div>
             </div>
 
-            <button
-              onClick={() => openCrisp()}
-              className="px-8 py-4 rounded-lg bg-gradient-to-r from-kaizen-cyan to-kaizen-lime text-gray-950 font-heading font-bold hover:shadow-lg hover:scale-105 transition-all inline-flex items-center gap-2"
-            >
-              Get a Performance Audit
-              <ArrowRight size={20} />
-            </button>
+            <div className="flex flex-col sm:flex-row gap-3">
+              <button
+                onClick={() => {
+                  const scanner = document.getElementById('live-performance-scanner');
+                  scanner?.scrollIntoView({ behavior: 'smooth' });
+                }}
+                className="px-8 py-4 rounded-lg bg-gradient-to-r from-kaizen-cyan to-kaizen-lime text-gray-950 font-heading font-bold hover:shadow-lg hover:scale-105 transition-all inline-flex items-center gap-2"
+              >
+                Get a Performance Audit
+                <ArrowRight size={20} />
+              </button>
+              <button
+                onClick={() => openCrisp()}
+                className="px-8 py-4 rounded-lg border-2 border-white/20 text-white font-heading font-bold hover:border-kaizen-cyan hover:text-kaizen-cyan transition-all inline-flex items-center gap-2"
+              >
+                Start Your Project
+                <ArrowRight size={20} />
+              </button>
+            </div>
           </motion.div>
 
           <motion.div
