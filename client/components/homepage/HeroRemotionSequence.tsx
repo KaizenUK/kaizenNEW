@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { ArrowRight, ArrowUpRight } from "lucide-react";
-import { openCrisp } from "@/lib/crisp-utils";
+import { useNavigate } from "react-router-dom";
 import { DEFAULT_OG_IMAGE } from "@/lib/seo";
 
 const LighthouseGauge: React.FC = () => {
@@ -77,6 +77,7 @@ const LighthouseGauge: React.FC = () => {
 export const HeroRemotionSequence: React.FC = () => {
   const [spotlightPos, setSpotlightPos] = useState({ x: 0, y: 0 });
   const heroRef = useRef<HTMLElement>(null);
+  const navigate = useNavigate();
 
   const handleMouseMove = (e: React.MouseEvent<HTMLElement>) => {
     if (!heroRef.current) return;
@@ -177,7 +178,7 @@ export const HeroRemotionSequence: React.FC = () => {
               style={{ "--delay": "0.4s" } as React.CSSProperties}
             >
               <button
-                onClick={() => openCrisp()}
+                onClick={() => navigate("/contact")}
                 className="px-8 py-4 rounded-lg bg-white text-black font-heading font-bold text-lg inline-flex items-center justify-center gap-2 transform-gpu transition-all duration-200 hover:scale-105 hover:shadow-[0_0_20px_rgba(255,255,255,0.5)] active:scale-95"
               >
                 Start Your Project
