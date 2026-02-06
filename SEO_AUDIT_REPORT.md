@@ -103,21 +103,14 @@
 
 **Status:**
 
-- ✅ **ALREADY COMPLIANT:** Crisp Chat deferred with 4-second setTimeout
-- ✅ Script loads only after `window.addEventListener("load")`
+- ✅ **REMOVED:** Crisp Chat completely removed to improve performance and TBT
+- ✅ No third-party chat scripts blocking main thread
 - ✅ No Google Analytics or Hotjar scripts blocking main thread
 
 **Current Implementation:**
 
 ```javascript
-window.addEventListener("load", function () {
-  setTimeout(function () {
-    var s = document.createElement("script");
-    s.src = "https://client.crisp.chat/l.js";
-    s.async = 1;
-    document.getElementsByTagName("head")[0].appendChild(s);
-  }, 4000);
-});
+// REMOVED: window.addEventListener("load", function () { ... });
 ```
 
 **Impact:** Prevents third-party scripts from blocking initial render.
@@ -355,7 +348,7 @@ Sitemap: https://kaizenweb.co.uk/sitemap.xml
 
 ### Configuration Files (3)
 
-10. `index.html` - Already has Crisp deferred ���
+10. `index.html` - Crisp removed ✓ ���
 11. `public/robots.txt` - Already correct ✓
 12. `public/sitemap.php` - Already dynamic ✓
 
@@ -373,7 +366,7 @@ Sitemap: https://kaizenweb.co.uk/sitemap.xml
 ### Google PageSpeed Insights (Core Web Vitals)
 
 - ✅ **LCP:** <2.5s (hero image preloaded with high priority)
-- ✅ **TBT:** <200ms (Crisp deferred by 4s)
+- ✅ **TBT:** <200ms (Crisp removed)
 - ✅ **CLS:** <0.1 (all images have explicit dimensions)
 - ✅ **FCP:** <1.8s (fonts use swap, no blocking scripts)
 - 🎯 **Target:** 96+ Performance Score
