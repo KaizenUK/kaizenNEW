@@ -43,55 +43,55 @@ export default function Contact() {
               </p>
             </motion.div>
 
-            {/* Two Column Grid */}
+            {/* Three Column Grid with Cards and Form */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2, duration: 0.6 }}
-              className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16"
+              className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-16"
             >
               {/* Column 1: Chat Now */}
-              <div className="p-8 bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl hover:border-kaizen-cyan/30 transition">
-                <div className="flex items-start gap-4 mb-6">
-                  <MessageCircle className="w-8 h-8 text-kaizen-cyan flex-shrink-0 mt-1" />
-                  <h2 className="text-3xl font-heading font-bold text-white">
+              <div className="p-6 bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl hover:border-kaizen-cyan/30 transition flex flex-col">
+                <div className="flex items-start gap-3 mb-4">
+                  <MessageCircle className="w-6 h-6 text-kaizen-cyan flex-shrink-0 mt-1" />
+                  <h2 className="text-xl font-heading font-bold text-white">
                     Want to chat now?
                   </h2>
                 </div>
-                <p className="text-lg text-white/70 leading-relaxed">
-                  Got a quick question? We're available on live chat. Click the
-                  icon in the bottom corner to start a conversation.
+                <p className="text-sm text-white/70 leading-relaxed mb-4 flex-grow">
+                  Got a quick question? We're available on live chat.
                 </p>
+                <button
+                  onClick={handleChatClick}
+                  className="w-full px-4 py-2 rounded-lg bg-kaizen-cyan text-kaizen-dark font-semibold text-sm hover:shadow-lg hover:shadow-kaizen-cyan/50 transition"
+                >
+                  Open Chat
+                </button>
               </div>
 
               {/* Column 2: Schedule */}
-              <div className="p-8 bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl hover:border-kaizen-cyan/30 transition">
-                <div className="flex items-start gap-4 mb-6">
-                  <Calendar className="w-8 h-8 text-kaizen-cyan flex-shrink-0 mt-1" />
-                  <h2 className="text-3xl font-heading font-bold text-white">
+              <div className="p-6 bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl hover:border-kaizen-cyan/30 transition flex flex-col">
+                <div className="flex items-start gap-3 mb-4">
+                  <Calendar className="w-6 h-6 text-kaizen-cyan flex-shrink-0 mt-1" />
+                  <h2 className="text-xl font-heading font-bold text-white">
                     Prefer to schedule?
                   </h2>
                 </div>
-                <p className="text-lg text-white/70 leading-relaxed">
-                  Skip the email tennis. Book a 15-minute, no-pressure discovery
-                  call directly in our calendar. Pick a time that works for you.
+                <p className="text-sm text-white/70 leading-relaxed mb-4 flex-grow">
+                  Pick a 15-minute call that works for your schedule.
                 </p>
+                <button
+                  onClick={openCalendly}
+                  className="w-full px-4 py-2 rounded-lg bg-kaizen-cyan text-kaizen-dark font-semibold text-sm hover:shadow-lg hover:shadow-kaizen-cyan/50 transition"
+                >
+                  Book a Call
+                </button>
               </div>
-            </motion.div>
 
-            {/* CTA Button */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.4, duration: 0.6 }}
-              className="flex justify-center"
-            >
-              <button
-                onClick={openCalendly}
-                className="px-8 py-4 rounded-lg bg-gradient-to-r from-kaizen-cyan to-kaizen-lime text-kaizen-dark font-heading font-bold text-lg hover:shadow-lg hover:shadow-kaizen-cyan/50 transition"
-              >
-                Book a 15 Minute Call
-              </button>
+              {/* Column 3: Contact Form */}
+              <div>
+                <ContactFormBox />
+              </div>
             </motion.div>
           </div>
         </div>
