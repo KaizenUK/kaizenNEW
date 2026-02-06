@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import KaizenLogo from "@/components/KaizenLogo";
 import {
   X,
   ChevronDown,
@@ -188,15 +189,7 @@ const OffCanvasMenu: React.FC<OffCanvasMenuProps> = ({ isOpen, onClose }) => {
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100">
           <Link to="/" className="flex items-center gap-2" onClick={onClose}>
-            <img
-              src="/logo.svg"
-              alt="Kaizen"
-              width="100"
-              height="30"
-              className="h-6 w-auto"
-              loading="lazy"
-              decoding="async"
-            />
+            <KaizenLogo className="h-6 w-[100px] text-black" />
           </Link>
           <button
             type="button"
