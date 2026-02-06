@@ -20,7 +20,6 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
-import { openCrisp } from "@/lib/crisp-utils";
 
 interface OffCanvasMenuProps {
   isOpen: boolean;
@@ -392,16 +391,14 @@ const OffCanvasMenu: React.FC<OffCanvasMenuProps> = ({ isOpen, onClose }) => {
             <Zap size={16} />
             Free Speed Test
           </Link>
-          <button
-            onClick={() => {
-              openCrisp();
-              onClose();
-            }}
+          <Link
+            to="/contact"
+            onClick={onClose}
             className="w-full px-4 py-3 rounded-lg text-sm font-semibold text-white bg-gradient-to-r from-cyan-500 to-teal-500 hover:from-cyan-600 hover:to-teal-600 shadow-lg shadow-cyan-500/20 transition flex items-center justify-center gap-2"
           >
-            Start a Chat
+            Start Your Project
             <ArrowRight size={14} />
-          </button>
+          </Link>
         </div>
       </div>
     </>
