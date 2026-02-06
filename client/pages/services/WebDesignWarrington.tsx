@@ -16,9 +16,8 @@ import {
   ChevronDown,
   type LucideIcon,
 } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import SpeedScanner from "@/components/SpeedScanner";
-import { openCrisp } from "@/lib/crisp-utils";
 
 /* ==========================================================================
    ANIMATED COUNTER COMPONENT
@@ -290,6 +289,7 @@ function FaqItem({
    MAIN PAGE COMPONENT
    ========================================================================== */
 export default function WebDesignWarrington() {
+  const navigate = useNavigate();
   const heroRef = useRef<HTMLElement>(null);
   const { scrollYProgress } = useScroll({
     target: heroRef,
@@ -489,10 +489,10 @@ export default function WebDesignWarrington() {
               className="flex flex-col sm:flex-row gap-4"
             >
               <button
-                onClick={() => openCrisp()}
+                onClick={() => navigate("/contact")}
                 className="group inline-flex items-center justify-center gap-3 px-8 py-4 rounded-full bg-gradient-to-r from-cyan-500 to-sky-500 text-white font-bold text-lg shadow-lg shadow-cyan-500/25 hover:shadow-cyan-500/40 transition-all duration-300 hover:-translate-y-1"
               >
-                Start a Conversation
+                Get in Touch
                 <ArrowRight
                   size={20}
                   className="group-hover:translate-x-1 transition-transform"
@@ -846,10 +846,10 @@ export default function WebDesignWarrington() {
             className="flex flex-col sm:flex-row justify-center gap-4"
           >
             <button
-              onClick={() => openCrisp()}
+              onClick={() => navigate("/contact")}
               className="group inline-flex items-center justify-center gap-3 px-10 py-5 rounded-full bg-gradient-to-r from-cyan-500 to-sky-500 text-white font-bold text-lg shadow-lg shadow-cyan-500/25 hover:shadow-cyan-500/40 transition-all duration-300 hover:-translate-y-1"
             >
-              Start a Chat
+              Get in Touch
               <ArrowRight
                 size={20}
                 className="group-hover:translate-x-1 transition-transform"
