@@ -261,7 +261,7 @@ export default function SpeedScanner() {
             email: normalizedEmail,
             website_url: buildAuditUrl(url) || null,
             performance_score: typeof score === "number" ? score : null,
-            marketing_consent: consentToMarketing,
+            consent_to_marketing: consentToMarketing,
           },
         ]);
 
