@@ -48,7 +48,7 @@ export default function Contact() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2, duration: 0.6 }}
-              className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-16 max-w-6xl mx-auto"
+              className="grid grid-cols-1 lg:grid-cols-3 gap-12 mb-16 w-full"
             >
               {/* Column 1: Chat Now */}
               <div className="p-8 bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl hover:border-kaizen-cyan/30 transition flex flex-col">
