@@ -39,9 +39,7 @@ export default function Contact() {
               </h1>
 
               <p className="text-xl text-white/70 mb-12 leading-relaxed">
-                We've made it easy. You won't find a form to fill out, and your
-                email won't end up in a sales funnel. We just have two simple,
-                no-pressure options.
+                We've made it easy. We just have three simple, no-pressure options—pick what works best for you.
               </p>
             </motion.div>
 
