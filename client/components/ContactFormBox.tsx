@@ -231,7 +231,7 @@ export const ContactFormBox = () => {
 
   return (
     <motion.div
-      className="rounded-2xl border border-white/10 bg-gray-900/50 backdrop-blur-sm p-8 hover:border-white/20 transition"
+      className="rounded-2xl border border-white/10 bg-gray-900/50 backdrop-blur-sm p-8 hover:border-white/20 transition h-full"
       whileHover={{ y: -2 }}
     >
       <div className="flex items-center gap-3 mb-6">
