@@ -414,7 +414,6 @@ const AuthorityBridge = () => {
   );
 };
 
-
 const ServicePillars = () => {
   const pillars = [
     {
