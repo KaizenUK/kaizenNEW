@@ -288,26 +288,26 @@ export const ContactFormBox = () => {
           >
             {/* Step 1: Name & Surname */}
             {currentStep === 1 && (
-              <div className="space-y-3">
-                <h4 className="text-white font-semibold mb-4">
+              <div className="space-y-4">
+                <h4 className="text-white font-semibold mb-5">
                   What do we call you?
                 </h4>
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-xs font-medium text-white mb-1">
+                    <label className="block text-xs font-medium text-white mb-2">
                       First Name <span className="text-red-400">*</span>
                     </label>
                     <input
                       type="text"
                       value={name}
                       onChange={(e) => setName(e.target.value)}
-                      placeholder="First name"
-                      className="w-full bg-gray-800/50 border border-white/10 text-white placeholder:text-white/40 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-cyan-500 transition"
+                      placeholder="First nar"
+                      className="w-full bg-gray-800/50 border border-white/10 text-white placeholder:text-white/40 placeholder:text-xs rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-cyan-500 transition"
                       autoFocus
                     />
                   </div>
                   <div>
-                    <label className="block text-xs font-medium text-white mb-1">
+                    <label className="block text-xs font-medium text-white mb-2">
                       Surname
                     </label>
                     <input
@@ -315,7 +315,7 @@ export const ContactFormBox = () => {
                       value={surname}
                       onChange={(e) => setSurname(e.target.value)}
                       placeholder="Surname"
-                      className="w-full bg-gray-800/50 border border-white/10 text-white placeholder:text-white/40 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-cyan-500 transition"
+                      className="w-full bg-gray-800/50 border border-white/10 text-white placeholder:text-white/40 placeholder:text-xs rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-cyan-500 transition"
                     />
                   </div>
                 </div>
