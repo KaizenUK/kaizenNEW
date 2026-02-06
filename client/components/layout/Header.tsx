@@ -24,7 +24,6 @@ import {
 } from "lucide-react";
 import { useEffect, useRef, useState, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { openCrisp } from "@/lib/crisp-utils";
 
 interface HeaderProps {
   mobileMenuOpen: boolean;
@@ -494,14 +493,14 @@ const Header: React.FC<HeaderProps> = ({
               Free Speed Test
             </Link>
 
-            {/* Start a Chat - Primary CTA */}
-            <button
-              onClick={() => openCrisp()}
-              className="hidden sm:flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-semibold text-white bg-gradient-to-r from-cyan-500 to-teal-500 hover:from-cyan-600 hover:to-teal-600 shadow-lg shadow-cyan-500/20 hover:shadow-cyan-500/30 transition-all"
+            {/* Start Your Project - Primary CTA */}
+            <Link
+              to="/contact"
+              className="hidden sm:flex items-center gap-2 px-6 py-2.5 rounded-full text-sm font-semibold text-white bg-gradient-to-r from-cyan-500 to-teal-500 hover:from-cyan-600 hover:to-teal-600 shadow-lg shadow-cyan-500/20 hover:shadow-cyan-500/30 transition-all hover:scale-[1.02] active:scale-[0.98]"
             >
-              Start a Chat
+              Start Your Project
               <ArrowRight size={14} />
-            </button>
+            </Link>
 
             {/* Mobile Menu Button */}
             <button
