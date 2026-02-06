@@ -725,6 +725,8 @@ const PricingSlider = () => {
 };
 
 const PricingCTABanner = () => {
+  const currentYear = new Date().getFullYear();
+
   const getLastModifiedDate = () => {
     const now = new Date();
     const monthName = now.toLocaleString("en-GB", {
@@ -751,8 +753,8 @@ const PricingCTABanner = () => {
                 </h3>
                 <p className="text-white/80 text-lg mb-6">
                   Read our transparent pricing guide so you know what a serious
-                  website should cost in 2025 and what you should actually
-                  expect to pay.
+                  website should cost in {currentYear} and what you should
+                  actually expect to pay.
                 </p>
               </div>
               <div className="flex flex-col sm:flex-row gap-4">
