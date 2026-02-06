@@ -146,7 +146,6 @@ function AppContent() {
     };
   }, []);
 
-
   // Force light mode across the entire site
   // Dark backgrounds are handled explicitly per-section, not via dark mode toggle
   useEffect(() => {

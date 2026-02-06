@@ -223,10 +223,7 @@ const Footer: React.FC = () => {
             <h2 className="text-4xl sm:text-5xl lg:text-6xl font-medium tracking-tight text-white max-w-xl">
               Get started today
             </h2>
-            <Link
-              to="/contact"
-              className="group flex items-center gap-0"
-            >
+            <Link to="/contact" className="group flex items-center gap-0">
               <span className="px-6 py-5 bg-cyan-500 text-white text-xs font-medium uppercase tracking-widest border border-cyan-500 transition-colors hover:bg-cyan-600 hover:border-cyan-600">
                 Start Your Project
               </span>

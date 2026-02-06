@@ -56,7 +56,8 @@ export default function Contact() {
                   </h2>
                 </div>
                 <p className="text-lg text-white/70 leading-relaxed mb-8 flex-grow">
-                  Pick a 15-minute call that works for your schedule. No pitch, just an honest conversation about how we can help.
+                  Pick a 15-minute call that works for your schedule. No pitch,
+                  just an honest conversation about how we can help.
                 </p>
                 <button
                   onClick={openCalendly}
