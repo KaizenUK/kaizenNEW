@@ -1,7 +1,7 @@
-import React from 'react';
-import { motion } from 'framer-motion';
-import { ArrowRight, ArrowUpRight, AlertTriangle } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import React from "react";
+import { motion } from "framer-motion";
+import { ArrowRight, ArrowUpRight, AlertTriangle } from "lucide-react";
+import { Link } from "react-router-dom";
 
 /**
  * Blueprint SVG with CSS animations
@@ -12,7 +12,7 @@ const LivingBlueprintEnhanced: React.FC = () => {
     id: i,
     cx: Math.random() * 80 + 10,
     cy: Math.random() * 60 + 20,
-    color: i % 2 === 0 ? '#f59e0b' : '#a855f7',
+    color: i % 2 === 0 ? "#f59e0b" : "#a855f7",
   }));
 
   return (
@@ -81,13 +81,13 @@ const LivingBlueprintEnhanced: React.FC = () => {
               r="3"
               fill={dot.color}
               className="blueprint-dot"
-              style={{ filter: 'url(#glow)' }}
+              style={{ filter: "url(#glow)" }}
             />
           </g>
         ))}
 
         {/* Center Hexagon */}
-        <g style={{ transform: 'translate(200px, 150px)' }}>
+        <g style={{ transform: "translate(200px, 150px)" }}>
           <polygon
             points="0,-25 21,-12 21,13 0,25 -21,13 -21,-12"
             fill="none"
@@ -114,13 +114,10 @@ const LivingBlueprintEnhanced: React.FC = () => {
  * Value Proposition Section with Framer Motion animations
  */
 export const ValueProposition: React.FC = () => {
-
   return (
     <>
       {/* Authority Bridge Section */}
-      <section
-        className="py-20 md:py-28 bg-slate-950 text-white relative overflow-hidden"
-      >
+      <section className="py-20 md:py-28 bg-slate-950 text-white relative overflow-hidden">
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_10%_0,rgba(56,189,248,0.20),transparent_55%),radial-gradient(circle_at_100%_90%,rgba(34,197,94,0.16),transparent_60%)]" />
         <div className="container mx-auto px-4 relative z-10">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
@@ -162,7 +159,10 @@ export const ValueProposition: React.FC = () => {
                 </ul>
 
                 <div className="mt-8 flex flex-col sm:flex-row gap-3">
-                  <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                  <motion.div
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
                     <Link
                       to="/case-studies/helen-moore-hairdressing"
                       className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg border border-white/15 bg-white/5 text-white font-heading font-semibold hover:bg-white/10 transition"
@@ -174,14 +174,14 @@ export const ValueProposition: React.FC = () => {
                   <motion.button
                     onClick={() => {
                       const scanner = document.getElementById(
-                        'live-performance-scanner'
+                        "live-performance-scanner",
                       );
-                      scanner?.scrollIntoView({ behavior: 'smooth' as any });
+                      scanner?.scrollIntoView({ behavior: "smooth" as any });
                     }}
                     className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg bg-gradient-to-r from-green-400 to-emerald-500 text-gray-950 font-heading font-bold transition"
                     whileHover={{
                       scale: 1.05,
-                      boxShadow: '0 0 20px rgba(34,197,94,0.5)',
+                      boxShadow: "0 0 20px rgba(34,197,94,0.5)",
                     }}
                     whileTap={{ scale: 0.95 }}
                   >

@@ -39,7 +39,8 @@ export default function Contact() {
               </h1>
 
               <p className="text-xl text-white/70 mb-12 leading-relaxed">
-                We've made it easy. We just have three simple, no-pressure options—pick what works best for you.
+                We've made it easy. We just have three simple, no-pressure
+                options—pick what works best for you.
               </p>
             </motion.div>
 
@@ -112,12 +113,13 @@ export default function Contact() {
             </h2>
 
             <p className="text-lg md:text-xl text-kaizen-text-dark/70 dark:text-white/70 leading-relaxed">
-              We don't do long sales pitches. We tend to have a brief chat to see if we're a good fit first. We'll listen to your problem, you can ask us anything, and we'll tell you how we can help. Simple.
+              We don't do long sales pitches. We tend to have a brief chat to
+              see if we're a good fit first. We'll listen to your problem, you
+              can ask us anything, and we'll tell you how we can help. Simple.
             </p>
           </motion.div>
         </div>
       </section>
-
     </Layout>
   );
 }

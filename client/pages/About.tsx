@@ -68,16 +68,15 @@ export default function About() {
                   Stop overcomplicating your website.
                 </h1>
                 <p className="text-xl md:text-2xl text-kaizen-dark/70 dark:text-white/70 leading-relaxed">
-                  Traditional agencies are slow, expensive, and love jargon. We use modern technology to build fast, effective websites that just work.
+                  Traditional agencies are slow, expensive, and love jargon. We
+                  use modern technology to build fast, effective websites that
+                  just work.
                 </p>
               </motion.div>
 
               <motion.button
                 onClick={() => {
-                  if (
-                    typeof window !== "undefined" &&
-                    (window as any).$crisp
-                  ) {
+                  if (typeof window !== "undefined" && (window as any).$crisp) {
                     (window as any).$crisp.push(["do", "chat:open"]);
                   }
                 }}
@@ -109,11 +108,14 @@ export default function About() {
 
               <div className="text-xl text-kaizen-dark/70 dark:text-white/70 leading-relaxed space-y-6">
                 <p>
-                  Kaizen means "continuous improvement". Most agencies launch your site and disappear. That's not how we work.
+                  Kaizen means "continuous improvement". Most agencies launch
+                  your site and disappear. That's not how we work.
                 </p>
 
                 <p>
-                  Your website should grow with your business. We stick around to make sure you keep winning. Better speed. Better conversions. Better results.
+                  Your website should grow with your business. We stick around
+                  to make sure you keep winning. Better speed. Better
+                  conversions. Better results.
                 </p>
               </div>
             </div>
@@ -155,7 +157,8 @@ export default function About() {
                 We don't guess.
               </h3>
               <p className="text-lg text-kaizen-dark/70 dark:text-white/70 leading-relaxed">
-                We use data to see exactly what's working and what isn't. That's how we know if your site is actually generating leads.
+                We use data to see exactly what's working and what isn't. That's
+                how we know if your site is actually generating leads.
               </p>
             </motion.div>
 
@@ -171,7 +174,8 @@ export default function About() {
                 Speed wins.
               </h3>
               <p className="text-lg text-kaizen-dark/70 dark:text-white/70 leading-relaxed">
-                Fast sites convert. Slow sites lose customers. We make sure your site loads instantly so people stay.
+                Fast sites convert. Slow sites lose customers. We make sure your
+                site loads instantly so people stay.
               </p>
             </motion.div>
 
@@ -187,7 +191,8 @@ export default function About() {
                 No tech-talk.
               </h3>
               <p className="text-lg text-kaizen-dark/70 dark:text-white/70 leading-relaxed">
-                We speak plain English. We handle the complex stuff so you can focus on running your business.
+                We speak plain English. We handle the complex stuff so you can
+                focus on running your business.
               </p>
             </motion.div>
           </motion.div>
@@ -205,11 +210,15 @@ export default function About() {
 
               <div className="text-xl text-kaizen-dark/70 dark:text-white/70 leading-relaxed space-y-6">
                 <p>
-                  Old agencies charge by the hour. More hours, more money. We use modern tools—AI, automation—so we can work faster and cheaper, and you get a better site.
+                  Old agencies charge by the hour. More hours, more money. We
+                  use modern tools—AI, automation—so we can work faster and
+                  cheaper, and you get a better site.
                 </p>
 
                 <p>
-                  Don't pay us for the time we spent typing. Pay us because we took your site from a score of 40 to a score of 98. That's our Speed Scanner. That's proof.
+                  Don't pay us for the time we spent typing. Pay us because we
+                  took your site from a score of 40 to a score of 98. That's our
+                  Speed Scanner. That's proof.
                 </p>
               </div>
             </div>
@@ -227,7 +236,9 @@ export default function About() {
               </h2>
 
               <p className="text-xl text-kaizen-dark/70 dark:text-white/70 leading-relaxed">
-                We use AI and modern automation to do work that used to take a team of developers. We focus on results. Faster builds. Better performance. Lower cost. That's your modern advantage.
+                We use AI and modern automation to do work that used to take a
+                team of developers. We focus on results. Faster builds. Better
+                performance. Lower cost. That's your modern advantage.
               </p>
             </div>
           </ScrollReveal>
@@ -245,10 +256,7 @@ export default function About() {
 
               <motion.button
                 onClick={() => {
-                  if (
-                    typeof window !== "undefined" &&
-                    (window as any).$crisp
-                  ) {
+                  if (typeof window !== "undefined" && (window as any).$crisp) {
                     (window as any).$crisp.push(["do", "chat:open"]);
                   }
                 }}
