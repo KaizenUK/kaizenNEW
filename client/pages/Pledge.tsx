@@ -2,6 +2,7 @@ import { useEffect, useState, useRef } from "react";
 import Layout from "@/components/Layout";
 import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import { useCalendly } from "@/context/CalendlyContext";
 
 // Typing animation for hero
@@ -95,6 +96,7 @@ We don't build cheap, 'quick-fix' sites. We are a premium, expert-led agency for
 ];
 
 export default function Pledge() {
+  const navigate = useNavigate();
   const { openCalendly: openCalendlyFromContext } = useCalendly();
   const heroH1 = '> Our "No-BS" Pledge.';
   const displayedText = useTyping(heroH1, 40);
@@ -229,14 +231,10 @@ export default function Pledge() {
             transition={{ duration: 0.6, delay: 0.2 }}
           >
             <button
-              onClick={() => {
-                if (typeof window !== "undefined" && (window as any).$crisp) {
-                  (window as any).$crisp.push(["do", "chat:open"]);
-                }
-              }}
+              onClick={() => navigate("/contact")}
               className="px-8 py-3 rounded-lg bg-gradient-to-r from-kaizen-cyan to-kaizen-lime text-kaizen-dark font-heading font-bold hover:shadow-lg hover:shadow-kaizen-cyan/50 transition inline-flex items-center justify-center gap-2"
             >
-              Start a Live Chat
+              Get in Touch
               <ArrowRight size={18} />
             </button>
 
