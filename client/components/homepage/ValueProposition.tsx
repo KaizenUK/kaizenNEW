@@ -1,7 +1,7 @@
-import React from "react";
-import { motion } from "framer-motion";
-import { ArrowRight, ArrowUpRight } from "lucide-react";
-import { Link } from "react-router-dom";
+import React from 'react';
+import { motion } from 'framer-motion';
+import { ArrowRight, ArrowUpRight } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 /**
  * Section 2: Social Media Warning (The Pain)
@@ -27,9 +27,7 @@ export const SocialMediaWarning: React.FC = () => {
 
             <div className="space-y-6 text-lg text-white/85 leading-relaxed">
               <p>
-                If your only online presence is Facebook or Instagram, you don't
-                own anything. Algorithms change overnight. Accounts get locked
-                without warning. Reach gets throttled unless you pay.
+                If your only online presence is Facebook or Instagram, you don't own anything. Algorithms change overnight. Accounts get locked without warning. Reach gets throttled unless you pay.
               </p>
 
               <p className="text-xl font-heading font-semibold text-white">
@@ -65,10 +63,7 @@ export const CredibilitySection: React.FC = () => {
               Big-Tech Discipline. Wirral Postcode.
             </h2>
             <p className="text-lg text-white/80 leading-relaxed mb-10 max-w-3xl">
-              We spent years building systems for global companies. Now we use
-              that same rigour for local businesses. You get senior-level
-              ownership from day one — no juniors learning on your project, no
-              vanishing act after the deposit clears.
+              We spent years building systems for global companies. Now we use that same rigour for local businesses. You get senior-level ownership from day one — no juniors learning on your project, no vanishing act after the deposit clears.
             </p>
 
             <ul className="space-y-4 text-white/90 text-lg mb-10">
@@ -87,10 +82,7 @@ export const CredibilitySection: React.FC = () => {
             </ul>
 
             <div className="flex flex-col sm:flex-row gap-3">
-              <motion.div
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-              >
+              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
                 <Link
                   to="/case-studies/helen-moore-hairdressing"
                   className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg border border-white/15 bg-white/5 text-white font-heading font-semibold hover:bg-white/10 transition"
@@ -102,14 +94,14 @@ export const CredibilitySection: React.FC = () => {
               <motion.button
                 onClick={() => {
                   const scanner = document.getElementById(
-                    "live-performance-scanner",
+                    'live-performance-scanner'
                   );
-                  scanner?.scrollIntoView({ behavior: "smooth" as any });
+                  scanner?.scrollIntoView({ behavior: 'smooth' as any });
                 }}
                 className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg bg-gradient-to-r from-green-400 to-emerald-500 text-gray-950 font-heading font-bold transition"
                 whileHover={{
                   scale: 1.05,
-                  boxShadow: "0 0 20px rgba(34,197,94,0.5)",
+                  boxShadow: '0 0 20px rgba(34,197,94,0.5)',
                 }}
                 whileTap={{ scale: 0.95 }}
               >
