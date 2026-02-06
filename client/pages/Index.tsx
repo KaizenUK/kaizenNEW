@@ -1632,7 +1632,7 @@ const LocalMap = () => {
               Local Trust
             </p>
             <h2 className="text-4xl md:text-5xl font-heading font-bold mb-8 leading-tight">
-              Your Neighbours in Tech
+              Moreton-Based. Wirral-Focused.
             </h2>
             <p className="text-lg text-white/80 mb-8 leading-relaxed">
               We’re based in Moreton on the Wirral. You get enterprise delivery
