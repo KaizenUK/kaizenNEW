@@ -301,7 +301,7 @@ export const ContactFormBox = () => {
                       type="text"
                       value={name}
                       onChange={(e) => setName(e.target.value)}
-                      placeholder="First nar"
+                      placeholder="John"
                       className="w-full bg-gray-800/50 border border-white/10 text-white placeholder:text-white/40 placeholder:text-xs rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-cyan-500 transition"
                       autoFocus
                     />
