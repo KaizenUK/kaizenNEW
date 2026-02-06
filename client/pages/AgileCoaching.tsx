@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import Layout from "@/components/Layout";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useCalendly } from "@/context/CalendlyContext";
 import { FaqSection } from "@/components/FaqSection";
@@ -81,24 +81,23 @@ const CTAButton = ({
   text,
   onClick,
   secondary = false,
-  openChat = false,
+  openContact = false,
   openCalendly: openCalendlyProp = false,
 }: {
   text: string;
   onClick?: () => void;
   secondary?: boolean;
-  openChat?: boolean;
+  openContact?: boolean;
   openCalendly?: boolean;
 }) => {
   const { openCalendly } = useCalendly();
+  const navigate = useNavigate();
 
   const handleClick = () => {
     if (openCalendlyProp) {
       openCalendly();
-    } else if (openChat && typeof window !== "undefined") {
-      if ((window as any).$crisp) {
-        (window as any).$crisp.push(["do", "chat:open"]);
-      }
+    } else if (openContact) {
+      navigate("/contact");
     }
     if (onClick) {
       onClick();
@@ -175,7 +174,7 @@ export default function AgileCoaching() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.8, duration: 0.6 }}
             >
-              <CTAButton text="Start a Chat" openChat />
+              <CTAButton text="Get in Touch" openContact />
               <button
                 onClick={openCalendlyFromContext}
                 className="px-8 py-3 rounded-lg border-2 border-kaizen-cyan text-kaizen-cyan dark:text-kaizen-cyan/70 font-heading font-bold hover:bg-kaizen-cyan/10 dark:hover:bg-kaizen-cyan/5 transition inline-flex items-center justify-center gap-2"
@@ -441,7 +440,7 @@ export default function AgileCoaching() {
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
           >
-            <CTAButton text="Start a Live Chat" openChat />
+            <CTAButton text="Get in Touch" openContact />
             <button
               onClick={openCalendlyFromContext}
               className="px-8 py-3 rounded-lg border-2 border-kaizen-text-light/30 dark:border-white/20 text-kaizen-text-light dark:text-white/85 font-heading font-bold hover:border-kaizen-cyan dark:hover:border-kaizen-cyan transition inline-flex items-center justify-center gap-2"
