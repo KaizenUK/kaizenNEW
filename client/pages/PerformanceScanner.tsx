@@ -16,9 +16,8 @@ import {
   ShieldAlert,
   CheckCircle2,
 } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import SpeedScanner from "@/components/SpeedScanner";
-import { openCrisp } from "@/lib/crisp-utils";
 
 /* ==========================================================================
    FLOATING ORB BACKGROUND
@@ -199,6 +198,7 @@ function FaqItem({
    MAIN PAGE COMPONENT
    ========================================================================== */
 export default function PerformanceScanner() {
+  const navigate = useNavigate();
   const heroRef = useRef<HTMLElement>(null);
 
   const stats = [
@@ -621,7 +621,7 @@ export default function PerformanceScanner() {
               transition={{ delay: 0.3 }}
             >
               <button
-                onClick={() => openCrisp()}
+                onClick={() => navigate("/contact")}
                 className="group inline-flex items-center justify-center gap-3 px-8 py-4 rounded-full bg-gradient-to-r from-amber-500 to-orange-500 text-white font-bold text-lg shadow-lg shadow-amber-500/25 hover:shadow-amber-500/40 transition-all duration-300 hover:-translate-y-1"
               >
                 Request Full Audit
@@ -732,7 +732,7 @@ export default function PerformanceScanner() {
               />
             </Link>
             <button
-              onClick={() => openCrisp()}
+              onClick={() => navigate("/contact")}
               className="inline-flex items-center justify-center gap-2 px-10 py-5 rounded-full border border-slate-600 text-slate-300 font-medium text-lg hover:bg-slate-800 hover:text-white hover:border-slate-500 transition-all duration-300"
             >
               Talk to an Expert
