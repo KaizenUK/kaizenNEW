@@ -376,7 +376,11 @@ export const ContactFormBox = () => {
                 <div className="flex gap-3">
                   <button
                     type="button"
-                    onClick={() => setHasWebsite(true)}
+                    onClick={() => {
+                      setHasWebsite(true);
+                      // Auto-advance to step 4 (website field)
+                      setTimeout(() => setCurrentStep(4), 100);
+                    }}
                     className={`flex-1 py-3 rounded-lg font-semibold transition ${
                       hasWebsite === true
                         ? "bg-cyan-500 text-white"
@@ -387,7 +391,11 @@ export const ContactFormBox = () => {
                   </button>
                   <button
                     type="button"
-                    onClick={() => setHasWebsite(false)}
+                    onClick={() => {
+                      setHasWebsite(false);
+                      // Auto-advance to step 5 (message) - skip website field
+                      setTimeout(() => setCurrentStep(5), 100);
+                    }}
                     className={`flex-1 py-3 rounded-lg font-semibold transition ${
                       hasWebsite === false
                         ? "bg-cyan-500 text-white"
