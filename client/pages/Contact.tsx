@@ -108,14 +108,11 @@ export default function Contact() {
             className="max-w-2xl mx-auto text-center"
           >
             <h2 className="text-4xl md:text-5xl font-heading font-bold mb-8 text-kaizen-dark dark:text-white">
-              What to Expect from Our Call
+              What to Expect From Us
             </h2>
 
             <p className="text-lg md:text-xl text-kaizen-text-dark/70 dark:text-white/70 leading-relaxed">
-              This is not a high-pressure sales pitch. It's a 15-minute chat to
-              see if we're a good fit. We'll listen to your problem, you can ask
-              us anything, and we'll tell you <span className="italic">if</span>{" "}
-              we can help. Simple.
+              We don't do long sales pitches. We tend to have a brief chat to see if we're a good fit first. We'll listen to your problem, you can ask us anything, and we'll tell you how we can help. Simple.
             </p>
           </motion.div>
         </div>
