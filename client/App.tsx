@@ -5,12 +5,16 @@ import {
 } from "react-router-dom";
 import { Suspense, lazy, useEffect, useState } from "react";
 import { CalendlyProvider, useCalendly } from "@/context/CalendlyContext";
-import { RouteChangeTracker } from "@/components/RouteChangeTracker";
 
 // Eager load Home page for fast First Paint
 // All other pages are lazy-loaded for better initial load performance
 import Index from "./pages/Index";
 const OtherRoutes = lazy(() => import("./OtherRoutes"));
+const RouteChangeTracker = lazy(() =>
+  import("@/components/RouteChangeTracker").then((m) => ({
+    default: m.RouteChangeTracker,
+  })),
+);
 const CalendlyModal = lazy(() =>
   import("@/components/CalendlyModal").then((m) => ({
     default: m.CalendlyModal,
@@ -141,6 +145,31 @@ function AppContent() {
 }
 
 export default function App() {
+  const [shouldLoadRouteTracker, setShouldLoadRouteTracker] = useState(false);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const loadRouteTracker = () => setShouldLoadRouteTracker(true);
+    let idleId: number | null = null;
+    const win = window as Window & {
+      requestIdleCallback?: (cb: IdleRequestCallback) => number;
+      cancelIdleCallback?: (id: number) => void;
+    };
+
+    if (typeof win.requestIdleCallback === "function") {
+      idleId = win.requestIdleCallback(() => loadRouteTracker());
+      return () => {
+        if (idleId !== null && typeof win.cancelIdleCallback === "function") {
+          win.cancelIdleCallback(idleId);
+        }
+      };
+    }
+
+    const timeoutId = window.setTimeout(loadRouteTracker, 1500);
+    return () => window.clearTimeout(timeoutId);
+  }, []);
+
   return (
     <BrowserRouter
       future={{
@@ -149,7 +178,11 @@ export default function App() {
       }}
     >
       <CalendlyProvider>
-        <RouteChangeTracker />
+        {shouldLoadRouteTracker ? (
+          <Suspense fallback={null}>
+            <RouteChangeTracker />
+          </Suspense>
+        ) : null}
         <AppContent />
       </CalendlyProvider>
     </BrowserRouter>
