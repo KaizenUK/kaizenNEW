@@ -1,41 +1,28 @@
-import React, { useState, useRef, useEffect } from "react";
+import React from "react";
 import { ArrowRight, ArrowUpRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { DEFAULT_OG_IMAGE } from "@/lib/seo";
 
+const LIGHTHOUSE_SCORE = 96;
+const HIGH_PRIORITY_IMAGE_ATTRS: Record<string, string> = {
+  fetchpriority: "high",
+};
+
 const LighthouseGauge: React.FC = () => {
-  const [score, setScore] = useState(0);
-  const gaugeRef = useRef<HTMLDivElement>(null);
-  const hasAnimated = useRef(false);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(([entry]) => {
-      if (entry.isIntersecting && !hasAnimated.current) {
-        hasAnimated.current = true;
-        let current = 0;
-        const target = 96;
-        const timer = setInterval(() => {
-          current += 1.5;
-          if (current >= target) {
-            setScore(target);
-            clearInterval(timer);
-          } else {
-            setScore(Math.floor(current));
-          }
-        }, 20);
-      }
-    });
-
-    if (gaugeRef.current) observer.observe(gaugeRef.current);
-    return () => observer.disconnect();
-  }, []);
-
   const radius = 80;
   const circumference = 2 * Math.PI * radius;
-  const offset = circumference * (1 - score / 100);
+  const offset = circumference * (1 - LIGHTHOUSE_SCORE / 100);
 
   return (
-    <div ref={gaugeRef} className="relative w-48 h-48 md:w-56 md:h-56 mx-auto">
+    <div
+      className="relative w-48 h-48 md:w-56 md:h-56 mx-auto"
+      style={
+        {
+          "--gauge-circumference": circumference,
+          "--gauge-offset": offset,
+        } as React.CSSProperties
+      }
+    >
       <svg className="w-full h-full -rotate-90" viewBox="0 0 200 200">
         {/* Track */}
         <circle
@@ -57,14 +44,14 @@ const LighthouseGauge: React.FC = () => {
           strokeDasharray={circumference}
           strokeDashoffset={offset}
           strokeLinecap="round"
-          style={{ transition: "stroke-dashoffset 1.5s ease-out" }}
+          className="hero-gauge-progress"
         />
       </svg>
 
       {/* Score text */}
       <div className="absolute inset-0 flex flex-col items-center justify-center">
         <span className="text-5xl md:text-6xl font-heading font-black text-green-400 tabular-nums">
-          {score}
+          {LIGHTHOUSE_SCORE}
         </span>
         <span className="text-xs text-white/50 uppercase tracking-widest mt-1">
           Performance
@@ -75,39 +62,10 @@ const LighthouseGauge: React.FC = () => {
 };
 
 export const HeroRemotionSequence: React.FC = () => {
-  const heroRef = useRef<HTMLElement>(null);
-  const spotlightRef = useRef<HTMLDivElement>(null);
-  const rafRef = useRef<number | null>(null);
-  const mousePosRef = useRef({ x: 0, y: 0 });
   const navigate = useNavigate();
-
-  const handleMouseMove = (e: React.MouseEvent<HTMLElement>) => {
-    if (!heroRef.current) return;
-    const rect = heroRef.current.getBoundingClientRect();
-    mousePosRef.current = { x: e.clientX - rect.left, y: e.clientY - rect.top };
-
-    if (rafRef.current !== null) return;
-    rafRef.current = window.requestAnimationFrame(() => {
-      rafRef.current = null;
-      if (!spotlightRef.current) return;
-      const x = mousePosRef.current.x - 300;
-      const y = mousePosRef.current.y - 300;
-      spotlightRef.current.style.transform = `translate3d(${x}px, ${y}px, 0)`;
-    });
-  };
-
-  useEffect(() => {
-    return () => {
-      if (rafRef.current !== null) {
-        window.cancelAnimationFrame(rafRef.current);
-      }
-    };
-  }, []);
 
   return (
     <section
-      ref={heroRef}
-      onMouseMove={handleMouseMove}
       className="relative isolate min-h-[100vh] text-white flex items-center py-20 overflow-hidden"
     >
       {/* Hidden preload-optimized hero image for LCP */}
@@ -115,12 +73,12 @@ export const HeroRemotionSequence: React.FC = () => {
         src={DEFAULT_OG_IMAGE}
         alt=""
         loading="eager"
-        fetchpriority="high"
         decoding="async"
         width="1200"
         height="630"
         className="absolute inset-0 w-0 h-0 opacity-0 pointer-events-none"
         aria-hidden="true"
+        {...HIGH_PRIORITY_IMAGE_ATTRS}
       />
 
       {/* Fixed mesh gradient background */}
@@ -154,17 +112,7 @@ export const HeroRemotionSequence: React.FC = () => {
         <rect width="100%" height="100%" fill="url(#hero-grid)" />
       </svg>
 
-      <div
-        ref={spotlightRef}
-        className="hero-spotlight absolute -z-10 opacity-60"
-        style={{
-          width: "600px",
-          height: "600px",
-          background: `radial-gradient(circle, rgba(6, 182, 212, 0.15) 0%, rgba(124, 58, 237, 0.08) 50%, transparent 100%)`,
-          transform: "translate3d(-300px, -300px, 0)",
-          willChange: "transform",
-        }}
-      />
+      <div className="hero-spotlight absolute -z-10 opacity-60" />
 
       <div className="pointer-events-none absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-[#020617] to-transparent -z-10" />
 

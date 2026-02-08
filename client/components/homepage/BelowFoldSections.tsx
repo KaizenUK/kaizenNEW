@@ -1,16 +1,10 @@
-import React, { Suspense, useEffect, useRef, useState, lazy } from "react";
+import React, { Suspense, useState, lazy } from "react";
 import { motion } from "framer-motion";
 import { ArrowRight, ChevronRight } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 
 const FaqSection = lazy(() =>
   import("@/components/FaqSection").then((m) => ({ default: m.FaqSection })),
-);
-
-const LazyLeafletMap = React.lazy(() =>
-  import("@/components/LeafletMap").then((module) => ({
-    default: module.LeafletMap,
-  })),
 );
 
 export const PricingSlider = () => {
@@ -395,27 +389,7 @@ export const SEOFAQSection = () => {
 };
 
 export const LocalMap = () => {
-  const [isMapVisible, setIsMapVisible] = useState(false);
-  const mapContainerRef = useRef<HTMLDivElement | null>(null);
   const navigate = useNavigate();
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsMapVisible(true);
-          observer.disconnect();
-        }
-      },
-      { rootMargin: "200px" },
-    );
-
-    if (mapContainerRef.current) {
-      observer.observe(mapContainerRef.current);
-    }
-
-    return () => observer.disconnect();
-  }, []);
 
   return (
     <section className="py-20 md:py-32 bg-gray-950 text-white relative overflow-hidden">
@@ -489,19 +463,16 @@ export const LocalMap = () => {
             viewport={{ once: true }}
           >
             <div className="absolute -inset-6 bg-gradient-to-r from-kaizen-cyan/20 to-kaizen-lime/10 blur-2xl rounded-3xl" />
-            <div
-              ref={mapContainerRef}
-              className="relative h-96 rounded-2xl overflow-hidden border-2 border-white/10 shadow-2xl"
-            >
-              {isMapVisible ? (
-                <Suspense
-                  fallback={<div className="w-full h-full bg-slate-900/40" />}
-                >
-                  <LazyLeafletMap className="w-full h-full" />
-                </Suspense>
-              ) : (
-                <div className="w-full h-full bg-slate-900/40" aria-hidden />
-              )}
+            <div className="relative h-96 rounded-2xl overflow-hidden border-2 border-white/10 shadow-2xl">
+              <img
+                src="/kaizen-web-map-wirral-liverpool.svg"
+                alt="Map of Wirral and Liverpool highlighting Kaizen Web's local service area."
+                loading="lazy"
+                decoding="async"
+                width="514"
+                height="363"
+                className="w-full h-full object-cover"
+              />
             </div>
           </motion.div>
         </div>

@@ -28,7 +28,6 @@
     "dotenv": "^17.2.1",
     "express": "^5.1.0",
     "jspdf": "^4.1.0",
-    "leaflet": "^1.9.4",
     "react-ga4": "^2.1.0",
     "react-helmet-async": "^2.0.5",
     "zod": "^3.25.76"
