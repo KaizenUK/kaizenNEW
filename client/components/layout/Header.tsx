@@ -1,41 +1,34 @@
 import { Link, useLocation } from "react-router-dom";
 import KaizenLogo from "@/components/KaizenLogo";
 import {
-  Menu,
-  X,
-  ChevronDown,
-  Zap,
-  ArrowRight,
-} from "lucide-react";
+  ArrowRightIcon,
+  ChevronDownIcon,
+  MenuIcon,
+  XIcon,
+  ZapIcon,
+} from "@/components/icons/CriticalIcons";
 import { useEffect, useRef, useState, useCallback } from "react";
+import type { DesktopMenuKey, ServiceColumn } from "./header-menu-data";
 
 interface HeaderProps {
   mobileMenuOpen: boolean;
   onMobileMenuChange: (open: boolean) => void;
 }
 
-type DesktopMenuKey = "services" | "insights" | "case-studies" | "about" | null;
-
-interface ServiceItem {
-  label: string;
-  href: string;
-  description: string;
-  highlight?: boolean;
-}
-
-interface ServiceColumn {
-  title: string;
-  items: ServiceItem[];
-}
+type HeaderMenuModule = typeof import("./header-menu-data");
 
 const Header: React.FC<HeaderProps> = ({
   mobileMenuOpen,
   onMobileMenuChange,
 }) => {
-  const [activeMenu, setActiveMenu] = useState<DesktopMenuKey>(null);
+  const [activeMenu, setActiveMenu] = useState<DesktopMenuKey | null>(null);
   const [hoveredColumn, setHoveredColumn] = useState<string | null>(null);
   const [buttonPosition, setButtonPosition] = useState(0);
+  const [menuDataModule, setMenuDataModule] = useState<HeaderMenuModule | null>(
+    null,
+  );
   const closeTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const menuDataPromiseRef = useRef<Promise<HeaderMenuModule> | null>(null);
 
   const navRef = useRef<HTMLDivElement | null>(null);
   const buttonRefs = useRef<Record<DesktopMenuKey, HTMLButtonElement | null>>({
@@ -53,6 +46,25 @@ const Header: React.FC<HeaderProps> = ({
       closeTimeoutRef.current = null;
     }
   }, []);
+
+  const loadMenuData = useCallback(() => {
+    if (menuDataModule) {
+      return Promise.resolve(menuDataModule);
+    }
+
+    if (!menuDataPromiseRef.current) {
+      menuDataPromiseRef.current = import("./header-menu-data")
+        .then((module) => {
+          setMenuDataModule(module);
+          return module;
+        })
+        .finally(() => {
+          menuDataPromiseRef.current = null;
+        });
+    }
+
+    return menuDataPromiseRef.current;
+  }, [menuDataModule]);
 
   useEffect(() => {
     setActiveMenu(null);
@@ -81,139 +93,36 @@ const Header: React.FC<HeaderProps> = ({
     return () => clearCloseTimeout();
   }, [clearCloseTimeout]);
 
-  const servicesMenu: ServiceColumn[] = [
-    {
-      title: "Web & Growth",
-      items: [
-        {
-          label: "High-Performance Local Websites",
-          href: "/services/local-seo",
-          description: "Local rankings powered by Core Web Vitals.",
-        },
-        {
-          label: "WordPress Web Design",
-          href: "/services/wordpress-web-design",
-          description: "Custom, high-performance WordPress builds.",
-        },
-        {
-          label: "E-commerce Development",
-          href: "/services/ecommerce",
-          description: "Shopify and custom stores that convert.",
-        },
-      ],
-    },
-    {
-      title: "Product & Strategy",
-      items: [
-        {
-          label: "Project Rescue",
-          href: "/project-rescue",
-          description: "Fix broken web projects fast.",
-          highlight: true,
-        },
-        {
-          label: "Contract Product Owner",
-          href: "/contract-product-owner",
-          description: "Hands-on product leadership.",
-        },
-        {
-          label: "Agile Coaching",
-          href: "/agile-coaching",
-          description: "Turn chaos into predictable delivery.",
-        },
-        {
-          label: "Digital Transformation",
-          href: "/digital-transformation",
-          description: "Automate work and connect systems.",
-        },
-      ],
-    },
-  ];
+  useEffect(() => {
+    if (typeof window === "undefined") return;
 
-  const insightsMenu: ServiceColumn[] = [
-    {
-      title: "Latest Articles",
-      items: [
-        {
-          label: "Web Design Costs in Liverpool 2025",
-          href: "/blog/how-much-does-a-website-cost-in-liverpool-in-2025",
-          description: "Transparent pricing breakdown.",
-        },
-        {
-          label: "How to Choose a Web Agency",
-          href: "/blog/choose-web-design-agency-liverpool",
-          description: "Red flags and what matters.",
-        },
-        {
-          label: "Website Mistakes to Avoid",
-          href: "/blog/website-mistakes-liverpool",
-          description: "Errors that kill conversions.",
-        },
-        {
-          label: "All Articles",
-          href: "/blog",
-          description: "Browse our full archive.",
-        },
-      ],
-    },
-  ];
+    const preloadMenus = () => {
+      void loadMenuData();
+    };
 
-  const caseStudiesMenu: ServiceColumn[] = [
-    {
-      title: "Client Results",
-      items: [
-        {
-          label: "Sweep Stakes Casino",
-          href: "/case-studies/high-five-games",
-          description: "+180% conversion uplift.",
-        },
-        {
-          label: "Independent Retailer",
-          href: "/case-studies/independent-retailer",
-          description: "+250% organic traffic.",
-        },
-        {
-          label: "All Case Studies",
-          href: "/case-studies",
-          description: "See more success stories.",
-        },
-      ],
-    },
-  ];
+    let idleId: number | null = null;
+    const win = window as Window & {
+      requestIdleCallback?: (cb: IdleRequestCallback) => number;
+      cancelIdleCallback?: (id: number) => void;
+    };
 
-  const aboutMenu: ServiceColumn[] = [
-    {
-      title: "About",
-      items: [
-        {
-          label: "About Kaizen",
-          href: "/about",
-          description: "What we do and how we work.",
-        },
-        {
-          label: "Our Pledge",
-          href: "/pledge",
-          description: "No jargon. Transparent partnership.",
-        },
-        {
-          label: "Contact",
-          href: "/contact",
-          description: "Say hello or request an audit.",
-        },
-      ],
-    },
-  ];
+    if (typeof win.requestIdleCallback === "function") {
+      idleId = win.requestIdleCallback(() => preloadMenus());
+      return () => {
+        if (idleId !== null && typeof win.cancelIdleCallback === "function") {
+          win.cancelIdleCallback(idleId);
+        }
+      };
+    }
 
-  const getMenuData = (menu: DesktopMenuKey) => {
-    if (menu === "insights") return insightsMenu;
-    if (menu === "case-studies") return caseStudiesMenu;
-    if (menu === "about") return aboutMenu;
-    return servicesMenu;
-  };
+    const timeoutId = window.setTimeout(preloadMenus, 1400);
+    return () => window.clearTimeout(timeoutId);
+  }, [loadMenuData]);
 
   const handleMenuEnter = (menu: DesktopMenuKey) => {
     clearCloseTimeout();
     setActiveMenu(menu);
+    void loadMenuData();
 
     // Calculate button position for dropdown alignment
     const button = buttonRefs.current[menu];
@@ -240,6 +149,9 @@ const Header: React.FC<HeaderProps> = ({
   const handlePanelLeave = () => {
     handleMenuLeave();
   };
+
+  const activeColumns: ServiceColumn[] =
+    activeMenu && menuDataModule ? menuDataModule.getMenuData(activeMenu) : [];
 
   const menuTriggers: { key: DesktopMenuKey; label: string }[] = [
     { key: "services", label: "Services" },
@@ -285,7 +197,7 @@ const Header: React.FC<HeaderProps> = ({
                   aria-expanded={activeMenu === key}
                 >
                   {label}
-                  <ChevronDown
+                  <ChevronDownIcon
                     size={14}
                     className={`transition-transform duration-200 ${
                       activeMenu === key ? "rotate-180" : ""
@@ -307,67 +219,73 @@ const Header: React.FC<HeaderProps> = ({
                 }}
               >
                 <div key={activeMenu} className="p-6">
-                      <div
-                        className={`grid gap-8 ${
-                          activeMenu === "services"
-                            ? "grid-cols-2"
-                            : "grid-cols-1"
-                        }`}
-                      >
-                        {getMenuData(activeMenu).map((column) => (
-                          <div
-                            key={column.title}
-                            onMouseEnter={() => setHoveredColumn(column.title)}
-                            onMouseLeave={() => setHoveredColumn(null)}
-                          >
-                            {/* Column Header with animated underline */}
-                            <div className="relative mb-4">
-                              <h3 className="text-sm font-semibold text-cyan-600 hover:text-black transition-colors duration-150 cursor-default">
-                                {column.title}
-                              </h3>
-                              <div className="absolute bottom-0 left-0 right-0 h-px bg-gray-200 mt-2">
-                                <div
-                                  className={`h-full bg-cyan-500 transition-all duration-300 ${
-                                    hoveredColumn === column.title
-                                      ? "w-full"
-                                      : "w-0"
-                                  }`}
-                                />
-                              </div>
+                  {menuDataModule ? (
+                    <div
+                      className={`grid gap-8 ${
+                        activeMenu === "services"
+                          ? "grid-cols-2"
+                          : "grid-cols-1"
+                      }`}
+                    >
+                      {activeColumns.map((column) => (
+                        <div
+                          key={column.title}
+                          onMouseEnter={() => setHoveredColumn(column.title)}
+                          onMouseLeave={() => setHoveredColumn(null)}
+                        >
+                          {/* Column Header with animated underline */}
+                          <div className="relative mb-4">
+                            <h3 className="text-sm font-semibold text-cyan-600 hover:text-black transition-colors duration-150 cursor-default">
+                              {column.title}
+                            </h3>
+                            <div className="absolute bottom-0 left-0 right-0 h-px bg-gray-200 mt-2">
+                              <div
+                                className={`h-full bg-cyan-500 transition-all duration-300 ${
+                                  hoveredColumn === column.title
+                                    ? "w-full"
+                                    : "w-0"
+                                }`}
+                              />
                             </div>
-
-                            {/* Menu Items */}
-                            <ul className="space-y-0.5">
-                              {column.items.map((item) => (
-                                <li key={item.href}>
-                                  <Link
-                                    to={item.href}
-                                    className="group flex flex-col gap-0.5 rounded-lg px-3 py-2.5 -mx-3 hover:bg-gray-50 transition-colors duration-150"
-                                    onClick={() => {
-                                      setActiveMenu(null);
-                                      setHoveredColumn(null);
-                                    }}
-                                    onMouseEnter={() =>
-                                      setHoveredColumn(column.title)
-                                    }
-                                  >
-                                    <span className="text-sm font-medium flex items-center gap-1.5 text-gray-900 group-hover:text-cyan-600 transition-colors duration-150">
-                                      {item.label}
-                                      <ArrowRight
-                                        size={12}
-                                        className="opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-200"
-                                      />
-                                    </span>
-                                    <span className="text-xs text-gray-500 group-hover:text-gray-600 transition-colors duration-150">
-                                      {item.description}
-                                    </span>
-                                  </Link>
-                                </li>
-                              ))}
-                            </ul>
                           </div>
-                        ))}
-                      </div>
+
+                          {/* Menu Items */}
+                          <ul className="space-y-0.5">
+                            {column.items.map((item) => (
+                              <li key={item.href}>
+                                <Link
+                                  to={item.href}
+                                  className="group flex flex-col gap-0.5 rounded-lg px-3 py-2.5 -mx-3 hover:bg-gray-50 transition-colors duration-150"
+                                  onClick={() => {
+                                    setActiveMenu(null);
+                                    setHoveredColumn(null);
+                                  }}
+                                  onMouseEnter={() =>
+                                    setHoveredColumn(column.title)
+                                  }
+                                >
+                                  <span className="text-sm font-medium flex items-center gap-1.5 text-gray-900 group-hover:text-cyan-600 transition-colors duration-150">
+                                    {item.label}
+                                    <ArrowRightIcon
+                                      size={12}
+                                      className="opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-200"
+                                    />
+                                  </span>
+                                  <span className="text-xs text-gray-500 group-hover:text-gray-600 transition-colors duration-150">
+                                    {item.description}
+                                  </span>
+                                </Link>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="py-4 px-2 text-sm text-gray-500">
+                      Loading menu...
+                    </div>
+                  )}
                 </div>
               </div>
             )}
@@ -380,7 +298,7 @@ const Header: React.FC<HeaderProps> = ({
               to="/performance-scanner"
               className="site-header-speed hidden md:flex items-center gap-2 px-4 py-2 text-sm font-medium text-cyan-600 hover:text-cyan-700 hover:bg-cyan-50 rounded-lg transition"
             >
-              <Zap size={16} />
+              <ZapIcon size={16} />
               Free Speed Test
             </Link>
 
@@ -390,7 +308,7 @@ const Header: React.FC<HeaderProps> = ({
               className="site-header-cta hidden sm:flex items-center gap-2 px-6 py-2.5 rounded-full text-sm font-semibold text-white bg-gradient-to-r from-cyan-500 to-teal-500 hover:from-cyan-600 hover:to-teal-600 shadow-lg shadow-cyan-500/20 hover:shadow-cyan-500/30 transition-all hover:scale-[1.02] active:scale-[0.98]"
             >
               Start Your Project
-              <ArrowRight size={14} />
+              <ArrowRightIcon size={14} />
             </Link>
 
             {/* Mobile Menu Button */}
@@ -399,7 +317,7 @@ const Header: React.FC<HeaderProps> = ({
               onClick={() => onMobileMenuChange(!mobileMenuOpen)}
               aria-label="Toggle mobile menu"
             >
-              {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+              {mobileMenuOpen ? <XIcon size={24} /> : <MenuIcon size={24} />}
             </button>
           </div>
         </div>

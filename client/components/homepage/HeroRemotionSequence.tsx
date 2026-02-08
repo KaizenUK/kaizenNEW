@@ -1,6 +1,9 @@
 import React from "react";
-import { ArrowRight, ArrowUpRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import {
+  ArrowRightIcon,
+  ArrowUpRightIcon,
+} from "@/components/icons/CriticalIcons";
 
 const LIGHTHOUSE_SCORE = 96;
 
@@ -120,7 +123,7 @@ export const HeroRemotionSequence: React.FC = () => {
                 className="home-hero-btn-primary px-8 py-4 rounded-lg bg-white text-black font-heading font-bold text-lg inline-flex items-center justify-center gap-2 transform-gpu transition-all duration-200 hover:scale-105 hover:shadow-[0_0_20px_rgba(255,255,255,0.5)] active:scale-95"
               >
                 Start Your Project
-                <ArrowRight size={20} />
+                <ArrowRightIcon size={20} />
               </button>
 
               <button
@@ -133,7 +136,7 @@ export const HeroRemotionSequence: React.FC = () => {
                 className="home-hero-btn-secondary px-8 py-4 rounded-lg border-2 border-white/30 text-white font-heading font-bold text-lg inline-flex items-center justify-center gap-2 transition-all duration-200 hover:scale-105 hover:border-cyan-400 hover:text-cyan-400 hover:shadow-[0_0_20px_rgba(6,182,212,0.3)] active:scale-95"
               >
                 See Our Pricing
-                <ArrowUpRight size={20} />
+                <ArrowUpRightIcon size={20} />
               </button>
             </div>
 

@@ -20,6 +20,9 @@ export default defineConfig(({ mode }) => ({
   },
   build: {
     outDir: "dist/spa",
+    modulePreload: {
+      polyfill: false,
+    },
     // Explicitly disable browser sourcemaps in production builds to avoid
     // leaking internal file structure in the browser devtools.
     sourcemap: mode === "development",
