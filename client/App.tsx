@@ -5,10 +5,8 @@ import {
   Navigate,
 } from "react-router-dom";
 import { HelmetProvider } from "react-helmet-async";
-import { Suspense, lazy, useEffect } from "react";
+import { Suspense, lazy, useEffect, useState } from "react";
 import { CalendlyProvider, useCalendly } from "@/context/CalendlyContext";
-import { CalendlyModal } from "@/components/CalendlyModal";
-import { CookieBanner } from "@/components/CookieBanner";
 import { RouteChangeTracker } from "@/components/RouteChangeTracker";
 import Layout from "./components/Layout";
 
@@ -64,6 +62,16 @@ const CookiePolicy = lazy(() => import("./pages/CookiePolicy"));
 const GDPRPolicy = lazy(() => import("./pages/GDPRPolicy"));
 const ThankYou = lazy(() => import("./pages/ThankYou"));
 const PerformanceScanner = lazy(() => import("./pages/PerformanceScanner"));
+const CalendlyModal = lazy(() =>
+  import("@/components/CalendlyModal").then((m) => ({
+    default: m.CalendlyModal,
+  })),
+);
+const CookieBanner = lazy(() =>
+  import("@/components/CookieBanner").then((m) => ({
+    default: m.CookieBanner,
+  })),
+);
 
 // Fallback component for lazy-loaded routes
 const PageLoader = () => (
@@ -76,11 +84,43 @@ const PageLoader = () => (
 
 function ModalsAndBanner() {
   const { isCalendlyOpen, closeCalendly } = useCalendly();
+  const [shouldLoadCookieBanner, setShouldLoadCookieBanner] = useState(false);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const loadCookieBanner = () => setShouldLoadCookieBanner(true);
+    let idleId: number | null = null;
+    const win = window as Window & {
+      requestIdleCallback?: (cb: IdleRequestCallback) => number;
+      cancelIdleCallback?: (id: number) => void;
+    };
+
+    if (typeof win.requestIdleCallback === "function") {
+      idleId = win.requestIdleCallback(() => loadCookieBanner());
+      return () => {
+        if (idleId !== null && typeof win.cancelIdleCallback === "function") {
+          win.cancelIdleCallback(idleId);
+        }
+      };
+    }
+
+    const timeoutId = window.setTimeout(loadCookieBanner, 1200);
+    return () => window.clearTimeout(timeoutId);
+  }, []);
 
   return (
     <>
-      <CalendlyModal isOpen={isCalendlyOpen} onClose={closeCalendly} />
-      <CookieBanner />
+      {isCalendlyOpen ? (
+        <Suspense fallback={null}>
+          <CalendlyModal isOpen={isCalendlyOpen} onClose={closeCalendly} />
+        </Suspense>
+      ) : null}
+      {shouldLoadCookieBanner ? (
+        <Suspense fallback={null}>
+          <CookieBanner />
+        </Suspense>
+      ) : null}
     </>
   );
 }

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { Suspense, lazy, useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import {
@@ -10,8 +10,9 @@ import {
 } from "@/lib/seo";
 import { generateBreadcrumbSchema } from "@/lib/breadcrumb-schema";
 import Header from "@/components/layout/Header";
-import Footer from "@/components/layout/Footer";
-import OffCanvasMenu from "@/components/layout/OffCanvasMenu";
+
+const Footer = lazy(() => import("@/components/layout/Footer"));
+const OffCanvasMenu = lazy(() => import("@/components/layout/OffCanvasMenu"));
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -19,6 +20,8 @@ interface LayoutProps {
 
 const Layout: React.FC<LayoutProps> = ({ children }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [hasOpenedMobileMenu, setHasOpenedMobileMenu] = useState(false);
+  const [shouldRenderFooter, setShouldRenderFooter] = useState(false);
   const location = useLocation();
 
   const normalizedPath =
@@ -41,6 +44,34 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       window.scrollTo(0, 0);
     }
   }, [location.pathname]);
+
+  useEffect(() => {
+    if (!mobileMenuOpen) return;
+    setHasOpenedMobileMenu(true);
+  }, [mobileMenuOpen]);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const loadFooter = () => setShouldRenderFooter(true);
+    let idleId: number | null = null;
+    const win = window as Window & {
+      requestIdleCallback?: (cb: IdleRequestCallback) => number;
+      cancelIdleCallback?: (id: number) => void;
+    };
+
+    if (typeof win.requestIdleCallback === "function") {
+      idleId = win.requestIdleCallback(() => loadFooter());
+      return () => {
+        if (idleId !== null && typeof win.cancelIdleCallback === "function") {
+          win.cancelIdleCallback(idleId);
+        }
+      };
+    }
+
+    const timeoutId = window.setTimeout(loadFooter, 1200);
+    return () => window.clearTimeout(timeoutId);
+  }, []);
 
   return (
     <>
@@ -95,7 +126,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
               width: 500,
               height: 150,
             },
-            image: "https://kaizenweb.co.uk/og-image.webp",
+            image: ogImage,
             description: "Fast web design for Wirral and Liverpool businesses. Custom websites from £2k with 2-4 week turnaround.",
             priceRange: "££",
             telephone: "+44 151 808 1100",
@@ -158,13 +189,23 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         {/* Main Content */}
         <main className="flex-grow">{children}</main>
 
-        <Footer />
+        {shouldRenderFooter ? (
+          <Suspense fallback={<div className="min-h-[420px]" aria-hidden="true" />}>
+            <Footer />
+          </Suspense>
+        ) : (
+          <div className="min-h-[420px]" aria-hidden="true" />
+        )}
       </div>
 
-      <OffCanvasMenu
-        isOpen={mobileMenuOpen}
-        onClose={() => setMobileMenuOpen(false)}
-      />
+      {mobileMenuOpen || hasOpenedMobileMenu ? (
+        <Suspense fallback={null}>
+          <OffCanvasMenu
+            isOpen={mobileMenuOpen}
+            onClose={() => setMobileMenuOpen(false)}
+          />
+        </Suspense>
+      ) : null}
     </>
   );
 };
