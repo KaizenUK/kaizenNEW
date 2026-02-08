@@ -71,7 +71,8 @@ const DeferredSection = ({
       },
       // Do not preload below-the-fold sections too early; this helps avoid
       // downloading animation-heavy bundles before the user scrolls.
-      { rootMargin: "0px 0px" },
+      // A small preload window reduces "blank section" flashes.
+      { rootMargin: "220px 0px" },
     );
 
     if (sectionRef.current) {
@@ -84,10 +85,7 @@ const DeferredSection = ({
   return (
     <div
       ref={sectionRef}
-      style={{
-        contentVisibility: "auto",
-        containIntrinsicSize: `${minHeight}px 1px`,
-      }}
+      style={isVisible ? undefined : { minHeight: `${minHeight}px` }}
     >
       {isVisible ? children : null}
     </div>
