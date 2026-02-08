@@ -1,6 +1,6 @@
+import { useEffect, useId, useMemo } from "react";
 import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
-import { Helmet } from "react-helmet-async";
 
 import { Link } from "react-router-dom";
 
@@ -31,28 +31,51 @@ export function FaqSection({
   id,
   className = "bg-slate-50",
 }: FaqSectionProps) {
-  const faqSchema = {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    mainEntity: items.map((item) => ({
-      "@type": "Question",
-      name: item.question,
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: item.answer,
-      },
-    })),
-  };
+  const schemaInstanceId = useId().replace(/:/g, "");
+  const schemaScriptId = `faq-schema-${schemaInstanceId}`;
+
+  const faqSchemaJson = useMemo(
+    () =>
+      JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        mainEntity: items.map((item) => ({
+          "@type": "Question",
+          name: item.question,
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: item.answer,
+          },
+        })),
+      }),
+    [items],
+  );
+
+  useEffect(() => {
+    if (typeof document === "undefined") return;
+
+    let script = document.getElementById(schemaScriptId) as HTMLScriptElement | null;
+    if (!script) {
+      script = document.createElement("script");
+      script.type = "application/ld+json";
+      script.id = schemaScriptId;
+      document.head.appendChild(script);
+    }
+
+    script.text = faqSchemaJson;
+
+    return () => {
+      if (script?.parentNode) {
+        script.parentNode.removeChild(script);
+      }
+    };
+  }, [faqSchemaJson, schemaScriptId]);
 
   return (
     <section
       id={id}
       className={`py-20 md:py-32 relative overflow-hidden ${className}`}
     >
-      <Helmet>
-        <script type="application/ld+json">{JSON.stringify(faqSchema)}</script>
-      </Helmet>
-
       <div className="container mx-auto px-4 relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
