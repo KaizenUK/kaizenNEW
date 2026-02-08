@@ -1,7 +1,6 @@
 import { useEffect, useState, FormEvent } from "react";
 import { Link, useLocation } from "react-router-dom";
 import KaizenLogo from "@/components/KaizenLogo";
-import { motion } from "framer-motion";
 import { ArrowRight, Linkedin, Instagram, Check } from "lucide-react";
 import { getSupabaseClient } from "@/lib/supabase";
 
