@@ -93,32 +93,6 @@ const Header: React.FC<HeaderProps> = ({
     return () => clearCloseTimeout();
   }, [clearCloseTimeout]);
 
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-
-    const preloadMenus = () => {
-      void loadMenuData();
-    };
-
-    let idleId: number | null = null;
-    const win = window as Window & {
-      requestIdleCallback?: (cb: IdleRequestCallback) => number;
-      cancelIdleCallback?: (id: number) => void;
-    };
-
-    if (typeof win.requestIdleCallback === "function") {
-      idleId = win.requestIdleCallback(() => preloadMenus());
-      return () => {
-        if (idleId !== null && typeof win.cancelIdleCallback === "function") {
-          win.cancelIdleCallback(idleId);
-        }
-      };
-    }
-
-    const timeoutId = window.setTimeout(preloadMenus, 1400);
-    return () => window.clearTimeout(timeoutId);
-  }, [loadMenuData]);
-
   const handleMenuEnter = (menu: DesktopMenuKey) => {
     clearCloseTimeout();
     setActiveMenu(menu);
