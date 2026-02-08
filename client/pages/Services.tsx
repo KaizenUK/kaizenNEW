@@ -51,7 +51,7 @@ export default function Services() {
       title: "Digital Transformation",
       description:
         "Join up your website with back-office processes. Automate workflows, improve systems.",
-      link: "/services/digital-transformation",
+      link: "/digital-transformation",
     },
     {
       icon: Users,

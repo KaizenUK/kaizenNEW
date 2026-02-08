@@ -109,8 +109,10 @@ const Footer: React.FC = () => {
 
   const footerLinks = [
     { label: "Services", href: "/services" },
+    { label: "Ecommerce", href: "/services/ecommerce" },
+    { label: "Digital Transformation", href: "/digital-transformation" },
+    { label: "Agile Coaching", href: "/agile-coaching" },
     { label: "Rescue", href: "/project-rescue" },
-    { label: "Coaching", href: "/agile-coaching" },
     { label: "Blog", href: "/blog" },
     { label: "Cases", href: "/case-studies" },
     { label: "About", href: "/about" },

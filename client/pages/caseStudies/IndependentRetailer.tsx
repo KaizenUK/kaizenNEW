@@ -238,7 +238,7 @@ export default function IndependentRetailerCase() {
               {
                 title: "Explore Digital Transformation",
                 desc: "See how we modernize legacy systems and unlock new potential.",
-                link: "/services/digital-transformation",
+                link: "/digital-transformation",
               },
             ].map((card, index) => (
               <motion.div

@@ -938,7 +938,7 @@ const CoreServiceVerticals = () => {
                   <ArrowRight size={18} />
                 </Link>
                 <Link
-                  to="/technical-consulting"
+                  to="/project-rescue"
                   className="hidden md:inline-flex text-xs font-mono tracking-widest text-lime-200/80 hover:text-lime-100 transition-colors uppercase"
                 >
                   Learn More

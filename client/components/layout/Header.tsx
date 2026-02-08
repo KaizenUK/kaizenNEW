@@ -24,7 +24,7 @@ import {
   ArrowRight,
 } from "lucide-react";
 import { useEffect, useRef, useState, useCallback } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, easeInOut } from "framer-motion";
 
 interface HeaderProps {
   mobileMenuOpen: boolean;
@@ -147,7 +147,7 @@ const Header: React.FC<HeaderProps> = ({
         },
         {
           label: "Digital Transformation",
-          href: "/services/digital-transformation",
+          href: "/digital-transformation",
           description: "Automate work and connect systems.",
           icon: <Zap className="w-4 h-4" />,
         },
@@ -291,7 +291,7 @@ const Header: React.FC<HeaderProps> = ({
       transformOrigin: "top",
       transition: {
         duration: 0.25,
-        ease: [0.16, 1, 0.3, 1],
+        ease: easeInOut,
       },
     },
     exit: {
@@ -301,7 +301,7 @@ const Header: React.FC<HeaderProps> = ({
       transformOrigin: "top",
       transition: {
         duration: 0.15,
-        ease: [0.4, 0, 1, 1],
+        ease: easeInOut,
       },
     },
   };
@@ -311,11 +311,11 @@ const Header: React.FC<HeaderProps> = ({
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
-      transition: { duration: 0.15, ease: "easeOut" },
+      transition: { duration: 0.15, ease: easeInOut },
     },
     exit: {
       opacity: 0,
-      transition: { duration: 0.1, ease: "easeIn" },
+      transition: { duration: 0.1, ease: easeInOut },
     },
   };
 
@@ -420,19 +420,19 @@ const Header: React.FC<HeaderProps> = ({
                               {/* Animated underline */}
                               <div className="absolute bottom-0 left-0 right-0 h-px bg-gray-200 mt-2">
                                 <motion.div
-                                  className="h-full bg-cyan-500"
-                                  initial={{ width: 0 }}
-                                  animate={{
-                                    width:
-                                      hoveredColumn === column.title
-                                        ? "100%"
-                                        : 0,
-                                  }}
-                                  transition={{
-                                    duration: 0.3,
-                                    ease: [0.16, 1, 0.3, 1],
-                                  }}
-                                />
+                                    className="h-full bg-cyan-500"
+                                    initial={{ width: 0 }}
+                                    animate={{
+                                      width:
+                                        hoveredColumn === column.title
+                                          ? "100%"
+                                          : 0,
+                                    }}
+                                    transition={{
+                                      duration: 0.3,
+                                      ease: easeInOut,
+                                    }}
+                                  />
                               </div>
                             </div>
 

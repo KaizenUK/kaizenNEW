@@ -92,7 +92,7 @@ const OffCanvasMenu: React.FC<OffCanvasMenuProps> = ({ isOpen, onClose }) => {
         },
         {
           label: "Digital Transformation",
-          href: "/services/digital-transformation",
+          href: "/digital-transformation",
           description:
             "Automate manual work and connect your systems across the business.",
           icon: <Zap className="w-4 h-4" />,

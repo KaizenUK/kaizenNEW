@@ -6,15 +6,15 @@ export interface PageMeta {
   noIndex?: boolean;
 }
 
-export const SITE_NAME = "Kaizen";
+export const SITE_NAME = "Kaizen Web";
 export const SITE_URL = "https://kaizenweb.co.uk";
 export const BUSINESS_PHONE = "+44 151 808 1100";
 export const BUSINESS_EMAIL = "hello@kaizenweb.co.uk";
 export const BUSINESS_ADDRESS = {
-  street: "44 Simpson Street",
+  street: "103 Old Hall Street",
   locality: "Liverpool",
   region: "Merseyside",
-  postalCode: "L1 0AX",
+  postalCode: "L3 9BP",
   country: "GB",
 };
 export const DEFAULT_OG_IMAGE = `${SITE_URL}/og-image.webp`;
@@ -35,9 +35,9 @@ const defaultMeta: PageMeta = {
 
 const pageMeta: Record<string, Partial<PageMeta>> = {
   "/": {
-    title: "Web Design Wirral | Fast, Custom Sites from £2k | Kaizen",
+    title: "Web Design Liverpool & Wirral | Fast Custom Sites | Kaizen",
     description:
-      "We build fast websites for Wirral businesses. £2k-£15k, 2-4 week turnaround. No WordPress bloat. Just speed and leads.",
+      "We build fast websites for Liverpool & Wirral businesses. £2k-£15k, 2-4 week turnaround. No WordPress bloat. Just speed and leads.",
     keywords: [
       "web design wirral",
       "web design liverpool",
@@ -134,7 +134,7 @@ const pageMeta: Record<string, Partial<PageMeta>> = {
     ],
   },
   "/services/ecommerce": {
-    title: "Shopify Experts Liverpool & Custom Ecommerce Development | Kaizen",
+    title: "Shopify Experts Liverpool & Custom Ecommerce | Kaizen",
     description:
       "High-performance ecommerce. From Shopify setups to complex custom WooCommerce builds. We architect stores that convert.",
     keywords: [
@@ -157,7 +157,7 @@ const pageMeta: Record<string, Partial<PageMeta>> = {
       "woocommerce liverpool",
     ],
   },
-  "/services/digital-transformation": {
+  "/digital-transformation": {
     title: "Digital Transformation Liverpool | Business Automation | Kaizen",
     description:
       "We don't just build websites; we automate businesses. AI-integrated workflows and custom software to reduce admin time by up to 40%.",
@@ -166,17 +166,6 @@ const pageMeta: Record<string, Partial<PageMeta>> = {
       "business process automation",
       "workflow automation",
       "business automation wirral",
-    ],
-  },
-  "/services/agile-coaching": {
-    title: "Agile Coaching Liverpool | Scrum & Kanban Consultancy | Kaizen",
-    description:
-      "Real Agile. No waffle. We coach Liverpool teams to move from chaotic workflows to strict sprints, improving delivery speed and team morale.",
-    keywords: [
-      "agile coaching liverpool",
-      "agile for smes",
-      "fix chaotic projects",
-      "agile project management",
     ],
   },
   "/agile-coaching": {
@@ -190,21 +179,9 @@ const pageMeta: Record<string, Partial<PageMeta>> = {
       "agile project management",
     ],
   },
-  "/services/contract-product-owner": {
-    title:
-      "Contract Product Owner Liverpool | Agile Delivery & Strategy | Kaizen",
-    description:
-      "Stop hiring 'Yes Men'. Our Contract Product Owners prioritise ROI, manage the backlog, and ensure your software solves the actual business problem.",
-    keywords: [
-      "contract product owner liverpool",
-      "senior product owner",
-      "agile product owner",
-      "sean mcdonnell",
-    ],
-  },
   "/contract-product-owner": {
     title:
-      "Contract Product Owner Liverpool | Agile Delivery & Strategy | Kaizen",
+      "Contract Product Owner Liverpool | Agile Strategy | Kaizen",
     description:
       "Stop hiring 'Yes Men'. Our Contract Product Owners prioritise ROI, manage the backlog, and ensure your software solves the actual business problem.",
     keywords: [
@@ -452,23 +429,54 @@ export const buildLocalBusinessSchema = (description: string) => ({
     postalCode: BUSINESS_ADDRESS.postalCode,
     addressCountry: BUSINESS_ADDRESS.country,
   },
-  geo: {
-    "@type": "GeoCoordinates",
-    latitude: 53.4084,
-    longitude: -2.9916,
-  },
-  areaServed: [
+geo: {
+  "@type": "GeoCoordinates",
+  latitude: 53.4114,
+  longitude: -2.9935,
+},
+areaServed: [
+    // Core Cities
     {
       "@type": "City",
       name: "Liverpool",
     },
     {
       "@type": "City",
+      name: "Chester",
+    },
+    {
+      "@type": "City",
+      name: "Warrington",
+    },
+    {
+      "@type": "City",
+      name: "St Helens",
+    },
+    {
+      "@type": "City",
+      name: "Southport",
+    },
+
+    // Regions (The "Net")
+    {
+      "@type": "AdministrativeArea",
       name: "Wirral",
     },
     {
       "@type": "AdministrativeArea",
       name: "Merseyside",
+    },
+    {
+      "@type": "AdministrativeArea",
+      name: "Cheshire",
+    },
+    {
+      "@type": "AdministrativeArea",
+      name: "North Wales",
+    },
+    {
+      "@type": "Country",
+      name: "United Kingdom",
     },
   ],
   openingHoursSpecification: [
@@ -480,12 +488,23 @@ export const buildLocalBusinessSchema = (description: string) => ({
     },
   ],
   priceRange: "££",
-  foundingDate: "2020",
-  foundingLocation: "Liverpool, UK",
+  foundingDate: "2026",
+  foundingLocation: "Wirral, UK",
   sameAs: [
-    "https://www.linkedin.com/company/kaizen-web",
-    "https://www.instagram.com/kaizenwebliverpool",
-    "https://twitter.com/kaizenweblpool",
-    "https://www.crunchbase.com/organization/kaizen-web",
+    // Socials
+    "https://www.linkedin.com/company/kaizen-uk",
+    "https://www.instagram.com/kaizen.web.uk/",
+
+    // Core Trust Signals (Government & Maps)
+    "https://find-and-update.company-information.service.gov.uk/company/17007703",
+    "https://www.google.com/maps/place/?q=place_id:ChIJA6LmO4Mhe0gR6N1ohnoK7ZE",
+
+    // Verified Directories & Reviews
+    "https://clutch.co/profile/kaizen-2",
+    "https://www.provenexpert.com/kaizen/",
+    "https://www.yell.com/biz/kaizen-liverpool-10997636/",
+    "https://the-dots.com/pages/kaizen-845569",
+    "https://www.techdirectory.io/united-kingdom/liverpool/information-technology/kaizen",
+    "https://www.hotfrog.co.uk/company/a0cc9bb7a4178a6dbe399d88c7d1bbce/kaizen/liverpool/web-design",
   ],
 });

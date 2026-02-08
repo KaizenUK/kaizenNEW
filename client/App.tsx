@@ -50,7 +50,6 @@ const Services = lazy(() => import("./pages/Services"));
 const About = lazy(() => import("./pages/About"));
 const Pledge = lazy(() => import("./pages/Pledge"));
 const AgileCoaching = lazy(() => import("./pages/AgileCoaching"));
-const ProductOwner = lazy(() => import("./pages/ProductOwner"));
 const AsCollectionsCase = lazy(
   () => import("./pages/caseStudies/AsCollections"),
 );
@@ -204,8 +203,12 @@ function AppContent() {
           />
           <Route path="/services/local-seo" element={<LocalSeo />} />
           <Route
-            path="/services/digital-transformation"
+            path="/digital-transformation"
             element={<DigitalTransformation />}
+          />
+          <Route
+            path="/services/digital-transformation"
+            element={<Navigate to="/digital-transformation" replace />}
           />
           <Route path="/services/ecommerce" element={<Ecommerce />} />
           <Route
@@ -221,7 +224,10 @@ function AppContent() {
           <Route path="/about" element={<About />} />
           <Route path="/pledge" element={<Pledge />} />
           <Route path="/agile-coaching" element={<AgileCoaching />} />
-          <Route path="/product-owner" element={<ProductOwner />} />
+          <Route
+            path="/product-owner"
+            element={<Navigate to="/contract-product-owner" replace />}
+          />
           <Route path="/case-studies" element={<CaseStudies />} />
           <Route
             path="/case-studies/as-collections"
