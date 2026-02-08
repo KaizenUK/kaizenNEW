@@ -33,6 +33,7 @@ const STATIC_FILE_EXTENSIONS = new Set([
 
 const immutableRootAssets = new Set([
   "logo.svg",
+  "kaizen-web-map-wirral-liverpool.svg",
   "apple-touch-icon.png",
   "android-chrome-192x192.png",
   "android-chrome-512x512.png",

@@ -90,7 +90,7 @@
   </FilesMatch>
 
   # Brand/logo/app icon assets: 1 year immutable
-  <FilesMatch "^(logo\.svg|apple-touch-icon\.png|android-chrome-192x192\.png|android-chrome-512x512\.png|favicon\.ico|favicon\.svg|favicon-16x16\.png|favicon-32x32\.png|favicon-96x96\.png|web-app-manifest-192x192\.png|web-app-manifest-512x512\.png)$">
+  <FilesMatch "^(logo\.svg|kaizen-web-map-wirral-liverpool\.svg|apple-touch-icon\.png|android-chrome-192x192\.png|android-chrome-512x512\.png|favicon\.ico|favicon\.svg|favicon-16x16\.png|favicon-32x32\.png|favicon-96x96\.png|web-app-manifest-192x192\.png|web-app-manifest-512x512\.png)$">
     Header set Cache-Control "public, max-age=31536000, immutable"
   </FilesMatch>
 

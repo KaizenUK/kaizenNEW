@@ -44,7 +44,6 @@ const LighthouseGauge: React.FC = () => {
           strokeDasharray={circumference}
           strokeDashoffset={offset}
           strokeLinecap="round"
-          className="hero-gauge-progress"
         />
       </svg>
 
@@ -119,10 +118,7 @@ export const HeroRemotionSequence: React.FC = () => {
       <div className="container mx-auto px-4 relative z-10">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center max-w-7xl mx-auto">
           {/* Left: Copy */}
-          <div
-            className="hero-reveal"
-            style={{ "--delay": "0s" } as React.CSSProperties}
-          >
+          <div>
             <p className="text-xs font-mono tracking-[0.25em] text-kaizen-cyan mb-6 uppercase">
               Wirral Web Design
             </p>
@@ -131,19 +127,13 @@ export const HeroRemotionSequence: React.FC = () => {
               Sites That Actually Make You Money
             </h1>
 
-            <p
-              className="text-lg md:text-xl text-white/85 leading-relaxed mb-10 max-w-xl hero-reveal"
-              style={{ "--delay": "0.2s" } as React.CSSProperties}
-            >
+            <p className="text-lg md:text-xl text-white/85 leading-relaxed mb-10 max-w-xl">
               Slow sites lose customers. We build fast, lean websites that turn
               visitors into paying leads. Enterprise-grade. No corporate
               nonsense.
             </p>
 
-            <div
-              className="flex flex-col sm:flex-row items-start gap-4 mb-8 hero-reveal"
-              style={{ "--delay": "0.4s" } as React.CSSProperties}
-            >
+            <div className="flex flex-col sm:flex-row items-start gap-4 mb-8">
               <button
                 onClick={() => navigate("/contact")}
                 className="px-8 py-4 rounded-lg bg-white text-black font-heading font-bold text-lg inline-flex items-center justify-center gap-2 transform-gpu transition-all duration-200 hover:scale-105 hover:shadow-[0_0_20px_rgba(255,255,255,0.5)] active:scale-95"
@@ -167,20 +157,14 @@ export const HeroRemotionSequence: React.FC = () => {
             </div>
 
             {/* Social proof line */}
-            <p
-              className="text-sm text-white/50 hero-reveal"
-              style={{ "--delay": "0.6s" } as React.CSSProperties}
-            >
+            <p className="text-sm text-white/50">
               Trusted by Wirral trades, small shops, e-commerce brands, and SaaS
               teams.
             </p>
           </div>
 
           {/* Right: Lighthouse Gauge */}
-          <div
-            className="hidden lg:block hero-reveal"
-            style={{ "--delay": "0.3s" } as React.CSSProperties}
-          >
+          <div className="hidden lg:block">
             <div className="relative">
               <div className="absolute -inset-12 bg-green-500/10 rounded-full blur-3xl" />
               <div className="relative text-center">
