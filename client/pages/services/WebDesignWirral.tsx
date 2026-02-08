@@ -413,18 +413,18 @@ export default function WebDesignWirral() {
   return (
     <Layout>
       <Helmet>
-        <title>Web Design Wirral | Fast, Professional Websites</title>
+        <title>Web Design Wirral | Local Sites That Get Results</title>
         <meta
           name="description"
-          content="Web design on the Wirral for local businesses who want a fast, professional website. We build sites that load quickly, rank well, and bring in work."
+          content="Fast, professional websites for Wirral businesses. From Heswall to Birkenhead, we build sites that rank on Google and bring in customers."
         />
         <meta
           property="og:title"
-          content="Web Design Wirral | Fast, Professional Websites"
+          content="Web Design Wirral | Local Sites That Get Results"
         />
         <meta
           property="og:description"
-          content="Web design on the Wirral for local businesses who want a fast, professional website. We build sites that load quickly, rank well, and bring in work."
+          content="Fast, professional websites for Wirral businesses. From Heswall to Birkenhead, we build sites that rank on Google and bring in customers."
         />
         <meta property="og:type" content="website" />
         <link

@@ -21,7 +21,6 @@ import Layout from "./components/Layout";
 // All other pages are lazy-loaded for better initial load performance
 import Index from "./pages/Index";
 const NotFound = lazy(() => import("./pages/NotFound"));
-const WebDesign = lazy(() => import("./pages/services/WebDesign"));
 const LocalSeo = lazy(() => import("./pages/services/LocalSeo"));
 const DigitalTransformation = lazy(
   () => import("./pages/services/DigitalTransformation"),

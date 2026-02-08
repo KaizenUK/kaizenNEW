@@ -156,7 +156,7 @@ export default function LocalSeo() {
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
             <div className="max-w-2xl">
-              <AnimatedH1 text="High-Performance Local Websites." />
+              <AnimatedH1 text="Fast Websites for Liverpool Businesses" />
 
               <motion.div
                 className="space-y-6 mb-12 text-xl text-kaizen-text-light/80 dark:text-white/70 leading-relaxed"
@@ -165,16 +165,13 @@ export default function LocalSeo() {
                 transition={{ delay: 0.6, duration: 0.6 }}
               >
                 <p>
-                  Local SEO doesn’t start with keywords. It starts with a
-                  website that loads fast, reads clearly, and doesn’t frustrate
-                  people. If your competitors are quicker, cleaner, and easier
-                  to use, they’ll usually win the click.
+                  SEO isn't everything. If your website is slow, confusing, or
+                  hard to use, it doesn't matter how well it ranks. People will
+                  just click back to your competitor.
                 </p>
                 <p>
-                  We build high-performance local websites (often in custom
-                  React) and then layer on the local SEO work that actually
-                  moves the needle: Google Business Profile, location pages,
-                  reviews, and authority signals.
+                  We build fast, professional websites first—then we make sure
+                  they show up on Google. Speed + rankings = more customers.
                 </p>
               </motion.div>
 
@@ -223,7 +220,7 @@ export default function LocalSeo() {
         <div className="container mx-auto px-4">
           <ScrollReveal>
             <h2 className="text-4xl md:text-5xl font-heading font-bold mb-12 text-kaizen-dark dark:text-white">
-              Why Performance Wins Local Search
+              Why Speed Matters More Than SEO
             </h2>
           </ScrollReveal>
 
@@ -231,16 +228,15 @@ export default function LocalSeo() {
             <ScrollReveal delay={1}>
               <div className="space-y-6">
                 <p className="text-xl text-kaizen-text-dark/70 dark:text-white/60 leading-relaxed">
-                  Most “local SEO” packages fail because they try to bolt SEO
-                  onto a slow, generic website. Google increasingly rewards real
-                  user experience: speed, stability, and clarity. That’s exactly
-                  where most templated, plugin-heavy sites fall over.
+                  Most local SEO packages fail because they try to fix rankings
+                  without fixing the website. Google rewards sites that are
+                  fast, clear, and actually helpful. That's where most
+                  template-based sites fall down.
                 </p>
                 <p className="text-xl text-kaizen-text-dark/70 dark:text-white/60 leading-relaxed">
-                  We focus on <strong>Local Intent</strong> and{" "}
-                  <strong>Technical Advantage</strong>—getting you found by
-                  customers ready to buy, and ensuring the site performs well
-                  enough to keep them there.
+                  We build sites people want to use—then we make sure Google can
+                  find them. Fast sites that get you found and keep customers on
+                  the page.
                 </p>
               </div>
             </ScrollReveal>
@@ -249,25 +245,24 @@ export default function LocalSeo() {
               <div className="space-y-6 p-8 bg-kaizen-light dark:bg-slate-900/50 rounded-2xl border border-kaizen-light dark:border-slate-800/50">
                 <div>
                   <h3 className="text-sm font-bold text-kaizen-cyan dark:text-kaizen-cyan/70 uppercase tracking-wide mb-3">
-                    Why custom React often outranks WordPress
+                    Why fast sites rank better
                   </h3>
                   <ul className="space-y-3 text-lg text-kaizen-text-dark/70 dark:text-white/60">
                     <li>
-                      <strong>Speed by design:</strong> fewer plugins, less
-                      bloat, and tighter control over Core Web Vitals.
+                      <strong>Built for speed:</strong> No bloated plugins or
+                      mystery code slowing you down.
                     </li>
                     <li>
-                      <strong>Cleaner markup:</strong> better structure
-                      (headings, internal links, schema) without fighting a
-                      theme.
+                      <strong>Clean and clear:</strong> Easy for Google to read
+                      and understand what you do.
                     </li>
                     <li>
-                      <strong>More reliable:</strong> fewer moving parts, fewer
-                      security fires, fewer "mystery" slowdowns.
+                      <strong>Reliable:</strong> No random crashes or slow days
+                      that cost you customers.
                     </li>
                     <li>
-                      <strong>Conversion uplift:</strong> faster sites typically
-                      convert better, which improves engagement signals.
+                      <strong>More conversions:</strong> Fast sites keep people
+                      on the page, which means more enquiries.
                     </li>
                   </ul>
                 </div>
@@ -276,9 +271,8 @@ export default function LocalSeo() {
                     What you get
                   </h3>
                   <p className="text-lg text-kaizen-text-dark/70 dark:text-white/60">
-                    A site that loads fast, reads well, and supports local SEO
-                    properly—then we optimise your Google Business Profile and
-                    local pages to push you into the Map Pack.
+                    A site that loads fast and works properly—then we optimise
+                    your Google Business Profile to get you into the Map Pack.
                   </p>
                 </div>
               </div>
@@ -292,7 +286,7 @@ export default function LocalSeo() {
         <div className="container mx-auto px-4">
           <ScrollReveal>
             <h2 className="text-4xl md:text-5xl font-heading font-bold mb-16 text-kaizen-dark dark:text-white text-center">
-              Dominate the Map Pack
+              Get Found on Google
             </h2>
           </ScrollReveal>
 
@@ -307,17 +301,17 @@ export default function LocalSeo() {
               {
                 icon: MapPin,
                 title: "Google Business Profile",
-                copy: 'Your new homepage. We optimise your profile to ensure you appear in the "Map Pack" (the top 3 results) for searches like "near me" or "in Liverpool".',
+                copy: 'We set up your profile properly so you show up in the top 3 results when people search for "near me" or "in Liverpool".',
               },
               {
                 icon: FileText,
-                title: "Location-Specific Content",
-                copy: 'We build landing pages that target specific areas (e.g., "Wirral", "South Liverpool", "City Centre") to capture traffic from every corner of the region.',
+                title: "Location Pages",
+                copy: 'We create pages for specific areas like Wirral, South Liverpool, or City Centre—so you can be found wherever your customers are searching.',
               },
               {
                 icon: Star,
-                title: "Citations & Reputation",
-                copy: "We clean up your directory listings and implement a strategy to gather more 5-star reviews, building the trust signals Google loves.",
+                title: "Reviews & Trust",
+                copy: "We help you gather more 5-star reviews and clean up your online listings, so Google knows you're the real deal.",
               },
             ].map((item, index) => (
               <motion.div
@@ -487,7 +481,7 @@ export default function LocalSeo() {
         <div className="container mx-auto px-4">
           <ScrollReveal>
             <h2 className="text-4xl md:text-5xl font-heading font-bold mb-16 text-kaizen-dark dark:text-white text-center">
-              Combine SEO with High Performance
+              More Than Just SEO
             </h2>
           </ScrollReveal>
 
@@ -501,12 +495,12 @@ export default function LocalSeo() {
             {[
               {
                 title: "Web Design",
-                copy: "Traffic is useless if your site doesn't convert. Check out our high-performance web design services.",
+                copy: "Traffic is useless if your site is slow. See how we build fast websites that turn visitors into customers.",
                 link: "/web-design-liverpool",
               },
               {
                 title: "Agile Coaching",
-                copy: "Our SEO process is Agile. We can also train your in-house team to streamline their workflow.",
+                copy: "We use an organised process to get results faster. We can also help your team work more efficiently.",
                 link: "/agile-coaching",
               },
             ].map((card, index) => (

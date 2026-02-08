@@ -307,9 +307,9 @@ export default function WebDesignChester() {
     },
     {
       icon: Shield,
-      title: "Secure and Compliant",
+      title: "Secure and Reliable",
       description:
-        "Built with security in mind. SSL, regular backups, and clean code that protects your reputation.",
+        "Built to protect your reputation. Secure client data, regular backups, and sites that don't break.",
     },
     {
       icon: Users,
@@ -414,19 +414,19 @@ export default function WebDesignChester() {
     <Layout>
       <Helmet>
         <title>
-          Web Design Chester | Professional Websites for Chester Businesses
+          Web Design Chester | Trusted Sites for Law & Finance
         </title>
         <meta
           name="description"
-          content="Web design in Chester for law firms, financial advisors, and professional services. Fast, secure websites that look established and win client trust."
+          content="Professional websites for Chester law firms and financial advisors. Fast, secure, built to win client trust. Business Park to City Centre."
         />
         <meta
           property="og:title"
-          content="Web Design Chester | Professional Websites for Chester Businesses"
+          content="Web Design Chester | Trusted Sites for Law & Finance"
         />
         <meta
           property="og:description"
-          content="Web design in Chester for law firms, financial advisors, and professional services. Fast, secure websites that look established and win client trust."
+          content="Professional websites for Chester law firms and financial advisors. Fast, secure, built to win client trust. Business Park to City Centre."
         />
         <meta property="og:type" content="website" />
         <link

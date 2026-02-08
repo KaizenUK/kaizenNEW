@@ -58,43 +58,44 @@ const pageMeta: Record<string, Partial<PageMeta>> = {
       "A product-led digital agency. Specialising in React Development, Software Rescue, and Agile Consultancy for Liverpool & Wirral SMEs.",
   },
   "/web-design-liverpool": {
-    title: "Enterprise Web Design Liverpool | React & Next.js Developers",
+    title: "Web Design Liverpool | Fast Sites That Bring in Work",
     description:
-      "We build high-performance React websites for Liverpool's Commercial District and Knowledge Quarter. Faster, safer, and more profitable than WordPress.",
+      "Websites for Liverpool businesses who need more customers. Fast, professional, built to rank on Google. From £2k. City Centre to Merseyside.",
     keywords: [
       "web design liverpool",
-      "enterprise web design",
-      "react development liverpool",
-      "high-performance websites",
-      "commercial district web design",
+      "liverpool web design",
+      "web designer liverpool",
+      "fast websites liverpool",
+      "liverpool city centre web design",
+      "commercial district websites",
     ],
   },
   "/web-design-chester": {
-    title: "Web Design Chester | High-Performance React Developers",
+    title: "Web Design Chester | Trusted Sites for Law & Finance",
     description:
-      "Fast, secure web design for Chester. We build bespoke React websites for law firms, financial advisors, and businesses on Chester Business Park.",
+      "Professional websites for Chester law firms and financial advisors. Fast, secure, built to win client trust. Business Park to City Centre.",
     keywords: [
       "web design chester",
       "chester web design",
       "web designer chester",
       "chester business park web design",
-      "react developers chester",
       "law firm web design chester",
-      "wealth management web design",
+      "financial advisor websites",
+      "professional services chester",
     ],
   },
   "/web-design-warrington": {
-    title: "Web Design Warrington | Fast, Professional Websites",
+    title: "Web Design Warrington | Sites Built for Business",
     description:
-      "Web design in Warrington for businesses who want a fast, professional website. We build sites that load quickly, rank well, and bring in work.",
+      "Reliable websites for Warrington businesses. Fast, professional, no fuss. Perfect for logistics, manufacturing, and trade firms. Omega to Town Centre.",
     keywords: [
       "web design warrington",
       "warrington web design",
       "web designer warrington",
-      "website design warrington",
+      "omega business park websites",
       "birchwood park web design",
-      "omega warrington",
-      "warrington website",
+      "warrington logistics websites",
+      "manufacturing web design",
     ],
   },
   "/services/web-design-liverpool": {
@@ -121,9 +122,9 @@ const pageMeta: Record<string, Partial<PageMeta>> = {
     ],
   },
   "/services/local-seo": {
-    title: "Local SEO Services Liverpool & Wirral | Kaizen",
+    title: "Local SEO Liverpool | Sites That Work & Rank | Kaizen",
     description:
-      "Invisible in local search? We help Liverpool & Wirral businesses dominate the Google Map Pack and get found by local customers. No jargon, just rankings.",
+      "Local SEO starts with a fast website, not keywords. We build sites people want to use, then make sure Google finds them. Liverpool & Wirral.",
     keywords: [
       "local seo liverpool",
       "local seo wirral",
@@ -145,14 +146,15 @@ const pageMeta: Record<string, Partial<PageMeta>> = {
     ],
   },
   "/services/wordpress-web-design": {
-    title: "Bespoke WordPress Development Liverpool | Kaizen",
+    title: "WordPress Web Design Liverpool | Fast & Easy to Edit",
     description:
-      "Custom WordPress theme development. No templates. We use AI-augmented coding to build fast, secure, and scalable sites managed by Product Owners.",
+      "Custom WordPress sites for Liverpool businesses. Fast, secure, and easy to update yourself. No bloated themes, just clean code that works.",
     keywords: [
       "wordpress web design liverpool",
       "wordpress developer wirral",
-      "woocommerce developer",
-      "custom wordpress theme",
+      "custom wordpress sites",
+      "fast wordpress",
+      "woocommerce liverpool",
     ],
   },
   "/services/digital-transformation": {
@@ -247,18 +249,18 @@ const pageMeta: Record<string, Partial<PageMeta>> = {
     ],
   },
   "/web-design-wirral": {
-    title: "Bespoke Web Design Wirral | Fast, Secure, Profitable | Kaizen",
+    title: "Web Design Wirral | Local Sites That Get Results",
     description:
-      "Bespoke web design for Wirral. Fast, high-performance websites that rank, convert, and scale. Built locally for Heswall, West Kirby, and Birkenhead businesses.",
+      "Fast, professional websites for Wirral businesses. From Heswall to Birkenhead, we build sites that rank on Google and bring in customers.",
     image:
       "https://cdn.builder.io/api/v1/image/assets%2Fe4ae46bbd81b4b95bef54d66dd9748cc%2F094cdc9be84c41ee9db80308cbe5ea73?format=webp&width=1200&height=630",
     keywords: [
-      "bespoke web design wirral",
       "web design wirral",
-      "wirral websites",
+      "wirral web designer",
       "web design heswall",
       "web design west kirby",
       "web design birkenhead",
+      "local websites wirral",
     ],
   },
   "/case-studies": {

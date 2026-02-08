@@ -302,27 +302,27 @@ export default function WebDesignLiverpool() {
   const features = [
     {
       icon: Shield,
-      title: "Enterprise-Grade Security",
+      title: "Secure and Trustworthy",
       description:
-        "Compliance-first architecture. GDPR, data protection, secure authentication. Your clients&apos; trust is your most valuable asset.",
+        "Sites built to protect your business. Data security, regular backups, and reliable hosting that doesn't let you down.",
     },
     {
       icon: Clock,
-      title: "Premium Performance",
+      title: "Built for Speed",
       description:
-        "Every millisecond matters. First-class load times, seamless user experience. Your site works as hard as your practice.",
+        "Fast sites that load in under 2 seconds. Google rewards speed, and so do your customers.",
     },
     {
       icon: Briefcase,
-      title: "Built for Law and Finance",
+      title: "Professional and Reliable",
       description:
-        "We understand the requirements of high-trust industries. Secure document handling, compliance logging, client management.",
+        "We build sites that make you look established. Clear messaging, professional design, easy for customers to contact you.",
     },
     {
       icon: Zap,
-      title: "Scalable Architecture",
+      title: "Ranks on Google",
       description:
-        "Built to grow with your practice. Add features, handle more clients, scale your operations without rebuilding.",
+        "Sites built to show up in search. Proper structure, fast loading, and local SEO that gets you found by Liverpool customers.",
     },
   ];
 
@@ -415,19 +415,19 @@ export default function WebDesignLiverpool() {
     <Layout>
       <Helmet>
         <title>
-          Enterprise-Grade Web Design in Liverpool | Premium Digital Platforms
+          Web Design Liverpool | Fast Sites That Bring in Work
         </title>
         <meta
           name="description"
-          content="Bespoke digital platforms for the Commercial District and Knowledge Quarter. Stop relying on slow, insecure templates and scale with confidence."
+          content="Websites for Liverpool businesses who need more customers. Fast, professional, built to rank on Google. From £2k. City Centre to Merseyside."
         />
         <meta
           property="og:title"
-          content="Enterprise-Grade Web Design in Liverpool | Premium Digital Platforms"
+          content="Web Design Liverpool | Fast Sites That Bring in Work"
         />
         <meta
           property="og:description"
-          content="Bespoke digital platforms for the Commercial District and Knowledge Quarter. Stop relying on slow, insecure templates and scale with confidence."
+          content="Websites for Liverpool businesses who need more customers. Fast, professional, built to rank on Google. From £2k. City Centre to Merseyside."
         />
         <meta property="og:type" content="website" />
         <link
@@ -465,10 +465,10 @@ export default function WebDesignLiverpool() {
             </motion.div>
 
             <h1 className="text-5xl md:text-6xl lg:text-7xl font-heading font-black text-white leading-[1.05] mb-8">
-              <TextReveal delay={0.1}>Enterprise-Grade</TextReveal>
-              <TextReveal delay={0.2}>Web Design in</TextReveal>
+              <TextReveal delay={0.1}>Fast Websites</TextReveal>
+              <TextReveal delay={0.2}>for Liverpool</TextReveal>
               <span className="block text-transparent bg-clip-text bg-gradient-to-r from-red-400 via-rose-400 to-red-300">
-                <TextReveal delay={0.3}>Liverpool.</TextReveal>
+                <TextReveal delay={0.3}>Businesses.</TextReveal>
               </span>
             </h1>
 
@@ -478,9 +478,9 @@ export default function WebDesignLiverpool() {
               transition={{ duration: 0.6, delay: 0.4 }}
               className="text-xl md:text-2xl text-slate-300 mb-10 leading-relaxed max-w-2xl"
             >
-              Bespoke digital platforms for the Commercial District and
-              Knowledge Quarter. Stop relying on slow, insecure templates and
-              scale with confidence.
+              We build websites for Liverpool businesses who need more
+              customers. Fast sites that rank on Google and turn visitors into
+              paying clients.
             </motion.p>
 
             <motion.div
@@ -623,10 +623,9 @@ export default function WebDesignLiverpool() {
               transition={{ delay: 0.1 }}
               className="text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto"
             >
-              From Old Hall Street to the Baltic, Liverpool is competing on a
-              global stage. We build the digital infrastructure that law firms,
-              clinics, and consultants need to win high-value contracts—secure,
-              fast, and designed to impress.
+              Liverpool businesses deserve websites that work as hard as they
+              do. Whether you're a clinic, a building firm, or a consultancy, we
+              build sites that look professional and bring in customers.
             </motion.p>
           </div>
 

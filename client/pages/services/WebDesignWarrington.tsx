@@ -301,27 +301,27 @@ export default function WebDesignWarrington() {
   const features = [
     {
       icon: Shield,
-      title: "Enterprise Reliability",
+      title: "Built to Last",
       description:
-        "99.9% uptime SLA. We build for mission-critical operations. Your tracking system, your portal, your data—always available.",
+        "Reliable hosting, regular backups, and sites that don't break. We build for businesses that can't afford downtime.",
     },
     {
       icon: Clock,
-      title: "Handles Scale",
+      title: "Fast and Simple",
       description:
-        "Built from the ground up for high traffic and complex data loads. No slowdowns when your business grows.",
+        "Sites that load quickly and work properly. No fancy animations, just clean design that makes it easy for customers to find what they need.",
     },
     {
       icon: Truck,
-      title: "Real-World Engineering",
+      title: "We Get Industry",
       description:
-        "We understand logistics, distribution, and manufacturing workflows. Your website works the way your business actually operates.",
+        "We understand logistics, manufacturing, and trade businesses. Your website works the way your business actually operates.",
     },
     {
       icon: Zap,
-      title: "Performance at Scale",
+      title: "Built for Business",
       description:
-        "Sub-second response times, even with heavy concurrent users. Speed matters when you are managing supply chains.",
+        "Fast sites that handle traffic without slowing down. Whether you need a basic brochure or a client portal, we keep it simple and effective.",
     },
   ];
 
@@ -414,19 +414,19 @@ export default function WebDesignWarrington() {
     <Layout>
       <Helmet>
         <title>
-          High-Performance Web Systems for Warrington | Enterprise Solutions
+          Web Design Warrington | Sites Built for Business
         </title>
         <meta
           name="description"
-          content="Robust, scalable websites and portals for Warrington logistics, engineering, and tech firms. Built to handle complex data and high traffic without failing."
+          content="Reliable websites for Warrington businesses. Fast, professional, no fuss. Perfect for logistics, manufacturing, and trade firms. Omega to Town Centre."
         />
         <meta
           property="og:title"
-          content="High-Performance Web Systems for Warrington | Enterprise Solutions"
+          content="Web Design Warrington | Sites Built for Business"
         />
         <meta
           property="og:description"
-          content="Robust, scalable websites and portals for Warrington logistics, engineering, and tech firms. Built to handle complex data and high traffic without failing."
+          content="Reliable websites for Warrington businesses. Fast, professional, no fuss. Perfect for logistics, manufacturing, and trade firms. Omega to Town Centre."
         />
         <meta property="og:type" content="website" />
         <link
@@ -464,10 +464,10 @@ export default function WebDesignWarrington() {
             </motion.div>
 
             <h1 className="text-5xl md:text-6xl lg:text-7xl font-heading font-black text-white leading-[1.05] mb-8">
-              <TextReveal delay={0.1}>High-Performance</TextReveal>
-              <TextReveal delay={0.2}>Web Systems for</TextReveal>
+              <TextReveal delay={0.1}>Reliable Websites</TextReveal>
+              <TextReveal delay={0.2}>for Warrington</TextReveal>
               <span className="block text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-sky-400 to-cyan-300">
-                <TextReveal delay={0.3}>Warrington.</TextReveal>
+                <TextReveal delay={0.3}>Businesses.</TextReveal>
               </span>
             </h1>
 
@@ -477,9 +477,9 @@ export default function WebDesignWarrington() {
               transition={{ duration: 0.6, delay: 0.4 }}
               className="text-xl md:text-2xl text-slate-300 mb-10 leading-relaxed max-w-2xl"
             >
-              Robust, scalable websites and portals for logistics, engineering,
-              and tech firms. Built to handle complex data and high traffic
-              without failing.
+              We build websites for Warrington businesses that just need
+              something that works. Fast, professional, and built to bring in
+              customers—not headaches.
             </motion.p>
 
             <motion.div
@@ -622,11 +622,9 @@ export default function WebDesignWarrington() {
               transition={{ delay: 0.1 }}
               className="text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto"
             >
-              Warrington is the industrial engine of the North West. You
-              don&apos;t need a &apos;pretty&apos; brochure site; you need a
-              high-performance tool that handles data, tracking, and traffic
-              without breaking. We build systems that work as hard as your team
-              does.
+              Warrington businesses need websites that just work. No fuss, no
+              nonsense—just fast, reliable sites that make it easy for customers
+              to find you and get in touch.
             </motion.p>
           </div>
 

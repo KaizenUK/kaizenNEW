@@ -143,11 +143,11 @@ export default function WordPressWebDesign() {
     <Layout>
       <Helmet>
         <title>
-          WordPress Web Design Liverpool | Fast, Secure, Easy-to-Manage
+          WordPress Web Design Liverpool | Fast & Easy to Edit
         </title>
         <meta
           name="description"
-          content="Custom WordPress web design for Liverpool & Wirral businesses. Fast, secure, and easy-to-manage websites with powerful features. No bloat, no gimmicks."
+          content="Custom WordPress sites for Liverpool businesses. Fast, secure, and easy to update yourself. No bloated themes, just clean code that works."
         />
         <meta
           name="keywords"
@@ -202,7 +202,7 @@ export default function WordPressWebDesign() {
               transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] as const }}
             >
               <motion.h1 className="text-4xl md:text-5xl lg:text-6xl font-heading font-black mb-6 leading-tight text-kaizen-dark dark:text-white">
-                {["Bespoke", "WordPress", "Development", "Liverpool."].map(
+                {["WordPress", "Sites Built", "Right.", "Liverpool."].map(
                   (word, index) => (
                     <motion.span
                       key={index}
@@ -227,10 +227,10 @@ export default function WordPressWebDesign() {
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.8, duration: 0.8 }}
               >
-                Get the platform you know and love, built the right way. We use
-                AI tools to create fast, secure, and easy-to-manage WordPress
-                sites for Liverpool & Wirral businesses, so you keep the
-                familiar editor while we focus on performance and reliability.
+                WordPress you can actually edit yourself. We build fast, secure
+                sites for Liverpool & Wirral businesses with clean code—no
+                bloated themes, no mystery plugins. You get the familiar editor
+                without the usual slowdowns.
               </motion.p>
 
               <motion.div
@@ -294,9 +294,9 @@ export default function WordPressWebDesign() {
             <p className="text-xl text-kaizen-text-dark/70 dark:text-white/60 leading-relaxed max-w-3xl">
               The problem isn't WordPress; it's the way most agencies build on
               it. They use cheap, bloated themes and dozens of clunky plugins
-              that break your site and kill your page speed. We're different. We
-              use AI tools to generate lean, semantic WordPress builds that feel
-              familiar to edit but perform like a modern platform.
+              that break your site and kill your page speed. We build clean,
+              fast WordPress sites that feel familiar to edit but actually load
+              quickly.
             </p>
           </ScrollReveal>
         </div>
@@ -327,12 +327,12 @@ export default function WordPressWebDesign() {
               {
                 icon: Zap,
                 title: "Fast & Secure",
-                copy: "Our builds are performance-optimised from day one. We follow security best practices, ensuring your site is fast for users and safe from attacks.",
+                copy: "Built for speed from day one. We follow security best practices, so your site loads quickly and stays safe from attacks.",
               },
               {
                 icon: Settings,
-                title: "Full Ecosystem",
-                copy: "Need WooCommerce? A booking system? Advanced plugins? We are experts at integrating complex features into WordPress in a clean and scalable way.",
+                title: "Works with Everything",
+                copy: "Need WooCommerce? A booking system? Custom features? We integrate what you need into WordPress without slowing your site down.",
               },
             ].map((item, index) => (
               <motion.div
