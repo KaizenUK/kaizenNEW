@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import ReactGA from "react-ga4";
 
@@ -9,16 +9,11 @@ const GA_INIT_DELAY_MS = 3000;
 export function RouteChangeTracker() {
   const location = useLocation();
   const [initialized, setInitialized] = useState(false);
-  const isAdminRoute = location.pathname.startsWith("/admin");
-  const pendingPageview = useRef<string | null>(null);
 
   useEffect(() => {
-    if (initialized || process.env.NODE_ENV !== "production" || isAdminRoute) {
+    if (initialized || process.env.NODE_ENV !== "production") {
       return;
     }
-
-    // Store the initial pageview to send after initialization
-    pendingPageview.current = location.pathname + location.search;
 
     // Defer GA initialization to avoid blocking main thread during initial load
     const timer = setTimeout(() => {
@@ -27,10 +22,10 @@ export function RouteChangeTracker() {
     }, GA_INIT_DELAY_MS);
 
     return () => clearTimeout(timer);
-  }, [initialized, isAdminRoute, location.pathname, location.search]);
+  }, [initialized, location.pathname, location.search]);
 
   useEffect(() => {
-    if (!initialized || isAdminRoute) {
+    if (!initialized) {
       return;
     }
 
@@ -39,7 +34,7 @@ export function RouteChangeTracker() {
       page: location.pathname + location.search,
       title: document.title,
     });
-  }, [initialized, isAdminRoute, location]);
+  }, [initialized, location]);
 
   return null;
 }

@@ -32,10 +32,6 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   const keywords = meta.keywords?.join(", ");
   const robotsValue = meta.noIndex ? "noindex, nofollow" : "index, follow";
 
-  // Only render global description/keywords for primary site pages (home, services, company pages, blog index, legal pages)
-  const isAdminRoute = normalizedPath.startsWith("/admin");
-  const shouldRenderDescription = !isAdminRoute;
-
   const structuredData = buildLocalBusinessSchema(meta.description);
   const breadcrumbSchema = generateBreadcrumbSchema(normalizedPath);
   const ogImage = meta.image ?? DEFAULT_OG_IMAGE;
@@ -50,12 +46,8 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     <>
       <Helmet key={`seo-${normalizedPath}`} prioritizeSeoTags>
         <title>{meta.title}</title>
-        {shouldRenderDescription && (
-          <meta name="description" content={meta.description} />
-        )}
-        {shouldRenderDescription && keywords && (
-          <meta name="keywords" content={keywords} />
-        )}
+        <meta name="description" content={meta.description} />
+        {keywords && <meta name="keywords" content={keywords} />}
         <meta name="robots" content={robotsValue} />
         <meta name="googlebot" content={robotsValue} />
         <meta name="author" content={SITE_NAME} />
@@ -69,9 +61,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         <meta property="og:type" content="website" />
         <meta property="og:site_name" content={SITE_NAME} />
         <meta property="og:title" content={meta.title} />
-        {shouldRenderDescription && (
-          <meta property="og:description" content={meta.description} />
-        )}
+        <meta property="og:description" content={meta.description} />
         <meta property="og:url" content={canonicalUrl} />
         <meta property="og:image" content={ogImage} />
         <meta
@@ -80,12 +70,9 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content={meta.title} />
-        {shouldRenderDescription && (
-          <meta name="twitter:description" content={meta.description} />
-        )}
+        <meta name="twitter:description" content={meta.description} />
         <meta name="twitter:image" content={ogImage} />
         <meta name="twitter:site" content="@kaizenweblpool" />
-        <link rel="preload" as="image" href={DEFAULT_OG_IMAGE} />
         <script type="application/ld+json">
           {JSON.stringify(structuredData)}
         </script>

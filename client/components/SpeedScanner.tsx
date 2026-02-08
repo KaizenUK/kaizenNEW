@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { createClient } from "@supabase/supabase-js";
+import { getSupabaseClient } from "@/lib/supabase";
 
 // Define the metrics type for comprehensive reporting
 type MetricsState = {
@@ -30,13 +30,7 @@ type MetricsState = {
   }>;
 };
 
-// Initialize Supabase client
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || "";
-// FIX: Changed from VITE_SUPABASE_KEY to VITE_SUPABASE_ANON_KEY to match your .env
-const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY || "";
-
-const supabase =
-  supabaseUrl && supabaseKey ? createClient(supabaseUrl, supabaseKey) : null;
+const supabase = getSupabaseClient();
 export default function SpeedScanner() {
   const [url, setUrl] = useState("");
   const [loading, setLoading] = useState(false);

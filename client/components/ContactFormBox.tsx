@@ -1,12 +1,9 @@
 import { FormEvent, useState } from "react";
 import { motion } from "framer-motion";
 import { Mail, Check, AlertCircle } from "lucide-react";
-import { createClient } from "@supabase/supabase-js";
+import { getSupabaseClient } from "@/lib/supabase";
 
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || "";
-const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY || "";
-const supabase =
-  supabaseUrl && supabaseKey ? createClient(supabaseUrl, supabaseKey) : null;
+const supabase = getSupabaseClient();
 
 type SubmitStatus = "idle" | "submitting" | "success" | "error";
 type FormStep = 1 | 2 | 3 | 4 | 5;

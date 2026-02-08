@@ -365,14 +365,6 @@ const dynamicMeta: DynamicMetaMatcher[] = [
         "Articles and guides from the Kaizen Liverpool team covering SEO, UX, content design, and agile ways of working.",
     },
   },
-  {
-    test: (pathname) => pathname.startsWith("/admin"),
-    meta: {
-      title: "Admin | Kaizen",
-      description: "Restricted Kaizen admin tools.",
-      noIndex: true,
-    },
-  },
 ];
 
 const mergeMeta = (override: Partial<PageMeta> | undefined): PageMeta => {

@@ -6,7 +6,6 @@ import {
   BrowserRouter,
   Routes,
   Route,
-  useLocation,
   Navigate,
 } from "react-router-dom";
 import { HelmetProvider } from "react-helmet-async";
@@ -29,7 +28,6 @@ const Ecommerce = lazy(() => import("./pages/services/Ecommerce"));
 const WordPressWebDesign = lazy(
   () => import("./pages/services/WordPressWebDesign"),
 );
-const CityCentre = lazy(() => import("./pages/services/CityCentre"));
 const WebDesignWirral = lazy(() => import("./pages/services/WebDesignWirral"));
 const WebDesignLiverpool = lazy(
   () => import("./pages/services/WebDesignLiverpool"),
@@ -71,16 +69,6 @@ const GDPRPolicy = lazy(() => import("./pages/GDPRPolicy"));
 const ThankYou = lazy(() => import("./pages/ThankYou"));
 const PerformanceScanner = lazy(() => import("./pages/PerformanceScanner"));
 
-// Admin components remain in the repo but are intentionally not wired into
-// the public routing table to avoid exposing an admin surface by default.
-// They can be re-enabled locally if needed.
-// import AdminLogin from "./pages/admin/AdminLogin";
-// import AdminDashboardWrapper from "./components/AdminDashboardWrapper";
-// import AdminGuard from "./components/AdminGuard";
-// import BlogPostsList from "./pages/admin/BlogPostsList";
-// import BlogPostCreate from "./pages/admin/BlogPostCreate";
-// import BlogPostDetail from "./pages/admin/BlogPostDetail";
-
 // Fallback component for lazy-loaded routes
 const PageLoader = () => (
   <Layout>
@@ -93,57 +81,17 @@ const PageLoader = () => (
 const queryClient = new QueryClient();
 
 function ModalsAndBanner() {
-  const location = useLocation();
-  const isAdminRoute = location.pathname.startsWith("/admin");
   const { isCalendlyOpen, closeCalendly } = useCalendly();
 
   return (
     <>
-      {!isAdminRoute && (
-        <CalendlyModal isOpen={isCalendlyOpen} onClose={closeCalendly} />
-      )}
-      {!isAdminRoute && <CookieBanner />}
+      <CalendlyModal isOpen={isCalendlyOpen} onClose={closeCalendly} />
+      <CookieBanner />
     </>
   );
 }
 
 function AppContent() {
-  const location = useLocation();
-  const isAdminRoute = location.pathname.startsWith("/admin");
-
-  // Suppress react-quill findDOMNode deprecation warning
-  useEffect(() => {
-    const originalError = console.error;
-    const originalWarn = console.warn;
-
-    const isFindDOMNodeWarning = (args: any[]) => {
-      const fullMessage = args.map((arg) => String(arg)).join(" ");
-      return (
-        fullMessage.includes("findDOMNode") &&
-        fullMessage.includes("deprecated")
-      );
-    };
-
-    console.error = (...args: any[]) => {
-      if (isFindDOMNodeWarning(args)) {
-        return;
-      }
-      originalError(...args);
-    };
-
-    console.warn = (...args: any[]) => {
-      if (isFindDOMNodeWarning(args)) {
-        return;
-      }
-      originalWarn(...args);
-    };
-
-    return () => {
-      console.error = originalError;
-      console.warn = originalWarn;
-    };
-  }, []);
-
   // Force light mode across the entire site
   // Dark backgrounds are handled explicitly per-section, not via dark mode toggle
   useEffect(() => {
@@ -173,7 +121,7 @@ function AppContent() {
         }
       }
     }
-  }, [isAdminRoute]);
+  }, []);
 
   return (
     <>

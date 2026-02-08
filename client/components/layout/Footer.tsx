@@ -3,13 +3,9 @@ import { Link, useLocation } from "react-router-dom";
 import KaizenLogo from "@/components/KaizenLogo";
 import { motion } from "framer-motion";
 import { ArrowRight, Linkedin, Instagram, Check } from "lucide-react";
-import { createClient } from "@supabase/supabase-js";
+import { getSupabaseClient } from "@/lib/supabase";
 
-// Newsletter Supabase client (unified)
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || "";
-const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY || "";
-const newsletterSupabase =
-  supabaseUrl && supabaseKey ? createClient(supabaseUrl, supabaseKey) : null;
+const newsletterSupabase = getSupabaseClient();
 
 const CONSENT_TEXT =
   "I consent to receiving marketing emails from Kaizen Web Ltd about services, insights, and offers. I understand I can unsubscribe at any time.";

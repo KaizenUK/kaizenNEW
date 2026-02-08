@@ -3,8 +3,7 @@ import { Resend } from "npm:resend";
 const resend = new Resend(Deno.env.get("RESEND_API_KEY"));
 const hubspotToken = Deno.env.get("HUBSPOT_ACCESS_TOKEN");
 
-// 👇 REPLACE with your logo URL
-const logoUrl = "https://kaizenweb.co.uk/assets/kaizenweb-logo-light-mode-260x50.png";
+const logoUrl = "https://kaizenweb.co.uk/kaizenweb-logo-light-mode-260x50.png";
 
 Deno.serve(async (req) => {
   const payload = await req.json();
