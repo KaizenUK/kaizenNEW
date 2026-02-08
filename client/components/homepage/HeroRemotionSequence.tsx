@@ -1,12 +1,8 @@
 import React from "react";
 import { ArrowRight, ArrowUpRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { DEFAULT_OG_IMAGE } from "@/lib/seo";
 
 const LIGHTHOUSE_SCORE = 96;
-const HIGH_PRIORITY_IMAGE_ATTRS: Record<string, string> = {
-  fetchpriority: "high",
-};
 
 const LighthouseGauge: React.FC = () => {
   const radius = 80;
@@ -67,19 +63,6 @@ export const HeroRemotionSequence: React.FC = () => {
     <section
       className="home-hero relative isolate min-h-[100vh] text-white flex items-center py-20 overflow-hidden"
     >
-      {/* Hidden preload-optimized hero image for LCP */}
-      <img
-        src={DEFAULT_OG_IMAGE}
-        alt=""
-        loading="eager"
-        decoding="async"
-        width="1200"
-        height="630"
-        className="home-hero-lcp-preload absolute inset-0 w-0 h-0 opacity-0 pointer-events-none"
-        aria-hidden="true"
-        {...HIGH_PRIORITY_IMAGE_ATTRS}
-      />
-
       {/* Fixed mesh gradient background */}
       <div className="hero-mesh-bg absolute inset-0 -z-10">
         <div className="hero-mesh-blob hero-mesh-blob--violet" />

@@ -33,23 +33,6 @@ export default defineConfig(({ mode }) => ({
         manualChunks: {
           // Split vendor code for better caching and parallel loading
           "vendor-react": ["react", "react-dom", "react-router-dom"],
-          "vendor-ui": [
-            "@radix-ui/react-accordion",
-            "@radix-ui/react-alert-dialog",
-            "@radix-ui/react-aspect-ratio",
-            "@radix-ui/react-avatar",
-            "@radix-ui/react-checkbox",
-            "@radix-ui/react-collapsible",
-            "@radix-ui/react-dialog",
-            "@radix-ui/react-dropdown-menu",
-            "@radix-ui/react-label",
-            "@radix-ui/react-popover",
-            "@radix-ui/react-select",
-            "@radix-ui/react-tabs",
-            "@radix-ui/react-toggle",
-          ],
-          "vendor-animations": ["framer-motion"],
-          "vendor-charts": ["recharts"],
         },
       },
     },

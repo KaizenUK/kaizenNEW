@@ -1,7 +1,3 @@
-import { Toaster } from "@/components/ui/toaster";
-import { Toaster as Sonner } from "@/components/ui/sonner";
-import { TooltipProvider } from "@/components/ui/tooltip";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import {
   BrowserRouter,
   Routes,
@@ -77,8 +73,6 @@ const PageLoader = () => (
     </div>
   </Layout>
 );
-
-const queryClient = new QueryClient();
 
 function ModalsAndBanner() {
   const { isCalendlyOpen, closeCalendly } = useCalendly();
@@ -237,23 +231,17 @@ function AppContent() {
 export default function App() {
   return (
     <HelmetProvider>
-      <TooltipProvider>
-        <QueryClientProvider client={queryClient}>
-          <BrowserRouter
-            future={{
-              v7_startTransition: true,
-              v7_relativeSplatPath: true,
-            }}
-          >
-            <CalendlyProvider>
-              <RouteChangeTracker />
-              <AppContent />
-              <Toaster />
-              <Sonner />
-            </CalendlyProvider>
-          </BrowserRouter>
-        </QueryClientProvider>
-      </TooltipProvider>
+      <BrowserRouter
+        future={{
+          v7_startTransition: true,
+          v7_relativeSplatPath: true,
+        }}
+      >
+        <CalendlyProvider>
+          <RouteChangeTracker />
+          <AppContent />
+        </CalendlyProvider>
+      </BrowserRouter>
     </HelmetProvider>
   );
 }

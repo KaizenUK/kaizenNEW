@@ -69,8 +69,9 @@ const DeferredSection = ({
           observer.disconnect();
         }
       },
-      // Keep eager loading modest so below-the-fold bundles do not execute too early.
-      { rootMargin: "120px 0px" },
+      // Do not preload below-the-fold sections too early; this helps avoid
+      // downloading animation-heavy bundles before the user scrolls.
+      { rootMargin: "0px 0px" },
     );
 
     if (sectionRef.current) {
