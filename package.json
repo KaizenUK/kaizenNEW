@@ -18,7 +18,8 @@
     "start": "node dist/server/node-build.mjs",
     "test": "vitest --run",
     "format.fix": "prettier --write .",
-    "typecheck": "tsc"
+    "typecheck": "tsc",
+    "trace:summary": "node scripts/trace-summary.mjs"
   },
   "dependencies": {
     "@builder.io/react": "^8.2.9",
@@ -30,7 +31,6 @@
     "leaflet": "^1.9.4",
     "react-ga4": "^2.1.0",
     "react-helmet-async": "^2.0.5",
-    "react-leaflet": "^5.0.0",
     "zod": "^3.25.76"
   },
   "devDependencies": {

@@ -75,15 +75,34 @@ const LighthouseGauge: React.FC = () => {
 };
 
 export const HeroRemotionSequence: React.FC = () => {
-  const [spotlightPos, setSpotlightPos] = useState({ x: 0, y: 0 });
   const heroRef = useRef<HTMLElement>(null);
+  const spotlightRef = useRef<HTMLDivElement>(null);
+  const rafRef = useRef<number | null>(null);
+  const mousePosRef = useRef({ x: 0, y: 0 });
   const navigate = useNavigate();
 
   const handleMouseMove = (e: React.MouseEvent<HTMLElement>) => {
     if (!heroRef.current) return;
     const rect = heroRef.current.getBoundingClientRect();
-    setSpotlightPos({ x: e.clientX - rect.left, y: e.clientY - rect.top });
+    mousePosRef.current = { x: e.clientX - rect.left, y: e.clientY - rect.top };
+
+    if (rafRef.current !== null) return;
+    rafRef.current = window.requestAnimationFrame(() => {
+      rafRef.current = null;
+      if (!spotlightRef.current) return;
+      const x = mousePosRef.current.x - 300;
+      const y = mousePosRef.current.y - 300;
+      spotlightRef.current.style.transform = `translate3d(${x}px, ${y}px, 0)`;
+    });
   };
+
+  useEffect(() => {
+    return () => {
+      if (rafRef.current !== null) {
+        window.cancelAnimationFrame(rafRef.current);
+      }
+    };
+  }, []);
 
   return (
     <section
@@ -96,7 +115,7 @@ export const HeroRemotionSequence: React.FC = () => {
         src={DEFAULT_OG_IMAGE}
         alt=""
         loading="eager"
-        fetchPriority="high"
+        fetchpriority="high"
         decoding="async"
         width="1200"
         height="630"
@@ -136,14 +155,14 @@ export const HeroRemotionSequence: React.FC = () => {
       </svg>
 
       <div
+        ref={spotlightRef}
         className="hero-spotlight absolute -z-10 opacity-60"
         style={{
           width: "600px",
           height: "600px",
-          left: `${spotlightPos.x - 300}px`,
-          top: `${spotlightPos.y - 300}px`,
           background: `radial-gradient(circle, rgba(6, 182, 212, 0.15) 0%, rgba(124, 58, 237, 0.08) 50%, transparent 100%)`,
-          transform: "translate3d(0, 0, 0)",
+          transform: "translate3d(-300px, -300px, 0)",
+          willChange: "transform",
         }}
       />
 

@@ -108,19 +108,39 @@ function AppContent() {
     if (import.meta.env.DEV) return;
     if (typeof document === "undefined") return;
 
-    const root = document.documentElement;
-    const walker = document.createTreeWalker(root, NodeFilter.SHOW_ELEMENT);
+    const cleanupBuilderAttrs = () => {
+      const root = document.documentElement;
+      const walker = document.createTreeWalker(root, NodeFilter.SHOW_ELEMENT);
 
-    // eslint-disable-next-line no-constant-condition
-    while (walker.nextNode()) {
-      const el = walker.currentNode as HTMLElement;
-      const attrs = Array.from(el.attributes);
-      for (const attr of attrs) {
-        if (attr.name.startsWith("data-builder-")) {
-          el.removeAttribute(attr.name);
+      // eslint-disable-next-line no-constant-condition
+      while (walker.nextNode()) {
+        const el = walker.currentNode as HTMLElement;
+        const attrs = Array.from(el.attributes);
+        for (const attr of attrs) {
+          if (attr.name.startsWith("data-builder-")) {
+            el.removeAttribute(attr.name);
+          }
         }
       }
+    };
+
+    let idleId: number | null = null;
+    const win = window as Window & {
+      requestIdleCallback?: (cb: IdleRequestCallback) => number;
+      cancelIdleCallback?: (id: number) => void;
+    };
+
+    if (typeof win.requestIdleCallback === "function") {
+      idleId = win.requestIdleCallback(() => cleanupBuilderAttrs());
+      return () => {
+        if (idleId !== null && typeof win.cancelIdleCallback === "function") {
+          win.cancelIdleCallback(idleId);
+        }
+      };
     }
+
+    const timeoutId = window.setTimeout(cleanupBuilderAttrs, 300);
+    return () => window.clearTimeout(timeoutId);
   }, []);
 
   return (
@@ -219,7 +239,12 @@ export default function App() {
     <HelmetProvider>
       <TooltipProvider>
         <QueryClientProvider client={queryClient}>
-          <BrowserRouter>
+          <BrowserRouter
+            future={{
+              v7_startTransition: true,
+              v7_relativeSplatPath: true,
+            }}
+          >
             <CalendlyProvider>
               <RouteChangeTracker />
               <AppContent />
