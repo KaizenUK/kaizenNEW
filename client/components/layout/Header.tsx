@@ -24,7 +24,6 @@ import {
   ArrowRight,
 } from "lucide-react";
 import { useEffect, useRef, useState, useCallback } from "react";
-import { motion, AnimatePresence, easeInOut } from "framer-motion";
 
 interface HeaderProps {
   mobileMenuOpen: boolean;
@@ -276,49 +275,6 @@ const Header: React.FC<HeaderProps> = ({
     handleMenuLeave();
   };
 
-  // Stripe-style fold animation
-  const panelVariants = {
-    hidden: {
-      opacity: 0,
-      y: -10,
-      scaleY: 0.95,
-      transformOrigin: "top",
-    },
-    visible: {
-      opacity: 1,
-      y: 0,
-      scaleY: 1,
-      transformOrigin: "top",
-      transition: {
-        duration: 0.25,
-        ease: easeInOut,
-      },
-    },
-    exit: {
-      opacity: 0,
-      y: -5,
-      scaleY: 0.98,
-      transformOrigin: "top",
-      transition: {
-        duration: 0.15,
-        ease: easeInOut,
-      },
-    },
-  };
-
-  // Content fade for switching between menus
-  const contentVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: { duration: 0.15, ease: easeInOut },
-    },
-    exit: {
-      opacity: 0,
-      transition: { duration: 0.1, ease: easeInOut },
-    },
-  };
-
   const menuTriggers: { key: DesktopMenuKey; label: string }[] = [
     { key: "services", label: "Services" },
     { key: "insights", label: "Insights" },
@@ -374,31 +330,17 @@ const Header: React.FC<HeaderProps> = ({
             </div>
 
             {/* Dropdown Panel Container - Stripe-style fold animation */}
-            <AnimatePresence>
-              {activeMenu && (
-                <motion.div
-                  variants={panelVariants}
-                  initial="hidden"
-                  animate="visible"
-                  exit="exit"
-                  onMouseEnter={handlePanelEnter}
-                  onMouseLeave={handlePanelLeave}
-                  className="absolute top-full bg-white rounded-xl border border-gray-200 shadow-2xl shadow-gray-200/50 overflow-hidden"
-                  style={{
-                    left: `${buttonPosition}px`,
-                    minWidth: activeMenu === "services" ? "560px" : "320px",
-                  }}
-                >
-                  {/* Animated content switching */}
-                  <AnimatePresence mode="wait">
-                    <motion.div
-                      key={activeMenu}
-                      variants={contentVariants}
-                      initial="hidden"
-                      animate="visible"
-                      exit="exit"
-                      className="p-6"
-                    >
+            {activeMenu && (
+              <div
+                onMouseEnter={handlePanelEnter}
+                onMouseLeave={handlePanelLeave}
+                className="absolute top-full bg-white rounded-xl border border-gray-200 shadow-2xl shadow-gray-200/50 overflow-hidden transition-[opacity,transform] duration-200 ease-out opacity-100 translate-y-0"
+                style={{
+                  left: `${buttonPosition}px`,
+                  minWidth: activeMenu === "services" ? "560px" : "320px",
+                }}
+              >
+                <div key={activeMenu} className="p-6">
                       <div
                         className={`grid gap-8 ${
                           activeMenu === "services"
@@ -417,22 +359,14 @@ const Header: React.FC<HeaderProps> = ({
                               <h3 className="text-sm font-semibold text-cyan-600 hover:text-black transition-colors duration-150 cursor-default">
                                 {column.title}
                               </h3>
-                              {/* Animated underline */}
                               <div className="absolute bottom-0 left-0 right-0 h-px bg-gray-200 mt-2">
-                                <motion.div
-                                    className="h-full bg-cyan-500"
-                                    initial={{ width: 0 }}
-                                    animate={{
-                                      width:
-                                        hoveredColumn === column.title
-                                          ? "100%"
-                                          : 0,
-                                    }}
-                                    transition={{
-                                      duration: 0.3,
-                                      ease: easeInOut,
-                                    }}
-                                  />
+                                <div
+                                  className={`h-full bg-cyan-500 transition-all duration-300 ${
+                                    hoveredColumn === column.title
+                                      ? "w-full"
+                                      : "w-0"
+                                  }`}
+                                />
                               </div>
                             </div>
 
@@ -468,11 +402,9 @@ const Header: React.FC<HeaderProps> = ({
                           </div>
                         ))}
                       </div>
-                    </motion.div>
-                  </AnimatePresence>
-                </motion.div>
-              )}
-            </AnimatePresence>
+                </div>
+              </div>
+            )}
           </nav>
 
           {/* Right Actions - pushed to the right */}

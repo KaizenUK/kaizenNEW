@@ -472,19 +472,6 @@
     @apply border-l-4 border-kaizen-cyan pl-4 italic text-gray-700 dark:text-gray-300;
   }
 
-  /* Glassmorphism cards */
-  .glass-card {
-    background: rgba(255, 255, 255, 0.05);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-  }
-
-  .glass-card:hover {
-    background: rgba(255, 255, 255, 0.08);
-    border-color: rgba(255, 255, 255, 0.15);
-    transform: translateY(-5px);
-  }
 }
 
 @layer utilities {
@@ -616,32 +603,6 @@
     pointer-events: none;
   }
 
-  /* Text aurora gradient effect */
-  .hero-text-aurora {
-    background: linear-gradient(
-      90deg,
-      #06b6d4 0%,
-      #7c3aed 25%,
-      #ff006e 50%,
-      #7c3aed 75%,
-      #06b6d4 100%
-    );
-    background-size: 200% 100%;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    animation: aurora-text 8s linear infinite;
-  }
-
-  @keyframes aurora-text {
-    0% {
-      background-position: 200% 0;
-    }
-    100% {
-      background-position: -200% 0;
-    }
-  }
-
   /* Cursor spotlight */
   .hero-spotlight {
     position: absolute;
@@ -649,92 +610,9 @@
     will-change: opacity, transform;
   }
 
-  /* Living Blueprint animations */
-  @keyframes grid-scroll {
-    0% {
-      transform: translateZ(0) translateY(0);
-    }
-    100% {
-      transform: translateZ(-500px) translateY(50px);
-    }
-  }
-
-  @keyframes dot-pulse {
-    0%,
-    100% {
-      opacity: 0.4;
-      r: 3px;
-    }
-    50% {
-      opacity: 1;
-      r: 5px;
-    }
-  }
-
-  @keyframes cube-rotate {
-    0% {
-      transform: rotate3d(1, 1, 1, 0deg);
-    }
-    100% {
-      transform: rotate3d(1, 1, 1, 360deg);
-    }
-  }
-
-  @keyframes cube-breathe {
-    0%,
-    100% {
-      transform: rotate3d(1, 1, 1, 0deg) scale(1);
-    }
-    50% {
-      transform: rotate3d(1, 1, 1, 0deg) scale(1.1);
-    }
-  }
-
-  @keyframes line-draw {
-    0%,
-    100% {
-      stroke-dashoffset: 1000;
-    }
-    50% {
-      stroke-dashoffset: 0;
-    }
-  }
-
-  .blueprint-grid {
-    perspective: 1000px;
-    position: relative;
-  }
-
-  .blueprint-dot {
-    animation: dot-pulse 3s ease-in-out infinite;
-  }
-
-  .blueprint-cube {
-    animation: cube-breathe 4s ease-in-out infinite;
-    transform-style: preserve-3d;
-  }
-
   @media (prefers-reduced-motion: reduce) {
     .hero-mesh-blob {
       animation: none;
-    }
-
-    .hero-text-aurora {
-      animation: none;
-      background: linear-gradient(90deg, #06b6d4, #7c3aed);
-    }
-
-    .glass-card:hover {
-      transform: none;
-    }
-
-    .blueprint-dot {
-      animation: none;
-      opacity: 0.6 !important;
-    }
-
-    .blueprint-cube {
-      animation: none !important;
     }
   }
 }
