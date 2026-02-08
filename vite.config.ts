@@ -50,7 +50,7 @@ export default defineConfig(({ mode }) => ({
           ],
           "vendor-animations": ["framer-motion"],
           "vendor-charts": ["recharts"],
-          "vendor-maps": ["leaflet", "react-leaflet"],
+          "vendor-maps": ["leaflet"],
         },
       },
     },
