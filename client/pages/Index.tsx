@@ -1,5 +1,5 @@
 import React, { Suspense, useEffect, useRef, useState, lazy } from "react";
-import Layout from "@/components/Layout";
+import HomeLayout from "@/components/HomeLayout";
 
 // Lazy-load below-the-fold components to reduce initial bundle size
 import { HeroRemotionSequence } from "@/components/homepage/HeroRemotionSequence";
@@ -96,7 +96,7 @@ const DeferredSection = ({
 
 export default function Home() {
   return (
-    <Layout>
+    <HomeLayout>
       {/* 1. Hero — hook them with the outcome + live proof */}
       <HeroRemotionSequence />
 
@@ -160,7 +160,7 @@ export default function Home() {
           <SEOFAQSection />
         </Suspense>
       </DeferredSection>
-    </Layout>
+    </HomeLayout>
   );
 }
 

@@ -2,66 +2,15 @@ import {
   BrowserRouter,
   Routes,
   Route,
-  Navigate,
 } from "react-router-dom";
-import { HelmetProvider } from "react-helmet-async";
 import { Suspense, lazy, useEffect, useState } from "react";
 import { CalendlyProvider, useCalendly } from "@/context/CalendlyContext";
 import { RouteChangeTracker } from "@/components/RouteChangeTracker";
-import Layout from "./components/Layout";
 
 // Eager load Home page for fast First Paint
 // All other pages are lazy-loaded for better initial load performance
 import Index from "./pages/Index";
-const NotFound = lazy(() => import("./pages/NotFound"));
-const LocalSeo = lazy(() => import("./pages/services/LocalSeo"));
-const DigitalTransformation = lazy(
-  () => import("./pages/services/DigitalTransformation"),
-);
-const Ecommerce = lazy(() => import("./pages/services/Ecommerce"));
-const WordPressWebDesign = lazy(
-  () => import("./pages/services/WordPressWebDesign"),
-);
-const WebDesignWirral = lazy(() => import("./pages/services/WebDesignWirral"));
-const WebDesignLiverpool = lazy(
-  () => import("./pages/services/WebDesignLiverpool"),
-);
-const WebDesignChester = lazy(
-  () => import("./pages/services/WebDesignChester"),
-);
-const WebDesignWarrington = lazy(
-  () => import("./pages/services/WebDesignWarrington"),
-);
-const ContractProductOwner = lazy(() => import("./pages/ContractProductOwner"));
-const ProjectRescue = lazy(() => import("./pages/ProjectRescue"));
-const CaseStudies = lazy(() => import("./pages/CaseStudies"));
-const Blog = lazy(() => import("./pages/Blog"));
-const BlogDetail = lazy(() => import("./pages/BlogDetail"));
-const Contact = lazy(() => import("./pages/Contact"));
-const Services = lazy(() => import("./pages/Services"));
-const About = lazy(() => import("./pages/About"));
-const Pledge = lazy(() => import("./pages/Pledge"));
-const AgileCoaching = lazy(() => import("./pages/AgileCoaching"));
-const AsCollectionsCase = lazy(
-  () => import("./pages/caseStudies/AsCollections"),
-);
-const HelenMooreHairdressingCase = lazy(
-  () => import("./pages/caseStudies/HelenMooreHairdressing"),
-);
-const IndependentRetailerCase = lazy(
-  () => import("./pages/caseStudies/IndependentRetailer"),
-);
-const KaizenRebuildCase = lazy(
-  () => import("./pages/caseStudies/KaizenRebuild"),
-);
-const HighFiveGamesCase = lazy(
-  () => import("./pages/caseStudies/HighFiveGames"),
-);
-const PrivacyPolicy = lazy(() => import("./pages/PrivacyPolicy"));
-const CookiePolicy = lazy(() => import("./pages/CookiePolicy"));
-const GDPRPolicy = lazy(() => import("./pages/GDPRPolicy"));
-const ThankYou = lazy(() => import("./pages/ThankYou"));
-const PerformanceScanner = lazy(() => import("./pages/PerformanceScanner"));
+const OtherRoutes = lazy(() => import("./OtherRoutes"));
 const CalendlyModal = lazy(() =>
   import("@/components/CalendlyModal").then((m) => ({
     default: m.CalendlyModal,
@@ -75,11 +24,11 @@ const CookieBanner = lazy(() =>
 
 // Fallback component for lazy-loaded routes
 const PageLoader = () => (
-  <Layout>
+  <div className="site-shell min-h-screen flex flex-col bg-background text-foreground">
     <div className="flex items-center justify-center min-h-screen">
       <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-kaizen-cyan"></div>
     </div>
-  </Layout>
+  </div>
 );
 
 function ModalsAndBanner() {
@@ -183,85 +132,8 @@ function AppContent() {
 
       <Suspense fallback={<PageLoader />}>
         <Routes>
-          {/* Public Routes */}
           <Route path="/" element={<Index />} />
-          <Route path="/services" element={<Services />} />
-          <Route
-            path="/web-design-liverpool"
-            element={<WebDesignLiverpool />}
-          />
-          <Route path="/web-design-chester" element={<WebDesignChester />} />
-          <Route
-            path="/web-design-warrington"
-            element={<WebDesignWarrington />}
-          />
-          <Route
-            path="/services/web-design-liverpool"
-            element={<Navigate to="/web-design-liverpool" replace />}
-          />
-          <Route
-            path="/web-design-liverpool-city-centre"
-            element={<Navigate to="/web-design-liverpool" replace />}
-          />
-          <Route path="/services/local-seo" element={<LocalSeo />} />
-          <Route
-            path="/digital-transformation"
-            element={<DigitalTransformation />}
-          />
-          <Route
-            path="/services/digital-transformation"
-            element={<Navigate to="/digital-transformation" replace />}
-          />
-          <Route path="/services/ecommerce" element={<Ecommerce />} />
-          <Route
-            path="/services/wordpress-web-design"
-            element={<WordPressWebDesign />}
-          />
-          <Route path="/web-design-wirral" element={<WebDesignWirral />} />
-          <Route
-            path="/contract-product-owner"
-            element={<ContractProductOwner />}
-          />
-          <Route path="/project-rescue" element={<ProjectRescue />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/pledge" element={<Pledge />} />
-          <Route path="/agile-coaching" element={<AgileCoaching />} />
-          <Route
-            path="/product-owner"
-            element={<Navigate to="/contract-product-owner" replace />}
-          />
-          <Route path="/case-studies" element={<CaseStudies />} />
-          <Route
-            path="/case-studies/as-collections"
-            element={<AsCollectionsCase />}
-          />
-          <Route
-            path="/case-studies/helen-moore-hairdressing"
-            element={<HelenMooreHairdressingCase />}
-          />
-          <Route
-            path="/case-studies/independent-retailer"
-            element={<IndependentRetailerCase />}
-          />
-          <Route
-            path="/case-studies/kaizen-rebuild"
-            element={<KaizenRebuildCase />}
-          />
-          <Route
-            path="/case-studies/high-five-games"
-            element={<HighFiveGamesCase />}
-          />
-          <Route path="/blog" element={<Blog />} />
-          <Route path="/blog/:slug" element={<BlogDetail />} />
-          <Route path="/contact" element={<Contact />} />
-          <Route path="/thank-you" element={<ThankYou />} />
-          <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-          <Route path="/cookie-policy" element={<CookiePolicy />} />
-          <Route path="/gdpr-policy" element={<GDPRPolicy />} />
-          <Route path="/performance-scanner" element={<PerformanceScanner />} />
-
-          {/* Catch-all - ADD ALL CUSTOM ROUTES ABOVE THIS */}
-          <Route path="*" element={<NotFound />} />
+          <Route path="*" element={<OtherRoutes />} />
         </Routes>
       </Suspense>
     </>
@@ -270,18 +142,16 @@ function AppContent() {
 
 export default function App() {
   return (
-    <HelmetProvider>
-      <BrowserRouter
-        future={{
-          v7_startTransition: true,
-          v7_relativeSplatPath: true,
-        }}
-      >
-        <CalendlyProvider>
-          <RouteChangeTracker />
-          <AppContent />
-        </CalendlyProvider>
-      </BrowserRouter>
-    </HelmetProvider>
+    <BrowserRouter
+      future={{
+        v7_startTransition: true,
+        v7_relativeSplatPath: true,
+      }}
+    >
+      <CalendlyProvider>
+        <RouteChangeTracker />
+        <AppContent />
+      </CalendlyProvider>
+    </BrowserRouter>
   );
 }
