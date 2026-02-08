@@ -10,6 +10,26 @@ const __dirname = import.meta.dirname;
 const distPath = path.join(__dirname, "../spa");
 const IMMUTABLE_ONE_YEAR = "public, max-age=31536000, immutable";
 const HTML_NO_CACHE = "public, max-age=0, must-revalidate";
+const STATIC_FILE_EXTENSIONS = new Set([
+  ".png",
+  ".jpg",
+  ".jpeg",
+  ".gif",
+  ".webp",
+  ".avif",
+  ".svg",
+  ".ico",
+  ".woff",
+  ".woff2",
+  ".ttf",
+  ".otf",
+  ".mp4",
+  ".webm",
+  ".mp3",
+  ".wav",
+  ".json",
+  ".txt",
+]);
 
 const immutableRootAssets = new Set([
   "logo.svg",
@@ -37,6 +57,12 @@ const setStaticCacheHeaders: express.RequestHandler = (req, res, next) => {
 
   // Root-level static branding/app icon files are also version-stable.
   if (immutableRootAssets.has(fileName)) {
+    res.setHeader("Cache-Control", IMMUTABLE_ONE_YEAR);
+    return next();
+  }
+
+  // Other static files from /public in production should also be long-lived.
+  if (STATIC_FILE_EXTENSIONS.has(ext) && !req.path.startsWith("/api/")) {
     res.setHeader("Cache-Control", IMMUTABLE_ONE_YEAR);
     return next();
   }
