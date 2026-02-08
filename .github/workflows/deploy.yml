@@ -16,7 +16,6 @@ jobs:
 
       # 2. Install & Build (With Environment Variables)
       - name: 🔨 Install & Build
-        # 👇 This is where the secrets go (aligned with 'run', NOT inside it)
         env:
           VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
           VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
@@ -24,12 +23,12 @@ jobs:
           npm install
           npm run build
 
-      # 3. Deploy via Rsync
+      # 3. Deploy via FTP
       - name: 🚀 Deploy to cPanel
-        uses: easingthemes/ssh-deploy@v5.1.0
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
-          REMOTE_HOST: ${{ secrets.FTP_SERVER }}
-          REMOTE_USER: ${{ secrets.FTP_USERNAME }}
-          SOURCE: "dist/spa/"
-          TARGET: "public_html/"
-          ARGS: "-rltgoDzvO"
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          local-dir: ./dist/spa/
+          server-dir: ./public_html/
