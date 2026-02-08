@@ -29,7 +29,7 @@ export function FaqSection({
   eyebrow = "Common Questions",
   items,
   id,
-  className = "bg-slate-50 dark:bg-slate-900/50",
+  className = "bg-slate-50",
 }: FaqSectionProps) {
   const faqSchema = {
     "@context": "https://schema.org",
@@ -65,7 +65,7 @@ export function FaqSection({
               {eyebrow}
             </p>
           )}
-          <h2 className="text-4xl md:text-5xl font-heading font-bold text-gray-950 dark:text-white mb-6">
+          <h2 className="text-4xl md:text-5xl font-heading font-bold text-gray-950 mb-6">
             {heading}
           </h2>
         </motion.div>
@@ -76,12 +76,12 @@ export function FaqSection({
               <AccordionItem
                 key={index}
                 value={`item-${index}`}
-                className="border-b border-gray-200 dark:border-gray-800"
+                className="border-b border-gray-200"
               >
-                <AccordionTrigger className="text-left text-lg font-heading font-bold text-gray-950 dark:text-white hover:text-kaizen-cyan transition-colors">
+                <AccordionTrigger className="text-left text-lg font-heading font-bold text-gray-950 hover:text-kaizen-cyan transition-colors">
                   {item.question}
                 </AccordionTrigger>
-                <AccordionContent className="text-gray-700 dark:text-gray-300 leading-relaxed">
+                <AccordionContent className="text-gray-700 leading-relaxed">
                   {item.answer}
                 </AccordionContent>
               </AccordionItem>
@@ -95,7 +95,7 @@ export function FaqSection({
           viewport={{ once: true }}
           className="text-center mt-12"
         >
-          <p className="text-gray-700 dark:text-gray-300 mb-6">
+          <p className="text-gray-700 mb-6">
             Still have questions? We're here to help.
           </p>
           <Link

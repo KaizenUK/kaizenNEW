@@ -158,11 +158,11 @@ function ImageWithSkeleton({ src, alt }: ImageWithSkeletonProps) {
   const [hasError, setHasError] = useState(false);
 
   return (
-    <div className="relative w-full bg-gray-200 dark:bg-gray-800 rounded-lg overflow-hidden">
+    <div className="relative w-full bg-gray-200 rounded-lg overflow-hidden">
       <AnimatePresence>
         {isLoading && (
           <motion.div
-            className="absolute inset-0 bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 dark:from-gray-800 dark:via-gray-700 dark:to-gray-800 bg-[length:200%_100%]"
+            className="absolute inset-0 bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 bg-[length:200%_100%]"
             animate={{ backgroundPosition: ["0% 0%", "200% 0%"] }}
             transition={{ duration: 2, repeat: Infinity }}
             exit={{ opacity: 0 }}
@@ -184,7 +184,7 @@ function ImageWithSkeleton({ src, alt }: ImageWithSkeletonProps) {
         decoding="async"
       />
       {hasError && (
-        <div className="absolute inset-0 flex items-center justify-center bg-gray-200 dark:bg-gray-800 text-gray-600 dark:text-gray-500">
+        <div className="absolute inset-0 flex items-center justify-center bg-gray-200 text-gray-600">
           <span className="text-sm">Image failed to load</span>
         </div>
       )}
@@ -200,12 +200,12 @@ interface TableOfContentsProps {
 function TableOfContents({ items, activeId }: TableOfContentsProps) {
   return (
     <motion.div
-      className="bg-gray-100 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-lg p-6 sticky top-20"
+      className="bg-gray-100 border border-gray-200 rounded-lg p-6 sticky top-20"
       initial={{ opacity: 0, x: -20 }}
       animate={{ opacity: 1, x: 0 }}
       transition={{ duration: 0.5, delay: 0.6 }}
     >
-      <p className="text-xs font-mono text-gray-600 dark:text-gray-500 font-bold tracking-widest mb-4">
+      <p className="text-xs font-mono text-gray-600 font-bold tracking-widest mb-4">
         TABLE OF CONTENTS
       </p>
       <nav className="space-y-0">
@@ -217,8 +217,8 @@ function TableOfContents({ items, activeId }: TableOfContentsProps) {
               href={`#${item.id}`}
               className={`block text-sm py-3 px-3 rounded-md transition-all duration-200 relative group border-l-2 ${
                 isActive
-                  ? "text-cyan-600 dark:text-cyan-400 border-l-cyan-500 dark:border-l-cyan-400 font-semibold bg-cyan-50/50 dark:bg-gray-950/50"
-                  : "text-gray-700 dark:text-gray-500 border-l-transparent hover:text-gray-950 dark:hover:text-gray-300 hover:bg-gray-200/50 dark:hover:bg-gray-800/50"
+                  ? "text-cyan-600 border-l-cyan-500 font-semibold bg-cyan-50/50"
+                  : "text-gray-700 border-l-transparent hover:text-gray-950 hover:bg-gray-200/50"
               }`}
               whileHover={{ x: 3 }}
               transition={{ duration: 0.2 }}
@@ -235,7 +235,7 @@ function TableOfContents({ items, activeId }: TableOfContentsProps) {
               {/* Animated indicator dot for active state */}
               {isActive && (
                 <motion.div
-                  className="absolute right-3 top-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-cyan-500 dark:bg-cyan-400"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-cyan-500"
                   initial={{ scale: 0, opacity: 0 }}
                   animate={{ scale: 1, opacity: 1 }}
                   exit={{ scale: 0, opacity: 0 }}
@@ -259,12 +259,12 @@ interface AuthorProps {
 function Author({ name, role, image }: AuthorProps) {
   return (
     <motion.div
-      className="bg-gray-100 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-lg p-6"
+      className="bg-gray-100 border border-gray-200 rounded-lg p-6"
       initial={{ opacity: 0, x: -20 }}
       animate={{ opacity: 1, x: 0 }}
       transition={{ duration: 0.5, delay: 0.7 }}
     >
-      <p className="text-xs font-mono text-gray-600 dark:text-gray-500 font-bold tracking-widest mb-4">
+      <p className="text-xs font-mono text-gray-600 font-bold tracking-widest mb-4">
         AUTHOR
       </p>
       <div className="flex items-center gap-4">
@@ -278,10 +278,10 @@ function Author({ name, role, image }: AuthorProps) {
           decoding="async"
         />
         <div>
-          <p className="font-heading font-bold text-gray-950 dark:text-white">
+          <p className="font-heading font-bold text-gray-950">
             {name}
           </p>
-          <p className="text-xs text-gray-600 dark:text-gray-400">{role}</p>
+          <p className="text-xs text-gray-600">{role}</p>
         </div>
       </div>
     </motion.div>
@@ -362,7 +362,7 @@ function RichTextContent({ html }: RichTextContentProps) {
     const blockquotes = contentRef.current.querySelectorAll("blockquote");
     blockquotes.forEach((bq) => {
       bq.className =
-        "border-l-4 border-primary bg-gray-50 dark:bg-slate-800 pl-4 py-3 my-6 italic text-gray-800 dark:text-gray-200 rounded-md";
+        "border-l-4 border-primary bg-gray-50 pl-4 py-3 my-6 italic text-gray-800 rounded-md";
     });
 
     // Handle tables: hide on mobile, show modal button
@@ -379,7 +379,7 @@ function RichTextContent({ html }: RichTextContentProps) {
       const btn = document.createElement("button");
       btn.type = "button";
       btn.className =
-        "block md:hidden w-full bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white py-4 rounded-xl font-semibold flex items-center justify-center gap-2 my-6 hover:bg-slate-200 dark:hover:bg-slate-700 transition";
+        "block md:hidden w-full bg-slate-100 text-slate-900 py-4 rounded-xl font-semibold flex items-center justify-center gap-2 my-6 hover:bg-slate-200 transition";
       btn.innerHTML = "🔍 View Table";
 
       // Use captured HTML in closure
@@ -406,7 +406,7 @@ function RichTextContent({ html }: RichTextContentProps) {
     <>
       <motion.div
         ref={contentRef}
-        className="max-w-3xl blog-content prose dark:prose-invert text-gray-950 dark:text-white"
+        className="max-w-3xl blog-content prose text-gray-950"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, delay: 0.3 }}
@@ -591,11 +591,11 @@ export default function BlogDetail() {
   if (isLoading) {
     return (
       <Layout>
-        <div className="flex items-center justify-center min-h-screen bg-white dark:bg-gray-950">
+        <div className="flex items-center justify-center min-h-screen bg-white">
           <motion.div
             animate={{ rotate: 360 }}
             transition={{ repeat: Infinity, duration: 2, ease: "linear" }}
-            className="w-12 h-12 border-4 border-gray-300 dark:border-gray-800 border-t-blue-400 rounded-full"
+            className="w-12 h-12 border-4 border-gray-300 border-t-blue-400 rounded-full"
           />
         </div>
       </Layout>
@@ -605,11 +605,11 @@ export default function BlogDetail() {
   if (!post) {
     return (
       <Layout>
-        <div className="min-h-screen bg-white dark:bg-gray-950 text-gray-950 dark:text-white flex flex-col items-center justify-center px-4">
+        <div className="min-h-screen bg-white text-gray-950 flex flex-col items-center justify-center px-4">
           <h1 className="text-4xl font-heading font-bold mb-4">
             Post Not Found
           </h1>
-          <p className="text-gray-600 dark:text-gray-400 mb-8">
+          <p className="text-gray-600 mb-8">
             The blog post you're looking for doesn't exist.
           </p>
           <Link
@@ -706,12 +706,12 @@ export default function BlogDetail() {
       <SeoFromYoast yoast={yoast} />
 
       {/* Progress Bar with Percentage */}
-      <motion.div className="fixed top-0 left-0 right-0 h-1 z-50 bg-gray-200 dark:bg-gray-800">
+      <motion.div className="fixed top-0 left-0 right-0 h-1 z-50 bg-gray-200">
         <motion.div
           className="h-full bg-gradient-to-r from-blue-500 via-purple-500 to-blue-400"
           style={{ scaleX, transformOrigin: "left" }}
         />
-        <motion.div className="absolute top-2 right-4 text-xs font-mono text-gray-700 dark:text-gray-300 bg-gray-100/80 dark:bg-gray-900/80 px-2 py-1 rounded">
+        <motion.div className="absolute top-2 right-4 text-xs font-mono text-gray-700 bg-gray-100/80 px-2 py-1 rounded">
           {scrollProgress}%
         </motion.div>
       </motion.div>
@@ -740,7 +740,7 @@ export default function BlogDetail() {
         <div className="absolute top-4 left-4">
           <Link
             to="/blog"
-            className="inline-flex items-center gap-2 px-4 py-2 bg-white/80 dark:bg-gray-900/80 hover:bg-white dark:hover:bg-gray-900 text-gray-950 dark:text-gray-300 rounded-lg transition font-mono text-sm"
+            className="inline-flex items-center gap-2 px-4 py-2 bg-white/80 hover:bg-white text-gray-950 rounded-lg transition font-mono text-sm"
           >
             <ArrowLeft size={16} />
             Back to Blog
@@ -749,7 +749,7 @@ export default function BlogDetail() {
       </motion.div>
 
       {/* Content Section */}
-      <section className="bg-white dark:bg-gray-950 text-gray-950 dark:text-white py-12 px-4">
+      <section className="bg-white text-gray-950 py-12 px-4">
         <div className="container mx-auto max-w-7xl">
           <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
             {/* Left Sidebar - TOC and Author */}
@@ -778,7 +778,7 @@ export default function BlogDetail() {
                 {/* Header */}
                 <div className="mb-8">
                   <motion.h1
-                    className="text-5xl font-heading font-bold mb-4 text-gray-950 dark:text-white"
+                    className="text-5xl font-heading font-bold mb-4 text-gray-950"
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.6, delay: 0.3 }}
@@ -787,7 +787,7 @@ export default function BlogDetail() {
                   </motion.h1>
 
                   <motion.div
-                    className="flex flex-col gap-1 text-gray-600 dark:text-gray-400 font-mono text-sm"
+                    className="flex flex-col gap-1 text-gray-600 font-mono text-sm"
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ duration: 0.6, delay: 0.4 }}
@@ -802,7 +802,7 @@ export default function BlogDetail() {
                       <span>{post.readingTime} min read</span>
                     </div>
                     {modifiedLabel && (
-                      <div className="italic text-xs md:text-sm text-gray-500 dark:text-gray-400">
+                      <div className="italic text-xs md:text-sm text-gray-500">
                         Last updated {modifiedLabel}
                       </div>
                     )}
@@ -817,7 +817,7 @@ export default function BlogDetail() {
                 {/* Tags */}
                 {post.tags.length > 0 && (
                   <motion.div
-                    className="flex gap-3 flex-wrap mb-12 pt-8 border-t border-gray-200 dark:border-gray-800"
+                    className="flex gap-3 flex-wrap mb-12 pt-8 border-t border-gray-200"
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ duration: 0.6, delay: 0.6 }}
@@ -825,7 +825,7 @@ export default function BlogDetail() {
                     {post.tags.map((tag, tagIdx) => (
                       <span
                         key={`post-tag-${post.id}-${tagIdx}`}
-                        className="px-3 py-1 bg-gray-200 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-full text-xs font-mono font-bold tracking-widest"
+                        className="px-3 py-1 bg-gray-200 text-gray-700 rounded-full text-xs font-mono font-bold tracking-widest"
                       >
                         {tag}
                       </span>
@@ -836,18 +836,18 @@ export default function BlogDetail() {
 
               {/* CTA Section */}
               <motion.section
-                className="bg-gray-100 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-lg p-8 my-12"
+                className="bg-gray-100 border border-gray-200 rounded-lg p-8 my-12"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.7 }}
               >
-                <p className="text-green-600 dark:text-green-400 text-sm mb-4">
+                <p className="text-green-600 text-sm mb-4">
                   $ ready_to_sprint();
                 </p>
-                <h3 className="text-2xl font-heading font-bold text-gray-950 dark:text-white mb-3">
+                <h3 className="text-2xl font-heading font-bold text-gray-950 mb-3">
                   Ready to sprint? Let's build your MVP.
                 </h3>
-                <p className="text-gray-600 dark:text-gray-400 text-sm mb-6">
+                <p className="text-gray-600 text-sm mb-6">
                   Take your idea from concept to launch with Agile delivery and
                   clear thinking.
                 </p>
@@ -867,7 +867,7 @@ export default function BlogDetail() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.6, delay: 0.8 }}
                 >
-                  <h2 className="text-3xl font-heading font-bold text-gray-950 dark:text-white mb-8">
+                  <h2 className="text-3xl font-heading font-bold text-gray-950 mb-8">
                     More from the Blog
                   </h2>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -880,12 +880,12 @@ export default function BlogDetail() {
                       >
                         <Link
                           to={`/blog/${relatedPost.slug}`}
-                          className="group p-4 border border-gray-200 dark:border-gray-700 rounded-lg hover:border-blue-500/50 dark:hover:border-blue-500/50 hover:bg-gray-100 dark:hover:bg-gray-800/50 transition block"
+                          className="group p-4 border border-gray-200 rounded-lg hover:border-blue-500/50 hover:bg-gray-100 transition block"
                         >
-                          <h4 className="font-heading font-bold text-gray-950 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-300 transition mb-2">
+                          <h4 className="font-heading font-bold text-gray-950 group-hover:text-blue-600 transition mb-2">
                             {relatedPost.title}
                           </h4>
-                          <p className="text-gray-600 dark:text-gray-500 text-sm font-mono">
+                          <p className="text-gray-600 text-sm font-mono">
                             {relatedPost.publishedDate
                               ? new Date(
                                   relatedPost.publishedDate,

@@ -190,14 +190,14 @@ export default function ProjectRescue() {
       </section>
 
       {/* Symptom Checklist */}
-      <section className="py-20 md:py-32 bg-white dark:bg-slate-950">
+      <section className="py-20 md:py-32 bg-white">
         <div className="container mx-auto px-4">
           <ScrollReveal>
             <div className="text-center mb-16">
-              <h2 className="text-4xl md:text-5xl font-heading font-bold mb-6 text-kaizen-dark dark:text-white">
+              <h2 className="text-4xl md:text-5xl font-heading font-bold mb-6 text-kaizen-dark">
                 Is your project going off the rails?
               </h2>
-              <p className="text-xl text-kaizen-text-dark/70 dark:text-white/70 max-w-2xl mx-auto">
+              <p className="text-xl text-kaizen-text-dark/70 max-w-2xl mx-auto">
                 If any of these sound familiar, you need Project Rescue.
               </p>
             </div>
@@ -223,13 +223,13 @@ export default function ProjectRescue() {
               <motion.div
                 key={index}
                 variants={fadeInUp}
-                className="flex items-start gap-4 p-6 bg-red-50 dark:bg-red-900/10 rounded-xl border border-red-200 dark:border-red-900/30"
+                className="flex items-start gap-4 p-6 bg-red-50 rounded-xl border border-red-200"
               >
                 <AlertTriangle
-                  className="text-red-600 dark:text-red-400 flex-shrink-0 mt-1"
+                  className="text-red-600 flex-shrink-0 mt-1"
                   size={24}
                 />
-                <p className="text-base text-kaizen-dark dark:text-white font-medium">
+                <p className="text-base text-kaizen-dark font-medium">
                   {symptom}
                 </p>
               </motion.div>
@@ -239,11 +239,11 @@ export default function ProjectRescue() {
       </section>
 
       {/* The Process */}
-      <section className="py-20 md:py-32 bg-kaizen-light dark:bg-slate-900/50">
+      <section className="py-20 md:py-32 bg-kaizen-light">
         <div className="container mx-auto px-4">
           <ScrollReveal>
             <div className="text-center mb-16">
-              <h2 className="text-4xl md:text-5xl font-heading font-bold mb-6 text-kaizen-dark dark:text-white">
+              <h2 className="text-4xl md:text-5xl font-heading font-bold mb-6 text-kaizen-dark">
                 How Project Rescue Works
               </h2>
             </div>
@@ -271,14 +271,14 @@ export default function ProjectRescue() {
               },
             ].map((item, index) => (
               <ScrollReveal key={index} delay={index}>
-                <div className="relative p-8 bg-white dark:bg-slate-900 rounded-2xl border border-kaizen-light dark:border-slate-800">
-                  <p className="text-6xl font-heading font-black text-kaizen-cyan/20 dark:text-kaizen-cyan/10 mb-4">
+                <div className="relative p-8 bg-white rounded-2xl border border-kaizen-light">
+                  <p className="text-6xl font-heading font-black text-kaizen-cyan/20 mb-4">
                     {item.step}
                   </p>
-                  <h3 className="text-2xl font-heading font-bold mb-4 text-kaizen-dark dark:text-white">
+                  <h3 className="text-2xl font-heading font-bold mb-4 text-kaizen-dark">
                     {item.title}
                   </h3>
-                  <p className="text-base text-kaizen-text-dark/70 dark:text-white/70 leading-relaxed">
+                  <p className="text-base text-kaizen-text-dark/70 leading-relaxed">
                     {item.content}
                   </p>
                 </div>
@@ -289,14 +289,14 @@ export default function ProjectRescue() {
       </section>
 
       {/* Deliverables */}
-      <section className="py-20 md:py-32 bg-white dark:bg-slate-950">
+      <section className="py-20 md:py-32 bg-white">
         <div className="container mx-auto px-4">
           <ScrollReveal>
             <div className="text-center mb-16">
-              <h2 className="text-4xl md:text-5xl font-heading font-bold mb-6 text-kaizen-dark dark:text-white">
+              <h2 className="text-4xl md:text-5xl font-heading font-bold mb-6 text-kaizen-dark">
                 Expert Intervention
               </h2>
-              <p className="text-xl text-kaizen-text-dark/70 dark:text-white/70 max-w-2xl mx-auto">
+              <p className="text-xl text-kaizen-text-dark/70 max-w-2xl mx-auto">
                 What we actually do when we step in.
               </p>
             </div>
@@ -320,13 +320,13 @@ export default function ProjectRescue() {
               <motion.div
                 key={index}
                 variants={fadeInUp}
-                className="flex items-start gap-4 p-6 bg-kaizen-light dark:bg-slate-900/50 rounded-xl"
+                className="flex items-start gap-4 p-6 bg-kaizen-light rounded-xl"
               >
                 <CheckCircle
                   className="text-kaizen-cyan flex-shrink-0 mt-1"
                   size={24}
                 />
-                <p className="text-base text-kaizen-dark dark:text-white font-medium">
+                <p className="text-base text-kaizen-dark font-medium">
                   {item}
                 </p>
               </motion.div>
@@ -336,46 +336,46 @@ export default function ProjectRescue() {
       </section>
 
       {/* Comprehensive Software Project Rescue Services */}
-      <section className="py-20 md:py-32 bg-white dark:bg-slate-950">
+      <section className="py-20 md:py-32 bg-white">
         <div className="container mx-auto px-4">
           <ScrollReveal>
             <div className="max-w-3xl mx-auto mb-16">
-              <h2 className="text-4xl md:text-5xl font-heading font-bold mb-8 text-kaizen-dark dark:text-white">
+              <h2 className="text-4xl md:text-5xl font-heading font-bold mb-8 text-kaizen-dark">
                 Comprehensive Software Project Rescue Services
               </h2>
-              <p className="text-lg text-kaizen-text-dark/70 dark:text-white/70 leading-relaxed mb-8">
+              <p className="text-lg text-kaizen-text-dark/70 leading-relaxed mb-8">
                 Our rescue process isn't just about fixing bugs; it's about
                 securing your asset. We specialise in:
               </p>
               <div className="space-y-4">
                 <div>
-                  <h3 className="font-heading font-bold text-lg text-kaizen-dark dark:text-white mb-2">
+                  <h3 className="font-heading font-bold text-lg text-kaizen-dark mb-2">
                     Code Audits & Triage
                   </h3>
-                  <p className="text-base text-kaizen-text-dark/70 dark:text-white/70">
+                  <p className="text-base text-kaizen-text-dark/70">
                     Identifying toxic code and security risks in 48 hours.
                   </p>
                 </div>
                 <div>
-                  <h3 className="font-heading font-bold text-lg text-kaizen-dark dark:text-white mb-2">
+                  <h3 className="font-heading font-bold text-lg text-kaizen-dark mb-2">
                     Legacy System Modernisation
                   </h3>
-                  <p className="text-base text-kaizen-text-dark/70 dark:text-white/70">
+                  <p className="text-base text-kaizen-text-dark/70">
                     Moving you off outdated PHP or old React versions without
                     losing data.
                   </p>
                 </div>
                 <div>
-                  <h3 className="font-heading font-bold text-lg text-kaizen-dark dark:text-white mb-2">
+                  <h3 className="font-heading font-bold text-lg text-kaizen-dark mb-2">
                     Vendor Handover
                   </h3>
-                  <p className="text-base text-kaizen-text-dark/70 dark:text-white/70">
+                  <p className="text-base text-kaizen-text-dark/70">
                     We manage the difficult transition from your previous agency
                     to ensure you regain control of your IP.
                   </p>
                 </div>
               </div>
-              <p className="text-lg text-kaizen-text-dark/70 dark:text-white/70 leading-relaxed mt-8">
+              <p className="text-lg text-kaizen-text-dark/70 leading-relaxed mt-8">
                 Don't let a failed build kill your runway. We fix failing
                 software projects so you can finally launch.
               </p>
@@ -408,11 +408,11 @@ export default function ProjectRescue() {
       />
 
       {/* Qualification */}
-      <section className="py-20 md:py-32 bg-kaizen-light dark:bg-slate-900/50">
+      <section className="py-20 md:py-32 bg-kaizen-light">
         <div className="container mx-auto px-4">
           <ScrollReveal>
             <div className="text-center mb-16">
-              <h2 className="text-4xl md:text-5xl font-heading font-bold mb-6 text-kaizen-dark dark:text-white">
+              <h2 className="text-4xl md:text-5xl font-heading font-bold mb-6 text-kaizen-dark">
                 Is this right for you?
               </h2>
             </div>
@@ -420,15 +420,15 @@ export default function ProjectRescue() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
             <ScrollReveal delay={0}>
-              <div className="p-8 bg-green-50 dark:bg-green-900/10 rounded-2xl border-2 border-green-300 dark:border-green-900/30">
-                <h3 className="text-2xl font-heading font-bold mb-6 text-kaizen-dark dark:text-white flex items-center gap-3">
+              <div className="p-8 bg-green-50 rounded-2xl border-2 border-green-300">
+                <h3 className="text-2xl font-heading font-bold mb-6 text-kaizen-dark flex items-center gap-3">
                   <CheckCircle
-                    className="text-green-600 dark:text-green-400"
+                    className="text-green-600"
                     size={32}
                   />
                   Best Fit
                 </h3>
-                <ul className="space-y-3 text-base text-kaizen-dark dark:text-white">
+                <ul className="space-y-3 text-base text-kaizen-dark">
                   <li>✓ You have dev/design resources but lack leadership</li>
                   <li>✓ The project is commercially critical</li>
                   <li>✓ You're open to changing workflows</li>
@@ -441,15 +441,15 @@ export default function ProjectRescue() {
             </ScrollReveal>
 
             <ScrollReveal delay={1}>
-              <div className="p-8 bg-red-50 dark:bg-red-900/10 rounded-2xl border-2 border-red-300 dark:border-red-900/30">
-                <h3 className="text-2xl font-heading font-bold mb-6 text-kaizen-dark dark:text-white flex items-center gap-3">
+              <div className="p-8 bg-red-50 rounded-2xl border-2 border-red-300">
+                <h3 className="text-2xl font-heading font-bold mb-6 text-kaizen-dark flex items-center gap-3">
                   <XCircle
-                    className="text-red-600 dark:text-red-400"
+                    className="text-red-600"
                     size={32}
                   />
                   Not a Fit
                 </h3>
-                <ul className="space-y-3 text-base text-kaizen-dark dark:text-white">
+                <ul className="space-y-3 text-base text-kaizen-dark">
                   <li>✗ You're just shopping for the cheapest build</li>
                   <li>✗ You aren't open to changing workflows</li>
                   <li>✗ You want a fixed-price miracle</li>

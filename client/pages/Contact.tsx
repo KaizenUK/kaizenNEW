@@ -19,7 +19,7 @@ export default function Contact() {
   return (
     <Layout>
       {/* Hero Section */}
-      <section className="min-h-screen bg-gradient-to-br from-kaizen-dark via-slate-900 to-kaizen-dark dark:from-slate-950 dark:via-slate-900 dark:to-black text-white flex items-center py-20">
+      <section className="min-h-screen bg-gradient-to-br from-kaizen-dark via-slate-900 to-kaizen-dark text-white flex items-center py-20">
         <div className="container mx-auto px-4">
           <div className="max-w-5xl mx-auto">
             <motion.div
@@ -77,7 +77,7 @@ export default function Contact() {
       </section>
 
       {/* What to Expect Section */}
-      <section className="py-20 md:py-32 bg-white dark:bg-slate-950">
+      <section className="py-20 md:py-32 bg-white">
         <div className="container mx-auto px-4">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -86,11 +86,11 @@ export default function Contact() {
             transition={{ duration: 0.6 }}
             className="max-w-2xl mx-auto text-center"
           >
-            <h2 className="text-4xl md:text-5xl font-heading font-bold mb-8 text-kaizen-dark dark:text-white">
+            <h2 className="text-4xl md:text-5xl font-heading font-bold mb-8 text-kaizen-dark">
               What to Expect From Us
             </h2>
 
-            <p className="text-lg md:text-xl text-kaizen-text-dark/70 dark:text-white/70 leading-relaxed">
+            <p className="text-lg md:text-xl text-kaizen-text-dark/70 leading-relaxed">
               We don't do long sales pitches. We tend to have a brief chat to
               see if we're a good fit first. We'll listen to your problem, you
               can ask us anything, and we'll tell you how we can help. Simple.

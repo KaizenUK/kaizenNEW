@@ -171,14 +171,14 @@ function FeatureCard({
       className="group relative"
     >
       <div className="absolute inset-0 bg-gradient-to-br from-red-500/10 to-rose-500/10 rounded-3xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-      <div className="relative p-8 rounded-3xl bg-white dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700/50 backdrop-blur-sm hover:border-red-500/50 transition-all duration-300 h-full">
+      <div className="relative p-8 rounded-3xl bg-white border border-slate-200 backdrop-blur-sm hover:border-red-500/50 transition-all duration-300 h-full">
         <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-red-500 to-rose-500 flex items-center justify-center text-white mb-6 group-hover:scale-110 group-hover:rotate-3 transition-transform duration-300">
           <Icon size={28} />
         </div>
-        <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-3">
+        <h3 className="text-xl font-bold text-slate-900 mb-3">
           {title}
         </h3>
-        <p className="text-slate-600 dark:text-slate-400 leading-relaxed">
+        <p className="text-slate-600 leading-relaxed">
           {description}
         </p>
       </div>
@@ -209,19 +209,19 @@ function ComparisonRow({
       initial={{ opacity: 0, x: -20 }}
       animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -20 }}
       transition={{ duration: 0.4, delay: index * 0.08 }}
-      className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 rounded-2xl hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors"
+      className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 rounded-2xl hover:bg-slate-50 transition-colors"
     >
-      <div className="font-medium text-slate-900 dark:text-white flex items-center">
+      <div className="font-medium text-slate-900 flex items-center">
         {feature}
       </div>
-      <div className="flex items-center gap-3 text-slate-500 dark:text-slate-400">
-        <div className="w-6 h-6 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center flex-shrink-0">
+      <div className="flex items-center gap-3 text-slate-500">
+        <div className="w-6 h-6 rounded-full bg-red-100 flex items-center justify-center flex-shrink-0">
           <X size={14} className="text-red-500" />
         </div>
         <span className="text-sm">{bad}</span>
       </div>
-      <div className="flex items-center gap-3 text-emerald-700 dark:text-emerald-400">
-        <div className="w-6 h-6 rounded-full bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center flex-shrink-0">
+      <div className="flex items-center gap-3 text-emerald-700">
+        <div className="w-6 h-6 rounded-full bg-emerald-100 flex items-center justify-center flex-shrink-0">
           <Check size={14} className="text-emerald-500" />
         </div>
         <span className="text-sm font-medium">{good}</span>
@@ -252,13 +252,13 @@ function FaqItem({
       initial={{ opacity: 0, y: 20 }}
       animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
       transition={{ duration: 0.4, delay: index * 0.1 }}
-      className="border-b border-slate-200 dark:border-slate-700/50"
+      className="border-b border-slate-200"
     >
       <button
         onClick={() => setIsOpen(!isOpen)}
         className="w-full py-6 flex items-center justify-between text-left group"
       >
-        <span className="text-lg font-semibold text-slate-900 dark:text-white group-hover:text-red-600 dark:group-hover:text-red-400 transition-colors pr-8">
+        <span className="text-lg font-semibold text-slate-900 group-hover:text-red-600 transition-colors pr-8">
           {question}
         </span>
         <motion.div
@@ -278,7 +278,7 @@ function FaqItem({
         transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
         className="overflow-hidden"
       >
-        <p className="pb-6 text-slate-600 dark:text-slate-400 leading-relaxed">
+        <p className="pb-6 text-slate-600 leading-relaxed">
           {answer}
         </p>
       </motion.div>
@@ -556,15 +556,15 @@ export default function WebDesignLiverpool() {
       {/* ================================================================
           SPEED TEST SECTION
           ================================================================ */}
-      <section className="py-24 px-4 bg-white dark:bg-slate-950 relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-b from-slate-50 to-white dark:from-slate-900 dark:to-slate-950" />
+      <section className="py-24 px-4 bg-white relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-b from-slate-50 to-white" />
         <div className="container mx-auto max-w-6xl relative z-10">
           <div className="text-center mb-16">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 text-sm font-medium mb-6"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-amber-100 text-amber-700 text-sm font-medium mb-6"
             >
               <Zap size={16} />
               Free Speed Check
@@ -574,7 +574,7 @@ export default function WebDesignLiverpool() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.1 }}
-              className="text-3xl md:text-5xl font-heading font-bold text-slate-900 dark:text-white mb-6"
+              className="text-3xl md:text-5xl font-heading font-bold text-slate-900 mb-6"
             >
               Is Your Website Slowing You Down?
             </motion.h2>
@@ -583,7 +583,7 @@ export default function WebDesignLiverpool() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.2 }}
-              className="text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto"
+              className="text-lg text-slate-600 max-w-2xl mx-auto"
             >
               Google pushes slow websites down the rankings. If your site takes
               more than three seconds to load, you are losing visitors. Test
@@ -605,14 +605,14 @@ export default function WebDesignLiverpool() {
       {/* ================================================================
           FEATURES SECTION
           ================================================================ */}
-      <section className="py-24 px-4 bg-slate-50 dark:bg-slate-900 relative overflow-hidden">
+      <section className="py-24 px-4 bg-slate-50 relative overflow-hidden">
         <div className="container mx-auto max-w-6xl">
           <div className="text-center mb-16">
             <motion.h2
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              className="text-3xl md:text-5xl font-heading font-bold text-slate-900 dark:text-white mb-6"
+              className="text-3xl md:text-5xl font-heading font-bold text-slate-900 mb-6"
             >
               Why Liverpool Businesses Choose Us
             </motion.h2>
@@ -621,7 +621,7 @@ export default function WebDesignLiverpool() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.1 }}
-              className="text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto"
+              className="text-lg text-slate-600 max-w-2xl mx-auto"
             >
               Liverpool businesses deserve websites that work as hard as they
               do. Whether you're a clinic, a building firm, or a consultancy, we
@@ -714,14 +714,14 @@ export default function WebDesignLiverpool() {
       {/* ================================================================
           COMPARISON SECTION
           ================================================================ */}
-      <section className="py-24 px-4 bg-white dark:bg-slate-950 relative overflow-hidden">
+      <section className="py-24 px-4 bg-white relative overflow-hidden">
         <div className="container mx-auto max-w-4xl">
           <div className="text-center mb-16">
             <motion.h2
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              className="text-3xl md:text-5xl font-heading font-bold text-slate-900 dark:text-white mb-6"
+              className="text-3xl md:text-5xl font-heading font-bold text-slate-900 mb-6"
             >
               The Difference
             </motion.h2>
@@ -730,14 +730,14 @@ export default function WebDesignLiverpool() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.1 }}
-              className="text-lg text-slate-600 dark:text-slate-400"
+              className="text-lg text-slate-600"
             >
               What you get with us versus a typical web designer.
             </motion.p>
           </div>
 
-          <div className="bg-slate-50 dark:bg-slate-900/50 rounded-3xl border border-slate-200 dark:border-slate-800 p-6 md:p-8">
-            <div className="hidden md:grid grid-cols-3 gap-4 pb-4 mb-4 border-b border-slate-200 dark:border-slate-700">
+          <div className="bg-slate-50 rounded-3xl border border-slate-200 p-6 md:p-8">
+            <div className="hidden md:grid grid-cols-3 gap-4 pb-4 mb-4 border-b border-slate-200">
               <div className="text-sm font-bold uppercase tracking-wider text-slate-500">
                 Feature
               </div>
@@ -760,14 +760,14 @@ export default function WebDesignLiverpool() {
       {/* ================================================================
           FAQ SECTION
           ================================================================ */}
-      <section className="py-24 px-4 bg-slate-50 dark:bg-slate-900">
+      <section className="py-24 px-4 bg-slate-50">
         <div className="container mx-auto max-w-3xl">
           <div className="text-center mb-16">
             <motion.h2
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              className="text-3xl md:text-5xl font-heading font-bold text-slate-900 dark:text-white mb-6"
+              className="text-3xl md:text-5xl font-heading font-bold text-slate-900 mb-6"
             >
               Common Questions
             </motion.h2>
@@ -776,13 +776,13 @@ export default function WebDesignLiverpool() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.1 }}
-              className="text-lg text-slate-600 dark:text-slate-400"
+              className="text-lg text-slate-600"
             >
               Straight answers to the things people ask most.
             </motion.p>
           </div>
 
-          <div className="bg-white dark:bg-slate-800/50 rounded-3xl border border-slate-200 dark:border-slate-700/50 p-8 md:p-10">
+          <div className="bg-white rounded-3xl border border-slate-200 p-8 md:p-10">
             {faqs.map((faq, i) => (
               <FaqItem key={i} {...faq} index={i} />
             ))}

@@ -94,7 +94,7 @@ export function Speedometer() {
             stroke="#1e293b"
             strokeWidth="16"
             strokeLinecap="round"
-            className="dark:stroke-slate-800"
+            className=""
           />
 
           {/* Colored Arcs */}
@@ -148,7 +148,7 @@ export function Speedometer() {
                   y2={endY}
                   stroke="currentColor"
                   strokeWidth={isMajor ? 2 : 1}
-                  className="text-slate-400 dark:text-slate-600"
+                  className="text-slate-400"
                 />
                 {isMajor && (
                   <text
@@ -156,7 +156,7 @@ export function Speedometer() {
                     y={100 + 50 * Math.sin((angle * Math.PI) / 180)}
                     textAnchor="middle"
                     dominantBaseline="middle"
-                    className="text-[8px] font-mono fill-slate-500 dark:fill-slate-400 font-bold"
+                    className="text-[8px] font-mono fill-slate-500 font-bold"
                   >
                     {tick}
                   </text>

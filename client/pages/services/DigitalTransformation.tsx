@@ -120,7 +120,7 @@ function KineticTypography() {
       {/* Tagline */}
       {typedText === automatedText && (
         <motion.p
-          className="text-lg md:text-xl text-kaizen-text-dark/60 dark:text-white/60 font-mono tracking-wider"
+          className="text-lg md:text-xl text-kaizen-text-dark/60 font-mono tracking-wider"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 1.5, duration: 0.6 }}
@@ -139,18 +139,18 @@ export default function DigitalTransformation() {
   return (
     <Layout>
       {/* Section 1: Hero - Kinetic Typography */}
-      <section className="min-h-screen bg-white dark:bg-slate-950 flex items-center py-20 px-4">
+      <section className="min-h-screen bg-white flex items-center py-20 px-4">
         <div className="container mx-auto max-w-4xl">
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.6 }}
           >
-            <h1 className="text-5xl md:text-6xl lg:text-7xl font-heading font-black mb-6 leading-tight text-kaizen-dark dark:text-white">
+            <h1 className="text-5xl md:text-6xl lg:text-7xl font-heading font-black mb-6 leading-tight text-kaizen-dark">
               Digital Transformation Liverpool
             </h1>
 
-            <h2 className="text-2xl md:text-3xl font-heading font-semibold mb-12 leading-tight text-kaizen-dark dark:text-white/90">
+            <h2 className="text-2xl md:text-3xl font-heading font-semibold mb-12 leading-tight text-kaizen-dark">
               Automated. Integrated. Flowing.
             </h2>
           </motion.div>
@@ -162,11 +162,11 @@ export default function DigitalTransformation() {
             className="space-y-8 mt-16"
           >
             <div>
-              <h2 className="text-4xl md:text-5xl font-heading font-black mb-6 text-kaizen-dark dark:text-white">
+              <h2 className="text-4xl md:text-5xl font-heading font-black mb-6 text-kaizen-dark">
                 Stop working in chaos.
               </h2>
 
-              <p className="text-xl md:text-2xl text-kaizen-text-dark/70 dark:text-white/70 leading-relaxed max-w-3xl">
+              <p className="text-xl md:text-2xl text-kaizen-text-dark/70 leading-relaxed max-w-3xl">
                 You don't need "digital transformation." You need to get your
                 systems talking to each other. We find your bottlenecks,
                 automate your manual tasks, and build simple, efficient
@@ -203,10 +203,10 @@ export default function DigitalTransformation() {
       </section>
 
       {/* Section 2: Who Is This For? */}
-      <section className="bg-kaizen-light dark:bg-slate-900/50 py-24 px-4">
+      <section className="bg-kaizen-light py-24 px-4">
         <div className="container mx-auto max-w-6xl">
           <motion.h2
-            className="text-4xl md:text-5xl font-heading font-bold mb-8 text-kaizen-dark dark:text-white"
+            className="text-4xl md:text-5xl font-heading font-bold mb-8 text-kaizen-dark"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-100px" }}
@@ -216,7 +216,7 @@ export default function DigitalTransformation() {
           </motion.h2>
 
           <motion.p
-            className="text-lg md:text-xl text-kaizen-text-dark/70 dark:text-white/70 leading-relaxed mb-12 max-w-3xl"
+            className="text-lg md:text-xl text-kaizen-text-dark/70 leading-relaxed mb-12 max-w-3xl"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-100px" }}
@@ -249,12 +249,12 @@ export default function DigitalTransformation() {
               <motion.div
                 key={index}
                 variants={fadeInUp}
-                className="p-8 bg-white dark:bg-slate-950 rounded-2xl border border-kaizen-light dark:border-slate-800"
+                className="p-8 bg-white rounded-2xl border border-kaizen-light"
               >
-                <h3 className="text-2xl font-heading font-bold mb-4 text-kaizen-dark dark:text-white">
+                <h3 className="text-2xl font-heading font-bold mb-4 text-kaizen-dark">
                   {item.title}
                 </h3>
-                <p className="text-lg text-kaizen-text-dark/70 dark:text-white/70 leading-relaxed">
+                <p className="text-lg text-kaizen-text-dark/70 leading-relaxed">
                   {item.desc}
                 </p>
               </motion.div>
@@ -264,10 +264,10 @@ export default function DigitalTransformation() {
       </section>
 
       {/* Section 3: Pain Points */}
-      <section className="bg-white dark:bg-slate-950 py-24 px-4">
+      <section className="bg-white py-24 px-4">
         <div className="container mx-auto max-w-6xl">
           <motion.h2
-            className="text-4xl md:text-5xl font-heading font-bold mb-16 text-kaizen-dark dark:text-white"
+            className="text-4xl md:text-5xl font-heading font-bold mb-16 text-kaizen-dark"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-100px" }}
@@ -300,12 +300,12 @@ export default function DigitalTransformation() {
               <motion.div
                 key={index}
                 variants={fadeInUp}
-                className="p-8 bg-kaizen-light dark:bg-slate-900/50 rounded-2xl border border-kaizen-light dark:border-slate-800"
+                className="p-8 bg-kaizen-light rounded-2xl border border-kaizen-light"
               >
-                <h3 className="text-2xl font-heading font-bold mb-4 text-kaizen-dark dark:text-white">
+                <h3 className="text-2xl font-heading font-bold mb-4 text-kaizen-dark">
                   {item.title}
                 </h3>
-                <p className="text-kaizen-text-dark/70 dark:text-white/70 leading-relaxed">
+                <p className="text-kaizen-text-dark/70 leading-relaxed">
                   {item.desc}
                 </p>
               </motion.div>
@@ -315,7 +315,7 @@ export default function DigitalTransformation() {
       </section>
 
       {/* Section 4: Real-World Proof */}
-      <section className="bg-kaizen-light dark:bg-slate-900/50 py-24 px-4">
+      <section className="bg-kaizen-light py-24 px-4">
         <div className="container mx-auto max-w-4xl">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -323,7 +323,7 @@ export default function DigitalTransformation() {
             viewport={{ once: true, margin: "-100px" }}
             transition={{ duration: 0.6 }}
           >
-            <h2 className="text-4xl md:text-5xl font-heading font-bold mb-8 text-kaizen-dark dark:text-white">
+            <h2 className="text-4xl md:text-5xl font-heading font-bold mb-8 text-kaizen-dark">
               This is Our Expertise
             </h2>
 
@@ -331,7 +331,7 @@ export default function DigitalTransformation() {
               Real-World Proof: Fixing a Liverpool Firm
             </h3>
 
-            <p className="text-lg text-kaizen-text-dark/70 dark:text-white/70 leading-relaxed">
+            <p className="text-lg text-kaizen-text-dark/70 leading-relaxed">
               This expertise sits at the core of Kaizen. We have led full
               digital and operational transformations for Liverpool firms,
               mapping real-world workflows, rebuilding internal processes, and
@@ -344,10 +344,10 @@ export default function DigitalTransformation() {
       </section>
 
       {/* Section 5: Our Process */}
-      <section className="bg-white dark:bg-slate-950 py-24 px-4">
+      <section className="bg-white py-24 px-4">
         <div className="container mx-auto max-w-4xl">
           <motion.h2
-            className="text-4xl md:text-5xl font-heading font-bold mb-16 text-kaizen-dark dark:text-white"
+            className="text-4xl md:text-5xl font-heading font-bold mb-16 text-kaizen-dark"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-100px" }}
@@ -391,10 +391,10 @@ export default function DigitalTransformation() {
                 </div>
 
                 <div className="flex-grow">
-                  <h3 className="text-2xl font-heading font-bold mb-3 text-kaizen-dark dark:text-white">
+                  <h3 className="text-2xl font-heading font-bold mb-3 text-kaizen-dark">
                     {item.title}
                   </h3>
-                  <p className="text-lg text-kaizen-text-dark/70 dark:text-white/70 leading-relaxed">
+                  <p className="text-lg text-kaizen-text-dark/70 leading-relaxed">
                     {item.desc}
                   </p>
                 </div>
@@ -405,10 +405,10 @@ export default function DigitalTransformation() {
       </section>
 
       {/* Section 6: Internal Links */}
-      <section className="bg-kaizen-light dark:bg-slate-900/50 py-24 px-4">
+      <section className="bg-kaizen-light py-24 px-4">
         <div className="container mx-auto max-w-5xl">
           <motion.h2
-            className="text-4xl md:text-5xl font-heading font-bold mb-16 text-kaizen-dark dark:text-white"
+            className="text-4xl md:text-5xl font-heading font-bold mb-16 text-kaizen-dark"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-100px" }}
@@ -442,12 +442,12 @@ export default function DigitalTransformation() {
               >
                 <Link
                   to={card.link}
-                  className="group block p-8 bg-white dark:bg-slate-950 rounded-2xl border border-kaizen-light dark:border-slate-800 hover:border-kaizen-cyan dark:hover:border-kaizen-cyan/50 transition h-full"
+                  className="group block p-8 bg-white rounded-2xl border border-kaizen-light hover:border-kaizen-cyan transition h-full"
                 >
-                  <h3 className="text-2xl font-heading font-bold mb-3 text-kaizen-dark dark:text-white group-hover:text-kaizen-cyan transition">
+                  <h3 className="text-2xl font-heading font-bold mb-3 text-kaizen-dark group-hover:text-kaizen-cyan transition">
                     {card.title}
                   </h3>
-                  <p className="text-kaizen-text-dark/70 dark:text-white/60 mb-6">
+                  <p className="text-kaizen-text-dark/70 mb-6">
                     {card.desc}
                   </p>
                   <div className="text-kaizen-cyan font-medium flex items-center gap-2 group-hover:gap-3 transition">
@@ -482,7 +482,7 @@ export default function DigitalTransformation() {
       />
 
       {/* Section 7: Final CTA */}
-      <section className="bg-kaizen-dark dark:bg-gradient-to-b dark:from-slate-900 dark:to-slate-950 text-white py-20 md:py-32 px-4">
+      <section className="bg-kaizen-dark text-white py-20 md:py-32 px-4">
         <div className="container mx-auto max-w-3xl text-center">
           <motion.h2
             className="text-4xl md:text-5xl lg:text-6xl font-heading font-black mb-8"

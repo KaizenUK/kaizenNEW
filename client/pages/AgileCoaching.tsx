@@ -109,7 +109,7 @@ const CTAButton = ({
       onClick={handleClick}
       className={`px-8 py-3 rounded-lg font-heading font-bold inline-flex items-center justify-center gap-2 transition ${
         secondary
-          ? "border-2 border-kaizen-cyan text-kaizen-cyan hover:bg-kaizen-cyan/10 dark:border-kaizen-cyan/70 dark:text-kaizen-cyan/70 dark:hover:bg-kaizen-cyan/5"
+          ? "border-2 border-kaizen-cyan text-kaizen-cyan hover:bg-kaizen-cyan/10"
           : "bg-gradient-to-r from-kaizen-cyan to-kaizen-lime text-kaizen-dark hover:shadow-lg hover:shadow-kaizen-cyan/50"
       }`}
     >
@@ -125,11 +125,11 @@ export default function AgileCoaching() {
   return (
     <Layout>
       {/* Section 1: Hero - Typography as Graphic */}
-      <section className="min-h-screen bg-white dark:bg-slate-950 flex items-center py-20">
+      <section className="min-h-screen bg-white flex items-center py-20">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl">
             {/* Main H1 - Staggered word reveal */}
-            <h1 className="text-5xl md:text-6xl lg:text-7xl font-heading font-black mb-6 leading-tight text-kaizen-dark dark:text-white">
+            <h1 className="text-5xl md:text-6xl lg:text-7xl font-heading font-black mb-6 leading-tight text-kaizen-dark">
               {["Agile", "Coaching", "&", "Consultancy", "Liverpool"].map(
                 (word, index) => (
                   <motion.span
@@ -150,13 +150,13 @@ export default function AgileCoaching() {
             </h1>
 
             {/* Sub-headline H2 */}
-            <h2 className="text-2xl md:text-3xl font-heading font-semibold mb-12 leading-tight text-kaizen-dark dark:text-white/90">
+            <h2 className="text-2xl md:text-3xl font-heading font-semibold mb-12 leading-tight text-kaizen-dark">
               Stop. Wasting. Time. Start Shipping.
             </h2>
 
             {/* Sub-headline */}
             <motion.p
-              className="text-xl md:text-2xl text-kaizen-text-dark/70 dark:text-white/70 leading-relaxed mb-12 max-w-2xl"
+              className="text-xl md:text-2xl text-kaizen-text-dark/70 leading-relaxed mb-12 max-w-2xl"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.6, duration: 0.8 }}
@@ -177,7 +177,7 @@ export default function AgileCoaching() {
               <CTAButton text="Get in Touch" openContact />
               <button
                 onClick={openCalendlyFromContext}
-                className="px-8 py-3 rounded-lg border-2 border-kaizen-cyan text-kaizen-cyan dark:text-kaizen-cyan/70 font-heading font-bold hover:bg-kaizen-cyan/10 dark:hover:bg-kaizen-cyan/5 transition inline-flex items-center justify-center gap-2"
+                className="px-8 py-3 rounded-lg border-2 border-kaizen-cyan text-kaizen-cyan font-heading font-bold hover:bg-kaizen-cyan/10 transition inline-flex items-center justify-center gap-2"
               >
                 Book a 15 Minute Call
                 <ArrowUpRight size={18} />
@@ -188,14 +188,14 @@ export default function AgileCoaching() {
       </section>
 
       {/* Section 2: What "Agile Coaching" Actually Means */}
-      <section className="py-20 md:py-32 bg-kaizen-light dark:bg-slate-900/50">
+      <section className="py-20 md:py-32 bg-kaizen-light">
         <div className="container mx-auto px-4">
           <ScrollReveal>
             <div className="max-w-3xl">
-              <h2 className="text-4xl md:text-5xl font-heading font-bold mb-8 text-kaizen-dark dark:text-white">
+              <h2 className="text-4xl md:text-5xl font-heading font-bold mb-8 text-kaizen-dark">
                 What "Agile Coaching" Actually Means
               </h2>
-              <p className="text-xl text-kaizen-text-dark/70 dark:text-white/60 leading-relaxed mb-12">
+              <p className="text-xl text-kaizen-text-dark/70 leading-relaxed mb-12">
                 "Agile" is just a word for working smarter. It means breaking
                 huge, scary projects into small, manageable pieces. It means
                 clear communication, no one is guessing what to do, and you see
@@ -203,10 +203,10 @@ export default function AgileCoaching() {
               </p>
 
               <div>
-                <h3 className="text-2xl font-heading font-bold mb-4 text-kaizen-dark dark:text-white">
+                <h3 className="text-2xl font-heading font-bold mb-4 text-kaizen-dark">
                   Who is this for?
                 </h3>
-                <p className="text-lg text-kaizen-text-dark/70 dark:text-white/60 leading-relaxed">
+                <p className="text-lg text-kaizen-text-dark/70 leading-relaxed">
                   This is for any business owner who is frustrated by team
                   confusion, projects that drag on forever, or a workflow that
                   feels stuck.
@@ -218,10 +218,10 @@ export default function AgileCoaching() {
       </section>
 
       {/* Section 3: Pain Points - Does This Sound Familiar? */}
-      <section className="py-20 md:py-32 bg-white dark:bg-slate-950">
+      <section className="py-20 md:py-32 bg-white">
         <div className="container mx-auto px-4">
           <ScrollReveal>
-            <h2 className="text-4xl md:text-5xl font-heading font-bold mb-16 text-kaizen-dark dark:text-white text-center">
+            <h2 className="text-4xl md:text-5xl font-heading font-bold mb-16 text-kaizen-dark text-center">
               Does This Sound Familiar?
             </h2>
           </ScrollReveal>
@@ -253,18 +253,18 @@ export default function AgileCoaching() {
               <motion.div
                 key={index}
                 variants={fadeInUp}
-                className="p-8 bg-kaizen-light dark:bg-slate-900/50 rounded-2xl border border-kaizen-light dark:border-slate-800/50 hover:border-kaizen-cyan dark:hover:border-kaizen-cyan/50 transition"
+                className="p-8 bg-kaizen-light rounded-2xl border border-kaizen-light hover:border-kaizen-cyan transition"
               >
-                <div className="mb-6 p-4 w-16 h-16 bg-gradient-to-br from-kaizen-cyan/20 to-kaizen-lime/20 dark:from-kaizen-cyan/10 dark:to-kaizen-lime/10 rounded-xl flex items-center justify-center">
+                <div className="mb-6 p-4 w-16 h-16 bg-gradient-to-br from-kaizen-cyan/20 to-kaizen-lime/20 rounded-xl flex items-center justify-center">
                   <pain.icon
-                    className="text-kaizen-cyan dark:text-kaizen-cyan/70"
+                    className="text-kaizen-cyan"
                     size={32}
                   />
                 </div>
-                <h3 className="text-2xl font-heading font-bold mb-4 text-kaizen-dark dark:text-white">
+                <h3 className="text-2xl font-heading font-bold mb-4 text-kaizen-dark">
                   {pain.title}
                 </h3>
-                <p className="text-lg text-kaizen-text-dark/70 dark:text-white/60 leading-relaxed">
+                <p className="text-lg text-kaizen-text-dark/70 leading-relaxed">
                   {pain.copy}
                 </p>
               </motion.div>
@@ -274,10 +274,10 @@ export default function AgileCoaching() {
       </section>
 
       {/* Section 4: Our Simple 3-Step Process */}
-      <section className="py-20 md:py-32 bg-kaizen-light dark:bg-slate-900/50">
+      <section className="py-20 md:py-32 bg-kaizen-light">
         <div className="container mx-auto px-4">
           <ScrollReveal>
-            <h2 className="text-4xl md:text-5xl font-heading font-bold mb-16 text-kaizen-dark dark:text-white text-center">
+            <h2 className="text-4xl md:text-5xl font-heading font-bold mb-16 text-kaizen-dark text-center">
               Our Simple 3-Step Process
             </h2>
           </ScrollReveal>
@@ -319,10 +319,10 @@ export default function AgileCoaching() {
 
                 {/* Content */}
                 <div className="flex-grow pt-2">
-                  <h3 className="text-2xl md:text-3xl font-heading font-bold mb-4 text-kaizen-dark dark:text-white">
+                  <h3 className="text-2xl md:text-3xl font-heading font-bold mb-4 text-kaizen-dark">
                     {item.title}
                   </h3>
-                  <p className="text-lg text-kaizen-text-dark/70 dark:text-white/60 leading-relaxed">
+                  <p className="text-lg text-kaizen-text-dark/70 leading-relaxed">
                     {item.copy}
                   </p>
                 </div>
@@ -333,10 +333,10 @@ export default function AgileCoaching() {
       </section>
 
       {/* Section 5: Agile is in Our DNA */}
-      <section className="py-20 md:py-32 bg-white dark:bg-slate-950">
+      <section className="py-20 md:py-32 bg-white">
         <div className="container mx-auto px-4">
           <ScrollReveal>
-            <h2 className="text-4xl md:text-5xl font-heading font-bold mb-16 text-kaizen-dark dark:text-white text-center">
+            <h2 className="text-4xl md:text-5xl font-heading font-bold mb-16 text-kaizen-dark text-center">
               Agile is in Our DNA
             </h2>
           </ScrollReveal>
@@ -374,18 +374,18 @@ export default function AgileCoaching() {
               <motion.div key={index} variants={fadeInUp}>
                 <Link
                   to={item.link}
-                  className="block p-8 bg-kaizen-light dark:bg-slate-900/50 rounded-2xl border border-kaizen-light dark:border-slate-800/50 hover:border-kaizen-cyan dark:hover:border-kaizen-cyan/50 transition group h-full"
+                  className="block p-8 bg-kaizen-light rounded-2xl border border-kaizen-light hover:border-kaizen-cyan transition group h-full"
                 >
-                  <div className="mb-6 p-4 w-16 h-16 bg-gradient-to-br from-kaizen-cyan/20 to-kaizen-lime/20 dark:from-kaizen-cyan/10 dark:to-kaizen-lime/10 rounded-xl flex items-center justify-center">
+                  <div className="mb-6 p-4 w-16 h-16 bg-gradient-to-br from-kaizen-cyan/20 to-kaizen-lime/20 rounded-xl flex items-center justify-center">
                     <item.icon
-                      className="text-kaizen-cyan dark:text-kaizen-cyan/70 group-hover:scale-110 transition"
+                      className="text-kaizen-cyan group-hover:scale-110 transition"
                       size={32}
                     />
                   </div>
-                  <h3 className="text-2xl font-heading font-bold mb-4 text-kaizen-dark dark:text-white group-hover:text-kaizen-cyan transition">
+                  <h3 className="text-2xl font-heading font-bold mb-4 text-kaizen-dark group-hover:text-kaizen-cyan transition">
                     {item.title}
                   </h3>
-                  <p className="text-lg text-kaizen-text-dark/70 dark:text-white/60 leading-relaxed mb-6">
+                  <p className="text-lg text-kaizen-text-dark/70 leading-relaxed mb-6">
                     {item.copy}
                   </p>
                   <div className="text-kaizen-cyan font-medium flex items-center gap-2 hover:gap-3 transition">
@@ -421,13 +421,13 @@ export default function AgileCoaching() {
       />
 
       {/* Section 6: Final CTA */}
-      <section className="py-20 md:py-32 bg-kaizen-dark dark:bg-gradient-to-b dark:from-slate-900 dark:to-slate-950 text-kaizen-text-light dark:text-white/85">
+      <section className="py-20 md:py-32 bg-kaizen-dark text-kaizen-text-light">
         <div className="container mx-auto px-4 text-center">
           <ScrollReveal>
-            <h2 className="text-4xl md:text-5xl font-heading font-bold mb-8 text-kaizen-text-light dark:text-white">
+            <h2 className="text-4xl md:text-5xl font-heading font-bold mb-8 text-kaizen-text-light">
               Stop Running in Circles.
             </h2>
-            <p className="text-xl text-kaizen-text-light/80 dark:text-white/70 mb-12 max-w-2xl mx-auto leading-relaxed">
+            <p className="text-xl text-kaizen-text-light/80 mb-12 max-w-2xl mx-auto leading-relaxed">
               Let's fix your workflow. Book a 15-minute, no-pressure call to see
               if we can help.
             </p>
@@ -443,7 +443,7 @@ export default function AgileCoaching() {
             <CTAButton text="Get in Touch" openContact />
             <button
               onClick={openCalendlyFromContext}
-              className="px-8 py-3 rounded-lg border-2 border-kaizen-text-light/30 dark:border-white/20 text-kaizen-text-light dark:text-white/85 font-heading font-bold hover:border-kaizen-cyan dark:hover:border-kaizen-cyan transition inline-flex items-center justify-center gap-2"
+              className="px-8 py-3 rounded-lg border-2 border-kaizen-text-light/30 text-kaizen-text-light font-heading font-bold hover:border-kaizen-cyan transition inline-flex items-center justify-center gap-2"
             >
               Book a 15 Minute Call
               <ArrowUpRight size={18} />

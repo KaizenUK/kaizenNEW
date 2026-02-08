@@ -149,7 +149,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         </script>
       </Helmet>
 
-      <div className="min-h-screen flex flex-col bg-background text-foreground transition-colors">
+      <div className="site-shell min-h-screen flex flex-col bg-background text-foreground transition-colors">
         <Header
           mobileMenuOpen={mobileMenuOpen}
           onMobileMenuChange={setMobileMenuOpen}

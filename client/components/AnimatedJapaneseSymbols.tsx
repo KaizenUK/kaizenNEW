@@ -64,7 +64,7 @@ export default function AnimatedJapaneseSymbols() {
           variants={symbolVariants}
         >
           <motion.div
-            className="text-7xl md:text-8xl lg:text-9xl font-bold text-kaizen-dark dark:text-white"
+            className="text-7xl md:text-8xl lg:text-9xl font-bold text-kaizen-dark"
             whileHover={{
               scale: 1.1,
             }}
@@ -73,13 +73,13 @@ export default function AnimatedJapaneseSymbols() {
             {symbol.kanji}
           </motion.div>
           <motion.p
-            className="text-sm md:text-base font-heading font-semibold text-kaizen-cyan dark:text-kaizen-cyan/80 uppercase tracking-wider"
+            className="text-sm md:text-base font-heading font-semibold text-kaizen-cyan uppercase tracking-wider"
             variants={romajiVariants}
           >
             {symbol.romaji}
           </motion.p>
           <motion.p
-            className="text-xs md:text-sm font-medium text-kaizen-dark dark:text-white text-center"
+            className="text-xs md:text-sm font-medium text-kaizen-dark text-center"
             variants={romajiVariants}
           >
             {symbol.meaning}

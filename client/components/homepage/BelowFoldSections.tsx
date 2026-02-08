@@ -54,7 +54,7 @@ export const PricingSlider = () => {
   return (
     <section
       id="pricing-slider-section"
-      className="py-20 md:py-32 bg-gradient-to-br from-slate-50 via-white to-slate-50 dark:from-slate-950 dark:via-slate-950 dark:to-slate-900/50 relative overflow-hidden"
+      className="py-20 md:py-32 bg-gradient-to-br from-slate-50 via-white to-slate-50 relative overflow-hidden"
     >
       <div className="container mx-auto px-4 relative z-10">
         <motion.div
@@ -66,7 +66,7 @@ export const PricingSlider = () => {
           <p className="text-xs font-mono tracking-[0.25em] text-kaizen-cyan uppercase mb-4">
             Pricing That Fits
           </p>
-          <h2 className="text-4xl md:text-5xl font-heading font-bold text-gray-950 dark:text-white">
+          <h2 className="text-4xl md:text-5xl font-heading font-bold text-gray-950">
             Choose Your Build
           </h2>
         </motion.div>
@@ -90,7 +90,7 @@ export const PricingSlider = () => {
                   "linear-gradient(to right, rgb(34, 211, 238), rgb(132, 204, 22), rgb(34, 211, 238))",
               }}
             />
-            <div className="flex justify-between text-xs text-gray-500 dark:text-gray-400 mt-2 font-mono">
+            <div className="flex justify-between text-xs text-gray-500 mt-2 font-mono">
               <span>Starter</span>
               <span>Growth</span>
               <span>Scale</span>
@@ -107,40 +107,40 @@ export const PricingSlider = () => {
             className="relative group"
           >
             <div className="absolute -inset-px bg-gradient-to-r from-kaizen-cyan via-kaizen-lime to-kaizen-cyan rounded-3xl opacity-0 group-hover:opacity-20 blur transition duration-300" />
-            <div className="relative bg-white/80 dark:bg-slate-950/80 backdrop-blur-xl rounded-3xl border border-white/50 dark:border-white/10 p-8 md:p-12 mb-8 shadow-xl dark:shadow-2xl">
+            <div className="relative bg-white/80 backdrop-blur-xl rounded-3xl border border-white/50 p-8 md:p-12 mb-8 shadow-xl">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div>
-                  <h3 className="text-3xl font-heading font-bold text-gray-950 dark:text-white mb-2">
+                  <h3 className="text-3xl font-heading font-bold text-gray-950 mb-2">
                     {currentTier.name}
                   </h3>
-                  <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
+                  <p className="text-sm text-gray-600 mb-4">
                     {currentTier.description}
                   </p>
                   <div className="text-4xl font-heading font-black bg-gradient-to-r from-kaizen-cyan to-kaizen-lime bg-clip-text text-transparent mb-4">
                     {currentTier.price}
                   </div>
-                  <p className="text-lg text-gray-700 dark:text-gray-300">
+                  <p className="text-lg text-gray-700">
                     {currentTier.detail}
                   </p>
                 </div>
 
                 <div className="flex flex-col justify-between">
                   <div>
-                    <p className="text-xs font-mono tracking-widest text-gray-500 dark:text-gray-400 uppercase mb-3">
+                    <p className="text-xs font-mono tracking-widest text-gray-500 uppercase mb-3">
                       What's Included
                     </p>
                     <ul className="space-y-2">
                       {tier === 0 && (
                         <>
-                          <li className="flex items-center gap-2 text-gray-700 dark:text-gray-300">
+                          <li className="flex items-center gap-2 text-gray-700">
                             <span className="text-kaizen-cyan">✓</span>{" "}
                             Ready-made template
                           </li>
-                          <li className="flex items-center gap-2 text-gray-700 dark:text-gray-300">
+                          <li className="flex items-center gap-2 text-gray-700">
                             <span className="text-kaizen-cyan">✓</span> Basic
                             SEO
                           </li>
-                          <li className="flex items-center gap-2 text-gray-700 dark:text-gray-300">
+                          <li className="flex items-center gap-2 text-gray-700">
                             <span className="text-kaizen-cyan">✓</span> Mobile
                             responsive
                           </li>
@@ -148,15 +148,15 @@ export const PricingSlider = () => {
                       )}
                       {tier === 1 && (
                         <>
-                          <li className="flex items-center gap-2 text-gray-700 dark:text-gray-300">
+                          <li className="flex items-center gap-2 text-gray-700">
                             <span className="text-kaizen-cyan">✓</span> Custom
                             design
                           </li>
-                          <li className="flex items-center gap-2 text-gray-700 dark:text-gray-300">
+                          <li className="flex items-center gap-2 text-gray-700">
                             <span className="text-kaizen-cyan">✓</span> Lead
                             capture forms
                           </li>
-                          <li className="flex items-center gap-2 text-gray-700 dark:text-gray-300">
+                          <li className="flex items-center gap-2 text-gray-700">
                             <span className="text-kaizen-cyan">✓</span>{" "}
                             Analytics setup
                           </li>
@@ -164,15 +164,15 @@ export const PricingSlider = () => {
                       )}
                       {tier === 2 && (
                         <>
-                          <li className="flex items-center gap-2 text-gray-700 dark:text-gray-300">
+                          <li className="flex items-center gap-2 text-gray-700">
                             <span className="text-kaizen-cyan">✓</span>
                             React/Headless build
                           </li>
-                          <li className="flex items-center gap-2 text-gray-700 dark:text-gray-300">
+                          <li className="flex items-center gap-2 text-gray-700">
                             <span className="text-kaizen-cyan">✓</span> 96+
                             Lighthouse score
                           </li>
-                          <li className="flex items-center gap-2 text-gray-700 dark:text-gray-300">
+                          <li className="flex items-center gap-2 text-gray-700">
                             <span className="text-kaizen-cyan">✓</span> Full SEO
                             optimisation
                           </li>
@@ -180,15 +180,15 @@ export const PricingSlider = () => {
                       )}
                       {tier === 3 && (
                         <>
-                          <li className="flex items-center gap-2 text-gray-700 dark:text-gray-300">
+                          <li className="flex items-center gap-2 text-gray-700">
                             <span className="text-kaizen-cyan">✓</span> Complex
                             features
                           </li>
-                          <li className="flex items-center gap-2 text-gray-700 dark:text-gray-300">
+                          <li className="flex items-center gap-2 text-gray-700">
                             <span className="text-kaizen-cyan">✓</span> User
                             authentication
                           </li>
-                          <li className="flex items-center gap-2 text-gray-700 dark:text-gray-300">
+                          <li className="flex items-center gap-2 text-gray-700">
                             <span className="text-kaizen-cyan">✓</span>{" "}
                             Dedicated Product Owner
                           </li>
@@ -196,15 +196,15 @@ export const PricingSlider = () => {
                       )}
                       {tier === 4 && (
                         <>
-                          <li className="flex items-center gap-2 text-gray-700 dark:text-gray-300">
+                          <li className="flex items-center gap-2 text-gray-700">
                             <span className="text-kaizen-cyan">✓</span> Full
                             project audit
                           </li>
-                          <li className="flex items-center gap-2 text-gray-700 dark:text-gray-300">
+                          <li className="flex items-center gap-2 text-gray-700">
                             <span className="text-kaizen-cyan">✓</span> Recovery
                             plan
                           </li>
-                          <li className="flex items-center gap-2 text-gray-700 dark:text-gray-300">
+                          <li className="flex items-center gap-2 text-gray-700">
                             <span className="text-kaizen-cyan">✓</span> New team
                             stabilisation
                           </li>
@@ -243,7 +243,7 @@ export const PricingCTABanner = () => {
   };
 
   return (
-    <section className="py-16 md:py-20 bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 relative overflow-hidden border-y border-white/10">
+    <section className="py-16 md:py-20 bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 relative overflow-hidden border-y border-white/10">
       <div className="container mx-auto px-4 relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -287,7 +287,7 @@ export const PricingCTABanner = () => {
 
 export const AIPriceNarrative = () => {
   return (
-    <section className="py-20 md:py-28 bg-white dark:bg-slate-950 border-t border-slate-200/60 dark:border-slate-800/80">
+    <section className="py-20 md:py-28 bg-white border-t border-slate-200/60">
       <div className="container mx-auto px-4 max-w-5xl">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -298,7 +298,7 @@ export const AIPriceNarrative = () => {
           <p className="text-xs font-mono tracking-[0.25em] text-kaizen-cyan uppercase mb-4">
             AI-Augmented Delivery
           </p>
-          <h2 className="text-3xl md:text-5xl font-heading font-bold mb-3 text-slate-900 dark:text-white">
+          <h2 className="text-3xl md:text-5xl font-heading font-bold mb-3 text-slate-900">
             £15k Websites. Fraction of the Price.
           </h2>
         </motion.div>
@@ -308,14 +308,14 @@ export const AIPriceNarrative = () => {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ delay: 0.1 }}
-          className="space-y-6 text-slate-800 dark:text-slate-200 text-base md:text-lg max-w-3xl"
+          className="space-y-6 text-slate-800 text-base md:text-lg max-w-3xl"
         >
           <p>
             Most agencies bill you for every hour. We use smart tools to cut
             out the repetitive work, so you get professional results without the
             professional price tag.
           </p>
-          <p className="text-xl md:text-2xl font-heading font-bold text-slate-900 dark:text-white">
+          <p className="text-xl md:text-2xl font-heading font-bold text-slate-900">
             Enterprise quality. Freelancer prices. That's the deal.
           </p>
         </motion.div>

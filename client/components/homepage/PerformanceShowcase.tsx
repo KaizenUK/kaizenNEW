@@ -77,7 +77,7 @@ export const PerformanceShowcase: React.FC = () => {
       </section>
 
       {/* Our Score — directly below */}
-      <section className="py-20 md:py-32 bg-slate-50 dark:bg-slate-900/50 relative overflow-hidden">
+      <section className="py-20 md:py-32 bg-slate-50 relative overflow-hidden">
         <div className="container mx-auto px-4 relative z-10">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -88,7 +88,7 @@ export const PerformanceShowcase: React.FC = () => {
             <p className="text-xs font-mono tracking-[0.25em] text-kaizen-cyan uppercase mb-4">
               Proof, Not Promises
             </p>
-            <h2 className="text-4xl md:text-5xl font-heading font-bold text-gray-950 dark:text-white">
+            <h2 className="text-4xl md:text-5xl font-heading font-bold text-gray-950">
               Here's How We Score.
             </h2>
           </motion.div>
@@ -125,7 +125,7 @@ export const PerformanceShowcase: React.FC = () => {
                 />
               </svg>
               <div className="absolute inset-0 flex flex-col items-center justify-center">
-                <span className="text-5xl font-heading font-black text-green-600 dark:text-green-400 tabular-nums">
+                <span className="text-5xl font-heading font-black text-green-600 tabular-nums">
                   {count}%
                 </span>
                 <span className="text-xs text-gray-500 uppercase tracking-widest mt-1">
@@ -149,12 +149,12 @@ export const PerformanceShowcase: React.FC = () => {
               ].map((metric) => (
                 <div
                   key={metric.label}
-                  className="rounded-2xl bg-white/50 dark:bg-slate-950/50 backdrop-blur-lg border border-slate-200/50 dark:border-slate-800/50 p-6"
+                  className="rounded-2xl bg-white/50 backdrop-blur-lg border border-slate-200/50 p-6"
                 >
-                  <p className="text-xs text-gray-500 dark:text-gray-400 font-mono uppercase tracking-widest mb-2">
+                  <p className="text-xs text-gray-500 font-mono uppercase tracking-widest mb-2">
                     {metric.label}
                   </p>
-                  <p className="text-2xl font-heading font-bold text-gray-950 dark:text-white">
+                  <p className="text-2xl font-heading font-bold text-gray-950">
                     {metric.value}
                   </p>
                 </div>
@@ -169,7 +169,7 @@ export const PerformanceShowcase: React.FC = () => {
               transition={{ delay: 0.5 }}
               className="text-center"
             >
-              <p className="text-gray-700 dark:text-gray-300 mb-6 leading-relaxed">
+              <p className="text-gray-700 mb-6 leading-relaxed">
                 Core Web Vitals are how Google measures whether your site is any
                 good. Load speed, responsiveness, visual stability — if these
                 are poor, Google pushes you down the results. We hit 96% on our

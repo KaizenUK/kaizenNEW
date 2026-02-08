@@ -25,7 +25,7 @@ export default function AsCollectionsCase() {
       </Helmet>
 
       {/* Hero Section */}
-      <section className="relative bg-gradient-to-b from-blue-600 to-blue-700 dark:from-slate-900 dark:to-slate-950 min-h-screen flex items-center py-20 px-4">
+      <section className="relative bg-gradient-to-b from-blue-600 to-blue-700 min-h-screen flex items-center py-20 px-4">
         <div className="absolute inset-0 opacity-10">
           <div className="absolute inset-0 bg-[url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22100%22 height=%22100%22><rect fill=%22%23fff%22 width=%2250%22 height=%2250%22/><rect fill=%22%23fff%22 x=%2250%22 y=%2250%22 width=%2250%22 height=%2250%22/></svg>')]" />
         </div>
@@ -62,7 +62,7 @@ export default function AsCollectionsCase() {
       </section>
 
       {/* 3-Column Summary Bar */}
-      <section className="bg-white dark:bg-slate-950 py-16 px-4 border-b border-kaizen-light dark:border-slate-800">
+      <section className="bg-white py-16 px-4 border-b border-kaizen-light">
         <div className="container mx-auto max-w-6xl">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12">
             <motion.div
@@ -74,7 +74,7 @@ export default function AsCollectionsCase() {
               <h3 className="text-sm font-mono font-bold text-kaizen-cyan uppercase tracking-widest mb-4">
                 The Problem
               </h3>
-              <p className="text-lg text-kaizen-text-dark dark:text-white/80 leading-relaxed">
+              <p className="text-lg text-kaizen-text-dark leading-relaxed">
                 Dated, untrustworthy site that was failing to convert on mobile
                 and didn't reflect the firm's authority.
               </p>
@@ -90,7 +90,7 @@ export default function AsCollectionsCase() {
               <h3 className="text-sm font-mono font-bold text-kaizen-cyan uppercase tracking-widest mb-4">
                 The Solution
               </h3>
-              <p className="text-lg text-kaizen-text-dark dark:text-white/80 leading-relaxed">
+              <p className="text-lg text-kaizen-text-dark leading-relaxed">
                 A 100% custom, "no-BS" WordPress redesign focused on
                 transparency, clarity, and building instant trust.
               </p>
@@ -106,7 +106,7 @@ export default function AsCollectionsCase() {
               <h3 className="text-sm font-mono font-bold text-kaizen-cyan uppercase tracking-widest mb-4">
                 Services Provided
               </h3>
-              <p className="text-lg text-kaizen-text-dark dark:text-white/80 leading-relaxed">
+              <p className="text-lg text-kaizen-text-dark leading-relaxed">
                 Web Design, Content Strategy, WordPress Development
               </p>
             </motion.div>
@@ -115,7 +115,7 @@ export default function AsCollectionsCase() {
       </section>
 
       {/* The Story Section */}
-      <section className="bg-kaizen-light dark:bg-slate-900/50 py-24 px-4">
+      <section className="bg-kaizen-light py-24 px-4">
         <div className="container mx-auto max-w-4xl">
           <div className="space-y-16">
             {/* Challenge */}
@@ -125,10 +125,10 @@ export default function AsCollectionsCase() {
               viewport={{ once: true, margin: "-100px" }}
               transition={{ duration: 0.6 }}
             >
-              <h2 className="text-4xl md:text-5xl font-heading font-bold mb-6 text-kaizen-dark dark:text-white">
+              <h2 className="text-4xl md:text-5xl font-heading font-bold mb-6 text-kaizen-dark">
                 The Challenge: A Site That Didn't Build Trust
               </h2>
-              <p className="text-lg text-kaizen-text-dark/70 dark:text-white/70 leading-relaxed">
+              <p className="text-lg text-kaizen-text-dark/70 leading-relaxed">
                 A.S Collections is a leader in commercial debt recovery, but
                 their old website was letting them down. It was a "boxy,"
                 old-fashioned design that performed poorly on mobile. For a
@@ -144,10 +144,10 @@ export default function AsCollectionsCase() {
               viewport={{ once: true, margin: "-100px" }}
               transition={{ duration: 0.6 }}
             >
-              <h2 className="text-4xl md:text-5xl font-heading font-bold mb-6 text-kaizen-dark dark:text-white">
+              <h2 className="text-4xl md:text-5xl font-heading font-bold mb-6 text-kaizen-dark">
                 The Solution: Transparency and Authority
               </h2>
-              <p className="text-lg text-kaizen-text-dark/70 dark:text-white/70 leading-relaxed mb-8">
+              <p className="text-lg text-kaizen-text-dark/70 leading-relaxed mb-8">
                 We threw out the old site and started from scratch. We designed
                 and built a clean, modern, "no-BS" platform that positions A.S
                 Collections as the clear, professional choice. We focused on
@@ -180,10 +180,10 @@ export default function AsCollectionsCase() {
                       </span>
                     </div>
                     <div>
-                      <h4 className="font-heading font-bold text-kaizen-dark dark:text-white mb-1">
+                      <h4 className="font-heading font-bold text-kaizen-dark mb-1">
                         {item.title}
                       </h4>
-                      <p className="text-kaizen-text-dark/70 dark:text-white/70">
+                      <p className="text-kaizen-text-dark/70">
                         {item.desc}
                       </p>
                     </div>
@@ -199,10 +199,10 @@ export default function AsCollectionsCase() {
               viewport={{ once: true, margin: "-100px" }}
               transition={{ duration: 0.6 }}
             >
-              <h2 className="text-4xl md:text-5xl font-heading font-bold mb-6 text-kaizen-dark dark:text-white">
+              <h2 className="text-4xl md:text-5xl font-heading font-bold mb-6 text-kaizen-dark">
                 The Result: A Digital Front Door That Converts
               </h2>
-              <p className="text-lg text-kaizen-text-dark/70 dark:text-white/70 leading-relaxed">
+              <p className="text-lg text-kaizen-text-dark/70 leading-relaxed">
                 The new A.S Collections site is now a fast, mobile-first,
                 authoritative platform that perfectly matches their professional
                 reputation. It's a "no-BS" tool that builds trust and funnels
@@ -214,10 +214,10 @@ export default function AsCollectionsCase() {
       </section>
 
       {/* Internal Links CTA */}
-      <section className="bg-white dark:bg-slate-950 py-24 px-4">
+      <section className="bg-white py-24 px-4">
         <div className="container mx-auto max-w-5xl">
           <motion.h2
-            className="text-4xl md:text-5xl font-heading font-bold mb-16 text-center text-kaizen-dark dark:text-white"
+            className="text-4xl md:text-5xl font-heading font-bold mb-16 text-center text-kaizen-dark"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
@@ -249,12 +249,12 @@ export default function AsCollectionsCase() {
               >
                 <Link
                   to={card.link}
-                  className="group block p-8 bg-kaizen-light dark:bg-slate-900/50 rounded-2xl border border-kaizen-light dark:border-slate-800 hover:border-kaizen-cyan dark:hover:border-kaizen-cyan/50 transition h-full"
+                  className="group block p-8 bg-kaizen-light rounded-2xl border border-kaizen-light hover:border-kaizen-cyan transition h-full"
                 >
-                  <h3 className="text-2xl font-heading font-bold mb-3 text-kaizen-dark dark:text-white group-hover:text-kaizen-cyan transition">
+                  <h3 className="text-2xl font-heading font-bold mb-3 text-kaizen-dark group-hover:text-kaizen-cyan transition">
                     {card.title}
                   </h3>
-                  <p className="text-kaizen-text-dark/70 dark:text-white/60 mb-6">
+                  <p className="text-kaizen-text-dark/70 mb-6">
                     {card.desc}
                   </p>
                   <div className="text-kaizen-cyan font-medium flex items-center gap-2 group-hover:gap-3 transition">
@@ -272,12 +272,12 @@ export default function AsCollectionsCase() {
       </section>
 
       {/* Pagination */}
-      <section className="bg-kaizen-light dark:bg-slate-900/50 py-16 px-4 border-t border-kaizen-light dark:border-slate-800">
+      <section className="bg-kaizen-light py-16 px-4 border-t border-kaizen-light">
         <div className="container mx-auto max-w-5xl">
           <div className="flex items-center justify-between">
             <Link
               to="/case-studies/high-five-games"
-              className="group flex items-center gap-3 text-kaizen-dark dark:text-white hover:text-kaizen-cyan transition"
+              className="group flex items-center gap-3 text-kaizen-dark hover:text-kaizen-cyan transition"
             >
               <span className="group-hover:-translate-x-1 transition">←</span>
               Previous Case Study
@@ -285,14 +285,14 @@ export default function AsCollectionsCase() {
 
             <Link
               to="/case-studies"
-              className="text-kaizen-cyan hover:text-kaizen-dark dark:hover:text-white transition text-sm font-medium"
+              className="text-kaizen-cyan hover:text-kaizen-dark transition text-sm font-medium"
             >
               View All
             </Link>
 
             <Link
               to="/case-studies/helen-moore-hairdressing"
-              className="group flex items-center gap-3 text-kaizen-dark dark:text-white hover:text-kaizen-cyan transition"
+              className="group flex items-center gap-3 text-kaizen-dark hover:text-kaizen-cyan transition"
             >
               Next Case Study
               <span className="group-hover:translate-x-1 transition">→</span>

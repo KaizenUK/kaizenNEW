@@ -107,7 +107,7 @@ const CTAButton = ({
       onClick={handleClick}
       className={`px-8 py-3 rounded-lg font-heading font-bold inline-flex items-center justify-center gap-2 transition ${
         secondary
-          ? "border-2 border-kaizen-cyan text-kaizen-cyan hover:bg-kaizen-cyan/10 dark:border-kaizen-cyan/70 dark:text-kaizen-cyan/70 dark:hover:bg-kaizen-cyan/5"
+          ? "border-2 border-kaizen-cyan text-kaizen-cyan hover:bg-kaizen-cyan/10"
           : "bg-gradient-to-r from-kaizen-cyan to-kaizen-lime text-kaizen-dark hover:shadow-lg hover:shadow-kaizen-cyan/50"
       }`}
     >
@@ -156,7 +156,7 @@ export default function WordPressWebDesign() {
         <script type="application/ld+json">{JSON.stringify(seoSchema)}</script>
       </Helmet>
       {/* Section 1: Hero - Layered Card & Reveal Style */}
-      <section className="relative min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 dark:from-slate-950 dark:via-slate-900 dark:to-black overflow-hidden flex items-center py-20">
+      <section className="relative min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 overflow-hidden flex items-center py-20">
         {/* Background visual - abstract WordPress editor aesthetic */}
         <motion.div
           className="absolute inset-0 opacity-20"
@@ -196,12 +196,12 @@ export default function WordPressWebDesign() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
             {/* Floating Text Card */}
             <motion.div
-              className="bg-white/95 dark:bg-slate-900/95 backdrop-blur-sm rounded-2xl p-8 md:p-12 shadow-2xl border border-white/20 dark:border-slate-800/50"
+              className="bg-white/95 backdrop-blur-sm rounded-2xl p-8 md:p-12 shadow-2xl border border-white/20"
               initial={{ opacity: 0, x: -60 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] as const }}
             >
-              <motion.h1 className="text-4xl md:text-5xl lg:text-6xl font-heading font-black mb-6 leading-tight text-kaizen-dark dark:text-white">
+              <motion.h1 className="text-4xl md:text-5xl lg:text-6xl font-heading font-black mb-6 leading-tight text-kaizen-dark">
                 {["WordPress", "Sites Built", "Right.", "Liverpool."].map(
                   (word, index) => (
                     <motion.span
@@ -222,7 +222,7 @@ export default function WordPressWebDesign() {
               </motion.h1>
 
               <motion.p
-                className="text-lg text-kaizen-text-dark/70 dark:text-white/70 leading-relaxed mb-8"
+                className="text-lg text-kaizen-text-dark/70 leading-relaxed mb-8"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.8, duration: 0.8 }}
@@ -242,7 +242,7 @@ export default function WordPressWebDesign() {
                 <CTAButton text="Get in Touch" openContact />
                 <button
                   onClick={openCalendlyFromContext}
-                  className="px-8 py-3 rounded-lg border-2 border-kaizen-cyan text-kaizen-cyan dark:text-kaizen-cyan/70 font-heading font-bold hover:bg-kaizen-cyan/10 dark:hover:bg-kaizen-cyan/5 transition inline-flex items-center justify-center gap-2"
+                  className="px-8 py-3 rounded-lg border-2 border-kaizen-cyan text-kaizen-cyan font-heading font-bold hover:bg-kaizen-cyan/10 transition inline-flex items-center justify-center gap-2"
                 >
                   Book a 15 Minute Call
                   <ArrowUpRight size={18} />
@@ -259,7 +259,7 @@ export default function WordPressWebDesign() {
             >
               <div className="relative w-full h-96">
                 <motion.div
-                  className="absolute inset-0 bg-gradient-to-br from-kaizen-cyan/20 to-kaizen-lime/10 dark:from-kaizen-cyan/10 dark:to-kaizen-lime/5 rounded-2xl"
+                  className="absolute inset-0 bg-gradient-to-br from-kaizen-cyan/20 to-kaizen-lime/10 rounded-2xl"
                   animate={{
                     rotateZ: [-1, 1, -1],
                   }}
@@ -285,13 +285,13 @@ export default function WordPressWebDesign() {
       </section>
 
       {/* Section 2: The "Why" - Pain Point */}
-      <section className="py-20 md:py-32 bg-white dark:bg-slate-950">
+      <section className="py-20 md:py-32 bg-white">
         <div className="container mx-auto px-4">
           <ScrollReveal>
-            <h2 className="text-4xl md:text-5xl font-heading font-bold mb-8 text-kaizen-dark dark:text-white">
+            <h2 className="text-4xl md:text-5xl font-heading font-bold mb-8 text-kaizen-dark">
               A WordPress Site Doesn't Have to Be Slow.
             </h2>
-            <p className="text-xl text-kaizen-text-dark/70 dark:text-white/60 leading-relaxed max-w-3xl">
+            <p className="text-xl text-kaizen-text-dark/70 leading-relaxed max-w-3xl">
               The problem isn't WordPress; it's the way most agencies build on
               it. They use cheap, bloated themes and dozens of clunky plugins
               that break your site and kill your page speed. We build clean,
@@ -303,10 +303,10 @@ export default function WordPressWebDesign() {
       </section>
 
       {/* Section 3: The Kaizen WordPress Method */}
-      <section className="py-20 md:py-32 bg-kaizen-light dark:bg-slate-900/50">
+      <section className="py-20 md:py-32 bg-kaizen-light">
         <div className="container mx-auto px-4">
           <ScrollReveal>
-            <h2 className="text-4xl md:text-5xl font-heading font-bold mb-16 text-kaizen-dark dark:text-white text-center">
+            <h2 className="text-4xl md:text-5xl font-heading font-bold mb-16 text-kaizen-dark text-center">
               The Kaizen WordPress Method
             </h2>
           </ScrollReveal>
@@ -338,18 +338,18 @@ export default function WordPressWebDesign() {
               <motion.div
                 key={index}
                 variants={fadeInUp}
-                className="p-8 bg-white dark:bg-slate-950 rounded-2xl border border-kaizen-light dark:border-slate-800/50 hover:border-kaizen-cyan dark:hover:border-kaizen-cyan/50 transition"
+                className="p-8 bg-white rounded-2xl border border-kaizen-light hover:border-kaizen-cyan transition"
               >
-                <div className="mb-6 p-4 w-16 h-16 bg-gradient-to-br from-kaizen-cyan/20 to-kaizen-lime/20 dark:from-kaizen-cyan/10 dark:to-kaizen-lime/10 rounded-xl flex items-center justify-center">
+                <div className="mb-6 p-4 w-16 h-16 bg-gradient-to-br from-kaizen-cyan/20 to-kaizen-lime/20 rounded-xl flex items-center justify-center">
                   <item.icon
-                    className="text-kaizen-cyan dark:text-kaizen-cyan/70"
+                    className="text-kaizen-cyan"
                     size={32}
                   />
                 </div>
-                <h3 className="text-2xl font-heading font-bold mb-4 text-kaizen-dark dark:text-white">
+                <h3 className="text-2xl font-heading font-bold mb-4 text-kaizen-dark">
                   {item.title}
                 </h3>
-                <p className="text-lg text-kaizen-text-dark/70 dark:text-white/60 leading-relaxed">
+                <p className="text-lg text-kaizen-text-dark/70 leading-relaxed">
                   {item.copy}
                 </p>
               </motion.div>
@@ -359,23 +359,23 @@ export default function WordPressWebDesign() {
       </section>
 
       {/* Section: Is WordPress right for me? */}
-      <section className="py-20 md:py-24 bg-white dark:bg-slate-950">
+      <section className="py-20 md:py-24 bg-white">
         <div className="container mx-auto px-4">
           <ScrollReveal>
-            <div className="max-w-3xl mx-auto rounded-2xl border border-kaizen-light dark:border-slate-800 bg-kaizen-light dark:bg-slate-900/60 p-6 md:p-8">
+            <div className="max-w-3xl mx-auto rounded-2xl border border-kaizen-light bg-kaizen-light p-6 md:p-8">
               <p className="text-xs font-mono tracking-[0.25em] text-kaizen-cyan uppercase mb-3">
                 WordPress or React?
               </p>
-              <h2 className="text-2xl md:text-3xl font-heading font-bold mb-4 text-kaizen-dark dark:text-white">
+              <h2 className="text-2xl md:text-3xl font-heading font-bold mb-4 text-kaizen-dark">
                 Is WordPress right for my business?
               </h2>
-              <p className="text-base md:text-lg text-kaizen-text-dark/80 dark:text-white/70 leading-relaxed mb-4">
+              <p className="text-base md:text-lg text-kaizen-text-dark/80 leading-relaxed mb-4">
                 WordPress is ideal for smaller businesses and lower-traffic
                 sites that need a flexible, easy-to-manage presence. If you
                 already have a theme you really want to use, we can work with it
                 while still keeping your build as lean as possible.
               </p>
-              <p className="text-base md:text-lg text-kaizen-text-dark/80 dark:text-white/70 leading-relaxed mb-4">
+              <p className="text-base md:text-lg text-kaizen-text-dark/80 leading-relaxed mb-4">
                 If you later move to a React or headless build, you will still
                 manage your content through a familiar CMS. The front-end
                 changes, but your day-to-day editing workflow stays simple and
@@ -396,10 +396,10 @@ export default function WordPressWebDesign() {
       </section>
 
       {/* Section 4: Real Results for Local Businesses */}
-      <section className="py-20 md:py-32 bg-white dark:bg-slate-950">
+      <section className="py-20 md:py-32 bg-white">
         <div className="container mx-auto px-4">
           <ScrollReveal>
-            <h2 className="text-4xl md:text-5xl font-heading font-bold mb-16 text-kaizen-dark dark:text-white text-center">
+            <h2 className="text-4xl md:text-5xl font-heading font-bold mb-16 text-kaizen-dark text-center">
               Real Results for Local Businesses
             </h2>
           </ScrollReveal>
@@ -434,33 +434,33 @@ export default function WordPressWebDesign() {
               <motion.div
                 key={index}
                 variants={fadeInUp}
-                className="p-8 bg-kaizen-light dark:bg-slate-900/50 rounded-2xl border border-kaizen-light dark:border-slate-800/50"
+                className="p-8 bg-kaizen-light rounded-2xl border border-kaizen-light"
               >
                 <Link
                   to={`/case-studies/${caseStudy.slug.toLowerCase()}`}
-                  className="text-sm font-bold text-kaizen-cyan dark:text-kaizen-cyan/70 uppercase tracking-wide mb-2 hover:opacity-80 transition inline-block"
+                  className="text-sm font-bold text-kaizen-cyan uppercase tracking-wide mb-2 hover:opacity-80 transition inline-block"
                 >
                   {caseStudy.client}
                 </Link>
-                <p className="text-xs font-medium text-kaizen-text-dark/60 dark:text-white/50 mb-6">
+                <p className="text-xs font-medium text-kaizen-text-dark/60 mb-6">
                   {caseStudy.industry}
                 </p>
 
                 <div className="space-y-6">
                   <div>
-                    <h4 className="font-heading font-bold text-kaizen-dark dark:text-white mb-2">
+                    <h4 className="font-heading font-bold text-kaizen-dark mb-2">
                       The Problem
                     </h4>
-                    <p className="text-kaizen-text-dark/70 dark:text-white/60 leading-relaxed">
+                    <p className="text-kaizen-text-dark/70 leading-relaxed">
                       {caseStudy.problem}
                     </p>
                   </div>
 
                   <div>
-                    <h4 className="font-heading font-bold text-kaizen-dark dark:text-white mb-2">
+                    <h4 className="font-heading font-bold text-kaizen-dark mb-2">
                       The Outcome
                     </h4>
-                    <p className="text-kaizen-text-dark/70 dark:text-white/60 leading-relaxed">
+                    <p className="text-kaizen-text-dark/70 leading-relaxed">
                       {caseStudy.outcome}
                     </p>
                   </div>
@@ -479,10 +479,10 @@ export default function WordPressWebDesign() {
       </section>
 
       {/* Section 5: Internal Links - Cross-Sell */}
-      <section className="py-20 md:py-32 bg-kaizen-light dark:bg-slate-900/50">
+      <section className="py-20 md:py-32 bg-kaizen-light">
         <div className="container mx-auto px-4">
           <ScrollReveal>
-            <h2 className="text-4xl md:text-5xl font-heading font-bold mb-12 text-kaizen-dark dark:text-white text-center">
+            <h2 className="text-4xl md:text-5xl font-heading font-bold mb-12 text-kaizen-dark text-center">
               Looking for Ultimate Performance?
             </h2>
           </ScrollReveal>
@@ -496,12 +496,12 @@ export default function WordPressWebDesign() {
           >
             <Link
               to="/web-design-liverpool"
-              className="block p-8 md:p-12 bg-white dark:bg-slate-950 rounded-2xl border border-kaizen-light dark:border-slate-800/50 hover:border-kaizen-cyan dark:hover:border-kaizen-cyan/50 transition group"
+              className="block p-8 md:p-12 bg-white rounded-2xl border border-kaizen-light hover:border-kaizen-cyan transition group"
             >
-              <h3 className="text-3xl md:text-4xl font-heading font-bold mb-4 text-kaizen-dark dark:text-white group-hover:text-kaizen-cyan transition">
+              <h3 className="text-3xl md:text-4xl font-heading font-bold mb-4 text-kaizen-dark group-hover:text-kaizen-cyan transition">
                 Need a Headless Build?
               </h3>
-              <p className="text-lg text-kaizen-text-dark/70 dark:text-white/60 leading-relaxed mb-6">
+              <p className="text-lg text-kaizen-text-dark/70 leading-relaxed mb-6">
                 WordPress is perfect for most businesses. But for ambitious
                 brands needing unbeatable speed and a fully custom app-like
                 experience, we also offer high-performance Headless builds.
@@ -537,13 +537,13 @@ export default function WordPressWebDesign() {
       />
 
       {/* Section 6: Final Call to Action */}
-      <section className="py-20 md:py-32 bg-kaizen-dark dark:bg-gradient-to-b dark:from-slate-900 dark:to-slate-950 text-kaizen-text-light dark:text-white/85">
+      <section className="py-20 md:py-32 bg-kaizen-dark text-kaizen-text-light">
         <div className="container mx-auto px-4 text-center">
           <ScrollReveal>
-            <h2 className="text-4xl md:text-5xl font-heading font-bold mb-8 text-kaizen-text-light dark:text-white">
+            <h2 className="text-4xl md:text-5xl font-heading font-bold mb-8 text-kaizen-text-light">
               Get a WordPress Site You Can Rely On.
             </h2>
-            <p className="text-xl text-kaizen-text-light/80 dark:text-white/70 mb-12 max-w-2xl mx-auto leading-relaxed">
+            <p className="text-xl text-kaizen-text-light/80 mb-12 max-w-2xl mx-auto leading-relaxed">
               Let's talk about building a fast, secure WordPress site for your
               Liverpool business. Chat with us or book a no-pressure call.
             </p>
@@ -559,7 +559,7 @@ export default function WordPressWebDesign() {
             <CTAButton text="Get in Touch" openContact />
             <button
               onClick={openCalendlyFromContext}
-              className="px-8 py-3 rounded-lg border-2 border-kaizen-text-light/30 dark:border-white/20 text-kaizen-text-light dark:text-white/85 font-heading font-bold hover:border-kaizen-cyan dark:hover:border-kaizen-cyan transition inline-flex items-center justify-center gap-2"
+              className="px-8 py-3 rounded-lg border-2 border-kaizen-text-light/30 text-kaizen-text-light font-heading font-bold hover:border-kaizen-cyan transition inline-flex items-center justify-center gap-2"
             >
               Book a 15 Minute Call
               <ArrowUpRight size={18} />
@@ -567,7 +567,7 @@ export default function WordPressWebDesign() {
           </motion.div>
 
           <motion.p
-            className="text-kaizen-text-light/70 dark:text-white/60 mt-8 text-sm"
+            className="text-kaizen-text-light/70 mt-8 text-sm"
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}

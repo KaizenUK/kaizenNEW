@@ -57,7 +57,7 @@ export default function About() {
   return (
     <Layout>
       {/* HERO - The Promise */}
-      <section className="min-h-screen bg-white dark:bg-slate-950 flex items-center py-20">
+      <section className="min-h-screen bg-white flex items-center py-20">
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
             <div className="max-w-2xl">
@@ -66,10 +66,10 @@ export default function About() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6 }}
               >
-                <h1 className="text-6xl md:text-7xl lg:text-8xl font-heading font-black mb-6 leading-tight text-kaizen-dark dark:text-white">
+                <h1 className="text-6xl md:text-7xl lg:text-8xl font-heading font-black mb-6 leading-tight text-kaizen-dark">
                   Stop overcomplicating your website.
                 </h1>
-                <p className="text-xl md:text-2xl text-kaizen-dark/70 dark:text-white/70 leading-relaxed">
+                <p className="text-xl md:text-2xl text-kaizen-dark/70 leading-relaxed">
                   Traditional agencies are slow, expensive, and love jargon. We
                   use modern technology to build fast, effective websites that
                   just work.
@@ -96,15 +96,15 @@ export default function About() {
       </section>
 
       {/* PHILOSOPHY - Kaizen for Business */}
-      <section className="py-20 md:py-32 bg-kaizen-light dark:bg-slate-900/50">
+      <section className="py-20 md:py-32 bg-kaizen-light">
         <div className="container mx-auto px-4">
           <ScrollReveal>
             <div className="max-w-3xl mx-auto">
-              <h2 className="text-4xl md:text-5xl font-heading font-black mb-8 text-kaizen-dark dark:text-white">
+              <h2 className="text-4xl md:text-5xl font-heading font-black mb-8 text-kaizen-dark">
                 Continuous improvement. For your business.
               </h2>
 
-              <div className="text-xl text-kaizen-dark/70 dark:text-white/70 leading-relaxed space-y-6">
+              <div className="text-xl text-kaizen-dark/70 leading-relaxed space-y-6">
                 <p>
                   Kaizen means "continuous improvement". Most agencies launch
                   your site and disappear. That's not how we work.
@@ -122,10 +122,10 @@ export default function About() {
       </section>
 
       {/* WHY US - Three Cards, No Borders */}
-      <section className="py-20 md:py-32 bg-white dark:bg-slate-950">
+      <section className="py-20 md:py-32 bg-white">
         <div className="container mx-auto px-4">
           <ScrollReveal>
-            <h2 className="text-4xl md:text-5xl font-heading font-black mb-16 text-kaizen-dark dark:text-white text-center">
+            <h2 className="text-4xl md:text-5xl font-heading font-black mb-16 text-kaizen-dark text-center">
               Here's what's different.
             </h2>
           </ScrollReveal>
@@ -145,16 +145,16 @@ export default function About() {
           >
             {/* Card 1 */}
             <motion.div
-              className="p-8 md:p-10 rounded-3xl bg-kaizen-light/50 dark:bg-slate-900/50"
+              className="p-8 md:p-10 rounded-3xl bg-kaizen-light/50"
               variants={fadeInUp}
             >
               <div className="mb-8">
                 <Zap className="w-8 h-8 text-kaizen-cyan" />
               </div>
-              <h3 className="text-2xl font-heading font-bold mb-4 text-kaizen-dark dark:text-white">
+              <h3 className="text-2xl font-heading font-bold mb-4 text-kaizen-dark">
                 We don't guess.
               </h3>
-              <p className="text-lg text-kaizen-dark/70 dark:text-white/70 leading-relaxed">
+              <p className="text-lg text-kaizen-dark/70 leading-relaxed">
                 We use data to see exactly what's working and what isn't. That's
                 how we know if your site is actually generating leads.
               </p>
@@ -162,16 +162,16 @@ export default function About() {
 
             {/* Card 2 */}
             <motion.div
-              className="p-8 md:p-10 rounded-3xl bg-kaizen-light/50 dark:bg-slate-900/50"
+              className="p-8 md:p-10 rounded-3xl bg-kaizen-light/50"
               variants={fadeInUp}
             >
               <div className="mb-8">
                 <TrendingUp className="w-8 h-8 text-kaizen-cyan" />
               </div>
-              <h3 className="text-2xl font-heading font-bold mb-4 text-kaizen-dark dark:text-white">
+              <h3 className="text-2xl font-heading font-bold mb-4 text-kaizen-dark">
                 Speed wins.
               </h3>
-              <p className="text-lg text-kaizen-dark/70 dark:text-white/70 leading-relaxed">
+              <p className="text-lg text-kaizen-dark/70 leading-relaxed">
                 Fast sites convert. Slow sites lose customers. We make sure your
                 site loads instantly so people stay.
               </p>
@@ -179,16 +179,16 @@ export default function About() {
 
             {/* Card 3 */}
             <motion.div
-              className="p-8 md:p-10 rounded-3xl bg-kaizen-light/50 dark:bg-slate-900/50"
+              className="p-8 md:p-10 rounded-3xl bg-kaizen-light/50"
               variants={fadeInUp}
             >
               <div className="mb-8">
                 <MessageSquare className="w-8 h-8 text-kaizen-cyan" />
               </div>
-              <h3 className="text-2xl font-heading font-bold mb-4 text-kaizen-dark dark:text-white">
+              <h3 className="text-2xl font-heading font-bold mb-4 text-kaizen-dark">
                 No tech-talk.
               </h3>
-              <p className="text-lg text-kaizen-dark/70 dark:text-white/70 leading-relaxed">
+              <p className="text-lg text-kaizen-dark/70 leading-relaxed">
                 We speak plain English. We handle the complex stuff so you can
                 focus on running your business.
               </p>
@@ -198,15 +198,15 @@ export default function About() {
       </section>
 
       {/* THE SHIFT - Effort vs Outcome */}
-      <section className="py-20 md:py-32 bg-kaizen-light dark:bg-slate-900/50">
+      <section className="py-20 md:py-32 bg-kaizen-light">
         <div className="container mx-auto px-4">
           <ScrollReveal>
             <div className="max-w-3xl mx-auto">
-              <h2 className="text-4xl md:text-5xl font-heading font-black mb-8 text-kaizen-dark dark:text-white">
+              <h2 className="text-4xl md:text-5xl font-heading font-black mb-8 text-kaizen-dark">
                 You don't pay for the hours. You pay for the result.
               </h2>
 
-              <div className="text-xl text-kaizen-dark/70 dark:text-white/70 leading-relaxed space-y-6">
+              <div className="text-xl text-kaizen-dark/70 leading-relaxed space-y-6">
                 <p>
                   Old agencies charge by the hour. More hours, more money. We
                   use modern tools—AI, automation—so we can work faster and
@@ -225,15 +225,15 @@ export default function About() {
       </section>
 
       {/* MODERN ADVANTAGE - The Tech Edge */}
-      <section className="py-20 md:py-32 bg-white dark:bg-slate-950">
+      <section className="py-20 md:py-32 bg-white">
         <div className="container mx-auto px-4">
           <ScrollReveal>
             <div className="max-w-3xl mx-auto text-center">
-              <h2 className="text-4xl md:text-5xl font-heading font-black mb-8 text-kaizen-dark dark:text-white">
+              <h2 className="text-4xl md:text-5xl font-heading font-black mb-8 text-kaizen-dark">
                 We're operators. Not coders.
               </h2>
 
-              <p className="text-xl text-kaizen-dark/70 dark:text-white/70 leading-relaxed">
+              <p className="text-xl text-kaizen-dark/70 leading-relaxed">
                 We use AI and modern automation to do work that used to take a
                 team of developers. We focus on results. Faster builds. Better
                 performance. Lower cost. That's your modern advantage.
@@ -244,7 +244,7 @@ export default function About() {
       </section>
 
       {/* FINAL CTA */}
-      <section className="py-20 md:py-32 bg-kaizen-dark dark:bg-gradient-to-b dark:from-slate-900 dark:to-slate-950 text-white">
+      <section className="py-20 md:py-32 bg-kaizen-dark text-white">
         <div className="container mx-auto px-4">
           <ScrollReveal>
             <div className="max-w-3xl mx-auto text-center">

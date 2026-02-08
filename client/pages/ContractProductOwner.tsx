@@ -127,35 +127,35 @@ const FlipCard = ({
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
     >
-      <div className="relative w-full h-80 rounded-2xl border border-kaizen-light dark:border-slate-800/50 overflow-hidden">
+      <div className="relative w-full h-80 rounded-2xl border border-kaizen-light overflow-hidden">
         {/* Front Side */}
         <motion.div
-          className="absolute inset-0 w-full h-full p-6 bg-kaizen-light dark:bg-slate-900/50 flex flex-col"
+          className="absolute inset-0 w-full h-full p-6 bg-kaizen-light flex flex-col"
           animate={{
             opacity: isFlipped ? 0 : 1,
             pointerEvents: isFlipped ? "none" : "auto",
           }}
           transition={{ duration: 0.5 }}
         >
-          <div className="mb-3 p-3 w-14 h-14 bg-gradient-to-br from-kaizen-cyan/20 to-kaizen-lime/20 dark:from-kaizen-cyan/10 dark:to-kaizen-lime/10 rounded-lg flex items-center justify-center">
+          <div className="mb-3 p-3 w-14 h-14 bg-gradient-to-br from-kaizen-cyan/20 to-kaizen-lime/20 rounded-lg flex items-center justify-center">
             <Icon
-              className="text-kaizen-cyan dark:text-kaizen-cyan/70"
+              className="text-kaizen-cyan"
               size={28}
             />
           </div>
-          <h3 className="text-base font-heading font-bold mb-2 text-kaizen-dark dark:text-white leading-snug">
+          <h3 className="text-base font-heading font-bold mb-2 text-kaizen-dark leading-snug">
             {title}
           </h3>
           <div className="flex-grow overflow-hidden">
-            <p className="text-xs font-semibold text-kaizen-cyan dark:text-kaizen-cyan/80 mb-1 uppercase tracking-wide">
+            <p className="text-xs font-semibold text-kaizen-cyan mb-1 uppercase tracking-wide">
               Proof
             </p>
-            <p className="text-xs text-kaizen-text-dark/70 dark:text-white/60 leading-relaxed">
+            <p className="text-xs text-kaizen-text-dark/70 leading-relaxed">
               {proof}
             </p>
           </div>
           <div className="mt-auto pt-2">
-            <p className="text-xs text-kaizen-cyan/60 dark:text-kaizen-cyan/50 font-medium">
+            <p className="text-xs text-kaizen-cyan/60 font-medium">
               ✨ Click to flip
             </p>
           </div>
@@ -222,11 +222,11 @@ export default function ContractProductOwner() {
   return (
     <Layout>
       {/* Section 1: Hero - Bold Typography */}
-      <section className="min-h-screen bg-white dark:bg-slate-950 flex items-center py-20">
+      <section className="min-h-screen bg-white flex items-center py-20">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl">
             {/* Main H1 - Staggered word reveal */}
-            <h1 className="text-5xl md:text-6xl lg:text-7xl font-heading font-black mb-6 leading-tight text-kaizen-dark dark:text-white">
+            <h1 className="text-5xl md:text-6xl lg:text-7xl font-heading font-black mb-6 leading-tight text-kaizen-dark">
               {["Contract", "Product", "Owner", "Services"].map(
                 (word, index) => (
                   <motion.span
@@ -247,13 +247,13 @@ export default function ContractProductOwner() {
             </h1>
 
             {/* Sub-headline H2 */}
-            <h2 className="text-2xl md:text-3xl font-heading font-semibold mb-12 leading-tight text-kaizen-dark dark:text-white/90">
+            <h2 className="text-2xl md:text-3xl font-heading font-semibold mb-12 leading-tight text-kaizen-dark">
               Your project needs a leader, not just a manager.
             </h2>
 
             {/* Sub-headline */}
             <motion.p
-              className="text-lg md:text-xl text-kaizen-text-dark/70 dark:text-white/70 leading-relaxed mb-8 max-w-3xl"
+              className="text-lg md:text-xl text-kaizen-text-dark/70 leading-relaxed mb-8 max-w-3xl"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.8, duration: 0.8 }}
@@ -282,7 +282,7 @@ export default function ContractProductOwner() {
               </button>
               <button
                 onClick={() => navigate("/contact")}
-                className="px-8 py-3 rounded-lg border-2 border-kaizen-cyan text-kaizen-cyan dark:text-kaizen-cyan/70 font-heading font-bold hover:bg-kaizen-cyan/10 dark:hover:bg-kaizen-cyan/5 transition inline-flex items-center justify-center gap-2"
+                className="px-8 py-3 rounded-lg border-2 border-kaizen-cyan text-kaizen-cyan font-heading font-bold hover:bg-kaizen-cyan/10 transition inline-flex items-center justify-center gap-2"
               >
                 Get in Touch
                 <ArrowUpRight size={18} />
@@ -293,14 +293,14 @@ export default function ContractProductOwner() {
       </section>
 
       {/* Section 2: The "No-BS" Translation */}
-      <section className="py-20 md:py-32 bg-kaizen-light dark:bg-slate-900/50">
+      <section className="py-20 md:py-32 bg-kaizen-light">
         <div className="container mx-auto px-4">
           <ScrollReveal>
             <div className="max-w-3xl">
-              <h2 className="text-4xl md:text-5xl font-heading font-bold mb-8 text-kaizen-dark dark:text-white">
+              <h2 className="text-4xl md:text-5xl font-heading font-bold mb-8 text-kaizen-dark">
                 Why Your Project is Failing (And How I Fix It)
               </h2>
-              <p className="text-lg md:text-xl text-kaizen-text-dark/70 dark:text-white/60 leading-relaxed mb-8">
+              <p className="text-lg md:text-xl text-kaizen-text-dark/70 leading-relaxed mb-8">
                 Most projects fail from a lack of a single, accountable owner.
                 Not a "project manager" who just shuffles tasks, but one person
                 who has the authority to make decisions, protect your budget,
@@ -309,10 +309,10 @@ export default function ContractProductOwner() {
               </p>
 
               <div>
-                <h3 className="text-2xl font-heading font-bold mb-4 text-kaizen-dark dark:text-white">
+                <h3 className="text-2xl font-heading font-bold mb-4 text-kaizen-dark">
                   My job is to:
                 </h3>
-                <p className="text-lg text-kaizen-text-dark/70 dark:text-white/60 leading-relaxed">
+                <p className="text-lg text-kaizen-text-dark/70 leading-relaxed">
                   Act as your expert representative, de-risk your investment,
                   and ensure what you <em>ask for</em> is what gets{" "}
                   <em>built</em>.
@@ -325,16 +325,16 @@ export default function ContractProductOwner() {
 
       {/* Section 3: Real-World Experience */}
       <FlipCardProvider>
-        <section className="py-20 md:py-32 bg-white dark:bg-slate-950">
+        <section className="py-20 md:py-32 bg-white">
           <div className="container mx-auto px-4">
             <ScrollReveal>
-              <h2 className="text-4xl md:text-5xl font-heading font-bold mb-16 text-kaizen-dark dark:text-white">
+              <h2 className="text-4xl md:text-5xl font-heading font-bold mb-16 text-kaizen-dark">
                 My Experience, Your Peace of Mind
               </h2>
             </ScrollReveal>
 
             <div className="max-w-4xl mx-auto text-center mb-8">
-              <p className="text-lg text-kaizen-text-dark/70 dark:text-white/60">
+              <p className="text-lg text-kaizen-text-dark/70">
                 Click any card to open it and see why this experience matters to
                 your project.
               </p>
@@ -393,10 +393,10 @@ export default function ContractProductOwner() {
       </FlipCardProvider>
 
       {/* Section 4: How I Work */}
-      <section className="py-20 md:py-32 bg-white dark:bg-slate-950">
+      <section className="py-20 md:py-32 bg-white">
         <div className="container mx-auto px-4">
           <ScrollReveal>
-            <h2 className="text-4xl md:text-5xl font-heading font-bold mb-16 text-kaizen-dark dark:text-white text-center">
+            <h2 className="text-4xl md:text-5xl font-heading font-bold mb-16 text-kaizen-dark text-center">
               How I Work: My "Fix & Deliver" Process
             </h2>
           </ScrollReveal>
@@ -438,10 +438,10 @@ export default function ContractProductOwner() {
 
                 {/* Content */}
                 <div className="flex-grow pt-2">
-                  <h3 className="text-2xl md:text-3xl font-heading font-bold mb-4 text-kaizen-dark dark:text-white">
+                  <h3 className="text-2xl md:text-3xl font-heading font-bold mb-4 text-kaizen-dark">
                     {item.title}
                   </h3>
-                  <p className="text-lg text-kaizen-text-dark/70 dark:text-white/60 leading-relaxed">
+                  <p className="text-lg text-kaizen-text-dark/70 leading-relaxed">
                     {item.copy}
                   </p>
                 </div>
@@ -452,19 +452,19 @@ export default function ContractProductOwner() {
       </section>
 
       {/* Section 4b: Why We Use Product Owners, Not Project Managers */}
-      <section className="py-20 md:py-32 bg-kaizen-light dark:bg-slate-900/50">
+      <section className="py-20 md:py-32 bg-kaizen-light">
         <div className="container mx-auto px-4">
           <ScrollReveal>
             <div className="max-w-4xl mx-auto mb-12">
-              <h2 className="text-4xl md:text-5xl font-heading font-bold mb-6 text-kaizen-dark dark:text-white">
+              <h2 className="text-4xl md:text-5xl font-heading font-bold mb-6 text-kaizen-dark">
                 Why We Use Product Owners, Not Project Managers
               </h2>
-              <p className="text-lg md:text-xl text-kaizen-text-dark/70 dark:text-white/70 leading-relaxed">
+              <p className="text-lg md:text-xl text-kaizen-text-dark/70 leading-relaxed">
                 Most agencies assign you a Project Manager. Their job is to
                 protect the agency's margin. At Kaizen, I step in as a Contract
                 Product Owner. My job is to protect your ROI.
               </p>
-              <p className="text-lg text-kaizen-text-dark/70 dark:text-white/70 leading-relaxed mt-4">
+              <p className="text-lg text-kaizen-text-dark/70 leading-relaxed mt-4">
                 It sounds like a subtle title change, but the difference in
                 delivery is massive.
               </p>
@@ -474,15 +474,15 @@ export default function ContractProductOwner() {
           <div className="max-w-4xl mx-auto">
             {/* Desktop/tablet: side-by-side comparison table */}
             <div className="hidden md:block overflow-x-auto">
-              <div className="min-w-[640px] rounded-2xl border border-kaizen-light dark:border-slate-800 bg-white dark:bg-slate-950 shadow-sm">
-                <div className="grid grid-cols-3 border-b border-kaizen-light/70 dark:border-slate-800">
-                  <div className="p-4 text-sm font-heading font-semibold text-kaizen-dark dark:text-white bg-kaizen-light/70 dark:bg-slate-900/70">
+              <div className="min-w-[640px] rounded-2xl border border-kaizen-light bg-white shadow-sm">
+                <div className="grid grid-cols-3 border-b border-kaizen-light/70">
+                  <div className="p-4 text-sm font-heading font-semibold text-kaizen-dark bg-kaizen-light/70">
                     Feature
                   </div>
-                  <div className="p-4 text-sm font-heading font-semibold text-kaizen-dark dark:text-white bg-red-50 dark:bg-red-900/20 border-l border-kaizen-light/70 dark:border-slate-800">
+                  <div className="p-4 text-sm font-heading font-semibold text-kaizen-dark bg-red-50 border-l border-kaizen-light/70">
                     Project Manager (Traditional Agency)
                   </div>
-                  <div className="p-4 text-sm font-heading font-semibold text-kaizen-dark dark:text-white bg-green-50 dark:bg-green-900/20 border-l border-kaizen-light/70 dark:border-slate-800">
+                  <div className="p-4 text-sm font-heading font-semibold text-kaizen-dark bg-green-50 border-l border-kaizen-light/70">
                     Product Owner (Kaizen)
                   </div>
                 </div>
@@ -490,19 +490,19 @@ export default function ContractProductOwner() {
                 {comparisonRows.map((row, index) => (
                   <div
                     key={row.feature}
-                    className={`grid grid-cols-3 border-t border-kaizen-light/60 dark:border-slate-800 ${
+                    className={`grid grid-cols-3 border-t border-kaizen-light/60 ${
                       index % 2 === 0
-                        ? "bg-white dark:bg-slate-950"
-                        : "bg-kaizen-light/40 dark:bg-slate-900/60"
+                        ? "bg-white"
+                        : "bg-kaizen-light/40"
                     }`}
                   >
-                    <div className="p-4 text-sm font-heading font-semibold text-kaizen-dark dark:text-white">
+                    <div className="p-4 text-sm font-heading font-semibold text-kaizen-dark">
                       {row.feature}
                     </div>
-                    <div className="p-4 text-sm text-kaizen-text-dark/80 dark:text-white/70 border-l border-kaizen-light/60 dark:border-slate-800">
+                    <div className="p-4 text-sm text-kaizen-text-dark/80 border-l border-kaizen-light/60">
                       {row.pm}
                     </div>
-                    <div className="p-4 text-sm text-kaizen-text-dark/90 dark:text-white border-l border-kaizen-light/60 dark:border-slate-800 bg-green-50/60 dark:bg-green-900/15">
+                    <div className="p-4 text-sm text-kaizen-text-dark/90 border-l border-kaizen-light/60 bg-green-50/60">
                       {row.po}
                     </div>
                   </div>
@@ -515,27 +515,27 @@ export default function ContractProductOwner() {
               {comparisonRows.map((row) => (
                 <div
                   key={row.feature}
-                  className="rounded-2xl border border-kaizen-light dark:border-slate-800 bg-white dark:bg-slate-950 shadow-sm overflow-hidden"
+                  className="rounded-2xl border border-kaizen-light bg-white shadow-sm overflow-hidden"
                 >
-                  <div className="px-4 py-3 border-b border-kaizen-light/70 dark:border-slate-800 bg-kaizen-light/70 dark:bg-slate-900/70">
-                    <p className="text-sm font-heading font-semibold text-kaizen-dark dark:text-white">
+                  <div className="px-4 py-3 border-b border-kaizen-light/70 bg-kaizen-light/70">
+                    <p className="text-sm font-heading font-semibold text-kaizen-dark">
                       {row.feature}
                     </p>
                   </div>
-                  <div className="divide-y divide-kaizen-light/60 dark:divide-slate-800">
-                    <div className="p-4 bg-red-50 dark:bg-red-900/10">
-                      <p className="text-xs font-semibold uppercase tracking-wide text-red-700 dark:text-red-300 mb-1">
+                  <div className="divide-y divide-kaizen-light/60">
+                    <div className="p-4 bg-red-50">
+                      <p className="text-xs font-semibold uppercase tracking-wide text-red-700 mb-1">
                         Project Manager (Traditional Agency)
                       </p>
-                      <p className="text-sm text-kaizen-text-dark/80 dark:text-white/75">
+                      <p className="text-sm text-kaizen-text-dark/80">
                         {row.pm}
                       </p>
                     </div>
-                    <div className="p-4 bg-green-50/70 dark:bg-green-900/20">
-                      <p className="text-xs font-semibold uppercase tracking-wide text-green-800 dark:text-green-300 mb-1">
+                    <div className="p-4 bg-green-50/70">
+                      <p className="text-xs font-semibold uppercase tracking-wide text-green-800 mb-1">
                         Product Owner (Kaizen)
                       </p>
-                      <p className="text-sm text-kaizen-text-dark/90 dark:text-white">
+                      <p className="text-sm text-kaizen-text-dark/90">
                         {row.po}
                       </p>
                     </div>
@@ -544,7 +544,7 @@ export default function ContractProductOwner() {
               ))}
             </div>
 
-            <p className="mt-6 text-sm md:text-base text-kaizen-text-dark/80 dark:text-white/70">
+            <p className="mt-6 text-sm md:text-base text-kaizen-text-dark/80">
               <span className="font-semibold">The bottom line:</span> If you
               want someone to send you a weekly status report, hire a Project
               Manager. If you want someone to take ownership of the backlog,
@@ -553,20 +553,20 @@ export default function ContractProductOwner() {
             </p>
           </div>
 
-          <div className="max-w-4xl mx-auto mt-12 border-t border-kaizen-light dark:border-slate-800 pt-10">
-            <h3 className="text-2xl md:text-3xl font-heading font-bold mb-4 text-kaizen-dark dark:text-white">
+          <div className="max-w-4xl mx-auto mt-12 border-t border-kaizen-light pt-10">
+            <h3 className="text-2xl md:text-3xl font-heading font-bold mb-4 text-kaizen-dark">
               FAQ: Do I need a Product Owner or a Project Manager?
             </h3>
-            <p className="text-lg text-kaizen-text-dark/80 dark:text-white/70 leading-relaxed mb-4">
+            <p className="text-lg text-kaizen-text-dark/80 leading-relaxed mb-4">
               A Project Manager asks: <strong>"When will this be done?"</strong>{" "}
               They focus on dates, status reports, and Gantt charts.
             </p>
-            <p className="text-lg text-kaizen-text-dark/80 dark:text-white/70 leading-relaxed mb-4">
+            <p className="text-lg text-kaizen-text-dark/80 leading-relaxed mb-4">
               A Product Owner asks:{" "}
               <strong>"Should we build this at all?"</strong> I focus on value,
               risk, and what the work does to your bottom line.
             </p>
-            <p className="text-lg text-kaizen-text-dark/80 dark:text-white/70 leading-relaxed">
+            <p className="text-lg text-kaizen-text-dark/80 leading-relaxed">
               If your team is building the wrong features on time, you do not
               have a delivery problem, you have a strategy problem. That is
               where a Product Owner pays for themselves very quickly.
@@ -576,10 +576,10 @@ export default function ContractProductOwner() {
       </section>
 
       {/* Section 5: Professional Accreditations */}
-      <section className="py-20 md:py-32 bg-kaizen-light dark:bg-slate-900/50">
+      <section className="py-20 md:py-32 bg-kaizen-light">
         <div className="container mx-auto px-4">
           <ScrollReveal>
-            <h2 className="text-4xl md:text-5xl font-heading font-bold mb-16 text-kaizen-dark dark:text-white text-center">
+            <h2 className="text-4xl md:text-5xl font-heading font-bold mb-16 text-kaizen-dark text-center">
               Professional Accreditations
             </h2>
           </ScrollReveal>
@@ -601,13 +601,13 @@ export default function ContractProductOwner() {
                 variants={fadeInUp}
                 className="text-center"
               >
-                <div className="mb-6 p-4 w-16 h-16 bg-gradient-to-br from-kaizen-cyan/20 to-kaizen-lime/20 dark:from-kaizen-cyan/10 dark:to-kaizen-lime/10 rounded-xl flex items-center justify-center mx-auto">
+                <div className="mb-6 p-4 w-16 h-16 bg-gradient-to-br from-kaizen-cyan/20 to-kaizen-lime/20 rounded-xl flex items-center justify-center mx-auto">
                   <CheckCircle
-                    className="text-kaizen-cyan dark:text-kaizen-cyan/70"
+                    className="text-kaizen-cyan"
                     size={32}
                   />
                 </div>
-                <p className="text-xl font-heading font-bold text-kaizen-dark dark:text-white">
+                <p className="text-xl font-heading font-bold text-kaizen-dark">
                   {item.title}
                 </p>
               </motion.div>
@@ -617,10 +617,10 @@ export default function ContractProductOwner() {
       </section>
 
       {/* Section 6: When to Hire Me */}
-      <section className="py-20 md:py-32 bg-white dark:bg-slate-950">
+      <section className="py-20 md:py-32 bg-white">
         <div className="container mx-auto px-4">
           <ScrollReveal>
-            <h2 className="text-4xl md:text-5xl font-heading font-bold mb-16 text-kaizen-dark dark:text-white text-center">
+            <h2 className="text-4xl md:text-5xl font-heading font-bold mb-16 text-kaizen-dark text-center">
               When to Hire a Contract PO
             </h2>
           </ScrollReveal>
@@ -649,12 +649,12 @@ export default function ContractProductOwner() {
               <motion.div
                 key={index}
                 variants={fadeInUp}
-                className="p-8 bg-kaizen-light dark:bg-slate-900/50 rounded-2xl border border-kaizen-light dark:border-slate-800/50 hover:border-kaizen-cyan dark:hover:border-kaizen-cyan/50 transition"
+                className="p-8 bg-kaizen-light rounded-2xl border border-kaizen-light hover:border-kaizen-cyan transition"
               >
-                <h3 className="text-2xl font-heading font-bold mb-4 text-kaizen-dark dark:text-white">
+                <h3 className="text-2xl font-heading font-bold mb-4 text-kaizen-dark">
                   {item.title}
                 </h3>
-                <p className="text-lg text-kaizen-text-dark/70 dark:text-white/60 leading-relaxed">
+                <p className="text-lg text-kaizen-text-dark/70 leading-relaxed">
                   {item.copy}
                 </p>
               </motion.div>
@@ -664,10 +664,10 @@ export default function ContractProductOwner() {
       </section>
 
       {/* Section 7: How This Fits With Kaizen */}
-      <section className="py-20 md:py-32 bg-kaizen-light dark:bg-slate-900/50">
+      <section className="py-20 md:py-32 bg-kaizen-light">
         <div className="container mx-auto px-4">
           <ScrollReveal>
-            <h2 className="text-4xl md:text-5xl font-heading font-bold mb-16 text-kaizen-dark dark:text-white text-center">
+            <h2 className="text-4xl md:text-5xl font-heading font-bold mb-16 text-kaizen-dark text-center">
               How This Fits With Kaizen
             </h2>
           </ScrollReveal>
@@ -699,18 +699,18 @@ export default function ContractProductOwner() {
                 <Link
                   to={item.link}
                   onClick={() => window.scrollTo(0, 0)}
-                  className="block p-8 bg-white dark:bg-slate-950 rounded-2xl border border-kaizen-light dark:border-slate-800/50 hover:border-kaizen-cyan dark:hover:border-kaizen-cyan/50 transition group h-full"
+                  className="block p-8 bg-white rounded-2xl border border-kaizen-light hover:border-kaizen-cyan transition group h-full"
                 >
-                  <div className="mb-6 p-4 w-16 h-16 bg-gradient-to-br from-kaizen-cyan/20 to-kaizen-lime/20 dark:from-kaizen-cyan/10 dark:to-kaizen-lime/10 rounded-xl flex items-center justify-center">
+                  <div className="mb-6 p-4 w-16 h-16 bg-gradient-to-br from-kaizen-cyan/20 to-kaizen-lime/20 rounded-xl flex items-center justify-center">
                     <item.icon
-                      className="text-kaizen-cyan dark:text-kaizen-cyan/70 group-hover:scale-110 transition"
+                      className="text-kaizen-cyan group-hover:scale-110 transition"
                       size={32}
                     />
                   </div>
-                  <h3 className="text-2xl font-heading font-bold mb-4 text-kaizen-dark dark:text-white group-hover:text-kaizen-cyan transition">
+                  <h3 className="text-2xl font-heading font-bold mb-4 text-kaizen-dark group-hover:text-kaizen-cyan transition">
                     {item.title}
                   </h3>
-                  <p className="text-lg text-kaizen-text-dark/70 dark:text-white/60 leading-relaxed mb-6">
+                  <p className="text-lg text-kaizen-text-dark/70 leading-relaxed mb-6">
                     {item.copy}
                   </p>
                   <div className="text-kaizen-cyan font-medium flex items-center gap-2 hover:gap-3 transition">
@@ -724,13 +724,13 @@ export default function ContractProductOwner() {
       </section>
 
       {/* Section 8: Final Call to Action */}
-      <section className="py-20 md:py-32 bg-kaizen-dark dark:bg-gradient-to-b dark:from-slate-900 dark:to-slate-950 text-kaizen-text-light dark:text-white/85">
+      <section className="py-20 md:py-32 bg-kaizen-dark text-kaizen-text-light">
         <div className="container mx-auto px-4 text-center">
           <ScrollReveal>
-            <h2 className="text-4xl md:text-5xl font-heading font-bold mb-8 text-kaizen-text-light dark:text-white">
+            <h2 className="text-4xl md:text-5xl font-heading font-bold mb-8 text-kaizen-text-light">
               Get Your Project Delivered. No Excuses.
             </h2>
-            <p className="text-xl text-kaizen-text-light/80 dark:text-white/70 mb-12 max-w-2xl mx-auto leading-relaxed">
+            <p className="text-xl text-kaizen-text-light/80 mb-12 max-w-2xl mx-auto leading-relaxed">
               Let's talk about your project. Book a 15-minute, confidential call
               with me, Sean, to see how I can help.
             </p>
@@ -752,7 +752,7 @@ export default function ContractProductOwner() {
             </button>
             <button
               onClick={() => navigate("/contact")}
-              className="px-8 py-3 rounded-lg border-2 border-kaizen-text-light/30 dark:border-white/20 text-kaizen-text-light dark:text-white/85 font-heading font-bold hover:border-kaizen-cyan dark:hover:border-kaizen-cyan transition inline-flex items-center justify-center gap-2"
+              className="px-8 py-3 rounded-lg border-2 border-kaizen-text-light/30 text-kaizen-text-light font-heading font-bold hover:border-kaizen-cyan transition inline-flex items-center justify-center gap-2"
             >
               Get in Touch
               <ArrowUpRight size={18} />

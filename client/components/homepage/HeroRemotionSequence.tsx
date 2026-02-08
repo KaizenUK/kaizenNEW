@@ -65,7 +65,7 @@ export const HeroRemotionSequence: React.FC = () => {
 
   return (
     <section
-      className="relative isolate min-h-[100vh] text-white flex items-center py-20 overflow-hidden"
+      className="home-hero relative isolate min-h-[100vh] text-white flex items-center py-20 overflow-hidden"
     >
       {/* Hidden preload-optimized hero image for LCP */}
       <img
@@ -75,7 +75,7 @@ export const HeroRemotionSequence: React.FC = () => {
         decoding="async"
         width="1200"
         height="630"
-        className="absolute inset-0 w-0 h-0 opacity-0 pointer-events-none"
+        className="home-hero-lcp-preload absolute inset-0 w-0 h-0 opacity-0 pointer-events-none"
         aria-hidden="true"
         {...HIGH_PRIORITY_IMAGE_ATTRS}
       />
@@ -87,10 +87,8 @@ export const HeroRemotionSequence: React.FC = () => {
         <div className="hero-mesh-blob hero-mesh-blob--gold" />
       </div>
 
-      <div className="hero-noise absolute inset-0 -z-10" />
-
       <svg
-        className="absolute inset-0 w-full h-full pointer-events-none opacity-20 -z-10"
+        className="home-hero-grid-overlay absolute inset-0 w-full h-full pointer-events-none opacity-20 -z-10"
         preserveAspectRatio="none"
       >
         <defs>
@@ -111,32 +109,32 @@ export const HeroRemotionSequence: React.FC = () => {
         <rect width="100%" height="100%" fill="url(#hero-grid)" />
       </svg>
 
-      <div className="hero-spotlight absolute -z-10 opacity-60" />
+      <div className="home-hero-spotlight hero-spotlight absolute -z-10 opacity-60" />
 
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-[#020617] to-transparent -z-10" />
+      <div className="home-hero-bottom-fade pointer-events-none absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-[#020617] to-transparent -z-10" />
 
-      <div className="container mx-auto px-4 relative z-10">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center max-w-7xl mx-auto">
+      <div className="home-hero-container container mx-auto px-4 relative z-10">
+        <div className="home-hero-grid grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center max-w-7xl mx-auto">
           {/* Left: Copy */}
-          <div>
-            <p className="text-xs font-mono tracking-[0.25em] text-kaizen-cyan mb-6 uppercase">
+          <div className="home-hero-copy">
+            <p className="home-hero-kicker text-xs font-mono tracking-[0.25em] text-kaizen-cyan mb-6 uppercase">
               Wirral Web Design
             </p>
 
-            <h1 className="text-5xl md:text-6xl lg:text-7xl font-heading font-black mb-8 leading-tight text-white">
+            <h1 className="home-hero-title text-5xl md:text-6xl lg:text-7xl font-heading font-black mb-8 leading-tight text-white">
               Sites That Actually Make You Money
             </h1>
 
-            <p className="text-lg md:text-xl text-white/85 leading-relaxed mb-10 max-w-xl">
+            <p className="home-hero-desc text-lg md:text-xl text-white/85 leading-relaxed mb-10 max-w-xl">
               Slow sites lose customers. We build fast, lean websites that turn
               visitors into paying leads. Enterprise-grade. No corporate
               nonsense.
             </p>
 
-            <div className="flex flex-col sm:flex-row items-start gap-4 mb-8">
+            <div className="home-hero-actions flex flex-col sm:flex-row items-start gap-4 mb-8">
               <button
                 onClick={() => navigate("/contact")}
-                className="px-8 py-4 rounded-lg bg-white text-black font-heading font-bold text-lg inline-flex items-center justify-center gap-2 transform-gpu transition-all duration-200 hover:scale-105 hover:shadow-[0_0_20px_rgba(255,255,255,0.5)] active:scale-95"
+                className="home-hero-btn-primary px-8 py-4 rounded-lg bg-white text-black font-heading font-bold text-lg inline-flex items-center justify-center gap-2 transform-gpu transition-all duration-200 hover:scale-105 hover:shadow-[0_0_20px_rgba(255,255,255,0.5)] active:scale-95"
               >
                 Start Your Project
                 <ArrowRight size={20} />
@@ -149,7 +147,7 @@ export const HeroRemotionSequence: React.FC = () => {
                   );
                   slider?.scrollIntoView({ behavior: "smooth" });
                 }}
-                className="px-8 py-4 rounded-lg border-2 border-white/30 text-white font-heading font-bold text-lg inline-flex items-center justify-center gap-2 transition-all duration-200 hover:scale-105 hover:border-cyan-400 hover:text-cyan-400 hover:shadow-[0_0_20px_rgba(6,182,212,0.3)] active:scale-95"
+                className="home-hero-btn-secondary px-8 py-4 rounded-lg border-2 border-white/30 text-white font-heading font-bold text-lg inline-flex items-center justify-center gap-2 transition-all duration-200 hover:scale-105 hover:border-cyan-400 hover:text-cyan-400 hover:shadow-[0_0_20px_rgba(6,182,212,0.3)] active:scale-95"
               >
                 See Our Pricing
                 <ArrowUpRight size={20} />
@@ -164,7 +162,7 @@ export const HeroRemotionSequence: React.FC = () => {
           </div>
 
           {/* Right: Lighthouse Gauge */}
-          <div className="hidden lg:block">
+          <div className="home-hero-gauge hidden lg:block">
             <div className="relative">
               <div className="absolute -inset-12 bg-green-500/10 rounded-full blur-3xl" />
               <div className="relative text-center">

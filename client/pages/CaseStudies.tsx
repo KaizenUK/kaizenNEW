@@ -68,10 +68,10 @@ export default function CaseStudies() {
   return (
     <Layout>
       {/* Section 1: Hero */}
-      <section className="min-h-screen bg-white dark:bg-slate-950 flex items-center py-20 px-4">
+      <section className="min-h-screen bg-white flex items-center py-20 px-4">
         <div className="container mx-auto max-w-4xl">
           <motion.h1
-            className="text-5xl md:text-6xl lg:text-7xl font-heading font-black mb-8 leading-tight text-kaizen-dark dark:text-white"
+            className="text-5xl md:text-6xl lg:text-7xl font-heading font-black mb-8 leading-tight text-kaizen-dark"
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, ease: EASE_OUT }}
@@ -80,7 +80,7 @@ export default function CaseStudies() {
           </motion.h1>
 
           <motion.p
-            className="text-xl md:text-2xl text-kaizen-text-dark/70 dark:text-white/70 leading-relaxed max-w-3xl"
+            className="text-xl md:text-2xl text-kaizen-text-dark/70 leading-relaxed max-w-3xl"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.2, duration: 0.8 }}
@@ -94,10 +94,10 @@ export default function CaseStudies() {
       </section>
 
       {/* Section 2: Case Studies List */}
-      <section className="bg-kaizen-light dark:bg-slate-900/50 py-20 px-4">
+      <section className="bg-kaizen-light py-20 px-4">
         <div className="container mx-auto max-w-5xl">
           <motion.h2
-            className="text-4xl md:text-5xl font-heading font-bold mb-16 text-kaizen-dark dark:text-white"
+            className="text-4xl md:text-5xl font-heading font-bold mb-16 text-kaizen-dark"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-100px" }}
@@ -117,15 +117,15 @@ export default function CaseStudies() {
               <motion.li key={study.id} variants={fadeInUp}>
                 <Link
                   to={`/case-studies/${study.slug}`}
-                  className="group block border-b border-kaizen-light dark:border-slate-800 py-12 px-8 transition hover:bg-white dark:hover:bg-slate-950/50"
+                  className="group block border-b border-kaizen-light py-12 px-8 transition hover:bg-white"
                 >
                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
                     {/* Left Column - Client & Summary */}
                     <div>
-                      <h3 className="text-3xl md:text-4xl font-heading font-bold mb-4 text-kaizen-dark dark:text-white group-hover:text-kaizen-cyan transition">
+                      <h3 className="text-3xl md:text-4xl font-heading font-bold mb-4 text-kaizen-dark group-hover:text-kaizen-cyan transition">
                         {study.client}
                       </h3>
-                      <p className="text-lg text-kaizen-text-dark/70 dark:text-white/70 leading-relaxed">
+                      <p className="text-lg text-kaizen-text-dark/70 leading-relaxed">
                         {study.summary}
                       </p>
                     </div>
@@ -133,14 +133,14 @@ export default function CaseStudies() {
                     {/* Right Column - Services */}
                     <div className="flex flex-col justify-between h-full">
                       <div>
-                        <p className="text-xs font-mono text-kaizen-text-dark/50 dark:text-white/50 font-bold mb-4 tracking-widest">
+                        <p className="text-xs font-mono text-kaizen-text-dark/50 font-bold mb-4 tracking-widest">
                           SERVICES PROVIDED
                         </p>
                         <div className="flex flex-wrap gap-3">
                           {study.services.map((service) => (
                             <span
                               key={service}
-                              className="inline-block px-4 py-2 bg-white dark:bg-slate-800/50 rounded-full text-sm font-medium text-kaizen-dark dark:text-white border border-kaizen-light dark:border-slate-700 group-hover:border-kaizen-cyan dark:group-hover:border-kaizen-cyan/50 transition"
+                              className="inline-block px-4 py-2 bg-white rounded-full text-sm font-medium text-kaizen-dark border border-kaizen-light group-hover:border-kaizen-cyan transition"
                             >
                               {service}
                             </span>
@@ -166,7 +166,7 @@ export default function CaseStudies() {
       </section>
 
       {/* Section 3: Final CTA */}
-      <section className="bg-kaizen-dark dark:bg-gradient-to-b dark:from-slate-900 dark:to-slate-950 text-white py-20 md:py-32 px-4">
+      <section className="bg-kaizen-dark text-white py-20 md:py-32 px-4">
         <div className="container mx-auto max-w-3xl text-center">
           <motion.h2
             className="text-4xl md:text-5xl lg:text-6xl font-heading font-black mb-8"

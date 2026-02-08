@@ -25,30 +25,30 @@ const BlogTableModal: React.FC<BlogTableModalProps> = ({
       aria-label="Table comparison modal"
     >
       <div
-        className="relative w-full max-w-4xl max-h-[90vh] bg-white dark:bg-slate-900 rounded-2xl shadow-2xl flex flex-col"
+        className="relative w-full max-w-4xl max-h-[90vh] bg-white rounded-2xl shadow-2xl flex flex-col"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header with Close Button and Zoom Controls */}
-        <div className="flex items-center justify-between gap-3 border-b border-gray-200 dark:border-slate-700 p-4">
-          <h2 className="text-sm font-semibold text-gray-700 dark:text-gray-200">
+        <div className="flex items-center justify-between gap-3 border-b border-gray-200 p-4">
+          <h2 className="text-sm font-semibold text-gray-700">
             Table View
           </h2>
           <div className="flex items-center gap-2">
             {/* Zoom Controls */}
-            <div className="flex items-center gap-1 bg-gray-100 dark:bg-slate-800 rounded-lg p-1">
+            <div className="flex items-center gap-1 bg-gray-100 rounded-lg p-1">
               <button
                 onClick={() => setScale((s) => Math.max(0.75, s - 0.1))}
-                className="px-2 py-1 text-xs font-semibold text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition"
+                className="px-2 py-1 text-xs font-semibold text-gray-600 hover:text-gray-900 transition"
                 aria-label="Zoom out"
               >
                 −
               </button>
-              <span className="text-xs text-gray-600 dark:text-gray-300 min-w-[2.5rem] text-center">
+              <span className="text-xs text-gray-600 min-w-[2.5rem] text-center">
                 {Math.round(scale * 100)}%
               </span>
               <button
                 onClick={() => setScale((s) => Math.min(1.5, s + 0.1))}
-                className="px-2 py-1 text-xs font-semibold text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition"
+                className="px-2 py-1 text-xs font-semibold text-gray-600 hover:text-gray-900 transition"
                 aria-label="Zoom in"
               >
                 +
@@ -58,10 +58,10 @@ const BlogTableModal: React.FC<BlogTableModalProps> = ({
             {/* Close Button */}
             <button
               onClick={onClose}
-              className="ml-2 p-1.5 rounded-lg hover:bg-gray-200 dark:hover:bg-slate-800 transition-colors"
+              className="ml-2 p-1.5 rounded-lg hover:bg-gray-200 transition-colors"
               aria-label="Close modal"
             >
-              <X className="h-5 w-5 text-gray-600 dark:text-gray-300" />
+              <X className="h-5 w-5 text-gray-600" />
             </button>
           </div>
         </div>
@@ -77,7 +77,7 @@ const BlogTableModal: React.FC<BlogTableModalProps> = ({
           >
             <div
               dangerouslySetInnerHTML={{ __html: htmlContent }}
-              className="prose dark:prose-invert max-w-none"
+              className="prose max-w-none"
             />
           </div>
         </div>

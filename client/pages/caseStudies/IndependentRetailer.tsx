@@ -25,7 +25,7 @@ export default function IndependentRetailerCase() {
       </Helmet>
 
       {/* Hero Section */}
-      <section className="relative bg-gradient-to-b from-amber-500 to-amber-600 dark:from-slate-900 dark:to-slate-950 min-h-screen flex items-center py-20 px-4">
+      <section className="relative bg-gradient-to-b from-amber-500 to-amber-600 min-h-screen flex items-center py-20 px-4">
         <div className="absolute inset-0 opacity-10">
           <div className="absolute inset-0 bg-[url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22100%22 height=%22100%22><rect fill=%22%23fff%22 width=%2250%22 height=%2250%22/><rect fill=%22%23fff%22 x=%2250%22 y=%2250%22 width=%2250%22 height=%2250%22/></svg>')]" />
         </div>
@@ -62,7 +62,7 @@ export default function IndependentRetailerCase() {
       </section>
 
       {/* 3-Column Summary Bar */}
-      <section className="bg-white dark:bg-slate-950 py-16 px-4 border-b border-kaizen-light dark:border-slate-800">
+      <section className="bg-white py-16 px-4 border-b border-kaizen-light">
         <div className="container mx-auto max-w-6xl">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12">
             <motion.div
@@ -74,7 +74,7 @@ export default function IndependentRetailerCase() {
               <h3 className="text-sm font-mono font-bold text-kaizen-cyan uppercase tracking-widest mb-4">
                 The Problem
               </h3>
-              <p className="text-lg text-kaizen-text-dark dark:text-white/80 leading-relaxed">
+              <p className="text-lg text-kaizen-text-dark leading-relaxed">
                 A slow, clunky e-commerce platform that was hemorrhaging
                 customers on mobile. Page load times were over 5 seconds, and
                 conversion rates were abysmal.
@@ -91,7 +91,7 @@ export default function IndependentRetailerCase() {
               <h3 className="text-sm font-mono font-bold text-kaizen-cyan uppercase tracking-widest mb-4">
                 The Solution
               </h3>
-              <p className="text-lg text-kaizen-text-dark dark:text-white/80 leading-relaxed">
+              <p className="text-lg text-kaizen-text-dark leading-relaxed">
                 A modern, headless e-commerce build using React on the frontend
                 with optimised inventory management and lightning-fast
                 performance.
@@ -108,7 +108,7 @@ export default function IndependentRetailerCase() {
               <h3 className="text-sm font-mono font-bold text-kaizen-cyan uppercase tracking-widest mb-4">
                 Services Provided
               </h3>
-              <p className="text-lg text-kaizen-text-dark dark:text-white/80 leading-relaxed">
+              <p className="text-lg text-kaizen-text-dark leading-relaxed">
                 E-commerce Architecture, Headless (React), Performance
                 Optimisation
               </p>
@@ -118,7 +118,7 @@ export default function IndependentRetailerCase() {
       </section>
 
       {/* The Story Section */}
-      <section className="bg-kaizen-light dark:bg-slate-900/50 py-24 px-4">
+      <section className="bg-kaizen-light py-24 px-4">
         <div className="container mx-auto max-w-4xl">
           <div className="space-y-16">
             {/* Challenge */}
@@ -128,10 +128,10 @@ export default function IndependentRetailerCase() {
               viewport={{ once: true, margin: "-100px" }}
               transition={{ duration: 0.6 }}
             >
-              <h2 className="text-4xl md:text-5xl font-heading font-bold mb-6 text-kaizen-dark dark:text-white">
+              <h2 className="text-4xl md:text-5xl font-heading font-bold mb-6 text-kaizen-dark">
                 The Challenge: A Slow Platform Losing Sales
               </h2>
-              <p className="text-lg text-kaizen-text-dark/70 dark:text-white/70 leading-relaxed">
+              <p className="text-lg text-kaizen-text-dark/70 leading-relaxed">
                 This independent retailer had built their business with heart
                 and expertise, but their e-commerce platform was a technical
                 liability. The site was bloated, slow, and frankly terrible on
@@ -147,10 +147,10 @@ export default function IndependentRetailerCase() {
               viewport={{ once: true, margin: "-100px" }}
               transition={{ duration: 0.6 }}
             >
-              <h2 className="text-4xl md:text-5xl font-heading font-bold mb-6 text-kaizen-dark dark:text-white">
+              <h2 className="text-4xl md:text-5xl font-heading font-bold mb-6 text-kaizen-dark">
                 The Solution: Headless, Modern, and Fast
               </h2>
-              <p className="text-lg text-kaizen-text-dark/70 dark:text-white/70 leading-relaxed mb-8">
+              <p className="text-lg text-kaizen-text-dark/70 leading-relaxed mb-8">
                 We rebuilt the entire e-commerce platform from the ground up
                 using a modern headless architecture. This is about getting out
                 of the way and letting the product shine.
@@ -182,10 +182,10 @@ export default function IndependentRetailerCase() {
                       </span>
                     </div>
                     <div>
-                      <h4 className="font-heading font-bold text-kaizen-dark dark:text-white mb-1">
+                      <h4 className="font-heading font-bold text-kaizen-dark mb-1">
                         {item.title}
                       </h4>
-                      <p className="text-kaizen-text-dark/70 dark:text-white/70">
+                      <p className="text-kaizen-text-dark/70">
                         {item.desc}
                       </p>
                     </div>
@@ -201,10 +201,10 @@ export default function IndependentRetailerCase() {
               viewport={{ once: true, margin: "-100px" }}
               transition={{ duration: 0.6 }}
             >
-              <h2 className="text-4xl md:text-5xl font-heading font-bold mb-6 text-kaizen-dark dark:text-white">
+              <h2 className="text-4xl md:text-5xl font-heading font-bold mb-6 text-kaizen-dark">
                 The Result: A Platform Built to Convert
               </h2>
-              <p className="text-lg text-kaizen-text-dark/70 dark:text-white/70 leading-relaxed">
+              <p className="text-lg text-kaizen-text-dark/70 leading-relaxed">
                 The new e-commerce platform is fast, reliable, and built for
                 growth. Mobile conversions have skyrocketed, cart abandonment is
                 down, and the retailer can now focus on what matters: growing
@@ -216,10 +216,10 @@ export default function IndependentRetailerCase() {
       </section>
 
       {/* Internal Links CTA */}
-      <section className="bg-white dark:bg-slate-950 py-24 px-4">
+      <section className="bg-white py-24 px-4">
         <div className="container mx-auto max-w-5xl">
           <motion.h2
-            className="text-4xl md:text-5xl font-heading font-bold mb-16 text-center text-kaizen-dark dark:text-white"
+            className="text-4xl md:text-5xl font-heading font-bold mb-16 text-center text-kaizen-dark"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
@@ -251,12 +251,12 @@ export default function IndependentRetailerCase() {
               >
                 <Link
                   to={card.link}
-                  className="group block p-8 bg-kaizen-light dark:bg-slate-900/50 rounded-2xl border border-kaizen-light dark:border-slate-800 hover:border-kaizen-cyan dark:hover:border-kaizen-cyan/50 transition h-full"
+                  className="group block p-8 bg-kaizen-light rounded-2xl border border-kaizen-light hover:border-kaizen-cyan transition h-full"
                 >
-                  <h3 className="text-2xl font-heading font-bold mb-3 text-kaizen-dark dark:text-white group-hover:text-kaizen-cyan transition">
+                  <h3 className="text-2xl font-heading font-bold mb-3 text-kaizen-dark group-hover:text-kaizen-cyan transition">
                     {card.title}
                   </h3>
-                  <p className="text-kaizen-text-dark/70 dark:text-white/60 mb-6">
+                  <p className="text-kaizen-text-dark/70 mb-6">
                     {card.desc}
                   </p>
                   <div className="text-kaizen-cyan font-medium flex items-center gap-2 group-hover:gap-3 transition">
@@ -274,12 +274,12 @@ export default function IndependentRetailerCase() {
       </section>
 
       {/* Pagination */}
-      <section className="bg-kaizen-light dark:bg-slate-900/50 py-16 px-4 border-t border-kaizen-light dark:border-slate-800">
+      <section className="bg-kaizen-light py-16 px-4 border-t border-kaizen-light">
         <div className="container mx-auto max-w-5xl">
           <div className="flex items-center justify-between">
             <Link
               to="/case-studies/helen-moore-hairdressing"
-              className="group flex items-center gap-3 text-kaizen-dark dark:text-white hover:text-kaizen-cyan transition"
+              className="group flex items-center gap-3 text-kaizen-dark hover:text-kaizen-cyan transition"
             >
               <span className="group-hover:-translate-x-1 transition">←</span>
               Previous Case Study
@@ -287,14 +287,14 @@ export default function IndependentRetailerCase() {
 
             <Link
               to="/case-studies"
-              className="text-kaizen-cyan hover:text-kaizen-dark dark:hover:text-white transition text-sm font-medium"
+              className="text-kaizen-cyan hover:text-kaizen-dark transition text-sm font-medium"
             >
               View All
             </Link>
 
             <Link
               to="/case-studies/as-collections"
-              className="group flex items-center gap-3 text-kaizen-dark dark:text-white hover:text-kaizen-cyan transition"
+              className="group flex items-center gap-3 text-kaizen-dark hover:text-kaizen-cyan transition"
             >
               Next Case Study
               <span className="group-hover:translate-x-1 transition">→</span>

@@ -142,7 +142,7 @@ const CTAButton = ({
       onClick={handleClick}
       className={`px-8 py-3 rounded-full font-heading font-bold inline-flex items-center justify-center gap-2 transition ${
         secondary
-          ? "border-2 border-kaizen-cyan text-kaizen-cyan hover:bg-kaizen-cyan/10 dark:border-kaizen-cyan/70 dark:text-kaizen-cyan/70 dark:hover:bg-kaizen-cyan/5"
+          ? "border-2 border-kaizen-cyan text-kaizen-cyan hover:bg-kaizen-cyan/10"
           : "bg-gradient-to-r from-kaizen-cyan to-kaizen-lime text-kaizen-dark hover:opacity-90"
       }`}
     >
@@ -153,12 +153,13 @@ const CTAButton = ({
 };
 
 export default function Ecommerce() {
+  const navigate = useNavigate();
   const { openCalendly: openCalendlyFromContext } = useCalendly();
 
   return (
     <Layout>
       {/* Section 1: Hero - Diagonal Skewed Split */}
-      <section className="relative min-h-screen bg-kaizen-dark dark:bg-slate-950 overflow-hidden flex items-center">
+      <section className="relative min-h-screen bg-kaizen-dark overflow-hidden flex items-center">
         {/* Text Side (Left/Top) */}
         <div className="absolute inset-0 md:relative md:w-1/2 flex items-center justify-center md:justify-start z-10 p-8 md:p-12">
           <div className="max-w-lg">
@@ -232,7 +233,7 @@ export default function Ecommerce() {
           transition={{ duration: 0.8 }}
         >
           {/* Skewed background shape */}
-          <div className="absolute inset-0 bg-gradient-to-br from-kaizen-cyan/15 to-kaizen-lime/10 dark:from-kaizen-cyan/10 dark:to-kaizen-lime/5 transform md:skew-x-12" />
+          <div className="absolute inset-0 bg-gradient-to-br from-kaizen-cyan/15 to-kaizen-lime/10 transform md:skew-x-12" />
 
           {/* Main image with diagonal clip */}
           <motion.img
@@ -257,7 +258,7 @@ export default function Ecommerce() {
 
           {/* Accent overlay */}
           <motion.div
-            className="absolute top-0 right-0 w-48 h-48 bg-kaizen-cyan/20 dark:bg-kaizen-cyan/10 rounded-full blur-3xl"
+            className="absolute top-0 right-0 w-48 h-48 bg-kaizen-cyan/20 rounded-full blur-3xl"
             animate={{
               scale: [1, 1.2, 1],
               opacity: [0.3, 0.5, 0.3],
@@ -290,18 +291,18 @@ export default function Ecommerce() {
       </section>
 
       {/* Section 2: Shopify Experts & Custom Ecommerce */}
-      <section className="py-20 md:py-32 bg-kaizen-light dark:bg-slate-900/50">
+      <section className="py-20 md:py-32 bg-kaizen-light">
         <div className="container mx-auto px-4">
           <ScrollReveal>
             <div className="max-w-3xl mx-auto mb-16">
-              <h2 className="text-4xl md:text-5xl font-heading font-bold mb-8 text-kaizen-dark dark:text-white">
+              <h2 className="text-4xl md:text-5xl font-heading font-bold mb-8 text-kaizen-dark">
                 Shopify Experts & Custom Ecommerce in Liverpool
               </h2>
-              <p className="text-xl text-kaizen-text-dark/70 dark:text-white/70 leading-relaxed mb-8">
+              <p className="text-xl text-kaizen-text-dark/70 leading-relaxed mb-8">
                 We don't just build online shops; we build high-performance
                 revenue engines.
               </p>
-              <p className="text-lg text-kaizen-text-dark/70 dark:text-white/70 leading-relaxed mb-8">
+              <p className="text-lg text-kaizen-text-dark/70 leading-relaxed mb-8">
                 As Shopify Experts in Liverpool, we help brands move beyond
                 basic themes to create custom, high-converting storefronts.
                 Whether you need a headless Shopify build for speed or a custom
@@ -310,17 +311,17 @@ export default function Ecommerce() {
               </p>
               <div className="space-y-4">
                 <div>
-                  <h3 className="font-heading font-bold text-lg text-kaizen-dark dark:text-white mb-2">
+                  <h3 className="font-heading font-bold text-lg text-kaizen-dark mb-2">
                     Shopify: For rapid scale and ease of use.
                   </h3>
                 </div>
                 <div>
-                  <h3 className="font-heading font-bold text-lg text-kaizen-dark dark:text-white mb-2">
+                  <h3 className="font-heading font-bold text-lg text-kaizen-dark mb-2">
                     WooCommerce: For total control and custom integrations.
                   </h3>
                 </div>
                 <div>
-                  <h3 className="font-heading font-bold text-lg text-kaizen-dark dark:text-white mb-2">
+                  <h3 className="font-heading font-bold text-lg text-kaizen-dark mb-2">
                     Headless: For enterprise-grade speed.
                   </h3>
                 </div>
@@ -331,10 +332,10 @@ export default function Ecommerce() {
       </section>
 
       {/* Section 3: Our E-commerce Expertise */}
-      <section className="py-20 md:py-32 bg-white dark:bg-slate-950">
+      <section className="py-20 md:py-32 bg-white">
         <div className="container mx-auto px-4">
           <ScrollReveal>
-            <h2 className="text-4xl md:text-5xl font-heading font-bold mb-16 text-kaizen-dark dark:text-white text-center">
+            <h2 className="text-4xl md:text-5xl font-heading font-bold mb-16 text-kaizen-dark text-center">
               Our E-commerce Expertise
             </h2>
           </ScrollReveal>
@@ -365,27 +366,27 @@ export default function Ecommerce() {
               },
             ].map((item, index) => (
               <motion.div key={index} variants={fadeInUp}>
-                <div className="p-8 bg-kaizen-light dark:bg-slate-900/50 rounded-2xl border border-kaizen-light dark:border-slate-800/50 hover:border-kaizen-cyan dark:hover:border-kaizen-cyan/50 transition h-full">
-                  <div className="mb-6 p-4 w-16 h-16 bg-gradient-to-br from-kaizen-cyan/20 to-kaizen-lime/20 dark:from-kaizen-cyan/10 dark:to-kaizen-lime/10 rounded-xl flex items-center justify-center">
+                <div className="p-8 bg-kaizen-light rounded-2xl border border-kaizen-light hover:border-kaizen-cyan transition h-full">
+                  <div className="mb-6 p-4 w-16 h-16 bg-gradient-to-br from-kaizen-cyan/20 to-kaizen-lime/20 rounded-xl flex items-center justify-center">
                     <item.icon
-                      className="text-kaizen-cyan dark:text-kaizen-cyan/70"
+                      className="text-kaizen-cyan"
                       size={32}
                     />
                   </div>
-                  <h3 className="text-2xl font-heading font-bold mb-2 text-kaizen-dark dark:text-white">
+                  <h3 className="text-2xl font-heading font-bold mb-2 text-kaizen-dark">
                     {item.title}
                   </h3>
-                  <p className="text-sm text-kaizen-cyan dark:text-kaizen-cyan/70 font-medium mb-4">
+                  <p className="text-sm text-kaizen-cyan font-medium mb-4">
                     {item.subtitle}
                   </p>
-                  <p className="text-lg text-kaizen-text-dark/70 dark:text-white/60 leading-relaxed mb-6">
+                  <p className="text-lg text-kaizen-text-dark/70 leading-relaxed mb-6">
                     {item.copy}
                   </p>
                   <div>
-                    <p className="text-sm font-bold text-kaizen-cyan dark:text-kaizen-cyan/70 uppercase tracking-wide mb-2">
+                    <p className="text-sm font-bold text-kaizen-cyan uppercase tracking-wide mb-2">
                       Best for
                     </p>
-                    <p className="text-kaizen-text-dark/70 dark:text-white/60">
+                    <p className="text-kaizen-text-dark/70">
                       {item.bestFor}
                     </p>
                   </div>
@@ -402,7 +403,7 @@ export default function Ecommerce() {
             whileInView="visible"
             viewport={{ once: true, margin: "-100px" }}
           >
-            <div className="bg-gradient-to-br from-slate-800 via-slate-800 to-slate-900 dark:from-slate-950 dark:via-slate-950 dark:to-black rounded-3xl overflow-hidden border border-slate-700/50 dark:border-slate-800 p-8 md:p-12">
+            <div className="bg-gradient-to-br from-slate-800 via-slate-800 to-slate-900 rounded-3xl overflow-hidden border border-slate-700/50 p-8 md:p-12">
               <h3 className="text-3xl md:text-4xl font-heading font-bold mb-6 text-white leading-tight">
                 Shopify Expertise
               </h3>
@@ -421,10 +422,10 @@ export default function Ecommerce() {
       </section>
 
       {/* Section 3: What We Build (The Features) */}
-      <section className="py-20 md:py-32 bg-kaizen-light dark:bg-slate-900/50">
+      <section className="py-20 md:py-32 bg-kaizen-light">
         <div className="container mx-auto px-4">
           <ScrollReveal>
-            <h2 className="text-4xl md:text-5xl font-heading font-bold mb-16 text-kaizen-dark dark:text-white text-center">
+            <h2 className="text-4xl md:text-5xl font-heading font-bold mb-16 text-kaizen-dark text-center">
               A Secure, Scalable Store. Guaranteed.
             </h2>
           </ScrollReveal>
@@ -456,18 +457,18 @@ export default function Ecommerce() {
               <motion.div
                 key={index}
                 variants={fadeInUp}
-                className="p-8 bg-white dark:bg-slate-950 rounded-2xl border border-kaizen-light dark:border-slate-800/50 hover:border-kaizen-cyan dark:hover:border-kaizen-cyan/50 transition"
+                className="p-8 bg-white rounded-2xl border border-kaizen-light hover:border-kaizen-cyan transition"
               >
-                <div className="mb-6 p-4 w-16 h-16 bg-gradient-to-br from-kaizen-cyan/20 to-kaizen-lime/20 dark:from-kaizen-cyan/10 dark:to-kaizen-lime/10 rounded-xl flex items-center justify-center">
+                <div className="mb-6 p-4 w-16 h-16 bg-gradient-to-br from-kaizen-cyan/20 to-kaizen-lime/20 rounded-xl flex items-center justify-center">
                   <item.icon
-                    className="text-kaizen-cyan dark:text-kaizen-cyan/70"
+                    className="text-kaizen-cyan"
                     size={32}
                   />
                 </div>
-                <h3 className="text-2xl font-heading font-bold mb-4 text-kaizen-dark dark:text-white">
+                <h3 className="text-2xl font-heading font-bold mb-4 text-kaizen-dark">
                   {item.title}
                 </h3>
-                <p className="text-lg text-kaizen-text-dark/70 dark:text-white/60 leading-relaxed">
+                <p className="text-lg text-kaizen-text-dark/70 leading-relaxed">
                   {item.copy}
                 </p>
               </motion.div>
@@ -477,10 +478,10 @@ export default function Ecommerce() {
       </section>
 
       {/* Section 4: Local Proof (Honest & Believable) */}
-      <section className="py-20 md:py-32 bg-white dark:bg-slate-950">
+      <section className="py-20 md:py-32 bg-white">
         <div className="container mx-auto px-4">
           <ScrollReveal>
-            <h2 className="text-4xl md:text-5xl font-heading font-bold mb-12 text-kaizen-dark dark:text-white text-center">
+            <h2 className="text-4xl md:text-5xl font-heading font-bold mb-12 text-kaizen-dark text-center">
               From Local Brand to National Seller
             </h2>
           </ScrollReveal>
@@ -494,16 +495,16 @@ export default function Ecommerce() {
           >
             <div className="space-y-6">
               <div>
-                <h3 className="text-sm font-bold text-kaizen-cyan dark:text-kaizen-cyan/70 uppercase tracking-wide mb-3">
+                <h3 className="text-sm font-bold text-kaizen-cyan uppercase tracking-wide mb-3">
                   Client: Independent Retailer – Liverpool
                 </h3>
               </div>
 
               <div>
-                <h4 className="text-2xl font-heading font-bold mb-4 text-kaizen-dark dark:text-white">
+                <h4 className="text-2xl font-heading font-bold mb-4 text-kaizen-dark">
                   The Problem
                 </h4>
-                <p className="text-lg text-kaizen-text-dark/70 dark:text-white/60 leading-relaxed">
+                <p className="text-lg text-kaizen-text-dark/70 leading-relaxed">
                   A great local brand with a basic, slow-loading site that
                   couldn't handle mobile traffic or sales spikes during peak
                   season.
@@ -511,10 +512,10 @@ export default function Ecommerce() {
               </div>
 
               <div>
-                <h4 className="text-2xl font-heading font-bold mb-4 text-kaizen-dark dark:text-white">
+                <h4 className="text-2xl font-heading font-bold mb-4 text-kaizen-dark">
                   The Fix
                 </h4>
-                <p className="text-lg text-kaizen-text-dark/70 dark:text-white/60 leading-relaxed">
+                <p className="text-lg text-kaizen-text-dark/70 leading-relaxed">
                   We built a new, fast e-commerce site. It's now easy for them
                   to manage products and provides a smooth, instant checkout
                   experience for their customers on all devices.
@@ -522,10 +523,10 @@ export default function Ecommerce() {
               </div>
 
               <div>
-                <h4 className="text-2xl font-heading font-bold mb-4 text-kaizen-dark dark:text-white">
+                <h4 className="text-2xl font-heading font-bold mb-4 text-kaizen-dark">
                   The Outcome
                 </h4>
-                <p className="text-lg text-kaizen-text-dark/70 dark:text-white/60 leading-relaxed">
+                <p className="text-lg text-kaizen-text-dark/70 leading-relaxed">
                   The new site now handles peak season traffic with zero
                   downtime, and the improved mobile experience has led to a
                   clear, measurable increase in online sales.
@@ -533,16 +534,16 @@ export default function Ecommerce() {
               </div>
             </div>
 
-            <div className="bg-gradient-to-br from-kaizen-cyan/20 dark:from-kaizen-cyan/10 to-kaizen-lime/20 dark:to-kaizen-lime/10 rounded-2xl border border-kaizen-cyan/30 dark:border-kaizen-cyan/20 p-8 h-96 flex items-center justify-center">
+            <div className="bg-gradient-to-br from-kaizen-cyan/20 to-kaizen-lime/20 rounded-2xl border border-kaizen-cyan/30 p-8 h-96 flex items-center justify-center">
               <div className="text-center space-y-4">
                 <TrendingUp
                   size={64}
-                  className="text-kaizen-cyan/40 dark:text-kaizen-cyan/20 mx-auto"
+                  className="text-kaizen-cyan/40 mx-auto"
                 />
-                <p className="text-kaizen-text-dark/60 dark:text-white/50 font-heading font-bold text-lg">
+                <p className="text-kaizen-text-dark/60 font-heading font-bold text-lg">
                   Improved Mobile Experience
                 </p>
-                <p className="text-kaizen-text-dark/50 dark:text-white/40 text-sm">
+                <p className="text-kaizen-text-dark/50 text-sm">
                   Measurable increase in online sales
                 </p>
               </div>
@@ -552,10 +553,10 @@ export default function Ecommerce() {
       </section>
 
       {/* Section 5: Internal Links (Cross-Sell) */}
-      <section className="py-20 md:py-32 bg-kaizen-light dark:bg-slate-900/50">
+      <section className="py-20 md:py-32 bg-kaizen-light">
         <div className="container mx-auto px-4">
           <ScrollReveal>
-            <h2 className="text-4xl md:text-5xl font-heading font-bold mb-16 text-kaizen-dark dark:text-white text-center">
+            <h2 className="text-4xl md:text-5xl font-heading font-bold mb-16 text-kaizen-dark text-center">
               An Online Store is Just the Start
             </h2>
           </ScrollReveal>
@@ -582,12 +583,12 @@ export default function Ecommerce() {
               <motion.div key={index} variants={fadeInUp}>
                 <Link
                   to={card.link}
-                  className="p-8 bg-white dark:bg-slate-950 rounded-2xl border border-kaizen-light dark:border-slate-800/50 hover:border-kaizen-cyan dark:hover:border-kaizen-cyan/50 transition group block h-full"
+                  className="p-8 bg-white rounded-2xl border border-kaizen-light hover:border-kaizen-cyan transition group block h-full"
                 >
-                  <h3 className="text-2xl font-heading font-bold mb-4 text-kaizen-dark dark:text-white group-hover:text-kaizen-cyan transition">
+                  <h3 className="text-2xl font-heading font-bold mb-4 text-kaizen-dark group-hover:text-kaizen-cyan transition">
                     {card.title}
                   </h3>
-                  <p className="text-lg text-kaizen-text-dark/70 dark:text-white/60 leading-relaxed mb-6">
+                  <p className="text-lg text-kaizen-text-dark/70 leading-relaxed mb-6">
                     {card.copy}
                   </p>
                   <div className="text-kaizen-cyan font-medium flex items-center gap-2 hover:gap-3 transition">
@@ -623,13 +624,13 @@ export default function Ecommerce() {
       />
 
       {/* Section 6: Final Call to Action */}
-      <section className="py-20 md:py-32 bg-kaizen-dark dark:bg-gradient-to-b dark:from-slate-900 dark:to-slate-950 text-kaizen-text-light dark:text-white/85">
+      <section className="py-20 md:py-32 bg-kaizen-dark text-kaizen-text-light">
         <div className="container mx-auto px-4 text-center">
           <ScrollReveal>
-            <h2 className="text-4xl md:text-5xl font-heading font-bold mb-8 text-kaizen-text-light dark:text-white">
+            <h2 className="text-4xl md:text-5xl font-heading font-bold mb-8 text-kaizen-text-light">
               Stop Losing Sales to a Slow Site.
             </h2>
-            <p className="text-xl text-kaizen-text-light/80 dark:text-white/70 mb-12 max-w-2xl mx-auto leading-relaxed">
+            <p className="text-xl text-kaizen-text-light/80 mb-12 max-w-2xl mx-auto leading-relaxed">
               Let's talk about the right platform for your business. Chat with
               us or book a no-pressure call.
             </p>
@@ -645,7 +646,7 @@ export default function Ecommerce() {
             <CTAButton text="Get in Touch" openContact />
             <button
               onClick={openCalendlyFromContext}
-              className="px-8 py-3 rounded-full border-2 border-kaizen-text-light/30 dark:border-white/20 text-kaizen-text-light dark:text-white/85 font-heading font-bold hover:border-kaizen-cyan dark:hover:border-kaizen-cyan transition inline-flex items-center justify-center gap-2"
+              className="px-8 py-3 rounded-full border-2 border-kaizen-text-light/30 text-kaizen-text-light font-heading font-bold hover:border-kaizen-cyan transition inline-flex items-center justify-center gap-2"
             >
               Book a 15 Minute Call
               <ArrowUpRight size={18} />

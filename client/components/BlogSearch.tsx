@@ -207,7 +207,7 @@ const BlogSearch: React.FC<BlogSearchProps> = ({ onStateChange }) => {
           Search articles
         </label>
         <div className="relative">
-          <span className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400 dark:text-gray-500">
+          <span className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
             <Search className="h-4 w-4" aria-hidden="true" />
           </span>
           <input
@@ -216,7 +216,7 @@ const BlogSearch: React.FC<BlogSearchProps> = ({ onStateChange }) => {
             value={term}
             onChange={(event) => setTerm(event.target.value)}
             placeholder="Search articles by topic, keyword, or phrase"
-            className="block w-full rounded-xl border border-gray-300 bg-white/80 py-3 pl-10 pr-4 text-sm text-gray-900 shadow-sm placeholder:text-gray-400 focus:border-cyan-500 focus:outline-none focus:ring-2 focus:ring-cyan-500/40 dark:border-gray-700 dark:bg-gray-900/80 dark:text-white dark:placeholder:text-gray-500"
+            className="block w-full rounded-xl border border-gray-300 bg-white/80 py-3 pl-10 pr-4 text-sm text-gray-900 shadow-sm placeholder:text-gray-400 focus:border-cyan-500 focus:outline-none focus:ring-2 focus:ring-cyan-500/40"
             aria-label="Search blog articles"
             autoComplete="off"
           />
@@ -229,12 +229,12 @@ const BlogSearch: React.FC<BlogSearchProps> = ({ onStateChange }) => {
         aria-atomic="true"
       >
         {loading && (
-          <p className="text-xs text-gray-500 dark:text-gray-400">
+          <p className="text-xs text-gray-500">
             Searching articles...
           </p>
         )}
         {!loading && error && (
-          <p className="text-xs text-red-500 dark:text-red-400">{error}</p>
+          <p className="text-xs text-red-500">{error}</p>
         )}
       </div>
     </div>

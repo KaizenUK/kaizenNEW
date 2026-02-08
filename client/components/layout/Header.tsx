@@ -283,9 +283,9 @@ const Header: React.FC<HeaderProps> = ({
   ];
 
   return (
-    <header className="sticky top-0 z-50 w-full bg-white border-b border-gray-100">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center h-16">
+    <header className="site-header sticky top-0 z-50 w-full bg-white border-b border-gray-100">
+      <div className="site-header-wrap max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="site-header-inner flex items-center h-16">
           {/* Logo */}
           <Link
             to="/"
@@ -297,7 +297,7 @@ const Header: React.FC<HeaderProps> = ({
           {/* Desktop Navigation - positioned right after logo */}
           <nav
             ref={navRef}
-            className="relative hidden lg:flex items-center flex-1"
+            className="site-header-nav relative hidden lg:flex items-center flex-1"
             aria-label="Main navigation"
             onMouseLeave={handleMenuLeave}
           >
@@ -412,7 +412,7 @@ const Header: React.FC<HeaderProps> = ({
             {/* Free Speed Test */}
             <Link
               to="/performance-scanner"
-              className="hidden md:flex items-center gap-2 px-4 py-2 text-sm font-medium text-cyan-600 hover:text-cyan-700 hover:bg-cyan-50 rounded-lg transition"
+              className="site-header-speed hidden md:flex items-center gap-2 px-4 py-2 text-sm font-medium text-cyan-600 hover:text-cyan-700 hover:bg-cyan-50 rounded-lg transition"
             >
               <Zap size={16} />
               Free Speed Test
@@ -421,7 +421,7 @@ const Header: React.FC<HeaderProps> = ({
             {/* Start Your Project - Primary CTA */}
             <Link
               to="/contact"
-              className="hidden sm:flex items-center gap-2 px-6 py-2.5 rounded-full text-sm font-semibold text-white bg-gradient-to-r from-cyan-500 to-teal-500 hover:from-cyan-600 hover:to-teal-600 shadow-lg shadow-cyan-500/20 hover:shadow-cyan-500/30 transition-all hover:scale-[1.02] active:scale-[0.98]"
+              className="site-header-cta hidden sm:flex items-center gap-2 px-6 py-2.5 rounded-full text-sm font-semibold text-white bg-gradient-to-r from-cyan-500 to-teal-500 hover:from-cyan-600 hover:to-teal-600 shadow-lg shadow-cyan-500/20 hover:shadow-cyan-500/30 transition-all hover:scale-[1.02] active:scale-[0.98]"
             >
               Start Your Project
               <ArrowRight size={14} />
@@ -429,7 +429,7 @@ const Header: React.FC<HeaderProps> = ({
 
             {/* Mobile Menu Button */}
             <button
-              className="lg:hidden p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition"
+              className="site-header-mobile lg:hidden p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition"
               onClick={() => onMobileMenuChange(!mobileMenuOpen)}
               aria-label="Toggle mobile menu"
             >

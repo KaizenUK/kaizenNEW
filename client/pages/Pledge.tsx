@@ -113,7 +113,7 @@ export default function Pledge() {
   return (
     <Layout>
       {/* Section 1: Hero - Code Commit Style */}
-      <section className="min-h-screen bg-slate-900 dark:bg-slate-950 flex items-center justify-center py-20 px-4">
+      <section className="min-h-screen bg-slate-900 flex items-center justify-center py-20 px-4">
         <div className="max-w-3xl w-full">
           <h1 className="font-mono text-kaizen-cyan text-4xl md:text-6xl font-bold leading-tight">
             <span>{displayedText}</span>
@@ -143,13 +143,13 @@ export default function Pledge() {
       </section>
 
       {/* Section 2: The Pledge - Sticky Scroller */}
-      <section className="bg-white dark:bg-slate-950 py-20">
+      <section className="bg-white py-20">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 max-w-7xl mx-auto px-4">
           {/* Left Column - Sticky Headline */}
           <div className="hidden lg:flex">
             <div className="sticky top-1/2 -translate-y-1/2 h-fit w-full">
               <motion.h2
-                className="text-5xl md:text-6xl lg:text-7xl font-heading font-black text-kaizen-dark dark:text-white"
+                className="text-5xl md:text-6xl lg:text-7xl font-heading font-black text-kaizen-dark"
                 key={activeSection}
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
@@ -173,7 +173,7 @@ export default function Pledge() {
               >
                 {/* Mobile heading */}
                 <motion.h3
-                  className="lg:hidden text-4xl md:text-5xl font-heading font-black mb-8 text-kaizen-dark dark:text-white"
+                  className="lg:hidden text-4xl md:text-5xl font-heading font-black mb-8 text-kaizen-dark"
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true, margin: "-100px" }}
@@ -183,7 +183,7 @@ export default function Pledge() {
                 </motion.h3>
 
                 <motion.div
-                  className="text-lg text-kaizen-text-dark/70 dark:text-white/70 leading-relaxed space-y-4"
+                  className="text-lg text-kaizen-text-dark/70 leading-relaxed space-y-4"
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true, margin: "-100px" }}
@@ -200,7 +200,7 @@ export default function Pledge() {
       </section>
 
       {/* Section 3: Final CTA */}
-      <section className="bg-kaizen-dark dark:bg-gradient-to-b dark:from-slate-900 dark:to-slate-950 text-white py-20 md:py-32 px-4">
+      <section className="bg-kaizen-dark text-white py-20 md:py-32 px-4">
         <div className="max-w-3xl mx-auto text-center">
           <motion.h2
             className="text-4xl md:text-5xl lg:text-6xl font-heading font-black mb-8"

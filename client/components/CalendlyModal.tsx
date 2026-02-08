@@ -145,13 +145,13 @@ export function CalendlyModal({ isOpen, onClose }: CalendlyModalProps) {
     <div className="fixed inset-0 z-50 flex items-center justify-center">
       <div className="absolute inset-0 bg-black/50" onClick={onClose} />
 
-      <div className="relative z-50 w-full max-w-3xl bg-white dark:bg-slate-900 rounded-lg shadow-2xl mx-4 flex flex-col">
+      <div className="relative z-50 w-full max-w-3xl bg-white rounded-lg shadow-2xl mx-4 flex flex-col">
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 z-10 p-2 rounded-md hover:bg-gray-100 dark:hover:bg-slate-800 transition-colors"
+          className="absolute top-4 right-4 z-10 p-2 rounded-md hover:bg-gray-100 transition-colors"
           aria-label="Close modal"
         >
-          <X className="h-5 w-5 text-gray-600 dark:text-gray-400" />
+          <X className="h-5 w-5 text-gray-600" />
         </button>
 
         <div className="p-6 pt-12 flex-1 flex flex-col">

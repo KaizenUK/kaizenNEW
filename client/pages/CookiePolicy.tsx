@@ -14,7 +14,7 @@ export default function CookiePolicy() {
   return (
     <Layout>
       {/* Hero Section */}
-      <section className="bg-gradient-to-br from-kaizen-dark via-slate-900 to-kaizen-dark dark:from-slate-950 dark:via-slate-900 dark:to-black text-white py-16 md:py-24">
+      <section className="bg-gradient-to-br from-kaizen-dark via-slate-900 to-kaizen-dark text-white py-16 md:py-24">
         <div className="container mx-auto px-4">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -33,7 +33,7 @@ export default function CookiePolicy() {
       </section>
 
       {/* Content Section */}
-      <section className="bg-white dark:bg-slate-950 py-20 md:py-32">
+      <section className="bg-white py-20 md:py-32">
         <div className="container mx-auto px-4">
           <div className="max-w-3xl mx-auto space-y-12">
             {/* What is a Cookie */}
@@ -43,10 +43,10 @@ export default function CookiePolicy() {
               whileInView="visible"
               viewport={{ once: true, margin: "-100px" }}
             >
-              <h2 className="text-3xl md:text-4xl font-heading font-bold mb-6 text-kaizen-dark dark:text-white">
+              <h2 className="text-3xl md:text-4xl font-heading font-bold mb-6 text-kaizen-dark">
                 What is a Cookie?
               </h2>
-              <p className="text-lg text-kaizen-text-dark/70 dark:text-white/70 leading-relaxed">
+              <p className="text-lg text-kaizen-text-dark/70 leading-relaxed">
                 A cookie is a tiny text file stored on your browser. It helps a
                 website remember you. We use them to make the site work, not to
                 track you personally across the internet.
@@ -60,27 +60,27 @@ export default function CookiePolicy() {
               whileInView="visible"
               viewport={{ once: true, margin: "-100px" }}
             >
-              <h2 className="text-3xl md:text-4xl font-heading font-bold mb-6 text-kaizen-dark dark:text-white">
+              <h2 className="text-3xl md:text-4xl font-heading font-bold mb-6 text-kaizen-dark">
                 The Cookies We Use
               </h2>
 
               <div className="space-y-6">
-                <div className="p-6 bg-kaizen-light dark:bg-slate-900/50 border border-kaizen-light dark:border-slate-800/50 rounded-lg">
-                  <h3 className="text-xl font-heading font-bold mb-3 text-kaizen-dark dark:text-white">
+                <div className="p-6 bg-kaizen-light border border-kaizen-light rounded-lg">
+                  <h3 className="text-xl font-heading font-bold mb-3 text-kaizen-dark">
                     Strictly Necessary Cookies
                   </h3>
-                  <p className="text-kaizen-text-dark/70 dark:text-white/70 leading-relaxed">
+                  <p className="text-kaizen-text-dark/70 leading-relaxed">
                     These are essential for the site to function. They are used
                     by our platform (Builder.io) to serve pages, and to remember
                     your cookie consent choice. You cannot turn these off.
                   </p>
                 </div>
 
-                <div className="p-6 bg-kaizen-light dark:bg-slate-900/50 border border-kaizen-light dark:border-slate-800/50 rounded-lg">
-                  <h3 className="text-xl font-heading font-bold mb-3 text-kaizen-dark dark:text-white">
+                <div className="p-6 bg-kaizen-light border border-kaizen-light rounded-lg">
+                  <h3 className="text-xl font-heading font-bold mb-3 text-kaizen-dark">
                     Functional Cookies
                   </h3>
-                  <p className="text-kaizen-text-dark/70 dark:text-white/70 mb-3 leading-relaxed">
+                  <p className="text-kaizen-text-dark/70 mb-3 leading-relaxed">
                     These cookies make your experience better. For example, our{" "}
                     <span className="font-bold">Chat Widget</span> uses a cookie
                     to remember your conversation, and{" "}
@@ -89,11 +89,11 @@ export default function CookiePolicy() {
                   </p>
                 </div>
 
-                <div className="p-6 bg-kaizen-light dark:bg-slate-900/50 border border-kaizen-light dark:border-slate-800/50 rounded-lg">
-                  <h3 className="text-xl font-heading font-bold mb-3 text-kaizen-dark dark:text-white">
+                <div className="p-6 bg-kaizen-light border border-kaizen-light rounded-lg">
+                  <h3 className="text-xl font-heading font-bold mb-3 text-kaizen-dark">
                     Analytics Cookies
                   </h3>
-                  <p className="text-kaizen-text-dark/70 dark:text-white/70 leading-relaxed">
+                  <p className="text-kaizen-text-dark/70 leading-relaxed">
                     We use an analytics tool to understand how visitors use our
                     site (like which pages are most popular). This data is
                     anonymous and helps us improve our website. These will{" "}
@@ -110,10 +110,10 @@ export default function CookiePolicy() {
               whileInView="visible"
               viewport={{ once: true, margin: "-100px" }}
             >
-              <h2 className="text-3xl md:text-4xl font-heading font-bold mb-6 text-kaizen-dark dark:text-white">
+              <h2 className="text-3xl md:text-4xl font-heading font-bold mb-6 text-kaizen-dark">
                 How to Manage Your Consent
               </h2>
-              <p className="text-lg text-kaizen-text-dark/70 dark:text-white/70 leading-relaxed">
+              <p className="text-lg text-kaizen-text-dark/70 leading-relaxed">
                 You can change your cookie preferences at any time by clicking
                 the "Manage Cookies" link, which will always be visible at the
                 bottom of our site. You can also block or delete cookies at any
@@ -127,9 +127,9 @@ export default function CookiePolicy() {
               initial="hidden"
               whileInView="visible"
               viewport={{ once: true, margin: "-100px" }}
-              className="border-t border-kaizen-text-dark/10 dark:border-white/10 pt-8"
+              className="border-t border-kaizen-text-dark/10 pt-8"
             >
-              <p className="text-lg text-kaizen-text-dark/70 dark:text-white/70">
+              <p className="text-lg text-kaizen-text-dark/70">
                 For more information about how we use your data, please see our{" "}
                 <a
                   href="/privacy-policy"

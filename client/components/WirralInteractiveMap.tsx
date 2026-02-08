@@ -113,7 +113,7 @@ export function WirralInteractiveMap() {
           width="320"
           height="420"
           fill="url(#wirral-water)"
-          className="dark:fill-slate-900"
+          className=""
         />
 
         {/* River Dee and River Mersey labels */}
@@ -122,7 +122,7 @@ export function WirralInteractiveMap() {
           y="200"
           fontSize="10"
           fill="currentColor"
-          className="text-cyan-400/60 dark:text-cyan-500/60"
+          className="text-cyan-400/60"
           fontStyle="italic"
           opacity="0.6"
         >
@@ -133,7 +133,7 @@ export function WirralInteractiveMap() {
           y="200"
           fontSize="10"
           fill="currentColor"
-          className="text-cyan-400/60 dark:text-cyan-500/60"
+          className="text-cyan-400/60"
           fontStyle="italic"
           opacity="0.6"
         >
@@ -146,7 +146,7 @@ export function WirralInteractiveMap() {
           fill="url(#wirral-land)"
           stroke="currentColor"
           strokeWidth="2"
-          className="text-slate-400 dark:text-slate-600"
+          className="text-slate-400"
           opacity="0.8"
           filter="url(#shadow)"
         />
@@ -169,7 +169,7 @@ export function WirralInteractiveMap() {
                   fill="none"
                   stroke="currentColor"
                   strokeWidth="2"
-                  className={`text-${area.color}-400 dark:text-${area.color}-300`}
+                  className={`text-${area.color}-400`}
                   opacity="0.5"
                   style={{
                     animation: "pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite",
@@ -182,7 +182,7 @@ export function WirralInteractiveMap() {
                   fill="none"
                   stroke="currentColor"
                   strokeWidth="1"
-                  className={`text-${area.color}-400 dark:text-${area.color}-300`}
+                  className={`text-${area.color}-400`}
                   opacity="0.3"
                 />
               </>
@@ -196,8 +196,8 @@ export function WirralInteractiveMap() {
               fill="currentColor"
               className={`${
                 hoveredArea === area.id
-                  ? `text-${area.color}-400 dark:text-${area.color}-300`
-                  : "text-slate-500 dark:text-slate-500"
+                  ? `text-${area.color}-400`
+                  : "text-slate-500"
               } transition-all duration-200`}
               style={{
                 filter:
@@ -214,8 +214,8 @@ export function WirralInteractiveMap() {
               textAnchor="middle"
               className={`font-bold text-xs transition-all duration-200 ${
                 hoveredArea === area.id
-                  ? `text-${area.color}-400 dark:text-${area.color}-300`
-                  : "text-slate-600 dark:text-slate-400"
+                  ? `text-${area.color}-400`
+                  : "text-slate-600"
               }`}
               style={{ fontWeight: hoveredArea === area.id ? "700" : "500" }}
             >
@@ -250,20 +250,20 @@ export function WirralInteractiveMap() {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 10 }}
-            className="bg-gradient-to-r from-slate-100 to-slate-50 dark:from-slate-800 dark:to-slate-900 rounded-lg p-4 border border-slate-200 dark:border-slate-700"
+            className="bg-gradient-to-r from-slate-100 to-slate-50 rounded-lg p-4 border border-slate-200"
           >
             {wirralAreas.map(
               (area) =>
                 area.id === hoveredArea && (
                   <div key={area.id} className="flex items-center gap-4">
                     <div
-                      className={`w-3 h-3 rounded-full bg-${area.color}-400 dark:bg-${area.color}-300`}
+                      className={`w-3 h-3 rounded-full bg-${area.color}-400`}
                     />
                     <div>
-                      <h3 className="font-semibold text-slate-900 dark:text-white">
+                      <h3 className="font-semibold text-slate-900">
                         {area.name}
                       </h3>
-                      <p className="text-xs text-slate-600 dark:text-slate-400">
+                      <p className="text-xs text-slate-600">
                         {area.region}
                       </p>
                     </div>
@@ -275,7 +275,7 @@ export function WirralInteractiveMap() {
       </div>
 
       {/* Legend */}
-      <div className="flex gap-6 text-sm text-slate-600 dark:text-slate-400 mt-4">
+      <div className="flex gap-6 text-sm text-slate-600 mt-4">
         <div className="flex items-center gap-2">
           <div className="w-2 h-2 rounded-full bg-cyan-400" />
           <span>Serving</span>

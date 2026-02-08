@@ -31,7 +31,7 @@ export default function HelenMooreHairdressingCase() {
       </Helmet>
 
       {/* Hero Section - Split Screen */}
-      <section className="min-h-screen flex flex-col lg:flex-row bg-white dark:bg-slate-950">
+      <section className="min-h-screen flex flex-col lg:flex-row bg-white">
         {/* Left: Image */}
         <div className="w-full lg:w-1/2 h-[50vh] lg:h-auto relative overflow-hidden">
           <div className="absolute inset-0 bg-slate-900/20 z-10" />
@@ -51,7 +51,7 @@ export default function HelenMooreHairdressingCase() {
           <div className="max-w-xl">
             <Link
               to="/case-studies"
-              className="inline-flex items-center gap-2 text-slate-400 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white transition mb-8 text-sm font-medium"
+              className="inline-flex items-center gap-2 text-slate-400 hover:text-slate-900 transition mb-8 text-sm font-medium"
             >
               <ArrowLeft size={16} />
               Back to Case Studies
@@ -67,12 +67,12 @@ export default function HelenMooreHairdressingCase() {
                 <span className="inline-block text-rose-500 text-xs font-mono font-bold uppercase tracking-widest mb-4">
                   The Salon Experience
                 </span>
-                <h1 className="text-4xl md:text-5xl lg:text-6xl font-heading font-black leading-tight text-slate-900 dark:text-white mb-6">
+                <h1 className="text-4xl md:text-5xl lg:text-6xl font-heading font-black leading-tight text-slate-900 mb-6">
                   Helen Moore Hairdressing.
                 </h1>
               </div>
 
-              <div className="space-y-6 text-lg text-slate-600 dark:text-slate-300 leading-relaxed">
+              <div className="space-y-6 text-lg text-slate-600 leading-relaxed">
                 <p>
                   Helen Moore isn't just a salon; it's a Wirral institution. But
                   their digital presence was stuck in 2015—slow, clunky, and
@@ -93,7 +93,7 @@ export default function HelenMooreHairdressingCase() {
                   {["React", "Headless WordPress", "Local SEO"].map((item) => (
                     <span
                       key={item}
-                      className="px-3 py-1 rounded-full bg-slate-100 dark:bg-slate-900 text-slate-600 dark:text-slate-400 text-xs font-medium"
+                      className="px-3 py-1 rounded-full bg-slate-100 text-slate-600 text-xs font-medium"
                     >
                       {item}
                     </span>
@@ -106,7 +106,7 @@ export default function HelenMooreHairdressingCase() {
       </section>
 
       {/* Results Grid */}
-      <section className="bg-slate-50 dark:bg-slate-900/50 py-20 px-4">
+      <section className="bg-slate-50 py-20 px-4">
         <div className="container mx-auto max-w-6xl">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <motion.div
@@ -114,18 +114,18 @@ export default function HelenMooreHairdressingCase() {
               initial="hidden"
               whileInView="visible"
               viewport={{ once: true }}
-              className="bg-white dark:bg-slate-950 p-8 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-sm"
+              className="bg-white p-8 rounded-2xl border border-slate-100 shadow-sm"
             >
-              <div className="w-12 h-12 bg-rose-50 dark:bg-rose-900/20 rounded-full flex items-center justify-center mb-6 text-rose-500">
+              <div className="w-12 h-12 bg-rose-50 rounded-full flex items-center justify-center mb-6 text-rose-500">
                 <Star size={24} />
               </div>
-              <h3 className="text-3xl font-heading font-bold text-slate-900 dark:text-white mb-2">
+              <h3 className="text-3xl font-heading font-bold text-slate-900 mb-2">
                 100%
               </h3>
               <p className="text-sm font-mono uppercase tracking-wider text-slate-400 mb-2">
                 Performance Score
               </p>
-              <p className="text-slate-600 dark:text-slate-400 text-sm">
+              <p className="text-slate-600 text-sm">
                 Google Lighthouse score for maximum visibility and speed.
               </p>
             </motion.div>
@@ -136,18 +136,18 @@ export default function HelenMooreHairdressingCase() {
               whileInView="visible"
               viewport={{ once: true }}
               transition={{ delay: 0.1 }}
-              className="bg-white dark:bg-slate-950 p-8 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-sm"
+              className="bg-white p-8 rounded-2xl border border-slate-100 shadow-sm"
             >
-              <div className="w-12 h-12 bg-rose-50 dark:bg-rose-900/20 rounded-full flex items-center justify-center mb-6 text-rose-500">
+              <div className="w-12 h-12 bg-rose-50 rounded-full flex items-center justify-center mb-6 text-rose-500">
                 <Smartphone size={24} />
               </div>
-              <h3 className="text-3xl font-heading font-bold text-slate-900 dark:text-white mb-2">
+              <h3 className="text-3xl font-heading font-bold text-slate-900 mb-2">
                 Zero
               </h3>
               <p className="text-sm font-mono uppercase tracking-wider text-slate-400 mb-2">
                 Friction Booking
               </p>
-              <p className="text-slate-600 dark:text-slate-400 text-sm">
+              <p className="text-slate-600 text-sm">
                 Smooth flow from Instagram scroll to confirmed appointment.
               </p>
             </motion.div>
@@ -158,18 +158,18 @@ export default function HelenMooreHairdressingCase() {
               whileInView="visible"
               viewport={{ once: true }}
               transition={{ delay: 0.2 }}
-              className="bg-white dark:bg-slate-950 p-8 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-sm"
+              className="bg-white p-8 rounded-2xl border border-slate-100 shadow-sm"
             >
-              <div className="w-12 h-12 bg-rose-50 dark:bg-rose-900/20 rounded-full flex items-center justify-center mb-6 text-rose-500">
+              <div className="w-12 h-12 bg-rose-50 rounded-full flex items-center justify-center mb-6 text-rose-500">
                 <Search size={24} />
               </div>
-              <h3 className="text-3xl font-heading font-bold text-slate-900 dark:text-white mb-2">
+              <h3 className="text-3xl font-heading font-bold text-slate-900 mb-2">
                 #1
               </h3>
               <p className="text-sm font-mono uppercase tracking-wider text-slate-400 mb-2">
                 Local Ranking
               </p>
-              <p className="text-slate-600 dark:text-slate-400 text-sm">
+              <p className="text-slate-600 text-sm">
                 Dominating search results in Wallasey and across the Wirral.
               </p>
             </motion.div>
@@ -204,12 +204,12 @@ export default function HelenMooreHairdressingCase() {
       </section>
 
       {/* Pagination */}
-      <section className="bg-white dark:bg-slate-950 py-16 px-4 border-t border-slate-100 dark:border-slate-800">
+      <section className="bg-white py-16 px-4 border-t border-slate-100">
         <div className="container mx-auto max-w-5xl">
           <div className="flex items-center justify-between">
             <Link
               to="/case-studies/as-collections"
-              className="group flex items-center gap-3 text-slate-900 dark:text-white hover:text-rose-500 transition"
+              className="group flex items-center gap-3 text-slate-900 hover:text-rose-500 transition"
             >
               <span className="group-hover:-translate-x-1 transition">←</span>
               Previous Case Study
@@ -217,14 +217,14 @@ export default function HelenMooreHairdressingCase() {
 
             <Link
               to="/case-studies"
-              className="text-slate-400 hover:text-slate-900 dark:hover:text-white transition text-sm font-medium"
+              className="text-slate-400 hover:text-slate-900 transition text-sm font-medium"
             >
               View All
             </Link>
 
             <Link
               to="/case-studies/kaizen-rebuild"
-              className="group flex items-center gap-3 text-slate-900 dark:text-white hover:text-rose-500 transition"
+              className="group flex items-center gap-3 text-slate-900 hover:text-rose-500 transition"
             >
               Next Case Study
               <span className="group-hover:translate-x-1 transition">→</span>
