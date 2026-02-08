@@ -97,21 +97,34 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         <script type="application/ld+json">
           {JSON.stringify({
             "@context": "https://schema.org",
-            "@type": "ProfessionalService",
-            name: "Kaizen",
-            image: "https://kaizenweb.co.uk/logo.svg",
+            "@type": "LocalBusiness",
+            "@id": "https://kaizenweb.co.uk/#organization",
+            name: "Kaizen Web",
+            alternateName: "Kaizen",
             url: "https://kaizenweb.co.uk",
-            telephone: "",
+            logo: {
+              "@type": "ImageObject",
+              url: "https://kaizenweb.co.uk/logo.svg",
+              width: 500,
+              height: 150,
+            },
+            image: "https://kaizenweb.co.uk/og-image.webp",
+            description: "Fast web design for Wirral and Liverpool businesses. Custom websites from £2k with 2-4 week turnaround.",
+            priceRange: "££",
+            telephone: "+44 151 808 1100",
+            email: "hello@kaizenweb.co.uk",
             address: {
               "@type": "PostalAddress",
-              addressLocality: "Moreton",
-              addressRegion: "Wirral",
+              streetAddress: "44 Simpson Street",
+              addressLocality: "Liverpool",
+              addressRegion: "Merseyside",
+              postalCode: "L1 0AX",
               addressCountry: "GB",
             },
             geo: {
               "@type": "GeoCoordinates",
-              latitude: "53.4108",
-              longitude: "-3.1135",
+              latitude: 53.4084,
+              longitude: -2.9916,
             },
             areaServed: [
               {
@@ -120,36 +133,31 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
               },
               {
                 "@type": "City",
-                name: "Merseyside",
+                name: "Liverpool",
               },
               {
                 "@type": "City",
                 name: "Chester",
               },
+              {
+                "@type": "AdministrativeArea",
+                name: "Merseyside",
+              },
             ],
-            priceRange: "£££",
-          })}
-        </script>
-        <script type="application/ld+json">
-          {JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "LocalBusiness",
-            name: "Kaizen",
-            url: "https://kaizenweb.co.uk",
-            logo: "https://kaizenweb.co.uk/logo.svg",
-            address: {
-              "@type": "PostalAddress",
-              addressLocality: "Moreton",
-              addressRegion: "Wirral",
-              addressCountry: "GB",
-            },
-            contactPoint: {
-              "@type": "ContactPoint",
-              contactType: "Customer Support",
-              email: "hello@kaizenweb.co.uk",
-              areaServed: ["Wirral", "Merseyside", "Chester"],
-            },
-            sameAs: ["https://www.linkedin.com/company/kaizen-web"],
+            openingHoursSpecification: [
+              {
+                "@type": "OpeningHoursSpecification",
+                dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+                opens: "09:00",
+                closes: "18:00",
+              },
+            ],
+            sameAs: [
+              "https://www.linkedin.com/company/kaizen-web",
+              "https://www.instagram.com/kaizenwebliverpool",
+              "https://twitter.com/kaizenweblpool",
+            ],
+            foundingDate: "2020",
           })}
         </script>
       </Helmet>

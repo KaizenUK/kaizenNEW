@@ -35,18 +35,18 @@ const defaultMeta: PageMeta = {
 
 const pageMeta: Record<string, Partial<PageMeta>> = {
   "/": {
-    title: "Web Design Liverpool & Wirral | 2025 Pricing | Kaizen",
+    title: "Web Design Wirral | Fast, Custom Sites from £2k | Kaizen",
     description:
-      "Transform your online identity with skilled web designers on the Wirral. We create amazing, user-friendly websites that help your business shine!",
+      "We build fast websites for Wirral businesses. £2k-£15k, 2-4 week turnaround. No WordPress bloat. Just speed and leads.",
     keywords: [
-      "web design liverpool",
       "web design wirral",
-      "web design liverpool and wirral",
+      "web design liverpool",
+      "wirral web designer",
+      "fast websites wirral",
+      "custom websites wirral",
       "web design merseyside",
-      "product owner-led web design",
-      "agile web development",
-      "kaizen",
-      "high-performance websites",
+      "liverpool web design",
+      "kaizen web",
       "web design pricing",
       "liverpool web designer",
     ],
@@ -477,7 +477,7 @@ export const buildLocalBusinessSchema = (description: string) => ({
       closes: "18:00",
     },
   ],
-  priceRange: "$$",
+  priceRange: "££",
   foundingDate: "2020",
   foundingLocation: "Liverpool, UK",
   sameAs: [

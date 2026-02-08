@@ -189,8 +189,8 @@ const HeroSection = () => {
             className="text-lg md:text-xl text-white/85 leading-relaxed mb-12 max-w-3xl mx-auto hero-reveal"
             style={{ "--delay": "0.2s" } as React.CSSProperties}
           >
-            Stop losing customers to slow loading times. We build streamlined
-            sites designed to convert traffic into leads.
+            Slow websites lose you money. We build sites that load instantly and
+            turn visitors into paying customers.
           </p>
 
           <div
@@ -353,10 +353,10 @@ const AuthorityBridge = () => {
               Down-to-Earth Service.
             </h2>
             <p className="text-lg text-white/80 leading-relaxed mb-6">
-              We used to build massive systems for global companies. Now, we use
-              that same powerful technology to help local Wirral businesses get
-              more customers. You get a website that is faster, safer, and
-              smarter than your competitors, without the corporate waffle.
+              We've built websites for international companies. Now we bring
+              that same know-how to Wirral businesses—at prices that actually
+              make sense. You get a website that's faster and more reliable than
+              your competitors, without the corporate waffle.
             </p>
             <ul className="space-y-3 text-white/85">
               <li className="flex gap-3">
@@ -419,7 +419,7 @@ const ServicePillars = () => {
     {
       title: "High-Speed Websites",
       description:
-        "Lean React/modern builds that load fast, rank better, and convert more visitors.",
+        "Fast websites that show up on Google and bring in more enquiries.",
       icon: <Zap className="w-5 h-5" />,
       href: "/services/local-seo",
       accent: "from-cyan-300/25 to-transparent",
@@ -805,15 +805,12 @@ const AIPriceNarrative = () => {
           className="space-y-6 text-slate-800 dark:text-slate-200 text-base md:text-lg max-w-3xl"
         >
           <p>
-            Most agencies charge you for typing. Every hour a developer spends
-            writing code, you pay for.
-          </p>
-          <p>
-            We automate the repetitive work with AI. Same architecture. Same
-            security. Same performance. You just don't pay for the boring bits.
+            Most agencies bill you for every hour. We use smart tools to cut
+            out the repetitive work, so you get professional results without the
+            professional price tag.
           </p>
           <p className="text-xl md:text-2xl font-heading font-bold text-slate-900 dark:text-white">
-            Enterprise tech. Freelancer prices. That's the deal.
+            Enterprise quality. Freelancer prices. That's the deal.
           </p>
         </motion.div>
       </div>
@@ -867,9 +864,9 @@ const CoreServiceVerticals = () => {
                 Wirral Web Design
               </h3>
               <p className="text-sm md:text-base text-slate-200 mb-6 max-w-md">
-                High-performance web design for SMEs that want speed and
-                conversions. We build lean sites that turn search traffic into
-                leads and keep improving over time.
+                Fast websites for Wirral businesses who need more enquiries. We
+                build sites that show up on Google and turn visitors into
+                customers.
               </p>
               <ul className="space-y-2 text-sm md:text-base text-slate-200/90 mb-8">
                 <li className="flex items-center gap-2">
@@ -1021,8 +1018,8 @@ const LatestInsights = () => {
             Latest Insights
           </h2>
           <p className="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
-            Stay updated with our latest thoughts on web design, development,
-            and digital transformation for local and remote teams.
+            Practical advice on getting more customers from your website and
+            ranking higher on Google.
           </p>
         </motion.div>
 
