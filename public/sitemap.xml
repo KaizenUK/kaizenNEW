@@ -1,27 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>https://kaizenweb.co.uk/</loc></url>
-  <url><loc>https://kaizenweb.co.uk/services</loc></url>
-  <url><loc>https://kaizenweb.co.uk/web-design-liverpool</loc></url>
-  <url><loc>https://kaizenweb.co.uk/web-design-wirral</loc></url>
-  <url><loc>https://kaizenweb.co.uk/web-design-chester</loc></url>
-  <url><loc>https://kaizenweb.co.uk/web-design-warrington</loc></url>
-  <url><loc>https://kaizenweb.co.uk/digital-transformation</loc></url>
-  <url><loc>https://kaizenweb.co.uk/services/local-seo</loc></url>
-  <url><loc>https://kaizenweb.co.uk/services/wordpress-web-design</loc></url>
-  <url><loc>https://kaizenweb.co.uk/services/ecommerce</loc></url>
-  <url><loc>https://kaizenweb.co.uk/project-rescue</loc></url>
-  <url><loc>https://kaizenweb.co.uk/contract-product-owner</loc></url>
-  <url><loc>https://kaizenweb.co.uk/agile-coaching</loc></url>
-  <url><loc>https://kaizenweb.co.uk/case-studies</loc></url>
-  <url><loc>https://kaizenweb.co.uk/case-studies/as-collections</loc></url>
-  <url><loc>https://kaizenweb.co.uk/case-studies/helen-moore-hairdressing</loc></url>
-  <url><loc>https://kaizenweb.co.uk/case-studies/independent-retailer</loc></url>
-  <url><loc>https://kaizenweb.co.uk/case-studies/kaizen-rebuild</loc></url>
-  <url><loc>https://kaizenweb.co.uk/case-studies/high-five-games</loc></url>
-  <url><loc>https://kaizenweb.co.uk/performance-scanner</loc></url>
-  <url><loc>https://kaizenweb.co.uk/pledge</loc></url>
-  <url><loc>https://kaizenweb.co.uk/about</loc></url>
-  <url><loc>https://kaizenweb.co.uk/contact</loc></url>
-  <url><loc>https://kaizenweb.co.uk/blog</loc></url>
-</urlset>
+<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <sitemap>
+    <loc>https://kaizenweb.co.uk/sitemap.php</loc>
+  </sitemap>
+</sitemapindex>

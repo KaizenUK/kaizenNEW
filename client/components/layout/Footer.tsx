@@ -104,10 +104,18 @@ const Footer: React.FC = () => {
 
   const footerLinks = [
     { label: "Services", href: "/services" },
+    { label: "Web Design Liverpool", href: "/web-design-liverpool" },
+    { label: "Web Design Wirral", href: "/web-design-wirral" },
+    { label: "Web Design Chester", href: "/web-design-chester" },
+    { label: "Web Design Warrington", href: "/web-design-warrington" },
     { label: "Ecommerce", href: "/services/ecommerce" },
+    { label: "Local SEO", href: "/services/local-seo" },
+    { label: "WordPress Design", href: "/services/wordpress-web-design" },
     { label: "Digital Transformation", href: "/digital-transformation" },
     { label: "Agile Coaching", href: "/agile-coaching" },
+    { label: "Product Owner", href: "/contract-product-owner" },
     { label: "Rescue", href: "/project-rescue" },
+    { label: "Speed Scanner", href: "/performance-scanner" },
     { label: "Blog", href: "/blog" },
     { label: "Cases", href: "/case-studies" },
     { label: "About", href: "/about" },
