@@ -375,7 +375,7 @@ const Footer: React.FC = () => {
           {/* Copyright */}
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
             <p className="text-xs text-white/40 text-center md:text-left">
-              © Kaizen Web Ltd t/a Kaizen (Company No. 17007703). All rights
+              (c) Kaizen Web Ltd t/a Kaizen (Company No. 17007703). All rights
               reserved {new Date().getFullYear()}
               {buildLabel && (
                 <span className="ml-2 text-white/25" title="Build version">

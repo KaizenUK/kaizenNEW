@@ -1,5 +1,4 @@
 import React from "react";
-import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
 
@@ -12,35 +11,18 @@ export const ServiceShowcase: React.FC = () => {
     <section className="py-20 md:py-28 bg-slate-950 text-white relative overflow-hidden">
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_0_0,rgba(45,212,191,0.18),transparent_55%),radial-gradient(circle_at_100%_100%,rgba(56,189,248,0.18),transparent_55%)]" />
       <div className="container mx-auto px-4 relative z-10">
-        <motion.div
-          initial={{ opacity: 0, y: 24 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.3 }}
-          className="max-w-4xl mx-auto text-center mb-14"
-        >
+        <div className="max-w-4xl mx-auto text-center mb-14">
           <p className="text-xs font-mono tracking-[0.25em] text-cyan-300 mb-4 uppercase">
             What We Do
           </p>
           <h2 className="text-3xl md:text-4xl font-heading font-bold">
             Two ways we help
           </h2>
-        </motion.div>
+        </div>
 
-        <motion.div
-          initial={{ opacity: 0, y: 24 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.3 }}
-          className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-10 items-stretch"
-        >
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-10 items-stretch">
           {/* Vertical 1: Web Design */}
-          <motion.div
-            initial={{ opacity: 0, x: -24, rotate: -0.3 }}
-            whileInView={{ opacity: 1, x: 0, rotate: 0 }}
-            viewport={{ once: true, amount: 0.4 }}
-            whileHover={{ y: -6, rotate: -0.6 }}
-            transition={{ type: "spring", stiffness: 140, damping: 18 }}
-            className="relative rounded-3xl border border-cyan-400/40 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 overflow-hidden shadow-[0_24px_70px_rgba(8,47,73,0.9)]"
-          >
+          <div className="relative rounded-3xl border border-cyan-400/40 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 overflow-hidden shadow-[0_24px_70px_rgba(8,47,73,0.9)] transition-transform duration-300 hover:-translate-y-1">
             <div className="absolute inset-0 opacity-30 bg-[radial-gradient(circle_at_10%_0,rgba(56,189,248,0.5),transparent_55%),radial-gradient(circle_at_90%_100%,rgba(45,212,191,0.4),transparent_55%)]" />
             <div className="relative p-8 md:p-10 flex flex-col h-full">
               <p className="text-xs font-mono tracking-[0.25em] text-cyan-300 mb-4 uppercase">
@@ -78,17 +60,10 @@ export const ServiceShowcase: React.FC = () => {
                 </Link>
               </div>
             </div>
-          </motion.div>
+          </div>
 
           {/* Vertical 2: Project Rescue */}
-          <motion.div
-            initial={{ opacity: 0, x: 24, rotate: 0.3 }}
-            whileInView={{ opacity: 1, x: 0, rotate: 0 }}
-            viewport={{ once: true, amount: 0.4 }}
-            whileHover={{ y: -6, rotate: 0.6 }}
-            transition={{ type: "spring", stiffness: 140, damping: 18 }}
-            className="relative rounded-3xl border border-lime-400/40 bg-gradient-to-br from-slate-900 via-slate-950 to-slate-900 overflow-hidden shadow-[0_24px_70px_rgba(22,101,52,0.9)]"
-          >
+          <div className="relative rounded-3xl border border-lime-400/40 bg-gradient-to-br from-slate-900 via-slate-950 to-slate-900 overflow-hidden shadow-[0_24px_70px_rgba(22,101,52,0.9)] transition-transform duration-300 hover:-translate-y-1">
             <div className="absolute inset-0 opacity-30 bg-[radial-gradient(circle_at_15%_0,rgba(190,242,100,0.5),transparent_55%),radial-gradient(circle_at_90%_100%,rgba(22,163,74,0.5),transparent_55%)]" />
             <div className="relative p-8 md:p-10 flex flex-col h-full">
               <p className="text-xs font-mono tracking-[0.25em] text-lime-300 mb-4 uppercase">
@@ -125,8 +100,8 @@ export const ServiceShowcase: React.FC = () => {
                 </Link>
               </div>
             </div>
-          </motion.div>
-        </motion.div>
+          </div>
+        </div>
       </div>
     </section>
   );

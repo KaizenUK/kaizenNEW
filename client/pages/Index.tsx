@@ -56,17 +56,14 @@ const DeferredSection = ({
   id,
   children,
   minHeight = 480,
+  activated = true,
 }: {
   id: string;
   children: React.ReactNode;
   minHeight?: number;
+  activated?: boolean;
 }) => {
   const [isVisible, setIsVisible] = useState(() => {
-    if (typeof window === "undefined") {
-      // Keep SSR output stable to avoid section pop-in and scroll jank.
-      return true;
-    }
-
     if (typeof document !== "undefined") {
       const existingNode = document.querySelector(`[data-deferred-id="${id}"]`);
       if (existingNode && existingNode.childElementCount > 0) {
@@ -79,7 +76,7 @@ const DeferredSection = ({
   const sectionRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
-    if (isVisible) return;
+    if (!activated || isVisible) return;
 
     const observer = new IntersectionObserver(
       ([entry]) => {
@@ -88,10 +85,8 @@ const DeferredSection = ({
           observer.disconnect();
         }
       },
-      // Do not preload below-the-fold sections too early; this helps avoid
-      // downloading animation-heavy bundles before the user scrolls.
-      // A small preload window reduces "blank section" flashes.
-      { rootMargin: "220px 0px" },
+      // Keep this small so heavy lazy chunks are not fetched before scroll intent.
+      { rootMargin: "80px 0px" },
     );
 
     if (sectionRef.current) {
@@ -99,7 +94,7 @@ const DeferredSection = ({
     }
 
     return () => observer.disconnect();
-  }, [isVisible]);
+  }, [activated, isVisible]);
 
   return (
     <div
@@ -114,67 +109,127 @@ const DeferredSection = ({
 };
 
 export default function Home() {
+  const [canLoadDeferredSections, setCanLoadDeferredSections] = useState(() =>
+    isReactSnapPrerender(),
+  );
+
+  useEffect(() => {
+    if (canLoadDeferredSections || typeof window === "undefined") return;
+
+    const activate = () => setCanLoadDeferredSections(true);
+    const onFirstIntent = () => activate();
+
+    window.addEventListener("scroll", onFirstIntent, { once: true, passive: true });
+    window.addEventListener("touchstart", onFirstIntent, { once: true, passive: true });
+    window.addEventListener("keydown", onFirstIntent, { once: true });
+
+    const fallbackId = window.setTimeout(activate, 2000);
+
+    return () => {
+      window.removeEventListener("scroll", onFirstIntent);
+      window.removeEventListener("touchstart", onFirstIntent);
+      window.removeEventListener("keydown", onFirstIntent);
+      window.clearTimeout(fallbackId);
+    };
+  }, [canLoadDeferredSections]);
+
   return (
     <HomeLayout>
       {/* 1. Hero — hook them with the outcome + live proof */}
       <HeroRemotionSequence />
 
       {/* 2. Pain — make them feel the risk of doing nothing */}
-      <DeferredSection id="home-social-media-warning" minHeight={420}>
+      <DeferredSection
+        id="home-social-media-warning"
+        minHeight={420}
+        activated={canLoadDeferredSections}
+      >
         <Suspense fallback={<div className="min-h-[320px]" />}>
           <SocialMediaWarning />
         </Suspense>
       </DeferredSection>
 
       {/* 3. Audit Tool + Vitals — let them prove the problem, then show our standard */}
-      <DeferredSection id="home-performance-showcase" minHeight={900}>
+      <DeferredSection
+        id="home-performance-showcase"
+        minHeight={900}
+        activated={canLoadDeferredSections}
+      >
         <Suspense fallback={<div className="min-h-[700px]" />}>
           <PerformanceShowcase />
         </Suspense>
       </DeferredSection>
 
       {/* 4. Credibility — explain why we can deliver */}
-      <DeferredSection id="home-credibility" minHeight={550}>
+      <DeferredSection
+        id="home-credibility"
+        minHeight={550}
+        activated={canLoadDeferredSections}
+      >
         <Suspense fallback={<div className="min-h-[450px]" />}>
           <CredibilitySection />
         </Suspense>
       </DeferredSection>
 
       {/* 5. Two Verticals — show what we offer */}
-      <DeferredSection id="home-service-showcase" minHeight={500}>
+      <DeferredSection
+        id="home-service-showcase"
+        minHeight={500}
+        activated={canLoadDeferredSections}
+      >
         <Suspense fallback={<div className="min-h-[400px]" />}>
           <ServiceShowcase />
         </Suspense>
       </DeferredSection>
 
       {/* 6. Pricing — remove the cost objection */}
-      <DeferredSection id="home-pricing-slider" minHeight={620}>
+      <DeferredSection
+        id="home-pricing-slider"
+        minHeight={620}
+        activated={canLoadDeferredSections}
+      >
         <Suspense fallback={<div className="min-h-[560px]" />}>
           <PricingSlider />
         </Suspense>
       </DeferredSection>
-      <DeferredSection id="home-pricing-cta" minHeight={260}>
+      <DeferredSection
+        id="home-pricing-cta"
+        minHeight={260}
+        activated={canLoadDeferredSections}
+      >
         <Suspense fallback={<div className="min-h-[220px]" />}>
           <PricingCTABanner />
         </Suspense>
       </DeferredSection>
 
       {/* 7. AI USP — explain why the price is so low */}
-      <DeferredSection id="home-ai-narrative" minHeight={640}>
+      <DeferredSection
+        id="home-ai-narrative"
+        minHeight={640}
+        activated={canLoadDeferredSections}
+      >
         <Suspense fallback={<div className="min-h-[420px]" />}>
           <AIPriceNarrative />
         </Suspense>
       </DeferredSection>
 
       {/* 8. Local Trust + Map — warm close */}
-      <DeferredSection id="home-local-map" minHeight={680}>
+      <DeferredSection
+        id="home-local-map"
+        minHeight={680}
+        activated={canLoadDeferredSections}
+      >
         <Suspense fallback={<div className="min-h-[520px]" />}>
           <LocalMap />
         </Suspense>
       </DeferredSection>
 
       {/* Supporting content */}
-      <DeferredSection id="home-seo-faq" minHeight={520}>
+      <DeferredSection
+        id="home-seo-faq"
+        minHeight={520}
+        activated={canLoadDeferredSections}
+      >
         <Suspense fallback={<div className="min-h-[420px]" />}>
           <SEOFAQSection />
         </Suspense>

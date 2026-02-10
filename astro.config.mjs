@@ -16,6 +16,9 @@ export default defineConfig({
   },
   integrations: [react()],
   vite: {
+    build: {
+      modulePreload: false,
+    },
     ssr: {
       noExternal: ["react-helmet-async"],
     },

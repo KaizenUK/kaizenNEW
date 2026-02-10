@@ -32,6 +32,6 @@ const canonicalUrl = `https://kaizenweb.co.uk${pathname === "/" ? "" : pathname}
     <link rel="canonical" href={canonicalUrl} />
   </head>
   <body>
-    <AstroApp url={pathname} client:load />
+    <AstroApp url={pathname} client:idle />
   </body>
 </html>

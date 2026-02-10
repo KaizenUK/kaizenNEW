@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef } from "react";
-import { motion } from "framer-motion";
 import { ArrowUpRight } from "lucide-react";
 
 import SpeedScanner from "@/components/SpeedScanner";
@@ -47,12 +46,7 @@ export const PerformanceShowcase: React.FC = () => {
         className="py-20 md:py-28 bg-gradient-to-b from-slate-950 to-slate-900 text-white relative overflow-hidden"
       >
         <div className="container mx-auto px-4 relative z-10">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-center mb-12"
-          >
+          <div className="text-center mb-12">
             <p className="text-xs font-mono tracking-[0.25em] text-kaizen-cyan uppercase mb-4">
               Free Site Audit
             </p>
@@ -63,43 +57,30 @@ export const PerformanceShowcase: React.FC = () => {
               Enter your URL. Get a real-time audit of load speed, Core Web
               Vitals, and what's costing you rankings.
             </p>
-          </motion.div>
+          </div>
 
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.2 }}
-          >
+          <div>
             <SpeedScanner />
-          </motion.div>
+          </div>
         </div>
       </section>
 
       {/* Our Score — directly below */}
       <section className="py-20 md:py-32 bg-slate-50 relative overflow-hidden">
         <div className="container mx-auto px-4 relative z-10">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-center mb-16"
-          >
+          <div className="text-center mb-16">
             <p className="text-xs font-mono tracking-[0.25em] text-kaizen-cyan uppercase mb-4">
               Proof, Not Promises
             </p>
             <h2 className="text-4xl md:text-5xl font-heading font-bold text-gray-950">
               Here's How We Score.
             </h2>
-          </motion.div>
+          </div>
 
           <div className="max-w-2xl mx-auto">
             {/* Gauge */}
-            <motion.div
+            <div
               ref={badgeRef}
-              initial={{ opacity: 0, scale: 0.8 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
               className="relative w-52 h-52 mx-auto mb-12"
             >
               <svg className="w-full h-full -rotate-90" viewBox="0 0 200 200">
@@ -132,16 +113,10 @@ export const PerformanceShowcase: React.FC = () => {
                   Performance
                 </span>
               </div>
-            </motion.div>
+            </div>
 
             {/* Core Web Vitals */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.3 }}
-              className="grid grid-cols-3 gap-4 text-center mb-12"
-            >
+            <div className="grid grid-cols-3 gap-4 text-center mb-12">
               {[
                 { label: "LCP", value: "0.8s" },
                 { label: "TBT", value: "0ms" },
@@ -159,38 +134,26 @@ export const PerformanceShowcase: React.FC = () => {
                   </p>
                 </div>
               ))}
-            </motion.div>
+            </div>
 
             {/* Explanation */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.5 }}
-              className="text-center"
-            >
+            <div className="text-center">
               <p className="text-gray-700 mb-6 leading-relaxed">
                 Core Web Vitals are how Google measures whether your site is any
                 good. Load speed, responsiveness, visual stability — if these
                 are poor, Google pushes you down the results. We hit 96% on our
                 own site. We build yours to the same standard.
               </p>
-              <motion.a
+              <a
                 href="https://gtmetrix.com/reports/kaizenweb.co.uk/e2VJJsxv/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-6 py-3 rounded-lg border-2 border-kaizen-cyan/50 text-kaizen-cyan font-heading font-bold transition-all duration-300"
-                whileHover={{
-                  scale: 1.05,
-                  borderColor: "#06b6d4",
-                  backgroundColor: "rgba(6, 182, 212, 0.1)",
-                }}
-                whileTap={{ scale: 0.95 }}
+                className="inline-flex items-center gap-2 px-6 py-3 rounded-lg border-2 border-kaizen-cyan/50 text-kaizen-cyan font-heading font-bold transition-all duration-300 transform-gpu hover:scale-105 active:scale-95 hover:border-kaizen-cyan hover:bg-cyan-500/10"
               >
                 View Full Report
                 <ArrowUpRight size={18} />
-              </motion.a>
-            </motion.div>
+              </a>
+            </div>
           </div>
         </div>
       </section>
