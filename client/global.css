@@ -455,9 +455,8 @@
 
   .home-reveal {
     opacity: 0;
-    transform: translate3d(0, 18px, 0);
     animation: home-reveal-up 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards;
-    will-change: transform, opacity;
+    will-change: opacity;
   }
 
   .home-reveal-1 {
@@ -485,9 +484,12 @@
   }
 
   @keyframes home-reveal-up {
+    from {
+      opacity: 0;
+    }
+
     to {
       opacity: 1;
-      transform: translate3d(0, 0, 0);
     }
   }
 
@@ -504,35 +506,6 @@
     }
   }
 
-  @property --home-score {
-    syntax: "<integer>";
-    initial-value: 0;
-    inherits: false;
-  }
-
-  @supports (counter-reset: score var(--home-score)) {
-    .home-gauge-score {
-      --home-score: 0;
-      position: relative;
-      color: transparent;
-      animation: home-score-count 1.2s steps(96, end) 0.35s forwards;
-    }
-
-    .home-gauge-score::after {
-      content: counter(score);
-      counter-reset: score var(--home-score);
-      position: absolute;
-      inset: 0;
-      color: rgb(74 222 128);
-    }
-
-    @keyframes home-score-count {
-      to {
-        --home-score: 96;
-      }
-    }
-  }
-
   @media (prefers-reduced-motion: reduce) {
     .home-reveal {
       animation: none;
@@ -543,15 +516,6 @@
     .home-gauge-progress {
       animation: none;
       stroke-dashoffset: var(--gauge-offset);
-    }
-
-    .home-gauge-score {
-      animation: none;
-      color: rgb(74 222 128);
-    }
-
-    .home-gauge-score::after {
-      content: none;
     }
 
     .hero-mesh-blob {

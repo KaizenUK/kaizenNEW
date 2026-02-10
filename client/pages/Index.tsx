@@ -1,5 +1,6 @@
 import React, { Suspense, useEffect, useRef, useState, lazy } from "react";
 import HomeLayout from "@/components/HomeLayout";
+import { isReactSnapPrerender } from "@/lib/prerender";
 
 // Lazy-load below-the-fold components to reduce initial bundle size
 import { HeroRemotionSequence } from "@/components/homepage/HeroRemotionSequence";
@@ -52,16 +53,29 @@ const LocalMap = lazy(() =>
 );
 
 const DeferredSection = ({
+  id,
   children,
   minHeight = 480,
 }: {
+  id: string;
   children: React.ReactNode;
   minHeight?: number;
 }) => {
-  const [isVisible, setIsVisible] = useState(false);
+  const [isVisible, setIsVisible] = useState(() => {
+    if (typeof document !== "undefined") {
+      const existingNode = document.querySelector(`[data-deferred-id="${id}"]`);
+      if (existingNode && existingNode.childElementCount > 0) {
+        return true;
+      }
+    }
+
+    return isReactSnapPrerender();
+  });
   const sectionRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
+    if (isVisible) return;
+
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
@@ -80,11 +94,13 @@ const DeferredSection = ({
     }
 
     return () => observer.disconnect();
-  }, []);
+  }, [isVisible]);
 
   return (
     <div
       ref={sectionRef}
+      data-deferred-id={id}
+      data-deferred-rendered={isVisible ? "true" : undefined}
       style={isVisible ? undefined : { minHeight: `${minHeight}px` }}
     >
       {isVisible ? children : null}
@@ -99,61 +115,61 @@ export default function Home() {
       <HeroRemotionSequence />
 
       {/* 2. Pain — make them feel the risk of doing nothing */}
-      <DeferredSection minHeight={420}>
+      <DeferredSection id="home-social-media-warning" minHeight={420}>
         <Suspense fallback={<div className="min-h-[320px]" />}>
           <SocialMediaWarning />
         </Suspense>
       </DeferredSection>
 
       {/* 3. Audit Tool + Vitals — let them prove the problem, then show our standard */}
-      <DeferredSection minHeight={900}>
+      <DeferredSection id="home-performance-showcase" minHeight={900}>
         <Suspense fallback={<div className="min-h-[700px]" />}>
           <PerformanceShowcase />
         </Suspense>
       </DeferredSection>
 
       {/* 4. Credibility — explain why we can deliver */}
-      <DeferredSection minHeight={550}>
+      <DeferredSection id="home-credibility" minHeight={550}>
         <Suspense fallback={<div className="min-h-[450px]" />}>
           <CredibilitySection />
         </Suspense>
       </DeferredSection>
 
       {/* 5. Two Verticals — show what we offer */}
-      <DeferredSection minHeight={500}>
+      <DeferredSection id="home-service-showcase" minHeight={500}>
         <Suspense fallback={<div className="min-h-[400px]" />}>
           <ServiceShowcase />
         </Suspense>
       </DeferredSection>
 
       {/* 6. Pricing — remove the cost objection */}
-      <DeferredSection minHeight={620}>
+      <DeferredSection id="home-pricing-slider" minHeight={620}>
         <Suspense fallback={<div className="min-h-[560px]" />}>
           <PricingSlider />
         </Suspense>
       </DeferredSection>
-      <DeferredSection minHeight={260}>
+      <DeferredSection id="home-pricing-cta" minHeight={260}>
         <Suspense fallback={<div className="min-h-[220px]" />}>
           <PricingCTABanner />
         </Suspense>
       </DeferredSection>
 
       {/* 7. AI USP — explain why the price is so low */}
-      <DeferredSection minHeight={640}>
+      <DeferredSection id="home-ai-narrative" minHeight={640}>
         <Suspense fallback={<div className="min-h-[420px]" />}>
           <AIPriceNarrative />
         </Suspense>
       </DeferredSection>
 
       {/* 8. Local Trust + Map — warm close */}
-      <DeferredSection minHeight={680}>
+      <DeferredSection id="home-local-map" minHeight={680}>
         <Suspense fallback={<div className="min-h-[520px]" />}>
           <LocalMap />
         </Suspense>
       </DeferredSection>
 
       {/* Supporting content */}
-      <DeferredSection minHeight={520}>
+      <DeferredSection id="home-seo-faq" minHeight={520}>
         <Suspense fallback={<div className="min-h-[420px]" />}>
           <SEOFAQSection />
         </Suspense>

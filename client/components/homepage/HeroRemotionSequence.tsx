@@ -51,7 +51,6 @@ const LighthouseGauge: React.FC = () => {
       <div className="absolute inset-0 flex flex-col items-center justify-center">
         <span
           className="home-gauge-score text-5xl md:text-6xl font-heading font-black text-green-400 tabular-nums"
-          data-score={LIGHTHOUSE_SCORE}
           aria-label={`${LIGHTHOUSE_SCORE}`}
         >
           {LIGHTHOUSE_SCORE}
@@ -68,7 +67,7 @@ export const HeroRemotionSequence: React.FC = () => {
   const navigate = useNavigate();
 
   return (
-    <section className="home-hero relative isolate min-h-[100vh] text-white flex items-center py-20 overflow-hidden">
+    <section className="home-hero relative isolate min-h-[100svh] text-white flex items-center py-20 overflow-hidden">
       {/* Fixed mesh gradient background */}
       <div className="hero-mesh-bg absolute inset-0 -z-10">
         <div className="hero-mesh-blob hero-mesh-blob--violet" />
