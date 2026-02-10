@@ -2,6 +2,7 @@ import { Suspense, lazy, useEffect, useState, type ReactNode } from "react";
 import { useLocation } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import Header from "@/components/layout/Header";
+import { isReactSnapPrerender } from "@/lib/prerender";
 
 const Footer = lazy(() => import("@/components/layout/Footer"));
 const OffCanvasMenu = lazy(() => import("@/components/layout/OffCanvasMenu"));
@@ -36,6 +37,7 @@ const HomeLayout = ({ children }: HomeLayoutProps) => {
 
   useEffect(() => {
     if (typeof window === "undefined") return;
+    if (isReactSnapPrerender()) return;
 
     const loadFooter = () => setShouldRenderFooter(true);
     let idleId: number | null = null;

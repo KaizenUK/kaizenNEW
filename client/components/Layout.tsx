@@ -10,6 +10,7 @@ import {
 } from "@/lib/seo";
 import { generateBreadcrumbSchema } from "@/lib/breadcrumb-schema";
 import Header from "@/components/layout/Header";
+import { isReactSnapPrerender } from "@/lib/prerender";
 
 const Footer = lazy(() => import("@/components/layout/Footer"));
 const OffCanvasMenu = lazy(() => import("@/components/layout/OffCanvasMenu"));
@@ -52,6 +53,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 
   useEffect(() => {
     if (typeof window === "undefined") return;
+    if (isReactSnapPrerender()) return;
 
     const loadFooter = () => setShouldRenderFooter(true);
     let idleId: number | null = null;

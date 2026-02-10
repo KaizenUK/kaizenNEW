@@ -5,6 +5,7 @@ import {
 } from "react-router-dom";
 import { Suspense, lazy, useEffect, useState } from "react";
 import { CalendlyProvider, useCalendly } from "@/context/CalendlyContext";
+import { isReactSnapPrerender } from "@/lib/prerender";
 
 // Eager load Home page for fast First Paint
 // All other pages are lazy-loaded for better initial load performance
@@ -41,6 +42,7 @@ function ModalsAndBanner() {
 
   useEffect(() => {
     if (typeof window === "undefined") return;
+    if (isReactSnapPrerender()) return;
 
     const loadCookieBanner = () => setShouldLoadCookieBanner(true);
     let idleId: number | null = null;
@@ -149,6 +151,7 @@ export default function App() {
 
   useEffect(() => {
     if (typeof window === "undefined") return;
+    if (isReactSnapPrerender()) return;
 
     const loadRouteTracker = () => setShouldLoadRouteTracker(true);
     let idleId: number | null = null;

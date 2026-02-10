@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { getSupabaseClient } from "@/lib/supabase";
 
 // Define the metrics type for comprehensive reporting
 type MetricsState = {
@@ -30,7 +29,6 @@ type MetricsState = {
   }>;
 };
 
-const supabase = getSupabaseClient();
 export default function SpeedScanner() {
   const [url, setUrl] = useState("");
   const [loading, setLoading] = useState(false);
@@ -248,8 +246,11 @@ export default function SpeedScanner() {
     setStatusMsg("Saving results...");
 
     // 2. Save to Supabase (Client-Side)
-    if (supabase) {
-      try {
+    try {
+      const { getSupabaseClient } = await import("@/lib/supabase");
+      const supabase = getSupabaseClient();
+
+      if (supabase) {
         const { error } = await supabase.from("speed_scanner_results").insert([
           {
             email: normalizedEmail,
@@ -262,11 +263,11 @@ export default function SpeedScanner() {
         if (error) {
           console.error("Supabase Error:", error.message);
         }
-      } catch (err) {
-        console.error("Save failed:", err);
+      } else {
+        console.warn("Supabase not connected. Check .env keys.");
       }
-    } else {
-      console.warn("Supabase not connected. Check .env keys.");
+    } catch (err) {
+      console.error("Save failed:", err);
     }
 
     // 3. Success - Unlock the view regardless of save status

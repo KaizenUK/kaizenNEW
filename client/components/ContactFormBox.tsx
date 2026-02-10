@@ -1,9 +1,6 @@
 import { FormEvent, useState } from "react";
 import { motion } from "framer-motion";
 import { Mail, Check, AlertCircle } from "lucide-react";
-import { getSupabaseClient } from "@/lib/supabase";
-
-const supabase = getSupabaseClient();
 
 type SubmitStatus = "idle" | "submitting" | "success" | "error";
 type FormStep = 1 | 2 | 3 | 4 | 5;
@@ -186,15 +183,18 @@ export const ContactFormBox = () => {
 
     setStatus("submitting");
 
-    if (!supabase) {
-      setErrorMessage(
-        "Database connection unavailable. Please try again later.",
-      );
-      setStatus("error");
-      return;
-    }
-
     try {
+      const { getSupabaseClient } = await import("@/lib/supabase");
+      const supabase = getSupabaseClient();
+
+      if (!supabase) {
+        setErrorMessage(
+          "Database connection unavailable. Please try again later.",
+        );
+        setStatus("error");
+        return;
+      }
+
       const { error } = await supabase.from("contact_form_submissions").insert({
         name: name.trim(),
         last_name: surname.trim() || null,

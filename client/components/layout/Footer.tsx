@@ -2,9 +2,6 @@ import { useEffect, useState, FormEvent } from "react";
 import { Link, useLocation } from "react-router-dom";
 import KaizenLogo from "@/components/KaizenLogo";
 import { ArrowRight, Linkedin, Instagram, Check } from "lucide-react";
-import { getSupabaseClient } from "@/lib/supabase";
-
-const newsletterSupabase = getSupabaseClient();
 
 const CONSENT_TEXT =
   "I consent to receiving marketing emails from Kaizen Web Ltd about services, insights, and offers. I understand I can unsubscribe at any time.";
@@ -61,16 +58,20 @@ const Footer: React.FC = () => {
       return;
     }
 
-    if (!newsletterSupabase) {
-      setErrorMessage(
-        "Database connection unavailable. Please try again later.",
-      );
-      return;
-    }
-
     setIsSubmitting(true);
 
     try {
+      const { getSupabaseClient } = await import("@/lib/supabase");
+      const newsletterSupabase = getSupabaseClient();
+
+      if (!newsletterSupabase) {
+        setErrorMessage(
+          "Database connection unavailable. Please try again later.",
+        );
+        setSubmitStatus("error");
+        return;
+      }
+
       const { error } = await newsletterSupabase
         .from("newsletter_subscribers")
         .insert({
