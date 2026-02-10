@@ -54,7 +54,6 @@
     --sidebar-border: 210 14% 90%;
     --sidebar-ring: 186 100% 42%;
   }
-
 }
 
 @layer base {
@@ -329,7 +328,6 @@
   .blog-content blockquote {
     @apply border-l-4 border-kaizen-cyan pl-4 italic text-gray-700;
   }
-
 }
 
 @layer utilities {
@@ -455,7 +453,107 @@
     }
   }
 
+  .home-reveal {
+    opacity: 0;
+    transform: translate3d(0, 18px, 0);
+    animation: home-reveal-up 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    will-change: transform, opacity;
+  }
+
+  .home-reveal-1 {
+    animation-delay: 40ms;
+  }
+
+  .home-reveal-2 {
+    animation-delay: 120ms;
+  }
+
+  .home-reveal-3 {
+    animation-delay: 200ms;
+  }
+
+  .home-reveal-4 {
+    animation-delay: 260ms;
+  }
+
+  .home-reveal-5 {
+    animation-delay: 340ms;
+  }
+
+  .home-reveal-gauge {
+    animation-delay: 280ms;
+  }
+
+  @keyframes home-reveal-up {
+    to {
+      opacity: 1;
+      transform: translate3d(0, 0, 0);
+    }
+  }
+
+  .home-gauge-progress {
+    stroke-dasharray: var(--gauge-circumference);
+    stroke-dashoffset: var(--gauge-circumference);
+    animation: home-gauge-draw 1.2s cubic-bezier(0.22, 1, 0.36, 1) 0.35s
+      forwards;
+  }
+
+  @keyframes home-gauge-draw {
+    to {
+      stroke-dashoffset: var(--gauge-offset);
+    }
+  }
+
+  @property --home-score {
+    syntax: "<integer>";
+    initial-value: 0;
+    inherits: false;
+  }
+
+  @supports (counter-reset: score var(--home-score)) {
+    .home-gauge-score {
+      --home-score: 0;
+      position: relative;
+      color: transparent;
+      animation: home-score-count 1.2s steps(96, end) 0.35s forwards;
+    }
+
+    .home-gauge-score::after {
+      content: counter(score);
+      counter-reset: score var(--home-score);
+      position: absolute;
+      inset: 0;
+      color: rgb(74 222 128);
+    }
+
+    @keyframes home-score-count {
+      to {
+        --home-score: 96;
+      }
+    }
+  }
+
   @media (prefers-reduced-motion: reduce) {
+    .home-reveal {
+      animation: none;
+      opacity: 1;
+      transform: none;
+    }
+
+    .home-gauge-progress {
+      animation: none;
+      stroke-dashoffset: var(--gauge-offset);
+    }
+
+    .home-gauge-score {
+      animation: none;
+      color: rgb(74 222 128);
+    }
+
+    .home-gauge-score::after {
+      content: none;
+    }
+
     .hero-mesh-blob {
       animation: none;
     }
