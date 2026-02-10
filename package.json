@@ -4,9 +4,9 @@
   "type": "module",
   "scripts": {
     "dev": "astro dev",
-    "build": "astro build",
-    "build:snap:high-five": "astro build",
-    "build:snap:all": "astro build",
+    "build": "node scripts/generate-build-info.mjs && astro build",
+    "build:snap:high-five": "node scripts/generate-build-info.mjs && astro build",
+    "build:snap:all": "node scripts/generate-build-info.mjs && astro build",
     "start": "node dist/server/entry.mjs",
     "test": "vitest --run --config vitest.config.ts",
     "format.fix": "prettier --write .",

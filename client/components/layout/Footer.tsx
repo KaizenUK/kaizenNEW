@@ -2,13 +2,20 @@ import { useState, type FormEvent } from "react";
 import { Link, useLocation } from "react-router-dom";
 import KaizenLogo from "@/components/KaizenLogo";
 import { ArrowRight, Linkedin, Instagram, Check } from "lucide-react";
+import { BUILD_AT, BUILD_NUMBER, BUILD_SHA } from "@/generated/buildInfo";
 
 const CONSENT_TEXT =
   "I consent to receiving marketing emails from Kaizen Web Ltd about services, insights, and offers. I understand I can unsubscribe at any time.";
 
 const Footer: React.FC = () => {
   const location = useLocation();
-  const buildNumber = (import.meta.env.VITE_BUILD_NUMBER || "").trim();
+  const buildNumber = (BUILD_NUMBER || "").trim();
+  const buildSha = (BUILD_SHA || "").trim();
+  const buildLabel = buildNumber
+    ? `Build #${buildNumber}`
+    : buildSha
+      ? `Build ${buildSha.slice(0, 7)}`
+      : "";
   const [email, setEmail] = useState("");
   const [consent, setConsent] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -370,9 +377,14 @@ const Footer: React.FC = () => {
             <p className="text-xs text-white/40 text-center md:text-left">
               © Kaizen Web Ltd t/a Kaizen (Company No. 17007703). All rights
               reserved {new Date().getFullYear()}
-              {buildNumber && (
+              {buildLabel && (
                 <span className="ml-2 text-white/25" title="Build version">
-                  | Build #{buildNumber}
+                  | {buildLabel}
+                </span>
+              )}
+              {!buildLabel && BUILD_AT && (
+                <span className="ml-2 text-white/25" title="Build time">
+                  | Built {new Date(BUILD_AT).toLocaleString("en-GB")}
                 </span>
               )}
             </p>

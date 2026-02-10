@@ -62,6 +62,11 @@ const DeferredSection = ({
   minHeight?: number;
 }) => {
   const [isVisible, setIsVisible] = useState(() => {
+    if (typeof window === "undefined") {
+      // Keep SSR output stable to avoid section pop-in and scroll jank.
+      return true;
+    }
+
     if (typeof document !== "undefined") {
       const existingNode = document.querySelector(`[data-deferred-id="${id}"]`);
       if (existingNode && existingNode.childElementCount > 0) {
