@@ -1,6 +1,6 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+@config "../tailwind.config.ts";
+@reference "tailwindcss";
 
 @layer base {
   /**
@@ -58,7 +58,7 @@
 
 @layer base {
   * {
-    @apply border-border;
+    border-color: hsl(var(--border));
   }
 
   html {
@@ -66,7 +66,11 @@
   }
 
   body {
-    @apply bg-background text-foreground font-body antialiased;
+    background-color: hsl(var(--background));
+    color: hsl(var(--foreground));
+    font-family: "Space Grotesk", "Inter", "system-ui", "sans-serif";
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 
   h1,
@@ -75,7 +79,8 @@
   h4,
   h5,
   h6 {
-    @apply font-heading font-bold;
+    font-family: "Space Grotesk", "Inter", "system-ui", "sans-serif";
+    font-weight: 700;
   }
 
   /* PROTOCOL 3.10: Mobile Tap Target Compliance (Google Mobile Usability) */
@@ -279,21 +284,29 @@
   }
 
   .blog-content h1 {
-    @apply text-4xl lg:text-5xl font-heading font-bold mt-12 mb-6 text-gray-950;
+    @apply text-4xl lg:text-5xl mt-12 mb-6 text-gray-950;
+    font-family: "Space Grotesk", "Inter", "system-ui", "sans-serif";
+    font-weight: 700;
   }
 
   .blog-content h2 {
-    @apply text-3xl lg:text-4xl font-heading font-bold mt-12 mb-6 text-gray-950 relative scroll-mt-32;
+    @apply text-3xl lg:text-4xl mt-12 mb-6 text-gray-950 relative scroll-mt-32;
+    font-family: "Space Grotesk", "Inter", "system-ui", "sans-serif";
+    font-weight: 700;
   }
 
   .blog-content h3 {
-    @apply text-2xl lg:text-3xl font-heading font-bold mt-12 mb-4 text-gray-900 scroll-mt-32;
+    @apply text-2xl lg:text-3xl mt-12 mb-4 text-gray-900 scroll-mt-32;
+    font-family: "Space Grotesk", "Inter", "system-ui", "sans-serif";
+    font-weight: 700;
   }
 
   .blog-content h4,
   .blog-content h5,
   .blog-content h6 {
-    @apply text-xl font-heading font-bold mt-8 mb-3 text-gray-800;
+    @apply text-xl mt-8 mb-3 text-gray-800;
+    font-family: "Space Grotesk", "Inter", "system-ui", "sans-serif";
+    font-weight: 700;
   }
 
   .blog-content p {
@@ -301,7 +314,12 @@
   }
 
   .blog-content a {
-    @apply text-kaizen-cyan hover:text-kaizen-lime underline decoration-2 transition-colors duration-200;
+    @apply underline decoration-2 transition-colors duration-200;
+    color: rgb(var(--kaizen-cyan));
+  }
+
+  .blog-content a:hover {
+    color: rgb(var(--kaizen-lime));
   }
 
   .blog-content ul,
@@ -326,7 +344,8 @@
   }
 
   .blog-content blockquote {
-    @apply border-l-4 border-kaizen-cyan pl-4 italic text-gray-700;
+    @apply border-l-4 pl-4 italic text-gray-700;
+    border-left-color: rgb(var(--kaizen-cyan));
   }
 }
 

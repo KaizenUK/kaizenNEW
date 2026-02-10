@@ -21,10 +21,24 @@ jobs:
           echo "VITE_BUILD_SHA=${GITHUB_SHA}" >> "$GITHUB_ENV"
           echo "VITE_BUILD_TIMESTAMP=$(date -u +'%Y-%m-%dT%H:%M:%SZ')" >> "$GITHUB_ENV"
 
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
       - name: Install and Build
         run: |
-          npm ci
-          npm run build:snap:all
+          pnpm install --frozen-lockfile
+          cd node_modules/puppeteer
+          node install.js
+          cd ../..
+          pnpm run build:snap:all
 
       - name: List output folder
         run: ls -R ./dist || ls -R ./build || echo "No dist or build folder found"
@@ -46,6 +60,17 @@ jobs:
             error_log
             api/**
             api/*
+
+      - name: Restrict Staging by IP
+        if: github.ref == 'refs/heads/stage'
+        run: |
+          cat > ./dist/.htaccess <<'EOF'
+          RewriteEngine On
+
+          # Restrict stage to a single public IP.
+          RewriteCond %{REMOTE_ADDR} !^78\.148\.109\.55$
+          RewriteRule ^ - [F,L]
+          EOF
 
       # --- DEPLOY TO STAGING (If branch is stage) ---
       - name: Deploy to Staging
