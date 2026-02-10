@@ -16,6 +16,9 @@ export default defineConfig({
   },
   integrations: [react()],
   vite: {
+    ssr: {
+      noExternal: ["react-helmet-async"],
+    },
     resolve: {
       alias: {
         "@": path.resolve("./client"),
