@@ -32,6 +32,17 @@ jobs:
       - name: List output folder
         run: ls -R ./dist || ls -R ./build || echo "No dist or build folder found"
 
+      - name: Ensure Staging Directory Exists
+        if: github.ref == 'refs/heads/stage'
+        env:
+          FTP_HOST: ${{ secrets.FTP_SERVER }}
+          FTP_USER: ${{ secrets.STAGE_FTP_USERNAME || secrets.FTP_USERNAME }}
+          FTP_PASS: ${{ secrets.STAGE_FTP_PASSWORD || secrets.FTP_PASSWORD }}
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y lftp
+          lftp -u "$FTP_USER","$FTP_PASS" "$FTP_HOST" -e "mkdir -p public_html/stage; bye"
+
       # --- DEPLOY TO PRODUCTION (If branch is main) ---
       - name: Deploy to Production
         if: github.ref == 'refs/heads/main'
