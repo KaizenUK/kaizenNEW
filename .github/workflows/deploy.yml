@@ -38,10 +38,11 @@ jobs:
           FTP_HOST: ${{ secrets.FTP_SERVER }}
           FTP_USER: ${{ secrets.STAGE_FTP_USERNAME || secrets.FTP_USERNAME }}
           FTP_PASS: ${{ secrets.STAGE_FTP_PASSWORD || secrets.FTP_PASSWORD }}
+          STAGE_SERVER_DIR: ${{ secrets.STAGE_FTP_SERVER_DIR || './stage/' }}
         run: |
           sudo apt-get update
           sudo apt-get install -y lftp
-          lftp -u "$FTP_USER","$FTP_PASS" "$FTP_HOST" -e "mkdir -p public_html/stage; bye"
+          lftp -u "$FTP_USER","$FTP_PASS" "$FTP_HOST" -e "mkdir -p $STAGE_SERVER_DIR; bye"
 
       # --- DEPLOY TO PRODUCTION (If branch is main) ---
       - name: Deploy to Production
@@ -52,7 +53,7 @@ jobs:
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
           local-dir: ./dist/
-          server-dir: ./public_html/
+          server-dir: ${{ secrets.FTP_SERVER_DIR || './' }}
           delete: true
           exclude: |
             **/cgi-bin/**
@@ -70,7 +71,7 @@ jobs:
           username: ${{ secrets.STAGE_FTP_USERNAME || secrets.FTP_USERNAME }}
           password: ${{ secrets.STAGE_FTP_PASSWORD || secrets.FTP_PASSWORD }}
           local-dir: ./dist/
-          server-dir: ./public_html/stage/
+          server-dir: ${{ secrets.STAGE_FTP_SERVER_DIR || './stage/' }}
           delete: true
           exclude: |
             **/cgi-bin/**
