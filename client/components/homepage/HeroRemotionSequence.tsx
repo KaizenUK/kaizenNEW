@@ -1,12 +1,9 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { LazyMotion, domAnimation, m } from "framer-motion";
 import {
   ArrowRightIcon,
   ArrowUpRightIcon,
 } from "@/components/icons/CriticalIcons";
-import { isReactSnapPrerender } from "@/lib/prerender";
-import { useReducedMotion } from "@/hooks/useReducedMotion";
 
 const LIGHTHOUSE_SCORE = 96;
 
@@ -64,32 +61,6 @@ const LighthouseGauge: React.FC = () => {
 
 export const HeroRemotionSequence: React.FC = () => {
   const navigate = useNavigate();
-  const shouldReduceMotion = useReducedMotion();
-  const isPrerender = isReactSnapPrerender();
-  const shouldAnimate = !shouldReduceMotion && !isPrerender;
-
-  const containerVariants = {
-    hidden: { opacity: 0, y: 16 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: {
-        duration: 0.55,
-        ease: [0.22, 1, 0.36, 1] as const,
-        staggerChildren: 0.08,
-        delayChildren: 0.04,
-      },
-    },
-  };
-
-  const itemVariants = {
-    hidden: { opacity: 0, y: 14 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: { duration: 0.45, ease: [0.22, 1, 0.36, 1] as const },
-    },
-  };
 
   return (
     <section className="home-hero relative isolate min-h-[100vh] text-white flex items-center py-20 overflow-hidden">
@@ -126,104 +97,86 @@ export const HeroRemotionSequence: React.FC = () => {
 
       <div className="home-hero-bottom-fade pointer-events-none absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-[#020617] to-transparent -z-10" />
 
-      <LazyMotion features={domAnimation}>
-        <div className="home-hero-container container mx-auto px-4 relative z-10">
-          <div className="home-hero-grid grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center max-w-7xl mx-auto">
-            {/* Left: Copy */}
-            <m.div
-              className="home-hero-copy"
-              variants={containerVariants}
-              initial={shouldAnimate ? "hidden" : false}
-              animate={shouldAnimate ? "visible" : undefined}
+      <div className="home-hero-container container mx-auto px-4 relative z-10">
+        <div className="home-hero-grid grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center max-w-7xl mx-auto">
+          {/* Left: Copy */}
+          <div className="home-hero-copy">
+            <p
+              className="home-hero-kicker text-xs font-mono tracking-[0.25em] text-kaizen-cyan mb-6 uppercase motion-safe:animate-in motion-safe:fade-in motion-safe:slide-in-from-bottom-3 motion-safe:duration-700"
+              style={{ animationDelay: "40ms" }}
             >
-              <m.p
-                variants={itemVariants}
-                className="home-hero-kicker text-xs font-mono tracking-[0.25em] text-kaizen-cyan mb-6 uppercase"
-              >
-                Wirral Web Design
-              </m.p>
+              Wirral Web Design
+            </p>
 
-              <m.h1
-                variants={itemVariants}
-                className="home-hero-title text-5xl md:text-6xl lg:text-7xl font-heading font-black mb-8 leading-tight text-white"
-              >
-                Sites That Actually Make You Money
-              </m.h1>
-
-              <m.p
-                variants={itemVariants}
-                className="home-hero-desc text-lg md:text-xl text-white/85 leading-relaxed mb-10 max-w-xl"
-              >
-                Slow sites lose customers. We build fast, lean websites that
-                turn visitors into paying leads. Enterprise-grade. No corporate
-                nonsense.
-              </m.p>
-
-              <m.div
-                variants={itemVariants}
-                className="home-hero-actions flex flex-col sm:flex-row items-start gap-4 mb-8"
-              >
-                <m.button
-                  onClick={() => navigate("/contact")}
-                  className="home-hero-btn-primary px-8 py-4 rounded-lg bg-white text-black font-heading font-bold text-lg inline-flex items-center justify-center gap-2 transform-gpu transition-all duration-200 hover:scale-105 hover:shadow-[0_0_20px_rgba(255,255,255,0.5)] active:scale-95"
-                  whileHover={shouldAnimate ? { scale: 1.04 } : undefined}
-                  whileTap={shouldAnimate ? { scale: 0.97 } : undefined}
-                >
-                  Start Your Project
-                  <ArrowRightIcon size={20} />
-                </m.button>
-
-                <m.button
-                  onClick={() => {
-                    const slider = document.getElementById(
-                      "pricing-slider-section",
-                    );
-                    slider?.scrollIntoView({ behavior: "smooth" });
-                  }}
-                  className="home-hero-btn-secondary px-8 py-4 rounded-lg border-2 border-white/30 text-white font-heading font-bold text-lg inline-flex items-center justify-center gap-2 transition-all duration-200 hover:scale-105 hover:border-cyan-400 hover:text-cyan-400 hover:shadow-[0_0_20px_rgba(6,182,212,0.3)] active:scale-95"
-                  whileHover={shouldAnimate ? { scale: 1.04 } : undefined}
-                  whileTap={shouldAnimate ? { scale: 0.97 } : undefined}
-                >
-                  See Our Pricing
-                  <ArrowUpRightIcon size={20} />
-                </m.button>
-              </m.div>
-
-              {/* Social proof line */}
-              <m.p variants={itemVariants} className="text-sm text-white/50">
-                Trusted by Wirral trades, small shops, e-commerce brands, and
-                SaaS teams.
-              </m.p>
-            </m.div>
-
-            {/* Right: Lighthouse Gauge */}
-            <m.div
-              className="home-hero-gauge hidden lg:block"
-              initial={
-                shouldAnimate ? { opacity: 0, y: 18, scale: 0.98 } : false
-              }
-              animate={
-                shouldAnimate ? { opacity: 1, y: 0, scale: 1 } : undefined
-              }
-              transition={
-                shouldAnimate
-                  ? { duration: 0.55, delay: 0.22, ease: [0.22, 1, 0.36, 1] }
-                  : undefined
-              }
+            <h1
+              className="home-hero-title text-5xl md:text-6xl lg:text-7xl font-heading font-black mb-8 leading-tight text-white motion-safe:animate-in motion-safe:fade-in motion-safe:slide-in-from-bottom-4 motion-safe:duration-700"
+              style={{ animationDelay: "120ms" }}
             >
-              <div className="relative">
-                <div className="absolute -inset-12 bg-green-500/10 rounded-full blur-3xl" />
-                <div className="relative text-center">
-                  <LighthouseGauge />
-                  <p className="text-sm text-white/40 mt-4">
-                    Our Zero Bloat Score
-                  </p>
-                </div>
+              Sites That Actually Make You Money
+            </h1>
+
+            <p
+              className="home-hero-desc text-lg md:text-xl text-white/85 leading-relaxed mb-10 max-w-xl motion-safe:animate-in motion-safe:fade-in motion-safe:slide-in-from-bottom-4 motion-safe:duration-700"
+              style={{ animationDelay: "200ms" }}
+            >
+              Slow sites lose customers. We build fast, lean websites that turn
+              visitors into paying leads. Enterprise-grade. No corporate
+              nonsense.
+            </p>
+
+            <div
+              className="home-hero-actions flex flex-col sm:flex-row items-start gap-4 mb-8 motion-safe:animate-in motion-safe:fade-in motion-safe:slide-in-from-bottom-4 motion-safe:duration-700"
+              style={{ animationDelay: "260ms" }}
+            >
+              <button
+                onClick={() => navigate("/contact")}
+                className="home-hero-btn-primary px-8 py-4 rounded-lg bg-white text-black font-heading font-bold text-lg inline-flex items-center justify-center gap-2 transform-gpu transition-all duration-200 hover:scale-105 hover:shadow-[0_0_20px_rgba(255,255,255,0.5)] active:scale-95"
+              >
+                Start Your Project
+                <ArrowRightIcon size={20} />
+              </button>
+
+              <button
+                onClick={() => {
+                  const slider = document.getElementById(
+                    "pricing-slider-section",
+                  );
+                  slider?.scrollIntoView({ behavior: "smooth" });
+                }}
+                className="home-hero-btn-secondary px-8 py-4 rounded-lg border-2 border-white/30 text-white font-heading font-bold text-lg inline-flex items-center justify-center gap-2 transition-all duration-200 hover:scale-105 hover:border-cyan-400 hover:text-cyan-400 hover:shadow-[0_0_20px_rgba(6,182,212,0.3)] active:scale-95"
+              >
+                See Our Pricing
+                <ArrowUpRightIcon size={20} />
+              </button>
+            </div>
+
+            {/* Social proof line */}
+            <p
+              className="text-sm text-white/50 motion-safe:animate-in motion-safe:fade-in motion-safe:slide-in-from-bottom-3 motion-safe:duration-700"
+              style={{ animationDelay: "340ms" }}
+            >
+              Trusted by Wirral trades, small shops, e-commerce brands, and SaaS
+              teams.
+            </p>
+          </div>
+
+          {/* Right: Lighthouse Gauge */}
+          <div className="home-hero-gauge hidden lg:block">
+            <div
+              className="relative motion-safe:animate-in motion-safe:fade-in motion-safe:slide-in-from-bottom-4 motion-safe:duration-700"
+              style={{ animationDelay: "280ms" }}
+            >
+              <div className="absolute -inset-12 bg-green-500/10 rounded-full blur-3xl" />
+              <div className="relative text-center">
+                <LighthouseGauge />
+                <p className="text-sm text-white/40 mt-4">
+                  Our Zero Bloat Score
+                </p>
               </div>
-            </m.div>
+            </div>
           </div>
         </div>
-      </LazyMotion>
+      </div>
     </section>
   );
 };
