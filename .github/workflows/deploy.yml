@@ -33,9 +33,6 @@ jobs:
       - name: Install and Build
         run: |
           pnpm install --frozen-lockfile
-          cd node_modules/puppeteer
-          node install.js
-          cd ../..
           pnpm run build:snap:all
 
       - name: List output folder
