@@ -20,6 +20,7 @@ export default defineConfig(({ mode }) => ({
   },
   build: {
     outDir: "dist/spa",
+    target: mode === "snap" ? "chrome73" : undefined,
     modulePreload: {
       polyfill: false,
     },

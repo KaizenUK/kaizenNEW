@@ -14,12 +14,26 @@
     "dev": "vite",
     "build": "node scripts/generate-build-timestamp.mjs && npm run build:client && npm run build:server",
     "build:client": "vite build",
+    "build:client:snap": "vite build --mode snap",
     "build:server": "vite build --config vite.config.server.ts",
+    "build:snap:high-five": "node scripts/generate-build-timestamp.mjs && npm run build:client:snap && npm run build:server && react-snap",
     "start": "node dist/server/node-build.mjs",
     "test": "vitest --run",
     "format.fix": "prettier --write .",
     "typecheck": "tsc",
     "trace:summary": "node scripts/trace-summary.mjs"
+  },
+  "reactSnap": {
+    "source": "dist/spa",
+    "crawl": false,
+    "include": [
+      "/case-studies/high-five-games"
+    ],
+    "skipThirdPartyRequests": true,
+    "puppeteerArgs": [
+      "--no-sandbox",
+      "--disable-setuid-sandbox"
+    ]
   },
   "dependencies": {
     "@builder.io/react": "^8.2.9",
@@ -91,6 +105,7 @@
     "react-hook-form": "^7.62.0",
     "react-resizable-panels": "^3.0.4",
     "react-router-dom": "^6.30.1",
+    "react-snap": "^1.23.0",
     "recharts": "^2.12.7",
     "serverless-http": "^3.2.0",
     "sonner": "^1.7.4",
