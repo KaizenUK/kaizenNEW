@@ -78,10 +78,15 @@ export const PricingSlider = () => {
             viewport={{ once: true }}
             className="mb-12"
           >
+            <label htmlFor="pricing-tier-slider" className="sr-only">
+              Select pricing tier
+            </label>
             <input
+              id="pricing-tier-slider"
               type="range"
               min="0"
               max="4"
+              aria-label="Select pricing tier"
               value={tier}
               onChange={(e) => setTier(parseInt(e.target.value))}
               className="pricing-slider w-full h-3 bg-gradient-to-r from-cyan-400 via-lime-400 to-cyan-400 rounded-lg appearance-none cursor-pointer"
