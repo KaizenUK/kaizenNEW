@@ -9,7 +9,7 @@ on:
 
 jobs:
   web-deploy:
-    name: Build and Deploy
+    name: Build and Deploy SSR
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -19,10 +19,11 @@ jobs:
         run: |
           echo "VITE_BUILD_NUMBER=${GITHUB_RUN_NUMBER}" >> "$GITHUB_ENV"
           echo "VITE_BUILD_SHA=${GITHUB_SHA}" >> "$GITHUB_ENV"
-          echo "VITE_BUILD_TIMESTAMP=$(date -u +'%Y-%m-%dT%H:%M:%SZ')" >> "$GITHUB_ENV"
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
+        with:
+          version: 10.14.0
 
       - name: Setup Node
         uses: actions/setup-node@v4
@@ -35,55 +36,87 @@ jobs:
           pnpm install --frozen-lockfile
           pnpm run build:snap:all
 
-      - name: List output folder
-        run: ls -R ./dist || ls -R ./build || echo "No dist or build folder found"
-
-      # --- DEPLOY TO PRODUCTION (If branch is main) ---
-      - name: Deploy to Production
+      - name: Deploy Production SSR on VPS
         if: github.ref == 'refs/heads/main'
-        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        uses: appleboy/ssh-action@v1.2.0
         with:
-          server: ${{ secrets.FTP_SERVER }}
-          username: ${{ secrets.FTP_USERNAME }}
-          password: ${{ secrets.FTP_PASSWORD }}
-          local-dir: ./dist/
-          server-dir: ./public_html/
-          delete: true
-          exclude: |
-            **/cgi-bin/**
-            .well-known/**
-            error_log
-            api/**
-            api/*
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          port: ${{ secrets.VPS_PORT || '22' }}
+          script_stop: true
+          script: |
+            set -e
+            export APP_DIR="${{ secrets.VPS_APP_DIR_PROD }}"
+            export APP_NAME="${{ secrets.VPS_PM2_APP_PROD }}"
+            export PORT="${{ secrets.VPS_PORT_PROD || '4321' }}"
+            export HOST="0.0.0.0"
+            export VITE_BUILD_NUMBER="${{ github.run_number }}"
+            export VITE_BUILD_SHA="${{ github.sha }}"
+            export NODE_ENV="production"
 
-      - name: Restrict Staging by IP
+            if [ ! -d "$APP_DIR/.git" ]; then
+              echo "Missing git checkout at $APP_DIR"
+              exit 1
+            fi
+
+            cd "$APP_DIR"
+            git fetch origin main --prune
+            git checkout main
+            git reset --hard origin/main
+
+            corepack enable
+            corepack prepare pnpm@10.14.0 --activate
+            pnpm install --frozen-lockfile
+            pnpm run build
+
+            if pm2 describe "$APP_NAME" > /dev/null 2>&1; then
+              pm2 restart "$APP_NAME" --update-env
+            else
+              pm2 start dist/server/entry.mjs --name "$APP_NAME"
+            fi
+            pm2 save
+
+      - name: Deploy Staging SSR on VPS
         if: github.ref == 'refs/heads/stage'
-        run: |
-          cat > ./dist/.htaccess <<'EOF'
-          RewriteEngine On
-
-          # Restrict stage to a single public IP.
-          RewriteCond %{REMOTE_ADDR} !^78\.148\.109\.55$
-          RewriteRule ^ - [F,L]
-          EOF
-
-      # --- DEPLOY TO STAGING (If branch is stage) ---
-      - name: Deploy to Staging
-        if: github.ref == 'refs/heads/stage'
-        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        uses: appleboy/ssh-action@v1.2.0
         with:
-          server: ${{ secrets.FTP_SERVER }}
-          username: ${{ secrets.STAGE_FTP_USERNAME || secrets.FTP_USERNAME }}
-          password: ${{ secrets.STAGE_FTP_PASSWORD || secrets.FTP_PASSWORD }}
-          local-dir: ./dist/
-          server-dir: ./public_html/stage/
-          delete: true
-          exclude: |
-            **/cgi-bin/**
-            .well-known/**
-            error_log
-            api/**
-            api/*
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          port: ${{ secrets.VPS_PORT || '22' }}
+          script_stop: true
+          script: |
+            set -e
+            export APP_DIR="${{ secrets.VPS_APP_DIR_STAGE }}"
+            export APP_NAME="${{ secrets.VPS_PM2_APP_STAGE }}"
+            export PORT="${{ secrets.VPS_PORT_STAGE || '4322' }}"
+            export HOST="0.0.0.0"
+            export VITE_BUILD_NUMBER="${{ github.run_number }}"
+            export VITE_BUILD_SHA="${{ github.sha }}"
+            export NODE_ENV="production"
+
+            if [ ! -d "$APP_DIR/.git" ]; then
+              echo "Missing git checkout at $APP_DIR"
+              exit 1
+            fi
+
+            cd "$APP_DIR"
+            git fetch origin stage --prune
+            git checkout stage
+            git reset --hard origin/stage
+
+            corepack enable
+            corepack prepare pnpm@10.14.0 --activate
+            pnpm install --frozen-lockfile
+            pnpm run build
+
+            if pm2 describe "$APP_NAME" > /dev/null 2>&1; then
+              pm2 restart "$APP_NAME" --update-env
+            else
+              pm2 start dist/server/entry.mjs --name "$APP_NAME"
+            fi
+            pm2 save
 
       # --- DISCORD NOTIFICATION ---
       - name: Discord Notification

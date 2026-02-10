@@ -1,4 +1,4 @@
-import { useEffect, useState, FormEvent } from "react";
+import { useState, type FormEvent } from "react";
 import { Link, useLocation } from "react-router-dom";
 import KaizenLogo from "@/components/KaizenLogo";
 import { ArrowRight, Linkedin, Instagram, Check } from "lucide-react";
@@ -8,7 +8,7 @@ const CONSENT_TEXT =
 
 const Footer: React.FC = () => {
   const location = useLocation();
-  const [buildVersion, setBuildVersion] = useState("");
+  const buildNumber = (import.meta.env.VITE_BUILD_NUMBER || "").trim();
   const [email, setEmail] = useState("");
   const [consent, setConsent] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -16,26 +16,6 @@ const Footer: React.FC = () => {
     "idle" | "success" | "error"
   >("idle");
   const [errorMessage, setErrorMessage] = useState("");
-
-  useEffect(() => {
-    fetch("/build-timestamp.txt")
-      .then((res) => (res.ok ? res.text() : null))
-      .then((timestamp) => {
-        if (timestamp) {
-          const date = new Date(timestamp.trim());
-          const formatted = date.toLocaleDateString("en-GB", {
-            day: "2-digit",
-            month: "2-digit",
-            year: "2-digit",
-            hour: "2-digit",
-            minute: "2-digit",
-            timeZone: "Europe/London",
-          });
-          setBuildVersion(formatted);
-        }
-      })
-      .catch(() => {});
-  }, []);
 
   const handleNewsletterSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -390,9 +370,9 @@ const Footer: React.FC = () => {
             <p className="text-xs text-white/40 text-center md:text-left">
               © Kaizen Web Ltd t/a Kaizen (Company No. 17007703). All rights
               reserved {new Date().getFullYear()}
-              {buildVersion && (
+              {buildNumber && (
                 <span className="ml-2 text-white/25" title="Build version">
-                  • Build: {buildVersion}
+                  | Build #{buildNumber}
                 </span>
               )}
             </p>
