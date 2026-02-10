@@ -52,7 +52,7 @@ jobs:
           server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
-          local-dir: ./dist/
+          local-dir: ./dist/spa/
           server-dir: ${{ secrets.FTP_SERVER_DIR || './public/' }}
           delete: true
           exclude: |
@@ -70,7 +70,7 @@ jobs:
           server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.STAGE_FTP_USERNAME || secrets.FTP_USERNAME }}
           password: ${{ secrets.STAGE_FTP_PASSWORD || secrets.FTP_PASSWORD }}
-          local-dir: ./dist/
+          local-dir: ./dist/spa/
           server-dir: ${{ secrets.STAGE_FTP_SERVER_DIR || './stage/' }}
           delete: true
           exclude: |
