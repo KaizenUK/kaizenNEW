@@ -1,0 +1,181 @@
+---
+import "../../client/global.css";
+import { DEFAULT_OG_IMAGE, SITE_NAME, getPageMeta } from "../../client/lib/seo";
+import { BUILD_AT, BUILD_NUMBER, BUILD_SHA } from "../../client/generated/buildInfo";
+
+const meta = getPageMeta("/");
+const canonicalUrl = "https://kaizenweb.co.uk";
+const buildLabel = BUILD_NUMBER?.trim()
+  ? `Build #${BUILD_NUMBER.trim()}`
+  : BUILD_SHA?.trim()
+    ? `Build ${BUILD_SHA.trim().slice(0, 7)}`
+    : BUILD_AT?.trim()
+      ? `Built ${new Date(BUILD_AT).toLocaleString("en-GB")}`
+      : "";
+
+const navLinks = [
+  { href: "/services", label: "Services" },
+  { href: "/case-studies", label: "Case Studies" },
+  { href: "/performance-scanner", label: "Performance Scanner" },
+  { href: "/about", label: "About" },
+  { href: "/contact", label: "Contact" },
+];
+---
+
+<!doctype html>
+<html lang="en-GB">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{meta.title}</title>
+    <meta name="description" content={meta.description} />
+    <meta name="robots" content={meta.noIndex ? "noindex, nofollow" : "index, follow"} />
+    <meta property="og:site_name" content={SITE_NAME} />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={meta.title} />
+    <meta property="og:description" content={meta.description} />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:image" content={meta.image ?? DEFAULT_OG_IMAGE} />
+    <link rel="canonical" href={canonicalUrl} />
+  </head>
+  <body class="bg-slate-950 text-white antialiased">
+    <header class="sticky top-0 z-40 border-b border-white/10 bg-slate-950/85 backdrop-blur">
+      <div class="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
+        <a href="/" class="text-xl font-bold tracking-tight">Kaizen</a>
+        <nav class="hidden gap-6 text-sm text-white/80 md:flex">
+          {navLinks.map((link) => (
+            <a href={link.href} class="transition hover:text-white">{link.label}</a>
+          ))}
+        </nav>
+        <a
+          href="/contact"
+          class="rounded-full bg-cyan-400 px-5 py-2 text-sm font-semibold text-slate-950 transition hover:bg-cyan-300"
+        >
+          Start Your Project
+        </a>
+      </div>
+    </header>
+
+    <main>
+      <section class="relative overflow-hidden border-b border-white/10">
+        <div class="pointer-events-none absolute inset-0 opacity-60">
+          <div class="absolute -top-20 left-[-15%] h-72 w-72 rounded-full bg-cyan-500/20 blur-3xl"></div>
+          <div class="absolute -bottom-20 right-[-10%] h-80 w-80 rounded-full bg-emerald-500/15 blur-3xl"></div>
+        </div>
+        <div class="relative mx-auto grid max-w-7xl gap-10 px-4 py-24 sm:px-6 lg:grid-cols-2 lg:items-center lg:px-8 lg:py-32">
+          <div>
+            <p class="mb-4 text-xs uppercase tracking-[0.24em] text-cyan-300">Wirral Web Design</p>
+            <h1 class="text-5xl font-black leading-tight sm:text-6xl">
+              Sites That Actually Make You Money
+            </h1>
+            <p class="mt-6 max-w-xl text-lg text-white/80">
+              Fast, conversion-focused websites for ambitious businesses. No WordPress bloat. No
+              fluff. Just measurable growth.
+            </p>
+            <div class="mt-10 flex flex-wrap gap-4">
+              <a
+                href="/contact"
+                class="rounded-lg bg-white px-7 py-4 font-semibold text-slate-950 transition hover:bg-white/90"
+              >
+                Start Your Project
+              </a>
+              <a
+                href="/performance-scanner"
+                class="rounded-lg border border-white/25 px-7 py-4 font-semibold transition hover:border-cyan-400 hover:text-cyan-300"
+              >
+                Check Your Speed
+              </a>
+            </div>
+          </div>
+
+          <div class="rounded-3xl border border-emerald-300/30 bg-white/5 p-8">
+            <p class="text-xs uppercase tracking-[0.24em] text-emerald-300">Our Baseline</p>
+            <div class="mt-4 text-6xl font-black text-emerald-300">96</div>
+            <p class="mt-1 text-white/70">Lighthouse performance target</p>
+            <div class="mt-8 grid grid-cols-3 gap-3 text-center">
+              <div class="rounded-xl border border-white/10 bg-slate-900/60 p-4">
+                <p class="text-xs uppercase tracking-[0.2em] text-white/50">LCP</p>
+                <p class="mt-2 text-2xl font-bold">0.8s</p>
+              </div>
+              <div class="rounded-xl border border-white/10 bg-slate-900/60 p-4">
+                <p class="text-xs uppercase tracking-[0.2em] text-white/50">TBT</p>
+                <p class="mt-2 text-2xl font-bold">0ms</p>
+              </div>
+              <div class="rounded-xl border border-white/10 bg-slate-900/60 p-4">
+                <p class="text-xs uppercase tracking-[0.2em] text-white/50">CLS</p>
+                <p class="mt-2 text-2xl font-bold">0.01</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="border-b border-white/10 bg-slate-900">
+        <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
+          <p class="mb-4 text-xs uppercase tracking-[0.24em] text-cyan-300">Why Us</p>
+          <h2 class="max-w-3xl text-3xl font-bold sm:text-4xl">
+            Big-tech delivery discipline with local accountability.
+          </h2>
+          <div class="mt-10 grid gap-6 md:grid-cols-3">
+            <article class="rounded-2xl border border-white/10 bg-slate-950/70 p-6">
+              <h3 class="text-xl font-semibold">Performance First</h3>
+              <p class="mt-3 text-white/70">
+                Core Web Vitals are defined before build starts, not fixed at the end.
+              </p>
+            </article>
+            <article class="rounded-2xl border border-white/10 bg-slate-950/70 p-6">
+              <h3 class="text-xl font-semibold">Clean Delivery</h3>
+              <p class="mt-3 text-white/70">
+                Staging, QA and rollback-safe deployments are part of standard delivery.
+              </p>
+            </article>
+            <article class="rounded-2xl border border-white/10 bg-slate-950/70 p-6">
+              <h3 class="text-xl font-semibold">Senior Ownership</h3>
+              <p class="mt-3 text-white/70">
+                No hand-offs to juniors. One accountable engineer from kick-off to launch.
+              </p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="bg-slate-950">
+        <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
+          <div class="rounded-3xl border border-cyan-400/35 bg-gradient-to-r from-cyan-500/15 to-emerald-500/10 p-10">
+            <h2 class="text-3xl font-bold sm:text-4xl">Ready to outpace your competitors?</h2>
+            <p class="mt-4 max-w-2xl text-white/80">
+              Get a fast, revenue-focused website with measurable performance targets and a clear
+              delivery plan.
+            </p>
+            <div class="mt-8 flex flex-wrap gap-4">
+              <a
+                href="/contact"
+                class="rounded-lg bg-cyan-400 px-7 py-4 font-semibold text-slate-950 transition hover:bg-cyan-300"
+              >
+                Book Intro Call
+              </a>
+              <a
+                href="/case-studies"
+                class="rounded-lg border border-white/30 px-7 py-4 font-semibold transition hover:border-white/60"
+              >
+                View Case Studies
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="border-t border-white/10 bg-slate-950">
+      <div class="mx-auto flex max-w-7xl flex-col gap-3 px-4 py-8 text-sm text-white/60 sm:px-6 lg:px-8 md:flex-row md:items-center md:justify-between">
+        <p>(c) Kaizen Web Ltd t/a Kaizen (Company No. 17007703).</p>
+        <div class="flex items-center gap-4">
+          <a href="/privacy-policy" class="transition hover:text-white">Privacy</a>
+          <a href="/cookie-policy" class="transition hover:text-white">Cookies</a>
+          <a href="/gdpr-policy" class="transition hover:text-white">GDPR</a>
+          {buildLabel && <span class="text-white/40">{buildLabel}</span>}
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>
