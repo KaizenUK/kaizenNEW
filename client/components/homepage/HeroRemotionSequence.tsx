@@ -67,7 +67,7 @@ export const HeroRemotionSequence: React.FC = () => {
   const navigate = useNavigate();
 
   return (
-    <section className="home-hero relative isolate min-h-[100svh] text-white flex items-center py-20 overflow-hidden">
+    <section className="home-hero relative isolate min-h-[100vh] text-white flex items-start lg:items-center py-20 overflow-hidden">
       {/* Fixed mesh gradient background */}
       <div className="hero-mesh-bg absolute inset-0 -z-10">
         <div className="hero-mesh-blob hero-mesh-blob--violet" />

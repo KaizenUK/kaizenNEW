@@ -13,18 +13,18 @@
     <link
       rel="preload"
       as="style"
-      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=optional"
     />
     <link
       rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=optional"
       media="print"
       onload="this.media='all'"
     />
     <noscript>
       <link
         rel="stylesheet"
-        href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=optional"
       />
     </noscript>
     <!-- DNS prefetch for external resources -->
@@ -105,7 +105,7 @@
         isolation: isolate;
         min-height: 100vh;
         display: flex;
-        align-items: center;
+        align-items: flex-start;
         padding: 5rem 0;
         overflow: hidden;
         color: #ffffff;
@@ -300,6 +300,9 @@
         .home-hero-grid {
           grid-template-columns: minmax(0, 1fr) minmax(280px, 420px);
           gap: 4rem;
+        }
+        .home-hero {
+          align-items: center;
         }
         .home-hero-gauge {
           display: block;
