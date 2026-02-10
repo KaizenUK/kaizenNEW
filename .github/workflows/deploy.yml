@@ -1,34 +1,77 @@
-name: Deploy to cPanel
+name: Deploy to Kaizen
 
 on:
   push:
     branches:
       - main
+      - stage
+  workflow_dispatch:
 
 jobs:
   web-deploy:
-    name: 🎉 Deploy
+    name: Build and Deploy
     runs-on: ubuntu-latest
     steps:
-      # 1. Get the latest code
-      - name: 🚚 Get latest code
+      - name: Checkout
         uses: actions/checkout@v4
 
-      # 2. Install & Build (With Environment Variables)
-      - name: 🔨 Install & Build
-        env:
-          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
-          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
+      - name: Set build metadata
         run: |
-          npm install
+          echo "VITE_BUILD_NUMBER=${GITHUB_RUN_NUMBER}" >> "$GITHUB_ENV"
+          echo "VITE_BUILD_SHA=${GITHUB_SHA}" >> "$GITHUB_ENV"
+          echo "VITE_BUILD_TIMESTAMP=$(date -u +'%Y-%m-%dT%H:%M:%SZ')" >> "$GITHUB_ENV"
+
+      - name: Install and Build
+        run: |
+          npm ci
           npm run build:snap:all
 
-      # 3. Deploy via FTP
-      - name: 🚀 Deploy to cPanel
+      - name: List output folder
+        run: ls -R ./dist || ls -R ./build || echo "No dist or build folder found"
+
+      # --- DEPLOY TO PRODUCTION (If branch is main) ---
+      - name: Deploy to Production
+        if: github.ref == 'refs/heads/main'
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
           server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
-          local-dir: ./dist/spa/
+          local-dir: ./dist/
           server-dir: ./public_html/
+          delete: true
+          exclude: |
+            **/cgi-bin/**
+            .well-known/**
+            error_log
+            api/**
+            api/*
+
+      # --- DEPLOY TO STAGING (If branch is stage) ---
+      - name: Deploy to Staging
+        if: github.ref == 'refs/heads/stage'
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.STAGE_FTP_USERNAME || secrets.FTP_USERNAME }}
+          password: ${{ secrets.STAGE_FTP_PASSWORD || secrets.FTP_PASSWORD }}
+          local-dir: ./dist/
+          server-dir: ./public_html/stage/
+          delete: true
+          exclude: |
+            **/cgi-bin/**
+            .well-known/**
+            error_log
+            api/**
+            api/*
+
+      # --- DISCORD NOTIFICATION ---
+      - name: Discord Notification
+        if: always()
+        uses: sarisia/actions-status-discord@v1
+        with:
+          webhook: ${{ secrets.DISCORD_WEBHOOK }}
+          status: ${{ job.status }}
+          title: "Deployment to ${{ github.ref_name }}"
+          description: "Build #${{ github.run_number }} has finished."
+          color: 0x0099ff
