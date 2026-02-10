@@ -1,4 +1,5 @@
 import path from "path";
+import fs from "fs";
 import { createServer } from "./index";
 import * as express from "express";
 
@@ -80,6 +81,40 @@ const setStaticCacheHeaders: express.RequestHandler = (req, res, next) => {
 // Serve static files
 app.use(setStaticCacheHeaders);
 app.use(express.static(distPath));
+
+const hasFileExtension = (requestPath: string) => {
+  return path.extname(requestPath) !== "";
+};
+
+const getPrerenderedHtmlPath = (requestPath: string): string => {
+  const normalized = requestPath.replace(/\/+$/, "");
+  if (!normalized || normalized === "/") {
+    return path.join(distPath, "index.html");
+  }
+
+  const safePath = normalized.replace(/^\/+/, "");
+  return path.join(distPath, safePath, "index.html");
+};
+
+const servePrerenderedHtml: express.RequestHandler = (req, res, next) => {
+  if (req.path.startsWith("/api/") || req.path.startsWith("/health")) {
+    return next();
+  }
+
+  if (hasFileExtension(req.path)) {
+    return next();
+  }
+
+  const prerenderedPath = getPrerenderedHtmlPath(req.path);
+  if (fs.existsSync(prerenderedPath)) {
+    res.setHeader("Cache-Control", HTML_NO_CACHE);
+    return res.sendFile(prerenderedPath);
+  }
+
+  return next();
+};
+
+app.use(servePrerenderedHtml);
 
 // Handle React Router - serve index.html for all non-API routes
 app.get("*", (req, res) => {

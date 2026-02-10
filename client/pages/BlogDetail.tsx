@@ -7,7 +7,11 @@ import { Helmet } from "react-helmet-async";
 import builder from "@/builder";
 import Layout from "@/components/Layout";
 import BlogTableModal from "@/components/BlogTableModal";
-import { fetchPostBySlug, fetchPosts } from "../../src/api/wordpress";
+import {
+  fetchPostBySlug,
+  fetchPosts,
+  prefetchPostBySlug,
+} from "../../src/api/wordpress";
 import { SeoFromYoast } from "../../src/components/SeoFromYoast";
 import { stripHtmlTags } from "@/lib/html-utils";
 import { SITE_URL } from "@/lib/seo";
@@ -430,6 +434,10 @@ export default function BlogDetail() {
   const [scrollProgress, setScrollProgress] = useState(0);
   const contentRef = useRef<HTMLDivElement>(null);
   const scaleX = useSpring(0, { stiffness: 100, damping: 30 });
+
+  const prefetchBlogPost = (postSlug: string) => {
+    prefetchPostBySlug(postSlug);
+  };
 
   useEffect(() => {
     const fetchPost = async () => {
@@ -880,6 +888,10 @@ export default function BlogDetail() {
                       >
                         <Link
                           to={`/blog/${relatedPost.slug}`}
+                          onMouseEnter={() =>
+                            prefetchBlogPost(relatedPost.slug)
+                          }
+                          onFocus={() => prefetchBlogPost(relatedPost.slug)}
                           className="group p-4 border border-gray-200 rounded-lg hover:border-blue-500/50 hover:bg-gray-100 transition block"
                         >
                           <h4 className="font-heading font-bold text-gray-950 group-hover:text-blue-600 transition mb-2">

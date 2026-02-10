@@ -1,5 +1,5 @@
 [build]
-  command = "npm run build:client"
+  command = "npm run build:snap:all"
   functions = "netlify/functions"
   publish = "dist/spa"
 

@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 
 import builder from "@/builder";
-import { fetchPosts } from "../../src/api/wordpress";
+import { fetchPosts, prefetchPostBySlug } from "../../src/api/wordpress";
 import Layout from "@/components/Layout";
 import BlogSearch, { type BlogSearchState } from "@/components/BlogSearch";
 import { decodeHtmlEntities, stripHtmlTags } from "@/lib/html-utils";
@@ -62,6 +62,10 @@ export default function Blog() {
   const [isLoading, setIsLoading] = useState(true);
   const [searchState, setSearchState] = useState<BlogSearchState | null>(null);
   const [visibleStandardCount, setVisibleStandardCount] = useState(5);
+
+  const prefetchBlogPost = (slug: string) => {
+    prefetchPostBySlug(slug);
+  };
 
   useEffect(() => {
     const loadPosts = async () => {
@@ -145,6 +149,26 @@ export default function Blog() {
   useEffect(() => {
     setVisibleStandardCount(5);
   }, [selectedTag, isSearching]);
+
+  useEffect(() => {
+    if (!posts.length) return;
+
+    const warmTopPosts = () => {
+      posts.slice(0, 4).forEach((post) => prefetchPostBySlug(post.slug));
+    };
+
+    const win = window as Window & {
+      requestIdleCallback?: (cb: IdleRequestCallback) => number;
+    };
+
+    if (typeof win.requestIdleCallback === "function") {
+      win.requestIdleCallback(() => warmTopPosts());
+      return;
+    }
+
+    const timeoutId = window.setTimeout(warmTopPosts, 350);
+    return () => window.clearTimeout(timeoutId);
+  }, [posts]);
 
   return (
     <Layout>
@@ -303,6 +327,8 @@ export default function Blog() {
               >
                 <Link
                   to={`/blog/${featuredPost.slug}`}
+                  onMouseEnter={() => prefetchBlogPost(featuredPost.slug)}
+                  onFocus={() => prefetchBlogPost(featuredPost.slug)}
                   className="group block overflow-hidden rounded-xl border border-gray-200 hover:border-gray-300 transition-all hover:shadow-lg"
                 >
                   {/* Featured Post Image */}
@@ -380,6 +406,8 @@ export default function Blog() {
                     <Link
                       key={`search-${post.id}`}
                       to={`/blog/${post.slug}`}
+                      onMouseEnter={() => prefetchBlogPost(post.slug)}
+                      onFocus={() => prefetchBlogPost(post.slug)}
                       className="group relative overflow-hidden rounded-2xl border border-gray-200 bg-white hover:border-gray-300 transition-all h-full flex flex-col"
                     >
                       <div className="relative h-48 overflow-hidden bg-gray-200">
@@ -440,6 +468,14 @@ export default function Blog() {
                   >
                     <Link
                       to={`/blog/${filteredPosts[1]?.slug}`}
+                      onMouseEnter={() =>
+                        filteredPosts[1]?.slug &&
+                        prefetchBlogPost(filteredPosts[1].slug)
+                      }
+                      onFocus={() =>
+                        filteredPosts[1]?.slug &&
+                        prefetchBlogPost(filteredPosts[1].slug)
+                      }
                       className="group relative overflow-hidden rounded-2xl border border-gray-200 h-full block hover:border-gray-300 transition-all"
                     >
                       <img
@@ -499,6 +535,8 @@ export default function Blog() {
                       <Link
                         key={`upnext-${post.id}`}
                         to={`/blog/${post.slug}`}
+                        onMouseEnter={() => prefetchBlogPost(post.slug)}
+                        onFocus={() => prefetchBlogPost(post.slug)}
                         className="flex gap-3 group hover:opacity-70 transition"
                       >
                         <div className="w-16 h-16 flex-shrink-0 rounded-lg overflow-hidden border border-gray-300">
@@ -559,6 +597,8 @@ export default function Blog() {
                     >
                       <Link
                         to={`/blog/${post.slug}`}
+                        onMouseEnter={() => prefetchBlogPost(post.slug)}
+                        onFocus={() => prefetchBlogPost(post.slug)}
                         className="group relative overflow-hidden rounded-2xl border border-gray-200 bg-white hover:border-gray-300 transition-all h-full flex flex-col"
                       >
                         <div className="relative h-48 overflow-hidden bg-gray-200">

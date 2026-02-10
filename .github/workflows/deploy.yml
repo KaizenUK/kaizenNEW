@@ -21,7 +21,7 @@ jobs:
           VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
         run: |
           npm install
-          npm run build
+          npm run build:snap:all
 
       # 3. Deploy via FTP
       - name: 🚀 Deploy to cPanel
