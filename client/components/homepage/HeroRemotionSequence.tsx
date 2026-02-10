@@ -105,21 +105,21 @@ export const HeroRemotionSequence: React.FC = () => {
         <div className="home-hero-grid grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center max-w-7xl mx-auto">
           {/* Left: Copy */}
           <div className="home-hero-copy">
-            <p className="home-hero-kicker home-reveal home-reveal-1 text-xs font-mono tracking-[0.25em] text-kaizen-cyan mb-6 uppercase">
+            <p className="home-hero-kicker text-xs font-mono tracking-[0.25em] text-kaizen-cyan mb-6 uppercase">
               Wirral Web Design
             </p>
 
-            <h1 className="home-hero-title home-reveal home-reveal-2 text-5xl md:text-6xl lg:text-7xl font-heading font-black mb-8 leading-tight text-white">
+            <h1 className="home-hero-title text-5xl md:text-6xl lg:text-7xl font-heading font-black mb-8 leading-tight text-white">
               Sites That Actually Make You Money
             </h1>
 
-            <p className="home-hero-desc home-reveal home-reveal-3 text-lg md:text-xl text-white/85 leading-relaxed mb-10 max-w-xl">
+            <p className="home-hero-desc text-lg md:text-xl text-white/85 leading-relaxed mb-10 max-w-xl">
               Slow sites lose customers. We build fast, lean websites that turn
               visitors into paying leads. Enterprise-grade. No corporate
               nonsense.
             </p>
 
-            <div className="home-hero-actions home-reveal home-reveal-4 flex flex-col sm:flex-row items-start gap-4 mb-8">
+            <div className="home-hero-actions flex flex-col sm:flex-row items-start gap-4 mb-8">
               <button
                 onClick={() => navigate("/contact")}
                 className="home-hero-btn-primary px-8 py-4 rounded-lg bg-white text-black font-heading font-bold text-lg inline-flex items-center justify-center gap-2 transform-gpu transition-all duration-200 hover:scale-105 hover:shadow-[0_0_20px_rgba(255,255,255,0.5)] active:scale-95"
@@ -143,7 +143,7 @@ export const HeroRemotionSequence: React.FC = () => {
             </div>
 
             {/* Social proof line */}
-            <p className="home-reveal home-reveal-5 text-sm text-white/50">
+            <p className="text-sm text-white/50">
               Trusted by Wirral trades, small shops, e-commerce brands, and SaaS
               teams.
             </p>
@@ -151,7 +151,7 @@ export const HeroRemotionSequence: React.FC = () => {
 
           {/* Right: Lighthouse Gauge */}
           <div className="home-hero-gauge hidden lg:block">
-            <div className="relative home-reveal home-reveal-gauge">
+            <div className="relative">
               <div className="absolute -inset-12 bg-green-500/10 rounded-full blur-3xl" />
               <div className="relative text-center">
                 <LighthouseGauge />

@@ -473,43 +473,7 @@
   }
 
   .home-reveal {
-    opacity: 0;
-    animation: home-reveal-up 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards;
-    will-change: opacity;
-  }
-
-  .home-reveal-1 {
-    animation-delay: 40ms;
-  }
-
-  .home-reveal-2 {
-    animation-delay: 120ms;
-  }
-
-  .home-reveal-3 {
-    animation-delay: 200ms;
-  }
-
-  .home-reveal-4 {
-    animation-delay: 260ms;
-  }
-
-  .home-reveal-5 {
-    animation-delay: 340ms;
-  }
-
-  .home-reveal-gauge {
-    animation-delay: 280ms;
-  }
-
-  @keyframes home-reveal-up {
-    from {
-      opacity: 0;
-    }
-
-    to {
-      opacity: 1;
-    }
+    opacity: 1;
   }
 
   .home-gauge-progress {

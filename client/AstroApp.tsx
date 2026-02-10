@@ -73,12 +73,17 @@ function AppContent() {
   return (
     <>
       <ModalsAndBanner />
-      <Suspense fallback={<PageLoader />}>
-        <Routes>
-          <Route path="/" element={<Index />} />
-          <Route path="*" element={<OtherRoutes />} />
-        </Routes>
-      </Suspense>
+      <Routes>
+        <Route path="/" element={<Index />} />
+        <Route
+          path="*"
+          element={
+            <Suspense fallback={<PageLoader />}>
+              <OtherRoutes />
+            </Suspense>
+          }
+        />
+      </Routes>
     </>
   );
 }
