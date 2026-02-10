@@ -22,6 +22,9 @@ jobs:
           echo "VITE_BUILD_TIMESTAMP=$(date -u +'%Y-%m-%dT%H:%M:%SZ')" >> "$GITHUB_ENV"
 
       - name: Install and Build
+        env:
+          VITE_SUPABASE_URL: ${{ github.ref == 'refs/heads/stage' && secrets.STAGE_VITE_SUPABASE_URL || secrets.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_ANON_KEY: ${{ github.ref == 'refs/heads/stage' && secrets.STAGE_VITE_SUPABASE_ANON_KEY || secrets.VITE_SUPABASE_ANON_KEY }}
         run: |
           npm ci
           npm run build:snap:all
