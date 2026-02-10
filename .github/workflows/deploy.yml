@@ -46,16 +46,20 @@ jobs:
           script_stop: true
           script: |
             set -e
-            export APP_DIR="${{ secrets.VPS_APP_DIR_PROD }}"
-            export APP_NAME="${{ secrets.VPS_PM2_APP_PROD }}"
+            export APP_DIR="${{ secrets.VPS_APP_DIR_PROD || '/home/kaizenweb/apps/kaizen-prod' }}"
+            export APP_NAME="${{ secrets.VPS_PM2_APP_PROD || 'kaizen-prod' }}"
             export PORT="${{ secrets.VPS_PORT_PROD || '4321' }}"
             export HOST="0.0.0.0"
             export VITE_BUILD_NUMBER="${{ github.run_number }}"
             export VITE_BUILD_SHA="${{ github.sha }}"
             export NODE_ENV="production"
 
+            if [ -z "$APP_DIR" ]; then
+              echo "APP_DIR is empty. Set VPS_APP_DIR_PROD secret."
+              exit 1
+            fi
             if [ ! -d "$APP_DIR/.git" ]; then
-              echo "Missing git checkout at $APP_DIR"
+              echo "Missing git checkout at $APP_DIR (.git not found)"
               exit 1
             fi
 
@@ -88,16 +92,20 @@ jobs:
           script_stop: true
           script: |
             set -e
-            export APP_DIR="${{ secrets.VPS_APP_DIR_STAGE }}"
-            export APP_NAME="${{ secrets.VPS_PM2_APP_STAGE }}"
+            export APP_DIR="${{ secrets.VPS_APP_DIR_STAGE || '/home/kaizenweb/apps/kaizen-stage' }}"
+            export APP_NAME="${{ secrets.VPS_PM2_APP_STAGE || 'kaizen-stage' }}"
             export PORT="${{ secrets.VPS_PORT_STAGE || '4322' }}"
             export HOST="0.0.0.0"
             export VITE_BUILD_NUMBER="${{ github.run_number }}"
             export VITE_BUILD_SHA="${{ github.sha }}"
             export NODE_ENV="production"
 
+            if [ -z "$APP_DIR" ]; then
+              echo "APP_DIR is empty. Set VPS_APP_DIR_STAGE secret."
+              exit 1
+            fi
             if [ ! -d "$APP_DIR/.git" ]; then
-              echo "Missing git checkout at $APP_DIR"
+              echo "Missing git checkout at $APP_DIR (.git not found)"
               exit 1
             fi
 
