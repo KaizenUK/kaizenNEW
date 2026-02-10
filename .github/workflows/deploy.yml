@@ -83,6 +83,8 @@ jobs:
             error_log
             api/**
             api/*
+            cms/**
+            cms/*
             midland/**
             midland/*
 
