@@ -10,6 +10,10 @@ on:
       - sanity-update
   workflow_dispatch:
 
+concurrency:
+  group: deploy-${{ github.ref }}
+  cancel-in-progress: false
+
 jobs:
   web-deploy:
     name: Build and Deploy SSR
@@ -105,7 +109,6 @@ jobs:
             corepack enable
             corepack prepare pnpm@10.14.0 --activate
             pnpm install --frozen-lockfile
-            rm -rf dist
             pnpm run build
 
             START_SCRIPT=""
@@ -224,7 +227,6 @@ jobs:
             corepack enable
             corepack prepare pnpm@10.14.0 --activate
             pnpm install --frozen-lockfile
-            rm -rf dist
             pnpm run build
 
             START_SCRIPT=""
