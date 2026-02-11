@@ -30,10 +30,57 @@ jobs:
 
       - name: Merge stage into main and push
         run: |
+          set -euo pipefail
           git fetch origin main stage
           git checkout main
-          git merge --no-ff origin/stage -m "chore: promote stage to main"
-          git push origin main
+          git reset --hard origin/main
+
+          MERGE_MESSAGE="chore: promote stage to main"
+          if git merge --no-ff --no-commit origin/stage; then
+            echo "Merge applied cleanly."
+          else
+            echo "Merge produced conflicts. Trying approved auto-resolution..."
+            CONFLICTS="$(git diff --name-only --diff-filter=U || true)"
+
+            if [ -z "$CONFLICTS" ]; then
+              echo "Merge failed without conflict markers."
+              exit 1
+            fi
+
+            echo "Conflicted files:"
+            echo "$CONFLICTS"
+
+            while IFS= read -r file; do
+              [ -z "$file" ] && continue
+              case "$file" in
+                package.json|pnpm-lock.yaml|package-lock.json)
+                  echo "Resolving $file with stage branch version."
+                  git checkout --theirs -- "$file"
+                  git add "$file"
+                  ;;
+                *)
+                  echo "Unsupported conflict file: $file"
+                  echo "Resolve this conflict manually, then rerun the workflow."
+                  git merge --abort || true
+                  exit 1
+                  ;;
+              esac
+            done <<< "$CONFLICTS"
+
+            if git diff --name-only --diff-filter=U | grep -q .; then
+              echo "Unresolved conflicts remain:"
+              git diff --name-only --diff-filter=U
+              git merge --abort || true
+              exit 1
+            fi
+          fi
+
+          if git diff --cached --quiet; then
+            echo "No merge commit needed. main is already up to date with stage."
+          else
+            git commit -m "$MERGE_MESSAGE"
+            git push origin main
+          fi
 
       - name: Trigger deploy workflow for main
         if: ${{ inputs.deploy_main_after_merge }}
