@@ -45,7 +45,7 @@ jobs:
           pnpm run build
 
       - name: Deploy Production SSR on VPS
-        if: github.ref == 'refs/heads/main' || github.event_name == 'repository_dispatch'
+        if: github.ref == 'refs/heads/main' || (github.event_name == 'repository_dispatch' && (github.event.client_payload.target == 'main' || github.event.client_payload.target == 'prod' || github.event.client_payload.target == 'production' || github.event.client_payload.target == ''))
         uses: appleboy/ssh-action@v1.2.0
         with:
           host: ${{ secrets.VPS_HOST }}
@@ -75,6 +75,7 @@ jobs:
             export GITHUB_DEPLOY_TOKEN="${{ secrets.GITHUB_DEPLOY_TOKEN }}"
             export GITHUB_DEPLOY_REPO="${{ github.repository }}"
             export GITHUB_DEPLOY_EVENT_TYPE="sanity-update"
+            export GITHUB_DEPLOY_TARGET="main"
 
             if [ -z "$PUBLIC_SANITY_PROJECT_ID" ] && [ -n "$SANITY_PROJECT_ID" ]; then
               export PUBLIC_SANITY_PROJECT_ID="$SANITY_PROJECT_ID"
@@ -206,7 +207,7 @@ jobs:
             done
 
       - name: Deploy Staging SSR on VPS
-        if: github.ref == 'refs/heads/stage'
+        if: github.ref == 'refs/heads/stage' || (github.event_name == 'repository_dispatch' && (github.event.client_payload.target == 'stage' || github.event.client_payload.target == 'staging'))
         uses: appleboy/ssh-action@v1.2.0
         with:
           host: ${{ secrets.VPS_HOST }}
@@ -233,6 +234,10 @@ jobs:
             export NEXT_PUBLIC_SANITY_DATASET_SECRET="${{ secrets.NEXT_PUBLIC_SANITY_DATASET }}"
             export VITE_SANITY_PROJECT_ID_SECRET="${{ secrets.VITE_SANITY_PROJECT_ID }}"
             export VITE_SANITY_DATASET_SECRET="${{ secrets.VITE_SANITY_DATASET }}"
+            export GITHUB_DEPLOY_TOKEN="${{ secrets.GITHUB_DEPLOY_TOKEN }}"
+            export GITHUB_DEPLOY_REPO="${{ github.repository }}"
+            export GITHUB_DEPLOY_EVENT_TYPE="sanity-update"
+            export GITHUB_DEPLOY_TARGET="stage"
 
             if [ -z "$PUBLIC_SANITY_PROJECT_ID" ] && [ -n "$SANITY_PROJECT_ID" ]; then
               export PUBLIC_SANITY_PROJECT_ID="$SANITY_PROJECT_ID"

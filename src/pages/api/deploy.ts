@@ -4,6 +4,7 @@ const JSON_HEADERS = {
   "content-type": "application/json",
 } as const;
 const STUDIO_EDITOR_COOKIE = "kaizen_studio_auth";
+const VALID_DEPLOY_TARGETS = new Set(["main", "prod", "production", "stage", "staging"]);
 
 function parseRepository(repository: string): { owner: string; repo: string } | null {
   const [owner, repo] = repository.split("/");
@@ -50,6 +51,7 @@ export const POST: APIRoute = async ({ request }) => {
   const githubToken = process.env.GITHUB_DEPLOY_TOKEN;
   const repository = process.env.GITHUB_DEPLOY_REPO ?? process.env.GITHUB_REPOSITORY;
   const eventType = process.env.GITHUB_DEPLOY_EVENT_TYPE ?? "sanity-update";
+  const defaultTarget = (process.env.GITHUB_DEPLOY_TARGET ?? "").trim().toLowerCase();
 
   if (!githubToken) {
     return json(500, {
@@ -80,6 +82,16 @@ export const POST: APIRoute = async ({ request }) => {
     requestPayload = {};
   }
 
+  const requestedTargetRaw =
+    typeof requestPayload.target === "string"
+      ? requestPayload.target.trim().toLowerCase()
+      : "";
+  const target = VALID_DEPLOY_TARGETS.has(requestedTargetRaw)
+    ? requestedTargetRaw
+    : VALID_DEPLOY_TARGETS.has(defaultTarget)
+      ? defaultTarget
+      : "main";
+
   const dispatchResponse = await fetch(
     `https://api.github.com/repos/${parsedRepository.owner}/${parsedRepository.repo}/dispatches`,
     {
@@ -102,6 +114,7 @@ export const POST: APIRoute = async ({ request }) => {
             typeof requestPayload.schemaType === "string"
               ? requestPayload.schemaType
               : undefined,
+          target,
           requestedAt: new Date().toISOString(),
         },
       }),
@@ -122,6 +135,7 @@ export const POST: APIRoute = async ({ request }) => {
     ok: true,
     eventType,
     repository,
+    target,
   });
 };
 
