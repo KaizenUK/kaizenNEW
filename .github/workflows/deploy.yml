@@ -44,7 +44,7 @@ jobs:
           port: ${{ secrets.VPS_PORT || '22' }}
           script_stop: true
           script: |
-            set -e
+            set -euo pipefail
             export APP_DIR="${{ secrets.VPS_APP_DIR_PROD }}"
             export APP_NAME="${{ secrets.VPS_PM2_APP_PROD }}"
             export PORT="${{ secrets.VPS_PORT_PROD || '4321' }}"
@@ -52,13 +52,30 @@ jobs:
             export VITE_BUILD_NUMBER="${{ github.run_number }}"
             export VITE_BUILD_SHA="${{ github.sha }}"
             export NODE_ENV="production"
+            export CI="true"
+
+            if [ -z "$APP_DIR" ]; then
+              echo "Missing required secret: VPS_APP_DIR_PROD"
+              exit 1
+            fi
+
+            if [ -z "$APP_NAME" ]; then
+              echo "Missing required secret: VPS_PM2_APP_PROD"
+              exit 1
+            fi
+
+            if [ ! -d "$APP_DIR" ]; then
+              echo "APP_DIR does not exist: $APP_DIR"
+              exit 1
+            fi
 
             if [ ! -d "$APP_DIR/.git" ]; then
-              echo "Missing git checkout at $APP_DIR"
+              echo "Missing .git directory at APP_DIR: $APP_DIR"
               exit 1
             fi
 
             cd "$APP_DIR"
+            git config --global --add safe.directory "$APP_DIR"
             git fetch origin main --prune
             git checkout main
             git reset --hard origin/main
@@ -68,12 +85,20 @@ jobs:
             pnpm install --frozen-lockfile
             pnpm run build
 
+            if [ ! -f dist/server/entry.mjs ]; then
+              echo "Build completed but dist/server/entry.mjs is missing"
+              exit 1
+            fi
+
             if pm2 describe "$APP_NAME" > /dev/null 2>&1; then
               pm2 restart "$APP_NAME" --update-env
             else
-              pm2 start dist/server/entry.mjs --name "$APP_NAME"
+              pm2 start dist/server/entry.mjs --name "$APP_NAME" --cwd "$APP_DIR"
             fi
             pm2 save
+
+            sleep 2
+            curl -fsS "http://127.0.0.1:${PORT}" > /dev/null
 
       - name: Deploy Staging SSR on VPS
         if: github.ref == 'refs/heads/stage'
@@ -85,7 +110,7 @@ jobs:
           port: ${{ secrets.VPS_PORT || '22' }}
           script_stop: true
           script: |
-            set -e
+            set -euo pipefail
             export APP_DIR="${{ secrets.VPS_APP_DIR_STAGE }}"
             export APP_NAME="${{ secrets.VPS_PM2_APP_STAGE }}"
             export PORT="${{ secrets.VPS_PORT_STAGE || '4322' }}"
@@ -93,13 +118,30 @@ jobs:
             export VITE_BUILD_NUMBER="${{ github.run_number }}"
             export VITE_BUILD_SHA="${{ github.sha }}"
             export NODE_ENV="production"
+            export CI="true"
+
+            if [ -z "$APP_DIR" ]; then
+              echo "Missing required secret: VPS_APP_DIR_STAGE"
+              exit 1
+            fi
+
+            if [ -z "$APP_NAME" ]; then
+              echo "Missing required secret: VPS_PM2_APP_STAGE"
+              exit 1
+            fi
+
+            if [ ! -d "$APP_DIR" ]; then
+              echo "APP_DIR does not exist: $APP_DIR"
+              exit 1
+            fi
 
             if [ ! -d "$APP_DIR/.git" ]; then
-              echo "Missing git checkout at $APP_DIR"
+              echo "Missing .git directory at APP_DIR: $APP_DIR"
               exit 1
             fi
 
             cd "$APP_DIR"
+            git config --global --add safe.directory "$APP_DIR"
             git fetch origin stage --prune
             git checkout stage
             git reset --hard origin/stage
@@ -109,12 +151,20 @@ jobs:
             pnpm install --frozen-lockfile
             pnpm run build
 
+            if [ ! -f dist/server/entry.mjs ]; then
+              echo "Build completed but dist/server/entry.mjs is missing"
+              exit 1
+            fi
+
             if pm2 describe "$APP_NAME" > /dev/null 2>&1; then
               pm2 restart "$APP_NAME" --update-env
             else
-              pm2 start dist/server/entry.mjs --name "$APP_NAME"
+              pm2 start dist/server/entry.mjs --name "$APP_NAME" --cwd "$APP_DIR"
             fi
             pm2 save
+
+            sleep 2
+            curl -fsS "http://127.0.0.1:${PORT}" > /dev/null
 
       # --- DISCORD NOTIFICATION ---
       - name: Discord Notification
