@@ -1,6 +1,5 @@
 import { Suspense, lazy, useEffect, useState } from "react";
 import { BrowserRouter, MemoryRouter, Route, Routes } from "react-router-dom";
-import { HelmetProvider } from "@/lib/helmet";
 import { CalendlyProvider, useCalendly } from "@/context/CalendlyContext";
 import { isReactSnapPrerender } from "@/lib/prerender";
 import Index from "./pages/Index";
@@ -113,9 +112,5 @@ function RoutedApp({ url }: { url: string }) {
 }
 
 export default function AstroApp({ url = "/" }: { url?: string }) {
-  return (
-    <HelmetProvider>
-      <RoutedApp url={url} />
-    </HelmetProvider>
-  );
+  return <RoutedApp url={url} />;
 }

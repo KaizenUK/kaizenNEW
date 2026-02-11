@@ -61,16 +61,7 @@ const DeferredSection = ({
   children: React.ReactNode;
   minHeight?: number;
 }) => {
-  const [isVisible, setIsVisible] = useState(() => {
-    if (typeof document !== "undefined") {
-      const existingNode = document.querySelector(`[data-deferred-id="${id}"]`);
-      if (existingNode && existingNode.childElementCount > 0) {
-        return true;
-      }
-    }
-
-    return isReactSnapPrerender();
-  });
+  const [isVisible, setIsVisible] = useState(() => isReactSnapPrerender());
   const sectionRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
@@ -83,10 +74,7 @@ const DeferredSection = ({
           observer.disconnect();
         }
       },
-      // Do not preload below-the-fold sections too early; this helps avoid
-      // downloading animation-heavy bundles before the user scrolls.
-      // A small preload window reduces "blank section" flashes.
-      { rootMargin: "220px 0px" },
+      { rootMargin: "0px 0px" },
     );
 
     if (sectionRef.current) {
@@ -100,8 +88,10 @@ const DeferredSection = ({
     <div
       ref={sectionRef}
       data-deferred-id={id}
-      data-deferred-rendered={isVisible ? "true" : undefined}
-      style={isVisible ? undefined : { minHeight: `${minHeight}px` }}
+      style={{
+        contentVisibility: "auto",
+        containIntrinsicSize: `${minHeight}px 1px`,
+      }}
     >
       {isVisible ? children : null}
     </div>
