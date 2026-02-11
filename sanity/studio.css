@@ -310,22 +310,45 @@ body.studio-meta-open [data-testid="document-panel-scroller"] [data-ui="Stack"]:
 
 .studio-meta-toggle {
   position: fixed !important;
-  top: 66px;
-  right: 14px;
-  z-index: 310;
+  top: 50%;
+  right: 0;
+  transform: translateY(-50%);
+  z-index: 240;
   border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 8px;
+  border-right: 0;
+  border-radius: 10px 0 0 10px;
   background: #161618;
   color: #e5e7eb;
   font-size: 12px;
   font-weight: 600;
   line-height: 1;
-  padding: 10px 12px;
+  padding: 12px 10px;
+  min-height: 104px;
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+  letter-spacing: 0.01em;
   cursor: pointer;
+  pointer-events: auto !important;
+  user-select: none;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.28);
 }
 
 .studio-meta-toggle--active {
   background: #1f2937;
   border-color: rgba(34, 197, 94, 0.45);
   color: #bbf7d0;
+}
+
+@media (max-width: 1100px) {
+  .studio-meta-toggle {
+    top: auto;
+    bottom: 16px;
+    right: 16px;
+    transform: none;
+    min-height: auto;
+    writing-mode: horizontal-tb;
+    border-right: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 8px;
+    padding: 10px 12px;
+  }
 }

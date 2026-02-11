@@ -19,6 +19,7 @@ export default function Studio() {
 
   useEffect(() => {
     document.body.classList.toggle("studio-meta-open", metaPanelOpen);
+    document.documentElement.classList.toggle("studio-meta-open", metaPanelOpen);
     try {
       window.localStorage.setItem(
         META_PANEL_STORAGE_KEY,
@@ -37,9 +38,10 @@ export default function Studio() {
         className={`studio-meta-toggle${metaPanelOpen ? " studio-meta-toggle--active" : ""}`}
         onClick={() => setMetaPanelOpen((value) => !value)}
         aria-label={metaPanelOpen ? "Hide post settings panel" : "Show post settings panel"}
+        aria-expanded={metaPanelOpen}
         title={metaPanelOpen ? "Hide settings panel" : "Show settings panel"}
       >
-        {metaPanelOpen ? "Close Panel" : "Post Settings"}
+        {metaPanelOpen ? "Hide Settings" : "Post Settings"}
       </button>
     </div>
   );
