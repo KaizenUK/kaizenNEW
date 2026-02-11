@@ -110,6 +110,29 @@ jobs:
             corepack prepare pnpm@10.14.0 --activate
             pnpm install --frozen-lockfile
             pnpm run build
+            node <<'PATCH_SSR'
+            const fs = require('node:fs');
+            const path = require('node:path');
+            const dir = path.join(process.cwd(), 'dist', 'server', 'chunks');
+            if (!fs.existsSync(dir)) process.exit(0);
+            const files = fs.readdirSync(dir).filter((f) => /^_@astrojs-ssr-adapter_.*\.mjs$/.test(f));
+            for (const file of files) {
+              const fullPath = path.join(dir, file);
+              let src = fs.readFileSync(fullPath, 'utf8');
+              if (src.includes("if (typeof util.inherits !== 'function') util.inherits = requireInherits_browser();")) {
+                continue;
+              }
+              const needle = 'util.inherits(SendStream, Stream);';
+              if (src.includes(needle)) {
+                src = src.replace(
+                  needle,
+                  "if (typeof util.inherits !== 'function') util.inherits = requireInherits_browser();\n\tutil.inherits(SendStream, Stream);",
+                );
+                fs.writeFileSync(fullPath, src, 'utf8');
+                console.log(`Patched SSR adapter: ${file}`);
+              }
+            }
+            PATCH_SSR
 
             START_SCRIPT=""
             for candidate in \
@@ -235,6 +258,29 @@ jobs:
             corepack prepare pnpm@10.14.0 --activate
             pnpm install --frozen-lockfile
             pnpm run build
+            node <<'PATCH_SSR'
+            const fs = require('node:fs');
+            const path = require('node:path');
+            const dir = path.join(process.cwd(), 'dist', 'server', 'chunks');
+            if (!fs.existsSync(dir)) process.exit(0);
+            const files = fs.readdirSync(dir).filter((f) => /^_@astrojs-ssr-adapter_.*\.mjs$/.test(f));
+            for (const file of files) {
+              const fullPath = path.join(dir, file);
+              let src = fs.readFileSync(fullPath, 'utf8');
+              if (src.includes("if (typeof util.inherits !== 'function') util.inherits = requireInherits_browser();")) {
+                continue;
+              }
+              const needle = 'util.inherits(SendStream, Stream);';
+              if (src.includes(needle)) {
+                src = src.replace(
+                  needle,
+                  "if (typeof util.inherits !== 'function') util.inherits = requireInherits_browser();\n\tutil.inherits(SendStream, Stream);",
+                );
+                fs.writeFileSync(fullPath, src, 'utf8');
+                console.log(`Patched SSR adapter: ${file}`);
+              }
+            }
+            PATCH_SSR
 
             START_SCRIPT=""
             for candidate in \
