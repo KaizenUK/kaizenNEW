@@ -110,14 +110,14 @@ jobs:
             corepack prepare pnpm@10.14.0 --activate
             pnpm install --frozen-lockfile
             pnpm run build
-            mapfile -t inherit_files < <(grep -RIl "util.inherits(SendStream, Stream);" dist/server 2>/dev/null || true)
+            mapfile -t inherit_files < <(grep -RIlE "util\\.inherits\\(SendStream,[[:space:]]*Stream\\);" dist/server 2>/dev/null || true)
             for file in "${inherit_files[@]}"; do
               perl -0pi -e "s/util\\.inherits\\(SendStream,\\s*Stream\\);/requireInherits_browser()(SendStream, Stream);/g" "$file"
               echo "Patched util.inherits in: $file"
             done
-            if grep -RIn "util.inherits(SendStream, Stream);" dist/server >/dev/null 2>&1; then
-              echo "Failed to fully patch util.inherits(SendStream, Stream) in dist/server"
-              grep -RIn "util.inherits(SendStream, Stream);" dist/server || true
+            if grep -RInE "util\\.inherits\\(SendStream,[[:space:]]*Stream\\);" dist/server >/dev/null 2>&1; then
+              echo "Failed to fully patch util.inherits(SendStream, ...Stream) in dist/server"
+              grep -RInE "util\\.inherits\\(SendStream,[[:space:]]*Stream\\);" dist/server || true
               exit 1
             fi
 
@@ -236,14 +236,14 @@ jobs:
             corepack prepare pnpm@10.14.0 --activate
             pnpm install --frozen-lockfile
             pnpm run build
-            mapfile -t inherit_files < <(grep -RIl "util.inherits(SendStream, Stream);" dist/server 2>/dev/null || true)
+            mapfile -t inherit_files < <(grep -RIlE "util\\.inherits\\(SendStream,[[:space:]]*Stream\\);" dist/server 2>/dev/null || true)
             for file in "${inherit_files[@]}"; do
               perl -0pi -e "s/util\\.inherits\\(SendStream,\\s*Stream\\);/requireInherits_browser()(SendStream, Stream);/g" "$file"
               echo "Patched util.inherits in: $file"
             done
-            if grep -RIn "util.inherits(SendStream, Stream);" dist/server >/dev/null 2>&1; then
-              echo "Failed to fully patch util.inherits(SendStream, Stream) in dist/server"
-              grep -RIn "util.inherits(SendStream, Stream);" dist/server || true
+            if grep -RInE "util\\.inherits\\(SendStream,[[:space:]]*Stream\\);" dist/server >/dev/null 2>&1; then
+              echo "Failed to fully patch util.inherits(SendStream, ...Stream) in dist/server"
+              grep -RInE "util\\.inherits\\(SendStream,[[:space:]]*Stream\\);" dist/server || true
               exit 1
             fi
 
