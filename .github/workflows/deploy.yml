@@ -83,6 +83,19 @@ jobs:
               exit 1
             fi
 
+            if ! command -v node > /dev/null 2>&1; then
+              echo "Node.js is not available on VPS PATH"
+              exit 1
+            fi
+            NODE_BIN="$(command -v node)"
+            echo "Using node binary: $NODE_BIN"
+            echo "Node version: $(node -v)"
+            NODE_MAJOR="$(node -p "Number(process.versions.node.split('.')[0])")"
+            if [ "$NODE_MAJOR" -lt 20 ]; then
+              echo "Node 20+ is required on VPS. Found: $(node -v)"
+              exit 1
+            fi
+
             cd "$APP_DIR"
             git config --global --add safe.directory "$APP_DIR"
             git fetch origin main --prune
@@ -92,6 +105,7 @@ jobs:
             corepack enable
             corepack prepare pnpm@10.14.0 --activate
             pnpm install --frozen-lockfile
+            rm -rf dist
             pnpm run build
 
             START_SCRIPT=""
@@ -99,7 +113,9 @@ jobs:
               "dist/server/entry.mjs" \
               "dist/server/node-build.mjs" \
               "dist/server/production.mjs" \
-              "dist/server/index.mjs"; do
+              "dist/server/index.mjs" \
+              "dist/entry.mjs" \
+              "dist/node-build.mjs"; do
               if [ -f "$candidate" ]; then
                 START_SCRIPT="$candidate"
                 break
@@ -107,28 +123,37 @@ jobs:
             done
 
             if [ -z "$START_SCRIPT" ]; then
-              START_SCRIPT="$(find dist/server -maxdepth 1 -type f -name '*.mjs' | head -n 1 || true)"
-            fi
-
-            if [ -z "$START_SCRIPT" ]; then
-              echo "Build completed but no runnable server entry was found in dist/server"
+              echo "Build completed but no known runnable server entry was found"
+              echo "dist/server contents:"
               ls -la dist/server || true
+              echo "dist contents:"
+              ls -la dist || true
               exit 1
             fi
 
             echo "Using server entry: $START_SCRIPT"
+            HEALTH_PORT="$PORT"
+            PORT_FROM_BUILD="$(grep -Eo '"port":[0-9]+' "$START_SCRIPT" | head -n 1 | cut -d: -f2 || true)"
+            if [ -n "$PORT_FROM_BUILD" ]; then
+              HEALTH_PORT="$PORT_FROM_BUILD"
+              if [ "$PORT_FROM_BUILD" != "$PORT" ]; then
+                echo "Build entry port ${PORT_FROM_BUILD} differs from deploy PORT ${PORT}. Using ${HEALTH_PORT} for health checks."
+              fi
+            fi
+
             pm2 delete "$APP_NAME" > /dev/null 2>&1 || true
-            pm2 start "$START_SCRIPT" --name "$APP_NAME" --cwd "$APP_DIR" --update-env
+            pm2 start "$START_SCRIPT" --name "$APP_NAME" --cwd "$APP_DIR" --interpreter "$NODE_BIN" --update-env
             pm2 save
+            pm2 describe "$APP_NAME" || true
 
             for i in 1 2 3 4 5; do
-              if curl -fsS --max-time 10 "http://127.0.0.1:${PORT}/" > /dev/null; then
-                echo "Health check OK on port ${PORT}"
+              if curl -fsS --max-time 10 "http://127.0.0.1:${HEALTH_PORT}/" > /dev/null; then
+                echo "Health check OK on port ${HEALTH_PORT}"
                 break
               fi
 
               if [ "$i" -eq 5 ]; then
-                echo "Health check failed on port ${PORT}"
+                echo "Health check failed on port ${HEALTH_PORT}"
                 pm2 logs "$APP_NAME" --lines 80 --nostream || true
                 exit 1
               fi
@@ -177,6 +202,19 @@ jobs:
               exit 1
             fi
 
+            if ! command -v node > /dev/null 2>&1; then
+              echo "Node.js is not available on VPS PATH"
+              exit 1
+            fi
+            NODE_BIN="$(command -v node)"
+            echo "Using node binary: $NODE_BIN"
+            echo "Node version: $(node -v)"
+            NODE_MAJOR="$(node -p "Number(process.versions.node.split('.')[0])")"
+            if [ "$NODE_MAJOR" -lt 20 ]; then
+              echo "Node 20+ is required on VPS. Found: $(node -v)"
+              exit 1
+            fi
+
             cd "$APP_DIR"
             git config --global --add safe.directory "$APP_DIR"
             git fetch origin stage --prune
@@ -186,6 +224,7 @@ jobs:
             corepack enable
             corepack prepare pnpm@10.14.0 --activate
             pnpm install --frozen-lockfile
+            rm -rf dist
             pnpm run build
 
             START_SCRIPT=""
@@ -193,7 +232,9 @@ jobs:
               "dist/server/entry.mjs" \
               "dist/server/node-build.mjs" \
               "dist/server/production.mjs" \
-              "dist/server/index.mjs"; do
+              "dist/server/index.mjs" \
+              "dist/entry.mjs" \
+              "dist/node-build.mjs"; do
               if [ -f "$candidate" ]; then
                 START_SCRIPT="$candidate"
                 break
@@ -201,28 +242,37 @@ jobs:
             done
 
             if [ -z "$START_SCRIPT" ]; then
-              START_SCRIPT="$(find dist/server -maxdepth 1 -type f -name '*.mjs' | head -n 1 || true)"
-            fi
-
-            if [ -z "$START_SCRIPT" ]; then
-              echo "Build completed but no runnable server entry was found in dist/server"
+              echo "Build completed but no known runnable server entry was found"
+              echo "dist/server contents:"
               ls -la dist/server || true
+              echo "dist contents:"
+              ls -la dist || true
               exit 1
             fi
 
             echo "Using server entry: $START_SCRIPT"
+            HEALTH_PORT="$PORT"
+            PORT_FROM_BUILD="$(grep -Eo '"port":[0-9]+' "$START_SCRIPT" | head -n 1 | cut -d: -f2 || true)"
+            if [ -n "$PORT_FROM_BUILD" ]; then
+              HEALTH_PORT="$PORT_FROM_BUILD"
+              if [ "$PORT_FROM_BUILD" != "$PORT" ]; then
+                echo "Build entry port ${PORT_FROM_BUILD} differs from deploy PORT ${PORT}. Using ${HEALTH_PORT} for health checks."
+              fi
+            fi
+
             pm2 delete "$APP_NAME" > /dev/null 2>&1 || true
-            pm2 start "$START_SCRIPT" --name "$APP_NAME" --cwd "$APP_DIR" --update-env
+            pm2 start "$START_SCRIPT" --name "$APP_NAME" --cwd "$APP_DIR" --interpreter "$NODE_BIN" --update-env
             pm2 save
+            pm2 describe "$APP_NAME" || true
 
             for i in 1 2 3 4 5; do
-              if curl -fsS --max-time 10 "http://127.0.0.1:${PORT}/" > /dev/null; then
-                echo "Health check OK on port ${PORT}"
+              if curl -fsS --max-time 10 "http://127.0.0.1:${HEALTH_PORT}/" > /dev/null; then
+                echo "Health check OK on port ${HEALTH_PORT}"
                 break
               fi
 
               if [ "$i" -eq 5 ]; then
-                echo "Health check failed on port ${PORT}"
+                echo "Health check failed on port ${HEALTH_PORT}"
                 pm2 logs "$APP_NAME" --lines 80 --nostream || true
                 exit 1
               fi
