@@ -85,16 +85,31 @@ jobs:
             pnpm install --frozen-lockfile
             pnpm run build
 
-            if [ ! -f dist/server/entry.mjs ]; then
-              echo "Build completed but dist/server/entry.mjs is missing"
+            START_SCRIPT=""
+            for candidate in \
+              "dist/server/entry.mjs" \
+              "dist/server/node-build.mjs" \
+              "dist/server/production.mjs" \
+              "dist/server/index.mjs"; do
+              if [ -f "$candidate" ]; then
+                START_SCRIPT="$candidate"
+                break
+              fi
+            done
+
+            if [ -z "$START_SCRIPT" ]; then
+              START_SCRIPT="$(find dist/server -maxdepth 1 -type f -name '*.mjs' | head -n 1 || true)"
+            fi
+
+            if [ -z "$START_SCRIPT" ]; then
+              echo "Build completed but no runnable server entry was found in dist/server"
+              ls -la dist/server || true
               exit 1
             fi
 
-            if pm2 describe "$APP_NAME" > /dev/null 2>&1; then
-              pm2 restart "$APP_NAME" --update-env
-            else
-              pm2 start dist/server/entry.mjs --name "$APP_NAME" --cwd "$APP_DIR"
-            fi
+            echo "Using server entry: $START_SCRIPT"
+            pm2 delete "$APP_NAME" > /dev/null 2>&1 || true
+            pm2 start "$START_SCRIPT" --name "$APP_NAME" --cwd "$APP_DIR" --update-env
             pm2 save
 
             for i in 1 2 3 4 5; do
@@ -163,16 +178,31 @@ jobs:
             pnpm install --frozen-lockfile
             pnpm run build
 
-            if [ ! -f dist/server/entry.mjs ]; then
-              echo "Build completed but dist/server/entry.mjs is missing"
+            START_SCRIPT=""
+            for candidate in \
+              "dist/server/entry.mjs" \
+              "dist/server/node-build.mjs" \
+              "dist/server/production.mjs" \
+              "dist/server/index.mjs"; do
+              if [ -f "$candidate" ]; then
+                START_SCRIPT="$candidate"
+                break
+              fi
+            done
+
+            if [ -z "$START_SCRIPT" ]; then
+              START_SCRIPT="$(find dist/server -maxdepth 1 -type f -name '*.mjs' | head -n 1 || true)"
+            fi
+
+            if [ -z "$START_SCRIPT" ]; then
+              echo "Build completed but no runnable server entry was found in dist/server"
+              ls -la dist/server || true
               exit 1
             fi
 
-            if pm2 describe "$APP_NAME" > /dev/null 2>&1; then
-              pm2 restart "$APP_NAME" --update-env
-            else
-              pm2 start dist/server/entry.mjs --name "$APP_NAME" --cwd "$APP_DIR"
-            fi
+            echo "Using server entry: $START_SCRIPT"
+            pm2 delete "$APP_NAME" > /dev/null 2>&1 || true
+            pm2 start "$START_SCRIPT" --name "$APP_NAME" --cwd "$APP_DIR" --update-env
             pm2 save
 
             for i in 1 2 3 4 5; do
