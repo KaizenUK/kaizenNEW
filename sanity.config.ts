@@ -11,6 +11,7 @@ import {
 import { deskTool, type StructureBuilder } from "sanity/desk";
 import { media } from "sanity-plugin-media";
 import { SEOPane } from "sanity-plugin-seo-pane";
+import { studioSessionPlugin } from "./src/lib/sanity/studioSessionPlugin";
 
 const env = (import.meta.env ?? {}) as Record<string, string | undefined>;
 
@@ -42,9 +43,6 @@ const SITE_SETTINGS_ID = "siteSettings";
 const DEPLOYABLE_SCHEMA_TYPES = new Set([
   "post",
   "page",
-  "siteSettings",
-  "redirect",
-  "author",
 ]);
 
 async function triggerStudioDeploy(payload: {
@@ -1014,6 +1012,7 @@ export default defineConfig({
       structure: studioStructure,
     }),
     media(),
+    studioSessionPlugin(),
     visionTool(),
     assist(),
     singletonSupport,

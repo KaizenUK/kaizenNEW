@@ -39,6 +39,7 @@ const coverImageUrl = imageFor(coverImageSource, 1360, 780);
 const authorImageUrl = imageFor(post.author?.image, 72, 72);
 const studioDocumentId = post._id.replace(/^drafts\./, "");
 const studioEditHref = `/studio/structure/post;${encodeURIComponent(studioDocumentId)}`;
+const studioEditorCookieName = "kaizen_studio_auth";
 ---
 
 <article class="linear-container py-14 sm:py-20">
@@ -52,7 +53,7 @@ const studioEditHref = `/studio/structure/post;${encodeURIComponent(studioDocume
     </a>
 
     <header class="mt-6">
-      <div class="mb-4">
+      <div id="studio-edit-link" class="mb-4 hidden" data-editor-cookie={studioEditorCookieName}>
         <a
           href={studioEditHref}
           target="_blank"
@@ -121,3 +122,19 @@ const studioEditHref = `/studio/structure/post;${encodeURIComponent(studioDocume
     </section>
   </div>
 </article>
+
+<script is:inline>
+  (() => {
+    const container = document.getElementById("studio-edit-link");
+    if (!container) return;
+
+    const cookieName = container.getAttribute("data-editor-cookie") || "kaizen_studio_auth";
+    const hasEditorCookie = document.cookie
+      .split(";")
+      .some((entry) => entry.trim() === `${cookieName}=1`);
+
+    if (hasEditorCookie) {
+      container.classList.remove("hidden");
+    }
+  })();
+</script>

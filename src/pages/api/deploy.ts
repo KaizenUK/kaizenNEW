@@ -3,6 +3,7 @@ import type { APIRoute } from "astro";
 const JSON_HEADERS = {
   "content-type": "application/json",
 } as const;
+const STUDIO_EDITOR_COOKIE = "kaizen_studio_auth";
 
 function parseRepository(repository: string): { owner: string; repo: string } | null {
   const [owner, repo] = repository.split("/");
@@ -28,9 +29,22 @@ function isSameOriginRequest(request: Request): boolean {
   }
 }
 
+function hasEditorCookie(request: Request): boolean {
+  const cookieHeader = request.headers.get("cookie") ?? "";
+
+  return cookieHeader
+    .split(";")
+    .map((entry) => entry.trim())
+    .some((entry) => entry === `${STUDIO_EDITOR_COOKIE}=1`);
+}
+
 export const POST: APIRoute = async ({ request }) => {
   if (!isSameOriginRequest(request)) {
     return json(403, { ok: false, error: "Forbidden origin" });
+  }
+
+  if (!hasEditorCookie(request)) {
+    return json(401, { ok: false, error: "Studio authentication required" });
   }
 
   const githubToken = process.env.GITHUB_DEPLOY_TOKEN;
