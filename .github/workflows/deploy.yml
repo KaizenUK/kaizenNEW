@@ -64,9 +64,30 @@ jobs:
             export NODE_ENV="production"
             export CI="true"
             export NODE_OPTIONS="--max-old-space-size=4096"
+            export PUBLIC_SANITY_PROJECT_ID="${{ secrets.PUBLIC_SANITY_PROJECT_ID }}"
+            export PUBLIC_SANITY_DATASET="${{ secrets.PUBLIC_SANITY_DATASET }}"
+            export SANITY_PROJECT_ID="${{ secrets.SANITY_PROJECT_ID }}"
+            export SANITY_DATASET="${{ secrets.SANITY_DATASET }}"
             export GITHUB_DEPLOY_TOKEN="${{ secrets.GITHUB_DEPLOY_TOKEN }}"
             export GITHUB_DEPLOY_REPO="${{ github.repository }}"
             export GITHUB_DEPLOY_EVENT_TYPE="sanity-update"
+
+            if [ -z "$PUBLIC_SANITY_PROJECT_ID" ] && [ -n "$SANITY_PROJECT_ID" ]; then
+              export PUBLIC_SANITY_PROJECT_ID="$SANITY_PROJECT_ID"
+            fi
+            if [ -z "$PUBLIC_SANITY_DATASET" ] && [ -n "$SANITY_DATASET" ]; then
+              export PUBLIC_SANITY_DATASET="$SANITY_DATASET"
+            fi
+            if [ -z "$PUBLIC_SANITY_DATASET" ]; then
+              export PUBLIC_SANITY_DATASET="production"
+            fi
+            export NEXT_PUBLIC_SANITY_PROJECT_ID="$PUBLIC_SANITY_PROJECT_ID"
+            export NEXT_PUBLIC_SANITY_DATASET="$PUBLIC_SANITY_DATASET"
+
+            if [ -z "$PUBLIC_SANITY_PROJECT_ID" ]; then
+              echo "Missing Sanity project ID. Set one of: PUBLIC_SANITY_PROJECT_ID or SANITY_PROJECT_ID secrets."
+              exit 1
+            fi
 
             if [ -z "$APP_DIR" ]; then
               echo "Missing required secret: VPS_APP_DIR_PROD"
@@ -110,7 +131,11 @@ jobs:
             corepack enable
             corepack prepare pnpm@10.14.0 --activate
             pnpm install --frozen-lockfile
-            rm -rf dist .astro
+            if ! rm -rf dist .astro; then
+              echo "Failed to clean dist/.astro. This is usually a file ownership issue."
+              echo "Fix on VPS: sudo chown -R ${USER}:${USER} ${APP_DIR}"
+              exit 1
+            fi
             pnpm run build
 
             START_SCRIPT=""
@@ -184,6 +209,27 @@ jobs:
             export NODE_ENV="production"
             export CI="true"
             export NODE_OPTIONS="--max-old-space-size=4096"
+            export PUBLIC_SANITY_PROJECT_ID="${{ secrets.PUBLIC_SANITY_PROJECT_ID }}"
+            export PUBLIC_SANITY_DATASET="${{ secrets.PUBLIC_SANITY_DATASET }}"
+            export SANITY_PROJECT_ID="${{ secrets.SANITY_PROJECT_ID }}"
+            export SANITY_DATASET="${{ secrets.SANITY_DATASET }}"
+
+            if [ -z "$PUBLIC_SANITY_PROJECT_ID" ] && [ -n "$SANITY_PROJECT_ID" ]; then
+              export PUBLIC_SANITY_PROJECT_ID="$SANITY_PROJECT_ID"
+            fi
+            if [ -z "$PUBLIC_SANITY_DATASET" ] && [ -n "$SANITY_DATASET" ]; then
+              export PUBLIC_SANITY_DATASET="$SANITY_DATASET"
+            fi
+            if [ -z "$PUBLIC_SANITY_DATASET" ]; then
+              export PUBLIC_SANITY_DATASET="production"
+            fi
+            export NEXT_PUBLIC_SANITY_PROJECT_ID="$PUBLIC_SANITY_PROJECT_ID"
+            export NEXT_PUBLIC_SANITY_DATASET="$PUBLIC_SANITY_DATASET"
+
+            if [ -z "$PUBLIC_SANITY_PROJECT_ID" ]; then
+              echo "Missing Sanity project ID. Set one of: PUBLIC_SANITY_PROJECT_ID or SANITY_PROJECT_ID secrets."
+              exit 1
+            fi
 
             if [ -z "$APP_DIR" ]; then
               echo "Missing required secret: VPS_APP_DIR_STAGE"
@@ -227,7 +273,11 @@ jobs:
             corepack enable
             corepack prepare pnpm@10.14.0 --activate
             pnpm install --frozen-lockfile
-            rm -rf dist .astro
+            if ! rm -rf dist .astro; then
+              echo "Failed to clean dist/.astro. This is usually a file ownership issue."
+              echo "Fix on VPS: sudo chown -R ${USER}:${USER} ${APP_DIR}"
+              exit 1
+            fi
             pnpm run build
 
             START_SCRIPT=""

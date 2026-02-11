@@ -8,15 +8,23 @@ const env = (import.meta.env ?? {}) as Record<string, string | undefined>;
 const projectId =
   env.PUBLIC_SANITY_PROJECT_ID ??
   env.NEXT_PUBLIC_SANITY_PROJECT_ID ??
+  env.VITE_SANITY_PROJECT_ID ??
+  env.SANITY_PROJECT_ID ??
   process.env.PUBLIC_SANITY_PROJECT_ID ??
   process.env.NEXT_PUBLIC_SANITY_PROJECT_ID ??
+  process.env.VITE_SANITY_PROJECT_ID ??
+  process.env.SANITY_PROJECT_ID ??
   "";
 
 const dataset =
   env.PUBLIC_SANITY_DATASET ??
   env.NEXT_PUBLIC_SANITY_DATASET ??
+  env.VITE_SANITY_DATASET ??
+  env.SANITY_DATASET ??
   process.env.PUBLIC_SANITY_DATASET ??
   process.env.NEXT_PUBLIC_SANITY_DATASET ??
+  process.env.VITE_SANITY_DATASET ??
+  process.env.SANITY_DATASET ??
   "production";
 
 const token = env.SANITY_API_TOKEN ?? process.env.SANITY_API_TOKEN;

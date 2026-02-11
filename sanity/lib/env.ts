@@ -3,15 +3,23 @@ const env = (import.meta.env ?? {}) as Record<string, string | undefined>;
 export const projectId =
   env.PUBLIC_SANITY_PROJECT_ID ??
   env.NEXT_PUBLIC_SANITY_PROJECT_ID ??
+  env.VITE_SANITY_PROJECT_ID ??
+  env.SANITY_PROJECT_ID ??
   process.env.PUBLIC_SANITY_PROJECT_ID ??
   process.env.NEXT_PUBLIC_SANITY_PROJECT_ID ??
+  process.env.VITE_SANITY_PROJECT_ID ??
+  process.env.SANITY_PROJECT_ID ??
   "";
 
 export const dataset =
   env.PUBLIC_SANITY_DATASET ??
   env.NEXT_PUBLIC_SANITY_DATASET ??
+  env.VITE_SANITY_DATASET ??
+  env.SANITY_DATASET ??
   process.env.PUBLIC_SANITY_DATASET ??
   process.env.NEXT_PUBLIC_SANITY_DATASET ??
+  process.env.VITE_SANITY_DATASET ??
+  process.env.SANITY_DATASET ??
   "production";
 
 export const siteUrl = (
