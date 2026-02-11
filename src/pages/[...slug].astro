@@ -1,0 +1,37 @@
+---
+import AstroApp from "../../client/AstroApp";
+import {
+  DEFAULT_OG_IMAGE,
+  SITE_NAME,
+  getPageMeta,
+} from "../../client/lib/seo";
+
+const pathnameRaw = Astro.url.pathname || "/";
+const pathname =
+  pathnameRaw !== "/" && pathnameRaw.endsWith("/")
+    ? pathnameRaw.slice(0, -1)
+    : pathnameRaw;
+const meta = getPageMeta(pathname);
+const canonicalUrl = `https://kaizenweb.co.uk${pathname === "/" ? "" : pathname}`;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{meta.title}</title>
+    <meta name="description" content={meta.description} />
+    <meta name="robots" content={meta.noIndex ? "noindex, nofollow" : "index, follow"} />
+    <meta property="og:site_name" content={SITE_NAME} />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={meta.title} />
+    <meta property="og:description" content={meta.description} />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:image" content={meta.image ?? DEFAULT_OG_IMAGE} />
+    <link rel="canonical" href={canonicalUrl} />
+  </head>
+  <body>
+    <AstroApp url={pathname} client:idle />
+  </body>
+</html>

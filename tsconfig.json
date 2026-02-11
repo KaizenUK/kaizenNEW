@@ -34,10 +34,9 @@
   },
   "include": [
     "client/**/*",
-    "server/**/*",
+    "src/**/*",
     "shared/**/*",
-    "vite.config.ts",
-    "vite.config.server.ts"
+    "astro.config.mjs"
   ],
   "exclude": ["node_modules", "dist"]
 }

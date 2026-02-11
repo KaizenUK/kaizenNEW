@@ -31,7 +31,7 @@ interface ServiceItem {
   label: string;
   href: string;
   description: string;
-  icon: JSX.Element;
+  icon: React.ReactElement;
   highlight?: boolean;
 }
 

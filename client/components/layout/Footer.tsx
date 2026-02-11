@@ -1,4 +1,4 @@
-import { useEffect, useState, FormEvent } from "react";
+import { useState, type FormEvent } from "react";
 import { Link, useLocation } from "react-router-dom";
 import KaizenLogo from "@/components/KaizenLogo";
 import { ArrowRight, Linkedin, Instagram, Check } from "lucide-react";
@@ -8,7 +8,9 @@ const CONSENT_TEXT =
 
 const Footer: React.FC = () => {
   const location = useLocation();
-  const [buildVersion, setBuildVersion] = useState("");
+  const buildNumber = (import.meta.env.VITE_BUILD_NUMBER || "").trim();
+  const buildSha = (import.meta.env.VITE_BUILD_SHA || "").trim().slice(0, 7);
+  const buildLabel = buildNumber || buildSha || "local";
   const [email, setEmail] = useState("");
   const [consent, setConsent] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -16,26 +18,6 @@ const Footer: React.FC = () => {
     "idle" | "success" | "error"
   >("idle");
   const [errorMessage, setErrorMessage] = useState("");
-
-  useEffect(() => {
-    fetch("/build-timestamp.txt")
-      .then((res) => (res.ok ? res.text() : null))
-      .then((timestamp) => {
-        if (timestamp) {
-          const date = new Date(timestamp.trim());
-          const formatted = date.toLocaleDateString("en-GB", {
-            day: "2-digit",
-            month: "2-digit",
-            year: "2-digit",
-            hour: "2-digit",
-            minute: "2-digit",
-            timeZone: "Europe/London",
-          });
-          setBuildVersion(formatted);
-        }
-      })
-      .catch(() => {});
-  }, []);
 
   const handleNewsletterSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -388,17 +370,21 @@ const Footer: React.FC = () => {
           {/* Copyright */}
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
             <p className="text-xs text-white/40 text-center md:text-left">
-              © Kaizen Web Ltd t/a Kaizen (Company No. 17007703). All rights
+              (c) Kaizen Web Ltd t/a Kaizen (Company No. 17007703). All rights
               reserved {new Date().getFullYear()}
-              {buildVersion && (
-                <span className="ml-2 text-white/25" title="Build version">
-                  • Build: {buildVersion}
-                </span>
-              )}
             </p>
-            <p className="text-xs text-white/30">
-              Made with care on the Wirral
-            </p>
+            <div className="text-center md:text-right">
+              <p className="text-xs text-white/30">Made with care on the Wirral</p>
+              <p
+                className="mt-1 text-[11px] font-mono tracking-wide text-cyan-300/85"
+                title="Deployed build reference"
+              >
+                Build {buildLabel}
+                {buildNumber && buildSha && (
+                  <span className="text-cyan-200/70"> ({buildSha})</span>
+                )}
+              </p>
+            </div>
           </div>
         </div>
       </div>

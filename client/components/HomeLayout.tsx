@@ -1,6 +1,5 @@
 import { Suspense, lazy, useEffect, useState, type ReactNode } from "react";
 import { useLocation } from "react-router-dom";
-import { Helmet } from "react-helmet-async";
 import Header from "@/components/layout/Header";
 import { isReactSnapPrerender } from "@/lib/prerender";
 
@@ -18,6 +17,33 @@ const HOME_DESCRIPTION =
 const HOME_OG_IMAGE =
   "https://cdn.builder.io/api/v1/image/assets%2Fe4ae46bbd81b4b95bef54d66dd9748cc%2F094cdc9be84c41ee9db80308cbe5ea73?format=webp&width=1200&height=630";
 
+const upsertMeta = (attr: "name" | "property", key: string, content: string) => {
+  const selector = `meta[${attr}="${key}"]`;
+  let meta = document.head.querySelector(selector) as HTMLMetaElement | null;
+
+  if (!meta) {
+    meta = document.createElement("meta");
+    meta.setAttribute(attr, key);
+    document.head.appendChild(meta);
+  }
+
+  meta.setAttribute("content", content);
+};
+
+const upsertCanonical = (href: string) => {
+  let canonical = document.head.querySelector(
+    'link[rel="canonical"]',
+  ) as HTMLLinkElement | null;
+
+  if (!canonical) {
+    canonical = document.createElement("link");
+    canonical.setAttribute("rel", "canonical");
+    document.head.appendChild(canonical);
+  }
+
+  canonical.setAttribute("href", href);
+};
+
 const HomeLayout = ({ children }: HomeLayoutProps) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [hasOpenedMobileMenu, setHasOpenedMobileMenu] = useState(false);
@@ -28,6 +54,31 @@ const HomeLayout = ({ children }: HomeLayoutProps) => {
     if (typeof window !== "undefined") {
       window.scrollTo(0, 0);
     }
+  }, [location.pathname]);
+
+  useEffect(() => {
+    if (typeof document === "undefined") return;
+
+    document.title = HOME_TITLE;
+    upsertMeta("name", "description", HOME_DESCRIPTION);
+    upsertMeta("name", "robots", "index, follow");
+    upsertMeta("name", "googlebot", "index, follow");
+    upsertCanonical(HOME_URL);
+
+    upsertMeta("property", "og:locale", "en_GB");
+    upsertMeta("property", "og:type", "website");
+    upsertMeta("property", "og:site_name", "Kaizen Web");
+    upsertMeta("property", "og:title", HOME_TITLE);
+    upsertMeta("property", "og:description", HOME_DESCRIPTION);
+    upsertMeta("property", "og:url", HOME_URL);
+    upsertMeta("property", "og:image", HOME_OG_IMAGE);
+    upsertMeta("property", "og:image:alt", "Kaizen Web - Liverpool web design agency");
+
+    upsertMeta("name", "twitter:card", "summary_large_image");
+    upsertMeta("name", "twitter:title", HOME_TITLE);
+    upsertMeta("name", "twitter:description", HOME_DESCRIPTION);
+    upsertMeta("name", "twitter:image", HOME_OG_IMAGE);
+    upsertMeta("name", "twitter:site", "@kaizenweblpool");
   }, [location.pathname]);
 
   useEffect(() => {
@@ -61,32 +112,6 @@ const HomeLayout = ({ children }: HomeLayoutProps) => {
 
   return (
     <>
-      <Helmet key="seo-home" prioritizeSeoTags>
-        <title>{HOME_TITLE}</title>
-        <meta name="description" content={HOME_DESCRIPTION} />
-        <meta name="robots" content="index, follow" />
-        <meta name="googlebot" content="index, follow" />
-        <meta name="author" content="Kaizen Web" />
-        <meta name="publisher" content="Kaizen Web" />
-        <link rel="canonical" href={HOME_URL} />
-        <meta property="og:locale" content="en_GB" />
-        <meta property="og:type" content="website" />
-        <meta property="og:site_name" content="Kaizen Web" />
-        <meta property="og:title" content={HOME_TITLE} />
-        <meta property="og:description" content={HOME_DESCRIPTION} />
-        <meta property="og:url" content={HOME_URL} />
-        <meta property="og:image" content={HOME_OG_IMAGE} />
-        <meta
-          property="og:image:alt"
-          content="Kaizen Web - Liverpool web design agency"
-        />
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content={HOME_TITLE} />
-        <meta name="twitter:description" content={HOME_DESCRIPTION} />
-        <meta name="twitter:image" content={HOME_OG_IMAGE} />
-        <meta name="twitter:site" content="@kaizenweblpool" />
-      </Helmet>
-
       <div className="site-shell min-h-screen flex flex-col bg-background text-foreground transition-colors">
         <Header
           mobileMenuOpen={mobileMenuOpen}
