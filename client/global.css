@@ -550,6 +550,7 @@
     .hero-mesh-blob,
     .hero-spotlight {
       animation: none;
+      display: none;
     }
   }
 }

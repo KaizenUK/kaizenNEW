@@ -9,6 +9,8 @@ const CONSENT_TEXT =
 const Footer: React.FC = () => {
   const location = useLocation();
   const buildNumber = (import.meta.env.VITE_BUILD_NUMBER || "").trim();
+  const buildSha = (import.meta.env.VITE_BUILD_SHA || "").trim().slice(0, 7);
+  const buildLabel = buildNumber || buildSha || "local";
   const [email, setEmail] = useState("");
   const [consent, setConsent] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -368,17 +370,21 @@ const Footer: React.FC = () => {
           {/* Copyright */}
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
             <p className="text-xs text-white/40 text-center md:text-left">
-              © Kaizen Web Ltd t/a Kaizen (Company No. 17007703). All rights
+              (c) Kaizen Web Ltd t/a Kaizen (Company No. 17007703). All rights
               reserved {new Date().getFullYear()}
-              {buildNumber && (
-                <span className="ml-2 text-white/25" title="Build version">
-                  | Build #{buildNumber}
-                </span>
-              )}
             </p>
-            <p className="text-xs text-white/30">
-              Made with care on the Wirral
-            </p>
+            <div className="text-center md:text-right">
+              <p className="text-xs text-white/30">Made with care on the Wirral</p>
+              <p
+                className="mt-1 text-[11px] font-mono tracking-wide text-cyan-300/85"
+                title="Deployed build reference"
+              >
+                Build {buildLabel}
+                {buildNumber && buildSha && (
+                  <span className="text-cyan-200/70"> ({buildSha})</span>
+                )}
+              </p>
+            </div>
           </div>
         </div>
       </div>
