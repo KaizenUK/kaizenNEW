@@ -112,12 +112,13 @@ jobs:
             pnpm run build
             for file in dist/server/chunks/_@astrojs-ssr-adapter_*.mjs; do
               [ -f "$file" ] || continue
-              if grep -q "if (typeof util.inherits !== 'function') util.inherits = requireInherits_browser();" "$file"; then
-                continue
+              if grep -q "util.inherits(SendStream, Stream);" "$file"; then
+                sed -i "s/util.inherits(SendStream, Stream);/requireInherits_browser()(SendStream, Stream);/" "$file"
+                echo "Patched SSR adapter: $(basename "$file")"
               fi
               if grep -q "util.inherits(SendStream, Stream);" "$file"; then
-                sed -i "s/util.inherits(SendStream, Stream);/if (typeof util.inherits !== 'function') util.inherits = requireInherits_browser();\\n\\tutil.inherits(SendStream, Stream);/" "$file"
-                echo "Patched SSR adapter: $(basename "$file")"
+                echo "Failed to patch util.inherits in $(basename "$file")"
+                exit 1
               fi
             done
 
@@ -238,12 +239,13 @@ jobs:
             pnpm run build
             for file in dist/server/chunks/_@astrojs-ssr-adapter_*.mjs; do
               [ -f "$file" ] || continue
-              if grep -q "if (typeof util.inherits !== 'function') util.inherits = requireInherits_browser();" "$file"; then
-                continue
+              if grep -q "util.inherits(SendStream, Stream);" "$file"; then
+                sed -i "s/util.inherits(SendStream, Stream);/requireInherits_browser()(SendStream, Stream);/" "$file"
+                echo "Patched SSR adapter: $(basename "$file")"
               fi
               if grep -q "util.inherits(SendStream, Stream);" "$file"; then
-                sed -i "s/util.inherits(SendStream, Stream);/if (typeof util.inherits !== 'function') util.inherits = requireInherits_browser();\\n\\tutil.inherits(SendStream, Stream);/" "$file"
-                echo "Patched SSR adapter: $(basename "$file")"
+                echo "Failed to patch util.inherits in $(basename "$file")"
+                exit 1
               fi
             done
 
