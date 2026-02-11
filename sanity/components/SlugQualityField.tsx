@@ -116,11 +116,6 @@ export function SlugQualityField(
     <div>
       {props.renderDefault(props)}
       <div style={{ marginTop: 8, display: "grid", gap: 6 }}>
-        <p style={{ margin: 0, fontSize: 11, color: "#9ca3af" }}>
-          Google usually ignores common stop words in URLs. Keep slugs concise
-          and keyword-focused.
-        </p>
-
         {mustFound.length > 0 && (
           <p style={{ margin: 0, fontSize: 11, color: "#f87171", fontWeight: 700 }}>
             Remove: {mustFound.join(", ")}
@@ -142,4 +137,3 @@ export function SlugQualityField(
     </div>
   );
 }
-

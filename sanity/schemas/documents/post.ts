@@ -104,8 +104,7 @@ export const post = defineType({
       type: "slug",
       options: { source: "title", maxLength: 96 },
       components: { field: SlugQualityField },
-      description:
-        "Keep slugs short and keyword focused. Google usually ignores stop words, so removing them can improve readability.",
+      description: "Keep slugs short and keyword focused.",
       validation: (Rule) => [
         Rule.required(),
         Rule.custom((value) => {
