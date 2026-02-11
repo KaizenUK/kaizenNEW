@@ -5,14 +5,24 @@ export const prerender = false;
 ---
 
 <!doctype html>
-<html lang="en-GB" class="h-full">
+<html lang="en-GB">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Kaizen CMS Studio</title>
+    <title>Kaizen CMS</title>
     <meta name="robots" content="noindex, nofollow" />
+    <style>
+      /* Kill any white border / flash of unstyled content */
+      html, body {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        background: #101112;
+        overflow: hidden;
+      }
+    </style>
   </head>
-  <body class="m-0 h-full">
+  <body>
     <Studio client:only="react" />
   </body>
 </html>

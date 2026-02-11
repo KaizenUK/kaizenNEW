@@ -1,41 +1,128 @@
 /*
- * Kaizen Studio – custom CSS overrides
- *
- * Moves the document action bar (Publish / Discard) from the bottom
- * to the top of the document pane, and makes it more prominent.
+ * Kaizen Studio – visual overhaul
+ * ────────────────────────────────
+ * 1. Kill any white border/gap around the Studio iframe
+ * 2. Widen the document form so body/content isn't cramped
+ * 3. Move the action bar to the top of the document pane
+ * 4. Make Publish & Discard more prominent
+ * 5. General dark-mode polish
  */
 
-/* ── Flip the document panel so the footer (actions) renders above the form ── */
+/* ═══════════════════════════════════════════════════════════════════
+   1. FULL-BLEED — no white border around Studio
+   ═══════════════════════════════════════════════════════════════════ */
+
+html, body, #sanity {
+  margin: 0 !important;
+  padding: 0 !important;
+  background: #101112 !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   2. WIDER FORM — give the body editor more breathing room
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* Sanity wraps form fields in a Container with ~640px max-width.
+   Push it out so the rich-text editor + fields aren't so narrow. */
+[data-testid="document-panel-scroller"] [data-ui="Container"] {
+  max-width: 960px !important;
+}
+
+/* The Portable Text editor itself can also be narrow */
+[data-testid="pt-editor"] {
+  max-width: 100% !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   3. ACTION BAR → STICKY TOP
+   ═══════════════════════════════════════════════════════════════════
+   Sanity renders actions in a footer. We flip the document pane
+   layout so the footer sits at the top, always visible.
+   Multiple selectors for different Sanity internal structures.    */
+
+/* Approach A: target the panel that wraps scroller + footer */
+[data-testid="document-panel"] > div {
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+/* The scroll area should fill remaining space */
 [data-testid="document-panel-scroller"] {
-  display: flex;
-  flex-direction: column;
+  flex: 1 1 auto !important;
+  min-height: 0 !important;
+  order: 1 !important;
 }
 
-/* The status/actions bar inside the document pane */
-[data-testid="document-panel-scroller"] > [data-testid="document-panel-portal"] {
-  order: -1;
-  position: sticky;
-  top: 0;
-  z-index: 100;
-  border-bottom: 1px solid var(--card-border-color, rgba(255, 255, 255, 0.1));
-  background: var(--card-bg-color, #101112);
+/* The footer / status bar → move to top */
+[data-testid="document-panel"] footer,
+[data-testid="document-panel"] > div > div:last-child:not([data-testid="document-panel-scroller"]) {
+  order: -1 !important;
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 200 !important;
+  background: #1a1b1d !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+  border-top: none !important;
+  padding: 8px 16px !important;
 }
 
-/* Ensure the form content still fills available space */
-[data-testid="document-panel-scroller"] > div:not([data-testid="document-panel-portal"]) {
-  flex: 1;
-  min-height: 0;
+/* Approach B: target data-ui StatusBar directly */
+[data-ui="StatusBar"] {
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 200 !important;
+  background: #1a1b1d !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+  border-top: none !important;
 }
 
-/* ── Make the Publish button larger / more prominent ── */
-[data-testid="action-Publish---Deploy"],
-[data-testid="action-publish"] {
-  font-weight: 600;
+/* ═══════════════════════════════════════════════════════════════════
+   4. PROMINENT PUBLISH BUTTON
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* Make the primary action button bolder */
+[data-testid="action-menu-button"],
+[data-ui="MenuButton"] > button:first-child {
+  font-weight: 600 !important;
 }
 
-/* ── Ensure the document footer stays visible even when scrolling ── */
-[data-ui="DocumentStatusBar"] {
-  position: sticky;
-  top: 0;
-  z-index: 100;
+/* Publish button green accent */
+button[data-testid*="action"][data-tone="primary"],
+[data-ui="StatusBar"] button[data-ui="Button"][data-tone="primary"] {
+  background: #1e7a3f !important;
+  color: #fff !important;
+}
+
+button[data-testid*="action"][data-tone="primary"]:hover,
+[data-ui="StatusBar"] button[data-ui="Button"][data-tone="primary"]:hover {
+  background: #22924a !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   5. DOCUMENT PANE POLISH
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* Slightly darker card background for the document panel */
+[data-testid="document-panel"] {
+  background: #101112 !important;
+}
+
+/* Field labels — slightly more contrast */
+[data-testid="document-panel"] label {
+  color: rgba(255, 255, 255, 0.85) !important;
+}
+
+/* Input fields — subtle border glow on focus */
+[data-testid="document-panel"] input:focus,
+[data-testid="document-panel"] textarea:focus {
+  box-shadow: 0 0 0 1px rgba(59, 130, 246, 0.5) !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   6. DOCUMENT LIST polish
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* Give the left-hand list items a bit more padding */
+[data-ui="DefaultPreview"] {
+  padding: 4px 0 !important;
 }

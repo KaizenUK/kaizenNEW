@@ -26,14 +26,6 @@ export const post = defineType({
       validation: (Rule) => Rule.required(),
     }),
     defineField({
-      name: "excerpt",
-      type: "text",
-      rows: 3,
-      group: "content",
-      description: "Short summary used on index cards and social snippets.",
-      validation: (Rule) => Rule.max(240),
-    }),
-    defineField({
       name: "body",
       type: "array",
       group: "content",
@@ -58,6 +50,14 @@ export const post = defineType({
         defineArrayMember({ type: "videoEmbed" }),
       ],
       validation: (Rule) => Rule.required().min(1),
+    }),
+    defineField({
+      name: "excerpt",
+      type: "text",
+      rows: 3,
+      group: "content",
+      description: "Short summary used on index cards and social snippets.",
+      validation: (Rule) => Rule.max(240),
     }),
 
     // ── Media group ────────────────────────────────────────────────
@@ -138,7 +138,8 @@ export const post = defineType({
           name: "focusKeyword",
           title: "Focus Keyword",
           type: "string",
-          description: "Primary keyword to validate against meta title and description.",
+          description:
+            "Primary keyword to validate against meta title and description.",
         }),
         defineField({
           name: "metaDescription",
@@ -167,7 +168,8 @@ export const post = defineType({
           name: "shareImage",
           title: "Share Image",
           type: "image",
-          description: "Recommended 1200×630. Falls back to Main Image if empty.",
+          description:
+            "Recommended 1200×630. Falls back to Main Image if empty.",
           options: {
             hotspot: true,
             aiAssist: { exclude: true },
@@ -177,7 +179,8 @@ export const post = defineType({
           name: "canonicalUrl",
           title: "Canonical URL",
           type: "url",
-          description: "Only set if this content was originally published elsewhere.",
+          description:
+            "Only set if this content was originally published elsewhere.",
         }),
       ],
     }),
@@ -195,7 +198,12 @@ export const post = defineType({
       title: "Categories",
       type: "array",
       group: "settings",
-      of: [defineArrayMember({ type: "reference", to: [{ type: "category" }] })],
+      of: [
+        defineArrayMember({
+          type: "reference",
+          to: [{ type: "category" }],
+        }),
+      ],
       validation: (Rule) => Rule.unique(),
     }),
     defineField({

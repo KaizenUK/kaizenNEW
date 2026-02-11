@@ -8,6 +8,7 @@ import { resolvedProjectId, resolvedDataset } from "./sanity/lib/env";
 import { schemaTypes } from "./sanity/schemas";
 import { studioStructure } from "./sanity/structure";
 import { singletonPlugin } from "./sanity/plugins/singleton";
+import Dashboard from "./sanity/components/Dashboard";
 
 export default defineConfig({
   name: "default",
@@ -30,6 +31,15 @@ export default defineConfig({
           prev.filter((inspector) => inspector.name !== "ai-assistance"),
       },
     },
+  ],
+
+  tools: (prev) => [
+    {
+      name: "home",
+      title: "Home",
+      component: Dashboard,
+    },
+    ...prev,
   ],
 
   schema: {
