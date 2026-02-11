@@ -6,7 +6,8 @@
       "Bash(dir:*)",
       "Bash(ls:*)",
       "Bash(node -e:*)",
-      "Bash(npx astro:*)"
+      "Bash(npx astro:*)",
+      "Bash(pnpm run build:*)"
     ]
   }
 }
