@@ -4,13 +4,17 @@ on:
   push:
     branches:
       - main
-      - stage
+  repository_dispatch:
+    types:
+      - sanity-update
   workflow_dispatch:
 
 jobs:
   web-deploy:
     name: Build and Deploy SSR
     runs-on: ubuntu-latest
+    env:
+      NODE_OPTIONS: --max-old-space-size=6144
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -35,7 +39,7 @@ jobs:
           pnpm run build
 
       - name: Deploy Production SSR on VPS
-        if: github.ref == 'refs/heads/main'
+        if: github.ref == 'refs/heads/main' || github.event_name == 'repository_dispatch'
         uses: appleboy/ssh-action@v1.2.0
         with:
           host: ${{ secrets.VPS_HOST }}
@@ -53,6 +57,10 @@ jobs:
             export VITE_BUILD_SHA="${{ github.sha }}"
             export NODE_ENV="production"
             export CI="true"
+            export NODE_OPTIONS="--max-old-space-size=4096"
+            export GITHUB_DEPLOY_TOKEN="${{ secrets.GITHUB_DEPLOY_TOKEN }}"
+            export GITHUB_DEPLOY_REPO="${{ github.repository }}"
+            export GITHUB_DEPLOY_EVENT_TYPE="sanity-update"
 
             if [ -z "$APP_DIR" ]; then
               echo "Missing required secret: VPS_APP_DIR_PROD"
@@ -146,6 +154,7 @@ jobs:
             export VITE_BUILD_SHA="${{ github.sha }}"
             export NODE_ENV="production"
             export CI="true"
+            export NODE_OPTIONS="--max-old-space-size=4096"
 
             if [ -z "$APP_DIR" ]; then
               echo "Missing required secret: VPS_APP_DIR_STAGE"

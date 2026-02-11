@@ -5,9 +5,11 @@ import {
   defineConfig,
   defineField,
   defineType,
+  type DocumentActionComponent,
   type SanityDocument,
 } from "sanity";
 import { deskTool, type StructureBuilder } from "sanity/desk";
+import { media } from "sanity-plugin-media";
 import { SEOPane } from "sanity-plugin-seo-pane";
 
 const env = (import.meta.env ?? {}) as Record<string, string | undefined>;
@@ -37,6 +39,118 @@ const siteUrl = (
 const resolvedProjectId = projectId || "missing-project-id";
 const resolvedDataset = dataset || "production";
 const SITE_SETTINGS_ID = "siteSettings";
+const DEPLOYABLE_SCHEMA_TYPES = new Set([
+  "post",
+  "page",
+  "siteSettings",
+  "redirect",
+  "author",
+]);
+
+async function triggerStudioDeploy(payload: {
+  documentId?: string;
+  schemaType?: string;
+}): Promise<void> {
+  const response = await fetch("/api/deploy", {
+    method: "POST",
+    headers: {
+      "content-type": "application/json",
+    },
+    body: JSON.stringify(payload),
+  });
+
+  if (!response.ok) {
+    const message = await response.text();
+    throw new Error(
+      `Deployment trigger failed (${response.status} ${response.statusText})${message ? `: ${message}` : ""}`,
+    );
+  }
+}
+
+const deployNowAction: DocumentActionComponent = (props) => ({
+  label: "Deploy Live",
+  title: "Trigger a production deployment now",
+  group: "paneActions",
+  onHandle: async () => {
+    try {
+      await triggerStudioDeploy({
+        documentId: props.id,
+        schemaType: props.type,
+      });
+    } catch (error) {
+      console.error("Manual deploy trigger failed", error);
+      if (typeof window !== "undefined") {
+        window.alert(
+          "Deploy trigger failed. Check /api/deploy server env vars and GitHub Actions permissions.",
+        );
+      }
+    } finally {
+      props.onComplete();
+    }
+  },
+});
+
+deployNowAction.displayName = "DeployNowAction";
+
+function wrapPublishWithDeploy(
+  action: DocumentActionComponent,
+): DocumentActionComponent {
+  const PublishAndDeployAction: DocumentActionComponent = (props) => {
+    const original = action(props);
+
+    if (!original) return original;
+
+    return {
+      ...original,
+      label: "Publish & Deploy",
+      title: "Publish this document and trigger a production deployment",
+      onHandle: async () => {
+        try {
+          if (typeof original.onHandle === "function") {
+            await Promise.resolve(original.onHandle());
+          }
+
+          // Publish is async in the background; wait briefly before dispatching the build.
+          await new Promise((resolve) => setTimeout(resolve, 1200));
+          await triggerStudioDeploy({
+            documentId: props.id,
+            schemaType: props.type,
+          });
+        } catch (error) {
+          console.error("Publish succeeded but deploy trigger failed", error);
+          if (typeof window !== "undefined") {
+            window.alert(
+              "Published, but deploy trigger failed. Use the 'Deploy Live' button to retry.",
+            );
+          }
+        }
+      },
+    };
+  };
+
+  PublishAndDeployAction.action = action.action;
+  PublishAndDeployAction.displayName = action.displayName ?? "PublishAndDeployAction";
+  return PublishAndDeployAction;
+}
+
+function applyDeployActions(
+  previousActions: DocumentActionComponent[],
+  schemaType: string,
+): DocumentActionComponent[] {
+  if (!DEPLOYABLE_SCHEMA_TYPES.has(schemaType)) {
+    return previousActions;
+  }
+
+  const withPublishWrapped = previousActions.map((action) =>
+    action.action === "publish" ? wrapPublishWithDeploy(action) : action,
+  );
+
+  if (withPublishWrapped.some((action) => action.displayName === deployNowAction.displayName)) {
+    return withPublishWrapped;
+  }
+
+  return [deployNowAction, ...withPublishWrapped];
+}
 
 const author = defineType({
   name: "author",
@@ -543,21 +657,28 @@ const post = defineType({
       name: "seo",
       title: "SEO",
       type: "object",
+      description:
+        "Visible scoring and validation while editing. Red errors must be fixed before publishing.",
+      options: {
+        collapsible: false,
+        collapsed: false,
+      },
       fields: [
         defineField({
           name: "metaTitle",
           title: "Meta Title",
           type: "string",
+          description:
+            "Required. Keep between 30 and 60 characters and include the focus keyword.",
           validation: (Rule) => [
-            Rule.max(60).warning("Google creates ellipses after 60 chars"),
+            Rule.required().error("Meta title is required"),
+            Rule.min(30).warning("Meta title should be at least 30 characters"),
+            Rule.max(60).error("Google creates ellipses after 60 chars"),
             Rule.custom((value, context) => {
               const title = typeof value === "string" ? value.trim() : "";
               const focusKeyword = String(
-                (
-                  context.document as {
-                    seo?: { focusKeyword?: string };
-                  }
-                )?.seo?.focusKeyword ?? "",
+                (context.parent as { focusKeyword?: string } | undefined)
+                  ?.focusKeyword ?? "",
               ).trim();
 
               if (!title || !focusKeyword) {
@@ -576,16 +697,19 @@ const post = defineType({
           name: "focusKeyword",
           title: "Focus Keyword",
           type: "string",
+          description: "Primary keyword to validate against your meta title.",
         }),
         defineField({
           name: "metaDescription",
           title: "Meta Description",
           type: "text",
           rows: 4,
-          validation: (Rule) =>
-            Rule.min(50)
-              .max(160)
-              .warning("Descriptions should be between 50 and 160 characters"),
+          description: "Required. Target 50 to 160 characters for best snippets.",
+          validation: (Rule) => [
+            Rule.required().error("Meta description is required"),
+            Rule.min(50).warning("Descriptions should be at least 50 characters"),
+            Rule.max(160).error("Descriptions should not exceed 160 characters"),
+          ],
         }),
         defineField({
           name: "shareImage",
@@ -863,12 +987,19 @@ const singletonSupport = {
       creationContext?.type === "global"
         ? prev.filter((templateItem) => templateItem.templateId !== "siteSettings")
         : prev,
-    actions: (prev: any[], { schemaType }: any) =>
-      schemaType === "siteSettings"
-        ? prev.filter(({ action }) =>
-            action ? ["publish", "discardChanges", "restore"].includes(action) : false,
-          )
-        : prev,
+    actions: (prev: DocumentActionComponent[], { schemaType }: { schemaType: string }) => {
+      let allowedActions = prev;
+
+      if (schemaType === "siteSettings") {
+        allowedActions = prev.filter((action) =>
+          action.action
+            ? ["publish", "discardChanges", "restore"].includes(action.action)
+            : false,
+        );
+      }
+
+      return applyDeployActions(allowedActions, schemaType);
+    },
   },
 };
 
@@ -882,6 +1013,7 @@ export default defineConfig({
     deskTool({
       structure: studioStructure,
     }),
+    media(),
     visionTool(),
     assist(),
     singletonSupport,

@@ -30,6 +30,7 @@
     "react-ga4": "^2.1.0",
     "react-helmet-async": "^2.0.5",
     "sanity": "^5.9.0",
+    "sanity-plugin-media": "^4.1.1",
     "sanity-plugin-seo-pane": "^2.0.1"
   },
   "devDependencies": {

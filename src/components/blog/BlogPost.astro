@@ -37,6 +37,8 @@ const imageFor = (
 const coverImageSource = post.mainImage ?? post.coverImage;
 const coverImageUrl = imageFor(coverImageSource, 1360, 780);
 const authorImageUrl = imageFor(post.author?.image, 72, 72);
+const studioDocumentId = post._id.replace(/^drafts\./, "");
+const studioEditHref = `/studio/structure/post;${encodeURIComponent(studioDocumentId)}`;
 ---
 
 <article class="linear-container py-14 sm:py-20">
@@ -50,6 +52,17 @@ const authorImageUrl = imageFor(post.author?.image, 72, 72);
     </a>
 
     <header class="mt-6">
+      <div class="mb-4">
+        <a
+          href={studioEditHref}
+          target="_blank"
+          rel="noreferrer"
+          class="linear-meta inline-flex items-center gap-2 rounded-full border border-sky-400/30 bg-sky-500/10 px-3 py-1.5 text-xs text-sky-200 hover:border-sky-300/60 hover:text-sky-100"
+        >
+          Edit in Studio
+        </a>
+      </div>
+
       <div class="linear-meta mb-4 flex items-center gap-4">
         <span>{published}</span>
         <span>&bull;</span>
