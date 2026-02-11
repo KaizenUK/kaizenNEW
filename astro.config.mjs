@@ -26,6 +26,9 @@ export default defineConfig({
       alias: {
         "@": path.resolve("./client"),
         "@shared": path.resolve("./shared"),
+        "react-router-dom": path.resolve(
+          "./node_modules/react-router-dom/dist/index.mjs",
+        ),
       },
       dedupe: ["react", "react-dom"],
     },

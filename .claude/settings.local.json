@@ -3,7 +3,21 @@
     "allow": [
       "Bash(npm run build:*)",
       "Bash(npx tsc:*)",
-      "Bash(dir:*)"
+      "Bash(dir:*)",
+      "Bash(git ls-tree:*)",
+      "Bash(npx astro check:*)",
+      "Bash(npx astro build:*)",
+      "Bash(npx astro dev)",
+      "Bash(timeout:*)",
+      "Bash(cmd /c type:*)",
+      "Bash(Start-Process -NoNewWindow npx -ArgumentList \"astro\",\"dev\",\"--port\",\"4322\")",
+      "Bash(Start-Sleep -Seconds 10)",
+      "Bash(Invoke-WebRequest -Uri http://localhost:4322/ -UseBasicParsing)",
+      "Bash(Select-Object -First 30)",
+      "Bash(ping:*)",
+      "Bash(curl:*)",
+      "Bash(npx astro dev:*)",
+      "Bash(node -e:*)"
     ]
   }
 }
