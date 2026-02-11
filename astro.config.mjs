@@ -20,7 +20,7 @@ export default defineConfig({
     envPrefix: ["VITE_", "PUBLIC_", "NEXT_PUBLIC_"],
     plugins: [
       nodePolyfills({
-        include: ["util", "buffer", "process"],
+        include: ["buffer", "process"],
         globals: {
           Buffer: true,
           global: true,
