@@ -27,6 +27,7 @@ dist-ssr
 !.env
 node_modules/
 dist/
+.astro/
 .env
 .env.*
 /traces
