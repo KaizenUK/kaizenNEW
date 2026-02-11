@@ -2,7 +2,6 @@ import { defineConfig } from "astro/config";
 import react from "@astrojs/react";
 import node from "@astrojs/node";
 import path from "node:path";
-import { nodePolyfills } from "vite-plugin-node-polyfills";
 
 export default defineConfig({
   output: "server",
@@ -18,19 +17,6 @@ export default defineConfig({
   integrations: [react()],
   vite: {
     envPrefix: ["VITE_", "PUBLIC_", "NEXT_PUBLIC_"],
-    plugins: [
-      nodePolyfills({
-        include: ["buffer", "process"],
-        globals: {
-          Buffer: true,
-          global: true,
-          process: true,
-        },
-      }),
-    ],
-    define: {
-      "process.env": {},
-    },
     ssr: {
       noExternal: [
         "react-helmet-async",

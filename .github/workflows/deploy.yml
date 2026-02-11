@@ -41,6 +41,7 @@ jobs:
       - name: Install and Build
         run: |
           pnpm install --frozen-lockfile
+          rm -rf dist .astro
           pnpm run build
 
       - name: Deploy Production SSR on VPS
@@ -109,6 +110,7 @@ jobs:
             corepack enable
             corepack prepare pnpm@10.14.0 --activate
             pnpm install --frozen-lockfile
+            rm -rf dist .astro
             pnpm run build
 
             START_SCRIPT=""
@@ -225,6 +227,7 @@ jobs:
             corepack enable
             corepack prepare pnpm@10.14.0 --activate
             pnpm install --frozen-lockfile
+            rm -rf dist .astro
             pnpm run build
 
             START_SCRIPT=""
