@@ -21,6 +21,13 @@ interface Stats {
   redirects: number;
 }
 
+interface SeoQuickSummary {
+  clicks: number;
+  impressions: number;
+  ctr: number;
+  position: number;
+}
+
 // ── Helpers ──────────────────────────────────────────────────────────
 
 function getGreeting(): string {
@@ -71,9 +78,11 @@ function typeBadgeColor(t: string): string {
 }
 
 function getStudioEditHref(doc: RecentDoc): string {
-  if (doc._type === "siteSettings") return "/studio/structure/site-settings";
+  if (doc._type === "siteSettings") {
+    return "/studio/intent/edit/id=siteSettings;type=siteSettings";
+  }
   const documentId = doc._id.replace(/^drafts\./, "");
-  return `/studio/structure/${doc._type};${encodeURIComponent(documentId)}`;
+  return `/studio/intent/edit/id=${encodeURIComponent(documentId)};type=${encodeURIComponent(doc._type)}`;
 }
 
 // ── Components ───────────────────────────────────────────────────────
@@ -243,6 +252,7 @@ export default function Dashboard() {
     redirects: 0,
   });
   const [loaded, setLoaded] = useState(false);
+  const [seoSummary, setSeoSummary] = useState<SeoQuickSummary | null>(null);
 
   const fetchData = useCallback(() => {
     // Recent activity: last 10 edited documents across all types
@@ -280,6 +290,21 @@ export default function Dashboard() {
         }`,
       )
       .then(setStats)
+      .catch(() => {});
+
+    fetch("/api/seo/stats?days=28", { credentials: "include" })
+      .then(async (response) => {
+        if (!response.ok) return null;
+        const payload = (await response.json()) as {
+          ok?: boolean;
+          summary?: SeoQuickSummary;
+        };
+        if (!payload.ok || !payload.summary) return null;
+        return payload.summary;
+      })
+      .then((summary) => {
+        if (summary) setSeoSummary(summary);
+      })
       .catch(() => {});
   }, [client]);
 
@@ -351,13 +376,13 @@ export default function Dashboard() {
               icon="+"
               label="New Post"
               description="Write a new blog article"
-              href="/studio/structure/blog;posts"
+              href="/studio/intent/create/template=post;type=post"
             />
             <QuickAction
               icon="+"
               label="New Page"
               description="Build a landing page"
-              href="/studio/structure/page"
+              href="/studio/intent/create/template=page;type=page"
             />
             <QuickAction
               icon="+"
@@ -369,7 +394,7 @@ export default function Dashboard() {
               icon="+"
               label="Site Settings"
               description="Navigation, logo, footer"
-              href="/studio/structure/site-settings"
+              href="/studio/intent/edit/id=siteSettings;type=siteSettings"
             />
           </div>
         </div>
@@ -405,6 +430,47 @@ export default function Dashboard() {
         </div>
 
         {/* ── Two-column layout ──────────────────────────── */}
+        {seoSummary && (
+          <div style={{ marginBottom: 48 }}>
+            <h2
+              style={{
+                fontSize: 13,
+                fontWeight: 600,
+                color: "#999",
+                textTransform: "uppercase",
+                letterSpacing: "0.06em",
+                margin: "0 0 16px",
+              }}
+            >
+              SEO Snapshot (28d)
+            </h2>
+            <div
+              style={{
+                display: "grid",
+                gap: 12,
+                gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))",
+              }}
+            >
+              <StatPill value={Math.round(seoSummary.clicks)} label="Clicks" />
+              <StatPill value={Math.round(seoSummary.impressions)} label="Impressions" />
+              <StatPill value={Math.round(seoSummary.ctr * 100)} label="CTR %" />
+              <StatPill value={Number(seoSummary.position.toFixed(1))} label="Avg Pos" />
+            </div>
+            <a
+              href="/studio/seo"
+              style={{
+                marginTop: 12,
+                display: "inline-block",
+                color: "#8ab4f8",
+                fontSize: 12,
+                textDecoration: "none",
+              }}
+            >
+              Open full SEO dashboard
+            </a>
+          </div>
+        )}
+
         <div
           style={{
             display: "grid",

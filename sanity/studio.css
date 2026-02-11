@@ -179,6 +179,7 @@ form:has([data-testid="field-body"]):has([data-testid="field-seo"]) [data-testid
 form:has([data-testid="field-body"]):has([data-testid="field-seo"]) [data-testid="field-mainImage"],
 form:has([data-testid="field-body"]):has([data-testid="field-seo"]) [data-testid="field-coverImage"],
 form:has([data-testid="field-body"]):has([data-testid="field-seo"]) [data-testid="field-seo"],
+form:has([data-testid="field-body"]):has([data-testid="field-seo"]) [data-testid="field-seoStatsPanel"],
 form:has([data-testid="field-body"]):has([data-testid="field-seo"]) [data-testid="field-author"],
 form:has([data-testid="field-body"]):has([data-testid="field-seo"]) [data-testid="field-categories"],
 form:has([data-testid="field-body"]):has([data-testid="field-seo"]) [data-testid="field-publishedAt"],

@@ -68,6 +68,7 @@ jobs:
             export PUBLIC_SANITY_DATASET="${{ secrets.PUBLIC_SANITY_DATASET }}"
             export SANITY_PROJECT_ID="${{ secrets.SANITY_PROJECT_ID }}"
             export SANITY_DATASET="${{ secrets.SANITY_DATASET }}"
+            export SANITY_API_TOKEN="${{ secrets.SANITY_API_TOKEN }}"
             export NEXT_PUBLIC_SANITY_PROJECT_ID_SECRET="${{ secrets.NEXT_PUBLIC_SANITY_PROJECT_ID }}"
             export NEXT_PUBLIC_SANITY_DATASET_SECRET="${{ secrets.NEXT_PUBLIC_SANITY_DATASET }}"
             export VITE_SANITY_PROJECT_ID_SECRET="${{ secrets.VITE_SANITY_PROJECT_ID }}"
@@ -76,6 +77,12 @@ jobs:
             export GITHUB_DEPLOY_REPO="${{ github.repository }}"
             export GITHUB_DEPLOY_EVENT_TYPE="sanity-update"
             export GITHUB_DEPLOY_TARGET="main"
+            export GCP_PROJECT_ID="${{ secrets.GCP_PROJECT_ID }}"
+            export GCP_CLIENT_EMAIL="${{ secrets.GCP_CLIENT_EMAIL }}"
+            export GCP_PRIVATE_KEY="${{ secrets.GCP_PRIVATE_KEY }}"
+            export SEO_SITES_JSON="${{ secrets.SEO_SITES_JSON }}"
+            export GSC_SITE_URL="${{ secrets.GSC_SITE_URL }}"
+            export GA4_PROPERTY_ID="${{ secrets.GA4_PROPERTY_ID }}"
 
             if [ -z "$PUBLIC_SANITY_PROJECT_ID" ] && [ -n "$SANITY_PROJECT_ID" ]; then
               export PUBLIC_SANITY_PROJECT_ID="$SANITY_PROJECT_ID"
@@ -230,6 +237,7 @@ jobs:
             export PUBLIC_SANITY_DATASET="${{ secrets.PUBLIC_SANITY_DATASET }}"
             export SANITY_PROJECT_ID="${{ secrets.SANITY_PROJECT_ID }}"
             export SANITY_DATASET="${{ secrets.SANITY_DATASET }}"
+            export SANITY_API_TOKEN="${{ secrets.SANITY_API_TOKEN }}"
             export NEXT_PUBLIC_SANITY_PROJECT_ID_SECRET="${{ secrets.NEXT_PUBLIC_SANITY_PROJECT_ID }}"
             export NEXT_PUBLIC_SANITY_DATASET_SECRET="${{ secrets.NEXT_PUBLIC_SANITY_DATASET }}"
             export VITE_SANITY_PROJECT_ID_SECRET="${{ secrets.VITE_SANITY_PROJECT_ID }}"
@@ -238,6 +246,12 @@ jobs:
             export GITHUB_DEPLOY_REPO="${{ github.repository }}"
             export GITHUB_DEPLOY_EVENT_TYPE="sanity-update"
             export GITHUB_DEPLOY_TARGET="stage"
+            export GCP_PROJECT_ID="${{ secrets.GCP_PROJECT_ID }}"
+            export GCP_CLIENT_EMAIL="${{ secrets.GCP_CLIENT_EMAIL }}"
+            export GCP_PRIVATE_KEY="${{ secrets.GCP_PRIVATE_KEY }}"
+            export SEO_SITES_JSON="${{ secrets.SEO_SITES_JSON }}"
+            export GSC_SITE_URL="${{ secrets.GSC_SITE_URL }}"
+            export GA4_PROPERTY_ID="${{ secrets.GA4_PROPERTY_ID }}"
 
             if [ -z "$PUBLIC_SANITY_PROJECT_ID" ] && [ -n "$SANITY_PROJECT_ID" ]; then
               export PUBLIC_SANITY_PROJECT_ID="$SANITY_PROJECT_ID"

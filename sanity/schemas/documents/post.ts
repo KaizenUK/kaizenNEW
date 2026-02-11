@@ -1,4 +1,5 @@
 import { defineArrayMember, defineField, defineType } from "sanity";
+import { PostSeoStatsField } from "../../components/PostSeoStatsField";
 import { SeoMetaDescriptionField } from "../../components/SeoMetaDescriptionField";
 import { SeoMetaTitleField } from "../../components/SeoMetaTitleField";
 
@@ -190,6 +191,23 @@ export const post = defineType({
     }),
 
     // ── Settings group ─────────────────────────────────────────────
+    defineField({
+      name: "seoStatsPanel",
+      title: "SEO Stats",
+      type: "string",
+      group: "seo",
+      readOnly: true,
+      hidden: ({ document }) => {
+        const slugValue =
+          typeof document?.slug === "object" &&
+          document.slug !== null &&
+          "current" in document.slug
+            ? String((document.slug as { current?: string }).current ?? "").trim()
+            : "";
+        return !slugValue;
+      },
+      components: { field: PostSeoStatsField },
+    }),
     defineField({
       name: "author",
       type: "reference",

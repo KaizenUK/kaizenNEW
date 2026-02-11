@@ -9,6 +9,7 @@ import { schemaTypes } from "./sanity/schemas";
 import { studioStructure } from "./sanity/structure";
 import { singletonPlugin } from "./sanity/plugins/singleton";
 import Dashboard from "./sanity/components/Dashboard";
+import SeoDashboard from "./sanity/components/SeoDashboard";
 
 export default defineConfig({
   name: "default",
@@ -38,6 +39,11 @@ export default defineConfig({
       name: "home",
       title: "Home",
       component: Dashboard,
+    },
+    {
+      name: "seo",
+      title: "SEO",
+      component: SeoDashboard,
     },
     ...prev,
   ],
