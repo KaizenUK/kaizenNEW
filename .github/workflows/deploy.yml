@@ -136,32 +136,34 @@ jobs:
 
             echo "Using server entry: $START_SCRIPT"
             HEALTH_PORT="$PORT"
-            PORT_FROM_BUILD="$(grep -Eo '"port":[0-9]+' "$START_SCRIPT" | head -n 1 | cut -d: -f2 || true)"
+            PORT_FROM_BUILD="$(node -e "const fs=require('node:fs');const s=fs.readFileSync(process.argv[1],'utf8');const m=s.match(/\"port\"\\s*:\\s*(\\d+)/);if(m)process.stdout.write(m[1]);" "$START_SCRIPT" 2>/dev/null || true)"
             if [ -n "$PORT_FROM_BUILD" ]; then
               HEALTH_PORT="$PORT_FROM_BUILD"
               if [ "$PORT_FROM_BUILD" != "$PORT" ]; then
                 echo "Build entry port ${PORT_FROM_BUILD} differs from deploy PORT ${PORT}. Using ${HEALTH_PORT} for health checks."
               fi
             fi
+            echo "Health check target port: ${HEALTH_PORT}"
 
             pm2 delete "$APP_NAME" > /dev/null 2>&1 || true
             pm2 start "$START_SCRIPT" --name "$APP_NAME" --cwd "$APP_DIR" --interpreter "$NODE_BIN" --update-env
             pm2 save
             pm2 describe "$APP_NAME" || true
 
-            for i in 1 2 3 4 5; do
+            for i in 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15; do
               if curl -fsS --max-time 10 "http://127.0.0.1:${HEALTH_PORT}/" > /dev/null; then
                 echo "Health check OK on port ${HEALTH_PORT}"
                 break
               fi
 
-              if [ "$i" -eq 5 ]; then
+              if [ "$i" -eq 15 ]; then
                 echo "Health check failed on port ${HEALTH_PORT}"
+                ss -lntp | grep node || true
                 pm2 logs "$APP_NAME" --lines 80 --nostream || true
                 exit 1
               fi
 
-              sleep 2
+              sleep 3
             done
 
       - name: Deploy Staging SSR on VPS
@@ -254,32 +256,34 @@ jobs:
 
             echo "Using server entry: $START_SCRIPT"
             HEALTH_PORT="$PORT"
-            PORT_FROM_BUILD="$(grep -Eo '"port":[0-9]+' "$START_SCRIPT" | head -n 1 | cut -d: -f2 || true)"
+            PORT_FROM_BUILD="$(node -e "const fs=require('node:fs');const s=fs.readFileSync(process.argv[1],'utf8');const m=s.match(/\"port\"\\s*:\\s*(\\d+)/);if(m)process.stdout.write(m[1]);" "$START_SCRIPT" 2>/dev/null || true)"
             if [ -n "$PORT_FROM_BUILD" ]; then
               HEALTH_PORT="$PORT_FROM_BUILD"
               if [ "$PORT_FROM_BUILD" != "$PORT" ]; then
                 echo "Build entry port ${PORT_FROM_BUILD} differs from deploy PORT ${PORT}. Using ${HEALTH_PORT} for health checks."
               fi
             fi
+            echo "Health check target port: ${HEALTH_PORT}"
 
             pm2 delete "$APP_NAME" > /dev/null 2>&1 || true
             pm2 start "$START_SCRIPT" --name "$APP_NAME" --cwd "$APP_DIR" --interpreter "$NODE_BIN" --update-env
             pm2 save
             pm2 describe "$APP_NAME" || true
 
-            for i in 1 2 3 4 5; do
+            for i in 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15; do
               if curl -fsS --max-time 10 "http://127.0.0.1:${HEALTH_PORT}/" > /dev/null; then
                 echo "Health check OK on port ${HEALTH_PORT}"
                 break
               fi
 
-              if [ "$i" -eq 5 ]; then
+              if [ "$i" -eq 15 ]; then
                 echo "Health check failed on port ${HEALTH_PORT}"
+                ss -lntp | grep node || true
                 pm2 logs "$APP_NAME" --lines 80 --nostream || true
                 exit 1
               fi
 
-              sleep 2
+              sleep 3
             done
 
       # --- DISCORD NOTIFICATION ---
