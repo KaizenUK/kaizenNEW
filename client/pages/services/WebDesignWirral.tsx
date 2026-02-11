@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { Helmet } from "react-helmet-async";
+import { Helmet } from "@/lib/helmet";
 import Layout from "@/components/Layout";
 import { motion, useScroll, useTransform, useInView } from "framer-motion";
 import {

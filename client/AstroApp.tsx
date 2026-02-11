@@ -1,6 +1,6 @@
 import { Suspense, lazy, useEffect, useState } from "react";
 import { BrowserRouter, MemoryRouter, Route, Routes } from "react-router-dom";
-import { HelmetProvider } from "react-helmet-async";
+import { HelmetProvider } from "@/lib/helmet";
 import { CalendlyProvider, useCalendly } from "@/context/CalendlyContext";
 import { isReactSnapPrerender } from "@/lib/prerender";
 import Index from "./pages/Index";

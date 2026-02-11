@@ -1,6 +1,6 @@
 import { Suspense, lazy, useEffect, useState, type ReactNode } from "react";
 import { useLocation } from "react-router-dom";
-import { Helmet } from "react-helmet-async";
+import { Helmet } from "@/lib/helmet";
 import Header from "@/components/layout/Header";
 import { isReactSnapPrerender } from "@/lib/prerender";
 

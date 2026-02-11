@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import { ArrowRight, Check } from "lucide-react";
 import { useCalendly } from "@/context/CalendlyContext";
 import { FaqSection } from "@/components/FaqSection";
-import { Helmet } from "react-helmet-async";
+import { Helmet } from "@/lib/helmet";
 
 const fadeInUp = {
   hidden: { opacity: 0, y: 20 },

@@ -2,7 +2,7 @@ import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { ArrowRight, Check } from "lucide-react";
 import Layout from "@/components/Layout";
-import { Helmet } from "react-helmet-async";
+import { Helmet } from "@/lib/helmet";
 
 const ThankYou = () => {
   const recommendedReads = [

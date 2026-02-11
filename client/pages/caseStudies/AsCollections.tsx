@@ -1,5 +1,5 @@
 import Layout from "@/components/Layout";
-import { Helmet } from "react-helmet-async";
+import { Helmet } from "@/lib/helmet";
 import { ArrowLeft, ArrowUpRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";

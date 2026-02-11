@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import Layout from "@/components/Layout";
-import { Helmet } from "react-helmet-async";
+import { Helmet } from "@/lib/helmet";
 import { FaqSection } from "@/components/FaqSection";
 import { motion } from "framer-motion";
 import { AlertTriangle, CheckCircle, XCircle, ArrowRight } from "lucide-react";

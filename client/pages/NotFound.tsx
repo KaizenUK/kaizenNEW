@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
 import { motion } from "framer-motion";
 import { useCalendly } from "@/context/CalendlyContext";
-import { Helmet } from "react-helmet-async";
+import { Helmet } from "@/lib/helmet";
 
 const NotFound = () => {
   const location = useLocation();
