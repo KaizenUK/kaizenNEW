@@ -109,6 +109,39 @@ function normalizeUrlPrefixSite(siteUrl: string): string {
   }
 }
 
+function unwrapQuoted(value: string): string {
+  const trimmed = value.trim();
+  if (
+    (trimmed.startsWith('"') && trimmed.endsWith('"')) ||
+    (trimmed.startsWith("'") && trimmed.endsWith("'"))
+  ) {
+    return trimmed.slice(1, -1).trim();
+  }
+  return trimmed;
+}
+
+function tryParseStrictSites(raw: string): SeoSiteConfig[] {
+  const parsed = JSON.parse(raw) as Array<Record<string, unknown>>;
+  const normalized: SeoSiteConfig[] = [];
+
+  for (const site of parsed) {
+    const id = String(site.id ?? "").trim();
+    const label = String(site.label ?? "").trim();
+    const gscSiteUrl = normalizeUrlPrefixSite(String(site.gscSiteUrl ?? "").trim());
+    const ga4PropertyId = String(site.ga4PropertyId ?? "").trim();
+
+    if (!id || !gscSiteUrl) continue;
+    normalized.push({
+      id,
+      label: label || id,
+      gscSiteUrl,
+      ga4PropertyId: ga4PropertyId || undefined,
+    });
+  }
+
+  return normalized;
+}
+
 function parseSeoSitesFromEnv(): SeoSiteConfig[] {
   const sitesRaw = getEnv("SEO_SITES_JSON") || getEnv("SEO_SITES");
   if (!sitesRaw) {
@@ -125,15 +158,39 @@ function parseSeoSitesFromEnv(): SeoSiteConfig[] {
     ];
   }
 
-  try {
-    const parsed = JSON.parse(sitesRaw) as Array<Record<string, unknown>>;
-    const normalized: SeoSiteConfig[] = [];
+  const parseCandidates = [
+    sitesRaw,
+    unwrapQuoted(sitesRaw),
+    unwrapQuoted(sitesRaw).replace(/\\"/g, '"'),
+  ];
 
-    for (const site of parsed) {
-      const id = String(site.id ?? "").trim();
-      const label = String(site.label ?? "").trim();
-      const gscSiteUrl = normalizeUrlPrefixSite(String(site.gscSiteUrl ?? "").trim());
-      const ga4PropertyId = String(site.ga4PropertyId ?? "").trim();
+  for (const candidate of parseCandidates) {
+    try {
+      const parsed = tryParseStrictSites(candidate);
+      if (parsed.length) return parsed;
+    } catch {
+      // Continue and try looser parsing below.
+    }
+  }
+
+  {
+    const source = unwrapQuoted(sitesRaw);
+    const looseMatches = source.match(/\{[^{}]+\}/g) ?? [];
+    const normalized: SeoSiteConfig[] = [];
+    for (const block of looseMatches) {
+      const extract = (key: string): string => {
+        const regex = new RegExp(
+          `${key}\\s*:\\s*(?:"([^"]*)"|'([^']*)'|([^,}\\n]+))`,
+          "i",
+        );
+        const match = block.match(regex);
+        return String(match?.[1] ?? match?.[2] ?? match?.[3] ?? "").trim();
+      };
+
+      const id = extract("id");
+      const label = extract("label");
+      const gscSiteUrl = normalizeUrlPrefixSite(extract("gscSiteUrl"));
+      const ga4PropertyId = extract("ga4PropertyId");
 
       if (!id || !gscSiteUrl) continue;
       normalized.push({
@@ -145,8 +202,6 @@ function parseSeoSitesFromEnv(): SeoSiteConfig[] {
     }
 
     return normalized;
-  } catch {
-    return [];
   }
 }
 
@@ -368,7 +423,20 @@ export const GET: APIRoute = async ({ request, url }) => {
     return json(401, { ok: false, error: "Studio authentication required" });
   }
 
-  const sites = parseSeoSitesFromEnv();
+  let sites = parseSeoSitesFromEnv();
+  if (!sites.length) {
+    const requestOriginSite = normalizeUrlPrefixSite(`${new URL(request.url).origin}/`);
+    const fallbackGa = getEnv("GA4_PROPERTY_ID");
+    sites = [
+      {
+        id: "primary",
+        label: "Primary Site",
+        gscSiteUrl: requestOriginSite,
+        ga4PropertyId: fallbackGa || undefined,
+      },
+    ];
+  }
+
   if (!sites.length) {
     return json(500, {
       ok: false,

@@ -28,6 +28,28 @@ interface SeoQuickSummary {
   position: number;
 }
 
+interface SeoSetupCheck {
+  key: string;
+  present: boolean;
+  required: boolean;
+  description: string;
+}
+
+interface SeoSetupSummary {
+  ready: boolean;
+  googleCredentialsConfigured: boolean;
+  sitesConfigured: boolean;
+  analyticsConfigured: boolean;
+}
+
+interface SeoSetupStatus {
+  ok: boolean;
+  summary: SeoSetupSummary;
+  checks: SeoSetupCheck[];
+  recommendations: string[];
+  error?: string;
+}
+
 // ── Helpers ──────────────────────────────────────────────────────────
 
 function getGreeting(): string {
@@ -237,6 +259,43 @@ function ActivityRow({ doc }: { doc: RecentDoc }) {
   );
 }
 
+function SetupStatusPill({
+  label,
+  active,
+}: {
+  label: string;
+  active: boolean;
+}) {
+  return (
+    <div
+      style={{
+        display: "inline-flex",
+        alignItems: "center",
+        gap: 8,
+        borderRadius: 999,
+        border: `1px solid ${active ? "rgba(34,197,94,0.35)" : "rgba(248,113,113,0.35)"}`,
+        background: active ? "rgba(34,197,94,0.08)" : "rgba(248,113,113,0.08)",
+        color: active ? "#86efac" : "#fca5a5",
+        padding: "4px 10px",
+        fontSize: 11,
+        fontWeight: 700,
+        letterSpacing: "0.02em",
+      }}
+    >
+      <span
+        style={{
+          width: 8,
+          height: 8,
+          borderRadius: "50%",
+          background: active ? "#22c55e" : "#ef4444",
+          display: "inline-block",
+        }}
+      />
+      {label}
+    </div>
+  );
+}
+
 // ── Main Dashboard ───────────────────────────────────────────────────
 
 export default function Dashboard() {
@@ -253,6 +312,8 @@ export default function Dashboard() {
   });
   const [loaded, setLoaded] = useState(false);
   const [seoSummary, setSeoSummary] = useState<SeoQuickSummary | null>(null);
+  const [seoSetup, setSeoSetup] = useState<SeoSetupStatus | null>(null);
+  const [seoSetupError, setSeoSetupError] = useState("");
 
   const fetchData = useCallback(() => {
     // Recent activity: last 10 edited documents across all types
@@ -306,6 +367,22 @@ export default function Dashboard() {
         if (summary) setSeoSummary(summary);
       })
       .catch(() => {});
+
+    fetch("/api/seo/status", { credentials: "include" })
+      .then(async (response) => {
+        const payload = (await response.json()) as SeoSetupStatus;
+        if (!response.ok || !payload.ok) {
+          throw new Error(payload.error || "Failed to load SEO setup status");
+        }
+        setSeoSetup(payload);
+        setSeoSetupError("");
+      })
+      .catch((error) => {
+        setSeoSetup(null);
+        setSeoSetupError(
+          error instanceof Error ? error.message : "Failed to load SEO setup status",
+        );
+      });
   }, [client]);
 
   useEffect(() => {
@@ -468,6 +545,152 @@ export default function Dashboard() {
             >
               Open full SEO dashboard
             </a>
+          </div>
+        )}
+
+        {(seoSetup || seoSetupError) && (
+          <div style={{ marginBottom: 48 }}>
+            <h2
+              style={{
+                fontSize: 13,
+                fontWeight: 600,
+                color: "#999",
+                textTransform: "uppercase",
+                letterSpacing: "0.06em",
+                margin: "0 0 16px",
+              }}
+            >
+              SEO Setup Status
+            </h2>
+
+            <div
+              style={{
+                background: "#161618",
+                borderRadius: 14,
+                border: "1px solid rgba(255,255,255,0.06)",
+                padding: "18px 18px 16px",
+              }}
+            >
+              {seoSetupError && (
+                <div
+                  style={{
+                    border: "1px solid rgba(248,113,113,0.35)",
+                    background: "rgba(248,113,113,0.08)",
+                    color: "#fecaca",
+                    borderRadius: 10,
+                    padding: "10px 12px",
+                    fontSize: 12,
+                    marginBottom: 12,
+                  }}
+                >
+                  {seoSetupError}
+                </div>
+              )}
+
+              {seoSetup && (
+                <>
+                  <div
+                    style={{
+                      display: "flex",
+                      flexWrap: "wrap",
+                      gap: 8,
+                      marginBottom: 14,
+                    }}
+                  >
+                    <SetupStatusPill
+                      label="SEO API Ready"
+                      active={seoSetup.summary.ready}
+                    />
+                    <SetupStatusPill
+                      label="Google Credentials"
+                      active={seoSetup.summary.googleCredentialsConfigured}
+                    />
+                    <SetupStatusPill
+                      label="Sites Configured"
+                      active={seoSetup.summary.sitesConfigured}
+                    />
+                    <SetupStatusPill
+                      label="GA4 Metrics"
+                      active={seoSetup.summary.analyticsConfigured}
+                    />
+                  </div>
+
+                  <div style={{ display: "grid", gap: 8, marginBottom: 12 }}>
+                    {seoSetup.checks.map((check) => (
+                      <div
+                        key={check.key}
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "space-between",
+                          gap: 10,
+                          borderRadius: 10,
+                          border: "1px solid rgba(255,255,255,0.06)",
+                          padding: "9px 10px",
+                          background: "rgba(255,255,255,0.02)",
+                        }}
+                      >
+                        <div style={{ minWidth: 0 }}>
+                          <div
+                            style={{
+                              color: "#f3f4f6",
+                              fontSize: 12,
+                              fontWeight: 700,
+                              marginBottom: 2,
+                            }}
+                          >
+                            {check.key}
+                            {check.required && (
+                              <span
+                                style={{
+                                  marginLeft: 8,
+                                  color: "#fbbf24",
+                                  fontWeight: 600,
+                                  fontSize: 10,
+                                }}
+                              >
+                                REQUIRED
+                              </span>
+                            )}
+                          </div>
+                          <div
+                            style={{
+                              color: "#8f96a3",
+                              fontSize: 11,
+                              lineHeight: 1.35,
+                            }}
+                          >
+                            {check.description}
+                          </div>
+                        </div>
+
+                        <SetupStatusPill
+                          label={check.present ? "Detected" : "Missing"}
+                          active={check.present}
+                        />
+                      </div>
+                    ))}
+                  </div>
+
+                  {seoSetup.recommendations.length > 0 && (
+                    <div style={{ display: "grid", gap: 6 }}>
+                      {seoSetup.recommendations.map((item, index) => (
+                        <div
+                          key={`${item}-${index}`}
+                          style={{
+                            color: "#94a3b8",
+                            fontSize: 12,
+                            lineHeight: 1.4,
+                          }}
+                        >
+                          - {item}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </>
+              )}
+            </div>
           </div>
         )}
 

@@ -2,36 +2,163 @@ import { defineArrayMember, defineField, defineType } from "sanity";
 import { PostSeoStatsField } from "../../components/PostSeoStatsField";
 import { SeoMetaDescriptionField } from "../../components/SeoMetaDescriptionField";
 import { SeoMetaTitleField } from "../../components/SeoMetaTitleField";
+import { SlugQualityField } from "../../components/SlugQualityField";
+
+const MUST_REMOVE_STOP_WORDS = new Set([
+  "a",
+  "an",
+  "the",
+  "and",
+  "or",
+  "but",
+  "of",
+  "for",
+  "in",
+  "on",
+  "at",
+  "to",
+  "from",
+  "with",
+  "by",
+  "as",
+  "is",
+  "are",
+  "was",
+  "were",
+  "be",
+  "been",
+  "being",
+  "have",
+  "has",
+  "had",
+  "do",
+  "does",
+  "did",
+  "it",
+  "its",
+  "that",
+  "this",
+  "these",
+  "those",
+]);
+
+const NICE_TO_REMOVE_STOP_WORDS = new Set([
+  "your",
+  "my",
+  "their",
+  "our",
+  "we",
+  "you",
+  "they",
+  "he",
+  "she",
+  "him",
+  "her",
+  "who",
+  "which",
+  "what",
+  "where",
+  "when",
+  "why",
+  "how",
+  "all",
+  "any",
+  "both",
+  "each",
+  "few",
+  "more",
+  "most",
+  "other",
+  "some",
+  "such",
+  "no",
+  "nor",
+  "not",
+  "only",
+  "own",
+  "same",
+  "so",
+  "than",
+  "too",
+  "very",
+  "can",
+  "will",
+  "just",
+  "should",
+  "now",
+]);
 
 export const post = defineType({
   name: "post",
   title: "Post",
   type: "document",
-  groups: [
-    { name: "content", title: "Content", default: true },
-    { name: "media", title: "Media" },
-    { name: "seo", title: "SEO" },
-    { name: "settings", title: "Settings" },
-  ],
   fields: [
     // ── Content group ──────────────────────────────────────────────
     defineField({
       name: "title",
       type: "string",
-      group: "content",
       validation: (Rule) => Rule.required(),
     }),
     defineField({
       name: "slug",
       type: "slug",
-      group: "content",
       options: { source: "title", maxLength: 96 },
-      validation: (Rule) => Rule.required(),
+      components: { field: SlugQualityField },
+      description:
+        "Keep slugs short and keyword focused. Google usually ignores stop words, so removing them can improve readability.",
+      validation: (Rule) => [
+        Rule.required(),
+        Rule.custom((value) => {
+          const current =
+            typeof value === "object" &&
+            value !== null &&
+            "current" in value
+              ? String((value as { current?: string }).current ?? "").trim()
+              : "";
+
+          if (!current) return true;
+
+          const tokens = current
+            .toLowerCase()
+            .split("-")
+            .map((token) => token.trim())
+            .filter(Boolean);
+
+          const found = tokens.filter((token) =>
+            MUST_REMOVE_STOP_WORDS.has(token),
+          );
+
+          if (!found.length) return true;
+          return `Remove stop words from slug: ${Array.from(new Set(found)).join(", ")}`;
+        }).warning(),
+        Rule.custom((value) => {
+          const current =
+            typeof value === "object" &&
+            value !== null &&
+            "current" in value
+              ? String((value as { current?: string }).current ?? "").trim()
+              : "";
+
+          if (!current) return true;
+
+          const tokens = current
+            .toLowerCase()
+            .split("-")
+            .map((token) => token.trim())
+            .filter(Boolean);
+
+          const found = tokens.filter((token) =>
+            NICE_TO_REMOVE_STOP_WORDS.has(token),
+          );
+
+          if (!found.length) return true;
+          return `Consider removing optional stop words: ${Array.from(new Set(found)).join(", ")}`;
+        }).warning(),
+      ],
     }),
     defineField({
       name: "body",
       type: "array",
-      group: "content",
       of: [
         defineArrayMember({ type: "block" }),
         defineArrayMember({
@@ -58,7 +185,6 @@ export const post = defineType({
       name: "excerpt",
       type: "text",
       rows: 3,
-      group: "content",
       description: "Short summary used on index cards and social snippets.",
       validation: (Rule) => Rule.max(240),
     }),
@@ -68,7 +194,6 @@ export const post = defineType({
       name: "mainImage",
       title: "Main Image",
       type: "image",
-      group: "media",
       options: {
         hotspot: true,
         aiAssist: { exclude: true },
@@ -85,7 +210,6 @@ export const post = defineType({
       name: "coverImage",
       title: "Legacy Cover Image",
       type: "image",
-      group: "media",
       options: {
         hotspot: true,
         aiAssist: { exclude: true },
@@ -108,7 +232,6 @@ export const post = defineType({
       name: "seo",
       title: "SEO",
       type: "object",
-      group: "seo",
       options: {
         collapsible: false,
         collapsed: false,
@@ -195,7 +318,6 @@ export const post = defineType({
       name: "seoStatsPanel",
       title: "SEO Stats",
       type: "string",
-      group: "seo",
       readOnly: true,
       hidden: ({ document }) => {
         const slugValue =
@@ -212,14 +334,12 @@ export const post = defineType({
       name: "author",
       type: "reference",
       to: [{ type: "author" }],
-      group: "settings",
       validation: (Rule) => Rule.required(),
     }),
     defineField({
       name: "categories",
       title: "Categories",
       type: "array",
-      group: "settings",
       of: [
         defineArrayMember({
           type: "reference",
@@ -231,14 +351,12 @@ export const post = defineType({
     defineField({
       name: "publishedAt",
       type: "datetime",
-      group: "settings",
       validation: (Rule) => Rule.required(),
       initialValue: () => new Date().toISOString(),
     }),
     defineField({
       name: "readTime",
       type: "number",
-      group: "settings",
       description: "Leave blank to auto-estimate from body text.",
       validation: (Rule) => Rule.min(1).max(60),
     }),

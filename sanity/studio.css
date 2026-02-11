@@ -1,133 +1,40 @@
 /*
- * Kaizen Studio – visual overhaul
- * ────────────────────────────────
- * 1. Kill any white border/gap around the Studio iframe
- * 2. Widen the document form so body/content isn't cramped
- * 3. Move the action bar to the top of the document pane
- * 4. Make Publish & Discard more prominent
- * 5. General dark-mode polish
+ * Kaizen Studio styling
+ * Goals:
+ * 1) Keep a clean dark canvas
+ * 2) Make document actions clear and prominent
+ * 3) Push SEO/meta fields into a right rail for post editing
+ * 4) Make validation warnings/errors more visible while typing
  */
 
-/* ═══════════════════════════════════════════════════════════════════
-   1. FULL-BLEED — no white border around Studio
-   ═══════════════════════════════════════════════════════════════════ */
-
-html, body, #sanity {
+html,
+body,
+#sanity {
   margin: 0 !important;
   padding: 0 !important;
   background: #101112 !important;
 }
 
-/* ═══════════════════════════════════════════════════════════════════
-   2. WIDER FORM — give the body editor more breathing room
-   ═══════════════════════════════════════════════════════════════════ */
-
-/* Sanity wraps form fields in a Container with ~640px max-width.
-   Push it out so the rich-text editor + fields aren't so narrow. */
-[data-testid="document-panel-scroller"] [data-ui="Container"] {
-  max-width: 960px !important;
+[data-testid="document-panel"] {
+  background: #101112 !important;
 }
 
-/* The Portable Text editor itself can also be narrow */
+[data-testid="document-panel-scroller"] [data-ui="Container"] {
+  max-width: 1120px !important;
+}
+
 [data-testid="pt-editor"] {
   max-width: 100% !important;
 }
 
-/* ═══════════════════════════════════════════════════════════════════
-   3. ACTION BAR → STICKY TOP
-   ═══════════════════════════════════════════════════════════════════
-   Sanity renders actions in a footer. We flip the document pane
-   layout so the footer sits at the top, always visible.
-   Multiple selectors for different Sanity internal structures.    */
-
-/* Approach A: target the panel that wraps scroller + footer */
-[data-testid="document-panel"] > div {
-  display: flex !important;
-  flex-direction: column !important;
-}
-
-/* The scroll area should fill remaining space */
-[data-testid="document-panel-scroller"] {
-  flex: 1 1 auto !important;
-  min-height: 0 !important;
-  order: 1 !important;
-}
-
-/* The footer / status bar → move to top */
-[data-testid="document-panel"] footer,
-[data-testid="document-panel"] > div > div:last-child:not([data-testid="document-panel-scroller"]) {
-  order: -1 !important;
-  position: sticky !important;
-  top: 0 !important;
-  z-index: 200 !important;
-  background: #1a1b1d !important;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
-  border-top: none !important;
-  padding: 8px 16px !important;
-}
-
-/* Approach B: target data-ui StatusBar directly */
 [data-ui="StatusBar"] {
   position: sticky !important;
   top: 0 !important;
   z-index: 200 !important;
   background: #1a1b1d !important;
   border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
-  border-top: none !important;
 }
 
-/* ═══════════════════════════════════════════════════════════════════
-   4. PROMINENT PUBLISH BUTTON
-   ═══════════════════════════════════════════════════════════════════ */
-
-/* Make the primary action button bolder */
-[data-testid="action-menu-button"],
-[data-ui="MenuButton"] > button:first-child {
-  font-weight: 600 !important;
-}
-
-/* Publish button green accent */
-button[data-testid*="action"][data-tone="primary"],
-[data-ui="StatusBar"] button[data-ui="Button"][data-tone="primary"] {
-  background: #1e7a3f !important;
-  color: #fff !important;
-}
-
-button[data-testid*="action"][data-tone="primary"]:hover,
-[data-ui="StatusBar"] button[data-ui="Button"][data-tone="primary"]:hover {
-  background: #22924a !important;
-}
-
-/* ═══════════════════════════════════════════════════════════════════
-   5. DOCUMENT PANE POLISH
-   ═══════════════════════════════════════════════════════════════════ */
-
-/* Slightly darker card background for the document panel */
-[data-testid="document-panel"] {
-  background: #101112 !important;
-}
-
-/* Field labels — slightly more contrast */
-[data-testid="document-panel"] label {
-  color: rgba(255, 255, 255, 0.85) !important;
-}
-
-/* Input fields — subtle border glow on focus */
-[data-testid="document-panel"] input:focus,
-[data-testid="document-panel"] textarea:focus {
-  box-shadow: 0 0 0 1px rgba(59, 130, 246, 0.5) !important;
-}
-
-/* ═══════════════════════════════════════════════════════════════════
-   6. DOCUMENT LIST polish
-   ═══════════════════════════════════════════════════════════════════ */
-
-/* Give the left-hand list items a bit more padding */
-[data-ui="DefaultPreview"] {
-  padding: 4px 0 !important;
-}
-
-/* Studio action buttons: larger, clearer primary actions */
 [data-ui="StatusBar"] button[data-ui="Button"] {
   min-height: 38px !important;
   padding-inline: 14px !important;
@@ -138,7 +45,7 @@ button[data-testid*="action"][data-tone="primary"]:hover,
 [data-ui="StatusBar"] button[data-ui="Button"][data-tone="primary"] {
   background: #1f8f46 !important;
   border-color: #1f8f46 !important;
-  color: #ffffff !important;
+  color: #fff !important;
 }
 
 [data-ui="StatusBar"] button[data-ui="Button"][data-tone="primary"]:hover {
@@ -146,10 +53,9 @@ button[data-testid*="action"][data-tone="primary"]:hover,
   border-color: #25a451 !important;
 }
 
-/* Make warning/error validation text stand out while typing */
 [data-ui="Text"][data-tone="caution"] {
   color: #fbbf24 !important;
-  font-weight: 600 !important;
+  font-weight: 700 !important;
 }
 
 [data-ui="Text"][data-tone="critical"] {
@@ -158,41 +64,41 @@ button[data-testid*="action"][data-tone="primary"]:hover,
 }
 
 /*
-  Post editor layout:
-  left column = title/slug/body/excerpt
-  right column = media/seo/settings
-*/
-form:has([data-testid="field-body"]):has([data-testid="field-seo"]) {
+ * Post editor two-column layout.
+ * Uses multiple container selectors because Sanity's internal wrappers vary by version.
+ */
+[data-testid="document-panel-scroller"] form:has([data-testid="field-body"]):has([data-testid="field-seo"]),
+[data-testid="document-panel-scroller"] [data-ui="Stack"]:has(> [data-testid="field-title"]):has(> [data-testid="field-seo"]) {
   display: grid !important;
-  grid-template-columns: minmax(0, 1.8fr) minmax(280px, 1fr) !important;
+  grid-template-columns: minmax(0, 1.8fr) minmax(300px, 1fr) !important;
   gap: 14px 22px !important;
   align-items: start !important;
 }
 
-form:has([data-testid="field-body"]):has([data-testid="field-seo"]) [data-testid="field-title"],
-form:has([data-testid="field-body"]):has([data-testid="field-seo"]) [data-testid="field-slug"],
-form:has([data-testid="field-body"]):has([data-testid="field-seo"]) [data-testid="field-body"],
-form:has([data-testid="field-body"]):has([data-testid="field-seo"]) [data-testid="field-excerpt"] {
+[data-testid="document-panel-scroller"] :is(form, [data-ui="Stack"]):has([data-testid="field-body"]):has([data-testid="field-seo"]) [data-testid="field-title"],
+[data-testid="document-panel-scroller"] :is(form, [data-ui="Stack"]):has([data-testid="field-body"]):has([data-testid="field-seo"]) [data-testid="field-slug"],
+[data-testid="document-panel-scroller"] :is(form, [data-ui="Stack"]):has([data-testid="field-body"]):has([data-testid="field-seo"]) [data-testid="field-body"],
+[data-testid="document-panel-scroller"] :is(form, [data-ui="Stack"]):has([data-testid="field-body"]):has([data-testid="field-seo"]) [data-testid="field-excerpt"] {
   grid-column: 1 !important;
 }
 
-form:has([data-testid="field-body"]):has([data-testid="field-seo"]) [data-testid="field-mainImage"],
-form:has([data-testid="field-body"]):has([data-testid="field-seo"]) [data-testid="field-coverImage"],
-form:has([data-testid="field-body"]):has([data-testid="field-seo"]) [data-testid="field-seo"],
-form:has([data-testid="field-body"]):has([data-testid="field-seo"]) [data-testid="field-seoStatsPanel"],
-form:has([data-testid="field-body"]):has([data-testid="field-seo"]) [data-testid="field-author"],
-form:has([data-testid="field-body"]):has([data-testid="field-seo"]) [data-testid="field-categories"],
-form:has([data-testid="field-body"]):has([data-testid="field-seo"]) [data-testid="field-publishedAt"],
-form:has([data-testid="field-body"]):has([data-testid="field-seo"]) [data-testid="field-readTime"] {
+[data-testid="document-panel-scroller"] :is(form, [data-ui="Stack"]):has([data-testid="field-body"]):has([data-testid="field-seo"]) [data-testid="field-mainImage"],
+[data-testid="document-panel-scroller"] :is(form, [data-ui="Stack"]):has([data-testid="field-body"]):has([data-testid="field-seo"]) [data-testid="field-coverImage"],
+[data-testid="document-panel-scroller"] :is(form, [data-ui="Stack"]):has([data-testid="field-body"]):has([data-testid="field-seo"]) [data-testid="field-seo"],
+[data-testid="document-panel-scroller"] :is(form, [data-ui="Stack"]):has([data-testid="field-body"]):has([data-testid="field-seo"]) [data-testid="field-seoStatsPanel"],
+[data-testid="document-panel-scroller"] :is(form, [data-ui="Stack"]):has([data-testid="field-body"]):has([data-testid="field-seo"]) [data-testid="field-author"],
+[data-testid="document-panel-scroller"] :is(form, [data-ui="Stack"]):has([data-testid="field-body"]):has([data-testid="field-seo"]) [data-testid="field-categories"],
+[data-testid="document-panel-scroller"] :is(form, [data-ui="Stack"]):has([data-testid="field-body"]):has([data-testid="field-seo"]) [data-testid="field-publishedAt"],
+[data-testid="document-panel-scroller"] :is(form, [data-ui="Stack"]):has([data-testid="field-body"]):has([data-testid="field-seo"]) [data-testid="field-readTime"] {
   grid-column: 2 !important;
 }
 
-@media (max-width: 1099px) {
-  form:has([data-testid="field-body"]):has([data-testid="field-seo"]) {
+@media (max-width: 1100px) {
+  [data-testid="document-panel-scroller"] :is(form, [data-ui="Stack"]):has([data-testid="field-body"]):has([data-testid="field-seo"]) {
     grid-template-columns: 1fr !important;
   }
 
-  form:has([data-testid="field-body"]):has([data-testid="field-seo"]) [data-testid^="field-"] {
+  [data-testid="document-panel-scroller"] :is(form, [data-ui="Stack"]):has([data-testid="field-body"]):has([data-testid="field-seo"]) [data-testid^="field-"] {
     grid-column: 1 !important;
   }
 }
