@@ -80,7 +80,10 @@ jobs:
             export GCP_PROJECT_ID="${{ secrets.GCP_PROJECT_ID }}"
             export GCP_CLIENT_EMAIL="${{ secrets.GCP_CLIENT_EMAIL }}"
             export GCP_PRIVATE_KEY="${{ secrets.GCP_PRIVATE_KEY }}"
-            export SEO_SITES_JSON="${{ secrets.SEO_SITES_JSON }}"
+            export SEO_SITES_JSON="$(cat <<'__KAIZEN_SITES_JSON__'
+            ${{ secrets.SEO_SITES_JSON }}
+            __KAIZEN_SITES_JSON__
+            )"
             export GSC_SITE_URL="${{ secrets.GSC_SITE_URL }}"
             export GA4_PROPERTY_ID="${{ secrets.GA4_PROPERTY_ID }}"
 
@@ -249,7 +252,10 @@ jobs:
             export GCP_PROJECT_ID="${{ secrets.GCP_PROJECT_ID }}"
             export GCP_CLIENT_EMAIL="${{ secrets.GCP_CLIENT_EMAIL }}"
             export GCP_PRIVATE_KEY="${{ secrets.GCP_PRIVATE_KEY }}"
-            export SEO_SITES_JSON="${{ secrets.SEO_SITES_JSON }}"
+            export SEO_SITES_JSON="$(cat <<'__KAIZEN_SITES_JSON__'
+            ${{ secrets.SEO_SITES_JSON }}
+            __KAIZEN_SITES_JSON__
+            )"
             export GSC_SITE_URL="${{ secrets.GSC_SITE_URL }}"
             export GA4_PROPERTY_ID="${{ secrets.GA4_PROPERTY_ID }}"
 
