@@ -27,7 +27,7 @@ export const siteUrl = (
   env.NEXT_PUBLIC_SITE_URL ??
   process.env.PUBLIC_SITE_URL ??
   process.env.NEXT_PUBLIC_SITE_URL ??
-  "http://localhost:4321"
+  "https://kaizenweb.co.uk"
 ).replace(/\/$/, "");
 
 export const apiVersion = "2025-01-01";

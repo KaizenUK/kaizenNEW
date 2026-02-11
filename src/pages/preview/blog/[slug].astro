@@ -31,8 +31,11 @@ if (!post) {
   return Astro.redirect("/blog");
 }
 
+const DEFAULT_BLOG_DESCRIPTION =
+  "Expert insights from the Kaizen Web Audit team.";
 const layoutTitle = `[Preview] ${post.seo?.metaTitle || post.title}`;
-const layoutDescription = post.seo?.metaDescription || post.excerpt;
+const layoutDescription =
+  post.seo?.metaDescription || post.excerpt || DEFAULT_BLOG_DESCRIPTION;
 
 let ogImage: string | undefined;
 try {

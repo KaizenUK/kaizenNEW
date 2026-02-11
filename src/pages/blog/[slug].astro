@@ -26,8 +26,11 @@ if (!post) {
   throw new Error(`Could not find blog post for slug "${slug}".`);
 }
 
+const DEFAULT_BLOG_DESCRIPTION =
+  "Expert insights from the Kaizen Web Audit team.";
 const layoutTitle = post.seo?.metaTitle || `${post.title} | Kaizen Insights`;
-const layoutDescription = post.seo?.metaDescription || post.excerpt;
+const layoutDescription =
+  post.seo?.metaDescription || post.excerpt || DEFAULT_BLOG_DESCRIPTION;
 
 let ogImage: string | undefined;
 try {

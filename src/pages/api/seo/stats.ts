@@ -9,6 +9,7 @@ const JSON_HEADERS = {
 const STUDIO_EDITOR_COOKIE = "kaizen_studio_auth";
 const MAX_DAYS = 90;
 const DEFAULT_DAYS = 28;
+const DEFAULT_PUBLIC_SITE_URL = "https://kaizenweb.co.uk/";
 
 type SeoSiteConfig = {
   id: string;
@@ -54,15 +55,56 @@ function hasEditorCookie(request: Request): boolean {
     .some((entry) => entry === `${STUDIO_EDITOR_COOKIE}=1`);
 }
 
-function isSameOriginRequest(request: Request): boolean {
+function normalizeHost(rawHost: string): string {
+  return rawHost.trim().toLowerCase().replace(/\/$/, "");
+}
+
+function parseUrlHost(value: string): string {
+  try {
+    return normalizeHost(new URL(value).host);
+  } catch {
+    return "";
+  }
+}
+
+function getAllowedOriginHosts(request: Request): Set<string> {
   const requestUrl = new URL(request.url);
+  const hosts = new Set<string>([normalizeHost(requestUrl.host)]);
+
+  const hostHeader = request.headers.get("host");
+  if (hostHeader) {
+    hosts.add(normalizeHost(hostHeader));
+  }
+
+  const forwardedHostHeader = request.headers.get("x-forwarded-host");
+  if (forwardedHostHeader) {
+    forwardedHostHeader
+      .split(",")
+      .map((entry) => normalizeHost(entry))
+      .filter(Boolean)
+      .forEach((host) => hosts.add(host));
+  }
+
+  const configuredSite =
+    getEnv("PUBLIC_SITE_URL") ||
+    getEnv("NEXT_PUBLIC_SITE_URL") ||
+    DEFAULT_PUBLIC_SITE_URL;
+  const configuredHost = parseUrlHost(configuredSite);
+  if (configuredHost) {
+    hosts.add(configuredHost);
+  }
+
+  return hosts;
+}
+
+function isSameOriginRequest(request: Request): boolean {
   const originHeader = request.headers.get("origin");
 
   if (!originHeader) return true;
 
   try {
-    const originUrl = new URL(originHeader);
-    return originUrl.host === requestUrl.host;
+    const originHost = normalizeHost(new URL(originHeader).host);
+    return getAllowedOriginHosts(request).has(originHost);
   } catch {
     return false;
   }
@@ -107,6 +149,16 @@ function normalizeUrlPrefixSite(siteUrl: string): string {
   } catch {
     return trimmed;
   }
+}
+
+function resolveDefaultSeoSite(request: Request): string {
+  const configuredSite =
+    getEnv("PUBLIC_SITE_URL") ||
+    getEnv("NEXT_PUBLIC_SITE_URL") ||
+    DEFAULT_PUBLIC_SITE_URL;
+  const normalizedConfigured = normalizeUrlPrefixSite(configuredSite);
+  if (normalizedConfigured) return normalizedConfigured;
+  return normalizeUrlPrefixSite(`${new URL(request.url).origin}/`);
 }
 
 function unwrapQuoted(value: string): string {
@@ -425,13 +477,13 @@ export const GET: APIRoute = async ({ request, url }) => {
 
   let sites = parseSeoSitesFromEnv();
   if (!sites.length) {
-    const requestOriginSite = normalizeUrlPrefixSite(`${new URL(request.url).origin}/`);
+    const fallbackSite = resolveDefaultSeoSite(request);
     const fallbackGa = getEnv("GA4_PROPERTY_ID");
     sites = [
       {
         id: "primary",
         label: "Primary Site",
-        gscSiteUrl: requestOriginSite,
+        gscSiteUrl: fallbackSite,
         ga4PropertyId: fallbackGa || undefined,
       },
     ];

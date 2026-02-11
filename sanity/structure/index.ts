@@ -5,6 +5,19 @@ import type { SanityDocument } from "sanity";
 import { SITE_SETTINGS_ID } from "../schemas/documents/siteSettings";
 import { siteUrl } from "../lib/env";
 
+const LIVE_SITE_URL = "https://kaizenweb.co.uk";
+
+function resolveSeoPaneSiteUrl(baseUrl: string): string {
+  try {
+    const hostname = new URL(baseUrl).hostname.toLowerCase();
+    return hostname.startsWith("stage.") ? LIVE_SITE_URL : baseUrl;
+  } catch {
+    return LIVE_SITE_URL;
+  }
+}
+
+const seoPaneSiteUrl = resolveSeoPaneSiteUrl(siteUrl);
+
 function normalizeDocumentId(id: unknown): string {
   return String(id ?? "").replace(/^drafts\./, "").trim();
 }
@@ -16,9 +29,9 @@ function resolvePostPreviewUrl(doc: SanityDocument): string {
       : "";
   const docId = normalizeDocumentId((doc as { _id?: string })._id);
 
-  if (!slugValue) return `${siteUrl}/blog`;
+  if (!slugValue) return `${seoPaneSiteUrl}/blog`;
 
-  const previewUrl = `${siteUrl}/preview/blog/${encodeURIComponent(slugValue)}`;
+  const previewUrl = `${seoPaneSiteUrl}/preview/blog/${encodeURIComponent(slugValue)}`;
   return docId ? `${previewUrl}?id=${encodeURIComponent(docId)}` : previewUrl;
 }
 

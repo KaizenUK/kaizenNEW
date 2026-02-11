@@ -46,12 +46,18 @@ body,
 
 /* ── Wider form container ─────────────────────────────────────────── */
 [data-testid="document-panel-scroller"] [data-ui="Container"] {
-  max-width: 1320px !important;
+  max-width: min(1800px, calc(100vw - 32px)) !important;
+  width: 100% !important;
 }
 
 /* ── Portable text editor full width ──────────────────────────────── */
-[data-testid="pt-editor"] {
+[data-testid="field-body"] [data-testid="pt-editor"],
+[data-testid="field-content"] [data-testid="pt-editor"],
+[data-testid="field-body"] [data-slate-editor],
+[data-testid="field-content"] [data-slate-editor] {
   max-width: 100% !important;
+  width: 100% !important;
+  margin-inline: 0 !important;
 }
 
 /* ── Sticky status bar with prominent actions ─────────────────────── */
@@ -129,7 +135,7 @@ body,
 /* Post editor: has field-body + field-seo */
 [data-testid="document-panel-scroller"] [data-ui="Stack"]:has(> [data-testid="field-body"]):has(> [data-testid="field-seo"]) {
   display: grid !important;
-  grid-template-columns: minmax(0, 1.8fr) minmax(280px, 0.8fr) !important;
+  grid-template-columns: minmax(0, 1fr) minmax(320px, 360px) !important;
   gap: 16px 24px !important;
   align-items: start !important;
 }
@@ -137,12 +143,12 @@ body,
 /* Post: left column (content) */
 [data-testid="document-panel-scroller"] [data-ui="Stack"]:has(> [data-testid="field-body"]):has(> [data-testid="field-seo"]) > [data-testid="field-title"],
 [data-testid="document-panel-scroller"] [data-ui="Stack"]:has(> [data-testid="field-body"]):has(> [data-testid="field-seo"]) > [data-testid="field-slug"],
-[data-testid="document-panel-scroller"] [data-ui="Stack"]:has(> [data-testid="field-body"]):has(> [data-testid="field-seo"]) > [data-testid="field-body"],
-[data-testid="document-panel-scroller"] [data-ui="Stack"]:has(> [data-testid="field-body"]):has(> [data-testid="field-seo"]) > [data-testid="field-excerpt"] {
+[data-testid="document-panel-scroller"] [data-ui="Stack"]:has(> [data-testid="field-body"]):has(> [data-testid="field-seo"]) > [data-testid="field-body"] {
   grid-column: 1 !important;
 }
 
 /* Post: right column (meta sidebar) */
+[data-testid="document-panel-scroller"] [data-ui="Stack"]:has(> [data-testid="field-body"]):has(> [data-testid="field-seo"]) > [data-testid="field-excerpt"],
 [data-testid="document-panel-scroller"] [data-ui="Stack"]:has(> [data-testid="field-body"]):has(> [data-testid="field-seo"]) > [data-testid="field-mainImage"],
 [data-testid="document-panel-scroller"] [data-ui="Stack"]:has(> [data-testid="field-body"]):has(> [data-testid="field-seo"]) > [data-testid="field-coverImage"],
 [data-testid="document-panel-scroller"] [data-ui="Stack"]:has(> [data-testid="field-body"]):has(> [data-testid="field-seo"]) > [data-testid="field-seo"],
@@ -155,14 +161,14 @@ body,
 }
 
 /* Make right-column items span row 1 onward so they stack from the top */
-[data-testid="document-panel-scroller"] [data-ui="Stack"]:has(> [data-testid="field-body"]):has(> [data-testid="field-seo"]) > [data-testid="field-mainImage"] {
+[data-testid="document-panel-scroller"] [data-ui="Stack"]:has(> [data-testid="field-body"]):has(> [data-testid="field-seo"]) > [data-testid="field-seo"] {
   grid-row: 1 !important;
 }
 
 /* Page editor: has field-content + field-seo */
 [data-testid="document-panel-scroller"] [data-ui="Stack"]:has(> [data-testid="field-content"]):has(> [data-testid="field-seo"]) {
   display: grid !important;
-  grid-template-columns: minmax(0, 1.8fr) minmax(280px, 0.8fr) !important;
+  grid-template-columns: minmax(0, 1fr) minmax(320px, 360px) !important;
   gap: 16px 24px !important;
   align-items: start !important;
 }
@@ -182,6 +188,7 @@ body,
 
 /* ── Right sidebar card styling ───────────────────────────────────── */
 [data-testid="document-panel-scroller"] [data-ui="Stack"]:has(> [data-testid="field-body"]):has(> [data-testid="field-seo"]) > [data-testid="field-mainImage"],
+[data-testid="document-panel-scroller"] [data-ui="Stack"]:has(> [data-testid="field-body"]):has(> [data-testid="field-seo"]) > [data-testid="field-excerpt"],
 [data-testid="document-panel-scroller"] [data-ui="Stack"]:has(> [data-testid="field-body"]):has(> [data-testid="field-seo"]) > [data-testid="field-seo"],
 [data-testid="document-panel-scroller"] [data-ui="Stack"]:has(> [data-testid="field-body"]):has(> [data-testid="field-seo"]) > [data-testid="field-seoStatsPanel"],
 [data-testid="document-panel-scroller"] [data-ui="Stack"]:has(> [data-testid="field-body"]):has(> [data-testid="field-seo"]) > [data-testid="field-author"],

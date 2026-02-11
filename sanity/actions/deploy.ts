@@ -20,41 +20,17 @@ async function triggerStudioDeploy(payload: {
   }
 }
 
-export const deployNowAction: DocumentActionComponent = (props) => ({
-  label: "Deploy Now",
-  title: "Trigger a production deployment now",
-  onHandle: async () => {
-    try {
-      await triggerStudioDeploy({
-        documentId: props.id,
-        schemaType: props.type,
-      });
-    } catch (error) {
-      console.error("Manual deploy trigger failed", error);
-      if (typeof window !== "undefined") {
-        window.alert(
-          "Deploy trigger failed. Check /api/deploy server env vars and GitHub Actions permissions.",
-        );
-      }
-    } finally {
-      props.onComplete();
-    }
-  },
-});
-
-deployNowAction.displayName = "DeployNowAction";
-
 export function wrapPublishWithDeploy(
   action: DocumentActionComponent,
 ): DocumentActionComponent {
-  const PublishAndDeployAction: DocumentActionComponent = (props) => {
+  const PublishAction: DocumentActionComponent = (props) => {
     const original = action(props);
     if (!original) return original;
 
     return {
       ...original,
-      label: "Publish + Deploy",
-      title: "Publish this document and trigger a production deployment",
+      label: "Publish",
+      title: "Publish this document",
       onHandle: async () => {
         try {
           if (typeof original.onHandle === "function") {
@@ -67,20 +43,14 @@ export function wrapPublishWithDeploy(
           });
         } catch (error) {
           console.error("Publish succeeded but deploy trigger failed", error);
-          if (typeof window !== "undefined") {
-            window.alert(
-              "Published, but deploy trigger failed. Use the 'Deploy Live' button to retry.",
-            );
-          }
         }
       },
     };
   };
 
-  PublishAndDeployAction.action = action.action;
-  PublishAndDeployAction.displayName =
-    action.displayName ?? "PublishAndDeployAction";
-  return PublishAndDeployAction;
+  PublishAction.action = action.action;
+  PublishAction.displayName = action.displayName ?? "PublishAction";
+  return PublishAction;
 }
 
 export function applyDeployActions(
@@ -91,17 +61,7 @@ export function applyDeployActions(
     return previousActions;
   }
 
-  const withPublishWrapped = previousActions.map((action) =>
+  return previousActions.map((action) =>
     action.action === "publish" ? wrapPublishWithDeploy(action) : action,
   );
-
-  if (
-    withPublishWrapped.some(
-      (action) => action.displayName === deployNowAction.displayName,
-    )
-  ) {
-    return withPublishWrapped;
-  }
-
-  return [deployNowAction, ...withPublishWrapped];
 }

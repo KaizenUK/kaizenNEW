@@ -36,7 +36,7 @@ export const previewAction: DocumentActionComponent = (props) => {
       : `/${encodeURIComponent(slug)}`;
 
   return {
-    label: "Preview Draft",
+    label: "Preview",
     title: "Open a live preview of this draft in a new tab",
     onHandle: () => {
       window.open(previewUrl, "_blank");
