@@ -10,6 +10,7 @@ import { studioStructure } from "./sanity/structure";
 import { singletonPlugin } from "./sanity/plugins/singleton";
 import Dashboard from "./sanity/components/Dashboard";
 import SeoDashboard from "./sanity/components/SeoDashboard";
+import StudioNavbar from "./sanity/components/StudioNavbar";
 
 export default defineConfig({
   name: "default",
@@ -17,6 +18,12 @@ export default defineConfig({
   projectId: resolvedProjectId,
   dataset: resolvedDataset,
   basePath: "/studio",
+
+  studio: {
+    components: {
+      navbar: StudioNavbar,
+    },
+  },
 
   plugins: [
     structureTool({ structure: studioStructure }),

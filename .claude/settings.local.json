@@ -7,7 +7,8 @@
       "Bash(ls:*)",
       "Bash(node -e:*)",
       "Bash(npx astro:*)",
-      "Bash(pnpm run build:*)"
+      "Bash(pnpm run build:*)",
+      "WebFetch(domain:www.sanity.io)"
     ]
   }
 }

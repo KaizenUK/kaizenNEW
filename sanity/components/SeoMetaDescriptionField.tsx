@@ -18,15 +18,15 @@ export function SeoMetaDescriptionField(props: FieldProps<string>) {
   return (
     <div>
       {props.renderDefault(props)}
-      <div style={{ marginTop: 8, display: "flex", flexWrap: "wrap", gap: 6 }}>
+      <div style={{ marginTop: 6, display: "flex", flexWrap: "wrap", gap: 6 }}>
         <span
           style={{
             borderRadius: 999,
-            border: "1px solid rgba(255,255,255,0.18)",
+            border: "1px solid rgba(255,255,255,0.1)",
             padding: "2px 8px",
             fontSize: 11,
             fontWeight: 600,
-            color: length === 0 ? "#9ca3af" : lengthOk ? "#4ade80" : "#fbbf24",
+            color: length === 0 ? "#6b7280" : lengthOk ? "#4ade80" : "#fbbf24",
           }}
         >
           {length}/160 chars
@@ -34,7 +34,7 @@ export function SeoMetaDescriptionField(props: FieldProps<string>) {
         <span
           style={{
             borderRadius: 999,
-            border: "1px solid rgba(255,255,255,0.18)",
+            border: "1px solid rgba(255,255,255,0.1)",
             padding: "2px 8px",
             fontSize: 11,
             fontWeight: 600,
@@ -42,19 +42,16 @@ export function SeoMetaDescriptionField(props: FieldProps<string>) {
               ? keywordPresent
                 ? "#4ade80"
                 : "#fbbf24"
-              : "#9ca3af",
+              : "#6b7280",
           }}
         >
           {focusKeyword
             ? keywordPresent
               ? "Keyword in description"
-              : "Keyword missing in description"
+              : "Keyword missing"
             : "Set focus keyword"}
         </span>
       </div>
-      <p style={{ margin: "6px 0 0", fontSize: 11, color: "#9ca3af" }}>
-        Target: 50-160 characters.
-      </p>
     </div>
   );
 }

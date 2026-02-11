@@ -15,23 +15,32 @@ type SeoStatsPayload = {
   error?: string;
 };
 
+type SeoStatusPayload = {
+  ok: boolean;
+  summary?: { ready: boolean };
+};
+
 function chip(label: string, value: string) {
   return (
     <div
       style={{
-        border: "1px solid rgba(255,255,255,0.12)",
-        borderRadius: 10,
+        border: "1px solid rgba(255,255,255,0.08)",
+        borderRadius: 8,
         padding: "8px 10px",
-        minWidth: 96,
+        minWidth: 80,
+        background: "rgba(255,255,255,0.02)",
       }}
     >
-      <div style={{ color: "#cbd5e1", fontSize: 14, fontWeight: 700 }}>{value}</div>
+      <div style={{ color: "#e0e0e0", fontSize: 14, fontWeight: 700 }}>
+        {value}
+      </div>
       <div
         style={{
-          color: "#8f96a3",
+          color: "#6b7280",
           fontSize: 10,
           textTransform: "uppercase",
-          letterSpacing: "0.08em",
+          letterSpacing: "0.06em",
+          marginTop: 2,
         }}
       >
         {label}
@@ -48,49 +57,89 @@ export function PostSeoStatsField(_props: FieldProps<string>) {
   );
 
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
   const [summary, setSummary] = useState<SeoStatsPayload["summary"]>();
+  const [unavailable, setUnavailable] = useState(false);
 
   useEffect(() => {
     if (!slug) {
       setSummary(undefined);
-      setError("");
+      setUnavailable(false);
       return;
     }
 
     const controller = new AbortController();
-    setLoading(true);
-    setError("");
 
-    const pagePath = `/blog/${slug}`;
-    fetch(`/api/seo/stats?page=${encodeURIComponent(pagePath)}&days=28`, {
-      credentials: "include",
-      signal: controller.signal,
-    })
-      .then(async (response) => {
-        const payload = (await response.json()) as SeoStatsPayload;
-        if (!response.ok || !payload.ok) {
-          throw new Error(payload.error || "Failed to load SEO stats");
+    (async () => {
+      // Check if SEO API is configured before fetching stats
+      try {
+        const statusRes = await fetch("/api/seo/status", {
+          credentials: "include",
+          signal: controller.signal,
+        });
+        if (!statusRes.ok) {
+          setUnavailable(true);
+          return;
+        }
+        const statusData = (await statusRes.json()) as SeoStatusPayload;
+        if (!statusData.ok || !statusData.summary?.ready) {
+          setUnavailable(true);
+          return;
+        }
+      } catch (err) {
+        if (err instanceof DOMException && err.name === "AbortError") return;
+        setUnavailable(true);
+        return;
+      }
+
+      // API is ready — fetch stats for this slug
+      setLoading(true);
+      const pagePath = `/blog/${slug}`;
+      try {
+        const res = await fetch(
+          `/api/seo/stats?page=${encodeURIComponent(pagePath)}&days=28`,
+          { credentials: "include", signal: controller.signal },
+        );
+        const payload = (await res.json()) as SeoStatsPayload;
+        if (!res.ok || !payload.ok) {
+          setUnavailable(true);
+          return;
         }
         setSummary(payload.summary);
-      })
-      .catch((err) => {
+        setUnavailable(false);
+      } catch (err) {
         if (err instanceof DOMException && err.name === "AbortError") return;
-        setError(err instanceof Error ? err.message : "Failed to load SEO stats");
-      })
-      .finally(() => {
-        if (!controller.signal.aborted) {
-          setLoading(false);
-        }
-      });
+        setUnavailable(true);
+      } finally {
+        if (!controller.signal.aborted) setLoading(false);
+      }
+    })();
 
     return () => controller.abort();
   }, [slug]);
 
-  if (!slug) {
+  // Don't render anything if no slug
+  if (!slug) return null;
+
+  // Quiet message if Google API isn't configured
+  if (unavailable) {
     return (
-      <div style={{ color: "#94a3b8", fontSize: 12 }}>
-        SEO stats appear after this post has a slug.
+      <div
+        style={{
+          borderRadius: 8,
+          background: "rgba(255,255,255,0.02)",
+          border: "1px solid rgba(255,255,255,0.06)",
+          padding: "10px 12px",
+          color: "#6b7280",
+          fontSize: 12,
+        }}
+      >
+        SEO stats unavailable — Google API not configured.
+        <a
+          href="/studio/seo"
+          style={{ marginLeft: 6, color: "#93c5fd", textDecoration: "none" }}
+        >
+          Check setup
+        </a>
       </div>
     );
   }
@@ -98,30 +147,31 @@ export function PostSeoStatsField(_props: FieldProps<string>) {
   return (
     <div
       style={{
-        border: "1px solid rgba(255,255,255,0.12)",
-        borderRadius: 12,
+        borderRadius: 10,
         background: "rgba(255,255,255,0.02)",
+        border: "1px solid rgba(255,255,255,0.06)",
         padding: 12,
       }}
     >
-      <div style={{ color: "#fff", fontSize: 13, fontWeight: 700, marginBottom: 4 }}>
-        SEO Stats (Last 28 Days)
+      <div
+        style={{ color: "#e0e0e0", fontSize: 13, fontWeight: 700, marginBottom: 4 }}
+      >
+        SEO Stats (28 days)
       </div>
-      <div style={{ color: "#8f96a3", fontSize: 11, marginBottom: 10 }}>
-        Filtered for <code>/blog/{slug}</code>
+      <div style={{ color: "#6b7280", fontSize: 11, marginBottom: 10 }}>
+        /blog/{slug}
       </div>
 
-      {loading && <div style={{ color: "#94a3b8", fontSize: 12 }}>Loading...</div>}
-      {!loading && error && (
-        <div style={{ color: "#fca5a5", fontSize: 12, marginBottom: 10 }}>{error}</div>
+      {loading && (
+        <div style={{ color: "#6b7280", fontSize: 12 }}>Loading...</div>
       )}
 
-      {!loading && !error && summary && (
+      {!loading && summary && (
         <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
           {chip("Clicks", summary.clicks.toLocaleString())}
           {chip("Impressions", summary.impressions.toLocaleString())}
-          {chip("CTR", `${(summary.ctr * 100).toFixed(2)}%`)}
-          {chip("Position", summary.position.toFixed(2))}
+          {chip("CTR", `${(summary.ctr * 100).toFixed(1)}%`)}
+          {chip("Position", summary.position.toFixed(1))}
           {chip("Users", summary.activeUsers.toLocaleString())}
           {chip("Views", summary.screenPageViews.toLocaleString())}
         </div>
@@ -137,9 +187,8 @@ export function PostSeoStatsField(_props: FieldProps<string>) {
           textDecoration: "none",
         }}
       >
-        Open full SEO dashboard
+        Full SEO dashboard
       </a>
     </div>
   );
 }
-

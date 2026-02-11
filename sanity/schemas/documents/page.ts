@@ -6,24 +6,18 @@ export const page = defineType({
   name: "page",
   title: "Page",
   type: "document",
-  groups: [
-    { name: "content", title: "Content", default: true },
-    { name: "seo", title: "SEO" },
-  ],
   fields: [
-    // ── Content group ──────────────────────────────────────────────
+    // ── Content (left column) ─────────────────────────────────────
     defineField({
       name: "title",
       title: "Title",
       type: "string",
-      group: "content",
       validation: (Rule) => Rule.required(),
     }),
     defineField({
       name: "slug",
       title: "Slug",
       type: "slug",
-      group: "content",
       options: { source: "title", maxLength: 96 },
       validation: (Rule) => Rule.required(),
     }),
@@ -31,7 +25,6 @@ export const page = defineType({
       name: "content",
       title: "Page Sections",
       type: "array",
-      group: "content",
       of: [
         defineArrayMember({ type: "hero" }),
         defineArrayMember({ type: "richTextSection" }),
@@ -46,12 +39,11 @@ export const page = defineType({
       validation: (Rule) => Rule.required().min(1),
     }),
 
-    // ── SEO group ──────────────────────────────────────────────────
+    // ── SEO (right column via CSS grid) ───────────────────────────
     defineField({
       name: "seo",
       title: "SEO",
       type: "object",
-      group: "seo",
       options: { collapsible: false, collapsed: false },
       fields: [
         defineField({

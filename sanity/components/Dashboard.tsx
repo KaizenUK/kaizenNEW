@@ -353,21 +353,7 @@ export default function Dashboard() {
       .then(setStats)
       .catch(() => {});
 
-    fetch("/api/seo/stats?days=28", { credentials: "include" })
-      .then(async (response) => {
-        if (!response.ok) return null;
-        const payload = (await response.json()) as {
-          ok?: boolean;
-          summary?: SeoQuickSummary;
-        };
-        if (!payload.ok || !payload.summary) return null;
-        return payload.summary;
-      })
-      .then((summary) => {
-        if (summary) setSeoSummary(summary);
-      })
-      .catch(() => {});
-
+    // Fetch SEO status first, only fetch stats if API is ready
     fetch("/api/seo/status", { credentials: "include" })
       .then(async (response) => {
         const payload = (await response.json()) as SeoSetupStatus;
@@ -376,6 +362,22 @@ export default function Dashboard() {
         }
         setSeoSetup(payload);
         setSeoSetupError("");
+
+        // Only fetch stats if Google credentials + sites are configured
+        if (payload.summary?.ready) {
+          return fetch("/api/seo/stats?days=28", { credentials: "include" });
+        }
+        return null;
+      })
+      .then(async (response) => {
+        if (!response || !response.ok) return;
+        const payload = (await response.json()) as {
+          ok?: boolean;
+          summary?: SeoQuickSummary;
+        };
+        if (payload.ok && payload.summary) {
+          setSeoSummary(payload.summary);
+        }
       })
       .catch((error) => {
         setSeoSetup(null);

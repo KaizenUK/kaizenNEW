@@ -1,12 +1,17 @@
 /*
- * Kaizen Studio styling
- * Goals:
- * 1) Keep a clean dark canvas
- * 2) Make document actions clear and prominent
- * 3) Push SEO/meta fields into a right rail for post editing
- * 4) Make validation warnings/errors more visible while typing
+ * Kaizen Studio – Premium editor styling
+ *
+ * 1) Dark canvas with Inter font family
+ * 2) Two-column editor: main content (left) + meta sidebar (right)
+ * 3) Prominent document actions in sticky status bar
+ * 4) Consistent typography and validation styling
+ * 5) Wider editing area for comfortable writing
  */
 
+/* ── Font import ──────────────────────────────────────────────────── */
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
+
+/* ── Base canvas ──────────────────────────────────────────────────── */
 html,
 body,
 #sanity {
@@ -15,90 +20,210 @@ body,
   background: #101112 !important;
 }
 
+#sanity,
+#sanity * {
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    sans-serif !important;
+}
+
+/* Let Sanity's own monospace fields (code, json) keep their font */
+#sanity [data-ui="TextInput"] textarea,
+#sanity [data-ui="TextInput"] input,
+#sanity [data-testid="pt-editor"] [data-slate-editor] {
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    sans-serif !important;
+}
+
+#sanity code,
+#sanity pre,
+#sanity [data-ui="Code"] {
+  font-family: "JetBrains Mono", "Fira Code", "SF Mono", Consolas, monospace !important;
+}
+
 [data-testid="document-panel"] {
   background: #101112 !important;
 }
 
+/* ── Wider form container ─────────────────────────────────────────── */
 [data-testid="document-panel-scroller"] [data-ui="Container"] {
-  max-width: 1120px !important;
+  max-width: 1320px !important;
 }
 
+/* ── Portable text editor full width ──────────────────────────────── */
 [data-testid="pt-editor"] {
   max-width: 100% !important;
 }
 
+/* ── Sticky status bar with prominent actions ─────────────────────── */
 [data-ui="StatusBar"] {
   position: sticky !important;
   top: 0 !important;
   z-index: 200 !important;
-  background: #1a1b1d !important;
+  background: #161618 !important;
   border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+  backdrop-filter: blur(8px) !important;
 }
 
 [data-ui="StatusBar"] button[data-ui="Button"] {
-  min-height: 38px !important;
+  min-height: 36px !important;
   padding-inline: 14px !important;
-  border-radius: 10px !important;
+  border-radius: 8px !important;
   font-weight: 600 !important;
+  font-size: 13px !important;
+  letter-spacing: -0.01em !important;
+  transition: all 0.12s ease !important;
 }
 
+/* Publish button – green accent */
 [data-ui="StatusBar"] button[data-ui="Button"][data-tone="primary"] {
-  background: #1f8f46 !important;
-  border-color: #1f8f46 !important;
+  background: #1a8c42 !important;
+  border-color: #1a8c42 !important;
   color: #fff !important;
+  box-shadow: 0 1px 3px rgba(26, 140, 66, 0.25) !important;
 }
 
 [data-ui="StatusBar"] button[data-ui="Button"][data-tone="primary"]:hover {
-  background: #25a451 !important;
-  border-color: #25a451 !important;
+  background: #21a34e !important;
+  border-color: #21a34e !important;
+  box-shadow: 0 2px 8px rgba(26, 140, 66, 0.35) !important;
 }
 
+/* ── Validation message styling ───────────────────────────────────── */
 [data-ui="Text"][data-tone="caution"] {
   color: #fbbf24 !important;
-  font-weight: 700 !important;
+  font-weight: 600 !important;
+  font-size: 12px !important;
 }
 
 [data-ui="Text"][data-tone="critical"] {
   color: #f87171 !important;
-  font-weight: 700 !important;
+  font-weight: 600 !important;
+  font-size: 12px !important;
+}
+
+/* ── Field labels consistency ─────────────────────────────────────── */
+[data-testid="document-panel"] label [data-ui="Text"] {
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  letter-spacing: -0.01em !important;
+  color: #d1d5db !important;
+}
+
+/* Helper / description text below fields */
+[data-testid="document-panel"] [data-ui="Text"][data-muted] {
+  font-size: 12px !important;
+  color: #6b7280 !important;
+  line-height: 1.5 !important;
 }
 
 /*
- * Post editor two-column layout.
- * Uses multiple container selectors because Sanity's internal wrappers vary by version.
+ * ── Two-column layout for post & page editors ────────────────────
+ *
+ * Sanity v3 renders fields as direct children of a Stack element.
+ * We target the Stack that contains both a body/content field AND
+ * an seo field. Grid columns apply to direct children only.
+ *
+ * The > combinator ensures grid-column only hits direct grid items.
  */
-[data-testid="document-panel-scroller"] form:has([data-testid="field-body"]):has([data-testid="field-seo"]),
-[data-testid="document-panel-scroller"] [data-ui="Stack"]:has(> [data-testid="field-title"]):has(> [data-testid="field-seo"]) {
+
+/* Post editor: has field-body + field-seo */
+[data-testid="document-panel-scroller"] [data-ui="Stack"]:has(> [data-testid="field-body"]):has(> [data-testid="field-seo"]) {
   display: grid !important;
-  grid-template-columns: minmax(0, 1.8fr) minmax(300px, 1fr) !important;
-  gap: 14px 22px !important;
+  grid-template-columns: minmax(0, 1.8fr) minmax(280px, 0.8fr) !important;
+  gap: 16px 24px !important;
   align-items: start !important;
 }
 
-[data-testid="document-panel-scroller"] :is(form, [data-ui="Stack"]):has([data-testid="field-body"]):has([data-testid="field-seo"]) [data-testid="field-title"],
-[data-testid="document-panel-scroller"] :is(form, [data-ui="Stack"]):has([data-testid="field-body"]):has([data-testid="field-seo"]) [data-testid="field-slug"],
-[data-testid="document-panel-scroller"] :is(form, [data-ui="Stack"]):has([data-testid="field-body"]):has([data-testid="field-seo"]) [data-testid="field-body"],
-[data-testid="document-panel-scroller"] :is(form, [data-ui="Stack"]):has([data-testid="field-body"]):has([data-testid="field-seo"]) [data-testid="field-excerpt"] {
+/* Post: left column (content) */
+[data-testid="document-panel-scroller"] [data-ui="Stack"]:has(> [data-testid="field-body"]):has(> [data-testid="field-seo"]) > [data-testid="field-title"],
+[data-testid="document-panel-scroller"] [data-ui="Stack"]:has(> [data-testid="field-body"]):has(> [data-testid="field-seo"]) > [data-testid="field-slug"],
+[data-testid="document-panel-scroller"] [data-ui="Stack"]:has(> [data-testid="field-body"]):has(> [data-testid="field-seo"]) > [data-testid="field-body"],
+[data-testid="document-panel-scroller"] [data-ui="Stack"]:has(> [data-testid="field-body"]):has(> [data-testid="field-seo"]) > [data-testid="field-excerpt"] {
   grid-column: 1 !important;
 }
 
-[data-testid="document-panel-scroller"] :is(form, [data-ui="Stack"]):has([data-testid="field-body"]):has([data-testid="field-seo"]) [data-testid="field-mainImage"],
-[data-testid="document-panel-scroller"] :is(form, [data-ui="Stack"]):has([data-testid="field-body"]):has([data-testid="field-seo"]) [data-testid="field-coverImage"],
-[data-testid="document-panel-scroller"] :is(form, [data-ui="Stack"]):has([data-testid="field-body"]):has([data-testid="field-seo"]) [data-testid="field-seo"],
-[data-testid="document-panel-scroller"] :is(form, [data-ui="Stack"]):has([data-testid="field-body"]):has([data-testid="field-seo"]) [data-testid="field-seoStatsPanel"],
-[data-testid="document-panel-scroller"] :is(form, [data-ui="Stack"]):has([data-testid="field-body"]):has([data-testid="field-seo"]) [data-testid="field-author"],
-[data-testid="document-panel-scroller"] :is(form, [data-ui="Stack"]):has([data-testid="field-body"]):has([data-testid="field-seo"]) [data-testid="field-categories"],
-[data-testid="document-panel-scroller"] :is(form, [data-ui="Stack"]):has([data-testid="field-body"]):has([data-testid="field-seo"]) [data-testid="field-publishedAt"],
-[data-testid="document-panel-scroller"] :is(form, [data-ui="Stack"]):has([data-testid="field-body"]):has([data-testid="field-seo"]) [data-testid="field-readTime"] {
+/* Post: right column (meta sidebar) */
+[data-testid="document-panel-scroller"] [data-ui="Stack"]:has(> [data-testid="field-body"]):has(> [data-testid="field-seo"]) > [data-testid="field-mainImage"],
+[data-testid="document-panel-scroller"] [data-ui="Stack"]:has(> [data-testid="field-body"]):has(> [data-testid="field-seo"]) > [data-testid="field-coverImage"],
+[data-testid="document-panel-scroller"] [data-ui="Stack"]:has(> [data-testid="field-body"]):has(> [data-testid="field-seo"]) > [data-testid="field-seo"],
+[data-testid="document-panel-scroller"] [data-ui="Stack"]:has(> [data-testid="field-body"]):has(> [data-testid="field-seo"]) > [data-testid="field-seoStatsPanel"],
+[data-testid="document-panel-scroller"] [data-ui="Stack"]:has(> [data-testid="field-body"]):has(> [data-testid="field-seo"]) > [data-testid="field-author"],
+[data-testid="document-panel-scroller"] [data-ui="Stack"]:has(> [data-testid="field-body"]):has(> [data-testid="field-seo"]) > [data-testid="field-categories"],
+[data-testid="document-panel-scroller"] [data-ui="Stack"]:has(> [data-testid="field-body"]):has(> [data-testid="field-seo"]) > [data-testid="field-publishedAt"],
+[data-testid="document-panel-scroller"] [data-ui="Stack"]:has(> [data-testid="field-body"]):has(> [data-testid="field-seo"]) > [data-testid="field-readTime"] {
   grid-column: 2 !important;
 }
 
+/* Make right-column items span row 1 onward so they stack from the top */
+[data-testid="document-panel-scroller"] [data-ui="Stack"]:has(> [data-testid="field-body"]):has(> [data-testid="field-seo"]) > [data-testid="field-mainImage"] {
+  grid-row: 1 !important;
+}
+
+/* Page editor: has field-content + field-seo */
+[data-testid="document-panel-scroller"] [data-ui="Stack"]:has(> [data-testid="field-content"]):has(> [data-testid="field-seo"]) {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1.8fr) minmax(280px, 0.8fr) !important;
+  gap: 16px 24px !important;
+  align-items: start !important;
+}
+
+/* Page: left column */
+[data-testid="document-panel-scroller"] [data-ui="Stack"]:has(> [data-testid="field-content"]):has(> [data-testid="field-seo"]) > [data-testid="field-title"],
+[data-testid="document-panel-scroller"] [data-ui="Stack"]:has(> [data-testid="field-content"]):has(> [data-testid="field-seo"]) > [data-testid="field-slug"],
+[data-testid="document-panel-scroller"] [data-ui="Stack"]:has(> [data-testid="field-content"]):has(> [data-testid="field-seo"]) > [data-testid="field-content"] {
+  grid-column: 1 !important;
+}
+
+/* Page: right column */
+[data-testid="document-panel-scroller"] [data-ui="Stack"]:has(> [data-testid="field-content"]):has(> [data-testid="field-seo"]) > [data-testid="field-seo"] {
+  grid-column: 2 !important;
+  grid-row: 1 / span 3 !important;
+}
+
+/* ── Right sidebar card styling ───────────────────────────────────── */
+[data-testid="document-panel-scroller"] [data-ui="Stack"]:has(> [data-testid="field-body"]):has(> [data-testid="field-seo"]) > [data-testid="field-mainImage"],
+[data-testid="document-panel-scroller"] [data-ui="Stack"]:has(> [data-testid="field-body"]):has(> [data-testid="field-seo"]) > [data-testid="field-seo"],
+[data-testid="document-panel-scroller"] [data-ui="Stack"]:has(> [data-testid="field-body"]):has(> [data-testid="field-seo"]) > [data-testid="field-seoStatsPanel"],
+[data-testid="document-panel-scroller"] [data-ui="Stack"]:has(> [data-testid="field-body"]):has(> [data-testid="field-seo"]) > [data-testid="field-author"],
+[data-testid="document-panel-scroller"] [data-ui="Stack"]:has(> [data-testid="field-body"]):has(> [data-testid="field-seo"]) > [data-testid="field-categories"],
+[data-testid="document-panel-scroller"] [data-ui="Stack"]:has(> [data-testid="field-body"]):has(> [data-testid="field-seo"]) > [data-testid="field-publishedAt"],
+[data-testid="document-panel-scroller"] [data-ui="Stack"]:has(> [data-testid="field-body"]):has(> [data-testid="field-seo"]) > [data-testid="field-readTime"] {
+  background: #161618 !important;
+  border: 1px solid rgba(255, 255, 255, 0.06) !important;
+  border-radius: 10px !important;
+  padding: 14px !important;
+}
+
+/* Also style page SEO sidebar card */
+[data-testid="document-panel-scroller"] [data-ui="Stack"]:has(> [data-testid="field-content"]):has(> [data-testid="field-seo"]) > [data-testid="field-seo"] {
+  background: #161618 !important;
+  border: 1px solid rgba(255, 255, 255, 0.06) !important;
+  border-radius: 10px !important;
+  padding: 14px !important;
+}
+
+/* ── Responsive: collapse to single column ────────────────────────── */
 @media (max-width: 1100px) {
-  [data-testid="document-panel-scroller"] :is(form, [data-ui="Stack"]):has([data-testid="field-body"]):has([data-testid="field-seo"]) {
+  [data-testid="document-panel-scroller"] [data-ui="Stack"]:has(> [data-testid="field-body"]):has(> [data-testid="field-seo"]),
+  [data-testid="document-panel-scroller"] [data-ui="Stack"]:has(> [data-testid="field-content"]):has(> [data-testid="field-seo"]) {
     grid-template-columns: 1fr !important;
   }
 
-  [data-testid="document-panel-scroller"] :is(form, [data-ui="Stack"]):has([data-testid="field-body"]):has([data-testid="field-seo"]) [data-testid^="field-"] {
+  [data-testid="document-panel-scroller"] [data-ui="Stack"]:has(> [data-testid="field-body"]):has(> [data-testid="field-seo"]) > [data-testid^="field-"],
+  [data-testid="document-panel-scroller"] [data-ui="Stack"]:has(> [data-testid="field-content"]):has(> [data-testid="field-seo"]) > [data-testid^="field-"] {
     grid-column: 1 !important;
+    grid-row: auto !important;
   }
+}
+
+/* ── Navbar / tool switcher styling ───────────────────────────────── */
+[data-ui="Navbar"] {
+  background: #131415 !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06) !important;
+}
+
+/* ── Pane headers ─────────────────────────────────────────────────── */
+[data-testid="pane-header"] {
+  background: #131415 !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06) !important;
 }
