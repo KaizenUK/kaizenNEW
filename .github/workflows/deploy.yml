@@ -165,18 +165,6 @@ jobs:
             pm2 start "$START_SCRIPT" --name "$APP_NAME" --cwd "$APP_DIR" --interpreter "$NODE_BIN" --update-env
             pm2 save
             pm2 describe "$APP_NAME" || true
-            APP_PID="$(pm2 pid "$APP_NAME" | tr -d '\r')"
-            if [ -z "$APP_PID" ] || [ "$APP_PID" = "0" ]; then
-              echo "Could not resolve PID for PM2 app ${APP_NAME}"
-              pm2 logs "$APP_NAME" --lines 80 --nostream || true
-              exit 1
-            fi
-            if ! ss -lntp | grep -F "pid=${APP_PID}," | grep -q ":${HEALTH_PORT} "; then
-              echo "PM2 app ${APP_NAME} (pid ${APP_PID}) is not listening on configured port ${HEALTH_PORT}"
-              ss -lntp | grep node || true
-              pm2 logs "$APP_NAME" --lines 80 --nostream || true
-              exit 1
-            fi
 
             for i in 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15; do
               if curl -fsS --max-time 10 "http://127.0.0.1:${HEALTH_PORT}/" > /dev/null; then
@@ -313,18 +301,6 @@ jobs:
             pm2 start "$START_SCRIPT" --name "$APP_NAME" --cwd "$APP_DIR" --interpreter "$NODE_BIN" --update-env
             pm2 save
             pm2 describe "$APP_NAME" || true
-            APP_PID="$(pm2 pid "$APP_NAME" | tr -d '\r')"
-            if [ -z "$APP_PID" ] || [ "$APP_PID" = "0" ]; then
-              echo "Could not resolve PID for PM2 app ${APP_NAME}"
-              pm2 logs "$APP_NAME" --lines 80 --nostream || true
-              exit 1
-            fi
-            if ! ss -lntp | grep -F "pid=${APP_PID}," | grep -q ":${HEALTH_PORT} "; then
-              echo "PM2 app ${APP_NAME} (pid ${APP_PID}) is not listening on configured port ${HEALTH_PORT}"
-              ss -lntp | grep node || true
-              pm2 logs "$APP_NAME" --lines 80 --nostream || true
-              exit 1
-            fi
 
             for i in 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15; do
               if curl -fsS --max-time 10 "http://127.0.0.1:${HEALTH_PORT}/" > /dev/null; then
