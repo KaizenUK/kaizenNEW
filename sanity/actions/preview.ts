@@ -11,20 +11,32 @@ function getSlug(doc: Record<string, unknown> | null): string {
   return "";
 }
 
+function getDocId(props: unknown, doc: Record<string, unknown> | null): string {
+  const propsId =
+    props && typeof props === "object" && "id" in props
+      ? String((props as { id?: unknown }).id ?? "")
+      : "";
+  const docId = doc ? String((doc as { _id?: unknown })._id ?? "") : "";
+  return (propsId || docId).replace(/^drafts\./, "").trim();
+}
+
 /** Opens the draft preview route in a new tab. */
 export const previewAction: DocumentActionComponent = (props) => {
   if (!PREVIEWABLE_TYPES.has(props.type)) return null;
 
   const doc = (props as any).draft || (props as any).published;
   const slug = getSlug(doc);
+  const docId = getDocId(props, doc);
 
   if (!slug) return null;
 
   const previewUrl =
-    props.type === "post" ? `/preview/blog/${slug}` : `/preview/${slug}`;
+    props.type === "post"
+      ? `/preview/blog/${encodeURIComponent(slug)}${docId ? `?id=${encodeURIComponent(docId)}` : ""}`
+      : `/${encodeURIComponent(slug)}`;
 
   return {
-    label: "Preview",
+    label: "Preview Draft",
     title: "Open a live preview of this draft in a new tab",
     onHandle: () => {
       window.open(previewUrl, "_blank");

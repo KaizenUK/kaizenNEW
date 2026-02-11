@@ -1,4 +1,6 @@
 import { defineArrayMember, defineField, defineType } from "sanity";
+import { SeoMetaDescriptionField } from "../../components/SeoMetaDescriptionField";
+import { SeoMetaTitleField } from "../../components/SeoMetaTitleField";
 
 export const post = defineType({
   name: "post",
@@ -115,6 +117,7 @@ export const post = defineType({
           name: "metaTitle",
           title: "Meta Title",
           type: "string",
+          components: { field: SeoMetaTitleField },
           description:
             "Keep between 30–60 characters. Include your focus keyword.",
           validation: (Rule) => [
@@ -145,6 +148,7 @@ export const post = defineType({
           name: "metaDescription",
           title: "Meta Description",
           type: "text",
+          components: { field: SeoMetaDescriptionField },
           rows: 4,
           description: "Target 50–160 characters for best snippets.",
           validation: (Rule) => [

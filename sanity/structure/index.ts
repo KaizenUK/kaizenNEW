@@ -5,14 +5,21 @@ import type { SanityDocument } from "sanity";
 import { SITE_SETTINGS_ID } from "../schemas/documents/siteSettings";
 import { siteUrl } from "../lib/env";
 
-function resolvePostUrl(doc: SanityDocument): string {
+function normalizeDocumentId(id: unknown): string {
+  return String(id ?? "").replace(/^drafts\./, "").trim();
+}
+
+function resolvePostPreviewUrl(doc: SanityDocument): string {
   const slugValue =
     typeof doc.slug === "object" && doc.slug !== null && "current" in doc.slug
       ? String((doc.slug as { current?: string }).current ?? "").trim()
       : "";
+  const docId = normalizeDocumentId((doc as { _id?: string })._id);
 
   if (!slugValue) return `${siteUrl}/blog`;
-  return `${siteUrl}/blog/${slugValue}`;
+
+  const previewUrl = `${siteUrl}/preview/blog/${encodeURIComponent(slugValue)}`;
+  return docId ? `${previewUrl}?id=${encodeURIComponent(docId)}` : previewUrl;
 }
 
 export const studioStructure = (S: StructureBuilder) =>
@@ -60,7 +67,7 @@ export const studioStructure = (S: StructureBuilder) =>
                             .options({
                               keywords: "seo.focusKeyword",
                               synonyms: "seo.focusKeyword",
-                              url: resolvePostUrl,
+                              url: resolvePostPreviewUrl,
                             }),
                         ]),
                     ),

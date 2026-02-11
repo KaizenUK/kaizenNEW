@@ -31,6 +31,14 @@ const imageFor = (
     return null;
   }
 };
+
+const postImageFor = (
+  post: SanityPost,
+  width: number,
+  height: number,
+) =>
+  imageFor(post.mainImage, width, height) ??
+  imageFor(post.coverImage, width, height);
 ---
 
 <section class="linear-container py-14 sm:py-20">
@@ -93,9 +101,9 @@ const imageFor = (
             </div>
 
             {
-              imageFor(featuredPost.mainImage ?? featuredPost.coverImage, 1440, 720) ? (
+              postImageFor(featuredPost, 1440, 720) ? (
                 <img
-                  src={imageFor(featuredPost.mainImage ?? featuredPost.coverImage, 1440, 720)!}
+                  src={postImageFor(featuredPost, 1440, 720)!}
                   alt={featuredPost.title}
                   loading="lazy"
                   decoding="async"
@@ -113,9 +121,9 @@ const imageFor = (
               class="linear-card group relative flex flex-col gap-4 p-5 sm:p-6"
             >
               {
-                imageFor(post.mainImage ?? post.coverImage, 900, 520) ? (
+                postImageFor(post, 900, 520) ? (
                   <img
-                    src={imageFor(post.mainImage ?? post.coverImage, 900, 520)!}
+                    src={postImageFor(post, 900, 520)!}
                     alt={post.title}
                     loading="lazy"
                     decoding="async"

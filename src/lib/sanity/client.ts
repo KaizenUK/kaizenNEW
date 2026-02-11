@@ -240,6 +240,10 @@ const POST_BY_SLUG_QUERY = `*[_type == "post" && slug.current == $slug][0] {
   ${POST_PROJECTION}
 }`;
 
+const POST_BY_ID_QUERY = `*[_type == "post" && _id in [$id, "drafts." + $id]][0] {
+  ${POST_PROJECTION}
+}`;
+
 const POSTS_BY_CATEGORY_QUERY = `*[_type == "post" && defined(slug.current) && $categoryId in categories[]._ref] | order(publishedAt desc) {
   ${POST_PROJECTION}
 }`;
@@ -273,6 +277,23 @@ export async function getPostBySlug(
   const post = await client.fetch<SanityPost | null>(POST_BY_SLUG_QUERY, {
     slug,
   });
+  return post ? normalizePost(post) : null;
+}
+
+export async function getPostById(
+  id: string,
+  preview = false,
+): Promise<SanityPost | null> {
+  const normalizedId = String(id).replace(/^drafts\./, "").trim();
+  if (!normalizedId) return null;
+
+  const client = preview ? previewClient : sanityClient;
+  if (!client) return null;
+
+  const post = await client.fetch<SanityPost | null>(POST_BY_ID_QUERY, {
+    id: normalizedId,
+  });
+
   return post ? normalizePost(post) : null;
 }
 

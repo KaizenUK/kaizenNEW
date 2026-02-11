@@ -70,6 +70,12 @@ function typeBadgeColor(t: string): string {
   return colors[t] || "#6b7280";
 }
 
+function getStudioEditHref(doc: RecentDoc): string {
+  if (doc._type === "siteSettings") return "/studio/structure/site-settings";
+  const documentId = doc._id.replace(/^drafts\./, "");
+  return `/studio/structure/${doc._type};${encodeURIComponent(documentId)}`;
+}
+
 // ── Components ───────────────────────────────────────────────────────
 
 function QuickAction({
@@ -148,19 +154,23 @@ function StatPill({ value, label }: { value: number; label: string }) {
 function ActivityRow({ doc }: { doc: RecentDoc }) {
   const [hovered, setHovered] = useState(false);
   const color = typeBadgeColor(doc._type);
+  const href = getStudioEditHref(doc);
 
   return (
-    <div
+    <a
+      href={href}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       style={{
+        textDecoration: "none",
+        color: "inherit",
         display: "flex",
         alignItems: "center",
         gap: 12,
         padding: "12px 16px",
         background: hovered ? "#1a1b1e" : "transparent",
         borderRadius: 8,
-        cursor: "default",
+        cursor: "pointer",
         transition: "background 0.1s",
       }}
     >
@@ -214,7 +224,7 @@ function ActivityRow({ doc }: { doc: RecentDoc }) {
       >
         {timeAgo(doc._updatedAt)}
       </div>
-    </div>
+    </a>
   );
 }
 

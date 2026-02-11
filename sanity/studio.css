@@ -126,3 +126,72 @@ button[data-testid*="action"][data-tone="primary"]:hover,
 [data-ui="DefaultPreview"] {
   padding: 4px 0 !important;
 }
+
+/* Studio action buttons: larger, clearer primary actions */
+[data-ui="StatusBar"] button[data-ui="Button"] {
+  min-height: 38px !important;
+  padding-inline: 14px !important;
+  border-radius: 10px !important;
+  font-weight: 600 !important;
+}
+
+[data-ui="StatusBar"] button[data-ui="Button"][data-tone="primary"] {
+  background: #1f8f46 !important;
+  border-color: #1f8f46 !important;
+  color: #ffffff !important;
+}
+
+[data-ui="StatusBar"] button[data-ui="Button"][data-tone="primary"]:hover {
+  background: #25a451 !important;
+  border-color: #25a451 !important;
+}
+
+/* Make warning/error validation text stand out while typing */
+[data-ui="Text"][data-tone="caution"] {
+  color: #fbbf24 !important;
+  font-weight: 600 !important;
+}
+
+[data-ui="Text"][data-tone="critical"] {
+  color: #f87171 !important;
+  font-weight: 700 !important;
+}
+
+/*
+  Post editor layout:
+  left column = title/slug/body/excerpt
+  right column = media/seo/settings
+*/
+form:has([data-testid="field-body"]):has([data-testid="field-seo"]) {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1.8fr) minmax(280px, 1fr) !important;
+  gap: 14px 22px !important;
+  align-items: start !important;
+}
+
+form:has([data-testid="field-body"]):has([data-testid="field-seo"]) [data-testid="field-title"],
+form:has([data-testid="field-body"]):has([data-testid="field-seo"]) [data-testid="field-slug"],
+form:has([data-testid="field-body"]):has([data-testid="field-seo"]) [data-testid="field-body"],
+form:has([data-testid="field-body"]):has([data-testid="field-seo"]) [data-testid="field-excerpt"] {
+  grid-column: 1 !important;
+}
+
+form:has([data-testid="field-body"]):has([data-testid="field-seo"]) [data-testid="field-mainImage"],
+form:has([data-testid="field-body"]):has([data-testid="field-seo"]) [data-testid="field-coverImage"],
+form:has([data-testid="field-body"]):has([data-testid="field-seo"]) [data-testid="field-seo"],
+form:has([data-testid="field-body"]):has([data-testid="field-seo"]) [data-testid="field-author"],
+form:has([data-testid="field-body"]):has([data-testid="field-seo"]) [data-testid="field-categories"],
+form:has([data-testid="field-body"]):has([data-testid="field-seo"]) [data-testid="field-publishedAt"],
+form:has([data-testid="field-body"]):has([data-testid="field-seo"]) [data-testid="field-readTime"] {
+  grid-column: 2 !important;
+}
+
+@media (max-width: 1099px) {
+  form:has([data-testid="field-body"]):has([data-testid="field-seo"]) {
+    grid-template-columns: 1fr !important;
+  }
+
+  form:has([data-testid="field-body"]):has([data-testid="field-seo"]) [data-testid^="field-"] {
+    grid-column: 1 !important;
+  }
+}

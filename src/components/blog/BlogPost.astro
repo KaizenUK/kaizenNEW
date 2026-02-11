@@ -34,8 +34,9 @@ const imageFor = (
   }
 };
 
-const coverImageSource = post.mainImage ?? post.coverImage;
-const coverImageUrl = imageFor(coverImageSource, 1360, 780);
+const coverImageUrl =
+  imageFor(post.mainImage, 1360, 780) ??
+  imageFor(post.coverImage, 1360, 780);
 const authorImageUrl = imageFor(post.author?.image, 72, 72);
 const studioDocumentId = post._id.replace(/^drafts\./, "");
 const studioEditHref = `/studio/structure/post;${encodeURIComponent(studioDocumentId)}`;

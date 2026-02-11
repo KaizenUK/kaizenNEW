@@ -21,9 +21,8 @@ async function triggerStudioDeploy(payload: {
 }
 
 export const deployNowAction: DocumentActionComponent = (props) => ({
-  label: "Deploy Live",
+  label: "Deploy Now",
   title: "Trigger a production deployment now",
-  group: "paneActions",
   onHandle: async () => {
     try {
       await triggerStudioDeploy({
@@ -54,7 +53,7 @@ export function wrapPublishWithDeploy(
 
     return {
       ...original,
-      label: "Publish & Deploy",
+      label: "Publish + Deploy",
       title: "Publish this document and trigger a production deployment",
       onHandle: async () => {
         try {

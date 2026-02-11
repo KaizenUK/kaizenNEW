@@ -1,26 +1,31 @@
 ---
 import BlogPost from "../../../components/blog/BlogPost.astro";
 import LinearLayout from "../../../layouts/LinearLayout.astro";
-import { getPostBySlug, urlFor } from "../../../lib/sanity/client";
+import { getPostById, getPostBySlug, urlFor } from "../../../lib/sanity/client";
 
-// Server-rendered — never prerendered so it always fetches live drafts.
+// Server-rendered only so drafts are always fresh.
 export const prerender = false;
 
 const { slug } = Astro.params;
+const requestedId =
+  Astro.url.searchParams.get("id")?.replace(/^drafts\./, "").trim() ?? "";
 
 if (!slug) {
   return Astro.redirect("/blog");
 }
 
-// Check the Studio auth cookie — only editors may use preview routes.
+// Preview routes are only available to Studio-authenticated editors.
 const isEditor = Astro.cookies.get("kaizen_studio_auth")?.value === "1";
 if (!isEditor) {
-  return new Response("Unauthorized – sign in to Sanity Studio first.", {
+  return new Response("Unauthorized - sign in to Sanity Studio first.", {
     status: 401,
   });
 }
 
-const post = await getPostBySlug(slug, true);
+let post = await getPostBySlug(slug, true);
+if (!post && requestedId) {
+  post = await getPostById(requestedId, true);
+}
 
 if (!post) {
   return Astro.redirect("/blog");
@@ -31,13 +36,16 @@ const layoutDescription = post.seo?.metaDescription || post.excerpt;
 
 let ogImage: string | undefined;
 try {
-  const source = post.seo?.shareImage ?? post.mainImage ?? post.coverImage;
-  if (source) {
-    ogImage = urlFor(source).width(1200).height(630).fit("crop").auto("format").url();
+  const source = post.seo?.shareImage ?? post.mainImage;
+  const fallbackSource = post.coverImage;
+  if (source || fallbackSource) {
+    ogImage = urlFor(source ?? fallbackSource!).width(1200).height(630).fit("crop").auto("format").url();
   }
 } catch {
   ogImage = undefined;
 }
+
+const liveSlug = post.slug || slug;
 ---
 
 <LinearLayout
@@ -51,8 +59,8 @@ try {
   <div
     class="fixed top-0 left-0 z-50 w-full bg-amber-500 px-4 py-2 text-center text-sm font-semibold text-black"
   >
-    Draft Preview — This content is not published yet.
-    <a href={`/blog/${slug}`} class="ml-2 underline">View live</a>
+    Draft preview - this content is not published yet.
+    <a href={`/blog/${liveSlug}`} class="ml-2 underline">View live</a>
     <span class="mx-1">|</span>
     <a href="/studio" class="underline">Back to Studio</a>
   </div>

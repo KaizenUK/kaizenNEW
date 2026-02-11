@@ -31,9 +31,10 @@ const layoutDescription = post.seo?.metaDescription || post.excerpt;
 
 let ogImage: string | undefined;
 try {
-  const source = post.seo?.shareImage ?? post.mainImage ?? post.coverImage;
-  if (source) {
-    ogImage = urlFor(source).width(1200).height(630).fit("crop").auto("format").url();
+  const source = post.seo?.shareImage ?? post.mainImage;
+  const fallbackSource = post.coverImage;
+  if (source || fallbackSource) {
+    ogImage = urlFor(source ?? fallbackSource!).width(1200).height(630).fit("crop").auto("format").url();
   }
 } catch {
   ogImage = undefined;
