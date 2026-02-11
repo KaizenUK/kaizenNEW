@@ -110,17 +110,16 @@ jobs:
             corepack prepare pnpm@10.14.0 --activate
             pnpm install --frozen-lockfile
             pnpm run build
-            for file in dist/server/chunks/_@astrojs-ssr-adapter_*.mjs; do
-              [ -f "$file" ] || continue
-              if grep -q "util.inherits(SendStream, Stream);" "$file"; then
-                sed -i "s/util.inherits(SendStream, Stream);/requireInherits_browser()(SendStream, Stream);/" "$file"
-                echo "Patched SSR adapter: $(basename "$file")"
-              fi
-              if grep -q "util.inherits(SendStream, Stream);" "$file"; then
-                echo "Failed to patch util.inherits in $(basename "$file")"
-                exit 1
-              fi
+            mapfile -t inherit_files < <(grep -RIl "util.inherits(SendStream, Stream);" dist/server 2>/dev/null || true)
+            for file in "${inherit_files[@]}"; do
+              perl -0pi -e "s/util\\.inherits\\(SendStream,\\s*Stream\\);/requireInherits_browser()(SendStream, Stream);/g" "$file"
+              echo "Patched util.inherits in: $file"
             done
+            if grep -RIn "util.inherits(SendStream, Stream);" dist/server >/dev/null 2>&1; then
+              echo "Failed to fully patch util.inherits(SendStream, Stream) in dist/server"
+              grep -RIn "util.inherits(SendStream, Stream);" dist/server || true
+              exit 1
+            fi
 
             START_SCRIPT=""
             for candidate in \
@@ -237,17 +236,16 @@ jobs:
             corepack prepare pnpm@10.14.0 --activate
             pnpm install --frozen-lockfile
             pnpm run build
-            for file in dist/server/chunks/_@astrojs-ssr-adapter_*.mjs; do
-              [ -f "$file" ] || continue
-              if grep -q "util.inherits(SendStream, Stream);" "$file"; then
-                sed -i "s/util.inherits(SendStream, Stream);/requireInherits_browser()(SendStream, Stream);/" "$file"
-                echo "Patched SSR adapter: $(basename "$file")"
-              fi
-              if grep -q "util.inherits(SendStream, Stream);" "$file"; then
-                echo "Failed to patch util.inherits in $(basename "$file")"
-                exit 1
-              fi
+            mapfile -t inherit_files < <(grep -RIl "util.inherits(SendStream, Stream);" dist/server 2>/dev/null || true)
+            for file in "${inherit_files[@]}"; do
+              perl -0pi -e "s/util\\.inherits\\(SendStream,\\s*Stream\\);/requireInherits_browser()(SendStream, Stream);/g" "$file"
+              echo "Patched util.inherits in: $file"
             done
+            if grep -RIn "util.inherits(SendStream, Stream);" dist/server >/dev/null 2>&1; then
+              echo "Failed to fully patch util.inherits(SendStream, Stream) in dist/server"
+              grep -RIn "util.inherits(SendStream, Stream);" dist/server || true
+              exit 1
+            fi
 
             START_SCRIPT=""
             for candidate in \
