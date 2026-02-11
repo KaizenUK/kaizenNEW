@@ -116,8 +116,9 @@ const servePrerenderedHtml: express.RequestHandler = (req, res, next) => {
 
 app.use(servePrerenderedHtml);
 
-// Handle React Router - serve index.html for all non-API routes
-app.get("*", (req, res) => {
+// Handle React Router - serve index.html for all non-API routes.
+// Express 5 requires named wildcards; "{*path}" matches "/" and nested paths.
+app.get("/{*path}", (req, res) => {
   // Don't serve index.html for API routes
   if (req.path.startsWith("/api/") || req.path.startsWith("/health")) {
     return res.status(404).json({ error: "API endpoint not found" });
