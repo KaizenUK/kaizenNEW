@@ -68,6 +68,10 @@ jobs:
             export PUBLIC_SANITY_DATASET="${{ secrets.PUBLIC_SANITY_DATASET }}"
             export SANITY_PROJECT_ID="${{ secrets.SANITY_PROJECT_ID }}"
             export SANITY_DATASET="${{ secrets.SANITY_DATASET }}"
+            export NEXT_PUBLIC_SANITY_PROJECT_ID_SECRET="${{ secrets.NEXT_PUBLIC_SANITY_PROJECT_ID }}"
+            export NEXT_PUBLIC_SANITY_DATASET_SECRET="${{ secrets.NEXT_PUBLIC_SANITY_DATASET }}"
+            export VITE_SANITY_PROJECT_ID_SECRET="${{ secrets.VITE_SANITY_PROJECT_ID }}"
+            export VITE_SANITY_DATASET_SECRET="${{ secrets.VITE_SANITY_DATASET }}"
             export GITHUB_DEPLOY_TOKEN="${{ secrets.GITHUB_DEPLOY_TOKEN }}"
             export GITHUB_DEPLOY_REPO="${{ github.repository }}"
             export GITHUB_DEPLOY_EVENT_TYPE="sanity-update"
@@ -75,8 +79,20 @@ jobs:
             if [ -z "$PUBLIC_SANITY_PROJECT_ID" ] && [ -n "$SANITY_PROJECT_ID" ]; then
               export PUBLIC_SANITY_PROJECT_ID="$SANITY_PROJECT_ID"
             fi
+            if [ -z "$PUBLIC_SANITY_PROJECT_ID" ] && [ -n "$NEXT_PUBLIC_SANITY_PROJECT_ID_SECRET" ]; then
+              export PUBLIC_SANITY_PROJECT_ID="$NEXT_PUBLIC_SANITY_PROJECT_ID_SECRET"
+            fi
+            if [ -z "$PUBLIC_SANITY_PROJECT_ID" ] && [ -n "$VITE_SANITY_PROJECT_ID_SECRET" ]; then
+              export PUBLIC_SANITY_PROJECT_ID="$VITE_SANITY_PROJECT_ID_SECRET"
+            fi
             if [ -z "$PUBLIC_SANITY_DATASET" ] && [ -n "$SANITY_DATASET" ]; then
               export PUBLIC_SANITY_DATASET="$SANITY_DATASET"
+            fi
+            if [ -z "$PUBLIC_SANITY_DATASET" ] && [ -n "$NEXT_PUBLIC_SANITY_DATASET_SECRET" ]; then
+              export PUBLIC_SANITY_DATASET="$NEXT_PUBLIC_SANITY_DATASET_SECRET"
+            fi
+            if [ -z "$PUBLIC_SANITY_DATASET" ] && [ -n "$VITE_SANITY_DATASET_SECRET" ]; then
+              export PUBLIC_SANITY_DATASET="$VITE_SANITY_DATASET_SECRET"
             fi
             if [ -z "$PUBLIC_SANITY_DATASET" ]; then
               export PUBLIC_SANITY_DATASET="production"
@@ -85,7 +101,7 @@ jobs:
             export NEXT_PUBLIC_SANITY_DATASET="$PUBLIC_SANITY_DATASET"
 
             if [ -z "$PUBLIC_SANITY_PROJECT_ID" ]; then
-              echo "Missing Sanity project ID. Set one of: PUBLIC_SANITY_PROJECT_ID or SANITY_PROJECT_ID secrets."
+              echo "Missing Sanity project ID. Set one of: PUBLIC_SANITY_PROJECT_ID, SANITY_PROJECT_ID, NEXT_PUBLIC_SANITY_PROJECT_ID, or VITE_SANITY_PROJECT_ID secrets."
               exit 1
             fi
 
@@ -213,12 +229,28 @@ jobs:
             export PUBLIC_SANITY_DATASET="${{ secrets.PUBLIC_SANITY_DATASET }}"
             export SANITY_PROJECT_ID="${{ secrets.SANITY_PROJECT_ID }}"
             export SANITY_DATASET="${{ secrets.SANITY_DATASET }}"
+            export NEXT_PUBLIC_SANITY_PROJECT_ID_SECRET="${{ secrets.NEXT_PUBLIC_SANITY_PROJECT_ID }}"
+            export NEXT_PUBLIC_SANITY_DATASET_SECRET="${{ secrets.NEXT_PUBLIC_SANITY_DATASET }}"
+            export VITE_SANITY_PROJECT_ID_SECRET="${{ secrets.VITE_SANITY_PROJECT_ID }}"
+            export VITE_SANITY_DATASET_SECRET="${{ secrets.VITE_SANITY_DATASET }}"
 
             if [ -z "$PUBLIC_SANITY_PROJECT_ID" ] && [ -n "$SANITY_PROJECT_ID" ]; then
               export PUBLIC_SANITY_PROJECT_ID="$SANITY_PROJECT_ID"
             fi
+            if [ -z "$PUBLIC_SANITY_PROJECT_ID" ] && [ -n "$NEXT_PUBLIC_SANITY_PROJECT_ID_SECRET" ]; then
+              export PUBLIC_SANITY_PROJECT_ID="$NEXT_PUBLIC_SANITY_PROJECT_ID_SECRET"
+            fi
+            if [ -z "$PUBLIC_SANITY_PROJECT_ID" ] && [ -n "$VITE_SANITY_PROJECT_ID_SECRET" ]; then
+              export PUBLIC_SANITY_PROJECT_ID="$VITE_SANITY_PROJECT_ID_SECRET"
+            fi
             if [ -z "$PUBLIC_SANITY_DATASET" ] && [ -n "$SANITY_DATASET" ]; then
               export PUBLIC_SANITY_DATASET="$SANITY_DATASET"
+            fi
+            if [ -z "$PUBLIC_SANITY_DATASET" ] && [ -n "$NEXT_PUBLIC_SANITY_DATASET_SECRET" ]; then
+              export PUBLIC_SANITY_DATASET="$NEXT_PUBLIC_SANITY_DATASET_SECRET"
+            fi
+            if [ -z "$PUBLIC_SANITY_DATASET" ] && [ -n "$VITE_SANITY_DATASET_SECRET" ]; then
+              export PUBLIC_SANITY_DATASET="$VITE_SANITY_DATASET_SECRET"
             fi
             if [ -z "$PUBLIC_SANITY_DATASET" ]; then
               export PUBLIC_SANITY_DATASET="production"
@@ -227,7 +259,7 @@ jobs:
             export NEXT_PUBLIC_SANITY_DATASET="$PUBLIC_SANITY_DATASET"
 
             if [ -z "$PUBLIC_SANITY_PROJECT_ID" ]; then
-              echo "Missing Sanity project ID. Set one of: PUBLIC_SANITY_PROJECT_ID or SANITY_PROJECT_ID secrets."
+              echo "Missing Sanity project ID. Set one of: PUBLIC_SANITY_PROJECT_ID, SANITY_PROJECT_ID, NEXT_PUBLIC_SANITY_PROJECT_ID, or VITE_SANITY_PROJECT_ID secrets."
               exit 1
             fi
 
