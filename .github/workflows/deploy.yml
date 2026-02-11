@@ -97,8 +97,20 @@ jobs:
             fi
             pm2 save
 
-            sleep 2
-            curl -fsS "http://127.0.0.1:${PORT}" > /dev/null
+            for i in 1 2 3 4 5; do
+              if curl -fsS --max-time 10 "http://127.0.0.1:${PORT}/" > /dev/null; then
+                echo "Health check OK on port ${PORT}"
+                break
+              fi
+
+              if [ "$i" -eq 5 ]; then
+                echo "Health check failed on port ${PORT}"
+                pm2 logs "$APP_NAME" --lines 80 --nostream || true
+                exit 1
+              fi
+
+              sleep 2
+            done
 
       - name: Deploy Staging SSR on VPS
         if: github.ref == 'refs/heads/stage'
@@ -163,8 +175,20 @@ jobs:
             fi
             pm2 save
 
-            sleep 2
-            curl -fsS "http://127.0.0.1:${PORT}" > /dev/null
+            for i in 1 2 3 4 5; do
+              if curl -fsS --max-time 10 "http://127.0.0.1:${PORT}/" > /dev/null; then
+                echo "Health check OK on port ${PORT}"
+                break
+              fi
+
+              if [ "$i" -eq 5 ]; then
+                echo "Health check failed on port ${PORT}"
+                pm2 logs "$APP_NAME" --lines 80 --nostream || true
+                exit 1
+              fi
+
+              sleep 2
+            done
 
       # --- DISCORD NOTIFICATION ---
       - name: Discord Notification
