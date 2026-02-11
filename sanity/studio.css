@@ -1,0 +1,41 @@
+/*
+ * Kaizen Studio – custom CSS overrides
+ *
+ * Moves the document action bar (Publish / Discard) from the bottom
+ * to the top of the document pane, and makes it more prominent.
+ */
+
+/* ── Flip the document panel so the footer (actions) renders above the form ── */
+[data-testid="document-panel-scroller"] {
+  display: flex;
+  flex-direction: column;
+}
+
+/* The status/actions bar inside the document pane */
+[data-testid="document-panel-scroller"] > [data-testid="document-panel-portal"] {
+  order: -1;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  border-bottom: 1px solid var(--card-border-color, rgba(255, 255, 255, 0.1));
+  background: var(--card-bg-color, #101112);
+}
+
+/* Ensure the form content still fills available space */
+[data-testid="document-panel-scroller"] > div:not([data-testid="document-panel-portal"]) {
+  flex: 1;
+  min-height: 0;
+}
+
+/* ── Make the Publish button larger / more prominent ── */
+[data-testid="action-Publish---Deploy"],
+[data-testid="action-publish"] {
+  font-weight: 600;
+}
+
+/* ── Ensure the document footer stays visible even when scrolling ── */
+[data-ui="DocumentStatusBar"] {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}

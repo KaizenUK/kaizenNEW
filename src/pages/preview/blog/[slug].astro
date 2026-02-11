@@ -1,0 +1,62 @@
+---
+import BlogPost from "../../../components/blog/BlogPost.astro";
+import LinearLayout from "../../../layouts/LinearLayout.astro";
+import { getPostBySlug, urlFor } from "../../../lib/sanity/client";
+
+// Server-rendered — never prerendered so it always fetches live drafts.
+export const prerender = false;
+
+const { slug } = Astro.params;
+
+if (!slug) {
+  return Astro.redirect("/blog");
+}
+
+// Check the Studio auth cookie — only editors may use preview routes.
+const isEditor = Astro.cookies.get("kaizen_studio_auth")?.value === "1";
+if (!isEditor) {
+  return new Response("Unauthorized – sign in to Sanity Studio first.", {
+    status: 401,
+  });
+}
+
+const post = await getPostBySlug(slug, true);
+
+if (!post) {
+  return Astro.redirect("/blog");
+}
+
+const layoutTitle = `[Preview] ${post.seo?.metaTitle || post.title}`;
+const layoutDescription = post.seo?.metaDescription || post.excerpt;
+
+let ogImage: string | undefined;
+try {
+  const source = post.seo?.shareImage ?? post.mainImage ?? post.coverImage;
+  if (source) {
+    ogImage = urlFor(source).width(1200).height(630).fit("crop").auto("format").url();
+  }
+} catch {
+  ogImage = undefined;
+}
+---
+
+<LinearLayout
+  title={layoutTitle}
+  description={layoutDescription}
+  ogTitle={layoutTitle}
+  ogDescription={layoutDescription}
+  ogImage={ogImage}
+  ogType="article"
+>
+  <div
+    class="fixed top-0 left-0 z-50 w-full bg-amber-500 px-4 py-2 text-center text-sm font-semibold text-black"
+  >
+    Draft Preview — This content is not published yet.
+    <a href={`/blog/${slug}`} class="ml-2 underline">View live</a>
+    <span class="mx-1">|</span>
+    <a href="/studio" class="underline">Back to Studio</a>
+  </div>
+  <div class="pt-10">
+    <BlogPost post={post} />
+  </div>
+</LinearLayout>

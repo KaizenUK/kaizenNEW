@@ -2,10 +2,13 @@ import { PortableText, type PortableTextComponents } from "@portabletext/react";
 import type { PortableTextBlock as SanityPortableTextBlock } from "@portabletext/types";
 import Prism from "prismjs";
 import "prismjs/components/prism-bash";
+import "prismjs/components/prism-css";
 import "prismjs/components/prism-javascript";
 import "prismjs/components/prism-json";
 import "prismjs/components/prism-jsx";
 import "prismjs/components/prism-markup";
+import "prismjs/components/prism-python";
+import "prismjs/components/prism-sql";
 import "prismjs/components/prism-tsx";
 import "prismjs/components/prism-typescript";
 import "prismjs/themes/prism-tomorrow.css";
@@ -14,6 +17,7 @@ import { urlFor, type PortableTextBlock } from "../../lib/sanity/client";
 type CodeValue = {
   language?: string;
   code?: string;
+  filename?: string;
 };
 
 type CallToActionValue = {
@@ -21,6 +25,11 @@ type CallToActionValue = {
   href?: string;
   style?: "primary" | "ghost" | string;
   newTab?: boolean;
+};
+
+type VideoEmbedValue = {
+  url?: string;
+  caption?: string;
 };
 
 interface PortableTextRendererProps {
@@ -34,37 +43,87 @@ function renderCode(value: CodeValue) {
   return Prism.highlight(source, grammar, language);
 }
 
+function getVideoEmbedUrl(url: string): string | null {
+  // YouTube
+  const ytMatch = url.match(
+    /(?:youtube\.com\/(?:watch\?v=|embed\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})/,
+  );
+  if (ytMatch) return `https://www.youtube-nocookie.com/embed/${ytMatch[1]}`;
+
+  // Vimeo
+  const vimeoMatch = url.match(/vimeo\.com\/(\d+)/);
+  if (vimeoMatch) return `https://player.vimeo.com/video/${vimeoMatch[1]}`;
+
+  return null;
+}
+
 const components: PortableTextComponents = {
   block: {
-    h2: ({ children }) => <h2>{children}</h2>,
-    h3: ({ children }) => <h3>{children}</h3>,
+    h2: ({ children }) => (
+      <h2 className="mt-10 mb-4 text-2xl font-bold">{children}</h2>
+    ),
+    h3: ({ children }) => (
+      <h3 className="mt-8 mb-3 text-xl font-semibold">{children}</h3>
+    ),
+    h4: ({ children }) => (
+      <h4 className="mt-6 mb-2 text-lg font-semibold">{children}</h4>
+    ),
     normal: ({ children }) => <p>{children}</p>,
+    blockquote: ({ children }) => (
+      <blockquote className="my-6 border-l-4 border-sky-400/50 pl-4 italic text-gray-300">
+        {children}
+      </blockquote>
+    ),
+  },
+  list: {
+    bullet: ({ children }) => (
+      <ul className="my-4 list-disc space-y-1 pl-6">{children}</ul>
+    ),
+    number: ({ children }) => (
+      <ol className="my-4 list-decimal space-y-1 pl-6">{children}</ol>
+    ),
+  },
+  listItem: {
+    bullet: ({ children }) => <li>{children}</li>,
+    number: ({ children }) => <li>{children}</li>,
   },
   marks: {
     link: ({ children, value }) => (
       <a
         href={value?.href}
         target={value?.href?.startsWith("http") ? "_blank" : undefined}
-        rel={value?.href?.startsWith("http")
-          ? "noopener noreferrer"
-          : undefined}
+        rel={
+          value?.href?.startsWith("http") ? "noopener noreferrer" : undefined
+        }
       >
         {children}
       </a>
+    ),
+    strong: ({ children }) => <strong className="font-semibold">{children}</strong>,
+    code: ({ children }) => (
+      <code className="rounded bg-white/10 px-1.5 py-0.5 text-sm">{children}</code>
     ),
   },
   types: {
     codeBlock: ({ value }) => {
       const highlighted = renderCode(value as CodeValue);
       const language = (value as CodeValue).language || "typescript";
+      const filename = (value as CodeValue).filename;
 
       return (
-        <pre>
-          <code
-            className={`language-${language}`}
-            dangerouslySetInnerHTML={{ __html: highlighted }}
-          />
-        </pre>
+        <div className="my-6 overflow-hidden rounded-lg border border-white/10">
+          {filename && (
+            <div className="border-b border-white/10 bg-white/5 px-4 py-2 text-xs text-gray-400">
+              {filename}
+            </div>
+          )}
+          <pre className="!m-0 !rounded-none">
+            <code
+              className={`language-${language}`}
+              dangerouslySetInnerHTML={{ __html: highlighted }}
+            />
+          </pre>
+        </div>
       );
     },
     image: ({ value }) => {
@@ -95,9 +154,7 @@ const components: PortableTextComponents = {
       const href = typeof cta.href === "string" ? cta.href.trim() : "";
       const label = typeof cta.label === "string" ? cta.label.trim() : "";
 
-      if (!href || !label) {
-        return null;
-      }
+      if (!href || !label) return null;
 
       const isExternal =
         href.startsWith("http://") ||
@@ -123,6 +180,34 @@ const components: PortableTextComponents = {
             <span>{label}</span>
           </a>
         </div>
+      );
+    },
+    videoEmbed: ({ value }) => {
+      const video = value as VideoEmbedValue;
+      const url = typeof video.url === "string" ? video.url.trim() : "";
+      if (!url) return null;
+
+      const embedUrl = getVideoEmbedUrl(url);
+      if (!embedUrl) return null;
+
+      return (
+        <figure className="my-8">
+          <div className="relative aspect-video overflow-hidden rounded-xl border border-white/10">
+            <iframe
+              src={embedUrl}
+              title={video.caption || "Embedded video"}
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+              loading="lazy"
+              className="absolute inset-0 h-full w-full"
+            />
+          </div>
+          {video.caption && (
+            <figcaption className="mt-2 text-center text-sm text-gray-400">
+              {video.caption}
+            </figcaption>
+          )}
+        </figure>
       );
     },
   },

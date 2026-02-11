@@ -1,0 +1,28 @@
+const env = (import.meta.env ?? {}) as Record<string, string | undefined>;
+
+export const projectId =
+  env.PUBLIC_SANITY_PROJECT_ID ??
+  env.NEXT_PUBLIC_SANITY_PROJECT_ID ??
+  process.env.PUBLIC_SANITY_PROJECT_ID ??
+  process.env.NEXT_PUBLIC_SANITY_PROJECT_ID ??
+  "";
+
+export const dataset =
+  env.PUBLIC_SANITY_DATASET ??
+  env.NEXT_PUBLIC_SANITY_DATASET ??
+  process.env.PUBLIC_SANITY_DATASET ??
+  process.env.NEXT_PUBLIC_SANITY_DATASET ??
+  "production";
+
+export const siteUrl = (
+  env.PUBLIC_SITE_URL ??
+  env.NEXT_PUBLIC_SITE_URL ??
+  process.env.PUBLIC_SITE_URL ??
+  process.env.NEXT_PUBLIC_SITE_URL ??
+  "http://localhost:4321"
+).replace(/\/$/, "");
+
+export const apiVersion = "2025-01-01";
+
+export const resolvedProjectId = projectId || "missing-project-id";
+export const resolvedDataset = dataset || "production";

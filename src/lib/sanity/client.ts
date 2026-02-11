@@ -6,22 +6,24 @@ export type { SanityImageSource } from "@sanity/image-url";
 const env = (import.meta.env ?? {}) as Record<string, string | undefined>;
 
 const projectId =
-  env.NEXT_PUBLIC_SANITY_PROJECT_ID ??
   env.PUBLIC_SANITY_PROJECT_ID ??
-  process.env.NEXT_PUBLIC_SANITY_PROJECT_ID ??
+  env.NEXT_PUBLIC_SANITY_PROJECT_ID ??
   process.env.PUBLIC_SANITY_PROJECT_ID ??
+  process.env.NEXT_PUBLIC_SANITY_PROJECT_ID ??
   "";
 
 const dataset =
-  env.NEXT_PUBLIC_SANITY_DATASET ??
   env.PUBLIC_SANITY_DATASET ??
-  process.env.NEXT_PUBLIC_SANITY_DATASET ??
+  env.NEXT_PUBLIC_SANITY_DATASET ??
   process.env.PUBLIC_SANITY_DATASET ??
+  process.env.NEXT_PUBLIC_SANITY_DATASET ??
   "production";
 
 const token = env.SANITY_API_TOKEN ?? process.env.SANITY_API_TOKEN;
 
 const hasSanityConfig = Boolean(projectId && dataset);
+
+// ── Types ──────────────────────────────────────────────────────────
 
 export interface PortableTextSpan {
   _type: string;
@@ -65,10 +67,17 @@ export interface SanityAuthor {
   image?: SanityImageValue;
 }
 
+export interface SanityCategory {
+  _id: string;
+  title: string;
+  slug: string;
+}
+
 export interface SanitySeo {
   metaTitle?: string;
   metaDescription?: string;
   shareImage?: SanityImageValue;
+  canonicalUrl?: string;
 }
 
 export interface SanityPost {
@@ -82,8 +91,17 @@ export interface SanityPost {
   mainImage?: SanityImageValue;
   body?: PortableTextBlock[];
   author?: SanityAuthor;
+  categories?: SanityCategory[];
   seo?: SanitySeo;
 }
+
+export interface SanityRedirect {
+  source: string;
+  destination: string;
+  isPermanent: boolean;
+}
+
+// ── Clients ────────────────────────────────────────────────────────
 
 export const sanityClient = hasSanityConfig
   ? createClient({
@@ -96,12 +114,26 @@ export const sanityClient = hasSanityConfig
     })
   : null;
 
+/** Client that fetches draft content for preview mode. */
+export const previewClient = hasSanityConfig
+  ? createClient({
+      projectId,
+      dataset,
+      apiVersion: "2025-01-01",
+      useCdn: false,
+      token,
+      perspective: "previewDrafts",
+    })
+  : null;
+
+// ── Image helpers ──────────────────────────────────────────────────
+
 const imageBuilder = sanityClient ? createImageUrlBuilder(sanityClient) : null;
 
 export const urlFor = (source: SanityImageSource) => {
   if (!imageBuilder) {
     throw new Error(
-      "Sanity image URL builder is unavailable. Configure NEXT_PUBLIC_SANITY_PROJECT_ID and NEXT_PUBLIC_SANITY_DATASET.",
+      "Sanity image URL builder is unavailable. Configure PUBLIC_SANITY_PROJECT_ID and PUBLIC_SANITY_DATASET.",
     );
   }
   return imageBuilder.image(source);
@@ -113,13 +145,14 @@ export function getDominantImagePalette(
   return image?.asset?.metadata?.palette?.dominant;
 }
 
+// ── Read-time estimation ───────────────────────────────────────────
+
 export function estimateReadTime(body: PortableTextBlock[] = []): number {
   const text = body
     .map((block) => {
       const blockCode =
         typeof block.code === "string" ? block.code : undefined;
       if (blockCode) return blockCode;
-
       if (!Array.isArray(block.children)) return "";
       return block.children
         .map((child) => (typeof child?.text === "string" ? child.text : ""))
@@ -130,9 +163,7 @@ export function estimateReadTime(body: PortableTextBlock[] = []): number {
     .trim();
 
   if (!text) return 1;
-
-  const wordCount = text.split(" ").length;
-  return Math.max(1, Math.round(wordCount / 220));
+  return Math.max(1, Math.round(text.split(" ").length / 220));
 }
 
 function normalizePost(post: SanityPost): SanityPost {
@@ -146,6 +177,18 @@ function normalizePost(post: SanityPost): SanityPost {
   };
 }
 
+// ── GROQ Queries ───────────────────────────────────────────────────
+
+const IMAGE_ASSET_PROJECTION = `{
+  _id,
+  url,
+  metadata {
+    palette {
+      dominant { background, foreground, population, title }
+    }
+  }
+}`;
+
 const POST_PROJECTION = `
   _id,
   title,
@@ -153,101 +196,32 @@ const POST_PROJECTION = `
   excerpt,
   publishedAt,
   readTime,
-  coverImage{
+  coverImage {
     ...,
-    asset->{
-      _id,
-      url,
-      metadata{
-        palette{
-          dominant{
-            background,
-            foreground,
-            population,
-            title
-          }
-        }
-      }
-    }
+    asset->${IMAGE_ASSET_PROJECTION}
   },
-  mainImage{
+  mainImage {
     ...,
-    asset->{
-      _id,
-      url,
-      metadata{
-        palette{
-          dominant{
-            background,
-            foreground,
-            population,
-            title
-          }
-        }
-      }
-    }
+    asset->${IMAGE_ASSET_PROJECTION}
   },
   seo {
     metaTitle,
     metaDescription,
-    shareImage{
+    canonicalUrl,
+    shareImage {
       ...,
-      asset->{
-        _id,
-        url,
-        metadata{
-          palette{
-            dominant{
-              background,
-              foreground,
-              population,
-              title
-            }
-          }
-        }
-      }
+      asset->${IMAGE_ASSET_PROJECTION}
     }
   },
-  body[]{
+  body[] {
     ...,
     _type == "image" => {
       ...,
-      asset->{
-        _id,
-        url,
-        metadata{
-          palette{
-            dominant{
-              background,
-              foreground,
-              population,
-              title
-            }
-          }
-        }
-      }
+      asset->${IMAGE_ASSET_PROJECTION}
     }
   },
-  "author": author->{
-    name,
-    image{
-      ...,
-      asset->{
-        _id,
-        url,
-        metadata{
-          palette{
-            dominant{
-              background,
-              foreground,
-              population,
-              title
-            }
-          }
-        }
-      }
-    }
-  }
+  "author": author->{ name, image { ..., asset->${IMAGE_ASSET_PROJECTION} } },
+  "categories": categories[]->{ _id, title, "slug": slug.current }
 `;
 
 const POSTS_QUERY = `*[_type == "post" && defined(slug.current)] | order(publishedAt desc) {
@@ -258,16 +232,59 @@ const POST_BY_SLUG_QUERY = `*[_type == "post" && slug.current == $slug][0] {
   ${POST_PROJECTION}
 }`;
 
+const POSTS_BY_CATEGORY_QUERY = `*[_type == "post" && defined(slug.current) && $categoryId in categories[]._ref] | order(publishedAt desc) {
+  ${POST_PROJECTION}
+}`;
+
+const CATEGORIES_QUERY = `*[_type == "category"] | order(title asc) {
+  _id,
+  title,
+  "slug": slug.current
+}`;
+
+const REDIRECTS_QUERY = `*[_type == "redirect"] {
+  source,
+  destination,
+  isPermanent
+}`;
+
+// ── Query functions ────────────────────────────────────────────────
+
 export async function getAllPosts(): Promise<SanityPost[]> {
   if (!sanityClient) return [];
   const posts = await sanityClient.fetch<SanityPost[]>(POSTS_QUERY);
   return posts.map(normalizePost);
 }
 
-export async function getPostBySlug(slug: string): Promise<SanityPost | null> {
-  if (!sanityClient) return null;
-  const post = await sanityClient.fetch<SanityPost | null>(POST_BY_SLUG_QUERY, {
+export async function getPostBySlug(
+  slug: string,
+  preview = false,
+): Promise<SanityPost | null> {
+  const client = preview ? previewClient : sanityClient;
+  if (!client) return null;
+  const post = await client.fetch<SanityPost | null>(POST_BY_SLUG_QUERY, {
     slug,
   });
   return post ? normalizePost(post) : null;
+}
+
+export async function getPostsByCategory(
+  categoryId: string,
+): Promise<SanityPost[]> {
+  if (!sanityClient) return [];
+  const posts = await sanityClient.fetch<SanityPost[]>(
+    POSTS_BY_CATEGORY_QUERY,
+    { categoryId },
+  );
+  return posts.map(normalizePost);
+}
+
+export async function getAllCategories(): Promise<SanityCategory[]> {
+  if (!sanityClient) return [];
+  return sanityClient.fetch<SanityCategory[]>(CATEGORIES_QUERY);
+}
+
+export async function getAllRedirects(): Promise<SanityRedirect[]> {
+  if (!sanityClient) return [];
+  return sanityClient.fetch<SanityRedirect[]>(REDIRECTS_QUERY);
 }
