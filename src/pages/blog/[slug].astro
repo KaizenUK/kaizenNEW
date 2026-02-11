@@ -1,0 +1,52 @@
+---
+import BlogPost from "../../components/blog/BlogPost.astro";
+import LinearLayout from "../../layouts/LinearLayout.astro";
+import { getAllPosts, getPostBySlug, urlFor } from "../../lib/sanity/client";
+
+export const prerender = true;
+
+export async function getStaticPaths() {
+  const posts = await getAllPosts();
+  return posts.map((post) => ({
+    params: {
+      slug: post.slug,
+    },
+  }));
+}
+
+const { slug } = Astro.params;
+
+if (!slug) {
+  throw new Error("Missing slug param for blog detail page.");
+}
+
+const post = await getPostBySlug(slug);
+
+if (!post) {
+  throw new Error(`Could not find blog post for slug "${slug}".`);
+}
+
+const layoutTitle = post.seo?.metaTitle || `${post.title} | Kaizen Insights`;
+const layoutDescription = post.seo?.metaDescription || post.excerpt;
+
+let ogImage: string | undefined;
+try {
+  const source = post.seo?.shareImage ?? post.mainImage ?? post.coverImage;
+  if (source) {
+    ogImage = urlFor(source).width(1200).height(630).fit("crop").auto("format").url();
+  }
+} catch {
+  ogImage = undefined;
+}
+---
+
+<LinearLayout
+  title={layoutTitle}
+  description={layoutDescription}
+  ogTitle={layoutTitle}
+  ogDescription={layoutDescription}
+  ogImage={ogImage}
+  ogType="article"
+>
+  <BlogPost post={post} />
+</LinearLayout>

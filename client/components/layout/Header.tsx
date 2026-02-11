@@ -6,44 +6,17 @@ import {
   XIcon,
   ZapIcon,
 } from "@/components/icons/CriticalIcons";
-import { Suspense, lazy, useEffect, useState } from "react";
+import HeaderDesktopNav from "./HeaderDesktopNav";
 
 interface HeaderProps {
   mobileMenuOpen: boolean;
   onMobileMenuChange: (open: boolean) => void;
 }
 
-const HeaderDesktopNav = lazy(() => import("./HeaderDesktopNav"));
-const DESKTOP_BREAKPOINT_QUERY = "(min-width: 1024px)";
-
 const Header: React.FC<HeaderProps> = ({
   mobileMenuOpen,
   onMobileMenuChange,
 }) => {
-  const [shouldRenderDesktopNav, setShouldRenderDesktopNav] = useState(() => {
-    if (typeof window === "undefined") return false;
-    return window.matchMedia(DESKTOP_BREAKPOINT_QUERY).matches;
-  });
-
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-
-    const mediaQuery = window.matchMedia(DESKTOP_BREAKPOINT_QUERY);
-    const updateDesktopMode = () => {
-      setShouldRenderDesktopNav(mediaQuery.matches);
-    };
-
-    updateDesktopMode();
-
-    if (typeof mediaQuery.addEventListener === "function") {
-      mediaQuery.addEventListener("change", updateDesktopMode);
-      return () => mediaQuery.removeEventListener("change", updateDesktopMode);
-    }
-
-    mediaQuery.addListener(updateDesktopMode);
-    return () => mediaQuery.removeListener(updateDesktopMode);
-  }, []);
-
   return (
     <header className="site-header sticky top-0 z-50 w-full bg-white border-b border-gray-100">
       <div className="site-header-wrap max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -56,13 +29,7 @@ const Header: React.FC<HeaderProps> = ({
             <KaizenLogo className="h-7 w-[120px] text-black" />
           </Link>
 
-          {shouldRenderDesktopNav ? (
-            <Suspense fallback={<div className="hidden lg:flex flex-1" aria-hidden="true" />}>
-              <HeaderDesktopNav />
-            </Suspense>
-          ) : (
-            <div className="hidden lg:flex flex-1" aria-hidden="true" />
-          )}
+          <HeaderDesktopNav />
 
           {/* Right Actions - pushed to the right */}
           <div className="flex items-center gap-3 ml-auto">

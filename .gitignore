@@ -30,4 +30,5 @@ dist/
 .astro/
 .env
 .env.*
+!.env.example
 /traces

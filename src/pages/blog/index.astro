@@ -1,0 +1,18 @@
+---
+import BlogIndex from "../../components/blog/BlogIndex.astro";
+import LinearLayout from "../../layouts/LinearLayout.astro";
+import { getAllPosts } from "../../lib/sanity/client";
+
+export const prerender = true;
+
+const posts = await getAllPosts();
+---
+
+<LinearLayout
+  title="Insights | Kaizen Web"
+  description="Performance-led engineering notes from Kaizen."
+  ogTitle="Insights | Kaizen Web"
+  ogDescription="Performance-led engineering notes from Kaizen."
+>
+  <BlogIndex posts={posts} />
+</LinearLayout>

@@ -1,56 +1,51 @@
-import { lazy } from "react";
-import { Navigate, Route, Routes } from "react-router-dom";
+import { useEffect } from "react";
+import { Navigate, Route, Routes, useLocation } from "react-router-dom";
 import { HelmetProvider } from "@/lib/helmet";
 
-const NotFound = lazy(() => import("./pages/NotFound"));
-const LocalSeo = lazy(() => import("./pages/services/LocalSeo"));
-const DigitalTransformation = lazy(
-  () => import("./pages/services/DigitalTransformation"),
-);
-const Ecommerce = lazy(() => import("./pages/services/Ecommerce"));
-const WordPressWebDesign = lazy(
-  () => import("./pages/services/WordPressWebDesign"),
-);
-const WebDesignWirral = lazy(() => import("./pages/services/WebDesignWirral"));
-const WebDesignLiverpool = lazy(
-  () => import("./pages/services/WebDesignLiverpool"),
-);
-const WebDesignChester = lazy(
-  () => import("./pages/services/WebDesignChester"),
-);
-const WebDesignWarrington = lazy(
-  () => import("./pages/services/WebDesignWarrington"),
-);
-const ContractProductOwner = lazy(() => import("./pages/ContractProductOwner"));
-const ProjectRescue = lazy(() => import("./pages/ProjectRescue"));
-const CaseStudies = lazy(() => import("./pages/CaseStudies"));
-const Blog = lazy(() => import("./pages/Blog"));
-const BlogDetail = lazy(() => import("./pages/BlogDetail"));
-const Contact = lazy(() => import("./pages/Contact"));
-const Services = lazy(() => import("./pages/Services"));
-const About = lazy(() => import("./pages/About"));
-const Pledge = lazy(() => import("./pages/Pledge"));
-const AgileCoaching = lazy(() => import("./pages/AgileCoaching"));
-const AsCollectionsCase = lazy(
-  () => import("./pages/caseStudies/AsCollections"),
-);
-const HelenMooreHairdressingCase = lazy(
-  () => import("./pages/caseStudies/HelenMooreHairdressing"),
-);
-const IndependentRetailerCase = lazy(
-  () => import("./pages/caseStudies/IndependentRetailer"),
-);
-const KaizenRebuildCase = lazy(
-  () => import("./pages/caseStudies/KaizenRebuild"),
-);
-const HighFiveGamesCase = lazy(
-  () => import("./pages/caseStudies/HighFiveGames"),
-);
-const PrivacyPolicy = lazy(() => import("./pages/PrivacyPolicy"));
-const CookiePolicy = lazy(() => import("./pages/CookiePolicy"));
-const GDPRPolicy = lazy(() => import("./pages/GDPRPolicy"));
-const ThankYou = lazy(() => import("./pages/ThankYou"));
-const PerformanceScanner = lazy(() => import("./pages/PerformanceScanner"));
+import NotFound from "./pages/NotFound";
+import LocalSeo from "./pages/services/LocalSeo";
+import DigitalTransformation from "./pages/services/DigitalTransformation";
+import Ecommerce from "./pages/services/Ecommerce";
+import WordPressWebDesign from "./pages/services/WordPressWebDesign";
+import WebDesignWirral from "./pages/services/WebDesignWirral";
+import WebDesignLiverpool from "./pages/services/WebDesignLiverpool";
+import WebDesignChester from "./pages/services/WebDesignChester";
+import WebDesignWarrington from "./pages/services/WebDesignWarrington";
+import ContractProductOwner from "./pages/ContractProductOwner";
+import ProjectRescue from "./pages/ProjectRescue";
+import CaseStudies from "./pages/CaseStudies";
+import Contact from "./pages/Contact";
+import Services from "./pages/Services";
+import About from "./pages/About";
+import Pledge from "./pages/Pledge";
+import AgileCoaching from "./pages/AgileCoaching";
+import AsCollectionsCase from "./pages/caseStudies/AsCollections";
+import HelenMooreHairdressingCase from "./pages/caseStudies/HelenMooreHairdressing";
+import IndependentRetailerCase from "./pages/caseStudies/IndependentRetailer";
+import KaizenRebuildCase from "./pages/caseStudies/KaizenRebuild";
+import HighFiveGamesCase from "./pages/caseStudies/HighFiveGames";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
+import CookiePolicy from "./pages/CookiePolicy";
+import GDPRPolicy from "./pages/GDPRPolicy";
+import ThankYou from "./pages/ThankYou";
+import PerformanceScanner from "./pages/PerformanceScanner";
+
+function ServerRouteHandoff() {
+  const location = useLocation();
+
+  useEffect(() => {
+    const target = `${location.pathname}${location.search}${location.hash}`;
+    window.location.replace(target);
+  }, [location.pathname, location.search, location.hash]);
+
+  return (
+    <div className="site-shell min-h-screen bg-background text-foreground">
+      <div className="mx-auto max-w-4xl px-6 py-24 text-center text-gray-600">
+        Loading page...
+      </div>
+    </div>
+  );
+}
 
 export default function OtherRoutes() {
   return (
@@ -113,8 +108,10 @@ export default function OtherRoutes() {
           path="/case-studies/high-five-games"
           element={<HighFiveGamesCase />}
         />
-        <Route path="/blog" element={<Blog />} />
-        <Route path="/blog/:slug" element={<BlogDetail />} />
+        <Route path="/blog/*" element={<ServerRouteHandoff />} />
+        <Route path="/studio/*" element={<ServerRouteHandoff />} />
+        <Route path="/insights/*" element={<ServerRouteHandoff />} />
+        <Route path="/blogdetail/*" element={<ServerRouteHandoff />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/thank-you" element={<ThankYou />} />
         <Route path="/privacy-policy" element={<PrivacyPolicy />} />

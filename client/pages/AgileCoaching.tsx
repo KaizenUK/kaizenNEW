@@ -37,6 +37,9 @@ const staggerContainer = {
   },
 };
 
+const requiresDocumentNavigation = (href: string): boolean =>
+  /^\/(blog|studio|insights|blogdetail)(\/|$)/.test(href);
+
 // Scroll-triggered fade-in component
 const ScrollReveal = ({
   children,
@@ -372,26 +375,49 @@ export default function AgileCoaching() {
               },
             ].map((item, index) => (
               <motion.div key={index} variants={fadeInUp}>
-                <Link
-                  to={item.link}
-                  className="block p-8 bg-kaizen-light rounded-2xl border border-kaizen-light hover:border-kaizen-cyan transition group h-full"
-                >
-                  <div className="mb-6 p-4 w-16 h-16 bg-gradient-to-br from-kaizen-cyan/20 to-kaizen-lime/20 rounded-xl flex items-center justify-center">
-                    <item.icon
-                      className="text-kaizen-cyan group-hover:scale-110 transition"
-                      size={32}
-                    />
-                  </div>
-                  <h3 className="text-2xl font-heading font-bold mb-4 text-kaizen-dark group-hover:text-kaizen-cyan transition">
-                    {item.title}
-                  </h3>
-                  <p className="text-lg text-kaizen-text-dark/70 leading-relaxed mb-6">
-                    {item.copy}
-                  </p>
-                  <div className="text-kaizen-cyan font-medium flex items-center gap-2 hover:gap-3 transition">
-                    {item.linkText} <ArrowUpRight size={18} />
-                  </div>
-                </Link>
+                {requiresDocumentNavigation(item.link) ? (
+                  <a
+                    href={item.link}
+                    className="block p-8 bg-kaizen-light rounded-2xl border border-kaizen-light hover:border-kaizen-cyan transition group h-full"
+                  >
+                    <div className="mb-6 p-4 w-16 h-16 bg-gradient-to-br from-kaizen-cyan/20 to-kaizen-lime/20 rounded-xl flex items-center justify-center">
+                      <item.icon
+                        className="text-kaizen-cyan group-hover:scale-110 transition"
+                        size={32}
+                      />
+                    </div>
+                    <h3 className="text-2xl font-heading font-bold mb-4 text-kaizen-dark group-hover:text-kaizen-cyan transition">
+                      {item.title}
+                    </h3>
+                    <p className="text-lg text-kaizen-text-dark/70 leading-relaxed mb-6">
+                      {item.copy}
+                    </p>
+                    <div className="text-kaizen-cyan font-medium flex items-center gap-2 hover:gap-3 transition">
+                      {item.linkText} <ArrowUpRight size={18} />
+                    </div>
+                  </a>
+                ) : (
+                  <Link
+                    to={item.link}
+                    className="block p-8 bg-kaizen-light rounded-2xl border border-kaizen-light hover:border-kaizen-cyan transition group h-full"
+                  >
+                    <div className="mb-6 p-4 w-16 h-16 bg-gradient-to-br from-kaizen-cyan/20 to-kaizen-lime/20 rounded-xl flex items-center justify-center">
+                      <item.icon
+                        className="text-kaizen-cyan group-hover:scale-110 transition"
+                        size={32}
+                      />
+                    </div>
+                    <h3 className="text-2xl font-heading font-bold mb-4 text-kaizen-dark group-hover:text-kaizen-cyan transition">
+                      {item.title}
+                    </h3>
+                    <p className="text-lg text-kaizen-text-dark/70 leading-relaxed mb-6">
+                      {item.copy}
+                    </p>
+                    <div className="text-kaizen-cyan font-medium flex items-center gap-2 hover:gap-3 transition">
+                      {item.linkText} <ArrowUpRight size={18} />
+                    </div>
+                  </Link>
+                )}
               </motion.div>
             ))}
           </motion.div>

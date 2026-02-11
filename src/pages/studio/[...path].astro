@@ -1,0 +1,18 @@
+---
+import Studio from "../../components/Studio.jsx";
+
+export const prerender = false;
+---
+
+<!doctype html>
+<html lang="en-GB" class="h-full">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Kaizen CMS Studio</title>
+    <meta name="robots" content="noindex, nofollow" />
+  </head>
+  <body class="m-0 h-full">
+    <Studio client:only="react" />
+  </body>
+</html>

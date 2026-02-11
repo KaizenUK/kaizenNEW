@@ -20,8 +20,13 @@ function getClientIp(request: Request): string {
 }
 
 export const onRequest = defineMiddleware(async (context, next) => {
-  const hostHeader = context.request.headers.get("host") || "";
-  const host = hostHeader.split(":")[0].toLowerCase();
+  // Skip stage-IP checks during prerender so static build does not
+  // rely on request headers and emit warnings.
+  if (context.isPrerendered) {
+    return next();
+  }
+
+  const host = context.url.hostname.toLowerCase();
 
   if (host === STAGE_HOST) {
     const clientIp = getClientIp(context.request);

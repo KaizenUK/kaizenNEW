@@ -1,0 +1,110 @@
+---
+import PortableTextRenderer from "./PortableTextRenderer";
+import {
+  urlFor,
+  type SanityPost,
+  type SanityImageSource,
+} from "../../lib/sanity/client";
+
+interface Props {
+  post: SanityPost;
+}
+
+const { post } = Astro.props;
+
+const published = post.publishedAt
+  ? new Intl.DateTimeFormat("en-GB", {
+      day: "2-digit",
+      month: "long",
+      year: "numeric",
+    }).format(new Date(post.publishedAt))
+  : "Draft";
+
+const imageFor = (
+  source: SanityImageSource | undefined,
+  width: number,
+  height: number,
+) => {
+  if (!source) return null;
+
+  try {
+    return urlFor(source).width(width).height(height).fit("crop").auto("format").url();
+  } catch {
+    return null;
+  }
+};
+
+const coverImageSource = post.mainImage ?? post.coverImage;
+const coverImageUrl = imageFor(coverImageSource, 1360, 780);
+const authorImageUrl = imageFor(post.author?.image, 72, 72);
+---
+
+<article class="linear-container py-14 sm:py-20">
+  <div class="mx-auto max-w-[680px]">
+    <a
+      href="/blog"
+      class="linear-meta inline-flex items-center gap-2 text-sky-300 hover:text-sky-200"
+    >
+      <span aria-hidden="true">&larr;</span>
+      Back to insights
+    </a>
+
+    <header class="mt-6">
+      <div class="linear-meta mb-4 flex items-center gap-4">
+        <span>{published}</span>
+        <span>&bull;</span>
+        <span>{post.readTime} min read</span>
+      </div>
+
+      <h1 class="text-4xl font-semibold tracking-tight text-white sm:text-5xl">
+        {post.title}
+      </h1>
+
+      {
+        post.excerpt ? (
+          <p class="mt-5 text-lg leading-relaxed text-gray-400">{post.excerpt}</p>
+        ) : null
+      }
+
+      <div class="mt-7 flex items-center gap-3">
+        {
+          authorImageUrl ? (
+            <img
+              src={authorImageUrl}
+              alt={post.author?.name ?? "Author"}
+              width="36"
+              height="36"
+              class="size-9 rounded-full border border-white/10 object-cover"
+            />
+          ) : (
+            <span class="inline-grid size-9 place-items-center rounded-full border border-white/10 bg-white/5 text-xs font-semibold uppercase text-white">
+              {post.author?.name?.slice(0, 2) ?? "KW"}
+            </span>
+          )
+        }
+        <div class="linear-meta">
+          <p class="m-0">{post.author?.name ?? "Kaizen Team"}</p>
+        </div>
+      </div>
+    </header>
+
+    {
+      coverImageUrl ? (
+        <figure class="mt-10 overflow-hidden rounded-2xl border border-white/10">
+          <img
+            src={coverImageUrl}
+            alt={post.title}
+            loading="eager"
+            decoding="async"
+            fetchpriority="high"
+            class="h-auto w-full object-cover"
+          />
+        </figure>
+      ) : null
+    }
+
+    <section class="mt-12">
+      <PortableTextRenderer value={post.body ?? []} />
+    </section>
+  </div>
+</article>

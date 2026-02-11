@@ -1,9 +1,8 @@
 import { Suspense, lazy, useEffect, useState, type ReactNode } from "react";
 import { useLocation } from "react-router-dom";
 import Header from "@/components/layout/Header";
-import { isReactSnapPrerender } from "@/lib/prerender";
+import Footer from "@/components/layout/Footer";
 
-const Footer = lazy(() => import("@/components/layout/Footer"));
 const OffCanvasMenu = lazy(() => import("@/components/layout/OffCanvasMenu"));
 
 interface HomeLayoutProps {
@@ -47,7 +46,6 @@ const upsertCanonical = (href: string) => {
 const HomeLayout = ({ children }: HomeLayoutProps) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [hasOpenedMobileMenu, setHasOpenedMobileMenu] = useState(false);
-  const [shouldRenderFooter, setShouldRenderFooter] = useState(false);
   const location = useLocation();
 
   useEffect(() => {
@@ -86,30 +84,6 @@ const HomeLayout = ({ children }: HomeLayoutProps) => {
     setHasOpenedMobileMenu(true);
   }, [mobileMenuOpen]);
 
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    if (isReactSnapPrerender()) return;
-
-    const loadFooter = () => setShouldRenderFooter(true);
-    let idleId: number | null = null;
-    const win = window as Window & {
-      requestIdleCallback?: (cb: IdleRequestCallback) => number;
-      cancelIdleCallback?: (id: number) => void;
-    };
-
-    if (typeof win.requestIdleCallback === "function") {
-      idleId = win.requestIdleCallback(() => loadFooter());
-      return () => {
-        if (idleId !== null && typeof win.cancelIdleCallback === "function") {
-          win.cancelIdleCallback(idleId);
-        }
-      };
-    }
-
-    const timeoutId = window.setTimeout(loadFooter, 1200);
-    return () => window.clearTimeout(timeoutId);
-  }, []);
-
   return (
     <>
       <div className="site-shell min-h-screen flex flex-col bg-background text-foreground transition-colors">
@@ -120,13 +94,7 @@ const HomeLayout = ({ children }: HomeLayoutProps) => {
 
         <main className="flex-grow">{children}</main>
 
-        {shouldRenderFooter ? (
-          <Suspense fallback={<div className="min-h-[420px]" aria-hidden="true" />}>
-            <Footer />
-          </Suspense>
-        ) : (
-          <div className="min-h-[420px]" aria-hidden="true" />
-        )}
+        <Footer />
       </div>
 
       {mobileMenuOpen || hasOpenedMobileMenu ? (
