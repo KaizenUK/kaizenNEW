@@ -15,10 +15,31 @@ const buildLabel = BUILD_NUMBER?.trim()
 
 const navLinks = [
   { href: "/services", label: "Services" },
+  { href: "/web-design-wirral", label: "Web Design Wirral" },
+  { href: "/web-design-liverpool", label: "Web Design Liverpool" },
   { href: "/case-studies", label: "Case Studies" },
-  { href: "/performance-scanner", label: "Performance Scanner" },
+  { href: "/performance-scanner", label: "Free Audit" },
   { href: "/about", label: "About" },
   { href: "/contact", label: "Contact" },
+];
+
+const faqs = [
+  {
+    q: "How quickly can you launch a new site?",
+    a: "Most brochure and lead-generation builds launch in 2-4 weeks. Rescue and migration work depends on handover quality, but we set a clear milestone plan before work starts.",
+  },
+  {
+    q: "Do you only work with Liverpool and Wirral businesses?",
+    a: "No. We are based local and work UK-wide, but we keep local market positioning strong for Wirral, Liverpool, Chester and Warrington.",
+  },
+  {
+    q: "Can you improve our current site without rebuilding everything?",
+    a: "Yes. We can run focused performance, conversion and SEO improvements when a full rebuild is not the right commercial move.",
+  },
+  {
+    q: "Do you provide hosting and support after launch?",
+    a: "Yes. We support staged releases, ongoing maintenance and performance monitoring so the site keeps producing results post-launch.",
+  },
 ];
 ---
 
@@ -41,7 +62,7 @@ const navLinks = [
   <body class="bg-slate-950 text-white antialiased">
     <header class="sticky top-0 z-40 border-b border-white/10 bg-slate-950/85 backdrop-blur">
       <div class="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
-        <a href="/" class="text-xl font-bold tracking-tight">Kaizen</a>
+        <a href="/" class="text-xl font-black tracking-tight">Kaizen Web</a>
         <nav class="hidden gap-6 text-sm text-white/80 md:flex">
           {navLinks.map((link) => (
             <a href={link.href} class="transition hover:text-white">{link.label}</a>
@@ -58,20 +79,27 @@ const navLinks = [
 
     <main>
       <section class="relative overflow-hidden border-b border-white/10">
-        <div class="pointer-events-none absolute inset-0 opacity-60">
-          <div class="absolute -top-20 left-[-15%] h-72 w-72 rounded-full bg-cyan-500/20 blur-3xl"></div>
-          <div class="absolute -bottom-20 right-[-10%] h-80 w-80 rounded-full bg-emerald-500/15 blur-3xl"></div>
+        <div class="pointer-events-none absolute inset-0">
+          <div class="absolute -top-20 left-[-15%] h-72 w-72 rounded-full bg-cyan-500/30 blur-3xl"></div>
+          <div class="absolute -bottom-24 right-[-10%] h-80 w-80 rounded-full bg-emerald-500/20 blur-3xl"></div>
+          <div class="absolute inset-0 bg-[linear-gradient(to_bottom,rgba(2,6,23,0.4),rgba(2,6,23,0.88))]"></div>
         </div>
-        <div class="relative mx-auto grid max-w-7xl gap-10 px-4 py-24 sm:px-6 lg:grid-cols-2 lg:items-center lg:px-8 lg:py-32">
+        <div class="relative mx-auto grid max-w-7xl gap-12 px-4 py-24 sm:px-6 lg:grid-cols-[1.2fr_0.8fr] lg:items-center lg:px-8 lg:py-32">
           <div>
             <p class="mb-4 text-xs uppercase tracking-[0.24em] text-cyan-300">Wirral Web Design</p>
             <h1 class="text-5xl font-black leading-tight sm:text-6xl">
               Sites That Actually Make You Money
             </h1>
-            <p class="mt-6 max-w-xl text-lg text-white/80">
-              Fast, conversion-focused websites for ambitious businesses. No WordPress bloat. No
-              fluff. Just measurable growth.
+            <p class="mt-6 max-w-2xl text-lg leading-relaxed text-white/80">
+              We build fast websites for ambitious businesses that care about outcomes, not vanity.
+              Every project is designed to improve qualified leads, conversion rate, and organic
+              visibility.
             </p>
+            <div class="mt-6 flex flex-wrap gap-2 text-xs uppercase tracking-[0.18em] text-white/65">
+              <span class="rounded-full border border-white/15 px-3 py-1">Performance budgets</span>
+              <span class="rounded-full border border-white/15 px-3 py-1">Core Web Vitals first</span>
+              <span class="rounded-full border border-white/15 px-3 py-1">No WordPress bloat</span>
+            </div>
             <div class="mt-10 flex flex-wrap gap-4">
               <a
                 href="/contact"
@@ -88,22 +116,72 @@ const navLinks = [
             </div>
           </div>
 
-          <div class="rounded-3xl border border-emerald-300/30 bg-white/5 p-8">
-            <p class="text-xs uppercase tracking-[0.24em] text-emerald-300">Our Baseline</p>
-            <div class="mt-4 text-6xl font-black text-emerald-300">96</div>
-            <p class="mt-1 text-white/70">Lighthouse performance target</p>
+          <div class="rounded-3xl border border-emerald-300/35 bg-slate-900/70 p-8 shadow-[0_30px_100px_rgba(6,182,212,0.16)]">
+            <p class="text-xs uppercase tracking-[0.24em] text-emerald-300">Performance Standard</p>
+            <div class="mt-4 flex items-end gap-3">
+              <span class="text-7xl font-black leading-none text-emerald-300">96</span>
+              <span class="mb-2 text-sm uppercase tracking-[0.2em] text-white/65">Lighthouse target</span>
+            </div>
+            <p class="mt-3 text-sm leading-relaxed text-white/70">
+              If your site is slow, you pay for traffic and lose leads anyway. We ship pages built
+              to pass Core Web Vitals by default.
+            </p>
             <div class="mt-8 grid grid-cols-3 gap-3 text-center">
-              <div class="rounded-xl border border-white/10 bg-slate-900/60 p-4">
+              <div class="rounded-xl border border-white/10 bg-slate-950/75 p-4">
                 <p class="text-xs uppercase tracking-[0.2em] text-white/50">LCP</p>
                 <p class="mt-2 text-2xl font-bold">0.8s</p>
               </div>
-              <div class="rounded-xl border border-white/10 bg-slate-900/60 p-4">
+              <div class="rounded-xl border border-white/10 bg-slate-950/75 p-4">
                 <p class="text-xs uppercase tracking-[0.2em] text-white/50">TBT</p>
                 <p class="mt-2 text-2xl font-bold">0ms</p>
               </div>
-              <div class="rounded-xl border border-white/10 bg-slate-900/60 p-4">
+              <div class="rounded-xl border border-white/10 bg-slate-950/75 p-4">
                 <p class="text-xs uppercase tracking-[0.2em] text-white/50">CLS</p>
                 <p class="mt-2 text-2xl font-bold">0.01</p>
+              </div>
+            </div>
+            <a
+              href="/performance-scanner"
+              class="mt-8 inline-flex rounded-lg border border-cyan-400/50 px-5 py-3 text-sm font-semibold text-cyan-300 transition hover:border-cyan-300 hover:text-cyan-200"
+            >
+              Run your free speed scan
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <section class="border-b border-white/10 bg-slate-900/80">
+        <div class="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
+          <div class="grid gap-10 lg:grid-cols-2 lg:gap-16">
+            <div>
+              <p class="mb-4 text-xs uppercase tracking-[0.24em] text-amber-300">The Risk</p>
+              <h2 class="text-3xl font-bold sm:text-4xl">
+                Social media is rented land. Your website is your asset.
+              </h2>
+              <p class="mt-5 text-lg leading-relaxed text-white/75">
+                Accounts get throttled, reach drops, and platforms change rules overnight. A high
+                performing website gives you owned traffic, stable lead flow, and stronger search
+                visibility.
+              </p>
+            </div>
+            <div class="grid gap-4">
+              <div class="rounded-2xl border border-white/10 bg-slate-950/70 p-6">
+                <p class="text-sm font-semibold text-cyan-300">Conversion-focused architecture</p>
+                <p class="mt-2 text-sm text-white/70">
+                  Pages built around user intent, not template blocks.
+                </p>
+              </div>
+              <div class="rounded-2xl border border-white/10 bg-slate-950/70 p-6">
+                <p class="text-sm font-semibold text-cyan-300">Search visibility engineered in</p>
+                <p class="mt-2 text-sm text-white/70">
+                  Technical SEO and local relevance are built from the first commit.
+                </p>
+              </div>
+              <div class="rounded-2xl border border-white/10 bg-slate-950/70 p-6">
+                <p class="text-sm font-semibold text-cyan-300">Revenue over vanity metrics</p>
+                <p class="mt-2 text-sm text-white/70">
+                  We optimize for qualified enquiries and commercial outcomes.
+                </p>
               </div>
             </div>
           </div>
@@ -112,40 +190,197 @@ const navLinks = [
 
       <section class="border-b border-white/10 bg-slate-900">
         <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
-          <p class="mb-4 text-xs uppercase tracking-[0.24em] text-cyan-300">Why Us</p>
+          <p class="mb-4 text-xs uppercase tracking-[0.24em] text-cyan-300">How We Help</p>
+          <h2 class="max-w-3xl text-3xl font-bold sm:text-4xl">Three delivery tracks.</h2>
+          <p class="mt-4 max-w-3xl text-white/70">
+            Pick the route that fits your commercial need right now.
+          </p>
+          <div class="mt-10 grid gap-6 lg:grid-cols-3">
+            <article class="rounded-3xl border border-cyan-400/30 bg-slate-950/75 p-7">
+              <p class="text-xs uppercase tracking-[0.22em] text-cyan-300">Web Design</p>
+              <h3 class="mt-3 text-2xl font-bold">New Site Build</h3>
+              <p class="mt-3 text-white/70">
+                For businesses that need a fast, premium site built properly from day one.
+              </p>
+              <ul class="mt-5 space-y-2 text-sm text-white/75">
+                <li>Performance budgets and technical QA</li>
+                <li>Search-ready architecture and local relevance</li>
+                <li>Conversion-first page structure</li>
+              </ul>
+              <a href="/services" class="mt-6 inline-flex text-sm font-semibold text-cyan-300 hover:text-cyan-200">
+                Explore services
+              </a>
+            </article>
+            <article class="rounded-3xl border border-lime-400/30 bg-slate-950/75 p-7">
+              <p class="text-xs uppercase tracking-[0.22em] text-lime-300">Project Rescue</p>
+              <h3 class="mt-3 text-2xl font-bold">Fix a Stalled Build</h3>
+              <p class="mt-3 text-white/70">
+                When timelines slip and quality drops, we stabilize and ship safely.
+              </p>
+              <ul class="mt-5 space-y-2 text-sm text-white/75">
+                <li>Architecture and delivery triage</li>
+                <li>Priority bug and performance remediation</li>
+                <li>Clear recovery roadmap</li>
+              </ul>
+              <a
+                href="/project-rescue"
+                class="mt-6 inline-flex text-sm font-semibold text-lime-300 hover:text-lime-200"
+              >
+                Get rescue support
+              </a>
+            </article>
+            <article class="rounded-3xl border border-white/20 bg-slate-950/75 p-7">
+              <p class="text-xs uppercase tracking-[0.22em] text-white/70">Leadership</p>
+              <h3 class="mt-3 text-2xl font-bold">Fractional Product Support</h3>
+              <p class="mt-3 text-white/70">
+                Senior product and delivery leadership for teams that need traction fast.
+              </p>
+              <ul class="mt-5 space-y-2 text-sm text-white/75">
+                <li>Product ownership and roadmap clarity</li>
+                <li>Stakeholder alignment and delivery cadence</li>
+                <li>Execution support with measurable outcomes</li>
+              </ul>
+              <a
+                href="/contract-product-owner"
+                class="mt-6 inline-flex text-sm font-semibold text-white hover:text-cyan-200"
+              >
+                View product support
+              </a>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="border-b border-white/10 bg-slate-950">
+        <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
+          <p class="mb-4 text-xs uppercase tracking-[0.24em] text-cyan-300">Pricing</p>
           <h2 class="max-w-3xl text-3xl font-bold sm:text-4xl">
-            Big-tech delivery discipline with local accountability.
+            Clear ranges. No hidden surprises.
           </h2>
-          <div class="mt-10 grid gap-6 md:grid-cols-3">
-            <article class="rounded-2xl border border-white/10 bg-slate-950/70 p-6">
-              <h3 class="text-xl font-semibold">Performance First</h3>
-              <p class="mt-3 text-white/70">
-                Core Web Vitals are defined before build starts, not fixed at the end.
-              </p>
+          <div class="mt-10 grid gap-6 lg:grid-cols-3">
+            <article class="rounded-2xl border border-white/10 bg-slate-900/40 p-6">
+              <p class="text-xs uppercase tracking-[0.2em] text-white/60">Starter</p>
+              <h3 class="mt-3 text-3xl font-black">GBP2k-GBP4k</h3>
+              <p class="mt-3 text-sm text-white/70">Lean lead-gen sites for small businesses.</p>
+              <ul class="mt-5 space-y-2 text-sm text-white/75">
+                <li>Fast brochure build</li>
+                <li>Technical SEO foundation</li>
+                <li>Core pages + contact funnel</li>
+              </ul>
             </article>
-            <article class="rounded-2xl border border-white/10 bg-slate-950/70 p-6">
-              <h3 class="text-xl font-semibold">Clean Delivery</h3>
-              <p class="mt-3 text-white/70">
-                Staging, QA and rollback-safe deployments are part of standard delivery.
-              </p>
+            <article class="rounded-2xl border border-cyan-400/40 bg-cyan-500/10 p-6">
+              <p class="text-xs uppercase tracking-[0.2em] text-cyan-300">Growth</p>
+              <h3 class="mt-3 text-3xl font-black">GBP5k-GBP9k</h3>
+              <p class="mt-3 text-sm text-white/75">Conversion-focused builds for scaling teams.</p>
+              <ul class="mt-5 space-y-2 text-sm text-white/80">
+                <li>Extended conversion flow design</li>
+                <li>Performance and tracking setup</li>
+                <li>Content architecture and templates</li>
+              </ul>
             </article>
-            <article class="rounded-2xl border border-white/10 bg-slate-950/70 p-6">
-              <h3 class="text-xl font-semibold">Senior Ownership</h3>
-              <p class="mt-3 text-white/70">
-                No hand-offs to juniors. One accountable engineer from kick-off to launch.
-              </p>
+            <article class="rounded-2xl border border-emerald-400/35 bg-emerald-500/10 p-6">
+              <p class="text-xs uppercase tracking-[0.2em] text-emerald-300">Advanced</p>
+              <h3 class="mt-3 text-3xl font-black">GBP10k-GBP15k+</h3>
+              <p class="mt-3 text-sm text-white/75">Complex migrations and high-stakes rebuilds.</p>
+              <ul class="mt-5 space-y-2 text-sm text-white/80">
+                <li>Migration and rescue capability</li>
+                <li>Advanced integrations</li>
+                <li>Senior delivery ownership</li>
+              </ul>
             </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="border-b border-white/10 bg-slate-900/80">
+        <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
+          <p class="mb-4 text-xs uppercase tracking-[0.24em] text-cyan-300">Delivery Flow</p>
+          <h2 class="max-w-3xl text-3xl font-bold sm:text-4xl">
+            Built for clarity from day one.
+          </h2>
+          <div class="mt-10 grid gap-4 md:grid-cols-2 lg:grid-cols-5">
+            <div class="rounded-xl border border-white/12 bg-slate-950/60 p-5">
+              <p class="text-xs uppercase tracking-[0.2em] text-white/50">01</p>
+              <h3 class="mt-2 text-lg font-semibold">Discovery</h3>
+              <p class="mt-2 text-sm text-white/70">Goals, audience, technical scope.</p>
+            </div>
+            <div class="rounded-xl border border-white/12 bg-slate-950/60 p-5">
+              <p class="text-xs uppercase tracking-[0.2em] text-white/50">02</p>
+              <h3 class="mt-2 text-lg font-semibold">Plan</h3>
+              <p class="mt-2 text-sm text-white/70">Architecture and performance targets.</p>
+            </div>
+            <div class="rounded-xl border border-white/12 bg-slate-950/60 p-5">
+              <p class="text-xs uppercase tracking-[0.2em] text-white/50">03</p>
+              <h3 class="mt-2 text-lg font-semibold">Build</h3>
+              <p class="mt-2 text-sm text-white/70">Implementation with staged QA.</p>
+            </div>
+            <div class="rounded-xl border border-white/12 bg-slate-950/60 p-5">
+              <p class="text-xs uppercase tracking-[0.2em] text-white/50">04</p>
+              <h3 class="mt-2 text-lg font-semibold">Launch</h3>
+              <p class="mt-2 text-sm text-white/70">Safe release, tracking, verification.</p>
+            </div>
+            <div class="rounded-xl border border-white/12 bg-slate-950/60 p-5">
+              <p class="text-xs uppercase tracking-[0.2em] text-white/50">05</p>
+              <h3 class="mt-2 text-lg font-semibold">Improve</h3>
+              <p class="mt-2 text-sm text-white/70">Ongoing performance and CRO tuning.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="border-b border-white/10 bg-slate-950">
+        <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
+          <p class="mb-4 text-xs uppercase tracking-[0.24em] text-cyan-300">Coverage</p>
+          <h2 class="max-w-3xl text-3xl font-bold sm:text-4xl">
+            Supporting local growth across Merseyside and beyond.
+          </h2>
+          <div class="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            <a href="/web-design-wirral" class="rounded-xl border border-white/10 bg-slate-900/40 p-5 transition hover:border-cyan-400/50">
+              <h3 class="text-lg font-semibold">Wirral</h3>
+              <p class="mt-2 text-sm text-white/70">Local lead generation and conversion-focused builds.</p>
+            </a>
+            <a href="/web-design-liverpool" class="rounded-xl border border-white/10 bg-slate-900/40 p-5 transition hover:border-cyan-400/50">
+              <h3 class="text-lg font-semibold">Liverpool</h3>
+              <p class="mt-2 text-sm text-white/70">High-performance websites for competitive sectors.</p>
+            </a>
+            <a href="/web-design-chester" class="rounded-xl border border-white/10 bg-slate-900/40 p-5 transition hover:border-cyan-400/50">
+              <h3 class="text-lg font-semibold">Chester</h3>
+              <p class="mt-2 text-sm text-white/70">Modern delivery for service and retail businesses.</p>
+            </a>
+            <a href="/web-design-warrington" class="rounded-xl border border-white/10 bg-slate-900/40 p-5 transition hover:border-cyan-400/50">
+              <h3 class="text-lg font-semibold">Warrington</h3>
+              <p class="mt-2 text-sm text-white/70">Scalable sites designed for measurable growth.</p>
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <section class="border-b border-white/10 bg-slate-900">
+        <div class="mx-auto max-w-5xl px-4 py-20 sm:px-6 lg:px-8">
+          <p class="mb-4 text-xs uppercase tracking-[0.24em] text-cyan-300">FAQ</p>
+          <h2 class="text-3xl font-bold sm:text-4xl">Common questions before we start.</h2>
+          <div class="mt-10 space-y-4">
+            {faqs.map((item) => (
+              <details class="group rounded-xl border border-white/12 bg-slate-950/55 p-5">
+                <summary class="cursor-pointer list-none text-lg font-semibold">
+                  {item.q}
+                  <span class="ml-3 text-white/45 transition group-open:rotate-45 inline-block">+</span>
+                </summary>
+                <p class="mt-3 text-white/75">{item.a}</p>
+              </details>
+            ))}
           </div>
         </div>
       </section>
 
       <section class="bg-slate-950">
         <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
-          <div class="rounded-3xl border border-cyan-400/35 bg-gradient-to-r from-cyan-500/15 to-emerald-500/10 p-10">
-            <h2 class="text-3xl font-bold sm:text-4xl">Ready to outpace your competitors?</h2>
+          <div class="rounded-3xl border border-cyan-400/35 bg-gradient-to-r from-cyan-500/15 via-cyan-500/10 to-emerald-500/12 p-10">
+            <p class="text-xs uppercase tracking-[0.24em] text-cyan-300">Next Step</p>
+            <h2 class="mt-3 text-3xl font-bold sm:text-4xl">Ready to outpace your competitors?</h2>
             <p class="mt-4 max-w-2xl text-white/80">
-              Get a fast, revenue-focused website with measurable performance targets and a clear
-              delivery plan.
+              Bring us your current site, goals, and constraints. We will give you a practical
+              delivery plan with clear performance and conversion targets.
             </p>
             <div class="mt-8 flex flex-wrap gap-4">
               <a
@@ -167,12 +402,17 @@ const navLinks = [
     </main>
 
     <footer class="border-t border-white/10 bg-slate-950">
-      <div class="mx-auto flex max-w-7xl flex-col gap-3 px-4 py-8 text-sm text-white/60 sm:px-6 lg:px-8 md:flex-row md:items-center md:justify-between">
-        <p>(c) Kaizen Web Ltd t/a Kaizen (Company No. 17007703).</p>
-        <div class="flex items-center gap-4">
+      <div class="mx-auto flex max-w-7xl flex-col gap-6 px-4 py-10 text-sm text-white/60 sm:px-6 lg:px-8 md:flex-row md:items-center md:justify-between">
+        <div>
+          <p class="font-semibold text-white/80">Kaizen Web Ltd</p>
+          <p class="mt-1">(c) Kaizen Web Ltd t/a Kaizen (Company No. 17007703).</p>
+        </div>
+        <div class="flex flex-wrap items-center gap-4">
           <a href="/privacy-policy" class="transition hover:text-white">Privacy</a>
           <a href="/cookie-policy" class="transition hover:text-white">Cookies</a>
           <a href="/gdpr-policy" class="transition hover:text-white">GDPR</a>
+          <a href="/blog" class="transition hover:text-white">Blog</a>
+          <a href="/contact" class="transition hover:text-white">Contact</a>
           {buildLabel && <span class="text-white/40">{buildLabel}</span>}
         </div>
       </div>
