@@ -2,6 +2,7 @@
 import "../../client/global.css";
 import { DEFAULT_OG_IMAGE, SITE_NAME, getPageMeta } from "../../client/lib/seo";
 import { BUILD_AT, BUILD_NUMBER, BUILD_SHA } from "../../client/generated/buildInfo";
+import SpeedScanner from "../../client/components/SpeedScanner";
 
 const meta = getPageMeta("/");
 const canonicalUrl = "https://kaizenweb.co.uk";
@@ -10,23 +11,113 @@ const buildLabel = BUILD_NUMBER?.trim()
   : BUILD_SHA?.trim()
     ? `Build ${BUILD_SHA.trim().slice(0, 7)}`
     : BUILD_AT?.trim()
-      ? `Built ${new Date(BUILD_AT).toLocaleString("en-GB")}`
+      ? `Built ${BUILD_AT.trim()}`
       : "";
 
 const navLinks = [
-  { href: "/services", label: "Services" },
   { href: "/web-design-wirral", label: "Web Design Wirral" },
   { href: "/web-design-liverpool", label: "Web Design Liverpool" },
+  { href: "/services", label: "Services" },
   { href: "/case-studies", label: "Case Studies" },
   { href: "/performance-scanner", label: "Free Audit" },
   { href: "/about", label: "About" },
   { href: "/contact", label: "Contact" },
 ];
 
+const serviceCards = [
+  {
+    name: "Web Design and Rebuilds",
+    blurb:
+      "Fast websites built for lead generation, search visibility and conversion. No template spam, no WordPress bloat.",
+    bullets: [
+      "Performance budgets from day one",
+      "Clean technical SEO foundations",
+      "Mobile-first conversion journeys",
+    ],
+    href: "/services",
+    cta: "Explore web design",
+  },
+  {
+    name: "Project Rescue",
+    blurb:
+      "If your build is late, fragile or over budget, we stabilise architecture and ship safely with clear milestones.",
+    bullets: [
+      "Rapid technical triage",
+      "Fix-first delivery plans",
+      "Rollback-safe releases",
+    ],
+    href: "/project-rescue",
+    cta: "Get rescue support",
+  },
+  {
+    name: "Fractional Product Leadership",
+    blurb:
+      "Senior delivery ownership for teams that need roadmap clarity, pace and measurable commercial outcomes.",
+    bullets: [
+      "Roadmap and delivery governance",
+      "Stakeholder alignment",
+      "Execution with accountability",
+    ],
+    href: "/contract-product-owner",
+    cta: "View product support",
+  },
+];
+
+const caseStudies = [
+  {
+    title: "Helen Moore Hairdressing",
+    result: "From invisible to 3k+ monthly local impressions.",
+    href: "/case-studies/helen-moore-hairdressing",
+  },
+  {
+    title: "Independent Retailer",
+    result: "Improved conversion flow and higher quality enquiries.",
+    href: "/case-studies/independent-retailer",
+  },
+  {
+    title: "Kaizen Rebuild",
+    result: "Legacy stack replaced with a performance-first architecture.",
+    href: "/case-studies/kaizen-rebuild",
+  },
+];
+
+const pricingTiers = [
+  {
+    name: "Starter",
+    price: "GBP 2k-4k",
+    audience: "Lean brochure and lead-generation builds.",
+  },
+  {
+    name: "Growth",
+    price: "GBP 5k-9k",
+    audience: "Conversion-focused websites for scaling teams.",
+  },
+  {
+    name: "Advanced",
+    price: "GBP 10k-15k+",
+    audience: "Complex migrations, rescue and deeper integrations.",
+  },
+];
+
+const processSteps = [
+  { step: "01", title: "Discovery", text: "Business goals, audience, technical scope." },
+  { step: "02", title: "Blueprint", text: "Architecture, SEO and performance targets." },
+  { step: "03", title: "Build", text: "Implementation on staged environments." },
+  { step: "04", title: "Launch", text: "Safe release with verification and monitoring." },
+  { step: "05", title: "Improve", text: "Post-launch optimisation for conversion and speed." },
+];
+
+const localAreas = [
+  { href: "/web-design-wirral", title: "Wirral", text: "Local lead generation and conversion-first builds." },
+  { href: "/web-design-liverpool", title: "Liverpool", text: "Performance websites for high-competition sectors." },
+  { href: "/web-design-chester", title: "Chester", text: "Modern websites that are easy to maintain and scale." },
+  { href: "/web-design-warrington", title: "Warrington", text: "Commercially focused sites for growing teams." },
+];
+
 const faqs = [
   {
     q: "How quickly can you launch a new site?",
-    a: "Most brochure and lead-generation builds launch in 2-4 weeks. Rescue and migration work depends on handover quality, but we set a clear milestone plan before work starts.",
+    a: "Most brochure and lead-generation builds launch in 2-4 weeks. Rescue and migration work depends on the handover quality, but we set a clear milestone plan before work starts.",
   },
   {
     q: "Do you only work with Liverpool and Wirral businesses?",
@@ -39,6 +130,14 @@ const faqs = [
   {
     q: "Do you provide hosting and support after launch?",
     a: "Yes. We support staged releases, ongoing maintenance and performance monitoring so the site keeps producing results post-launch.",
+  },
+  {
+    q: "Can you rescue a project another agency has stalled?",
+    a: "Yes. We regularly step into delayed or unstable builds, run triage, stabilise delivery and get to launch with realistic timelines.",
+  },
+  {
+    q: "Do you offer e-commerce and advanced integrations?",
+    a: "Yes. We support commerce builds and complex integrations when they are required, while still protecting Core Web Vitals and maintainability.",
   },
 ];
 ---
@@ -57,13 +156,24 @@ const faqs = [
     <meta property="og:description" content={meta.description} />
     <meta property="og:url" content={canonicalUrl} />
     <meta property="og:image" content={meta.image ?? DEFAULT_OG_IMAGE} />
+    <meta property="og:locale" content="en_GB" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={meta.title} />
+    <meta name="twitter:description" content={meta.description} />
+    <meta name="twitter:image" content={meta.image ?? DEFAULT_OG_IMAGE} />
     <link rel="canonical" href={canonicalUrl} />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
   </head>
-  <body class="bg-slate-950 text-white antialiased">
-    <header class="sticky top-0 z-40 border-b border-white/10 bg-slate-950/85 backdrop-blur">
+  <body class="bg-slate-950 text-white antialiased selection:bg-cyan-400/30 selection:text-white">
+    <header class="sticky top-0 z-50 border-b border-white/10 bg-slate-950/85 backdrop-blur">
       <div class="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
-        <a href="/" class="text-xl font-black tracking-tight">Kaizen Web</a>
-        <nav class="hidden gap-6 text-sm text-white/80 md:flex">
+        <a href="/" class="text-xl font-black tracking-tight text-white">Kaizen Web</a>
+        <nav class="hidden items-center gap-6 text-sm text-white/80 md:flex">
           {navLinks.map((link) => (
             <a href={link.href} class="transition hover:text-white">{link.label}</a>
           ))}
@@ -72,30 +182,40 @@ const faqs = [
           href="/contact"
           class="rounded-full bg-cyan-400 px-5 py-2 text-sm font-semibold text-slate-950 transition hover:bg-cyan-300"
         >
-          Start Your Project
+          Book Intro Call
         </a>
+      </div>
+      <div class="mx-auto flex max-w-7xl gap-2 overflow-x-auto px-4 pb-4 text-xs text-white/80 md:hidden">
+        {navLinks.map((link) => (
+          <a
+            href={link.href}
+            class="whitespace-nowrap rounded-full border border-white/15 px-3 py-1.5 transition hover:border-cyan-400/60 hover:text-white"
+          >
+            {link.label}
+          </a>
+        ))}
       </div>
     </header>
 
     <main>
       <section class="relative overflow-hidden border-b border-white/10">
-        <div class="pointer-events-none absolute inset-0">
-          <div class="absolute -top-20 left-[-15%] h-72 w-72 rounded-full bg-cyan-500/30 blur-3xl"></div>
-          <div class="absolute -bottom-24 right-[-10%] h-80 w-80 rounded-full bg-emerald-500/20 blur-3xl"></div>
-          <div class="absolute inset-0 bg-[linear-gradient(to_bottom,rgba(2,6,23,0.4),rgba(2,6,23,0.88))]"></div>
+        <div class="hero-mesh-bg absolute inset-0 pointer-events-none">
+          <div class="hero-mesh-blob hero-mesh-blob--violet"></div>
+          <div class="hero-mesh-blob hero-mesh-blob--teal"></div>
+          <div class="hero-mesh-blob hero-mesh-blob--gold"></div>
+          <div class="absolute inset-0 bg-[radial-gradient(circle_at_25%_15%,rgba(6,182,212,0.22),transparent_52%),radial-gradient(circle_at_90%_70%,rgba(16,185,129,0.18),transparent_54%)]"></div>
         </div>
-        <div class="relative mx-auto grid max-w-7xl gap-12 px-4 py-24 sm:px-6 lg:grid-cols-[1.2fr_0.8fr] lg:items-center lg:px-8 lg:py-32">
+        <div class="relative mx-auto grid max-w-7xl gap-12 px-4 py-20 sm:px-6 lg:grid-cols-[1.15fr_0.85fr] lg:items-center lg:px-8 lg:py-28">
           <div>
             <p class="mb-4 text-xs uppercase tracking-[0.24em] text-cyan-300">Wirral Web Design</p>
             <h1 class="text-5xl font-black leading-tight sm:text-6xl">
               Sites That Actually Make You Money
             </h1>
-            <p class="mt-6 max-w-2xl text-lg leading-relaxed text-white/80">
-              We build fast websites for ambitious businesses that care about outcomes, not vanity.
-              Every project is designed to improve qualified leads, conversion rate, and organic
-              visibility.
+            <p class="mt-6 max-w-2xl text-lg leading-relaxed text-white/85">
+              Slow websites waste ad spend and kill lead quality. We build fast, conversion-focused
+              websites that improve qualified enquiries, search visibility and sales outcomes.
             </p>
-            <div class="mt-6 flex flex-wrap gap-2 text-xs uppercase tracking-[0.18em] text-white/65">
+            <div class="mt-6 flex flex-wrap gap-2 text-xs uppercase tracking-[0.18em] text-white/70">
               <span class="rounded-full border border-white/15 px-3 py-1">Performance budgets</span>
               <span class="rounded-full border border-white/15 px-3 py-1">Core Web Vitals first</span>
               <span class="rounded-full border border-white/15 px-3 py-1">No WordPress bloat</span>
@@ -111,21 +231,41 @@ const faqs = [
                 href="/performance-scanner"
                 class="rounded-lg border border-white/25 px-7 py-4 font-semibold transition hover:border-cyan-400 hover:text-cyan-300"
               >
-                Check Your Speed
+                Run Free Speed Audit
               </a>
             </div>
+            <p class="mt-8 text-sm text-white/65">
+              Trusted by Wirral trades, local retailers, service firms and product teams.
+            </p>
           </div>
 
-          <div class="rounded-3xl border border-emerald-300/35 bg-slate-900/70 p-8 shadow-[0_30px_100px_rgba(6,182,212,0.16)]">
+          <div class="rounded-3xl border border-emerald-300/35 bg-slate-950/70 p-8 shadow-[0_24px_80px_rgba(6,182,212,0.16)]">
             <p class="text-xs uppercase tracking-[0.24em] text-emerald-300">Performance Standard</p>
-            <div class="mt-4 flex items-end gap-3">
-              <span class="text-7xl font-black leading-none text-emerald-300">96</span>
-              <span class="mb-2 text-sm uppercase tracking-[0.2em] text-white/65">Lighthouse target</span>
+            <div class="mt-5 flex items-center gap-6">
+              <div class="relative h-28 w-28">
+                <svg class="h-full w-full -rotate-90" viewBox="0 0 200 200" aria-hidden="true">
+                  <circle cx="100" cy="100" r="84" fill="none" stroke="rgba(255,255,255,0.12)" stroke-width="10"></circle>
+                  <circle
+                    cx="100"
+                    cy="100"
+                    r="84"
+                    fill="none"
+                    stroke="#34d399"
+                    stroke-width="10"
+                    stroke-linecap="round"
+                    stroke-dasharray="527.8"
+                    stroke-dashoffset="21.1"
+                  ></circle>
+                </svg>
+                <div class="absolute inset-0 flex items-center justify-center text-3xl font-black text-emerald-300">96</div>
+              </div>
+              <div>
+                <p class="text-sm uppercase tracking-[0.2em] text-white/65">Lighthouse target</p>
+                <p class="mt-2 text-sm text-white/75">
+                  We treat performance as a delivery requirement, not a post-launch patch.
+                </p>
+              </div>
             </div>
-            <p class="mt-3 text-sm leading-relaxed text-white/70">
-              If your site is slow, you pay for traffic and lose leads anyway. We ship pages built
-              to pass Core Web Vitals by default.
-            </p>
             <div class="mt-8 grid grid-cols-3 gap-3 text-center">
               <div class="rounded-xl border border-white/10 bg-slate-950/75 p-4">
                 <p class="text-xs uppercase tracking-[0.2em] text-white/50">LCP</p>
@@ -144,227 +284,201 @@ const faqs = [
               href="/performance-scanner"
               class="mt-8 inline-flex rounded-lg border border-cyan-400/50 px-5 py-3 text-sm font-semibold text-cyan-300 transition hover:border-cyan-300 hover:text-cyan-200"
             >
-              Run your free speed scan
+              See full performance report
             </a>
           </div>
         </div>
       </section>
 
-      <section class="border-b border-white/10 bg-slate-900/80">
-        <div class="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
-          <div class="grid gap-10 lg:grid-cols-2 lg:gap-16">
-            <div>
-              <p class="mb-4 text-xs uppercase tracking-[0.24em] text-amber-300">The Risk</p>
-              <h2 class="text-3xl font-bold sm:text-4xl">
-                Social media is rented land. Your website is your asset.
-              </h2>
-              <p class="mt-5 text-lg leading-relaxed text-white/75">
-                Accounts get throttled, reach drops, and platforms change rules overnight. A high
-                performing website gives you owned traffic, stable lead flow, and stronger search
-                visibility.
-              </p>
+      <section class="border-b border-white/10 bg-slate-900">
+        <div class="mx-auto grid max-w-7xl gap-10 px-4 py-16 sm:px-6 lg:grid-cols-[1.05fr_0.95fr] lg:gap-12 lg:px-8">
+          <div>
+            <p class="mb-4 text-xs uppercase tracking-[0.24em] text-amber-300">The Uncomfortable Truth</p>
+            <h2 class="text-3xl font-black leading-tight sm:text-4xl">
+              Do not build your business on rented land.
+            </h2>
+            <p class="mt-5 text-lg leading-relaxed text-white/80">
+              If your only channel is social media, you do not own your audience. Algorithms shift,
+              reach gets throttled, and account access can disappear overnight.
+            </p>
+            <p class="mt-4 text-lg leading-relaxed text-white/80">
+              Your website is the only digital asset you control end to end. It should be your most
+              reliable lead source, not an afterthought.
+            </p>
+          </div>
+          <div class="grid gap-4">
+            <div class="rounded-2xl border border-white/10 bg-slate-950/70 p-6">
+              <p class="text-sm font-semibold text-cyan-300">Conversion-led architecture</p>
+              <p class="mt-2 text-sm text-white/70">Pages built around intent, trust and next action.</p>
             </div>
-            <div class="grid gap-4">
-              <div class="rounded-2xl border border-white/10 bg-slate-950/70 p-6">
-                <p class="text-sm font-semibold text-cyan-300">Conversion-focused architecture</p>
-                <p class="mt-2 text-sm text-white/70">
-                  Pages built around user intent, not template blocks.
-                </p>
-              </div>
-              <div class="rounded-2xl border border-white/10 bg-slate-950/70 p-6">
-                <p class="text-sm font-semibold text-cyan-300">Search visibility engineered in</p>
-                <p class="mt-2 text-sm text-white/70">
-                  Technical SEO and local relevance are built from the first commit.
-                </p>
-              </div>
-              <div class="rounded-2xl border border-white/10 bg-slate-950/70 p-6">
-                <p class="text-sm font-semibold text-cyan-300">Revenue over vanity metrics</p>
-                <p class="mt-2 text-sm text-white/70">
-                  We optimize for qualified enquiries and commercial outcomes.
-                </p>
-              </div>
+            <div class="rounded-2xl border border-white/10 bg-slate-950/70 p-6">
+              <p class="text-sm font-semibold text-cyan-300">Search visibility by design</p>
+              <p class="mt-2 text-sm text-white/70">Technical SEO and local relevance from first commit.</p>
+            </div>
+            <div class="rounded-2xl border border-white/10 bg-slate-950/70 p-6">
+              <p class="text-sm font-semibold text-cyan-300">Commercial outcomes first</p>
+              <p class="mt-2 text-sm text-white/70">We optimise for lead quality, not vanity stats.</p>
             </div>
           </div>
         </div>
       </section>
 
+      <section id="live-performance-scanner" class="border-b border-white/10 bg-slate-950">
+        <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
+          <div class="max-w-4xl">
+            <p class="mb-4 text-xs uppercase tracking-[0.24em] text-cyan-300">Free Site Audit</p>
+            <h2 class="text-3xl font-black sm:text-4xl">How does Google see your site today?</h2>
+            <p class="mt-4 text-lg text-white/75">
+              Enter your URL and get a real-time performance reading with actionable improvement
+              areas. This section lazy-loads on scroll so it does not slow first paint.
+            </p>
+          </div>
+          <div class="mt-10 rounded-3xl border border-white/12 bg-slate-900/55 p-4 md:p-8">
+            <SpeedScanner client:visible />
+          </div>
+        </div>
+      </section>
+
       <section class="border-b border-white/10 bg-slate-900">
+        <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
+          <div class="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+            <div>
+              <p class="mb-4 text-xs uppercase tracking-[0.24em] text-cyan-300">Case Studies</p>
+              <h2 class="text-3xl font-black sm:text-4xl">Proof, not promises.</h2>
+            </div>
+            <a href="/case-studies" class="text-sm font-semibold text-cyan-300 hover:text-cyan-200">View all case studies</a>
+          </div>
+          <div class="mt-10 grid gap-4 md:grid-cols-3">
+            {caseStudies.map((item) => (
+              <a
+                href={item.href}
+                class="group rounded-2xl border border-white/12 bg-slate-950/70 p-6 transition hover:border-cyan-400/50"
+              >
+                <p class="text-sm uppercase tracking-[0.2em] text-cyan-300/90">Case Study</p>
+                <h3 class="mt-3 text-xl font-bold text-white">{item.title}</h3>
+                <p class="mt-3 text-sm leading-relaxed text-white/72">{item.result}</p>
+                <p class="mt-5 text-sm font-semibold text-cyan-300 group-hover:text-cyan-200">Read case study</p>
+              </a>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section class="border-b border-white/10 bg-slate-950">
         <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
           <p class="mb-4 text-xs uppercase tracking-[0.24em] text-cyan-300">How We Help</p>
-          <h2 class="max-w-3xl text-3xl font-bold sm:text-4xl">Three delivery tracks.</h2>
-          <p class="mt-4 max-w-3xl text-white/70">
-            Pick the route that fits your commercial need right now.
+          <h2 class="max-w-3xl text-3xl font-black sm:text-4xl">Three delivery tracks.</h2>
+          <p class="mt-4 max-w-3xl text-white/72">
+            Pick the route that fits your current commercial need. We keep delivery practical and outcome-driven.
           </p>
           <div class="mt-10 grid gap-6 lg:grid-cols-3">
-            <article class="rounded-3xl border border-cyan-400/30 bg-slate-950/75 p-7">
-              <p class="text-xs uppercase tracking-[0.22em] text-cyan-300">Web Design</p>
-              <h3 class="mt-3 text-2xl font-bold">New Site Build</h3>
-              <p class="mt-3 text-white/70">
-                For businesses that need a fast, premium site built properly from day one.
-              </p>
-              <ul class="mt-5 space-y-2 text-sm text-white/75">
-                <li>Performance budgets and technical QA</li>
-                <li>Search-ready architecture and local relevance</li>
-                <li>Conversion-first page structure</li>
-              </ul>
-              <a href="/services" class="mt-6 inline-flex text-sm font-semibold text-cyan-300 hover:text-cyan-200">
-                Explore services
-              </a>
-            </article>
-            <article class="rounded-3xl border border-lime-400/30 bg-slate-950/75 p-7">
-              <p class="text-xs uppercase tracking-[0.22em] text-lime-300">Project Rescue</p>
-              <h3 class="mt-3 text-2xl font-bold">Fix a Stalled Build</h3>
-              <p class="mt-3 text-white/70">
-                When timelines slip and quality drops, we stabilize and ship safely.
-              </p>
-              <ul class="mt-5 space-y-2 text-sm text-white/75">
-                <li>Architecture and delivery triage</li>
-                <li>Priority bug and performance remediation</li>
-                <li>Clear recovery roadmap</li>
-              </ul>
-              <a
-                href="/project-rescue"
-                class="mt-6 inline-flex text-sm font-semibold text-lime-300 hover:text-lime-200"
-              >
-                Get rescue support
-              </a>
-            </article>
-            <article class="rounded-3xl border border-white/20 bg-slate-950/75 p-7">
-              <p class="text-xs uppercase tracking-[0.22em] text-white/70">Leadership</p>
-              <h3 class="mt-3 text-2xl font-bold">Fractional Product Support</h3>
-              <p class="mt-3 text-white/70">
-                Senior product and delivery leadership for teams that need traction fast.
-              </p>
-              <ul class="mt-5 space-y-2 text-sm text-white/75">
-                <li>Product ownership and roadmap clarity</li>
-                <li>Stakeholder alignment and delivery cadence</li>
-                <li>Execution support with measurable outcomes</li>
-              </ul>
-              <a
-                href="/contract-product-owner"
-                class="mt-6 inline-flex text-sm font-semibold text-white hover:text-cyan-200"
-              >
-                View product support
-              </a>
-            </article>
+            {serviceCards.map((card) => (
+              <article class="rounded-3xl border border-white/15 bg-slate-900/60 p-7">
+                <h3 class="text-2xl font-bold">{card.name}</h3>
+                <p class="mt-4 text-white/74">{card.blurb}</p>
+                <ul class="mt-5 space-y-2 text-sm text-white/76">
+                  {card.bullets.map((bullet) => (
+                    <li class="flex gap-3">
+                      <span class="mt-1 inline-block h-2 w-2 rounded-full bg-cyan-300"></span>
+                      <span>{bullet}</span>
+                    </li>
+                  ))}
+                </ul>
+                <a
+                  href={card.href}
+                  class="mt-6 inline-flex rounded-lg border border-cyan-400/40 px-4 py-2.5 text-sm font-semibold text-cyan-300 transition hover:border-cyan-300 hover:text-cyan-200"
+                >
+                  {card.cta}
+                </a>
+              </article>
+            ))}
           </div>
         </div>
       </section>
 
-      <section class="border-b border-white/10 bg-slate-950">
+      <section class="border-b border-white/10 bg-slate-900/90">
         <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
           <p class="mb-4 text-xs uppercase tracking-[0.24em] text-cyan-300">Pricing</p>
-          <h2 class="max-w-3xl text-3xl font-bold sm:text-4xl">
-            Clear ranges. No hidden surprises.
-          </h2>
+          <h2 class="max-w-3xl text-3xl font-black sm:text-4xl">Clear ranges. No hidden surprises.</h2>
           <div class="mt-10 grid gap-6 lg:grid-cols-3">
-            <article class="rounded-2xl border border-white/10 bg-slate-900/40 p-6">
-              <p class="text-xs uppercase tracking-[0.2em] text-white/60">Starter</p>
-              <h3 class="mt-3 text-3xl font-black">GBP2k-GBP4k</h3>
-              <p class="mt-3 text-sm text-white/70">Lean lead-gen sites for small businesses.</p>
-              <ul class="mt-5 space-y-2 text-sm text-white/75">
-                <li>Fast brochure build</li>
-                <li>Technical SEO foundation</li>
-                <li>Core pages + contact funnel</li>
-              </ul>
-            </article>
-            <article class="rounded-2xl border border-cyan-400/40 bg-cyan-500/10 p-6">
-              <p class="text-xs uppercase tracking-[0.2em] text-cyan-300">Growth</p>
-              <h3 class="mt-3 text-3xl font-black">GBP5k-GBP9k</h3>
-              <p class="mt-3 text-sm text-white/75">Conversion-focused builds for scaling teams.</p>
-              <ul class="mt-5 space-y-2 text-sm text-white/80">
-                <li>Extended conversion flow design</li>
-                <li>Performance and tracking setup</li>
-                <li>Content architecture and templates</li>
-              </ul>
-            </article>
-            <article class="rounded-2xl border border-emerald-400/35 bg-emerald-500/10 p-6">
-              <p class="text-xs uppercase tracking-[0.2em] text-emerald-300">Advanced</p>
-              <h3 class="mt-3 text-3xl font-black">GBP10k-GBP15k+</h3>
-              <p class="mt-3 text-sm text-white/75">Complex migrations and high-stakes rebuilds.</p>
-              <ul class="mt-5 space-y-2 text-sm text-white/80">
-                <li>Migration and rescue capability</li>
-                <li>Advanced integrations</li>
-                <li>Senior delivery ownership</li>
-              </ul>
-            </article>
+            {pricingTiers.map((tier) => (
+              <article class="rounded-2xl border border-white/12 bg-slate-950/70 p-6">
+                <p class="text-xs uppercase tracking-[0.2em] text-white/60">{tier.name}</p>
+                <h3 class="mt-3 text-3xl font-black text-white">{tier.price}</h3>
+                <p class="mt-3 text-sm text-white/74">{tier.audience}</p>
+              </article>
+            ))}
           </div>
-        </div>
-      </section>
-
-      <section class="border-b border-white/10 bg-slate-900/80">
-        <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
-          <p class="mb-4 text-xs uppercase tracking-[0.24em] text-cyan-300">Delivery Flow</p>
-          <h2 class="max-w-3xl text-3xl font-bold sm:text-4xl">
-            Built for clarity from day one.
-          </h2>
-          <div class="mt-10 grid gap-4 md:grid-cols-2 lg:grid-cols-5">
-            <div class="rounded-xl border border-white/12 bg-slate-950/60 p-5">
-              <p class="text-xs uppercase tracking-[0.2em] text-white/50">01</p>
-              <h3 class="mt-2 text-lg font-semibold">Discovery</h3>
-              <p class="mt-2 text-sm text-white/70">Goals, audience, technical scope.</p>
-            </div>
-            <div class="rounded-xl border border-white/12 bg-slate-950/60 p-5">
-              <p class="text-xs uppercase tracking-[0.2em] text-white/50">02</p>
-              <h3 class="mt-2 text-lg font-semibold">Plan</h3>
-              <p class="mt-2 text-sm text-white/70">Architecture and performance targets.</p>
-            </div>
-            <div class="rounded-xl border border-white/12 bg-slate-950/60 p-5">
-              <p class="text-xs uppercase tracking-[0.2em] text-white/50">03</p>
-              <h3 class="mt-2 text-lg font-semibold">Build</h3>
-              <p class="mt-2 text-sm text-white/70">Implementation with staged QA.</p>
-            </div>
-            <div class="rounded-xl border border-white/12 bg-slate-950/60 p-5">
-              <p class="text-xs uppercase tracking-[0.2em] text-white/50">04</p>
-              <h3 class="mt-2 text-lg font-semibold">Launch</h3>
-              <p class="mt-2 text-sm text-white/70">Safe release, tracking, verification.</p>
-            </div>
-            <div class="rounded-xl border border-white/12 bg-slate-950/60 p-5">
-              <p class="text-xs uppercase tracking-[0.2em] text-white/50">05</p>
-              <h3 class="mt-2 text-lg font-semibold">Improve</h3>
-              <p class="mt-2 text-sm text-white/70">Ongoing performance and CRO tuning.</p>
-            </div>
-          </div>
+          <a
+            href="/contact"
+            class="mt-8 inline-flex rounded-lg bg-cyan-400 px-6 py-3 font-semibold text-slate-950 transition hover:bg-cyan-300"
+          >
+            Get a tailored quote
+          </a>
         </div>
       </section>
 
       <section class="border-b border-white/10 bg-slate-950">
         <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
-          <p class="mb-4 text-xs uppercase tracking-[0.24em] text-cyan-300">Coverage</p>
-          <h2 class="max-w-3xl text-3xl font-bold sm:text-4xl">
-            Supporting local growth across Merseyside and beyond.
-          </h2>
-          <div class="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            <a href="/web-design-wirral" class="rounded-xl border border-white/10 bg-slate-900/40 p-5 transition hover:border-cyan-400/50">
-              <h3 class="text-lg font-semibold">Wirral</h3>
-              <p class="mt-2 text-sm text-white/70">Local lead generation and conversion-focused builds.</p>
-            </a>
-            <a href="/web-design-liverpool" class="rounded-xl border border-white/10 bg-slate-900/40 p-5 transition hover:border-cyan-400/50">
-              <h3 class="text-lg font-semibold">Liverpool</h3>
-              <p class="mt-2 text-sm text-white/70">High-performance websites for competitive sectors.</p>
-            </a>
-            <a href="/web-design-chester" class="rounded-xl border border-white/10 bg-slate-900/40 p-5 transition hover:border-cyan-400/50">
-              <h3 class="text-lg font-semibold">Chester</h3>
-              <p class="mt-2 text-sm text-white/70">Modern delivery for service and retail businesses.</p>
-            </a>
-            <a href="/web-design-warrington" class="rounded-xl border border-white/10 bg-slate-900/40 p-5 transition hover:border-cyan-400/50">
-              <h3 class="text-lg font-semibold">Warrington</h3>
-              <p class="mt-2 text-sm text-white/70">Scalable sites designed for measurable growth.</p>
-            </a>
+          <p class="mb-4 text-xs uppercase tracking-[0.24em] text-cyan-300">Delivery Flow</p>
+          <h2 class="max-w-3xl text-3xl font-black sm:text-4xl">Built for clarity from day one.</h2>
+          <div class="mt-10 grid gap-4 md:grid-cols-2 lg:grid-cols-5">
+            {processSteps.map((item) => (
+              <article class="rounded-xl border border-white/12 bg-slate-900/45 p-5">
+                <p class="text-xs uppercase tracking-[0.2em] text-white/50">{item.step}</p>
+                <h3 class="mt-2 text-lg font-semibold">{item.title}</h3>
+                <p class="mt-2 text-sm text-white/70">{item.text}</p>
+              </article>
+            ))}
           </div>
         </div>
       </section>
 
       <section class="border-b border-white/10 bg-slate-900">
+        <div class="mx-auto grid max-w-7xl gap-12 px-4 py-20 sm:px-6 lg:grid-cols-[1fr_1fr] lg:px-8">
+          <div>
+            <p class="mb-4 text-xs uppercase tracking-[0.24em] text-cyan-300">Local Trust</p>
+            <h2 class="text-3xl font-black sm:text-4xl">Moreton-based. Merseyside-focused.</h2>
+            <p class="mt-4 text-lg leading-relaxed text-white/78">
+              You are not dealing with a faceless agency. We support businesses across Wirral,
+              Liverpool, Chester and Warrington with enterprise-grade delivery discipline.
+            </p>
+            <div class="mt-8 grid gap-3 sm:grid-cols-2">
+              {localAreas.map((area) => (
+                <a
+                  href={area.href}
+                  class="rounded-xl border border-white/12 bg-slate-950/60 p-4 transition hover:border-cyan-400/50"
+                >
+                  <h3 class="font-semibold text-white">{area.title}</h3>
+                  <p class="mt-2 text-sm text-white/72">{area.text}</p>
+                </a>
+              ))}
+            </div>
+          </div>
+          <div class="rounded-2xl border border-white/12 bg-slate-950/65 p-4">
+            <img
+              src="/kaizen-web-map-wirral-liverpool.svg"
+              alt="Map of Wirral and Liverpool highlighting Kaizen Web service area"
+              loading="lazy"
+              decoding="async"
+              width="514"
+              height="363"
+              class="h-full w-full rounded-xl object-cover"
+            />
+          </div>
+        </div>
+      </section>
+
+      <section class="border-b border-white/10 bg-slate-950">
         <div class="mx-auto max-w-5xl px-4 py-20 sm:px-6 lg:px-8">
           <p class="mb-4 text-xs uppercase tracking-[0.24em] text-cyan-300">FAQ</p>
-          <h2 class="text-3xl font-bold sm:text-4xl">Common questions before we start.</h2>
+          <h2 class="text-3xl font-black sm:text-4xl">Common questions before we start.</h2>
           <div class="mt-10 space-y-4">
             {faqs.map((item) => (
-              <details class="group rounded-xl border border-white/12 bg-slate-950/55 p-5">
+              <details class="group rounded-xl border border-white/12 bg-slate-900/45 p-5">
                 <summary class="cursor-pointer list-none text-lg font-semibold">
                   {item.q}
-                  <span class="ml-3 text-white/45 transition group-open:rotate-45 inline-block">+</span>
+                  <span class="ml-3 inline-block text-white/45 transition group-open:rotate-45">+</span>
                 </summary>
                 <p class="mt-3 text-white/75">{item.a}</p>
               </details>
@@ -377,10 +491,10 @@ const faqs = [
         <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
           <div class="rounded-3xl border border-cyan-400/35 bg-gradient-to-r from-cyan-500/15 via-cyan-500/10 to-emerald-500/12 p-10">
             <p class="text-xs uppercase tracking-[0.24em] text-cyan-300">Next Step</p>
-            <h2 class="mt-3 text-3xl font-bold sm:text-4xl">Ready to outpace your competitors?</h2>
-            <p class="mt-4 max-w-2xl text-white/80">
-              Bring us your current site, goals, and constraints. We will give you a practical
-              delivery plan with clear performance and conversion targets.
+            <h2 class="mt-3 text-3xl font-black sm:text-4xl">Ready to outpace your competitors?</h2>
+            <p class="mt-4 max-w-2xl text-white/82">
+              Bring your current site, goals and constraints. We will give you a practical delivery
+              plan with clear performance and conversion targets.
             </p>
             <div class="mt-8 flex flex-wrap gap-4">
               <a
