@@ -1,11 +1,16 @@
+import { dashboardTool } from "@sanity/dashboard";
 import { assist } from "@sanity/assist";
 import { visionTool } from "@sanity/vision";
 import { defineConfig } from "sanity";
 import { presentationTool } from "sanity/presentation";
 import { structureTool } from "sanity/structure";
+import { teamMembersPlugin } from "@multidots/sanity-plugin-team-members";
 import { media } from "sanity-plugin-media";
+import { documentListWidget } from "sanity-plugin-dashboard-widget-document-list";
+import { tags } from "sanity-plugin-tags-v4";
 import { studioSessionPlugin } from "./src/lib/sanity/studioSessionPlugin";
 import { resolvedProjectId, resolvedDataset } from "./sanity/lib/env";
+import { toDocumentListWidgets } from "./sanity/lib/seoTaskWidgets";
 import { schemaTypes } from "./sanity/schemas";
 import { studioStructure } from "./sanity/structure";
 import { singletonPlugin } from "./sanity/plugins/singleton";
@@ -28,10 +33,19 @@ export default defineConfig({
 
   plugins: [
     structureTool({ structure: studioStructure }),
+    dashboardTool({
+      name: "seoTasks",
+      title: "SEO Tasks",
+      widgets: toDocumentListWidgets().map((widget) =>
+        documentListWidget(widget),
+      ),
+    }),
     media(),
     studioSessionPlugin(),
     visionTool(),
     assist(),
+    tags({}),
+    teamMembersPlugin(),
     presentationTool({
       previewUrl: "/blog",
       resolve: {

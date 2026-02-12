@@ -103,6 +103,26 @@ export const staticPage = defineType({
           ],
         }),
         defineField({
+          name: "keywordTags",
+          title: "Keyword Tags",
+          type: "tags",
+          description:
+            "Reusable SEO keywords. Tags you create are suggested in future static SEO pages.",
+          options: {
+            includeFromRelated: "keywordTags",
+            allowCreate: true,
+            onCreate: (inputValue: string) => ({
+              label: inputValue.trim(),
+              value: inputValue
+                .trim()
+                .toLowerCase()
+                .replace(/[^a-z0-9\s-]/g, "")
+                .replace(/\s+/g, "-")
+                .replace(/-+/g, "-"),
+            }),
+          },
+        }),
+        defineField({
           name: "shareImage",
           title: "Share Image",
           type: "image",

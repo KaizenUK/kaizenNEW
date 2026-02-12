@@ -1,4 +1,4 @@
-import { defineArrayMember, defineField, defineType } from "sanity";
+﻿import { defineArrayMember, defineField, defineType } from "sanity";
 import { SeoMetaDescriptionField } from "../../components/SeoMetaDescriptionField";
 import { SeoMetaTitleField } from "../../components/SeoMetaTitleField";
 
@@ -7,7 +7,7 @@ export const page = defineType({
   title: "Page",
   type: "document",
   fields: [
-    // ── Content (left column) ─────────────────────────────────────
+    // â”€â”€ Content (left column) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     defineField({
       name: "title",
       title: "Title",
@@ -38,8 +38,15 @@ export const page = defineType({
       ],
       validation: (Rule) => Rule.required().min(1),
     }),
+    defineField({
+      name: "teamMembers",
+      title: "Team Members",
+      type: "teamMembersReference",
+      description:
+        "Optional author/contributor profiles to feature on this page.",
+    }),
 
-    // ── SEO (right column via CSS grid) ───────────────────────────
+    // â”€â”€ SEO (right column via CSS grid) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     defineField({
       name: "seo",
       title: "SEO",
@@ -51,7 +58,7 @@ export const page = defineType({
           title: "Meta Title",
           type: "string",
           components: { field: SeoMetaTitleField },
-          description: "Keep between 30–60 characters.",
+          description: "Keep between 30â€“60 characters.",
           validation: (Rule) => [
             Rule.required().error("Meta title is required"),
             Rule.min(30).warning("Should be at least 30 characters"),
@@ -64,7 +71,7 @@ export const page = defineType({
           type: "text",
           components: { field: SeoMetaDescriptionField },
           rows: 4,
-          description: "Target 50–160 characters.",
+          description: "Target 50â€“160 characters.",
           validation: (Rule) => [
             Rule.required().error("Meta description is required"),
             Rule.min(50).warning("Should be at least 50 characters"),
@@ -72,10 +79,30 @@ export const page = defineType({
           ],
         }),
         defineField({
+          name: "keywordTags",
+          title: "Keyword Tags",
+          type: "tags",
+          description:
+            "Reusable SEO keywords. Tags you create are suggested in future pages.",
+          options: {
+            includeFromRelated: "keywordTags",
+            allowCreate: true,
+            onCreate: (inputValue: string) => ({
+              label: inputValue.trim(),
+              value: inputValue
+                .trim()
+                .toLowerCase()
+                .replace(/[^a-z0-9\s-]/g, "")
+                .replace(/\s+/g, "-")
+                .replace(/-+/g, "-"),
+            }),
+          },
+        }),
+        defineField({
           name: "shareImage",
           title: "Share Image",
           type: "image",
-          description: "Recommended 1200×630 for social sharing.",
+          description: "Recommended 1200Ã—630 for social sharing.",
           options: {
             hotspot: true,
             aiAssist: { exclude: true },

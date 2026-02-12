@@ -268,6 +268,26 @@ export const post = defineType({
             "Primary keyword to validate against meta title and description.",
         }),
         defineField({
+          name: "keywordTags",
+          title: "Keyword Tags",
+          type: "tags",
+          description:
+            "Reusable SEO keywords. Tags you create are suggested in future posts.",
+          options: {
+            includeFromRelated: "keywordTags",
+            allowCreate: true,
+            onCreate: (inputValue: string) => ({
+              label: inputValue.trim(),
+              value: inputValue
+                .trim()
+                .toLowerCase()
+                .replace(/[^a-z0-9\s-]/g, "")
+                .replace(/\s+/g, "-")
+                .replace(/-+/g, "-"),
+            }),
+          },
+        }),
+        defineField({
           name: "metaDescription",
           title: "Meta Description",
           type: "text",

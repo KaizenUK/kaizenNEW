@@ -80,6 +80,7 @@ export const studioStructure = (S: StructureBuilder) =>
                 ),
               S.documentTypeListItem("category").title("Categories"),
               S.documentTypeListItem("author").title("Authors"),
+              S.documentTypeListItem("teamMember").title("Team Members"),
             ]),
         ),
 
