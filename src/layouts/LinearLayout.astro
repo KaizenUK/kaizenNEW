@@ -84,6 +84,6 @@ const buildLabel = buildNumber || buildSha || "local";
         {buildNumber && buildSha && <span class="text-gray-600"> ({buildSha})</span>}
       </p>
     </footer>
-  {isPreview && <VisualEditingClient client:only="react" />}
+  <VisualEditingClient client:only="react" />
   </body>
 </html>

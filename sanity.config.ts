@@ -5,7 +5,7 @@ import { presentationTool } from "sanity/presentation";
 import { structureTool } from "sanity/structure";
 import { media } from "sanity-plugin-media";
 import { studioSessionPlugin } from "./src/lib/sanity/studioSessionPlugin";
-import { resolvedProjectId, resolvedDataset, siteUrl } from "./sanity/lib/env";
+import { resolvedProjectId, resolvedDataset } from "./sanity/lib/env";
 import { schemaTypes } from "./sanity/schemas";
 import { studioStructure } from "./sanity/structure";
 import { singletonPlugin } from "./sanity/plugins/singleton";
@@ -33,8 +33,23 @@ export default defineConfig({
     visionTool(),
     assist(),
     presentationTool({
-      previewUrl: {
-        origin: siteUrl,
+      previewUrl: "/blog",
+      resolve: {
+        locations: {
+          post: {
+            select: { title: "title", slug: "slug.current" },
+            resolve: (doc: Record<string, string> | null) => ({
+              locations: doc?.slug
+                ? [
+                    {
+                      title: doc.title || "Post",
+                      href: `/preview/blog/${doc.slug}`,
+                    },
+                  ]
+                : [],
+            }),
+          },
+        },
       },
     }),
     singletonPlugin,
