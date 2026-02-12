@@ -21,12 +21,12 @@ const POST_META_FIELDS = new Set([
   "field-readTime",
 ]);
 
-function getTopLevelGridItem(fieldElement, stackElement) {
+function getTopLevelGridItem(fieldElement, container) {
   let current = fieldElement;
-  while (current && current.parentElement && current.parentElement !== stackElement) {
+  while (current && current.parentElement && current.parentElement !== container) {
     current = current.parentElement;
   }
-  if (current && current.parentElement === stackElement) {
+  if (current && current.parentElement === container) {
     return current;
   }
   return null;
@@ -41,62 +41,90 @@ function isVisibleElement(element) {
   return style.display !== "none" && style.visibility !== "hidden";
 }
 
-function annotatePostEditorStacks() {
-  const stacks = Array.from(
-    document.querySelectorAll(
-      '[data-testid="document-panel-scroller"] [data-ui="Stack"]',
-    ),
+/**
+ * Find the form container that holds all the post/page fields.
+ * Instead of relying on [data-ui="Stack"] (which may not exist in
+ * Sanity v5), walk up from known fields to find their common parent.
+ */
+function findFormContainer(scroller) {
+  // Find one main field and one meta field
+  const bodyField = scroller.querySelector(
+    '[data-testid="field-body"], [data-testid="field-content"]',
   );
+  const metaField = scroller.querySelector('[data-testid="field-slug"]');
+  if (!bodyField || !metaField) return null;
 
-  let hasPostEditorStack = false;
-
-  for (const stack of stacks) {
-    if (!(stack instanceof HTMLElement)) continue;
-    const hasMainField = Array.from(MAIN_EDITOR_FIELDS).some((fieldId) =>
-      Boolean(stack.querySelector(`[data-testid="${fieldId}"]`)),
-    );
-    const hasMetaField = Array.from(POST_META_FIELDS).some((fieldId) =>
-      Boolean(stack.querySelector(`[data-testid="${fieldId}"]`)),
-    );
-    const isPostEditorStack = hasMainField && hasMetaField;
-
-    const gridItems = Array.from(stack.children).filter(
-      (child) => child instanceof HTMLElement,
-    );
-
-    if (!isPostEditorStack) {
-      stack.classList.remove(POST_STACK_CLASS);
-      for (const item of gridItems) {
-        item.classList.remove(MAIN_FIELD_CLASS, META_FIELD_CLASS);
+  // Walk up from the meta field to find the nearest ancestor that also
+  // contains the body field, and where both are in different direct children.
+  let candidate = metaField.parentElement;
+  while (candidate && candidate !== scroller) {
+    if (candidate.contains(bodyField)) {
+      const bodyWrapper = getTopLevelGridItem(bodyField, candidate);
+      const metaWrapper = getTopLevelGridItem(metaField, candidate);
+      if (bodyWrapper && metaWrapper && bodyWrapper !== metaWrapper) {
+        return candidate;
       }
-      continue;
     }
+    candidate = candidate.parentElement;
+  }
+  return null;
+}
 
-    hasPostEditorStack = hasPostEditorStack || isVisibleElement(stack);
-    stack.classList.add(POST_STACK_CLASS);
+function annotatePostEditorStacks() {
+  const scroller = document.querySelector(
+    '[data-testid="document-panel-scroller"]',
+  );
+  if (!scroller) return false;
 
-    for (const item of gridItems) {
-      item.classList.remove(MAIN_FIELD_CLASS, META_FIELD_CLASS);
-    }
-
-    for (const fieldId of MAIN_EDITOR_FIELDS) {
-      const fieldElement = stack.querySelector(`[data-testid="${fieldId}"]`);
-      if (!(fieldElement instanceof HTMLElement)) continue;
-      const gridItem = getTopLevelGridItem(fieldElement, stack);
-      if (gridItem) gridItem.classList.add(MAIN_FIELD_CLASS);
-    }
-
-    for (const fieldId of POST_META_FIELDS) {
-      const fieldElement = stack.querySelector(`[data-testid="${fieldId}"]`);
-      if (!(fieldElement instanceof HTMLElement)) continue;
-      const gridItem = getTopLevelGridItem(fieldElement, stack);
-      if (gridItem) {
-        gridItem.classList.add(META_FIELD_CLASS);
+  // Remove stale annotations from any previously annotated containers.
+  const prevStacks = scroller.querySelectorAll(`.${POST_STACK_CLASS}`);
+  for (const prev of prevStacks) {
+    prev.classList.remove(POST_STACK_CLASS);
+    for (const child of prev.children) {
+      if (child instanceof HTMLElement) {
+        child.classList.remove(MAIN_FIELD_CLASS, META_FIELD_CLASS);
       }
     }
   }
 
-  return hasPostEditorStack;
+  const container = findFormContainer(scroller);
+  if (!container) return false;
+
+  // Verify it has both field types
+  const hasMainField = Array.from(MAIN_EDITOR_FIELDS).some((id) =>
+    Boolean(container.querySelector(`[data-testid="${id}"]`)),
+  );
+  const hasMetaField = Array.from(POST_META_FIELDS).some((id) =>
+    Boolean(container.querySelector(`[data-testid="${id}"]`)),
+  );
+  if (!hasMainField || !hasMetaField) return false;
+
+  container.classList.add(POST_STACK_CLASS);
+
+  // Clear any existing annotations on children
+  for (const child of container.children) {
+    if (child instanceof HTMLElement) {
+      child.classList.remove(MAIN_FIELD_CLASS, META_FIELD_CLASS);
+    }
+  }
+
+  // Annotate main field wrappers
+  for (const fieldId of MAIN_EDITOR_FIELDS) {
+    const el = container.querySelector(`[data-testid="${fieldId}"]`);
+    if (!(el instanceof HTMLElement)) continue;
+    const wrapper = getTopLevelGridItem(el, container);
+    if (wrapper) wrapper.classList.add(MAIN_FIELD_CLASS);
+  }
+
+  // Annotate meta field wrappers
+  for (const fieldId of POST_META_FIELDS) {
+    const el = container.querySelector(`[data-testid="${fieldId}"]`);
+    if (!(el instanceof HTMLElement)) continue;
+    const wrapper = getTopLevelGridItem(el, container);
+    if (wrapper) wrapper.classList.add(META_FIELD_CLASS);
+  }
+
+  return isVisibleElement(container);
 }
 
 export default function Studio() {
