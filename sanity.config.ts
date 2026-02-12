@@ -1,6 +1,7 @@
 import { assist } from "@sanity/assist";
 import { visionTool } from "@sanity/vision";
 import { defineConfig } from "sanity";
+import { presentationTool } from "sanity/presentation";
 import { structureTool } from "sanity/structure";
 import { media } from "sanity-plugin-media";
 import { studioSessionPlugin } from "./src/lib/sanity/studioSessionPlugin";
@@ -31,6 +32,26 @@ export default defineConfig({
     studioSessionPlugin(),
     visionTool(),
     assist(),
+    presentationTool({
+      previewUrl: "/blog",
+      resolve: {
+        locations: {
+          post: {
+            select: { title: "title", slug: "slug.current" },
+            resolve: (doc: Record<string, string> | null) => ({
+              locations: doc?.slug
+                ? [
+                    {
+                      title: doc.title || "Post",
+                      href: `/preview/blog/${doc.slug}`,
+                    },
+                  ]
+                : [],
+            }),
+          },
+        },
+      },
+    }),
     singletonPlugin,
     {
       name: "disable-ai-assist-inspector-route",

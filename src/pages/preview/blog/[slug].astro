@@ -50,6 +50,12 @@ try {
 }
 
 const liveSlug = post.slug || slug;
+const studioDocId = String(post._id ?? requestedId ?? "")
+  .replace(/^drafts\./, "")
+  .trim();
+const backToEditorHref = studioDocId
+  ? `/studio/intent/edit/id=${encodeURIComponent(studioDocId)};type=post`
+  : "/studio/structure";
 ---
 
 <LinearLayout
@@ -68,7 +74,7 @@ const liveSlug = post.slug || slug;
     Draft preview - this content is not published yet.
     <a href={`/blog/${liveSlug}`} class="ml-2 underline">View live</a>
     <span class="mx-1">|</span>
-    <a href="/studio" class="underline">Back to Studio</a>
+    <a href={backToEditorHref} class="underline">Back to editor</a>
   </div>
   <div class="pt-10">
     <BlogPost post={post} />

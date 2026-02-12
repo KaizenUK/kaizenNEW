@@ -8,7 +8,9 @@
       "Bash(node -e:*)",
       "Bash(npx astro:*)",
       "Bash(pnpm run build:*)",
-      "WebFetch(domain:www.sanity.io)"
+      "WebFetch(domain:www.sanity.io)",
+      "Bash(git add sanity.config.ts src/components/VisualEditingClient.tsx src/layouts/LinearLayout.astro)",
+      "Bash(git commit -m \"$\\(cat <<''EOF''\nstudio: fix presentation tool connection and default to /blog\n\nRemove hardcoded production origin from presentationTool so the iframe\nuses same-origin \\(works in both dev and production\\). Default landing\npage set to /blog. Add resolve.locations so selecting a post navigates\nthe iframe to its preview URL. VisualEditingClient now guards against\nactivating on normal browsing \\(only in iframe or /preview/ routes\\) and\nrenders on all pages so the Presentation tool channel can establish.\n\nCo-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>\nEOF\n\\)\")"
     ]
   }
 }

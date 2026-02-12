@@ -680,6 +680,13 @@ export const GET: APIRoute = async ({ request, url }) => {
       availableSites: sites,
       site: selectedSite,
       range: { startDate, endDate, days },
+      context: {
+        siteLabel: selectedSite.label,
+        gscProperty: selectedSite.gscSiteUrl,
+        ga4PropertyId: selectedSite.ga4PropertyId ?? "",
+        pagePath: pageFilter.pagePath ?? "",
+        pageUrl: pageFilter.pageUrl ?? "",
+      },
       filters: {
         page: pageFilter.pageUrl ?? pageFilter.pagePath ?? "",
       },

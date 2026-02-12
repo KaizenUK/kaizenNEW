@@ -164,7 +164,7 @@ export const GET: APIRoute = async ({ request }) => {
     );
   } else {
     recommendations.push(
-      "If using a domain property, set GSC_SITE_URL as kaizenweb.co.uk (or sc-domain:kaizenweb.co.uk).",
+      "For domain properties, set GSC_SITE_URL as sc-domain:kaizenweb.co.uk (kaizenweb.co.uk is also accepted).",
     );
   }
   if (!analyticsConfigured) {

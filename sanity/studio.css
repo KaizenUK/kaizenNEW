@@ -56,6 +56,13 @@ body,
   text-align: left !important;
 }
 
+[data-testid="field-body"] [data-testid="pt-editor"] > div,
+[data-testid="field-content"] [data-testid="pt-editor"] > div {
+  width: 100% !important;
+  max-width: none !important;
+  display: block !important;
+}
+
 [data-testid="field-body"] [data-testid="pt-editor"] [data-slate-editor] > *,
 [data-testid="field-content"] [data-testid="pt-editor"] [data-slate-editor] > *,
 [data-testid="field-body"] [data-testid="pt-editor"] [data-slate-editor] [data-slate-node="element"],
@@ -148,10 +155,11 @@ body,
 /* Drawer toggle button */
 .studio-meta-toggle {
   position: fixed !important;
-  top: 50%;
+  top: auto;
+  bottom: 96px;
   right: 0;
-  transform: translateY(-50%);
-  z-index: 80;
+  transform: none;
+  z-index: 60;
   border: 1px solid rgba(255, 255, 255, 0.12);
   border-right: 0;
   border-radius: 10px 0 0 10px;
@@ -177,7 +185,7 @@ body,
   color: #bbf7d0;
 }
 
-@media (max-width: 1100px) {
+@media (max-width: 1200px) {
   .studio-meta-toggle {
     top: auto;
     bottom: 16px;
@@ -201,29 +209,18 @@ body,
 }
 
 .kaizen-post-stack > .kaizen-main-field,
-.kaizen-post-stack > *:has([data-testid="field-title"]),
-.kaizen-post-stack > *:has([data-testid="field-body"]),
-.kaizen-post-stack > *:has([data-testid="field-content"]) {
+.kaizen-post-stack > .kaizen-main-field {
   grid-column: 1 !important;
   transition: transform 160ms ease !important;
 }
 
 .studio-meta-open .kaizen-post-stack {
-  grid-template-columns: minmax(0, 1fr) minmax(320px, 360px) !important;
+  grid-template-columns: minmax(0, 1fr) minmax(340px, 400px) !important;
   gap: 16px 24px !important;
 }
 
 .kaizen-post-stack > .kaizen-meta-field,
-.kaizen-post-stack > *:has([data-testid="field-slug"]),
-.kaizen-post-stack > *:has([data-testid="field-excerpt"]),
-.kaizen-post-stack > *:has([data-testid="field-mainImage"]),
-.kaizen-post-stack > *:has([data-testid="field-coverImage"]),
-.kaizen-post-stack > *:has([data-testid="field-seo"]),
-.kaizen-post-stack > *:has([data-testid="field-seoStatsPanel"]),
-.kaizen-post-stack > *:has([data-testid="field-author"]),
-.kaizen-post-stack > *:has([data-testid="field-categories"]),
-.kaizen-post-stack > *:has([data-testid="field-publishedAt"]),
-.kaizen-post-stack > *:has([data-testid="field-readTime"]) {
+.kaizen-post-stack > .kaizen-meta-field {
   grid-column: 2 !important;
   display: none !important;
   max-height: 0 !important;
@@ -238,18 +235,9 @@ body,
 }
 
 .studio-meta-open .kaizen-post-stack > .kaizen-meta-field,
-.studio-meta-open .kaizen-post-stack > *:has([data-testid="field-slug"]),
-.studio-meta-open .kaizen-post-stack > *:has([data-testid="field-excerpt"]),
-.studio-meta-open .kaizen-post-stack > *:has([data-testid="field-mainImage"]),
-.studio-meta-open .kaizen-post-stack > *:has([data-testid="field-coverImage"]),
-.studio-meta-open .kaizen-post-stack > *:has([data-testid="field-seo"]),
-.studio-meta-open .kaizen-post-stack > *:has([data-testid="field-seoStatsPanel"]),
-.studio-meta-open .kaizen-post-stack > *:has([data-testid="field-author"]),
-.studio-meta-open .kaizen-post-stack > *:has([data-testid="field-categories"]),
-.studio-meta-open .kaizen-post-stack > *:has([data-testid="field-publishedAt"]),
-.studio-meta-open .kaizen-post-stack > *:has([data-testid="field-readTime"]) {
+.studio-meta-open .kaizen-post-stack > .kaizen-meta-field {
   display: block !important;
-  max-height: 2200px !important;
+  max-height: none !important;
   opacity: 1 !important;
   pointer-events: auto !important;
   background: #161618 !important;
@@ -260,19 +248,16 @@ body,
   transform: translateX(0);
 }
 
-.studio-meta-open .kaizen-post-stack > [data-testid="field-seo"],
-.studio-meta-open .kaizen-post-stack > *:has([data-testid="field-seo"]) {
+.studio-meta-open .kaizen-post-stack > [data-testid="field-seo"] {
   grid-row: 1 !important;
 }
 
 .studio-meta-open .kaizen-post-stack > .kaizen-main-field,
-.studio-meta-open .kaizen-post-stack > *:has([data-testid="field-title"]),
-.studio-meta-open .kaizen-post-stack > *:has([data-testid="field-body"]),
-.studio-meta-open .kaizen-post-stack > *:has([data-testid="field-content"]) {
+.studio-meta-open .kaizen-post-stack > .kaizen-main-field {
   transform: translate(-6px, -2px) !important;
 }
 
-@media (max-width: 1100px) {
+@media (max-width: 1200px) {
   .kaizen-post-stack,
   .studio-meta-open .kaizen-post-stack {
     grid-template-columns: 1fr !important;
@@ -280,27 +265,7 @@ body,
   }
 
   .kaizen-post-stack > .kaizen-meta-field,
-  .studio-meta-open .kaizen-post-stack > .kaizen-meta-field,
-  .kaizen-post-stack > *:has([data-testid="field-slug"]),
-  .kaizen-post-stack > *:has([data-testid="field-excerpt"]),
-  .kaizen-post-stack > *:has([data-testid="field-mainImage"]),
-  .kaizen-post-stack > *:has([data-testid="field-coverImage"]),
-  .kaizen-post-stack > *:has([data-testid="field-seo"]),
-  .kaizen-post-stack > *:has([data-testid="field-seoStatsPanel"]),
-  .kaizen-post-stack > *:has([data-testid="field-author"]),
-  .kaizen-post-stack > *:has([data-testid="field-categories"]),
-  .kaizen-post-stack > *:has([data-testid="field-publishedAt"]),
-  .kaizen-post-stack > *:has([data-testid="field-readTime"]),
-  .studio-meta-open .kaizen-post-stack > *:has([data-testid="field-slug"]),
-  .studio-meta-open .kaizen-post-stack > *:has([data-testid="field-excerpt"]),
-  .studio-meta-open .kaizen-post-stack > *:has([data-testid="field-mainImage"]),
-  .studio-meta-open .kaizen-post-stack > *:has([data-testid="field-coverImage"]),
-  .studio-meta-open .kaizen-post-stack > *:has([data-testid="field-seo"]),
-  .studio-meta-open .kaizen-post-stack > *:has([data-testid="field-seoStatsPanel"]),
-  .studio-meta-open .kaizen-post-stack > *:has([data-testid="field-author"]),
-  .studio-meta-open .kaizen-post-stack > *:has([data-testid="field-categories"]),
-  .studio-meta-open .kaizen-post-stack > *:has([data-testid="field-publishedAt"]),
-  .studio-meta-open .kaizen-post-stack > *:has([data-testid="field-readTime"]) {
+  .studio-meta-open .kaizen-post-stack > .kaizen-meta-field {
     display: block !important;
     grid-column: 1 !important;
     max-height: none !important;
@@ -313,9 +278,7 @@ body,
   }
 
   .studio-meta-open .kaizen-post-stack > .kaizen-main-field,
-  .studio-meta-open .kaizen-post-stack > *:has([data-testid="field-title"]),
-  .studio-meta-open .kaizen-post-stack > *:has([data-testid="field-body"]),
-  .studio-meta-open .kaizen-post-stack > *:has([data-testid="field-content"]) {
+  .studio-meta-open .kaizen-post-stack > .kaizen-main-field {
     transform: none !important;
   }
 }

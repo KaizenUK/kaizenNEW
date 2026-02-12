@@ -4,6 +4,13 @@ import { useFormValue } from "sanity";
 
 type SeoStatsPayload = {
   ok: boolean;
+  range?: { startDate: string; endDate: string; days: number };
+  context?: {
+    siteLabel?: string;
+    gscProperty?: string;
+    pagePath?: string;
+    pageUrl?: string;
+  };
   summary?: {
     clicks: number;
     impressions: number;
@@ -53,6 +60,13 @@ function chip(label: string, value: string) {
   );
 }
 
+function formatDateRange(
+  range: SeoStatsPayload["range"] | undefined,
+): string {
+  if (!range?.startDate || !range?.endDate) return "Last 28 days";
+  return `${range.startDate} to ${range.endDate} (${range.days}d)`;
+}
+
 export function PostSeoStatsField(_props: FieldProps<string>) {
   const slugValue = useFormValue(["slug", "current"]);
   const slug = useMemo(
@@ -62,12 +76,16 @@ export function PostSeoStatsField(_props: FieldProps<string>) {
 
   const [loading, setLoading] = useState(false);
   const [summary, setSummary] = useState<SeoStatsPayload["summary"]>();
+  const [context, setContext] = useState<SeoStatsPayload["context"]>();
+  const [range, setRange] = useState<SeoStatsPayload["range"]>();
   const [error, setError] = useState("");
   const [requested, setRequested] = useState(false);
   const fetchingRef = useRef(false);
 
   useEffect(() => {
     setSummary(undefined);
+    setContext(undefined);
+    setRange(undefined);
     setError("");
     setRequested(false);
   }, [slug]);
@@ -109,9 +127,13 @@ export function PostSeoStatsField(_props: FieldProps<string>) {
       }
 
       setSummary(payload.summary);
+      setContext(payload.context);
+      setRange(payload.range);
       setError("");
     } catch (err) {
       setSummary(undefined);
+      setContext(undefined);
+      setRange(undefined);
       setError(err instanceof Error ? err.message : "Failed to load SEO stats.");
     } finally {
       fetchingRef.current = false;
@@ -119,7 +141,17 @@ export function PostSeoStatsField(_props: FieldProps<string>) {
     }
   }, [slug]);
 
+  useEffect(() => {
+    if (!slug) return;
+    void loadStats();
+  }, [slug, loadStats]);
+
   if (!slug) return null;
+
+  const rangeLabel = formatDateRange(range);
+  const pageScope = context?.pagePath || `/blog/${slug}`;
+  const siteLabel = context?.siteLabel || "Primary Site";
+  const propertyLabel = context?.gscProperty || "-";
 
   return (
     <div
@@ -135,8 +167,20 @@ export function PostSeoStatsField(_props: FieldProps<string>) {
       >
         SEO Stats (28 days)
       </div>
-      <div style={{ color: "#6b7280", fontSize: 11, marginBottom: 10 }}>
-        /blog/{slug}
+
+      <div style={{ display: "grid", gap: 3, marginBottom: 10 }}>
+        <div style={{ color: "#94a3b8", fontSize: 11 }}>
+          Site: <strong>{siteLabel}</strong>
+        </div>
+        <div style={{ color: "#6b7280", fontSize: 11 }}>
+          Property: <strong>{propertyLabel}</strong>
+        </div>
+        <div style={{ color: "#6b7280", fontSize: 11 }}>
+          Page scope: <strong>{pageScope}</strong>
+        </div>
+        <div style={{ color: "#6b7280", fontSize: 11 }}>
+          Date range: <strong>{rangeLabel}</strong>
+        </div>
       </div>
 
       <div style={{ display: "flex", gap: 8, marginBottom: 10 }}>
@@ -178,7 +222,7 @@ export function PostSeoStatsField(_props: FieldProps<string>) {
 
       {!loading && !summary && !error && (
         <div style={{ color: "#6b7280", fontSize: 12 }}>
-          Stats are loaded on demand to reduce API usage.
+          Loading current stats...
         </div>
       )}
 

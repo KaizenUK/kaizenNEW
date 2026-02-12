@@ -27,13 +27,14 @@ export const previewAction: DocumentActionComponent = (props) => {
   const doc = (props as any).draft || (props as any).published;
   const slug = getSlug(doc);
   const docId = getDocId(props, doc);
+  const normalizedSlug = slug.replace(/^\/+/, "");
 
-  if (!slug) return null;
+  if (!normalizedSlug) return null;
 
   const previewUrl =
     props.type === "post"
-      ? `/preview/blog/${encodeURIComponent(slug)}${docId ? `?id=${encodeURIComponent(docId)}` : ""}`
-      : `/${encodeURIComponent(slug)}`;
+      ? `/preview/blog/${encodeURIComponent(normalizedSlug)}${docId ? `?id=${encodeURIComponent(docId)}` : ""}`
+      : `/${normalizedSlug}`;
 
   return {
     label: "Preview",

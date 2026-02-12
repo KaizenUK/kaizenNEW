@@ -436,8 +436,6 @@ export default function Dashboard() {
           maxWidth: 1080,
           margin: "0 auto",
           padding: "56px 40px 80px",
-          fontFamily:
-            '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
           color: "#e0e0e0",
         }}
       >
