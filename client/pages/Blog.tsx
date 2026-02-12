@@ -325,8 +325,8 @@ export default function Blog() {
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.6, delay: 0.2 }}
               >
-                <Link
-                  to={`/blog/${featuredPost.slug}`}
+                <a
+                  href={`/blog/${featuredPost.slug}`}
                   onMouseEnter={() => prefetchBlogPost(featuredPost.slug)}
                   onFocus={() => prefetchBlogPost(featuredPost.slug)}
                   className="group block overflow-hidden rounded-xl border border-gray-200 hover:border-gray-300 transition-all hover:shadow-lg"
@@ -369,7 +369,7 @@ export default function Blog() {
                       {featuredPost.excerpt}
                     </p>
                   </div>
-                </Link>
+                </a>
               </motion.div>
             )}
           </div>
@@ -403,9 +403,9 @@ export default function Blog() {
                   </div>
                 ) : searchResults.length > 0 ? (
                   searchResults.map((post) => (
-                    <Link
+                    <a
                       key={`search-${post.id}`}
-                      to={`/blog/${post.slug}`}
+                      href={`/blog/${post.slug}`}
                       onMouseEnter={() => prefetchBlogPost(post.slug)}
                       onFocus={() => prefetchBlogPost(post.slug)}
                       className="group relative overflow-hidden rounded-2xl border border-gray-200 bg-white hover:border-gray-300 transition-all h-full flex flex-col"
@@ -435,7 +435,7 @@ export default function Blog() {
                           </span>
                         </div>
                       </div>
-                    </Link>
+                    </a>
                   ))
                 ) : (
                   <div className="col-span-full text-center py-10">
@@ -466,8 +466,8 @@ export default function Blog() {
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ duration: 0.5 }}
                   >
-                    <Link
-                      to={`/blog/${filteredPosts[1]?.slug}`}
+                    <a
+                      href={`/blog/${filteredPosts[1]?.slug}`}
                       onMouseEnter={() =>
                         filteredPosts[1]?.slug &&
                         prefetchBlogPost(filteredPosts[1].slug)
@@ -515,7 +515,7 @@ export default function Blog() {
                           </span>
                         </div>
                       </div>
-                    </Link>
+                    </a>
                   </motion.div>
                 )}
 
@@ -532,9 +532,9 @@ export default function Blog() {
 
                   <div className="space-y-4">
                     {upNextPosts.map((post) => (
-                      <Link
+                      <a
                         key={`upnext-${post.id}`}
-                        to={`/blog/${post.slug}`}
+                        href={`/blog/${post.slug}`}
                         onMouseEnter={() => prefetchBlogPost(post.slug)}
                         onFocus={() => prefetchBlogPost(post.slug)}
                         className="flex gap-3 group hover:opacity-70 transition"
@@ -558,7 +558,7 @@ export default function Blog() {
                             {new Date(post.publishedDate).toLocaleDateString()}
                           </p>
                         </div>
-                      </Link>
+                      </a>
                     ))}
                   </div>
                 </motion.div>
@@ -595,8 +595,8 @@ export default function Blog() {
                       animate={{ opacity: 1, scale: 1 }}
                       transition={{ duration: 0.5, delay: 0.3 + idx * 0.05 }}
                     >
-                      <Link
-                        to={`/blog/${post.slug}`}
+                      <a
+                        href={`/blog/${post.slug}`}
                         onMouseEnter={() => prefetchBlogPost(post.slug)}
                         onFocus={() => prefetchBlogPost(post.slug)}
                         className="group relative overflow-hidden rounded-2xl border border-gray-200 bg-white hover:border-gray-300 transition-all h-full flex flex-col"
@@ -636,7 +636,7 @@ export default function Blog() {
                             </span>
                           </div>
                         </div>
-                      </Link>
+                      </a>
                     </motion.div>
                   ))}
 

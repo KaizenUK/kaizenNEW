@@ -104,13 +104,13 @@ const ThankYou = () => {
                 <ArrowRight size={18} />
               </Link>
 
-              <Link
-                to="/blog"
+              <a
+                href="/blog"
                 className="inline-flex items-center justify-center gap-2 px-8 py-3 border-2 border-white/30 text-white/70 font-heading font-bold rounded-lg hover:border-white/60 hover:text-white transition"
               >
                 Read Our Blog
                 <ArrowRight size={18} />
-              </Link>
+              </a>
             </motion.div>
           </motion.div>
 
@@ -135,8 +135,8 @@ const ThankYou = () => {
                   variants={itemVariants}
                   className="group"
                 >
-                  <Link
-                    to={`/blog/${read.slug}`}
+                  <a
+                    href={`/blog/${read.slug}`}
                     className="block p-6 border border-gray-800 rounded-lg hover:border-kaizen-cyan/50 hover:bg-gray-900/50 transition duration-300 h-full"
                   >
                     <h3 className="text-xl font-heading font-bold mb-3 group-hover:text-kaizen-cyan transition">
@@ -149,7 +149,7 @@ const ThankYou = () => {
                       Read Article
                       <ArrowRight size={16} />
                     </div>
-                  </Link>
+                  </a>
                 </motion.div>
               ))}
             </div>

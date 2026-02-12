@@ -40,6 +40,9 @@ interface ServiceColumn {
   items: ServiceItem[];
 }
 
+const requiresDocumentNavigation = (href: string): boolean =>
+  /^\/(blog|studio|insights|blogdetail)(\/|$)/.test(href);
+
 const OffCanvasMenu: React.FC<OffCanvasMenuProps> = ({ isOpen, onClose }) => {
   const [expandedSection, setExpandedSection] = useState<string | null>(null);
 
@@ -226,19 +229,35 @@ const OffCanvasMenu: React.FC<OffCanvasMenuProps> = ({ isOpen, onClose }) => {
                       {column.title}
                     </p>
                     {column.items.map((item) => (
-                      <Link
-                        key={item.href}
-                        to={item.href}
-                        className={cn(
-                          "block px-3 py-2 text-sm font-medium rounded-lg hover:bg-gray-50 transition",
-                          item.highlight
-                            ? "text-cyan-600 hover:text-cyan-700"
-                            : "text-gray-600 hover:text-gray-900",
-                        )}
-                        onClick={onClose}
-                      >
-                        {item.label}
-                      </Link>
+                      requiresDocumentNavigation(item.href) ? (
+                        <a
+                          key={item.href}
+                          href={item.href}
+                          className={cn(
+                            "block px-3 py-2 text-sm font-medium rounded-lg hover:bg-gray-50 transition",
+                            item.highlight
+                              ? "text-cyan-600 hover:text-cyan-700"
+                              : "text-gray-600 hover:text-gray-900",
+                          )}
+                          onClick={onClose}
+                        >
+                          {item.label}
+                        </a>
+                      ) : (
+                        <Link
+                          key={item.href}
+                          to={item.href}
+                          className={cn(
+                            "block px-3 py-2 text-sm font-medium rounded-lg hover:bg-gray-50 transition",
+                            item.highlight
+                              ? "text-cyan-600 hover:text-cyan-700"
+                              : "text-gray-600 hover:text-gray-900",
+                          )}
+                          onClick={onClose}
+                        >
+                          {item.label}
+                        </Link>
+                      )
                     ))}
                   </div>
                 ))}
@@ -266,14 +285,25 @@ const OffCanvasMenu: React.FC<OffCanvasMenuProps> = ({ isOpen, onClose }) => {
                 {insightsMenu.map((column) => (
                   <div key={column.title}>
                     {column.items.map((item) => (
-                      <Link
-                        key={item.href}
-                        to={item.href}
-                        className="block px-3 py-2 text-sm font-medium rounded-lg text-gray-600 hover:text-gray-900 hover:bg-gray-50 transition"
-                        onClick={onClose}
-                      >
-                        {item.label}
-                      </Link>
+                      requiresDocumentNavigation(item.href) ? (
+                        <a
+                          key={item.href}
+                          href={item.href}
+                          className="block px-3 py-2 text-sm font-medium rounded-lg text-gray-600 hover:text-gray-900 hover:bg-gray-50 transition"
+                          onClick={onClose}
+                        >
+                          {item.label}
+                        </a>
+                      ) : (
+                        <Link
+                          key={item.href}
+                          to={item.href}
+                          className="block px-3 py-2 text-sm font-medium rounded-lg text-gray-600 hover:text-gray-900 hover:bg-gray-50 transition"
+                          onClick={onClose}
+                        >
+                          {item.label}
+                        </Link>
+                      )
                     ))}
                   </div>
                 ))}
@@ -301,14 +331,25 @@ const OffCanvasMenu: React.FC<OffCanvasMenuProps> = ({ isOpen, onClose }) => {
                 {caseStudiesMenu.map((column) => (
                   <div key={column.title}>
                     {column.items.map((item) => (
-                      <Link
-                        key={item.href}
-                        to={item.href}
-                        className="block px-3 py-2 text-sm font-medium rounded-lg text-gray-600 hover:text-gray-900 hover:bg-gray-50 transition"
-                        onClick={onClose}
-                      >
-                        {item.label}
-                      </Link>
+                      requiresDocumentNavigation(item.href) ? (
+                        <a
+                          key={item.href}
+                          href={item.href}
+                          className="block px-3 py-2 text-sm font-medium rounded-lg text-gray-600 hover:text-gray-900 hover:bg-gray-50 transition"
+                          onClick={onClose}
+                        >
+                          {item.label}
+                        </a>
+                      ) : (
+                        <Link
+                          key={item.href}
+                          to={item.href}
+                          className="block px-3 py-2 text-sm font-medium rounded-lg text-gray-600 hover:text-gray-900 hover:bg-gray-50 transition"
+                          onClick={onClose}
+                        >
+                          {item.label}
+                        </Link>
+                      )
                     ))}
                   </div>
                 ))}
@@ -363,14 +404,25 @@ const OffCanvasMenu: React.FC<OffCanvasMenuProps> = ({ isOpen, onClose }) => {
 
           {/* Top-Level Links */}
           {topLevelLinks.map((link) => (
-            <Link
-              key={link.href}
-              to={link.href}
-              className="block px-3 py-3 text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50 rounded-lg transition"
-              onClick={onClose}
-            >
-              {link.label}
-            </Link>
+            requiresDocumentNavigation(link.href) ? (
+              <a
+                key={link.href}
+                href={link.href}
+                className="block px-3 py-3 text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50 rounded-lg transition"
+                onClick={onClose}
+              >
+                {link.label}
+              </a>
+            ) : (
+              <Link
+                key={link.href}
+                to={link.href}
+                className="block px-3 py-3 text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50 rounded-lg transition"
+                onClick={onClose}
+              >
+                {link.label}
+              </Link>
+            )
           ))}
         </div>
 

@@ -6,6 +6,9 @@ import { ArrowRight, Linkedin, Instagram, Check } from "lucide-react";
 const CONSENT_TEXT =
   "I consent to receiving marketing emails from Kaizen Web Ltd about services, insights, and offers. I understand I can unsubscribe at any time.";
 
+const requiresDocumentNavigation = (href: string): boolean =>
+  /^\/(blog|studio|insights|blogdetail)(\/|$)/.test(href);
+
 const Footer: React.FC = () => {
   const location = useLocation();
   const buildNumber = (import.meta.env.VITE_BUILD_NUMBER || "").trim();
@@ -355,12 +358,21 @@ const Footer: React.FC = () => {
             <ul className="flex flex-wrap items-center justify-center gap-x-6 gap-y-3">
               {footerLinks.map((link) => (
                 <li key={link.href}>
-                  <Link
-                    to={link.href}
-                    className="text-xs font-medium uppercase tracking-widest text-white/80 hover:text-white transition"
-                  >
-                    {link.label}
-                  </Link>
+                  {requiresDocumentNavigation(link.href) ? (
+                    <a
+                      href={link.href}
+                      className="text-xs font-medium uppercase tracking-widest text-white/80 hover:text-white transition"
+                    >
+                      {link.label}
+                    </a>
+                  ) : (
+                    <Link
+                      to={link.href}
+                      className="text-xs font-medium uppercase tracking-widest text-white/80 hover:text-white transition"
+                    >
+                      {link.label}
+                    </Link>
+                  )}
                 </li>
               ))}
             </ul>

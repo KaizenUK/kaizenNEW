@@ -5,6 +5,9 @@ import type { DesktopMenuKey, ServiceColumn } from "./header-menu-data";
 
 type HeaderMenuModule = typeof import("./header-menu-data");
 
+const requiresDocumentNavigation = (href: string): boolean =>
+  /^\/(blog|studio|insights|blogdetail)(\/|$)/.test(href);
+
 export default function HeaderDesktopNav() {
   const [activeMenu, setActiveMenu] = useState<DesktopMenuKey | null>(null);
   const [hoveredColumn, setHoveredColumn] = useState<string | null>(null);
@@ -186,26 +189,49 @@ export default function HeaderDesktopNav() {
                     <ul className="space-y-0.5">
                       {column.items.map((item) => (
                         <li key={item.href}>
-                          <Link
-                            to={item.href}
-                            className="group flex flex-col gap-0.5 rounded-lg px-3 py-2.5 -mx-3 hover:bg-gray-50 transition-colors duration-150"
-                            onClick={() => {
-                              setActiveMenu(null);
-                              setHoveredColumn(null);
-                            }}
-                            onMouseEnter={() => setHoveredColumn(column.title)}
-                          >
-                            <span className="text-sm font-medium flex items-center gap-1.5 text-gray-900 group-hover:text-cyan-600 transition-colors duration-150">
-                              {item.label}
-                              <ArrowRightIcon
-                                size={12}
-                                className="opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-200"
-                              />
-                            </span>
-                            <span className="text-xs text-gray-500 group-hover:text-gray-600 transition-colors duration-150">
-                              {item.description}
-                            </span>
-                          </Link>
+                          {requiresDocumentNavigation(item.href) ? (
+                            <a
+                              href={item.href}
+                              className="group flex flex-col gap-0.5 rounded-lg px-3 py-2.5 -mx-3 hover:bg-gray-50 transition-colors duration-150"
+                              onClick={() => {
+                                setActiveMenu(null);
+                                setHoveredColumn(null);
+                              }}
+                              onMouseEnter={() => setHoveredColumn(column.title)}
+                            >
+                              <span className="text-sm font-medium flex items-center gap-1.5 text-gray-900 group-hover:text-cyan-600 transition-colors duration-150">
+                                {item.label}
+                                <ArrowRightIcon
+                                  size={12}
+                                  className="opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-200"
+                                />
+                              </span>
+                              <span className="text-xs text-gray-500 group-hover:text-gray-600 transition-colors duration-150">
+                                {item.description}
+                              </span>
+                            </a>
+                          ) : (
+                            <Link
+                              to={item.href}
+                              className="group flex flex-col gap-0.5 rounded-lg px-3 py-2.5 -mx-3 hover:bg-gray-50 transition-colors duration-150"
+                              onClick={() => {
+                                setActiveMenu(null);
+                                setHoveredColumn(null);
+                              }}
+                              onMouseEnter={() => setHoveredColumn(column.title)}
+                            >
+                              <span className="text-sm font-medium flex items-center gap-1.5 text-gray-900 group-hover:text-cyan-600 transition-colors duration-150">
+                                {item.label}
+                                <ArrowRightIcon
+                                  size={12}
+                                  className="opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-200"
+                                />
+                              </span>
+                              <span className="text-xs text-gray-500 group-hover:text-gray-600 transition-colors duration-150">
+                                {item.description}
+                              </span>
+                            </Link>
+                          )}
                         </li>
                       ))}
                     </ul>

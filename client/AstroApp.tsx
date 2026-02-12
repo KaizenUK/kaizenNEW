@@ -3,9 +3,9 @@ import { BrowserRouter, MemoryRouter, Route, Routes } from "react-router-dom";
 import { CalendlyProvider, useCalendly } from "@/context/CalendlyContext";
 import { isReactSnapPrerender } from "@/lib/prerender";
 import Index from "./pages/Index";
+import OtherRoutes from "./OtherRoutes";
 import "./global.css";
 
-const OtherRoutes = lazy(() => import("./OtherRoutes"));
 const RouteChangeTracker = lazy(() =>
   import("@/components/RouteChangeTracker").then((m) => ({
     default: m.RouteChangeTracker,
@@ -20,14 +20,6 @@ const CookieBanner = lazy(() =>
   import("@/components/CookieBanner").then((m) => ({
     default: m.CookieBanner,
   })),
-);
-
-const PageLoader = () => (
-  <div className="site-shell min-h-screen flex flex-col bg-background text-foreground">
-    <div className="flex items-center justify-center min-h-screen">
-      <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-kaizen-cyan"></div>
-    </div>
-  </div>
 );
 
 function ModalsAndBanner() {
@@ -72,12 +64,10 @@ function AppContent() {
   return (
     <>
       <ModalsAndBanner />
-      <Suspense fallback={<PageLoader />}>
-        <Routes>
-          <Route path="/" element={<Index />} />
-          <Route path="*" element={<OtherRoutes />} />
-        </Routes>
-      </Suspense>
+      <Routes>
+        <Route path="/" element={<Index />} />
+        <Route path="*" element={<OtherRoutes />} />
+      </Routes>
     </>
   );
 }

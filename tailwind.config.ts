@@ -3,7 +3,11 @@ import typography from "@tailwindcss/typography";
 
 export default {
   darkMode: ["class"],
-  content: ["./client/**/*.{ts,tsx}"],
+  content: [
+    "./client/**/*.{ts,tsx}",
+    "./src/**/*.{astro,html,js,jsx,ts,tsx,md,mdx}",
+    "./sanity.config.ts",
+  ],
   prefix: "",
   theme: {
     container: {

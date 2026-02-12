@@ -5,14 +5,44 @@ import {
   SITE_NAME,
   getPageMeta,
 } from "../../client/lib/seo";
+import { getStaticPageBySlug, urlFor } from "../lib/sanity/client";
 
 const pathnameRaw = Astro.url.pathname || "/";
 const pathname =
   pathnameRaw !== "/" && pathnameRaw.endsWith("/")
     ? pathnameRaw.slice(0, -1)
     : pathnameRaw;
-const meta = getPageMeta(pathname);
-const canonicalUrl = `https://kaizenweb.co.uk${pathname === "/" ? "" : pathname}`;
+const fallbackMeta = getPageMeta(pathname);
+const staticPage = await getStaticPageBySlug(pathname);
+const seo = staticPage?.seo;
+
+const title = seo?.metaTitle?.trim() || fallbackMeta.title;
+const description = seo?.metaDescription?.trim() || fallbackMeta.description;
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || "https://kaizenweb.co.uk").replace(
+  /\/$/,
+  "",
+);
+const canonicalUrl = seo?.canonicalUrl?.trim() || `${siteUrl}${pathname === "/" ? "/" : pathname}`;
+const robots =
+  seo?.noIndex || fallbackMeta.noIndex
+    ? "noindex, nofollow"
+    : import.meta.env.MODE === "development"
+      ? "noindex"
+      : "index, follow";
+
+let ogImage = fallbackMeta.image || DEFAULT_OG_IMAGE;
+try {
+  if (seo?.shareImage) {
+    ogImage = urlFor(seo.shareImage)
+      .width(1200)
+      .height(630)
+      .fit("crop")
+      .auto("format")
+      .url();
+  }
+} catch {
+  ogImage = fallbackMeta.image || DEFAULT_OG_IMAGE;
+}
 ---
 
 <!doctype html>
@@ -20,15 +50,24 @@ const canonicalUrl = `https://kaizenweb.co.uk${pathname === "/" ? "" : pathname}
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>{meta.title}</title>
-    <meta name="description" content={meta.description} />
-    <meta name="robots" content={meta.noIndex ? "noindex, nofollow" : "index, follow"} />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="robots" content={robots} />
+    <meta name="author" content="Kaizen Web" />
+    <meta name="publisher" content="Kaizen Web" />
     <meta property="og:site_name" content={SITE_NAME} />
     <meta property="og:type" content="website" />
-    <meta property="og:title" content={meta.title} />
-    <meta property="og:description" content={meta.description} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
     <meta property="og:url" content={canonicalUrl} />
-    <meta property="og:image" content={meta.image ?? DEFAULT_OG_IMAGE} />
+    {ogImage && <meta property="og:image" content={ogImage} />}
+    <meta
+      name="twitter:card"
+      content={ogImage ? "summary_large_image" : "summary"}
+    />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    {ogImage && <meta name="twitter:image" content={ogImage} />}
     <link rel="canonical" href={canonicalUrl} />
   </head>
   <body>

@@ -577,12 +577,12 @@ export default function HighFiveGamesCase() {
                 one—modelling upside, downside, and delivery risk in parallel.
                 If you’re curious how we keep complex software work financially
                 accountable, this is the same framework we use in our{" "}
-                <Link
-                  to="/blog/fix-failing-software-project-financial-guide"
+                <a
+                  href="/blog/fix-failing-software-project-financial-guide"
                   className="text-blue-300 hover:text-blue-200 underline"
                 >
                   financial guide
-                </Link>
+                </a>
                 .
               </p>
             </motion.div>

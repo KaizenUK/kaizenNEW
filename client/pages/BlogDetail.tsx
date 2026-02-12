@@ -620,13 +620,13 @@ export default function BlogDetail() {
           <p className="text-gray-600 mb-8">
             The blog post you're looking for doesn't exist.
           </p>
-          <Link
-            to="/blog"
+          <a
+            href="/blog"
             className="px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-500 text-white font-heading font-bold rounded-lg hover:opacity-90 transition flex items-center gap-2"
           >
             <ArrowLeft size={18} />
             Back to Blog
-          </Link>
+          </a>
         </div>
       </Layout>
     );
@@ -746,13 +746,13 @@ export default function BlogDetail() {
         <div className="absolute inset-0 bg-gradient-to-t from-gray-950 via-transparent to-transparent" />
 
         <div className="absolute top-4 left-4">
-          <Link
-            to="/blog"
+          <a
+            href="/blog"
             className="inline-flex items-center gap-2 px-4 py-2 bg-white/80 hover:bg-white text-gray-950 rounded-lg transition font-mono text-sm"
           >
             <ArrowLeft size={16} />
             Back to Blog
-          </Link>
+          </a>
         </div>
       </motion.div>
 
@@ -886,8 +886,8 @@ export default function BlogDetail() {
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.4, delay: 0.9 + idx * 0.1 }}
                       >
-                        <Link
-                          to={`/blog/${relatedPost.slug}`}
+                        <a
+                          href={`/blog/${relatedPost.slug}`}
                           onMouseEnter={() =>
                             prefetchBlogPost(relatedPost.slug)
                           }
@@ -908,7 +908,7 @@ export default function BlogDetail() {
                                 })
                               : "—"}
                           </p>
-                        </Link>
+                        </a>
                       </motion.div>
                     ))}
                   </div>

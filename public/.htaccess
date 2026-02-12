@@ -27,7 +27,13 @@
   # 5. EXCLUSIONS: Let /cms (WordPress) handle its own routing
   RewriteRule ^cms/ - [L]
 
-  # 6. SPA ROUTING: Route all other requests to index.html (React)
+  # 6. SANITY STUDIO SPA ROUTING: Keep /studio client routes working on refresh
+  RewriteCond %{REQUEST_URI} ^/studio(?:/.*)?$ [NC]
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteRule ^studio(?:/.*)?$ /studio/index.html [L]
+
+  # 7. SPA ROUTING: Route all other requests to index.html (React)
   RewriteCond %{REQUEST_FILENAME} !-f
   RewriteCond %{REQUEST_FILENAME} !-d
   RewriteRule ^(.*)$ index.html [L]

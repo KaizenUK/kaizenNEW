@@ -3,7 +3,12 @@
     "allow": [
       "Bash(npm run build:*)",
       "Bash(npx tsc:*)",
-      "Bash(dir:*)"
+      "Bash(dir:*)",
+      "Bash(ls:*)",
+      "Bash(node -e:*)",
+      "Bash(npx astro:*)",
+      "Bash(pnpm run build:*)",
+      "WebFetch(domain:www.sanity.io)"
     ]
   }
 }

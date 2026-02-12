@@ -1,164 +1,97 @@
-# Fusion Starter
+# Kaizen
 
-A production-ready full-stack React application template with integrated Express server, featuring React Router 6 SPA mode, TypeScript, Vitest, Zod and modern tooling.
+A production-ready Astro SSR application with React components, Sanity CMS, TypeScript, Vitest, and modern tooling.
 
-While the starter comes with a express server, only create endpoint when strictly neccesary, for example to encapsulate logic that must leave in the server, such as private keys handling, or certain DB operations, db...
+API endpoints should only be created when strictly necessary, for example to encapsulate logic that must live on the server, such as private key handling or certain DB operations.
 
 ## Tech Stack
 
 - **PNPM**: Prefer pnpm
-- **Frontend**: React 18 + React Router 6 (spa) + TypeScript + Vite + TailwindCSS 3
-- **Backend**: Express server integrated with Vite dev server
+- **Framework**: Astro 5 SSR with `@astrojs/node` standalone adapter
+- **Frontend**: React 19 + React Router 7 + TypeScript + TailwindCSS 4
+- **CMS**: Sanity Studio (embedded at `/studio`)
 - **Testing**: Vitest
-- **UI**: Radix UI + TailwindCSS 3 + Lucide React icons
+- **UI**: Radix UI + TailwindCSS 4 + Lucide React icons
 
 ## Project Structure
 
 ```
-client/                   # React SPA frontend
-├── pages/                # Route components (Index.tsx = home)
+src/                      # Astro source
+├── pages/                # Astro pages and file-based routing
+│   ├── api/              # Server API routes (Astro APIRoute handlers)
+│   ├── studio/           # Sanity Studio
+│   └── [...slug].astro   # Dynamic catch-all route
+├── layouts/              # Astro layout components
+├── styles/               # Global stylesheets
+└── middleware.ts          # Astro middleware
+
+client/                   # React components and client-side code
+├── pages/                # React page components
 ├── components/ui/        # Pre-built UI component library
-├── App.tsx                # App entry point and with SPA routing setup
-└── global.css            # TailwindCSS 3 theming and global styles
+├── hooks/                # Custom React hooks
+├── context/              # React context providers
+├── animations/           # Animation configs (GSAP, Remotion, particles)
+├── App.tsx               # React Router SPA routing setup
+├── AstroApp.tsx          # Astro-wrapped React entry point
+└── global.css            # TailwindCSS theming and global styles
 
-server/                   # Express API backend
-├── index.ts              # Main server setup (express config + routes)
-└── routes/               # API handlers
+shared/                   # Types shared between API routes and client
+└── api.ts                # Shared API interfaces
 
-shared/                   # Types used by both client & server
-└── api.ts                # Example of how to share api interfaces
+sanity/                   # Sanity CMS schema and configuration
 ```
 
-## Key Features
+## Routing
 
-## SPA Routing System
+Astro handles SSR page rendering via `src/pages/`. React Router handles client-side navigation within the React app mounted by Astro.
 
-The routing system is powered by React Router 6:
+## Styling System
 
-- `client/pages/Index.tsx` represents the home page.
-- Routes are defined in `client/App.tsx` using the `react-router-dom` import
-- Route files are located in the `client/pages/` directory
-
-For example, routes can be defined with:
-
-```typescript
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-
-<Routes>
-  <Route path="/" element={<Index />} />
-  {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-  <Route path="*" element={<NotFound />} />
-</Routes>;
-```
-
-### Styling System
-
-- **Primary**: TailwindCSS 3 utility classes
-- **Theme and design tokens**: Configure in `client/global.css` 
+- **Primary**: TailwindCSS 4 utility classes
+- **Theme and design tokens**: Configure in `client/global.css`
+- **Tailwind config**: `tailwind.config.ts` (referenced via `@config` in CSS files)
 - **UI components**: Pre-built library in `client/components/ui/`
 - **Utility**: `cn()` function combines `clsx` + `tailwind-merge` for conditional classes
 
 ```typescript
-// cn utility usage
 className={cn(
   "base-classes",
   { "conditional-class": condition },
-  props.className  // User overrides
+  props.className
 )}
 ```
 
-### Express Server Integration
+## API Routes
 
-- **Development**: Single port (8080) for both frontend/backend
-- **Hot reload**: Both client and server code
-- **API endpoints**: Prefixed with `/api/`
+API routes use Astro's file-based API routing in `src/pages/api/`:
 
-#### Example API Routes
-- `GET /api/ping` - Simple ping api
-- `GET /api/demo` - Demo endpoint  
-
-### Shared Types
-Import consistent types in both client and server:
 ```typescript
-import { DemoResponse } from '@shared/api';
+import type { APIRoute } from "astro";
+
+export const GET: APIRoute = async ({ url }) => {
+  return new Response(JSON.stringify({ message: "Hello" }), {
+    status: 200,
+    headers: { "content-type": "application/json" },
+  });
+};
 ```
 
 Path aliases:
-- `@shared/*` - Shared folder
 - `@/*` - Client folder
+- `@shared/*` - Shared folder
 
 ## Development Commands
 
 ```bash
-pnpm dev        # Start dev server (client + server)
+pnpm dev        # Start Astro dev server
 pnpm build      # Production build
-pnpm start      # Start production server
+pnpm start      # Start production server (node dist/server/entry.mjs)
 pnpm typecheck  # TypeScript validation
-pnpm test          # Run Vitest tests
-```
-
-## Adding Features
-
-### Add new colors to the theme
-
-Open `client/global.css` and `tailwind.config.ts` and add new tailwind colors.
-
-### New API Route
-1. **Optional**: Create a shared interface in `shared/api.ts`:
-```typescript
-export interface MyRouteResponse {
-  message: string;
-  // Add other response properties here
-}
-```
-
-2. Create a new route handler in `server/routes/my-route.ts`:
-```typescript
-import { RequestHandler } from "express";
-import { MyRouteResponse } from "@shared/api"; // Optional: for type safety
-
-export const handleMyRoute: RequestHandler = (req, res) => {
-  const response: MyRouteResponse = {
-    message: 'Hello from my endpoint!'
-  };
-  res.json(response);
-};
-```
-
-3. Register the route in `server/index.ts`:
-```typescript
-import { handleMyRoute } from "./routes/my-route";
-
-// Add to the createServer function:
-app.get("/api/my-endpoint", handleMyRoute);
-```
-
-4. Use in React components with type safety:
-```typescript
-import { MyRouteResponse } from '@shared/api'; // Optional: for type safety
-
-const response = await fetch('/api/my-endpoint');
-const data: MyRouteResponse = await response.json();
-```
-
-### New Page Route
-1. Create component in `client/pages/MyPage.tsx`
-2. Add route in `client/App.tsx`:
-```typescript
-<Route path="/my-page" element={<MyPage />} />
+pnpm test       # Run Vitest tests
 ```
 
 ## Production Deployment
 
-- **Standard**: `pnpm build`
-- **Binary**: Self-contained executables (Linux, macOS, Windows)
-- **Cloud Deployment**: Use either Netlify or Vercel via their MCP integrations for easy deployment. Both providers work well with this starter template.
-
-## Architecture Notes
-
-- Single-port development with Vite + Express integration
-- TypeScript throughout (client, server, shared)
-- Full hot reload for rapid development
-- Production-ready with multiple deployment options
-- Comprehensive UI component library included
-- Type-safe API communication via shared interfaces
+- SSR via `@astrojs/node` standalone adapter
+- Deployed to VPS with PM2 process management
+- GitHub Actions CI/CD pipeline (`.github/workflows/deploy.yml`)
