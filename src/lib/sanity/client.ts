@@ -139,6 +139,10 @@ export const previewClient = hasSanityConfig
       useCdn: false,
       token,
       perspective: "previewDrafts",
+      stega: {
+        enabled: true,
+        studioUrl: "/studio",
+      },
     })
   : null;
 
