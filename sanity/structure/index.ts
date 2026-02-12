@@ -12,8 +12,6 @@ function resolveSeoPaneSiteUrl(): string {
   return siteUrl;
 }
 
-const seoPaneSiteUrl = resolveSeoPaneSiteUrl();
-
 function normalizeDocumentId(id: unknown): string {
   return String(id ?? "").replace(/^drafts\./, "").trim();
 }
@@ -24,10 +22,11 @@ function resolvePostPreviewUrl(doc: SanityDocument): string {
       ? String((doc.slug as { current?: string }).current ?? "").trim()
       : "";
   const docId = normalizeDocumentId((doc as { _id?: string })._id);
+  const previewHost = resolveSeoPaneSiteUrl();
 
-  if (!slugValue) return `${seoPaneSiteUrl}/blog`;
+  if (!slugValue) return `${previewHost}/blog`;
 
-  const previewUrl = `${seoPaneSiteUrl}/preview/blog/${encodeURIComponent(slugValue)}`;
+  const previewUrl = `${previewHost}/preview/blog/${encodeURIComponent(slugValue)}`;
   return docId ? `${previewUrl}?id=${encodeURIComponent(docId)}` : previewUrl;
 }
 
@@ -35,7 +34,6 @@ export const studioStructure = (S: StructureBuilder) =>
   S.list()
     .title("Kaizen CMS")
     .items([
-      // ── Site Settings (singleton) ────────────────────────────────
       S.listItem()
         .title("Site Settings")
         .id("site-settings")
@@ -48,7 +46,6 @@ export const studioStructure = (S: StructureBuilder) =>
 
       S.divider(),
 
-      // ── Blog ─────────────────────────────────────────────────────
       S.listItem()
         .title("Blog")
         .id("blog")
@@ -86,13 +83,10 @@ export const studioStructure = (S: StructureBuilder) =>
             ]),
         ),
 
-      // ── Pages ────────────────────────────────────────────────────
       S.documentTypeListItem("page").title("Pages"),
-      S.documentTypeListItem("staticPage").title("Static SEO Pages"),
 
       S.divider(),
 
-      // ── Utilities ────────────────────────────────────────────────
       S.listItem()
         .title("Utilities")
         .id("utilities")

@@ -3,19 +3,11 @@ import { useEffect, useState } from "react";
 import config from "../../sanity.config";
 import "../../sanity/studio.css";
 
-const META_PANEL_STORAGE_KEY = "kaizen_studio_meta_panel_open";
 const POST_STACK_CLASS = "kaizen-post-stack";
 const MAIN_FIELD_CLASS = "kaizen-main-field";
 const META_FIELD_CLASS = "kaizen-meta-field";
+const POST_STACK_ANCHOR_FIELDS = new Set(["field-body", "field-content"]);
 const MAIN_EDITOR_FIELDS = new Set(["field-title", "field-body", "field-content"]);
-const EDITABLE_SCHEMA_TYPES = new Set([
-  "post",
-  "page",
-  "category",
-  "author",
-  "redirect",
-  "siteSettings",
-]);
 
 const POST_META_FIELDS = new Set([
   "field-slug",
@@ -41,17 +33,6 @@ function getTopLevelGridItem(fieldElement, stackElement) {
   return null;
 }
 
-function getDocumentTypeFromUrl() {
-  const combined = `${window.location.pathname}${window.location.search}${window.location.hash}`;
-  const match = combined.match(/(?:[;?&]|\/)type=([a-zA-Z0-9_-]+)/i);
-  return match?.[1] ? decodeURIComponent(match[1]) : "";
-}
-
-function isDocumentEditIntentRoute() {
-  const path = window.location.pathname.toLowerCase();
-  return path.includes("/studio/intent/edit/") || path.includes("/studio/intent/create/");
-}
-
 function isVisibleElement(element) {
   if (!(element instanceof HTMLElement)) return false;
   if (element.closest('[aria-hidden="true"], [hidden], [data-hidden="true"]')) {
@@ -72,13 +53,13 @@ function annotatePostEditorStacks() {
 
   for (const stack of stacks) {
     if (!(stack instanceof HTMLElement)) continue;
-    const hasMainField = Array.from(MAIN_EDITOR_FIELDS).some((fieldId) =>
+    const hasAnchorField = Array.from(POST_STACK_ANCHOR_FIELDS).some((fieldId) =>
       Boolean(stack.querySelector(`[data-testid="${fieldId}"]`)),
     );
     const hasMetaField = Array.from(POST_META_FIELDS).some((fieldId) =>
       Boolean(stack.querySelector(`[data-testid="${fieldId}"]`)),
     );
-    const isPostEditorStack = hasMainField && hasMetaField;
+    const isPostEditorStack = hasAnchorField && hasMetaField;
 
     const gridItems = Array.from(stack.children).filter(
       (child) => child instanceof HTMLElement,
@@ -124,26 +105,9 @@ export default function Studio() {
   const [showMetaToggle, setShowMetaToggle] = useState(false);
 
   useEffect(() => {
-    try {
-      const saved = window.localStorage.getItem(META_PANEL_STORAGE_KEY);
-      if (saved === "1") setMetaPanelOpen(true);
-    } catch {
-      // Ignore storage errors in hardened browser contexts.
-    }
-  }, []);
-
-  useEffect(() => {
     const shouldOpen = showMetaToggle && metaPanelOpen;
     document.body.classList.toggle("studio-meta-open", shouldOpen);
     document.documentElement.classList.toggle("studio-meta-open", shouldOpen);
-    try {
-      window.localStorage.setItem(
-        META_PANEL_STORAGE_KEY,
-        metaPanelOpen ? "1" : "0",
-      );
-    } catch {
-      // Ignore storage errors in hardened browser contexts.
-    }
   }, [metaPanelOpen, showMetaToggle]);
 
   useEffect(() => {
@@ -153,15 +117,14 @@ export default function Studio() {
       rafId = window.requestAnimationFrame(() => {
         rafId = 0;
         const hasPostEditorStack = annotatePostEditorStacks();
-        const routeType = getDocumentTypeFromUrl();
-        const routeIsEditIntent = isDocumentEditIntentRoute();
-        const validType = !routeType || EDITABLE_SCHEMA_TYPES.has(routeType);
         const hasDocumentForm = Boolean(
           document.querySelector('[data-testid="document-panel"]'),
         );
-        const shouldShowToggle =
-          routeIsEditIntent && validType && hasDocumentForm;
+        const shouldShowToggle = hasDocumentForm && hasPostEditorStack;
         setShowMetaToggle(shouldShowToggle);
+        if (!shouldShowToggle) {
+          setMetaPanelOpen(false);
+        }
       });
     };
 
@@ -193,7 +156,7 @@ export default function Studio() {
           aria-expanded={metaPanelOpen}
           title={metaPanelOpen ? "Hide settings panel" : "Show settings panel"}
         >
-          {metaPanelOpen ? "Hide Settings" : "Post Settings"}
+          {metaPanelOpen ? "Close Panel" : "Post Settings"}
         </button>
       )}
     </div>
