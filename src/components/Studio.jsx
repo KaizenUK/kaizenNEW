@@ -8,15 +8,6 @@ const POST_STACK_CLASS = "kaizen-post-stack";
 const MAIN_FIELD_CLASS = "kaizen-main-field";
 const META_FIELD_CLASS = "kaizen-meta-field";
 const MAIN_EDITOR_FIELDS = new Set(["field-title", "field-body", "field-content"]);
-const EDITABLE_SCHEMA_TYPES = new Set([
-  "post",
-  "page",
-  "category",
-  "author",
-  "redirect",
-  "siteSettings",
-]);
-
 const POST_META_FIELDS = new Set([
   "field-slug",
   "field-excerpt",
@@ -39,17 +30,6 @@ function getTopLevelGridItem(fieldElement, stackElement) {
     return current;
   }
   return null;
-}
-
-function getDocumentTypeFromUrl() {
-  const combined = `${window.location.pathname}${window.location.search}${window.location.hash}`;
-  const match = combined.match(/(?:[;?&]|\/)type=([a-zA-Z0-9_-]+)/i);
-  return match?.[1] ? decodeURIComponent(match[1]) : "";
-}
-
-function isDocumentEditIntentRoute() {
-  const path = window.location.pathname.toLowerCase();
-  return path.includes("/studio/intent/edit/") || path.includes("/studio/intent/create/");
 }
 
 function isVisibleElement(element) {
@@ -153,14 +133,10 @@ export default function Studio() {
       rafId = window.requestAnimationFrame(() => {
         rafId = 0;
         const hasPostEditorStack = annotatePostEditorStacks();
-        const routeType = getDocumentTypeFromUrl();
-        const routeIsEditIntent = isDocumentEditIntentRoute();
-        const validType = !routeType || EDITABLE_SCHEMA_TYPES.has(routeType);
         const hasDocumentForm = Boolean(
           document.querySelector('[data-testid="document-panel"]'),
         );
-        const shouldShowToggle =
-          routeIsEditIntent && validType && hasDocumentForm;
+        const shouldShowToggle = hasDocumentForm && hasPostEditorStack;
         setShowMetaToggle(shouldShowToggle);
       });
     };
