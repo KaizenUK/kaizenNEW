@@ -348,9 +348,11 @@ export async function getAllRedirects(): Promise<SanityRedirect[]> {
 
 export async function getStaticPageBySlug(
   slug: string,
+  preview = false,
 ): Promise<SanityStaticPage | null> {
-  if (!sanityClient) return null;
-  return sanityClient.fetch<SanityStaticPage | null>(STATIC_PAGE_BY_SLUG_QUERY, {
+  const client = preview ? previewClient : sanityClient;
+  if (!client) return null;
+  return client.fetch<SanityStaticPage | null>(STATIC_PAGE_BY_SLUG_QUERY, {
     slug,
   });
 }

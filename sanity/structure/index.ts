@@ -3,30 +3,29 @@ import { SEOPane } from "sanity-plugin-seo-pane";
 import type { StructureBuilder } from "sanity/structure";
 import type { SanityDocument } from "sanity";
 import { SITE_SETTINGS_ID } from "../schemas/documents/siteSettings";
-import { siteUrl } from "../lib/env";
-
-function resolveSeoPaneSiteUrl(): string {
-  if (typeof window !== "undefined" && window.location?.origin) {
-    return window.location.origin.replace(/\/$/, "");
-  }
-  return siteUrl;
-}
 
 function normalizeDocumentId(id: unknown): string {
   return String(id ?? "").replace(/^drafts\./, "").trim();
 }
 
+function normalizeSlugPathSegment(value: unknown): string {
+  return String(value ?? "")
+    .trim()
+    .replace(/^\/+/, "")
+    .replace(/\/+$/, "");
+}
+
 function resolvePostPreviewUrl(doc: SanityDocument): string {
-  const slugValue =
+  const slugValue = normalizeSlugPathSegment(
     typeof doc.slug === "object" && doc.slug !== null && "current" in doc.slug
       ? String((doc.slug as { current?: string }).current ?? "").trim()
-      : "";
+      : "",
+  );
   const docId = normalizeDocumentId((doc as { _id?: string })._id);
-  const previewHost = resolveSeoPaneSiteUrl();
 
-  if (!slugValue) return `${previewHost}/blog`;
+  if (!slugValue) return "/blog";
 
-  const previewUrl = `${previewHost}/preview/blog/${encodeURIComponent(slugValue)}`;
+  const previewUrl = `/preview/blog/${encodeURIComponent(slugValue)}`;
   return docId ? `${previewUrl}?id=${encodeURIComponent(docId)}` : previewUrl;
 }
 
@@ -84,7 +83,22 @@ export const studioStructure = (S: StructureBuilder) =>
             ]),
         ),
 
-      S.documentTypeListItem("page").title("Pages"),
+      S.listItem()
+        .title("Pages")
+        .id("page")
+        .child(
+          S.documentTypeList("page")
+            .title("Pages")
+            .defaultOrdering([{ field: "_updatedAt", direction: "desc" }]),
+        ),
+      S.listItem()
+        .title("Static SEO Pages")
+        .id("staticPage")
+        .child(
+          S.documentTypeList("staticPage")
+            .title("Static SEO Pages")
+            .defaultOrdering([{ field: "slug.current", direction: "asc" }]),
+        ),
 
       S.divider(),
 

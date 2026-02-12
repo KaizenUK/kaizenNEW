@@ -1,6 +1,6 @@
 import type { DocumentActionComponent } from "sanity";
 
-const PREVIEWABLE_TYPES = new Set(["post", "page"]);
+const PREVIEWABLE_TYPES = new Set(["post", "page", "staticPage"]);
 
 function getSlug(doc: Record<string, unknown> | null): string {
   if (!doc) return "";
@@ -27,14 +27,29 @@ export const previewAction: DocumentActionComponent = (props) => {
   const doc = (props as any).draft || (props as any).published;
   const slug = getSlug(doc);
   const docId = getDocId(props, doc);
-  const normalizedSlug = slug.replace(/^\/+/, "");
+  const normalizedSlug = slug.replace(/^\/+/, "").trim();
 
-  if (!normalizedSlug) return null;
+  let previewPath = "";
+  if (props.type === "post") {
+    if (!normalizedSlug) return null;
+    previewPath = `/preview/blog/${encodeURIComponent(normalizedSlug)}${docId ? `?id=${encodeURIComponent(docId)}` : ""}`;
+  } else if (props.type === "page") {
+    if (!normalizedSlug) return null;
+    previewPath = `/${encodeURIComponent(normalizedSlug)}`;
+  } else {
+    const routePath = slug.trim();
+    if (routePath === "/") {
+      previewPath = "/";
+    } else if (routePath.startsWith("/")) {
+      previewPath = routePath;
+    } else if (normalizedSlug) {
+      previewPath = `/${normalizedSlug}`;
+    } else {
+      return null;
+    }
+  }
 
-  const previewUrl =
-    props.type === "post"
-      ? `/preview/blog/${encodeURIComponent(normalizedSlug)}${docId ? `?id=${encodeURIComponent(docId)}` : ""}`
-      : `/${normalizedSlug}`;
+  const previewUrl = `/api/draft?path=${encodeURIComponent(previewPath)}`;
 
   return {
     label: "Preview",

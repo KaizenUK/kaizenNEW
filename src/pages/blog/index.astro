@@ -8,17 +8,19 @@ import {
   urlFor,
 } from "../../lib/sanity/client";
 
-export const prerender = true;
+export const prerender = false;
+
+const isEditorPreview = Astro.cookies.get("kaizen_studio_auth")?.value === "1";
 
 const [posts, staticPage] = await Promise.all([
   getAllPosts(),
-  getStaticPageBySlug("/blog"),
+  getStaticPageBySlug("/blog", isEditorPreview),
 ]);
 
 const seo = staticPage?.seo;
 const defaultTitle = "Insights | Kaizen Web";
 const defaultDescription = "Performance-led engineering notes from Kaizen.";
-const title = seo?.metaTitle?.trim() || defaultTitle;
+const title = seo?.metaTitle?.trim() || staticPage?.title?.trim() || defaultTitle;
 const description = seo?.metaDescription?.trim() || defaultDescription;
 const canonical = seo?.canonicalUrl?.trim() || undefined;
 const robots = seo?.noIndex ? "noindex" : undefined;

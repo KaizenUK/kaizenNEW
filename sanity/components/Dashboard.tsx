@@ -391,10 +391,16 @@ export default function Dashboard() {
             >
               +
             </div>
-            <ActionButton
-              href="/studio/intent/create/template=post;type=post"
-              label="Create New Post"
-            />
+            <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+              <ActionButton
+                href="/studio/intent/create/template=post;type=post"
+                label="Create New Post"
+              />
+              <ActionButton
+                href="/studio/intent/create/template=page;type=page"
+                label="Create New Page"
+              />
+            </div>
           </CardShell>
 
           <CardShell accent="#72d384">

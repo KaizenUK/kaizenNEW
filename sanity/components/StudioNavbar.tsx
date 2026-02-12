@@ -27,8 +27,23 @@ const NAV_SECTIONS: NavSection[] = [
     title: "Content",
     links: [
       {
+        label: "New Post",
+        href: "/studio/intent/create/template=post;type=post",
+        icon: "M12 5v14 M5 12h14",
+      },
+      {
+        label: "New Page",
+        href: "/studio/intent/create/template=page;type=page",
+        icon: "M12 5v14 M5 12h14",
+      },
+      {
+        label: "New Static Page",
+        href: "/studio/intent/create/template=staticPage;type=staticPage",
+        icon: "M12 5v14 M5 12h14",
+      },
+      {
         label: "Posts",
-        href: "/studio/structure/post",
+        href: "/studio/structure/blog;post",
         icon: "M5 4h14a2 2 0 012 2v12a2 2 0 01-2 2H5a2 2 0 01-2-2V6a2 2 0 012-2zm0 4h14M9 2v4",
       },
       {
@@ -43,12 +58,12 @@ const NAV_SECTIONS: NavSection[] = [
       },
       {
         label: "Categories",
-        href: "/studio/structure/category",
+        href: "/studio/structure/blog;category",
         icon: "M4 7h8v8H4z M14 4h6v6h-6z M14 12h6v8h-6z",
       },
       {
         label: "Authors",
-        href: "/studio/structure/author",
+        href: "/studio/structure/blog;author",
         icon: "M16 11c1.66 0 3-1.79 3-4s-1.34-4-3-4-3 1.79-3 4 1.34 4 3 4z M8 11c1.66 0 3-1.79 3-4S9.66 3 8 3 5 4.79 5 7s1.34 4 3 4z M8 13c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z M16 13c-.29 0-.62.02-.97.05 1.34.97 2.97 2.48 2.97 4.95v1h6v-2c0-2.66-5.33-4-8-4z",
       },
     ],

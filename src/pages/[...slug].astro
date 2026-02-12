@@ -5,6 +5,7 @@ import {
   SITE_NAME,
   getPageMeta,
 } from "../../client/lib/seo";
+import VisualEditingClient from "../components/VisualEditingClient";
 import { getStaticPageBySlug, urlFor } from "../lib/sanity/client";
 
 const pathnameRaw = Astro.url.pathname || "/";
@@ -13,10 +14,11 @@ const pathname =
     ? pathnameRaw.slice(0, -1)
     : pathnameRaw;
 const fallbackMeta = getPageMeta(pathname);
-const staticPage = await getStaticPageBySlug(pathname);
+const isEditorPreview = Astro.cookies.get("kaizen_studio_auth")?.value === "1";
+const staticPage = await getStaticPageBySlug(pathname, isEditorPreview);
 const seo = staticPage?.seo;
 
-const title = seo?.metaTitle?.trim() || fallbackMeta.title;
+const title = seo?.metaTitle?.trim() || staticPage?.title?.trim() || fallbackMeta.title;
 const description = seo?.metaDescription?.trim() || fallbackMeta.description;
 const siteUrl = (import.meta.env.PUBLIC_SITE_URL || "https://kaizenweb.co.uk").replace(
   /\/$/,
@@ -72,5 +74,6 @@ try {
   </head>
   <body>
     <AstroApp url={pathname} client:idle />
+    <VisualEditingClient client:only="react" />
   </body>
 </html>
