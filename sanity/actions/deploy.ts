@@ -1,6 +1,6 @@
 import type { DocumentActionComponent } from "sanity";
 
-const DEPLOYABLE_SCHEMA_TYPES = new Set(["post", "page"]);
+const DEPLOYABLE_SCHEMA_TYPES = new Set(["post", "page", "staticPage"]);
 
 async function triggerStudioDeploy(payload: {
   documentId?: string;

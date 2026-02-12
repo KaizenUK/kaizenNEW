@@ -52,7 +52,7 @@ export const staticPage = defineType({
         slugify: (input) => normalizeStaticRoute(input),
       },
       description:
-        "Use '/' for homepage and '/blog' for the blog index route.",
+        "Set route path, e.g. '/', '/blog', '/contact', '/about', '/services'.",
       validation: (Rule) => [
         Rule.required(),
         Rule.custom((value) => {
