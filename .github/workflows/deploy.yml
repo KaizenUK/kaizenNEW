@@ -5,12 +5,21 @@ on:
     branches:
       - main
       - stage
+  repository_dispatch:
+    types:
+      - sanity-update
   workflow_dispatch:
+
+concurrency:
+  group: deploy-${{ github.ref }}
+  cancel-in-progress: false
 
 jobs:
   web-deploy:
     name: Build and Deploy SSR
     runs-on: ubuntu-latest
+    env:
+      NODE_OPTIONS: --max-old-space-size=6144
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -32,10 +41,11 @@ jobs:
       - name: Install and Build
         run: |
           pnpm install --frozen-lockfile
+          rm -rf dist .astro
           pnpm run build
 
       - name: Deploy Production SSR on VPS
-        if: github.ref == 'refs/heads/main'
+        if: github.ref == 'refs/heads/main' || (github.event_name == 'repository_dispatch' && (github.event.client_payload.target == 'main' || github.event.client_payload.target == 'prod' || github.event.client_payload.target == 'production' || github.event.client_payload.target == ''))
         uses: appleboy/ssh-action@v1.2.0
         with:
           host: ${{ secrets.VPS_HOST }}
@@ -53,6 +63,58 @@ jobs:
             export VITE_BUILD_SHA="${{ github.sha }}"
             export NODE_ENV="production"
             export CI="true"
+            export NODE_OPTIONS="--max-old-space-size=4096"
+            export PUBLIC_SANITY_PROJECT_ID="${{ secrets.PUBLIC_SANITY_PROJECT_ID }}"
+            export PUBLIC_SANITY_DATASET="${{ secrets.PUBLIC_SANITY_DATASET }}"
+            export SANITY_PROJECT_ID="${{ secrets.SANITY_PROJECT_ID }}"
+            export SANITY_DATASET="${{ secrets.SANITY_DATASET }}"
+            export SANITY_API_TOKEN="${{ secrets.SANITY_API_TOKEN }}"
+            export NEXT_PUBLIC_SANITY_PROJECT_ID_SECRET="${{ secrets.NEXT_PUBLIC_SANITY_PROJECT_ID }}"
+            export NEXT_PUBLIC_SANITY_DATASET_SECRET="${{ secrets.NEXT_PUBLIC_SANITY_DATASET }}"
+            export VITE_SANITY_PROJECT_ID_SECRET="${{ secrets.VITE_SANITY_PROJECT_ID }}"
+            export VITE_SANITY_DATASET_SECRET="${{ secrets.VITE_SANITY_DATASET }}"
+            export GITHUB_DEPLOY_TOKEN="${{ secrets.GITHUB_DEPLOY_TOKEN }}"
+            export GITHUB_DEPLOY_REPO="${{ github.repository }}"
+            export GITHUB_DEPLOY_EVENT_TYPE="sanity-update"
+            export GITHUB_DEPLOY_TARGET="main"
+            export GCP_PROJECT_ID="${{ secrets.GCP_PROJECT_ID }}"
+            export GCP_CLIENT_EMAIL="${{ secrets.GCP_CLIENT_EMAIL }}"
+            export GCP_PRIVATE_KEY="${{ secrets.GCP_PRIVATE_KEY }}"
+            export SEO_SITES_JSON="$(cat <<'__KAIZEN_SITES_JSON__'
+            ${{ secrets.SEO_SITES_JSON }}
+            __KAIZEN_SITES_JSON__
+            )"
+            export GSC_SITE_URL="${{ secrets.GSC_SITE_URL }}"
+            export GA4_PROPERTY_ID="${{ secrets.GA4_PROPERTY_ID }}"
+
+            if [ -z "$PUBLIC_SANITY_PROJECT_ID" ] && [ -n "$SANITY_PROJECT_ID" ]; then
+              export PUBLIC_SANITY_PROJECT_ID="$SANITY_PROJECT_ID"
+            fi
+            if [ -z "$PUBLIC_SANITY_PROJECT_ID" ] && [ -n "$NEXT_PUBLIC_SANITY_PROJECT_ID_SECRET" ]; then
+              export PUBLIC_SANITY_PROJECT_ID="$NEXT_PUBLIC_SANITY_PROJECT_ID_SECRET"
+            fi
+            if [ -z "$PUBLIC_SANITY_PROJECT_ID" ] && [ -n "$VITE_SANITY_PROJECT_ID_SECRET" ]; then
+              export PUBLIC_SANITY_PROJECT_ID="$VITE_SANITY_PROJECT_ID_SECRET"
+            fi
+            if [ -z "$PUBLIC_SANITY_DATASET" ] && [ -n "$SANITY_DATASET" ]; then
+              export PUBLIC_SANITY_DATASET="$SANITY_DATASET"
+            fi
+            if [ -z "$PUBLIC_SANITY_DATASET" ] && [ -n "$NEXT_PUBLIC_SANITY_DATASET_SECRET" ]; then
+              export PUBLIC_SANITY_DATASET="$NEXT_PUBLIC_SANITY_DATASET_SECRET"
+            fi
+            if [ -z "$PUBLIC_SANITY_DATASET" ] && [ -n "$VITE_SANITY_DATASET_SECRET" ]; then
+              export PUBLIC_SANITY_DATASET="$VITE_SANITY_DATASET_SECRET"
+            fi
+            if [ -z "$PUBLIC_SANITY_DATASET" ]; then
+              export PUBLIC_SANITY_DATASET="production"
+            fi
+            export NEXT_PUBLIC_SANITY_PROJECT_ID="$PUBLIC_SANITY_PROJECT_ID"
+            export NEXT_PUBLIC_SANITY_DATASET="$PUBLIC_SANITY_DATASET"
+
+            if [ -z "$PUBLIC_SANITY_PROJECT_ID" ]; then
+              echo "Missing Sanity project ID. Set one of: PUBLIC_SANITY_PROJECT_ID, SANITY_PROJECT_ID, NEXT_PUBLIC_SANITY_PROJECT_ID, or VITE_SANITY_PROJECT_ID secrets."
+              exit 1
+            fi
 
             if [ -z "$APP_DIR" ]; then
               echo "Missing required secret: VPS_APP_DIR_PROD"
@@ -74,6 +136,19 @@ jobs:
               exit 1
             fi
 
+            if ! command -v node > /dev/null 2>&1; then
+              echo "Node.js is not available on VPS PATH"
+              exit 1
+            fi
+            NODE_BIN="$(command -v node)"
+            echo "Using node binary: $NODE_BIN"
+            echo "Node version: $(node -v)"
+            NODE_MAJOR="$(node -p "Number(process.versions.node.split('.')[0])")"
+            if [ "$NODE_MAJOR" -lt 20 ]; then
+              echo "Node 20+ is required on VPS. Found: $(node -v)"
+              exit 1
+            fi
+
             cd "$APP_DIR"
             git config --global --add safe.directory "$APP_DIR"
             git fetch origin main --prune
@@ -83,6 +158,11 @@ jobs:
             corepack enable
             corepack prepare pnpm@10.14.0 --activate
             pnpm install --frozen-lockfile
+            if ! rm -rf dist .astro; then
+              echo "Failed to clean dist/.astro. This is usually a file ownership issue."
+              echo "Fix on VPS: sudo chown -R ${USER}:${USER} ${APP_DIR}"
+              exit 1
+            fi
             pnpm run build
 
             START_SCRIPT=""
@@ -90,7 +170,9 @@ jobs:
               "dist/server/entry.mjs" \
               "dist/server/node-build.mjs" \
               "dist/server/production.mjs" \
-              "dist/server/index.mjs"; do
+              "dist/server/index.mjs" \
+              "dist/entry.mjs" \
+              "dist/node-build.mjs"; do
               if [ -f "$candidate" ]; then
                 START_SCRIPT="$candidate"
                 break
@@ -98,37 +180,44 @@ jobs:
             done
 
             if [ -z "$START_SCRIPT" ]; then
-              START_SCRIPT="$(find dist/server -maxdepth 1 -type f -name '*.mjs' | head -n 1 || true)"
-            fi
-
-            if [ -z "$START_SCRIPT" ]; then
-              echo "Build completed but no runnable server entry was found in dist/server"
+              echo "Build completed but no known runnable server entry was found"
+              echo "dist/server contents:"
               ls -la dist/server || true
+              echo "dist contents:"
+              ls -la dist || true
               exit 1
             fi
 
             echo "Using server entry: $START_SCRIPT"
-            pm2 delete "$APP_NAME" > /dev/null 2>&1 || true
-            pm2 start "$START_SCRIPT" --name "$APP_NAME" --cwd "$APP_DIR" --update-env
-            pm2 save
+            HEALTH_PORT="$PORT"
+            echo "Configured app port: ${HEALTH_PORT}"
 
-            for i in 1 2 3 4 5; do
-              if curl -fsS --max-time 10 "http://127.0.0.1:${PORT}/" > /dev/null; then
-                echo "Health check OK on port ${PORT}"
+            pm2 delete "$APP_NAME" > /dev/null 2>&1 || true
+            HOST="$HOST" PORT="$PORT" NODE_ENV="$NODE_ENV" CI="$CI" VITE_BUILD_NUMBER="$VITE_BUILD_NUMBER" VITE_BUILD_SHA="$VITE_BUILD_SHA" \
+              pm2 start "$START_SCRIPT" --name "$APP_NAME" --cwd "$APP_DIR" --interpreter "$NODE_BIN" --update-env
+            pm2 save
+            pm2 describe "$APP_NAME" || true
+
+            for i in 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15; do
+              if curl -fsS --max-time 10 "http://127.0.0.1:${HEALTH_PORT}/" > /dev/null || \
+                 curl -fsS --max-time 10 "http://localhost:${HEALTH_PORT}/" > /dev/null || \
+                 curl -g -fsS --max-time 10 "http://[::1]:${HEALTH_PORT}/" > /dev/null; then
+                echo "Health check OK on port ${HEALTH_PORT}"
                 break
               fi
 
-              if [ "$i" -eq 5 ]; then
-                echo "Health check failed on port ${PORT}"
-                pm2 logs "$APP_NAME" --lines 80 --nostream || true
+              if [ "$i" -eq 15 ]; then
+                echo "Health check failed on configured port ${HEALTH_PORT} via IPv4/IPv6 localhost"
+                ss -lntp | grep node || true
+                pm2 logs "$APP_NAME" --lines 120 --nostream || true
                 exit 1
               fi
 
-              sleep 2
+              sleep 3
             done
 
       - name: Deploy Staging SSR on VPS
-        if: github.ref == 'refs/heads/stage'
+        if: github.ref == 'refs/heads/stage' || (github.event_name == 'repository_dispatch' && (github.event.client_payload.target == 'stage' || github.event.client_payload.target == 'staging'))
         uses: appleboy/ssh-action@v1.2.0
         with:
           host: ${{ secrets.VPS_HOST }}
@@ -146,6 +235,58 @@ jobs:
             export VITE_BUILD_SHA="${{ github.sha }}"
             export NODE_ENV="production"
             export CI="true"
+            export NODE_OPTIONS="--max-old-space-size=4096"
+            export PUBLIC_SANITY_PROJECT_ID="${{ secrets.PUBLIC_SANITY_PROJECT_ID }}"
+            export PUBLIC_SANITY_DATASET="${{ secrets.PUBLIC_SANITY_DATASET }}"
+            export SANITY_PROJECT_ID="${{ secrets.SANITY_PROJECT_ID }}"
+            export SANITY_DATASET="${{ secrets.SANITY_DATASET }}"
+            export SANITY_API_TOKEN="${{ secrets.SANITY_API_TOKEN }}"
+            export NEXT_PUBLIC_SANITY_PROJECT_ID_SECRET="${{ secrets.NEXT_PUBLIC_SANITY_PROJECT_ID }}"
+            export NEXT_PUBLIC_SANITY_DATASET_SECRET="${{ secrets.NEXT_PUBLIC_SANITY_DATASET }}"
+            export VITE_SANITY_PROJECT_ID_SECRET="${{ secrets.VITE_SANITY_PROJECT_ID }}"
+            export VITE_SANITY_DATASET_SECRET="${{ secrets.VITE_SANITY_DATASET }}"
+            export GITHUB_DEPLOY_TOKEN="${{ secrets.GITHUB_DEPLOY_TOKEN }}"
+            export GITHUB_DEPLOY_REPO="${{ github.repository }}"
+            export GITHUB_DEPLOY_EVENT_TYPE="sanity-update"
+            export GITHUB_DEPLOY_TARGET="stage"
+            export GCP_PROJECT_ID="${{ secrets.GCP_PROJECT_ID }}"
+            export GCP_CLIENT_EMAIL="${{ secrets.GCP_CLIENT_EMAIL }}"
+            export GCP_PRIVATE_KEY="${{ secrets.GCP_PRIVATE_KEY }}"
+            export SEO_SITES_JSON="$(cat <<'__KAIZEN_SITES_JSON__'
+            ${{ secrets.SEO_SITES_JSON }}
+            __KAIZEN_SITES_JSON__
+            )"
+            export GSC_SITE_URL="${{ secrets.GSC_SITE_URL }}"
+            export GA4_PROPERTY_ID="${{ secrets.GA4_PROPERTY_ID }}"
+
+            if [ -z "$PUBLIC_SANITY_PROJECT_ID" ] && [ -n "$SANITY_PROJECT_ID" ]; then
+              export PUBLIC_SANITY_PROJECT_ID="$SANITY_PROJECT_ID"
+            fi
+            if [ -z "$PUBLIC_SANITY_PROJECT_ID" ] && [ -n "$NEXT_PUBLIC_SANITY_PROJECT_ID_SECRET" ]; then
+              export PUBLIC_SANITY_PROJECT_ID="$NEXT_PUBLIC_SANITY_PROJECT_ID_SECRET"
+            fi
+            if [ -z "$PUBLIC_SANITY_PROJECT_ID" ] && [ -n "$VITE_SANITY_PROJECT_ID_SECRET" ]; then
+              export PUBLIC_SANITY_PROJECT_ID="$VITE_SANITY_PROJECT_ID_SECRET"
+            fi
+            if [ -z "$PUBLIC_SANITY_DATASET" ] && [ -n "$SANITY_DATASET" ]; then
+              export PUBLIC_SANITY_DATASET="$SANITY_DATASET"
+            fi
+            if [ -z "$PUBLIC_SANITY_DATASET" ] && [ -n "$NEXT_PUBLIC_SANITY_DATASET_SECRET" ]; then
+              export PUBLIC_SANITY_DATASET="$NEXT_PUBLIC_SANITY_DATASET_SECRET"
+            fi
+            if [ -z "$PUBLIC_SANITY_DATASET" ] && [ -n "$VITE_SANITY_DATASET_SECRET" ]; then
+              export PUBLIC_SANITY_DATASET="$VITE_SANITY_DATASET_SECRET"
+            fi
+            if [ -z "$PUBLIC_SANITY_DATASET" ]; then
+              export PUBLIC_SANITY_DATASET="production"
+            fi
+            export NEXT_PUBLIC_SANITY_PROJECT_ID="$PUBLIC_SANITY_PROJECT_ID"
+            export NEXT_PUBLIC_SANITY_DATASET="$PUBLIC_SANITY_DATASET"
+
+            if [ -z "$PUBLIC_SANITY_PROJECT_ID" ]; then
+              echo "Missing Sanity project ID. Set one of: PUBLIC_SANITY_PROJECT_ID, SANITY_PROJECT_ID, NEXT_PUBLIC_SANITY_PROJECT_ID, or VITE_SANITY_PROJECT_ID secrets."
+              exit 1
+            fi
 
             if [ -z "$APP_DIR" ]; then
               echo "Missing required secret: VPS_APP_DIR_STAGE"
@@ -167,6 +308,19 @@ jobs:
               exit 1
             fi
 
+            if ! command -v node > /dev/null 2>&1; then
+              echo "Node.js is not available on VPS PATH"
+              exit 1
+            fi
+            NODE_BIN="$(command -v node)"
+            echo "Using node binary: $NODE_BIN"
+            echo "Node version: $(node -v)"
+            NODE_MAJOR="$(node -p "Number(process.versions.node.split('.')[0])")"
+            if [ "$NODE_MAJOR" -lt 20 ]; then
+              echo "Node 20+ is required on VPS. Found: $(node -v)"
+              exit 1
+            fi
+
             cd "$APP_DIR"
             git config --global --add safe.directory "$APP_DIR"
             git fetch origin stage --prune
@@ -176,6 +330,11 @@ jobs:
             corepack enable
             corepack prepare pnpm@10.14.0 --activate
             pnpm install --frozen-lockfile
+            if ! rm -rf dist .astro; then
+              echo "Failed to clean dist/.astro. This is usually a file ownership issue."
+              echo "Fix on VPS: sudo chown -R ${USER}:${USER} ${APP_DIR}"
+              exit 1
+            fi
             pnpm run build
 
             START_SCRIPT=""
@@ -183,7 +342,9 @@ jobs:
               "dist/server/entry.mjs" \
               "dist/server/node-build.mjs" \
               "dist/server/production.mjs" \
-              "dist/server/index.mjs"; do
+              "dist/server/index.mjs" \
+              "dist/entry.mjs" \
+              "dist/node-build.mjs"; do
               if [ -f "$candidate" ]; then
                 START_SCRIPT="$candidate"
                 break
@@ -191,33 +352,40 @@ jobs:
             done
 
             if [ -z "$START_SCRIPT" ]; then
-              START_SCRIPT="$(find dist/server -maxdepth 1 -type f -name '*.mjs' | head -n 1 || true)"
-            fi
-
-            if [ -z "$START_SCRIPT" ]; then
-              echo "Build completed but no runnable server entry was found in dist/server"
+              echo "Build completed but no known runnable server entry was found"
+              echo "dist/server contents:"
               ls -la dist/server || true
+              echo "dist contents:"
+              ls -la dist || true
               exit 1
             fi
 
             echo "Using server entry: $START_SCRIPT"
-            pm2 delete "$APP_NAME" > /dev/null 2>&1 || true
-            pm2 start "$START_SCRIPT" --name "$APP_NAME" --cwd "$APP_DIR" --update-env
-            pm2 save
+            HEALTH_PORT="$PORT"
+            echo "Configured app port: ${HEALTH_PORT}"
 
-            for i in 1 2 3 4 5; do
-              if curl -fsS --max-time 10 "http://127.0.0.1:${PORT}/" > /dev/null; then
-                echo "Health check OK on port ${PORT}"
+            pm2 delete "$APP_NAME" > /dev/null 2>&1 || true
+            HOST="$HOST" PORT="$PORT" NODE_ENV="$NODE_ENV" CI="$CI" VITE_BUILD_NUMBER="$VITE_BUILD_NUMBER" VITE_BUILD_SHA="$VITE_BUILD_SHA" \
+              pm2 start "$START_SCRIPT" --name "$APP_NAME" --cwd "$APP_DIR" --interpreter "$NODE_BIN" --update-env
+            pm2 save
+            pm2 describe "$APP_NAME" || true
+
+            for i in 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15; do
+              if curl -fsS --max-time 10 "http://127.0.0.1:${HEALTH_PORT}/" > /dev/null || \
+                 curl -fsS --max-time 10 "http://localhost:${HEALTH_PORT}/" > /dev/null || \
+                 curl -g -fsS --max-time 10 "http://[::1]:${HEALTH_PORT}/" > /dev/null; then
+                echo "Health check OK on port ${HEALTH_PORT}"
                 break
               fi
 
-              if [ "$i" -eq 5 ]; then
-                echo "Health check failed on port ${PORT}"
-                pm2 logs "$APP_NAME" --lines 80 --nostream || true
+              if [ "$i" -eq 15 ]; then
+                echo "Health check failed on configured port ${HEALTH_PORT} via IPv4/IPv6 localhost"
+                ss -lntp | grep node || true
+                pm2 logs "$APP_NAME" --lines 120 --nostream || true
                 exit 1
               fi
 
-              sleep 2
+              sleep 3
             done
 
       # --- DISCORD NOTIFICATION ---
