@@ -162,6 +162,10 @@ export const GET: APIRoute = async ({ request }) => {
     recommendations.push(
       "Set SEO_SITES_JSON (preferred) or GSC_SITE_URL for single-site mode.",
     );
+  } else {
+    recommendations.push(
+      "If using a domain property, set GSC_SITE_URL as kaizenweb.co.uk (or sc-domain:kaizenweb.co.uk).",
+    );
   }
   if (!analyticsConfigured) {
     recommendations.push("Set GA4_PROPERTY_ID to include Analytics metrics.");

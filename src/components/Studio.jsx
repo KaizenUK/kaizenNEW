@@ -7,6 +7,15 @@ const META_PANEL_STORAGE_KEY = "kaizen_studio_meta_panel_open";
 const POST_STACK_CLASS = "kaizen-post-stack";
 const MAIN_FIELD_CLASS = "kaizen-main-field";
 const META_FIELD_CLASS = "kaizen-meta-field";
+const MAIN_EDITOR_FIELDS = new Set(["field-title", "field-body", "field-content"]);
+const EDITABLE_SCHEMA_TYPES = new Set([
+  "post",
+  "page",
+  "category",
+  "author",
+  "redirect",
+  "siteSettings",
+]);
 
 const POST_META_FIELDS = new Set([
   "field-slug",
@@ -21,10 +30,35 @@ const POST_META_FIELDS = new Set([
   "field-readTime",
 ]);
 
-const POST_MAIN_FIELDS = new Set(["field-title", "field-body"]);
+function getTopLevelGridItem(fieldElement, stackElement) {
+  let current = fieldElement;
+  while (current && current.parentElement && current.parentElement !== stackElement) {
+    current = current.parentElement;
+  }
+  if (current && current.parentElement === stackElement) {
+    return current;
+  }
+  return null;
+}
 
-function getFieldId(element) {
-  return String(element.getAttribute("data-testid") ?? "").trim();
+function getDocumentTypeFromUrl() {
+  const combined = `${window.location.pathname}${window.location.search}${window.location.hash}`;
+  const match = combined.match(/(?:[;?&]|\/)type=([a-zA-Z0-9_-]+)/i);
+  return match?.[1] ? decodeURIComponent(match[1]) : "";
+}
+
+function isDocumentEditIntentRoute() {
+  const path = window.location.pathname.toLowerCase();
+  return path.includes("/studio/intent/edit/") || path.includes("/studio/intent/create/");
+}
+
+function isVisibleElement(element) {
+  if (!(element instanceof HTMLElement)) return false;
+  if (element.closest('[aria-hidden="true"], [hidden]')) return false;
+  const style = window.getComputedStyle(element);
+  if (style.display === "none" || style.visibility === "hidden") return false;
+  const rect = element.getBoundingClientRect();
+  return rect.width > 0 && rect.height > 0;
 }
 
 function annotatePostEditorStacks() {
@@ -34,50 +68,60 @@ function annotatePostEditorStacks() {
     ),
   );
 
+  let hasPostEditorStack = false;
+
   for (const stack of stacks) {
-    const directFields = Array.from(stack.children).filter(
-      (child) =>
-        child instanceof HTMLElement &&
-        getFieldId(child).startsWith("field-"),
+    if (!(stack instanceof HTMLElement)) continue;
+    const hasMainField = Array.from(MAIN_EDITOR_FIELDS).some((fieldId) =>
+      Boolean(stack.querySelector(`[data-testid="${fieldId}"]`)),
     );
+    const hasMetaField = Array.from(POST_META_FIELDS).some((fieldId) =>
+      Boolean(stack.querySelector(`[data-testid="${fieldId}"]`)),
+    );
+    const isPostEditorStack = hasMainField && hasMetaField;
 
-    if (!directFields.length) {
-      stack.classList.remove(POST_STACK_CLASS);
-      continue;
-    }
-
-    const hasBody = directFields.some((field) => getFieldId(field) === "field-body");
-    const hasSeo = directFields.some((field) => getFieldId(field) === "field-seo");
-    const isPostEditorStack = hasBody && hasSeo;
+    const gridItems = Array.from(stack.children).filter(
+      (child) => child instanceof HTMLElement,
+    );
 
     if (!isPostEditorStack) {
       stack.classList.remove(POST_STACK_CLASS);
-      for (const field of directFields) {
-        field.classList.remove(MAIN_FIELD_CLASS, META_FIELD_CLASS);
+      for (const item of gridItems) {
+        item.classList.remove(MAIN_FIELD_CLASS, META_FIELD_CLASS);
       }
       continue;
     }
 
+    hasPostEditorStack = hasPostEditorStack || isVisibleElement(stack);
     stack.classList.add(POST_STACK_CLASS);
 
-    for (const field of directFields) {
-      const fieldId = getFieldId(field);
-      field.classList.remove(MAIN_FIELD_CLASS, META_FIELD_CLASS);
+    for (const item of gridItems) {
+      item.classList.remove(MAIN_FIELD_CLASS, META_FIELD_CLASS);
+    }
 
-      if (POST_META_FIELDS.has(fieldId)) {
-        field.classList.add(META_FIELD_CLASS);
-        continue;
-      }
+    for (const fieldId of MAIN_EDITOR_FIELDS) {
+      const fieldElement = stack.querySelector(`[data-testid="${fieldId}"]`);
+      if (!(fieldElement instanceof HTMLElement)) continue;
+      const gridItem = getTopLevelGridItem(fieldElement, stack);
+      if (gridItem) gridItem.classList.add(MAIN_FIELD_CLASS);
+    }
 
-      if (POST_MAIN_FIELDS.has(fieldId)) {
-        field.classList.add(MAIN_FIELD_CLASS);
+    for (const fieldId of POST_META_FIELDS) {
+      const fieldElement = stack.querySelector(`[data-testid="${fieldId}"]`);
+      if (!(fieldElement instanceof HTMLElement)) continue;
+      const gridItem = getTopLevelGridItem(fieldElement, stack);
+      if (gridItem) {
+        gridItem.classList.add(META_FIELD_CLASS);
       }
     }
   }
+
+  return hasPostEditorStack;
 }
 
 export default function Studio() {
   const [metaPanelOpen, setMetaPanelOpen] = useState(false);
+  const [showMetaToggle, setShowMetaToggle] = useState(false);
 
   useEffect(() => {
     try {
@@ -89,8 +133,9 @@ export default function Studio() {
   }, []);
 
   useEffect(() => {
-    document.body.classList.toggle("studio-meta-open", metaPanelOpen);
-    document.documentElement.classList.toggle("studio-meta-open", metaPanelOpen);
+    const shouldOpen = showMetaToggle && metaPanelOpen;
+    document.body.classList.toggle("studio-meta-open", shouldOpen);
+    document.documentElement.classList.toggle("studio-meta-open", shouldOpen);
     try {
       window.localStorage.setItem(
         META_PANEL_STORAGE_KEY,
@@ -99,7 +144,7 @@ export default function Studio() {
     } catch {
       // Ignore storage errors in hardened browser contexts.
     }
-  }, [metaPanelOpen]);
+  }, [metaPanelOpen, showMetaToggle]);
 
   useEffect(() => {
     let rafId = 0;
@@ -107,7 +152,19 @@ export default function Studio() {
       if (rafId) return;
       rafId = window.requestAnimationFrame(() => {
         rafId = 0;
-        annotatePostEditorStacks();
+        const hasPostEditorStack = annotatePostEditorStacks();
+        const routeType = getDocumentTypeFromUrl();
+        const routeIsEditIntent = isDocumentEditIntentRoute();
+        const validType = !routeType || EDITABLE_SCHEMA_TYPES.has(routeType);
+        const hasDocumentForm = Boolean(
+          document.querySelector('[data-testid="document-panel"]'),
+        );
+        const shouldShowToggle =
+          (routeIsEditIntent || hasPostEditorStack) &&
+          validType &&
+          hasDocumentForm &&
+          hasPostEditorStack;
+        setShowMetaToggle(shouldShowToggle);
       });
     };
 
@@ -115,10 +172,14 @@ export default function Studio() {
     const observer = new MutationObserver(scheduleAnnotate);
     observer.observe(document.body, { childList: true, subtree: true });
     window.addEventListener("resize", scheduleAnnotate);
+    window.addEventListener("hashchange", scheduleAnnotate);
+    window.addEventListener("popstate", scheduleAnnotate);
 
     return () => {
       observer.disconnect();
       window.removeEventListener("resize", scheduleAnnotate);
+      window.removeEventListener("hashchange", scheduleAnnotate);
+      window.removeEventListener("popstate", scheduleAnnotate);
       if (rafId) window.cancelAnimationFrame(rafId);
     };
   }, []);
@@ -126,16 +187,18 @@ export default function Studio() {
   return (
     <div style={{ height: "100vh", position: "relative" }}>
       <SanityStudio config={config} />
-      <button
-        type="button"
-        className={`studio-meta-toggle${metaPanelOpen ? " studio-meta-toggle--active" : ""}`}
-        onClick={() => setMetaPanelOpen((value) => !value)}
-        aria-label={metaPanelOpen ? "Hide post settings panel" : "Show post settings panel"}
-        aria-expanded={metaPanelOpen}
-        title={metaPanelOpen ? "Hide settings panel" : "Show settings panel"}
-      >
-        {metaPanelOpen ? "Hide Settings" : "Post Settings"}
-      </button>
+      {showMetaToggle && (
+        <button
+          type="button"
+          className={`studio-meta-toggle${metaPanelOpen ? " studio-meta-toggle--active" : ""}`}
+          onClick={() => setMetaPanelOpen((value) => !value)}
+          aria-label={metaPanelOpen ? "Hide post settings panel" : "Show post settings panel"}
+          aria-expanded={metaPanelOpen}
+          title={metaPanelOpen ? "Hide settings panel" : "Show settings panel"}
+        >
+          {metaPanelOpen ? "Hide Settings" : "Post Settings"}
+        </button>
+      )}
     </div>
   );
 }

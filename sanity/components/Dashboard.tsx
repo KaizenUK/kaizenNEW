@@ -312,6 +312,8 @@ export default function Dashboard() {
   });
   const [loaded, setLoaded] = useState(false);
   const [seoSummary, setSeoSummary] = useState<SeoQuickSummary | null>(null);
+  const [seoSummaryLoading, setSeoSummaryLoading] = useState(false);
+  const [seoSummaryError, setSeoSummaryError] = useState("");
   const [seoSetup, setSeoSetup] = useState<SeoSetupStatus | null>(null);
   const [seoSetupError, setSeoSetupError] = useState("");
 
@@ -353,7 +355,7 @@ export default function Dashboard() {
       .then(setStats)
       .catch(() => {});
 
-    // Fetch SEO status first, only fetch stats if API is ready
+    // Fetch SEO setup status only. Stats are loaded on demand.
     fetch("/api/seo/status", { credentials: "include" })
       .then(async (response) => {
         const payload = (await response.json()) as SeoSetupStatus;
@@ -362,25 +364,14 @@ export default function Dashboard() {
         }
         setSeoSetup(payload);
         setSeoSetupError("");
-
-        // Only fetch stats if Google credentials + sites are configured
-        if (payload.summary?.ready) {
-          return fetch("/api/seo/stats?days=28", { credentials: "include" });
-        }
-        return null;
-      })
-      .then(async (response) => {
-        if (!response || !response.ok) return;
-        const payload = (await response.json()) as {
-          ok?: boolean;
-          summary?: SeoQuickSummary;
-        };
-        if (payload.ok && payload.summary) {
-          setSeoSummary(payload.summary);
+        if (!payload.summary?.ready) {
+          setSeoSummary(null);
+          setSeoSummaryError("");
         }
       })
       .catch((error) => {
         setSeoSetup(null);
+        setSeoSummary(null);
         setSeoSetupError(
           error instanceof Error ? error.message : "Failed to load SEO setup status",
         );
@@ -390,6 +381,44 @@ export default function Dashboard() {
   useEffect(() => {
     fetchData();
   }, [fetchData]);
+
+  const loadSeoSummary = useCallback(async () => {
+    if (!seoSetup?.summary.ready || seoSummaryLoading) return;
+
+    setSeoSummaryLoading(true);
+    setSeoSummaryError("");
+
+    try {
+      const response = await fetch("/api/seo/stats?days=28", {
+        credentials: "include",
+      });
+      const payload = (await response.json()) as {
+        ok?: boolean;
+        summary?: SeoQuickSummary;
+        error?: string;
+        details?: string;
+        hint?: string;
+      };
+
+      if (!response.ok || !payload.ok || !payload.summary) {
+        const details = payload.details ? ` (${payload.details})` : "";
+        const hint = payload.hint ? ` ${payload.hint}` : "";
+        throw new Error(
+          `${payload.error || "Failed to load SEO snapshot"}${details}${hint}`,
+        );
+      }
+
+      setSeoSummary(payload.summary);
+      setSeoSummaryError("");
+    } catch (error) {
+      setSeoSummary(null);
+      setSeoSummaryError(
+        error instanceof Error ? error.message : "Failed to load SEO snapshot",
+      );
+    } finally {
+      setSeoSummaryLoading(false);
+    }
+  }, [seoSetup?.summary.ready, seoSummaryLoading]);
 
   const firstName = user?.name?.split(" ")[0] || "";
   const greeting = getGreeting();
@@ -509,7 +538,7 @@ export default function Dashboard() {
         </div>
 
         {/* ── Two-column layout ──────────────────────────── */}
-        {seoSummary && (
+        {seoSetup?.summary.ready && (
           <div style={{ marginBottom: 48 }}>
             <h2
               style={{
@@ -523,30 +552,78 @@ export default function Dashboard() {
             >
               SEO Snapshot (28d)
             </h2>
-            <div
-              style={{
-                display: "grid",
-                gap: 12,
-                gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))",
-              }}
-            >
-              <StatPill value={Math.round(seoSummary.clicks)} label="Clicks" />
-              <StatPill value={Math.round(seoSummary.impressions)} label="Impressions" />
-              <StatPill value={Math.round(seoSummary.ctr * 100)} label="CTR %" />
-              <StatPill value={Number(seoSummary.position.toFixed(1))} label="Avg Pos" />
+            <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 12 }}>
+              <button
+                type="button"
+                onClick={() => void loadSeoSummary()}
+                disabled={seoSummaryLoading}
+                style={{
+                  borderRadius: 8,
+                  border: "1px solid rgba(59,130,246,0.7)",
+                  background: seoSummaryLoading
+                    ? "rgba(59,130,246,0.35)"
+                    : "rgba(59,130,246,0.85)",
+                  color: "#fff",
+                  fontSize: 12,
+                  fontWeight: 700,
+                  padding: "7px 12px",
+                  cursor: seoSummaryLoading ? "default" : "pointer",
+                }}
+              >
+                {seoSummaryLoading
+                  ? "Loading..."
+                  : seoSummary
+                    ? "Refresh Snapshot"
+                    : "Load Snapshot"}
+              </button>
+              <a
+                href="/studio/seo"
+                style={{
+                  color: "#8ab4f8",
+                  fontSize: 12,
+                  textDecoration: "none",
+                }}
+              >
+                Open full SEO dashboard
+              </a>
             </div>
-            <a
-              href="/studio/seo"
-              style={{
-                marginTop: 12,
-                display: "inline-block",
-                color: "#8ab4f8",
-                fontSize: 12,
-                textDecoration: "none",
-              }}
-            >
-              Open full SEO dashboard
-            </a>
+
+            {seoSummaryError && (
+              <div
+                style={{
+                  border: "1px solid rgba(248,113,113,0.35)",
+                  background: "rgba(248,113,113,0.08)",
+                  color: "#fecaca",
+                  borderRadius: 10,
+                  padding: "10px 12px",
+                  fontSize: 12,
+                  marginBottom: 12,
+                }}
+              >
+                {seoSummaryError}
+              </div>
+            )}
+
+            {seoSummary && (
+              <div
+                style={{
+                  display: "grid",
+                  gap: 12,
+                  gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))",
+                }}
+              >
+                <StatPill value={Math.round(seoSummary.clicks)} label="Clicks" />
+                <StatPill value={Math.round(seoSummary.impressions)} label="Impressions" />
+                <StatPill value={Math.round(seoSummary.ctr * 100)} label="CTR %" />
+                <StatPill value={Number(seoSummary.position.toFixed(1))} label="Avg Pos" />
+              </div>
+            )}
+
+            {!seoSummary && !seoSummaryLoading && !seoSummaryError && (
+              <div style={{ color: "#6b7280", fontSize: 12 }}>
+                Snapshot is loaded on demand to reduce API usage.
+              </div>
+            )}
           </div>
         )}
 

@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import type { FieldProps } from "sanity";
 import { useFormValue } from "sanity";
 
@@ -13,11 +13,15 @@ type SeoStatsPayload = {
     screenPageViews: number;
   };
   error?: string;
+  details?: string;
+  hint?: string;
 };
 
 type SeoStatusPayload = {
   ok: boolean;
   summary?: { ready: boolean };
+  recommendations?: string[];
+  error?: string;
 };
 
 function chip(label: string, value: string) {
@@ -58,91 +62,61 @@ export function PostSeoStatsField(_props: FieldProps<string>) {
 
   const [loading, setLoading] = useState(false);
   const [summary, setSummary] = useState<SeoStatsPayload["summary"]>();
-  const [unavailable, setUnavailable] = useState(false);
+  const [error, setError] = useState("");
+  const [requested, setRequested] = useState(false);
 
   useEffect(() => {
-    if (!slug) {
-      setSummary(undefined);
-      setUnavailable(false);
-      return;
-    }
-
-    const controller = new AbortController();
-
-    (async () => {
-      // Check if SEO API is configured before fetching stats
-      try {
-        const statusRes = await fetch("/api/seo/status", {
-          credentials: "include",
-          signal: controller.signal,
-        });
-        if (!statusRes.ok) {
-          setUnavailable(true);
-          return;
-        }
-        const statusData = (await statusRes.json()) as SeoStatusPayload;
-        if (!statusData.ok || !statusData.summary?.ready) {
-          setUnavailable(true);
-          return;
-        }
-      } catch (err) {
-        if (err instanceof DOMException && err.name === "AbortError") return;
-        setUnavailable(true);
-        return;
-      }
-
-      // API is ready — fetch stats for this slug
-      setLoading(true);
-      const pagePath = `/blog/${slug}`;
-      try {
-        const res = await fetch(
-          `/api/seo/stats?page=${encodeURIComponent(pagePath)}&days=28`,
-          { credentials: "include", signal: controller.signal },
-        );
-        const payload = (await res.json()) as SeoStatsPayload;
-        if (!res.ok || !payload.ok) {
-          setUnavailable(true);
-          return;
-        }
-        setSummary(payload.summary);
-        setUnavailable(false);
-      } catch (err) {
-        if (err instanceof DOMException && err.name === "AbortError") return;
-        setUnavailable(true);
-      } finally {
-        if (!controller.signal.aborted) setLoading(false);
-      }
-    })();
-
-    return () => controller.abort();
+    setSummary(undefined);
+    setError("");
+    setRequested(false);
   }, [slug]);
 
-  // Don't render anything if no slug
-  if (!slug) return null;
+  const loadStats = useCallback(async () => {
+    if (!slug || loading) return;
 
-  // Quiet message if Google API isn't configured
-  if (unavailable) {
-    return (
-      <div
-        style={{
-          borderRadius: 8,
-          background: "rgba(255,255,255,0.02)",
-          border: "1px solid rgba(255,255,255,0.06)",
-          padding: "10px 12px",
-          color: "#6b7280",
-          fontSize: 12,
-        }}
-      >
-        SEO stats unavailable — Google API not configured.
-        <a
-          href="/studio/seo"
-          style={{ marginLeft: 6, color: "#93c5fd", textDecoration: "none" }}
-        >
-          Check setup
-        </a>
-      </div>
-    );
-  }
+    setRequested(true);
+    setLoading(true);
+    setError("");
+
+    try {
+      const statusRes = await fetch("/api/seo/status", {
+        credentials: "include",
+      });
+      const statusData = (await statusRes.json()) as SeoStatusPayload;
+      if (!statusRes.ok || !statusData.ok || !statusData.summary?.ready) {
+        const recommendation = statusData.recommendations?.[0];
+        const message =
+          statusData.error ||
+          recommendation ||
+          "SEO stats unavailable because Google API setup is incomplete.";
+        throw new Error(message);
+      }
+
+      const pagePath = `/blog/${slug}`;
+      const response = await fetch(
+        `/api/seo/stats?page=${encodeURIComponent(pagePath)}&days=28`,
+        { credentials: "include" },
+      );
+      const payload = (await response.json()) as SeoStatsPayload;
+      if (!response.ok || !payload.ok) {
+        const details = payload.details ? ` (${payload.details})` : "";
+        const hint = payload.hint ? ` ${payload.hint}` : "";
+        throw new Error(
+          `${payload.error || "Failed to load SEO stats."}${details}${hint}`,
+        );
+      }
+
+      setSummary(payload.summary);
+      setError("");
+    } catch (err) {
+      setSummary(undefined);
+      setError(err instanceof Error ? err.message : "Failed to load SEO stats.");
+    } finally {
+      setLoading(false);
+    }
+  }, [slug, loading]);
+
+  if (!slug) return null;
 
   return (
     <div
@@ -162,8 +136,30 @@ export function PostSeoStatsField(_props: FieldProps<string>) {
         /blog/{slug}
       </div>
 
-      {loading && (
-        <div style={{ color: "#6b7280", fontSize: 12 }}>Loading...</div>
+      <div style={{ display: "flex", gap: 8, marginBottom: 10 }}>
+        <button
+          type="button"
+          onClick={() => void loadStats()}
+          disabled={loading}
+          style={{
+            borderRadius: 8,
+            border: "1px solid rgba(59,130,246,0.7)",
+            background: loading ? "rgba(59,130,246,0.35)" : "rgba(59,130,246,0.85)",
+            color: "#fff",
+            fontSize: 12,
+            fontWeight: 700,
+            padding: "6px 10px",
+            cursor: loading ? "default" : "pointer",
+          }}
+        >
+          {loading ? "Loading..." : requested ? "Refresh Stats" : "Load Stats"}
+        </button>
+      </div>
+
+      {!loading && error && (
+        <div style={{ color: "#fca5a5", fontSize: 12, lineHeight: 1.45 }}>
+          {error}
+        </div>
       )}
 
       {!loading && summary && (
@@ -174,6 +170,12 @@ export function PostSeoStatsField(_props: FieldProps<string>) {
           {chip("Position", summary.position.toFixed(1))}
           {chip("Users", summary.activeUsers.toLocaleString())}
           {chip("Views", summary.screenPageViews.toLocaleString())}
+        </div>
+      )}
+
+      {!loading && !summary && !error && (
+        <div style={{ color: "#6b7280", fontSize: 12 }}>
+          Stats are loaded on demand to reduce API usage.
         </div>
       )}
 

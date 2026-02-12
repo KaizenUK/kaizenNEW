@@ -9,7 +9,7 @@ const JSON_HEADERS = {
 const STUDIO_EDITOR_COOKIE = "kaizen_studio_auth";
 const MAX_DAYS = 90;
 const DEFAULT_DAYS = 28;
-const DEFAULT_PUBLIC_SITE_URL = "https://kaizenweb.co.uk/";
+const DEFAULT_PUBLIC_SITE_URL = "https://kaizenweb.co.uk";
 
 type SeoSiteConfig = {
   id: string;
@@ -139,15 +139,95 @@ function getDateRange(days: number): { startDate: string; endDate: string } {
 
 function normalizeUrlPrefixSite(siteUrl: string): string {
   const trimmed = siteUrl.trim();
-  if (!trimmed) return trimmed;
-  if (trimmed.startsWith("sc-domain:")) return trimmed;
+  if (!trimmed) return "";
+
+  const stripTrailingSlash = (value: string) => value.replace(/\/+$/, "");
+  const isBareDomain = /^[a-z0-9.-]+\.[a-z]{2,}$/i.test(trimmed);
+
+  if (trimmed.startsWith("sc-domain:")) {
+    const host = stripTrailingSlash(trimmed.slice("sc-domain:".length)).toLowerCase();
+    return host ? `sc-domain:${host}` : "";
+  }
+
+  if (isBareDomain) {
+    return `sc-domain:${stripTrailingSlash(trimmed).toLowerCase()}`;
+  }
 
   try {
     const url = new URL(trimmed);
     const pathname = url.pathname.endsWith("/") ? url.pathname : `${url.pathname}/`;
     return `${url.protocol}//${url.host}${pathname}`;
   } catch {
+    try {
+      const url = new URL(`https://${trimmed}`);
+      const asDomain = `${url.hostname}`.toLowerCase();
+      if (asDomain && !trimmed.includes("/")) {
+        return `sc-domain:${asDomain}`;
+      }
+      return `${url.protocol}//${url.host}/`;
+    } catch {
+      return trimmed;
+    }
+  }
+}
+
+function parseDomainFromGscSiteUrl(gscSiteUrl: string): string {
+  const trimmed = gscSiteUrl.trim().toLowerCase();
+  if (!trimmed) return "";
+
+  if (trimmed.startsWith("sc-domain:")) {
+    return trimmed.slice("sc-domain:".length).replace(/\/+$/, "");
+  }
+
+  if (/^https?:\/\//.test(trimmed)) {
+    try {
+      return new URL(trimmed).hostname.toLowerCase();
+    } catch {
+      return "";
+    }
+  }
+
+  if (/^[a-z0-9.-]+\.[a-z]{2,}$/i.test(trimmed)) {
     return trimmed;
+  }
+
+  return "";
+}
+
+function resolvePageFilterOrigin(gscSiteUrl: string, request: Request): string {
+  const configuredSite =
+    getEnv("PUBLIC_SITE_URL") ||
+    getEnv("NEXT_PUBLIC_SITE_URL") ||
+    DEFAULT_PUBLIC_SITE_URL;
+
+  const requestOrigin = new URL(request.url).origin;
+  const gscDomain = parseDomainFromGscSiteUrl(gscSiteUrl);
+
+  if (/^https?:\/\//.test(gscSiteUrl)) {
+    try {
+      return new URL(gscSiteUrl).origin;
+    } catch {
+      // Fall through to configured site handling.
+    }
+  }
+
+  if (gscDomain) {
+    try {
+      const configuredUrl = new URL(configuredSite);
+      const configuredHost = configuredUrl.hostname.toLowerCase();
+      if (configuredHost === gscDomain) {
+        return configuredUrl.origin;
+      }
+    } catch {
+      // Ignore invalid configured site URL and continue with fallback.
+    }
+    return `https://${gscDomain}`;
+  }
+
+  try {
+    return new URL(configuredSite).origin;
+  } catch {
+    return requestOrigin;
   }
 }
 
@@ -287,6 +367,7 @@ function toNumber(value: unknown): number {
 function resolvePageFilter(
   rawPage: string | null,
   gscSiteUrl: string,
+  pageFilterOrigin: string,
 ): { pageUrl?: string; pagePath?: string } {
   if (!rawPage) return {};
   const value = rawPage.trim();
@@ -297,18 +378,25 @@ function resolvePageFilter(
     return { pageUrl: url.toString(), pagePath: url.pathname || "/" };
   } catch {
     const normalizedPath = value.startsWith("/") ? value : `/${value}`;
-    if (gscSiteUrl.startsWith("http://") || gscSiteUrl.startsWith("https://")) {
-      try {
-        const base = new URL(gscSiteUrl);
-        return {
-          pageUrl: new URL(normalizedPath, base.origin).toString(),
-          pagePath: normalizedPath,
-        };
-      } catch {
-        return { pagePath: normalizedPath };
+    try {
+      return {
+        pageUrl: new URL(normalizedPath, pageFilterOrigin).toString(),
+        pagePath: normalizedPath,
+      };
+    } catch {
+      if (gscSiteUrl.startsWith("http://") || gscSiteUrl.startsWith("https://")) {
+        try {
+          const base = new URL(gscSiteUrl);
+          return {
+            pageUrl: new URL(normalizedPath, base.origin).toString(),
+            pagePath: normalizedPath,
+          };
+        } catch {
+          return { pagePath: normalizedPath };
+        }
       }
+      return { pagePath: normalizedPath };
     }
-    return { pagePath: normalizedPath };
   }
 }
 
@@ -466,6 +554,52 @@ function summarizeGa4(rows: GaRow[]) {
   };
 }
 
+function extractGoogleApiError(error: unknown): { message: string; status: number } {
+  const fallback = {
+    message: error instanceof Error ? error.message : "Unknown error",
+    status: 502,
+  };
+
+  if (!error || typeof error !== "object") return fallback;
+
+  const maybeError = error as {
+    code?: unknown;
+    message?: unknown;
+    response?: {
+      status?: unknown;
+      data?: { error?: { message?: unknown } };
+    };
+    errors?: Array<{ message?: unknown }>;
+  };
+
+  const responseStatus = Number(maybeError.response?.status);
+  const codeStatus = Number(maybeError.code);
+  const status = Number.isFinite(responseStatus)
+    ? responseStatus
+    : Number.isFinite(codeStatus)
+      ? codeStatus
+      : 502;
+
+  const responseMessage = maybeError.response?.data?.error?.message;
+  const firstErrorMessage = maybeError.errors?.[0]?.message;
+  const ownMessage = maybeError.message;
+  const message = String(
+    responseMessage ?? firstErrorMessage ?? ownMessage ?? fallback.message,
+  );
+
+  return { message, status };
+}
+
+function isAuthorizationFailure(message: string, status: number): boolean {
+  if (status === 401 || status === 403) return true;
+  const normalized = message.toLowerCase();
+  return (
+    normalized.includes("not authorized") ||
+    normalized.includes("permission") ||
+    normalized.includes("insufficient")
+  );
+}
+
 export const GET: APIRoute = async ({ request, url }) => {
   if (!isSameOriginRequest(request)) {
     return json(403, { ok: false, error: "Forbidden origin" });
@@ -512,9 +646,11 @@ export const GET: APIRoute = async ({ request, url }) => {
 
   const days = parseDays(url.searchParams.get("days"));
   const { startDate, endDate } = getDateRange(days);
+  const pageFilterOrigin = resolvePageFilterOrigin(selectedSite.gscSiteUrl, request);
   const pageFilter = resolvePageFilter(
     url.searchParams.get("page"),
     selectedSite.gscSiteUrl,
+    pageFilterOrigin,
   );
 
   try {
@@ -559,11 +695,18 @@ export const GET: APIRoute = async ({ request, url }) => {
       gaRows,
     });
   } catch (error) {
-    const message = error instanceof Error ? error.message : "Unknown error";
-    return json(502, {
+    const { message, status } = extractGoogleApiError(error);
+    const authFailure = isAuthorizationFailure(message, status);
+    return json(authFailure ? 403 : 502, {
       ok: false,
-      error: "Failed to fetch SEO stats from Google APIs.",
+      error: authFailure
+        ? "Google API authorization failed for the configured Search Console property."
+        : "Failed to fetch SEO stats from Google APIs.",
       details: message,
+      site: selectedSite,
+      hint: authFailure
+        ? `Grant the service account access to "${selectedSite.gscSiteUrl}" in Search Console, then retry.`
+        : undefined,
     });
   }
 };

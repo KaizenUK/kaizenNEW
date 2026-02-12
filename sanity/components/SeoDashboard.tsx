@@ -90,11 +90,13 @@ export default function SeoDashboard() {
   const [data, setData] = useState<SeoResponse | null>(null);
   const [siteId, setSiteId] = useState("");
   const [pageFilter, setPageFilter] = useState("");
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const [requested, setRequested] = useState(false);
   const [error, setError] = useState("");
 
   const loadStats = useCallback(
     async (nextSiteId?: string, nextPageFilter?: string) => {
+      setRequested(true);
       setLoading(true);
       setError("");
 
@@ -128,8 +130,11 @@ export default function SeoDashboard() {
   );
 
   useEffect(() => {
-    void loadStats();
-  }, [loadStats]);
+    const pageFromQuery = new URLSearchParams(window.location.search).get("page");
+    if (pageFromQuery) {
+      setPageFilter(pageFromQuery);
+    }
+  }, []);
 
   const summary = data?.summary;
   const sites = data?.availableSites ?? [];
@@ -235,6 +240,11 @@ export default function SeoDashboard() {
             {error}
           </div>
         )}
+        {!loading && !error && !summary && !requested && (
+          <p style={{ color: "#94a3b8", fontSize: 12 }}>
+            Metrics are loaded on demand. Set filters and click Refresh.
+          </p>
+        )}
 
         {summary && (
           <>
@@ -337,4 +347,3 @@ export default function SeoDashboard() {
     </div>
   );
 }
-
