@@ -5,6 +5,7 @@ export { page } from "./documents/page";
 export { post } from "./documents/post";
 export { redirect } from "./documents/redirect";
 export { siteSettings } from "./documents/siteSettings";
+export { staticPage } from "./documents/staticPage";
 
 // Objects
 export { callToAction } from "./objects/callToAction";
@@ -31,6 +32,7 @@ import { page } from "./documents/page";
 import { post } from "./documents/post";
 import { redirect } from "./documents/redirect";
 import { siteSettings } from "./documents/siteSettings";
+import { staticPage } from "./documents/staticPage";
 import { callToAction } from "./objects/callToAction";
 import { codeBlock } from "./objects/codeBlock";
 import { ctaSection } from "./objects/ctaSection";
@@ -57,6 +59,7 @@ export const schemaTypes = [
   post,
   redirect,
   siteSettings,
+  staticPage,
   // Objects
   callToAction,
   codeBlock,

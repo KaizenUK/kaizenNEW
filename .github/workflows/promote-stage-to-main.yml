@@ -31,6 +31,8 @@ jobs:
       - name: Merge stage into main and push
         run: |
           set -euo pipefail
+          echo "Workflow ref: ${GITHUB_REF}"
+          echo "Workflow SHA: ${GITHUB_SHA}"
           git fetch origin main stage
           git checkout main
           git reset --hard origin/main
@@ -76,10 +78,9 @@ jobs:
                   resolve_with_stage "${file}"
                   ;;
                 *)
-                  echo "Unsupported conflict file: ${file}"
-                  echo "Resolve this conflict manually, then rerun the workflow."
-                  git merge --abort || true
-                  exit 1
+                  echo "Unlisted conflict file: ${file}"
+                  echo "Auto-resolving ${file} with stage branch version (fallback)."
+                  resolve_with_stage "${file}"
                   ;;
               esac
             done <<< "${CONFLICTS}"

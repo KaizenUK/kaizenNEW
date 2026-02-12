@@ -8,8 +8,10 @@ interface Props {
   canonical?: string;
   ogTitle?: string;
   ogDescription?: string;
+  image?: string;
   ogImage?: string;
   ogType?: "website" | "article";
+  robots?: string;
 }
 
 const {
@@ -18,8 +20,10 @@ const {
   canonical: canonicalProp,
   ogTitle,
   ogDescription,
+  image,
   ogImage,
   ogType = "website",
+  robots,
 } = Astro.props;
 
 const siteUrl = (import.meta.env.PUBLIC_SITE_URL || "https://kaizenweb.co.uk").replace(
@@ -29,9 +33,9 @@ const siteUrl = (import.meta.env.PUBLIC_SITE_URL || "https://kaizenweb.co.uk").r
 const canonical = canonicalProp || `${siteUrl}${Astro.url.pathname}`;
 const socialTitle = ogTitle || title;
 const socialDescription = ogDescription || description;
-const socialImage =
-  ogImage ||
-  "https://cdn.builder.io/api/v1/image/assets%2Fe4ae46bbd81b4b95bef54d66dd9748cc%2F094cdc9be84c41ee9db80308cbe5ea73?format=webp&width=1200&height=630";
+const socialImage = ogImage || image;
+const robotsContent =
+  robots || (import.meta.env.MODE === "development" ? "noindex" : "index, follow");
 const buildNumber = String(import.meta.env.VITE_BUILD_NUMBER ?? "").trim();
 const buildSha = String(import.meta.env.VITE_BUILD_SHA ?? "").trim().slice(0, 7);
 const buildLabel = buildNumber || buildSha || "local";
@@ -44,17 +48,23 @@ const buildLabel = buildNumber || buildSha || "local";
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{title}</title>
     <meta name="description" content={description} />
+    <meta name="robots" content={robotsContent} />
+    <meta name="author" content="Kaizen Web" />
+    <meta name="publisher" content="Kaizen Web" />
     <link rel="canonical" href={canonical} />
     <meta property="og:site_name" content="Kaizen Web" />
     <meta property="og:type" content={ogType} />
     <meta property="og:title" content={socialTitle} />
     <meta property="og:description" content={socialDescription} />
     <meta property="og:url" content={canonical} />
-    <meta property="og:image" content={socialImage} />
-    <meta name="twitter:card" content="summary_large_image" />
+    {socialImage && <meta property="og:image" content={socialImage} />}
+    <meta
+      name="twitter:card"
+      content={socialImage ? "summary_large_image" : "summary"}
+    />
     <meta name="twitter:title" content={socialTitle} />
     <meta name="twitter:description" content={socialDescription} />
-    <meta name="twitter:image" content={socialImage} />
+    {socialImage && <meta name="twitter:image" content={socialImage} />}
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link

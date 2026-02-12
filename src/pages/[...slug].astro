@@ -12,7 +12,17 @@ const pathname =
     ? pathnameRaw.slice(0, -1)
     : pathnameRaw;
 const meta = getPageMeta(pathname);
-const canonicalUrl = `https://kaizenweb.co.uk${pathname === "/" ? "" : pathname}`;
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || "https://kaizenweb.co.uk").replace(
+  /\/$/,
+  "",
+);
+const canonicalUrl = `${siteUrl}${pathname === "/" ? "/" : pathname}`;
+const robots =
+  meta.noIndex
+    ? "noindex, nofollow"
+    : import.meta.env.MODE === "development"
+      ? "noindex"
+      : "index, follow";
 ---
 
 <!doctype html>
@@ -22,7 +32,9 @@ const canonicalUrl = `https://kaizenweb.co.uk${pathname === "/" ? "" : pathname}
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{meta.title}</title>
     <meta name="description" content={meta.description} />
-    <meta name="robots" content={meta.noIndex ? "noindex, nofollow" : "index, follow"} />
+    <meta name="robots" content={robots} />
+    <meta name="author" content="Kaizen Web" />
+    <meta name="publisher" content="Kaizen Web" />
     <meta property="og:site_name" content={SITE_NAME} />
     <meta property="og:type" content="website" />
     <meta property="og:title" content={meta.title} />

@@ -88,6 +88,7 @@ export const studioStructure = (S: StructureBuilder) =>
 
       // ── Pages ────────────────────────────────────────────────────
       S.documentTypeListItem("page").title("Pages"),
+      S.documentTypeListItem("staticPage").title("Static SEO Pages"),
 
       S.divider(),
 

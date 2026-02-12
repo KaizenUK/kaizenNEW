@@ -86,6 +86,14 @@ export interface SanitySeo {
   metaDescription?: string;
   shareImage?: SanityImageValue;
   canonicalUrl?: string;
+  noIndex?: boolean;
+}
+
+export interface SanityStaticPage {
+  _id: string;
+  title: string;
+  slug: string;
+  seo?: SanitySeo;
 }
 
 export interface SanityPost {
@@ -260,6 +268,22 @@ const REDIRECTS_QUERY = `*[_type == "redirect"] {
   isPermanent
 }`;
 
+const STATIC_PAGE_BY_SLUG_QUERY = `*[_type == "staticPage" && slug.current == $slug][0] {
+  _id,
+  title,
+  "slug": slug.current,
+  seo {
+    metaTitle,
+    metaDescription,
+    canonicalUrl,
+    noIndex,
+    shareImage {
+      ...,
+      asset->${IMAGE_ASSET_PROJECTION}
+    }
+  }
+}`;
+
 // ── Query functions ────────────────────────────────────────────────
 
 export async function getAllPosts(): Promise<SanityPost[]> {
@@ -316,4 +340,13 @@ export async function getAllCategories(): Promise<SanityCategory[]> {
 export async function getAllRedirects(): Promise<SanityRedirect[]> {
   if (!sanityClient) return [];
   return sanityClient.fetch<SanityRedirect[]>(REDIRECTS_QUERY);
+}
+
+export async function getStaticPageBySlug(
+  slug: string,
+): Promise<SanityStaticPage | null> {
+  if (!sanityClient) return null;
+  return sanityClient.fetch<SanityStaticPage | null>(STATIC_PAGE_BY_SLUG_QUERY, {
+    slug,
+  });
 }
