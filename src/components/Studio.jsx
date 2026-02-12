@@ -54,11 +54,11 @@ function isDocumentEditIntentRoute() {
 
 function isVisibleElement(element) {
   if (!(element instanceof HTMLElement)) return false;
-  if (element.closest('[aria-hidden="true"], [hidden]')) return false;
+  if (element.closest('[aria-hidden="true"], [hidden], [data-hidden="true"]')) {
+    return false;
+  }
   const style = window.getComputedStyle(element);
-  if (style.display === "none" || style.visibility === "hidden") return false;
-  const rect = element.getBoundingClientRect();
-  return rect.width > 0 && rect.height > 0;
+  return style.display !== "none" && style.visibility !== "hidden";
 }
 
 function annotatePostEditorStacks() {
@@ -160,10 +160,7 @@ export default function Studio() {
           document.querySelector('[data-testid="document-panel"]'),
         );
         const shouldShowToggle =
-          (routeIsEditIntent || hasPostEditorStack) &&
-          validType &&
-          hasDocumentForm &&
-          hasPostEditorStack;
+          routeIsEditIntent && validType && hasDocumentForm;
         setShowMetaToggle(shouldShowToggle);
       });
     };

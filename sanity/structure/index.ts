@@ -5,18 +5,14 @@ import type { SanityDocument } from "sanity";
 import { SITE_SETTINGS_ID } from "../schemas/documents/siteSettings";
 import { siteUrl } from "../lib/env";
 
-const LIVE_SITE_URL = "https://kaizenweb.co.uk";
-
-function resolveSeoPaneSiteUrl(baseUrl: string): string {
-  try {
-    const hostname = new URL(baseUrl).hostname.toLowerCase();
-    return hostname.startsWith("stage.") ? LIVE_SITE_URL : baseUrl;
-  } catch {
-    return LIVE_SITE_URL;
+function resolveSeoPaneSiteUrl(): string {
+  if (typeof window !== "undefined" && window.location?.origin) {
+    return window.location.origin.replace(/\/$/, "");
   }
+  return siteUrl;
 }
 
-const seoPaneSiteUrl = resolveSeoPaneSiteUrl(siteUrl);
+const seoPaneSiteUrl = resolveSeoPaneSiteUrl();
 
 function normalizeDocumentId(id: unknown): string {
   return String(id ?? "").replace(/^drafts\./, "").trim();
