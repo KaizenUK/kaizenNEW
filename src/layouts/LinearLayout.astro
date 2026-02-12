@@ -1,6 +1,7 @@
 ---
 import "../styles/linear.css";
 import BlogNav from "../components/blog/BlogNav.astro";
+import VisualEditingClient from "../components/VisualEditingClient";
 
 interface Props {
   title: string;
@@ -12,6 +13,7 @@ interface Props {
   ogImage?: string;
   ogType?: "website" | "article";
   robots?: string;
+  isPreview?: boolean;
 }
 
 const {
@@ -24,6 +26,7 @@ const {
   ogImage,
   ogType = "website",
   robots,
+  isPreview = false,
 } = Astro.props;
 
 const siteUrl = (import.meta.env.PUBLIC_SITE_URL || "https://kaizenweb.co.uk").replace(
@@ -81,5 +84,6 @@ const buildLabel = buildNumber || buildSha || "local";
         {buildNumber && buildSha && <span class="text-gray-600"> ({buildSha})</span>}
       </p>
     </footer>
+  {isPreview && <VisualEditingClient client:only="react" />}
   </body>
 </html>

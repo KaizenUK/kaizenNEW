@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { FieldProps } from "sanity";
 import { useFormValue } from "sanity";
 
@@ -42,13 +42,13 @@ function chip(label: string, value: string) {
         background: "rgba(255,255,255,0.02)",
       }}
     >
-      <div style={{ color: "#e0e0e0", fontSize: 14, fontWeight: 700 }}>
+      <div style={{ color: "#e0e0e0", fontSize: 13, fontWeight: 700 }}>
         {value}
       </div>
       <div
         style={{
           color: "#6b7280",
-          fontSize: 10,
+          fontSize: 11,
           textTransform: "uppercase",
           letterSpacing: "0.06em",
           marginTop: 2,
@@ -80,6 +80,7 @@ export function PostSeoStatsField(_props: FieldProps<string>) {
   const [range, setRange] = useState<SeoStatsPayload["range"]>();
   const [error, setError] = useState("");
   const [requested, setRequested] = useState(false);
+  const fetchingRef = useRef(false);
 
   useEffect(() => {
     setSummary(undefined);
@@ -90,8 +91,9 @@ export function PostSeoStatsField(_props: FieldProps<string>) {
   }, [slug]);
 
   const loadStats = useCallback(async () => {
-    if (!slug || loading) return;
+    if (!slug || fetchingRef.current) return;
 
+    fetchingRef.current = true;
     setRequested(true);
     setLoading(true);
     setError("");
@@ -134,9 +136,10 @@ export function PostSeoStatsField(_props: FieldProps<string>) {
       setRange(undefined);
       setError(err instanceof Error ? err.message : "Failed to load SEO stats.");
     } finally {
+      fetchingRef.current = false;
       setLoading(false);
     }
-  }, [slug, loading]);
+  }, [slug]);
 
   useEffect(() => {
     if (!slug) return;
