@@ -76,6 +76,8 @@ export default defineConfig({
       // runtime (VPS runs pnpm install before pm2 start).
       noExternal: [
         "react-helmet-async",
+        "react-router",
+        "react-router-dom",
         "@sanity/visual-editing",
       ],
     },
