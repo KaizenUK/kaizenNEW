@@ -4,6 +4,21 @@ import node from "@astrojs/node";
 import path from "node:path";
 import { nodePolyfills } from "vite-plugin-node-polyfills";
 
+// Prevents node-polyfills from injecting browser stubs (e.g. stream→stream-browserify)
+// into the SSR bundle, which breaks sub-path imports like stream/web.
+function clientOnlyNodePolyfills(options) {
+  const plugin = nodePolyfills(options);
+  return {
+    ...plugin,
+    config(config, env) {
+      if (env?.isSsrBuild) return null;
+      return typeof plugin.config === "function"
+        ? plugin.config(config, env)
+        : plugin.config;
+    },
+  };
+}
+
 export default defineConfig({
   output: "server",
   adapter: node({
@@ -27,7 +42,7 @@ export default defineConfig({
   vite: {
     envPrefix: ["VITE_", "PUBLIC_", "NEXT_PUBLIC_"],
     plugins: [
-      nodePolyfills({
+      clientOnlyNodePolyfills({
         include: ["process", "util", "buffer", "stream"],
         globals: {
           process: true,
@@ -42,9 +57,10 @@ export default defineConfig({
     },
 
     ssr: {
-      // THE FIX: "true" forces all dependencies (including problematic legacy ones)
-      // to be bundled and polyfilled during build time.
       noExternal: true,
+      // Keep Node built-ins external so sub-path imports (e.g. stream/web)
+      // and util.inherits resolve natively rather than hitting browser stubs.
+      external: ["util", "process", "stream"],
     },
 
     optimizeDeps: {
@@ -75,8 +91,6 @@ export default defineConfig({
       alias: [
         { find: "@", replacement: path.resolve("./client") },
         { find: "@shared", replacement: path.resolve("./shared") },
-        // Manual mapping for the util error
-        { find: "util", replacement: "vite-plugin-node-polyfills/shims/util" },
         {
           find: "react/compiler-runtime",
           replacement: path.resolve("./src/lib/reactCompilerRuntimeShim.ts"),
