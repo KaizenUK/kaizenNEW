@@ -1,0 +1,58 @@
+---
+import BlogPost from "../../components/blog/BlogPost.astro";
+import LinearLayout from "../../layouts/LinearLayout.astro";
+import { getAllPosts, getPostBySlug, urlFor } from "../../lib/sanity/client";
+import { DEFAULT_OG_IMAGE } from "../../../client/lib/seo";
+
+export const prerender = true;
+
+export async function getStaticPaths() {
+  const posts = await getAllPosts();
+  return posts.map((post) => ({
+    params: {
+      slug: post.slug,
+    },
+  }));
+}
+
+const { slug } = Astro.params;
+
+if (!slug) {
+  throw new Error("Missing slug param for blog detail page.");
+}
+
+const post = await getPostBySlug(slug);
+
+if (!post) {
+  throw new Error(`Could not find blog post for slug "${slug}".`);
+}
+
+const DEFAULT_BLOG_DESCRIPTION =
+  "Expert insights from the Kaizen Web Audit team.";
+const layoutTitle = post.seo?.metaTitle || `${post.title} | Kaizen Insights`;
+const layoutDescription =
+  post.seo?.metaDescription || post.excerpt || DEFAULT_BLOG_DESCRIPTION;
+
+let ogImage = DEFAULT_OG_IMAGE;
+try {
+  const source = post.seo?.shareImage ?? post.mainImage;
+  const fallbackSource = post.coverImage;
+  if (source || fallbackSource) {
+    ogImage = urlFor(source ?? fallbackSource!).width(1200).height(630).fit("crop").auto("format").url();
+  }
+} catch {
+  ogImage = DEFAULT_OG_IMAGE;
+}
+---
+
+<LinearLayout
+  title={layoutTitle}
+  description={layoutDescription}
+  ogTitle={layoutTitle}
+  ogDescription={layoutDescription}
+  image={ogImage}
+  canonical={post.seo?.canonicalUrl}
+  ogType="article"
+>
+  <BlogPost post={post} />
+</LinearLayout>

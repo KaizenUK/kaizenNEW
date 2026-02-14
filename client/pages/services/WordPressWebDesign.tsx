@@ -1,0 +1,589 @@
+import { useEffect, useState } from "react";
+import Layout from "@/components/Layout";
+import { Link, useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
+import { Helmet } from "@/lib/helmet";
+import { useCalendly } from "@/context/CalendlyContext";
+import { FaqSection } from "@/components/FaqSection";
+import {
+  ArrowRight,
+  ArrowUpRight,
+  Lock,
+  Zap,
+  Settings,
+  Check,
+} from "lucide-react";
+
+// Animation variants
+const fadeInUp = {
+  hidden: { opacity: 0, y: 20 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] as const },
+  },
+};
+
+const staggerContainer = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1,
+      delayChildren: 0.2,
+    },
+  },
+};
+
+// Scroll-triggered fade-in component
+const ScrollReveal = ({
+  children,
+  delay = 0,
+}: {
+  children: React.ReactNode;
+  delay?: number;
+}) => {
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting) {
+        setIsVisible(true);
+        observer.unobserve(entry.target);
+      }
+    });
+
+    const element = document.getElementById(`scroll-reveal-${delay}`);
+    if (element) {
+      observer.observe(element);
+    }
+
+    return () => observer.disconnect();
+  }, [delay]);
+
+  return (
+    <motion.div
+      id={`scroll-reveal-${delay}`}
+      variants={fadeInUp}
+      initial="hidden"
+      animate={isVisible ? "visible" : "hidden"}
+      transition={{ delay: delay * 0.1 }}
+    >
+      {children}
+    </motion.div>
+  );
+};
+
+// CTA Button component
+const CTAButton = ({
+  text,
+  onClick,
+  secondary = false,
+  openContact = false,
+  openCalendly: openCalendlyProp = false,
+}: {
+  text: string;
+  onClick?: () => void;
+  secondary?: boolean;
+  openContact?: boolean;
+  openCalendly?: boolean;
+}) => {
+  const { openCalendly } = useCalendly();
+  const navigate = useNavigate();
+
+  const handleClick = () => {
+    if (openCalendlyProp) {
+      openCalendly();
+    } else if (openContact) {
+      navigate("/contact");
+    }
+    if (onClick) {
+      onClick();
+    }
+  };
+
+  return (
+    <button
+      onClick={handleClick}
+      className={`px-8 py-3 rounded-lg font-heading font-bold inline-flex items-center justify-center gap-2 transition ${
+        secondary
+          ? "border-2 border-kaizen-cyan text-kaizen-cyan hover:bg-kaizen-cyan/10"
+          : "bg-gradient-to-r from-kaizen-cyan to-kaizen-lime text-kaizen-dark hover:shadow-lg hover:shadow-kaizen-cyan/50"
+      }`}
+    >
+      {text}
+      <ArrowRight size={18} />
+    </button>
+  );
+};
+
+export default function WordPressWebDesign() {
+  const { openCalendly: openCalendlyFromContext } = useCalendly();
+
+  const seoSchema = {
+    "@context": "https://schema.org",
+    "@type": "Service",
+    name: "WordPress Web Design Liverpool",
+    description:
+      "Custom WordPress web design and development for Liverpool and Wirral businesses. Fast, secure, easy-to-manage websites.",
+    provider: {
+      "@type": "Organization",
+      name: "Kaizen Web",
+      url: "https://kaizenweb.co.uk",
+    },
+    areaServed: {
+      "@type": "City",
+      name: "Liverpool",
+    },
+    image:
+      "https://cdn.builder.io/api/v1/image/assets%2Fe4ae46bbd81b4b95bef54d66dd9748cc%2Fa18f81c064614dceb4a9d1fcb2c9f64b?format=webp&width=800",
+  };
+
+  return (
+    <Layout>
+      <Helmet>
+        <title>
+          WordPress Web Design Liverpool | Fast & Easy to Edit
+        </title>
+        <meta
+          name="description"
+          content="Custom WordPress sites for Liverpool businesses. Fast, secure, and easy to update yourself. No bloated themes, just clean code that works."
+        />
+        <meta
+          name="keywords"
+          content="WordPress web design Liverpool, WordPress developer Wirral, custom WordPress websites, managed WordPress"
+        />
+        <script type="application/ld+json">{JSON.stringify(seoSchema)}</script>
+      </Helmet>
+      {/* Section 1: Hero - Layered Card & Reveal Style */}
+      <section className="relative min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 overflow-hidden flex items-center py-20">
+        {/* Background visual - abstract WordPress editor aesthetic */}
+        <motion.div
+          className="absolute inset-0 opacity-20"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 0.15 }}
+          transition={{ duration: 1.2, delay: 0.2 }}
+        >
+          <div
+            className="w-full h-full"
+            style={{
+              backgroundImage:
+                "radial-gradient(circle at 20% 50%, rgba(0,255,200,0.4) 0%, transparent 50%), radial-gradient(circle at 80% 80%, rgba(0,255,200,0.3) 0%, transparent 60%)",
+              filter: "blur(80px)",
+            }}
+          />
+        </motion.div>
+
+        {/* Subtle animated accent shapes */}
+        <motion.div
+          className="absolute top-20 right-20 w-96 h-96 rounded-full"
+          animate={{
+            scale: [1, 1.1, 1],
+            opacity: [0.05, 0.1, 0.05],
+          }}
+          transition={{
+            duration: 8,
+            repeat: Infinity,
+            ease: [0.65, 0, 0.35, 1] as const,
+          }}
+          style={{
+            background:
+              "radial-gradient(circle, rgba(0,255,200,0.5) 0%, transparent 70%)",
+          }}
+        />
+
+        <div className="container mx-auto px-4 relative z-10">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+            {/* Floating Text Card */}
+            <motion.div
+              className="bg-white/95 backdrop-blur-sm rounded-2xl p-8 md:p-12 shadow-2xl border border-white/20"
+              initial={{ opacity: 0, x: -60 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] as const }}
+            >
+              <motion.h1 className="text-4xl md:text-5xl lg:text-6xl font-heading font-black mb-6 leading-tight text-kaizen-dark">
+                {["WordPress", "Sites Built", "Right.", "Liverpool."].map(
+                  (word, index) => (
+                    <motion.span
+                      key={index}
+                      className="block"
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{
+                        delay: 0.3 + index * 0.15,
+                        duration: 0.6,
+                        ease: [0.16, 1, 0.3, 1] as const,
+                      }}
+                    >
+                      {word}
+                    </motion.span>
+                  ),
+                )}
+              </motion.h1>
+
+              <motion.p
+                className="text-lg text-kaizen-text-dark/70 leading-relaxed mb-8"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.8, duration: 0.8 }}
+              >
+                WordPress you can actually edit yourself. We build fast, secure
+                sites for Liverpool & Wirral businesses with clean code—no
+                bloated themes, no mystery plugins. You get the familiar editor
+                without the usual slowdowns.
+              </motion.p>
+
+              <motion.div
+                className="flex flex-col sm:flex-row gap-4"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 1, duration: 0.6 }}
+              >
+                <CTAButton text="Get in Touch" openContact />
+                <button
+                  onClick={openCalendlyFromContext}
+                  className="px-8 py-3 rounded-lg border-2 border-kaizen-cyan text-kaizen-cyan font-heading font-bold hover:bg-kaizen-cyan/10 transition inline-flex items-center justify-center gap-2"
+                >
+                  Book a 15 Minute Call
+                  <ArrowUpRight size={18} />
+                </button>
+              </motion.div>
+            </motion.div>
+
+            {/* Right side - subtle visual indicator */}
+            <motion.div
+              className="hidden md:flex items-center justify-center"
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.5, duration: 0.9 }}
+            >
+              <div className="relative w-full h-96">
+                <motion.div
+                  className="absolute inset-0 bg-gradient-to-br from-kaizen-cyan/20 to-kaizen-lime/10 rounded-2xl"
+                  animate={{
+                    rotateZ: [-1, 1, -1],
+                  }}
+                  transition={{
+                    duration: 6,
+                    repeat: Infinity,
+                    ease: [0.65, 0, 0.35, 1] as const,
+                  }}
+                />
+                <img
+                  src="https://cdn.builder.io/api/v1/image/assets%2Fe4ae46bbd81b4b95bef54d66dd9748cc%2Fa18f81c064614dceb4a9d1fcb2c9f64b?format=webp&width=800"
+                  alt="WordPress block editor interface for easy content management"
+                  width="800"
+                  height="600"
+                  className="w-full h-full object-cover rounded-2xl"
+                  loading="lazy"
+                  decoding="async"
+                />
+              </div>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* Section 2: The "Why" - Pain Point */}
+      <section className="py-20 md:py-32 bg-white">
+        <div className="container mx-auto px-4">
+          <ScrollReveal>
+            <h2 className="text-4xl md:text-5xl font-heading font-bold mb-8 text-kaizen-dark">
+              A WordPress Site Doesn't Have to Be Slow.
+            </h2>
+            <p className="text-xl text-kaizen-text-dark/70 leading-relaxed max-w-3xl">
+              The problem isn't WordPress; it's the way most agencies build on
+              it. They use cheap, bloated themes and dozens of clunky plugins
+              that break your site and kill your page speed. We build clean,
+              fast WordPress sites that feel familiar to edit but actually load
+              quickly.
+            </p>
+          </ScrollReveal>
+        </div>
+      </section>
+
+      {/* Section 3: The Kaizen WordPress Method */}
+      <section className="py-20 md:py-32 bg-kaizen-light">
+        <div className="container mx-auto px-4">
+          <ScrollReveal>
+            <h2 className="text-4xl md:text-5xl font-heading font-bold mb-16 text-kaizen-dark text-center">
+              The Kaizen WordPress Method
+            </h2>
+          </ScrollReveal>
+
+          <motion.div
+            className="grid grid-cols-1 md:grid-cols-3 gap-8"
+            variants={staggerContainer}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-100px" }}
+          >
+            {[
+              {
+                icon: Lock,
+                title: "Total Control, No Bloat",
+                copy: "We give you the full power of the WordPress block editor on a clean, custom build. You can manage 100% of your content without the limitations of a rigid theme.",
+              },
+              {
+                icon: Zap,
+                title: "Fast & Secure",
+                copy: "Built for speed from day one. We follow security best practices, so your site loads quickly and stays safe from attacks.",
+              },
+              {
+                icon: Settings,
+                title: "Works with Everything",
+                copy: "Need WooCommerce? A booking system? Custom features? We integrate what you need into WordPress without slowing your site down.",
+              },
+            ].map((item, index) => (
+              <motion.div
+                key={index}
+                variants={fadeInUp}
+                className="p-8 bg-white rounded-2xl border border-kaizen-light hover:border-kaizen-cyan transition"
+              >
+                <div className="mb-6 p-4 w-16 h-16 bg-gradient-to-br from-kaizen-cyan/20 to-kaizen-lime/20 rounded-xl flex items-center justify-center">
+                  <item.icon
+                    className="text-kaizen-cyan"
+                    size={32}
+                  />
+                </div>
+                <h3 className="text-2xl font-heading font-bold mb-4 text-kaizen-dark">
+                  {item.title}
+                </h3>
+                <p className="text-lg text-kaizen-text-dark/70 leading-relaxed">
+                  {item.copy}
+                </p>
+              </motion.div>
+            ))}
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Section: Is WordPress right for me? */}
+      <section className="py-20 md:py-24 bg-white">
+        <div className="container mx-auto px-4">
+          <ScrollReveal>
+            <div className="max-w-3xl mx-auto rounded-2xl border border-kaizen-light bg-kaizen-light p-6 md:p-8">
+              <p className="text-xs font-mono tracking-[0.25em] text-kaizen-cyan uppercase mb-3">
+                WordPress or React?
+              </p>
+              <h2 className="text-2xl md:text-3xl font-heading font-bold mb-4 text-kaizen-dark">
+                Is WordPress right for my business?
+              </h2>
+              <p className="text-base md:text-lg text-kaizen-text-dark/80 leading-relaxed mb-4">
+                WordPress is ideal for smaller businesses and lower-traffic
+                sites that need a flexible, easy-to-manage presence. If you
+                already have a theme you really want to use, we can work with it
+                while still keeping your build as lean as possible.
+              </p>
+              <p className="text-base md:text-lg text-kaizen-text-dark/80 leading-relaxed mb-4">
+                If you later move to a React or headless build, you will still
+                manage your content through a familiar CMS. The front-end
+                changes, but your day-to-day editing workflow stays simple and
+                predictable.
+              </p>
+              <a
+                href="https://kaizenweb.co.uk/blog/wordpress-vs-react-business-roi"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 text-kaizen-cyan hover:text-kaizen-lime font-heading font-semibold text-sm md:text-base"
+              >
+                Read: WordPress vs React – Business ROI guide
+                <ArrowUpRight size={16} />
+              </a>
+            </div>
+          </ScrollReveal>
+        </div>
+      </section>
+
+      {/* Section 4: Real Results for Local Businesses */}
+      <section className="py-20 md:py-32 bg-white">
+        <div className="container mx-auto px-4">
+          <ScrollReveal>
+            <h2 className="text-4xl md:text-5xl font-heading font-bold mb-16 text-kaizen-dark text-center">
+              Real Results for Local Businesses
+            </h2>
+          </ScrollReveal>
+
+          <motion.div
+            className="grid grid-cols-1 md:grid-cols-2 gap-12 max-w-5xl mx-auto"
+            variants={staggerContainer}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-100px" }}
+          >
+            {[
+              {
+                client: "Helen Moore Hairdressing",
+                industry: "Boutique Salon – Wirral",
+                problem:
+                  "A top-rated salon in Wallasey Village with no website, missing out on online discovery and relying on phone-only bookings.",
+                outcome:
+                  "We built a classy, easy-to-manage WordPress site that captures her brand and includes a 24/7 online booking system.",
+                slug: "HelenMooreHairdressing",
+              },
+              {
+                client: "A.S Collections",
+                industry: "Professional Services – Liverpool",
+                problem:
+                  "Their previous site was dated, performed poorly on mobile, and failed to build trust in the competitive commercial debt recovery sector.",
+                outcome:
+                  "A complete, modern redesign on an easy-to-use platform. The new site is fast, authoritative, and simple for their team to update.",
+                slug: "AsCollections",
+              },
+            ].map((caseStudy, index) => (
+              <motion.div
+                key={index}
+                variants={fadeInUp}
+                className="p-8 bg-kaizen-light rounded-2xl border border-kaizen-light"
+              >
+                <Link
+                  to={`/case-studies/${caseStudy.slug.toLowerCase()}`}
+                  className="text-sm font-bold text-kaizen-cyan uppercase tracking-wide mb-2 hover:opacity-80 transition inline-block"
+                >
+                  {caseStudy.client}
+                </Link>
+                <p className="text-xs font-medium text-kaizen-text-dark/60 mb-6">
+                  {caseStudy.industry}
+                </p>
+
+                <div className="space-y-6">
+                  <div>
+                    <h4 className="font-heading font-bold text-kaizen-dark mb-2">
+                      The Problem
+                    </h4>
+                    <p className="text-kaizen-text-dark/70 leading-relaxed">
+                      {caseStudy.problem}
+                    </p>
+                  </div>
+
+                  <div>
+                    <h4 className="font-heading font-bold text-kaizen-dark mb-2">
+                      The Outcome
+                    </h4>
+                    <p className="text-kaizen-text-dark/70 leading-relaxed">
+                      {caseStudy.outcome}
+                    </p>
+                  </div>
+
+                  <Link
+                    to={`/case-studies/${caseStudy.slug.toLowerCase()}`}
+                    className="inline-flex items-center gap-2 text-kaizen-cyan font-medium hover:gap-3 transition"
+                  >
+                    Read Full Case Study <ArrowRight size={18} />
+                  </Link>
+                </div>
+              </motion.div>
+            ))}
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Section 5: Internal Links - Cross-Sell */}
+      <section className="py-20 md:py-32 bg-kaizen-light">
+        <div className="container mx-auto px-4">
+          <ScrollReveal>
+            <h2 className="text-4xl md:text-5xl font-heading font-bold mb-12 text-kaizen-dark text-center">
+              Looking for Ultimate Performance?
+            </h2>
+          </ScrollReveal>
+
+          <motion.div
+            className="max-w-2xl mx-auto"
+            variants={fadeInUp}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-100px" }}
+          >
+            <Link
+              to="/web-design-liverpool"
+              className="block p-8 md:p-12 bg-white rounded-2xl border border-kaizen-light hover:border-kaizen-cyan transition group"
+            >
+              <h3 className="text-3xl md:text-4xl font-heading font-bold mb-4 text-kaizen-dark group-hover:text-kaizen-cyan transition">
+                Need a Headless Build?
+              </h3>
+              <p className="text-lg text-kaizen-text-dark/70 leading-relaxed mb-6">
+                WordPress is perfect for most businesses. But for ambitious
+                brands needing unbeatable speed and a fully custom app-like
+                experience, we also offer high-performance Headless builds.
+              </p>
+              <div className="text-kaizen-cyan font-medium flex items-center gap-2 hover:gap-3 transition">
+                Explore Headless Web Design <ArrowUpRight size={20} />
+              </div>
+            </Link>
+          </motion.div>
+        </div>
+      </section>
+
+      <FaqSection
+        heading="WordPress Web Design FAQs"
+        eyebrow="Common Questions"
+        items={[
+          {
+            question: "Is WordPress secure for business?",
+            answer:
+              "Yes, but only if managed correctly. We build headless or hardened WordPress sites that strip out vulnerabilities, and we manage updates to prevent plugin hacks.",
+          },
+          {
+            question: "Is this just a template?",
+            answer:
+              "No. We use AI to generate bespoke code tailored exactly to your brand. Templates are bloated; our AI produces clean, semantic code that performs strongly on Core Web Vitals, but at a fraction of the usual bespoke price.",
+          },
+          {
+            question: "Can I edit the content myself?",
+            answer:
+              "Absolutely. We use WordPress specifically because it offers the best editing experience for your marketing team, while we handle the code.",
+          },
+        ]}
+      />
+
+      {/* Section 6: Final Call to Action */}
+      <section className="py-20 md:py-32 bg-kaizen-dark text-kaizen-text-light">
+        <div className="container mx-auto px-4 text-center">
+          <ScrollReveal>
+            <h2 className="text-4xl md:text-5xl font-heading font-bold mb-8 text-kaizen-text-light">
+              Get a WordPress Site You Can Rely On.
+            </h2>
+            <p className="text-xl text-kaizen-text-light/80 mb-12 max-w-2xl mx-auto leading-relaxed">
+              Let's talk about building a fast, secure WordPress site for your
+              Liverpool business. Chat with us or book a no-pressure call.
+            </p>
+          </ScrollReveal>
+
+          <motion.div
+            className="flex flex-col sm:flex-row gap-6 justify-center"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+          >
+            <CTAButton text="Get in Touch" openContact />
+            <button
+              onClick={openCalendlyFromContext}
+              className="px-8 py-3 rounded-lg border-2 border-kaizen-text-light/30 text-kaizen-text-light font-heading font-bold hover:border-kaizen-cyan transition inline-flex items-center justify-center gap-2"
+            >
+              Book a 15 Minute Call
+              <ArrowUpRight size={18} />
+            </button>
+          </motion.div>
+
+          <motion.p
+            className="text-kaizen-text-light/70 mt-8 text-sm"
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+          >
+            Got a broken WordPress site? We also offer {""}
+            <Link
+              to="/project-rescue"
+              className="text-kaizen-cyan hover:underline"
+            >
+              project rescue services
+            </Link>
+            .
+          </motion.p>
+        </div>
+      </section>
+    </Layout>
+  );
+}

@@ -1,0 +1,71 @@
+---
+import BlogIndex from "../../components/blog/BlogIndex.astro";
+import LinearLayout from "../../layouts/LinearLayout.astro";
+import { DEFAULT_OG_IMAGE } from "../../../client/lib/seo";
+import ManagedPageRenderer from "../../../client/components/sanity/ManagedPageRenderer";
+import {
+  getAllPosts,
+  getPageByPath,
+  getStaticPageBySlug,
+  urlFor,
+} from "../../lib/sanity/client";
+
+export const prerender = false;
+
+const isEditorPreview = Astro.cookies.get("kaizen_studio_auth")?.value === "1";
+
+const [staticPage, managedPage] = await Promise.all([
+  getStaticPageBySlug("/blog", isEditorPreview),
+  getPageByPath("/blog", isEditorPreview),
+]);
+const shouldRenderManagedContent = Boolean(managedPage?.replaceRouteContent);
+const posts = shouldRenderManagedContent ? [] : await getAllPosts();
+
+const seo = managedPage?.seo || staticPage?.seo;
+const defaultTitle = "Insights | Kaizen Web";
+const defaultDescription = "Performance-led engineering notes from Kaizen.";
+const title =
+  seo?.metaTitle?.trim() ||
+  managedPage?.title?.trim() ||
+  staticPage?.title?.trim() ||
+  defaultTitle;
+const description = seo?.metaDescription?.trim() || defaultDescription;
+const canonical = seo?.canonicalUrl?.trim() || undefined;
+const robots = seo?.noIndex ? "noindex" : undefined;
+
+let ogImage = DEFAULT_OG_IMAGE;
+try {
+  if (seo?.shareImage) {
+    ogImage = urlFor(seo.shareImage)
+      .width(1200)
+      .height(630)
+      .fit("crop")
+      .auto("format")
+      .url();
+  }
+} catch {
+  ogImage = DEFAULT_OG_IMAGE;
+}
+---
+
+<LinearLayout
+  title={title}
+  description={description}
+  ogTitle={title}
+  ogDescription={description}
+  image={ogImage}
+  canonical={canonical}
+  robots={robots}
+>
+  {
+    shouldRenderManagedContent && managedPage ? (
+      <ManagedPageRenderer
+        page={managedPage}
+        routePath="/blog"
+        withLayout={false}
+      />
+    ) : (
+      <BlogIndex posts={posts} />
+    )
+  }
+</LinearLayout>

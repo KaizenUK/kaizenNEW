@@ -1,0 +1,229 @@
+# Apache Server Configuration for Kaizen Web Design
+# Cache Control, Security, and SEO Optimization
+
+# ============================================================================
+# Enable mod_rewrite
+# ============================================================================
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /
+
+  # 1. Remove trailing slashes (except for directories)
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteRule ^(.+)/$ $1 [L,R=301]
+
+  # 2. Force HTTPS
+  RewriteCond %{HTTPS} off
+  RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+  # 3. Force non-www (canonical URL is kaizenweb.co.uk without www)
+  RewriteCond %{HTTP_HOST} ^www\.(.*)$ [NC]
+  RewriteRule ^(.*)$ https://%1/$1 [L,R=301]
+
+  # 4. SITEMAP PROXY (The "Live" Bridge)
+  # This tells server: When asked for 'sitemap.xml', serve 'sitemap.php' instead.
+  RewriteRule ^sitemap\.xml$ sitemap.php [L]
+
+  # 5. EXCLUSIONS: Let /cms (WordPress) handle its own routing
+  RewriteRule ^cms/ - [L]
+
+  # 6. SANITY STUDIO SPA ROUTING: Keep /studio client routes working on refresh
+  RewriteCond %{REQUEST_URI} ^/studio(?:/.*)?$ [NC]
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteRule ^studio(?:/.*)?$ /studio/index.html [L]
+
+  # 7. SPA ROUTING: Route all other requests to index.html (React)
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteRule ^(.*)$ index.html [L]
+</IfModule>
+
+# ============================================================================
+# Browser Cache Control
+# ============================================================================
+<IfModule mod_expires.c>
+  ExpiresActive On
+
+  # Default: 1 hour
+  ExpiresDefault "access plus 1 hour"
+
+  # HTML documents: Always check for new version
+  ExpiresByType text/html "access plus 0 seconds"
+
+  # CSS & JavaScript: 1 year (safe due to hash busting)
+  ExpiresByType text/css "access plus 1 year"
+  ExpiresByType application/javascript "access plus 1 year"
+  ExpiresByType application/x-javascript "access plus 1 year"
+
+  # Images: 1 year (safe due to hash busting)
+  ExpiresByType image/jpeg "access plus 1 year"
+  ExpiresByType image/gif "access plus 1 year"
+  ExpiresByType image/png "access plus 1 year"
+  ExpiresByType image/webp "access plus 1 year"
+  ExpiresByType image/svg+xml "access plus 1 year"
+  ExpiresByType image/x-icon "access plus 1 year"
+
+  # Fonts: 1 year (safe due to hash busting)
+  ExpiresByType font/ttf "access plus 1 year"
+  ExpiresByType font/otf "access plus 1 year"
+  ExpiresByType font/woff "access plus 1 year"
+  ExpiresByType font/woff2 "access plus 1 year"
+  ExpiresByType application/font-woff "access plus 1 year"
+
+  # Sitemap and robots: 24 hours
+  ExpiresByType application/xml "access plus 1 day"
+  ExpiresByType text/plain "access plus 1 day"
+</IfModule>
+
+# ============================================================================
+# Cache-Control Headers
+# ============================================================================
+<IfModule mod_headers.c>
+  # HTML: revalidate on each visit
+  <FilesMatch "\.html?$">
+    Header set Cache-Control "public, max-age=0, must-revalidate"
+  </FilesMatch>
+
+  # Hashed assets: 1 year (immutable)
+  <FilesMatch "\-[a-f0-9]{8}\.(js|css)$">
+    Header set Cache-Control "public, max-age=31536000, immutable"
+  </FilesMatch>
+
+  # Images
+  <FilesMatch "\.(jpg|jpeg|png|gif|webp|svg)$">
+    Header set Cache-Control "public, max-age=604800"
+  </FilesMatch>
+
+  # Brand/logo/app icon assets: 1 year immutable
+  <FilesMatch "^(logo\.svg|kaizen-web-map-wirral-liverpool\.svg|apple-touch-icon\.png|android-chrome-192x192\.png|android-chrome-512x512\.png|favicon\.ico|favicon\.svg|favicon-16x16\.png|favicon-32x32\.png|favicon-96x96\.png|web-app-manifest-192x192\.png|web-app-manifest-512x512\.png)$">
+    Header set Cache-Control "public, max-age=31536000, immutable"
+  </FilesMatch>
+
+  # Fonts: 1 year (assume hash-busted)
+  <FilesMatch "\.(woff|woff2|ttf|otf)$">
+    Header set Cache-Control "public, max-age=31536000, immutable"
+  </FilesMatch>
+
+  # Sitemap and robots.txt: 24 hours
+  <FilesMatch "(sitemap\.xml|robots\.txt)">
+    Header set Cache-Control "public, max-age=86400"
+  </FilesMatch>
+
+  # Security Headers
+  Header set X-Content-Type-Options "nosniff"
+  Header set X-Frame-Options "DENY"
+  Header set X-XSS-Protection "1; mode=block"
+  Header set Referrer-Policy "strict-origin-when-cross-origin"
+  Header set Permissions-Policy "geolocation=(), microphone=(), camera=()"
+
+  # Remove server information
+  Header always unset "X-Powered-By"
+  Header always unset "X-AspNet-Version"
+  Header always unset "X-Runtime"
+</IfModule>
+
+# ============================================================================
+# Compression
+# ============================================================================
+<IfModule mod_deflate.c>
+  # Compress HTML, CSS, JavaScript, Text, XML and fonts
+  AddOutputFilterByType DEFLATE text/plain
+  AddOutputFilterByType DEFLATE text/html
+  AddOutputFilterByType DEFLATE text/xml
+  AddOutputFilterByType DEFLATE text/css
+  AddOutputFilterByType DEFLATE text/javascript
+  AddOutputFilterByType DEFLATE application/xml
+  AddOutputFilterByType DEFLATE application/xhtml+xml
+  AddOutputFilterByType DEFLATE application/rss+xml
+  AddOutputFilterByType DEFLATE application/javascript
+  AddOutputFilterByType DEFLATE application/x-javascript
+  AddOutputFilterByType DEFLATE font/ttf
+  AddOutputFilterByType DEFLATE font/otf
+  AddOutputFilterByType DEFLATE font/woff
+  AddOutputFilterByType DEFLATE font/woff2
+
+  # Properly handle different file types
+  AddOutputFilterByType DEFLATE application/x-font-ttf
+  AddOutputFilterByType DEFLATE application/x-font-otf
+  AddOutputFilterByType DEFLATE application/x-font-woff
+  AddOutputFilterByType DEFLATE application/x-font-woff2
+</IfModule>
+
+# ============================================================================
+# MIME Types
+# ============================================================================
+<IfModule mod_mime.c>
+  AddType application/javascript js
+  AddType application/font-woff woff
+  AddType application/font-woff2 woff2
+  AddType font/ttf ttf
+  AddType font/otf otf
+  AddType image/webp webp
+  AddType image/svg+xml svg svgz
+</IfModule>
+
+# ============================================================================
+# Disable Directory Listing
+# ============================================================================
+Options -Indexes
+
+# ============================================================================
+# Block Access to Sensitive Files
+# ============================================================================
+<FilesMatch "^\.">
+  <IfModule mod_authz_core.c>
+    Require all denied
+  </IfModule>
+  <IfModule !mod_authz_core.c>
+    Order allow,deny
+    Deny from all
+  </IfModule>
+</FilesMatch>
+
+<FilesMatch "^(package\.json|package-lock\.json|yarn\.lock|\.env|\.git)">
+  <IfModule mod_authz_core.c>
+    Require all denied
+  </IfModule>
+  <IfModule !mod_authz_core.c>
+    Order allow,deny
+    Deny from all
+  </IfModule>
+</FilesMatch>
+
+# BEGIN cPanel-generated php ini directives, do not edit
+# Manual editing of this file may result in unexpected behavior.
+# To make changes to this file, use the cPanel MultiPHP INI Editor (Home >> Software >> MultiPHP INI Editor)
+# For more information, read our documentation (https://go.cpanel.net/EA4ModifyINI)
+<IfModule php8_module>
+   php_flag display_errors Off
+   php_value max_execution_time 300
+   php_value max_input_time 60
+   php_value max_input_vars 1000
+   php_value memory_limit 512M
+   php_value post_max_size 32M
+   php_value session.gc_maxlifetime 1440
+   php_value session.save_path "/var/cpanel/php/sessions/ea-php82"
+   php_value upload_max_filesize 256M
+   php_flag zlib.output_compression Off
+</IfModule>
+<IfModule lsapi_module>
+   php_flag display_errors Off
+   php_value max_execution_time 300
+   php_value max_input_time 60
+   php_value max_input_vars 1000
+   php_value memory_limit 512M
+   php_value post_max_size 32M
+   php_value session.gc_maxlifetime 1440
+   php_value session.save_path "/var/cpanel/php/sessions/ea-php82"
+   php_value upload_max_filesize 256M
+   php_flag zlib.output_compression Off
+</IfModule>
+# END cPanel-generated php ini directives, do not edit
+
+# php -- BEGIN cPanel-generated handler, do not edit
+# Set the “ea-php82” package as the default “PHP” programming language.
+<IfModule mime_module>
+  AddHandler application/x-httpd-ea-php82 .php .php8 .phtml
+</IfModule>
+# php -- END cPanel-generated handler, do not edit
