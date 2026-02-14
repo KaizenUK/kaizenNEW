@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "pnpm run clean:caches && astro dev --force",
     "dev:clean": "pnpm run clean:caches && astro dev --force",
-    "build": "astro build",
+    "build": "rm -rf dist .astro && NODE_OPTIONS='--max-old-space-size=6144' astro build",
     "build:snap:high-five": "astro build",
     "build:snap:all": "astro build",
     "start": "node dist/server/entry.mjs",
@@ -14,6 +14,7 @@
     "format.fix": "prettier --write .",
     "typecheck": "astro check && tsc --noEmit",
     "trace:summary": "node scripts/trace-summary.mjs"
+    
   },
   "dependencies": {
     "@builder.io/react": "^9.1.0",
