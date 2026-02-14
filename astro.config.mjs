@@ -4,8 +4,10 @@ import node from "@astrojs/node";
 import path from "node:path";
 import { nodePolyfills } from "vite-plugin-node-polyfills";
 
-// Prevents node-polyfills from injecting browser stubs (e.g. stream→stream-browserify)
-// into the SSR bundle, which breaks sub-path imports like stream/web.
+// Completely disables vite-plugin-node-polyfills during SSR builds so that
+// Node built-ins (util, stream, buffer, etc.) resolve natively. Without this,
+// the plugin's resolveId/load hooks can redirect them to browser stubs that
+// lack APIs like util.inherits or stream/web, crashing the server.
 function clientOnlyNodePolyfills(options) {
   const plugin = nodePolyfills(options);
   return {
@@ -15,6 +17,18 @@ function clientOnlyNodePolyfills(options) {
       return typeof plugin.config === "function"
         ? plugin.config(config, env)
         : plugin.config;
+    },
+    resolveId(id, importer, resolveOptions) {
+      if (resolveOptions?.ssr) return undefined;
+      return typeof plugin.resolveId === "function"
+        ? plugin.resolveId.call(this, id, importer, resolveOptions)
+        : undefined;
+    },
+    load(id, loadOptions) {
+      if (loadOptions?.ssr) return undefined;
+      return typeof plugin.load === "function"
+        ? plugin.load.call(this, id, loadOptions)
+        : undefined;
     },
   };
 }
@@ -57,18 +71,13 @@ export default defineConfig({
     },
 
     ssr: {
-      // Only bundle packages that have ESM/CJS issues as externals.
-      // Previously `noExternal: true` which bundled ALL of node_modules,
-      // forcing Rollup to hold the entire dep graph in memory (~6GB).
+      // Only bundle packages that need Vite transformation for SSR.
+      // Everything else stays external and resolves from node_modules at
+      // runtime (VPS runs pnpm install before pm2 start).
       noExternal: [
         "react-helmet-async",
-        "react-router",
-        "react-router-dom",
         "@sanity/visual-editing",
       ],
-      // Keep Node built-ins external so sub-path imports (e.g. stream/web)
-      // and util.inherits resolve natively rather than hitting browser stubs.
-      external: ["util", "process", "stream"],
     },
 
     optimizeDeps: {
