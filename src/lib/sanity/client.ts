@@ -37,35 +37,18 @@ export type SanityVideoEmbedSection = ManagedVideoSection;
 export type SanityLayoutColumn = ManagedLayoutColumn;
 export type SanityLayoutRowSection = ManagedLayoutRowSection;
 
-const env = (import.meta.env ?? {}) as Record<string, string | undefined>;
-const processEnv =
-  typeof process !== "undefined" && process.env
-    ? (process.env as Record<string, string | undefined>)
-    : {};
+// Resolve env vars from import.meta.env (Astro/Vite, client+server)
+// with fallback to process.env (Node SSR).
+function getEnv(key: string): string | undefined {
+  const metaEnv = (import.meta.env ?? {}) as Record<string, string | undefined>;
+  if (metaEnv[key]) return metaEnv[key];
+  if (typeof process !== "undefined" && process.env?.[key]) return process.env[key];
+  return undefined;
+}
 
-const projectId =
-  env.PUBLIC_SANITY_PROJECT_ID ??
-  env.NEXT_PUBLIC_SANITY_PROJECT_ID ??
-  env.VITE_SANITY_PROJECT_ID ??
-  env.SANITY_PROJECT_ID ??
-  processEnv.PUBLIC_SANITY_PROJECT_ID ??
-  processEnv.NEXT_PUBLIC_SANITY_PROJECT_ID ??
-  processEnv.VITE_SANITY_PROJECT_ID ??
-  processEnv.SANITY_PROJECT_ID ??
-  "";
-
-const dataset =
-  env.PUBLIC_SANITY_DATASET ??
-  env.NEXT_PUBLIC_SANITY_DATASET ??
-  env.VITE_SANITY_DATASET ??
-  env.SANITY_DATASET ??
-  processEnv.PUBLIC_SANITY_DATASET ??
-  processEnv.NEXT_PUBLIC_SANITY_DATASET ??
-  processEnv.VITE_SANITY_DATASET ??
-  processEnv.SANITY_DATASET ??
-  "production";
-
-const token = env.SANITY_API_TOKEN ?? processEnv.SANITY_API_TOKEN;
+const projectId = getEnv("PUBLIC_SANITY_PROJECT_ID") ?? getEnv("SANITY_PROJECT_ID") ?? "";
+const dataset = getEnv("PUBLIC_SANITY_DATASET") ?? getEnv("SANITY_DATASET") ?? "production";
+const token = getEnv("SANITY_API_TOKEN");
 
 const hasSanityConfig = Boolean(projectId && dataset);
 

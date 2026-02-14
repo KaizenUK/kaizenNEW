@@ -57,7 +57,15 @@ export default defineConfig({
     },
 
     ssr: {
-      noExternal: true,
+      // Only bundle packages that have ESM/CJS issues as externals.
+      // Previously `noExternal: true` which bundled ALL of node_modules,
+      // forcing Rollup to hold the entire dep graph in memory (~6GB).
+      noExternal: [
+        "react-helmet-async",
+        "react-router",
+        "react-router-dom",
+        "@sanity/visual-editing",
+      ],
       // Keep Node built-ins external so sub-path imports (e.g. stream/web)
       // and util.inherits resolve natively rather than hitting browser stubs.
       external: ["util", "process", "stream"],

@@ -1,24 +1,58 @@
+import { lazy, Suspense } from "react";
 import { stegaClean } from "@sanity/client/stega";
 import { createDataAttribute } from "@sanity/visual-editing";
 import Layout from "@/components/Layout";
 import type { ManagedPageData, ManagedPageSection } from "@shared/pageBuilder";
 
-// ── Section components ────────────────────────────────────────────
-import HeroSection from "@/components/page-builder/sections/HeroSection";
-import RichTextSection from "@/components/page-builder/sections/RichTextSection";
-import FeaturesSection from "@/components/page-builder/sections/FeaturesSection";
-import CtaSectionBlock from "@/components/page-builder/sections/CtaSectionBlock";
-import TestimonialsSection from "@/components/page-builder/sections/TestimonialsSection";
-import FaqSectionBlock from "@/components/page-builder/sections/FaqSectionBlock";
-import StatsSection from "@/components/page-builder/sections/StatsSection";
-import ImageGallerySection from "@/components/page-builder/sections/ImageGallerySection";
-import VideoEmbedSection from "@/components/page-builder/sections/VideoEmbedSection";
-import PricingSection from "@/components/page-builder/sections/PricingSection";
-import LogoBarSection from "@/components/page-builder/sections/LogoBarSection";
-import TeamGridSection from "@/components/page-builder/sections/TeamGridSection";
-import ContactFormSection from "@/components/page-builder/sections/ContactFormSection";
-import LayoutRowSection from "@/components/page-builder/sections/LayoutRowSection";
-import SpacerSection from "@/components/page-builder/sections/SpacerSection";
+// ── Lazy-loaded section components ────────────────────────────────
+// Each section is split into its own chunk so the browser only
+// downloads JS for sections actually present on the page.
+
+const HeroSection = lazy(
+  () => import("@/components/page-builder/sections/HeroSection"),
+);
+const RichTextSection = lazy(
+  () => import("@/components/page-builder/sections/RichTextSection"),
+);
+const FeaturesSection = lazy(
+  () => import("@/components/page-builder/sections/FeaturesSection"),
+);
+const CtaSectionBlock = lazy(
+  () => import("@/components/page-builder/sections/CtaSectionBlock"),
+);
+const TestimonialsSection = lazy(
+  () => import("@/components/page-builder/sections/TestimonialsSection"),
+);
+const FaqSectionBlock = lazy(
+  () => import("@/components/page-builder/sections/FaqSectionBlock"),
+);
+const StatsSection = lazy(
+  () => import("@/components/page-builder/sections/StatsSection"),
+);
+const ImageGallerySection = lazy(
+  () => import("@/components/page-builder/sections/ImageGallerySection"),
+);
+const VideoEmbedSection = lazy(
+  () => import("@/components/page-builder/sections/VideoEmbedSection"),
+);
+const PricingSection = lazy(
+  () => import("@/components/page-builder/sections/PricingSection"),
+);
+const LogoBarSection = lazy(
+  () => import("@/components/page-builder/sections/LogoBarSection"),
+);
+const TeamGridSection = lazy(
+  () => import("@/components/page-builder/sections/TeamGridSection"),
+);
+const ContactFormSection = lazy(
+  () => import("@/components/page-builder/sections/ContactFormSection"),
+);
+const LayoutRowSection = lazy(
+  () => import("@/components/page-builder/sections/LayoutRowSection"),
+);
+const SpacerSection = lazy(
+  () => import("@/components/page-builder/sections/SpacerSection"),
+);
 
 const SITE_URL = "https://kaizenweb.co.uk";
 
@@ -27,40 +61,59 @@ function sanitizeImageUrl(value: unknown): string {
 }
 
 function renderSection(section: ManagedPageSection) {
+  let element: React.ReactNode;
+
   switch (section._type) {
     case "hero":
-      return <HeroSection {...section} />;
+      element = <HeroSection {...section} />;
+      break;
     case "richTextSection":
-      return <RichTextSection {...section} />;
+      element = <RichTextSection {...section} />;
+      break;
     case "features":
-      return <FeaturesSection {...section} />;
+      element = <FeaturesSection {...section} />;
+      break;
     case "ctaSection":
-      return <CtaSectionBlock {...section} />;
+      element = <CtaSectionBlock {...section} />;
+      break;
     case "testimonials":
-      return <TestimonialsSection {...section} />;
+      element = <TestimonialsSection {...section} />;
+      break;
     case "faqSection":
-      return <FaqSectionBlock {...section} />;
+      element = <FaqSectionBlock {...section} />;
+      break;
     case "statsSection":
-      return <StatsSection {...section} />;
+      element = <StatsSection {...section} />;
+      break;
     case "imageGallery":
-      return <ImageGallerySection {...section} />;
+      element = <ImageGallerySection {...section} />;
+      break;
     case "videoEmbed":
-      return <VideoEmbedSection {...section} />;
+      element = <VideoEmbedSection {...section} />;
+      break;
     case "pricingSection":
-      return <PricingSection {...section} />;
+      element = <PricingSection {...section} />;
+      break;
     case "logoBar":
-      return <LogoBarSection {...section} />;
+      element = <LogoBarSection {...section} />;
+      break;
     case "teamGrid":
-      return <TeamGridSection {...section} />;
+      element = <TeamGridSection {...section} />;
+      break;
     case "contactForm":
-      return <ContactFormSection {...section} />;
+      element = <ContactFormSection {...section} />;
+      break;
     case "layoutRow":
-      return <LayoutRowSection {...section} />;
+      element = <LayoutRowSection {...section} />;
+      break;
     case "spacer":
-      return <SpacerSection {...section} />;
+      element = <SpacerSection {...section} />;
+      break;
     default:
       return null;
   }
+
+  return <Suspense fallback={null}>{element}</Suspense>;
 }
 
 export default function ManagedPageRenderer({
