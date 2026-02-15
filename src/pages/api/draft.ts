@@ -55,11 +55,21 @@ function getCookieHeader({
   requestUrl: URL;
   enabled: boolean;
 }): string {
-  const secure = requestUrl.protocol === "https:" ? "; Secure" : "";
+  const isHttps = requestUrl.protocol === "https:";
+  const secure = isHttps ? "; Secure" : "";
+
+  // Presentation mode uses an iframe. For cookies to work reliably in that context,
+  // we need SameSite=None (which requires Secure). Fall back to Lax on non-HTTPS.
+  const sameSite = isHttps ? "None" : "Lax";
+
+  // This cookie is used as a short-lived server-side flag, so HttpOnly is appropriate.
+  const httpOnly = "; HttpOnly";
+
   if (enabled) {
-    return `${STUDIO_EDITOR_COOKIE}=1; Path=/; Max-Age=${COOKIE_MAX_AGE_SECONDS}; SameSite=Lax${secure}`;
+    return `${STUDIO_EDITOR_COOKIE}=1; Path=/; Max-Age=${COOKIE_MAX_AGE_SECONDS}; SameSite=${sameSite}${secure}${httpOnly}`;
   }
-  return `${STUDIO_EDITOR_COOKIE}=; Path=/; Max-Age=0; SameSite=Lax${secure}`;
+
+  return `${STUDIO_EDITOR_COOKIE}=; Path=/; Max-Age=0; SameSite=${sameSite}${secure}${httpOnly}`;
 }
 
 export const GET: APIRoute = async ({ request }) => {
@@ -83,4 +93,3 @@ export const GET: APIRoute = async ({ request }) => {
     },
   });
 };
-

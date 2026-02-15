@@ -11,15 +11,21 @@ const requiresDocumentNavigation = (href: string): boolean =>
 
 const Footer: React.FC = () => {
   const location = useLocation();
-  const buildNumber = (import.meta.env.VITE_BUILD_NUMBER || "").trim();
-  const buildSha = (import.meta.env.VITE_BUILD_SHA || "").trim().slice(0, 7);
-  const buildLabel = buildNumber || buildSha || "local";
+
+  const buildNumberRaw = (import.meta.env.VITE_BUILD_NUMBER || "").trim();
+  const buildShaRaw = (import.meta.env.VITE_BUILD_SHA || "").trim();
+  const buildShaShort = buildShaRaw ? buildShaRaw.slice(0, 7) : "";
+
+  // Prefer a human build number, fall back to sha, otherwise show nothing (unless you want "local").
+  const buildLabel = buildNumberRaw || buildShaShort;
+  const showBuild = Boolean(buildLabel);
+
   const [email, setEmail] = useState("");
   const [consent, setConsent] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitStatus, setSubmitStatus] = useState<
-    "idle" | "success" | "error"
-  >("idle");
+  const [submitStatus, setSubmitStatus] = useState<"idle" | "success" | "error">(
+    "idle",
+  );
   const [errorMessage, setErrorMessage] = useState("");
 
   const handleNewsletterSubmit = async (e: FormEvent) => {
@@ -31,7 +37,6 @@ const Footer: React.FC = () => {
       return;
     }
 
-    // Email format validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email.trim())) {
       setErrorMessage("Please enter a valid email address.");
@@ -64,8 +69,7 @@ const Footer: React.FC = () => {
           marketing_consent: true,
           consent_text: CONSENT_TEXT,
           source_page: location.pathname,
-          user_agent:
-            typeof navigator !== "undefined" ? navigator.userAgent : null,
+          user_agent: typeof navigator !== "undefined" ? navigator.userAgent : null,
         });
 
       if (error) {
@@ -113,7 +117,6 @@ const Footer: React.FC = () => {
 
   return (
     <footer className="bg-gray-950 text-white overflow-hidden relative">
-      {/* Decorative Background SVG */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <svg
           className="absolute w-[120%] h-full left-0 top-0 opacity-[0.03]"
@@ -208,7 +211,6 @@ const Footer: React.FC = () => {
       </div>
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* CTA Section */}
         <div className="py-20 md:py-28 border-b border-white/10">
           <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-8">
             <h2 className="text-4xl sm:text-5xl lg:text-6xl font-medium tracking-tight text-white max-w-xl">
@@ -228,16 +230,12 @@ const Footer: React.FC = () => {
           </div>
         </div>
 
-        {/* Main Footer Content */}
         <div className="py-12 flex flex-col gap-12">
-          {/* Logo */}
           <div className="flex text-white">
             <KaizenLogo className="h-6 md:h-8 w-[120px]" />
           </div>
 
-          {/* Content Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 lg:gap-2">
-            {/* Tagline */}
             <div className="lg:col-span-1">
               <p className="text-lg text-white/60 leading-relaxed">
                 High-performance websites and product leadership for ambitious
@@ -245,7 +243,6 @@ const Footer: React.FC = () => {
               </p>
             </div>
 
-            {/* Contact Us */}
             <div className="lg:col-span-1">
               <h3 className="text-xs font-medium uppercase tracking-widest text-white mb-6">
                 Contact Us
@@ -264,7 +261,6 @@ const Footer: React.FC = () => {
               </div>
             </div>
 
-            {/* Social */}
             <div className="lg:col-span-1">
               <h3 className="text-xs font-medium uppercase tracking-widest text-white mb-6">
                 Follow
@@ -291,7 +287,6 @@ const Footer: React.FC = () => {
               </div>
             </div>
 
-            {/* Newsletter */}
             <div className="lg:col-span-1 transform lg:-translate-x-6">
               <h3 className="text-xs font-medium uppercase tracking-widest text-white mb-6">
                 Stay up to date
@@ -320,7 +315,6 @@ const Footer: React.FC = () => {
                     </button>
                   </div>
 
-                  {/* Consent Checkbox */}
                   <label className="flex items-start gap-2 cursor-pointer group">
                     <div className="relative mt-0.5">
                       <input
@@ -352,7 +346,6 @@ const Footer: React.FC = () => {
             </div>
           </div>
 
-          {/* Navigation Links */}
           <div className="flex flex-col gap-8">
             <div className="h-px bg-white/10" />
             <ul className="flex flex-wrap items-center justify-center gap-x-6 gap-y-3">
@@ -379,7 +372,6 @@ const Footer: React.FC = () => {
             <div className="h-px bg-white/10" />
           </div>
 
-          {/* Copyright */}
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
             <p className="text-xs text-white/40 text-center md:text-left">
               (c) Kaizen Web Ltd t/a Kaizen (Company No. 17007703). All rights
@@ -387,15 +379,18 @@ const Footer: React.FC = () => {
             </p>
             <div className="text-center md:text-right">
               <p className="text-xs text-white/30">Made with care on the Wirral</p>
-              <p
-                className="mt-1 text-[11px] font-mono tracking-wide text-cyan-300/85"
-                title="Deployed build reference"
-              >
-                Build {buildLabel}
-                {buildNumber && buildSha && (
-                  <span className="text-cyan-200/70"> ({buildSha})</span>
-                )}
-              </p>
+
+              {showBuild && (
+                <p
+                  className="mt-1 text-[11px] font-mono tracking-wide text-cyan-300/85"
+                  title="Deployed build reference"
+                >
+                  Build {buildLabel}
+                  {buildNumberRaw && buildShaShort && (
+                    <span className="text-cyan-200/70"> ({buildShaShort})</span>
+                  )}
+                </p>
+              )}
             </div>
           </div>
         </div>
