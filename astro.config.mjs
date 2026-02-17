@@ -104,8 +104,6 @@ export default defineConfig({
 
     resolve: {
       alias: [
-        { find: "@", replacement: path.resolve("./client") },
-        { find: "@shared", replacement: path.resolve("./shared") },
         {
           find: "react/compiler-runtime",
           replacement: path.resolve("./src/lib/reactCompilerRuntimeShim.ts"),

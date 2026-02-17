@@ -29,19 +29,16 @@ jobs:
           echo "VITE_BUILD_NUMBER=${GITHUB_RUN_NUMBER}" >> "$GITHUB_ENV"
           echo "VITE_BUILD_SHA=${GITHUB_SHA}" >> "$GITHUB_ENV"
 
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: pnpm
+          cache: npm
 
       - name: Install and Build (CI Check)
         run: |
-          pnpm install --frozen-lockfile
-          pnpm run build
+          npm ci
+          npm run build
 
       # --- PRODUCTION DEPLOY ---
       - name: Deploy Production SSR on VPS
@@ -68,10 +65,9 @@ jobs:
             git reset --hard origin/main
 
             # Build phase
-            corepack enable
-            pnpm install --frozen-lockfile
+            npm ci
             rm -rf dist .astro
-            pnpm run build
+            npm run build
 
             # Zero-Downtime Restart Logic
             # Instead of delete, we use 'start' with '--update-env' which restarts if running
@@ -102,8 +98,8 @@ jobs:
             git fetch origin stage
             git reset --hard origin/stage
 
-            pnpm install --frozen-lockfile
-            pnpm run build
+            npm ci
+            npm run build
 
             pm2 start dist/server/entry.mjs --name "$APP_NAME" --update-env || pm2 restart "$APP_NAME"
 
