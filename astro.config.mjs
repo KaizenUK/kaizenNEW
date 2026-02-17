@@ -78,7 +78,6 @@ export default defineConfig({
         "react-helmet-async",
         "react-router",
         "react-router-dom",
-        "@sanity/visual-editing",
       ],
     },
 
@@ -92,8 +91,6 @@ export default defineConfig({
         "sanity-plugin-tags-v4",
         "@sanity/color-input",
         "react-ga4",
-        "@sanity/visual-editing",
-        "@sanity/client/stega",
         "lucide-react",
         "jspdf",
         "react-router-dom",

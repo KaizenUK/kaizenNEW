@@ -1,7 +1,6 @@
 ---
 import "../styles/linear.css";
 import BlogNav from "../components/blog/BlogNav.astro";
-import VisualEditingClient from "../components/VisualEditingClient";
 
 interface Props {
   title: string;
@@ -83,7 +82,5 @@ const buildLabel = buildNumber || buildSha || "local";
         Build {buildLabel}
         {buildNumber && buildSha && <span class="text-gray-600"> ({buildSha})</span>}
       </p>
-    </footer>
-  <VisualEditingClient client:only="react" />
   </body>
 </html>

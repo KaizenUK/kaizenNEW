@@ -1,6 +1,4 @@
 import { lazy, Suspense } from "react";
-import { stegaClean } from "@sanity/client/stega";
-import { createDataAttribute } from "@sanity/visual-editing";
 import Layout from "@/components/Layout";
 import type { ManagedPageData, ManagedPageSection } from "@shared/pageBuilder";
 
@@ -57,7 +55,7 @@ const SpacerSection = lazy(
 const SITE_URL = "https://kaizenweb.co.uk";
 
 function sanitizeImageUrl(value: unknown): string {
-  return String(stegaClean(value) ?? "");
+  return String(value ?? "");
 }
 
 function renderSection(section: ManagedPageSection) {
@@ -134,17 +132,9 @@ export default function ManagedPageRenderer({
   const ogImage = sanitizeImageUrl(seo.shareImage?.asset?.url);
   const sections = Array.isArray(page.content) ? page.content : [];
 
-  // Build data attribute helper for Presentation drag-and-drop
-  const attr = createDataAttribute({
-    id: page._id,
-    type: page._type || "page",
-    path: "content",
-  });
-
   const content = (
     <div
       className="flex w-full flex-col"
-      data-sanity={attr.toString()}
     >
       {sections.length ? (
         sections.map((section, index) => {
@@ -152,11 +142,6 @@ export default function ManagedPageRenderer({
           return (
             <div
               key={key}
-              data-sanity={
-                section._key
-                  ? attr.scope(section._key).toString()
-                  : undefined
-              }
             >
               {renderSection(section)}
             </div>

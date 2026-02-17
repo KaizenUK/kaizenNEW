@@ -5,7 +5,6 @@ import {
   SITE_NAME,
   getPageMeta,
 } from "../../client/lib/seo";
-import VisualEditingClient from "../components/VisualEditingClient";
 import { getPageByPath, getStaticPageBySlug, urlFor } from "../lib/sanity/client";
 
 const fallbackMeta = getPageMeta("/");
@@ -79,6 +78,5 @@ try {
       managedPath="/"
       client:idle
     />
-    <VisualEditingClient client:only="react" />
   </body>
 </html>

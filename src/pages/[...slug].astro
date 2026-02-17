@@ -5,7 +5,6 @@ import {
   SITE_NAME,
   getPageMeta,
 } from "../../client/lib/seo";
-import VisualEditingClient from "../components/VisualEditingClient";
 import { getPageByPath, getStaticPageBySlug, urlFor } from "../lib/sanity/client";
 
 const pathnameRaw = Astro.url.pathname || "/";
@@ -85,6 +84,5 @@ try {
       managedPath={pathname}
       client:idle
     />
-    <VisualEditingClient client:only="react" />
   </body>
 </html>
