@@ -1,23 +1,26 @@
 import { assist } from "@sanity/assist";
+import { colorInput } from "@sanity/color-input";
+import { EyeOpenIcon } from "@sanity/icons";
 import { visionTool } from "@sanity/vision";
 import { defineConfig } from "sanity";
 import { presentationTool } from "sanity/presentation";
 import { structureTool } from "sanity/structure";
 import { media } from "sanity-plugin-media";
 import { tags } from "sanity-plugin-tags-v4";
-import { colorInput } from "@sanity/color-input";
+
 import { studioSessionPlugin } from "./src/lib/sanity/studioSessionPlugin";
 import { studioProjectId, studioDataset } from "./sanity/lib/env";
 import { schemaTypes } from "./sanity/schemas";
 import { pageTemplates } from "./sanity/templates";
 import { studioStructure } from "./sanity/structure";
 import { singletonPlugin } from "./sanity/plugins/singleton";
+
 import Dashboard from "./sanity/components/Dashboard";
 import SeoDashboard from "./sanity/components/SeoDashboard";
 import SeoTasksDashboard from "./sanity/components/SeoTasksDashboard";
 import StudioNavbar from "./sanity/components/StudioNavbar";
+
 import { OpenPreviewAction } from "./sanity/actions/OpenPreviewAction";
-import { EyeOpenIcon } from "@sanity/icons";
 
 function normalizeDocumentId(value: unknown): string {
   return String(value ?? "").replace(/^drafts\./, "").trim();
@@ -164,7 +167,7 @@ export default defineConfig({
     {
       name: "disable-ai-assist-inspector-route",
       document: {
-        inspectors: (prev: Array<{ name?: string }>) =>
+        inspectors: (prev) =>
           prev.filter((inspector) => inspector.name !== "ai-assistance"),
       },
     },
@@ -201,6 +204,7 @@ export default defineConfig({
       }
       return prev;
     },
+
     productionUrl: async (prev, { document }) => {
       const type = document._type;
 

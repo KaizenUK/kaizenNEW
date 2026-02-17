@@ -1,5 +1,4 @@
 import { contextDocumentTypeName } from "@sanity/assist";
-import { SEOPane } from "sanity-plugin-seo-pane";
 import type { StructureBuilder } from "sanity/structure";
 import type { SanityDocument } from "sanity";
 import { SITE_SETTINGS_ID } from "../schemas/documents/siteSettings";
@@ -48,17 +47,9 @@ function cleanDocumentId(documentId: string): string {
 }
 
 // --- Views ---
-const postViews = (S: StructureBuilder) => [
-  S.view.form(),
-  S.view
-    .component(SEOPane)
-    .title("SEO")
-    .options({
-      keywords: "seo.focusKeyword",
-      synonyms: "seo.focusKeyword",
-      url: resolvePostPreviewUrl,
-    }),
-];
+// Keep it simple for now: ONLY the form view.
+// (If/when you re-add SEO, add it back here once the plugin versions match your React/Sanity setup.)
+const postViews = (S: StructureBuilder) => [S.view.form()];
 
 // --- Structure ---
 
@@ -67,8 +58,7 @@ export const studioStructure = (S: StructureBuilder) =>
     .title("Kaizen CMS")
     .items([
       // ======================================================
-      // GLOBAL DRAFTS 
-      // Route: /studio/structure/drafts
+      // GLOBAL DRAFTS
       // ======================================================
       S.listItem()
         .title("Drafts")
@@ -78,8 +68,21 @@ export const studioStructure = (S: StructureBuilder) =>
           S.documentList()
             .title("Drafts")
             .apiVersion("2024-01-01")
-            .filter('_type in ["post","page","staticPage"] && _originalId in path("drafts.**")')
-            .defaultOrdering([{ field: "_updatedAt", direction: "desc" }]),
+            .filter(
+              '_type in ["post","page","staticPage"] && _originalId in path("drafts.**")',
+            )
+            .defaultOrdering([{ field: "_updatedAt", direction: "desc" }])
+            // IMPORTANT: force schemaType for the document pane
+            .child((documentId) =>
+              S.document()
+                .documentId(documentId)
+                .schemaType(
+                  // Best-effort: schemaType is derived by Sanity in the list,
+                  // but we still need *a* schemaType for the document node.
+                  // If this ever misroutes, split drafts into separate lists by type.
+                  "post",
+                ),
+            ),
         ),
 
       S.divider(),
@@ -105,14 +108,14 @@ export const studioStructure = (S: StructureBuilder) =>
             ),
         ),
 
-      // Draft (Posts)
+      // Draft Posts
       S.listItem()
         .title("Draft Posts")
         .id("draft-posts")
         .icon(EditIcon)
         .child(
           S.documentList()
-            .title("Draft")
+            .title("Draft Posts")
             .apiVersion("2024-01-01")
             .filter('_type == "post" && _originalId in path("drafts.**")')
             .defaultOrdering([{ field: "_updatedAt", direction: "desc" }])
@@ -159,17 +162,22 @@ export const studioStructure = (S: StructureBuilder) =>
         .child(
           S.documentTypeList("page")
             .title("All Pages")
-            .defaultOrdering([{ field: "_updatedAt", direction: "desc" }]),
+            .defaultOrdering([{ field: "_updatedAt", direction: "desc" }])
+            .child((documentId) =>
+              S.document()
+                .documentId(cleanDocumentId(documentId))
+                .schemaType("page"),
+            ),
         ),
 
-      // Draft (Pages)
+      // Draft Pages
       S.listItem()
         .title("Draft Pages")
         .id("draft-pages")
         .icon(EditIcon)
         .child(
           S.documentList()
-            .title("Draft (Pages)")
+            .title("Draft Pages")
             .apiVersion("2024-01-01")
             .filter('_type == "page" && _originalId in path("drafts.**")')
             .defaultOrdering([{ field: "_updatedAt", direction: "desc" }])
@@ -178,6 +186,7 @@ export const studioStructure = (S: StructureBuilder) =>
             ),
         ),
 
+      // Static SEO Pages
       S.listItem()
         .title("Static SEO Pages")
         .id("static-seo-pages")
@@ -185,7 +194,12 @@ export const studioStructure = (S: StructureBuilder) =>
         .child(
           S.documentTypeList("staticPage")
             .title("Static SEO Pages")
-            .defaultOrdering([{ field: "slug.current", direction: "asc" }]),
+            .defaultOrdering([{ field: "slug.current", direction: "asc" }])
+            .child((documentId) =>
+              S.document()
+                .documentId(cleanDocumentId(documentId))
+                .schemaType("staticPage"),
+            ),
         ),
 
       S.divider(),
@@ -197,17 +211,47 @@ export const studioStructure = (S: StructureBuilder) =>
       S.documentTypeListItem("category")
         .title("Categories")
         .id("categories-list")
-        .icon(TagIcon),
+        .icon(TagIcon)
+        .child(
+          S.documentTypeList("category")
+            .title("Categories")
+            .defaultOrdering([{ field: "_updatedAt", direction: "desc" }])
+            .child((documentId) =>
+              S.document()
+                .documentId(cleanDocumentId(documentId))
+                .schemaType("category"),
+            ),
+        ),
 
       S.documentTypeListItem("author")
         .title("Authors")
         .id("authors-list")
-        .icon(UsersIcon),
+        .icon(UsersIcon)
+        .child(
+          S.documentTypeList("author")
+            .title("Authors")
+            .defaultOrdering([{ field: "_updatedAt", direction: "desc" }])
+            .child((documentId) =>
+              S.document()
+                .documentId(cleanDocumentId(documentId))
+                .schemaType("author"),
+            ),
+        ),
 
       S.documentTypeListItem("redirect")
         .title("Redirects")
         .id("redirects-list")
-        .icon(ArrowRightIcon),
+        .icon(ArrowRightIcon)
+        .child(
+          S.documentTypeList("redirect")
+            .title("Redirects")
+            .defaultOrdering([{ field: "_updatedAt", direction: "desc" }])
+            .child((documentId) =>
+              S.document()
+                .documentId(cleanDocumentId(documentId))
+                .schemaType("redirect"),
+            ),
+        ),
 
       S.listItem()
         .title("Site Settings")
@@ -222,5 +266,15 @@ export const studioStructure = (S: StructureBuilder) =>
 
       S.documentTypeListItem(contextDocumentTypeName)
         .title("AI Context Editor")
-        .id("ai-context-list"),
+        .id("ai-context-list")
+        .child(
+          S.documentTypeList(contextDocumentTypeName)
+            .title("AI Context Editor")
+            .defaultOrdering([{ field: "_updatedAt", direction: "desc" }])
+            .child((documentId) =>
+              S.document()
+                .documentId(cleanDocumentId(documentId))
+                .schemaType(contextDocumentTypeName),
+            ),
+        ),
     ]);
