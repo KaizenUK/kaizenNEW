@@ -151,7 +151,7 @@ Effective Date: February 2026
     11.1 Snagging period: Where a staging/beta site is provided, the Client should test and provide feedback promptly.
     11.2 Defects window governed by Clause 5.7: Defects reporting after Go-Live is governed by Clause 5.7.
     11.3 Browser compatibility: The Developer supports the latest two versions of Major Browsers. Legacy browsers are excluded unless agreed in writing.
-    11.4 Remedies and refunds (rectification first):
+   11.4 Remedies and refunds (rectification first):
     (a) If the Deliverables materially fail to conform to the SoW due to the Developer’s fault, the Client must notify the Developer in writing with reasonable detail. The Developer will have a reasonable opportunity to remedy the non-conformity.
     (b) No refunds as a general policy: Refunds are not provided as a general policy. A refund (full or partial) will only be considered where remedy is not reasonably possible within a reasonable time and the issue is materially attributable to the Developer, and the Client has provided reasonable cooperation. Any refund, if agreed, will be limited to the portion of fees paid for the affected part of the Work.
     (c) Change of mind / capability / preference is not a basis for non-payment: The Client remains responsible for payment if it changes its mind (including preference for a different platform/stack, inability to operate a chosen solution, or internal business decisions). Any rework, platform change, or reversion requested by the Client is chargeable under Clauses 2 and 3.
@@ -159,7 +159,7 @@ Effective Date: February 2026
 ---
 
 12. Portfolio Rights and Credit
-    12.1 The Client grants the Developer the right to display the project in the Developer’s portfolio and marketing materials, excluding confidential information.
+    12.1 The Client grants the Developer the right to display the. project in the Developer’s portfolio and marketing materials, excluding confidential information.
     12.2 The Client agrees to retain a small, unobtrusive credit link in the footer (e.g., “Designed by Kaizen”).
     12.3 Opt-out: The Client may request removal of the footer credit in writing, and the Developer will remove it within a reasonable time.
 
@@ -192,7 +192,7 @@ Effective Date: February 2026
     (e) the Developer reasonably believes, based on credible information from reputable sources, that the Client (or its directors/owners) has engaged in, is engaging in, or is reasonably suspected of engaging in: unlawful discrimination; human trafficking/forced labour; modern slavery; serious harassment or violence; bribery/corruption; sanctions breaches; money laundering; or other serious unlawful or unethical conduct such that continued association would likely damage the Developer’s reputation.
     14.2.1 Effect of termination under 14.2(e): On termination under Clause 14.2(e), the Developer will have no obligation to continue providing services. The deposit remains non-refundable, and the Client must pay all fees for work performed up to termination and any non-cancellable committed costs. Any further refunds are excluded to the extent permitted by law.
     14.2.2 Effect of termination under 14.2(a)–(d): On termination under Clauses 14.2(a)–(d), the Client must pay all fees due for work completed and any non-cancellable committed costs. The deposit remains non-refundable.
-    14.3 Termination by Developer (for convenience): The Developer may terminate for convenience on 14 days’ written notice. In that event, the Client will pay for work completed and any non-cancellable committed costs up to the termination date. Any unused portion of fees already paid for work not performed will be refunded.
+    14.3 Termination by Developer (for convenience): The Developer may terminate for convenience on 14 days’ written notice. In that event, the Client will pay for work completed and any non-cancellable committed costs up to the termination date. Any unused portion of fees already paid for work not. performed will be refunded.
     14.4 Data handover fee (minimum): Where the Client requests data handover or packaging of Deliverables beyond standard repository transfer (including exports, archives, migration packaging, documentation collation, or coordinated handover to a third party), the Developer may charge a minimum fee of £200, with additional time billed at the applicable hourly rate where the request exceeds a reasonable amount of work.
     14.5 Termination does not affect rights accrued before termination.
 
@@ -240,16 +240,58 @@ F. International transfers: processing/storage may occur in the UK and/or EU.
 `;
 
 const TermsAndConditions = () => {
+  // Process the text to create paragraphs and headings
+  const processedContent = termsContent.split("---").map((section, index) => (
+    <div key={index} className="mb-8">
+      {section.trim().split("\n").map((line, lineIndex) => {
+        const trimmedLine = line.trim();
+
+        // Skip empty lines
+        if (!trimmedLine) return null;
+
+        // Main document title (only the very first line of the first section)
+        if (index === 0 && lineIndex === 0 && trimmedLine.startsWith("STANDARD TERMS AND CONDITIONS OF BUSINESS")) {
+          return <h1 key={lineIndex} className="text-3xl md:text-4xl lg:text-5xl font-bold mb-6 text-kaizen-dark">{trimmedLine}</h1>;
+        }
+        // Major section headings (e.g., "1. Definitions", "2. Rates...", "Schedule 1...")
+        if ((/^\d+\./.test(trimmedLine) && !/^\d+\.\d+/.test(trimmedLine)) || trimmedLine.startsWith("Schedule")) {
+          return <h2 key={lineIndex} className="text-2xl md:text-3xl font-bold mt-8 mb-4 text-kaizen-dark">{trimmedLine}</h2>;
+        }
+        // Sub-section clauses (e.g., "1.1 “Client”", "16.13 Confidentiality")
+        // This regex captures:
+        // 1. The number (e.g., "1.1", "16.13")
+        // 2. Any text between the number and an optional colon (e.g., " “Client”", " Confidentiality")
+        // 3. The optional colon and any following whitespace
+        // 4. The rest of the line
+        const subSectionMatch = trimmedLine.match(/^(\d+\.\d+)\s*([^:]*)?(:?\s*)(.*)/);
+        if (subSectionMatch) {
+          const [, number, headingTextRaw, colonAndSpace, restOfLine] = subSectionMatch;
+          const headingText = headingTextRaw ? headingTextRaw.trim() : ''; // Trim to remove leading/trailing spaces
+
+          // Construct the bolded part: number, optionally followed by a space and the heading text
+          const boldedContent = headingText ? `${number} ${headingText}` : number;
+          return (
+            <p key={lineIndex} className="mb-2 text-base md:text-lg text-kaizen-text-dark/70">
+              <strong>{boldedContent}</strong>{colonAndSpace}{restOfLine}
+            </p>
+          );
+        }
+        // List items like (a), (b)
+        if (/^\([a-z]\)/.test(trimmedLine)) {
+          return <p key={lineIndex} className="ml-8 mb-2 text-base md:text-lg text-kaizen-text-dark/70">{trimmedLine}</p>;
+        }
+        // Default paragraph
+        return <p key={lineIndex} className="mb-2 text-base md:text-lg text-kaizen-text-dark/70">{trimmedLine}</p>;
+      })}
+    </div>  ));
+
   return (
     <Layout>
       <div className="bg-white py-20">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto">
-            <h1 className="text-5xl font-heading font-black mb-12 text-kaizen-dark">
-              Terms and Conditions
-            </h1>
-            <div className="prose lg:prose-xl max-w-none text-kaizen-dark/80 leading-relaxed">
-              <pre className="whitespace-pre-wrap">{termsContent}</pre>
+            <div className="prose max-w-none text-kaizen-dark/80 leading-relaxed">
+              {processedContent}
             </div>
           </div>
         </div>
