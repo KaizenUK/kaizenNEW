@@ -106,6 +106,8 @@ export default defineConfig({
     colorInput(),
     presentationTool({
       previewUrl: {
+        // The URL of your Astro site, localhost:4321 is the default for Astro
+        origin: "http://localhost:4321",
         initial: "/blog",
         previewMode: {
           enable: "/api/draft?redirectTo=/blog",
