@@ -154,7 +154,7 @@ export const sanityClient = hasSanityConfig
   ? createClient({
       projectId,
       dataset,
-      apiVersion: "2025-01-01",
+      apiVersion: "2025-01-01", // Align with sanity.config.ts
       useCdn: !token,
       token,
       perspective: "published",
@@ -166,7 +166,7 @@ export const previewClient = hasSanityConfig
   ? createClient({
       projectId,
       dataset,
-      apiVersion: "2025-01-01",
+      apiVersion: "2025-01-01", // Align with sanity.config.ts
       useCdn: false,
       token,
       perspective: "previewDrafts",
