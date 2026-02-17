@@ -3,9 +3,9 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "pnpm run clean:caches && astro dev --force",
-    "dev:clean": "pnpm run clean:caches && astro dev --force",
-    "build": "rm -rf dist .astro && NODE_OPTIONS='--max-old-space-size=6144' astro build",
+    "dev": "npm run clean:caches && astro dev --force",
+    "dev:clean": "npm run clean:caches && astro dev --force",
+    "build": "rimraf dist .astro && cross-env NODE_OPTIONS='--max-old-space-size=6144' astro build",
     "build:snap:high-five": "astro build",
     "build:snap:all": "astro build",
     "start": "node dist/server/entry.mjs",
@@ -91,6 +91,7 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "cmdk": "^1.1.1",
+    "cross-env": "^7.0.3",
     "date-fns": "^4.1.0",
     "embla-carousel-react": "^8.6.0",
     "framer-motion": "^12.34.0",
@@ -110,6 +111,7 @@
     "react-router-dom": "^7.13.0",
     "recharts": "^3.7.0",
     "remotion": "^4.0.421",
+    "rimraf": "^5.0.5",
     "sonner": "^2.0.7",
     "supabase": "^2.76.8",
     "tailwind-merge": "^3.4.0",
@@ -123,11 +125,5 @@
     "vite-plugin-node-polyfills": "^0.25.0",
     "vitest": "^4.0.18",
     "xml2js": "^0.6.2"
-  },
-  "pnpm": {
-    "overrides": {
-      "lodash": "^4.17.23"
-    }
-  },
-  "packageManager": "pnpm@10.14.0+sha512.ad27a79641b49c3e481a16a805baa71817a04bbe06a38d17e60e2eaee83f6a146c6a688125f5792e48dd5ba30e7da52a5cda4c3992b9ccf333f9ce223af84748"
+  }
 }
