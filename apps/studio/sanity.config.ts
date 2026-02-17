@@ -164,9 +164,8 @@ export default defineConfig({
     {
       name: "disable-ai-assist-inspector-route",
       document: {
-        inspectors: (prev) =>
-        prev.filter((inspector) => inspector.name !== "ai-assistance"),
-
+        inspectors: (prev: Array<{ name?: string }>) =>
+          prev.filter((inspector) => inspector.name !== "ai-assistance"),
       },
     },
   ],
