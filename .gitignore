@@ -34,3 +34,5 @@ dist/
 !.env.example
 /traces
 kaizen-perf/
+terms.txt
+terms.docx

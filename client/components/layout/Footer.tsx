@@ -113,6 +113,7 @@ const Footer: React.FC = () => {
     { label: "Privacy", href: "/privacy-policy" },
     { label: "Cookies", href: "/cookie-policy" },
     { label: "GDPR", href: "/gdpr-policy" },
+    { label: "Terms", href: "/terms-and-conditions" },
   ];
 
   return (

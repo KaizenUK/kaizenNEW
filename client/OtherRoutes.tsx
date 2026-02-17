@@ -62,6 +62,7 @@ const ThankYou = lazy(() => import("./pages/ThankYou"));
 const PerformanceScanner = lazy(
   () => import("./pages/PerformanceScanner"),
 );
+const TermsAndConditions = lazy(() => import("./pages/TermsAndConditions"));
 
 // ── Minimal loading shell (matches site background) ───────────────
 
@@ -177,6 +178,7 @@ export default function OtherRoutes({
         <Route path="/cookie-policy" element={<CookiePolicy />} />
         <Route path="/gdpr-policy" element={<GDPRPolicy />} />
         <Route path="/performance-scanner" element={<PerformanceScanner />} />
+        <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </Suspense>
