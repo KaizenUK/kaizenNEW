@@ -4,7 +4,6 @@ import type {
 } from "../../../../src/lib/sanity/client";
 import SectionWrapper from "../SectionWrapper";
 import { SectionHeading } from "../shared";
-import IconRenderer from "../IconRenderer";
 
 type Props = SanityFeaturesSection & { settings?: SanitySectionSettings };
 
@@ -24,11 +23,7 @@ export default function FeaturesSection(props: Props) {
             key={item._key || `feature-${index}`}
             className="rounded-xl border border-white/10 bg-white/5 p-6 transition hover:border-cyan-400/30"
           >
-            {item.icon && (
-              <div className="mb-3 text-cyan-400">
-                <IconRenderer icon={item.icon} size={28} />
-              </div>
-            )}
+         
             {item.title && (
               <h3 className="text-lg font-semibold text-white">
                 {item.title}

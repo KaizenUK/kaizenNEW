@@ -83,27 +83,6 @@ export interface ManagedRichTextSection {
   settings?: ManagedSectionSettings;
 }
 
-/** Value stored by sanity-plugin-icon-picker. */
-export interface IconPickerValue {
-  _type?: string;
-  name: string;
-  provider: string;
-}
-
-export interface ManagedFeaturesSection {
-  _type: "features";
-  _key?: string;
-  heading?: string;
-  items?: Array<{
-    _key?: string;
-    _type?: "featureItem";
-    icon?: string | IconPickerValue;
-    title?: string;
-    text?: string;
-  }>;
-  settings?: ManagedSectionSettings;
-}
-
 export interface ManagedCtaSection {
   _type: "ctaSection";
   _key?: string;

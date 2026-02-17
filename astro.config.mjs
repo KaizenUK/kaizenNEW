@@ -90,7 +90,6 @@ export default defineConfig({
         "@sanity/vision",
         "sanity-plugin-media",
         "sanity-plugin-tags-v4",
-        "sanity-plugin-icon-picker",
         "@sanity/color-input",
         "react-ga4",
         "@sanity/visual-editing",

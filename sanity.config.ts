@@ -5,7 +5,6 @@ import { presentationTool } from "sanity/presentation";
 import { structureTool } from "sanity/structure";
 import { media } from "sanity-plugin-media";
 import { tags } from "sanity-plugin-tags-v4";
-import { iconPicker } from "sanity-plugin-icon-picker";
 import { colorInput } from "@sanity/color-input";
 import { studioSessionPlugin } from "./src/lib/sanity/studioSessionPlugin";
 import { studioProjectId, studioDataset } from "./sanity/lib/env";
@@ -101,7 +100,6 @@ export default defineConfig({
     visionTool({ defaultApiVersion: "2024-01-01" }),
     assist(),
     tags({}),
-    iconPicker(),
     colorInput(),
     presentationTool({
       previewUrl: {

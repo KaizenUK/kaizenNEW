@@ -5,16 +5,7 @@ export const featureItem = defineType({
   title: "Feature Item",
   type: "object",
   fields: [
-    defineField({
-      name: "icon",
-      title: "Icon",
-      type: "iconPicker",
-      description: "Pick an icon from the library, or type a name if you know it.",
-      options: {
-        providers: ["lu", "mdi", "hi"],
-        outputFormat: "react",
-      },
-    }),
+  
     defineField({
       name: "title",
       title: "Title",
