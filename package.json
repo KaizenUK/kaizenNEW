@@ -14,11 +14,9 @@
     "format.fix": "prettier --write .",
     "typecheck": "astro check && tsc --noEmit",
     "trace:summary": "node scripts/trace-summary.mjs"
-    
   },
   "dependencies": {
     "@builder.io/react": "^9.1.0",
-    "@multidots/sanity-plugin-team-members": "^1.0.5",
     "@portabletext/react": "^6.0.2",
     "@portabletext/types": "^4.0.1",
     "@sanity/assist": "^5.0.4",
