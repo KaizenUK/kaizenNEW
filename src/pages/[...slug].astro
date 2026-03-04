@@ -13,9 +13,8 @@ const pathname =
     ? pathnameRaw.slice(0, -1)
     : pathnameRaw;
 const fallbackMeta = getPageMeta(pathname);
-const isEditorPreview = Astro.cookies.get("kaizen_studio_auth")?.value === "1";
-const staticPage = await getStaticPageBySlug(pathname, isEditorPreview);
-const managedPage = await getPageByPath(pathname, isEditorPreview);
+const staticPage = await getStaticPageBySlug(pathname, false);
+const managedPage = await getPageByPath(pathname, false);
 const shouldRenderManagedContent = Boolean(managedPage?.replaceRouteContent);
 const seo = managedPage?.seo || staticPage?.seo;
 

@@ -1,6 +1,6 @@
 import type { DocumentActionComponent } from "sanity";
 
-const PREVIEWABLE_TYPES = new Set(["post", "page", "staticPage"]);
+const PREVIEWABLE_TYPES = new Set(["post"]);
 
 function getSlug(doc: Record<string, unknown> | null): string {
   if (!doc) return "";
@@ -29,25 +29,10 @@ export const previewAction: DocumentActionComponent = (props) => {
   const docId = getDocId(props, doc);
   const normalizedSlug = slug.replace(/^\/+/, "").trim();
 
-  let previewPath = "";
-  if (props.type === "post") {
-    if (!normalizedSlug) return null;
-    previewPath = `/preview/blog/${encodeURIComponent(normalizedSlug)}${docId ? `?id=${encodeURIComponent(docId)}` : ""}`;
-  } else if (props.type === "page") {
-    if (!normalizedSlug) return null;
-    previewPath = `/${encodeURIComponent(normalizedSlug)}`;
-  } else {
-    const routePath = slug.trim();
-    if (routePath === "/") {
-      previewPath = "/";
-    } else if (routePath.startsWith("/")) {
-      previewPath = routePath;
-    } else if (normalizedSlug) {
-      previewPath = `/${normalizedSlug}`;
-    } else {
-      return null;
-    }
-  }
+  if (!normalizedSlug) return null;
+  const previewPath = `/preview/blog/${encodeURIComponent(normalizedSlug)}${
+    docId ? `?id=${encodeURIComponent(docId)}` : ""
+  }`;
 
   const previewUrl = `/api/draft?path=${encodeURIComponent(previewPath)}`;
 

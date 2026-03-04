@@ -48,6 +48,15 @@ function getRedirectTarget(requestUrl: URL): string {
   return "/blog";
 }
 
+function isAllowedPresentationPath(path: string): boolean {
+  const pathname = String(path).split(/[?#]/, 1)[0] || "/";
+  return (
+    pathname === "/blog" ||
+    pathname.startsWith("/blog/") ||
+    pathname.startsWith("/preview/blog/")
+  );
+}
+
 function getCookieHeader({
   requestUrl,
   enabled,
@@ -77,7 +86,9 @@ export const GET: APIRoute = async ({ request }) => {
   const disablePreview = requestUrl.searchParams.get("disable") === "1";
   const requestedRedirect = getRedirectTarget(requestUrl);
   const redirectTo =
-    requestedRedirect === "/api/draft" || requestedRedirect === "/api/draft/"
+    requestedRedirect === "/api/draft" ||
+    requestedRedirect === "/api/draft/" ||
+    !isAllowedPresentationPath(requestedRedirect)
       ? "/blog"
       : requestedRedirect;
 

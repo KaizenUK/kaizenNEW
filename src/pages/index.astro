@@ -8,9 +8,8 @@ import {
 import { getPageByPath, getStaticPageBySlug, urlFor } from "../lib/sanity/client";
 
 const fallbackMeta = getPageMeta("/");
-const isEditorPreview = Astro.cookies.get("kaizen_studio_auth")?.value === "1";
-const staticPage = await getStaticPageBySlug("/", isEditorPreview);
-const managedPage = await getPageByPath("/", isEditorPreview);
+const staticPage = await getStaticPageBySlug("/", false);
+const managedPage = await getPageByPath("/", false);
 const shouldRenderManagedContent = Boolean(managedPage?.replaceRouteContent);
 const seo = managedPage?.seo || staticPage?.seo;
 

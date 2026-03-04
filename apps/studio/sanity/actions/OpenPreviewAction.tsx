@@ -16,9 +16,6 @@ function resolvePreviewUrl(
   if (type === "post" && slug) {
     return `/preview/blog/${encodeURIComponent(slug)}?id=${encodeURIComponent(cleanId)}`;
   }
-  if ((type === "page" || type === "staticPage") && slug) {
-    return `/${encodeURIComponent(slug)}`;
-  }
   return null;
 }
 

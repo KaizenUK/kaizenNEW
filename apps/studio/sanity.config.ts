@@ -33,42 +33,24 @@ function normalizeSlugPathSegment(value: unknown): string {
     .replace(/\/+$/, "");
 }
 
-function normalizeRoutePath(value: unknown): string {
-  const raw = String(value ?? "").trim();
-  if (!raw) return "/";
-  if (raw === "/") return "/";
-
-  const normalized = raw.replace(/^\/+/, "").replace(/\/+$/, "");
-  return normalized ? `/${normalized}` : "/";
-}
-
 // Custom Action to launch Presentation Mode
 function InVisionAction(props: any) {
   const { type, draft, published } = props;
   const doc = draft || published;
+  if (type !== "post") return null;
 
   return {
     label: "In-Vision",
     icon: EyeOpenIcon,
     onHandle: () => {
       if (!doc) return;
-
-      let previewPath = "/";
-
-      if (type === "post") {
-        const slug = normalizeSlugPathSegment(doc.slug?.current);
-        const docId = normalizeDocumentId(doc._id);
-        previewPath = slug
-          ? `/preview/blog/${encodeURIComponent(slug)}${
-              docId ? `?id=${encodeURIComponent(docId)}` : ""
-            }`
-          : "/blog";
-      } else if (type === "page") {
-        const slug = normalizeSlugPathSegment(doc.slug?.current);
-        previewPath = slug ? `/${encodeURIComponent(slug)}` : "/";
-      } else if (type === "staticPage") {
-        previewPath = normalizeRoutePath(doc.slug?.current);
-      }
+      const slug = normalizeSlugPathSegment(doc.slug?.current);
+      const docId = normalizeDocumentId(doc._id);
+      const previewPath = slug
+        ? `/preview/blog/${encodeURIComponent(slug)}${
+            docId ? `?id=${encodeURIComponent(docId)}` : ""
+          }`
+        : "/blog";
 
       window.location.href = `/studio/presentation?preview=${encodeURIComponent(
         previewPath,
@@ -142,31 +124,6 @@ export default defineConfig({
               };
             },
           },
-          page: {
-            select: { title: "title", slug: "slug.current" },
-            resolve: (doc: Record<string, string> | null) => {
-              const slug = normalizeSlugPathSegment(doc?.slug);
-              return {
-                locations: [
-                  {
-                    title: doc?.title || "Page",
-                    href: slug ? `/${encodeURIComponent(slug)}` : "/",
-                  },
-                ],
-              };
-            },
-          },
-          staticPage: {
-            select: { title: "title", route: "slug.current" },
-            resolve: (doc: Record<string, string> | null) => ({
-              locations: [
-                {
-                  title: doc?.title || "Static SEO Page",
-                  href: normalizeRoutePath(doc?.route),
-                },
-              ],
-            }),
-          },
         },
       },
     }),
@@ -206,7 +163,7 @@ export default defineConfig({
 
   document: {
     actions: (prev: any[], context: { schemaType: string }) => {
-      if (["post", "page", "staticPage"].includes(context.schemaType)) {
+      if (context.schemaType === "post") {
         return [...prev, InVisionAction, OpenPreviewAction];
       }
       return prev;
@@ -223,28 +180,6 @@ export default defineConfig({
             ? String((document.slug as { current?: string }).current ?? "").trim()
             : "";
         if (slug) return `/preview/blog/${slug}`;
-      }
-
-      if (type === "page") {
-        const slug = normalizeSlugPathSegment(
-          typeof document.slug === "object" &&
-            document.slug !== null &&
-            "current" in document.slug
-            ? String((document.slug as { current?: string }).current ?? "").trim()
-            : "",
-        );
-        if (slug) return `/${slug}`;
-      }
-
-      if (type === "staticPage") {
-        const route = normalizeRoutePath(
-          typeof document.slug === "object" &&
-            document.slug !== null &&
-            "current" in document.slug
-            ? String((document.slug as { current?: string }).current ?? "").trim()
-            : "",
-        );
-        return route;
       }
 
       return prev;
