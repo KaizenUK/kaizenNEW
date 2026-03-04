@@ -1,87 +1,29 @@
 ---
-import AstroApp from "../../client/AstroApp";
-import {
-  DEFAULT_OG_IMAGE,
-  SITE_NAME,
-  getPageMeta,
-} from "../../client/lib/seo";
-import { getPageByPath, getStaticPageBySlug, urlFor } from "../lib/sanity/client";
+import ReactRoutePage from "../layouts/ReactRoutePage.astro";
+import ManagedRoutePage from "../../client/static/ManagedRoutePage";
+import { getManagedRoutePaths, getPageByPath } from "../lib/sanity/client";
 
-const pathnameRaw = Astro.url.pathname || "/";
-const pathname =
-  pathnameRaw !== "/" && pathnameRaw.endsWith("/")
-    ? pathnameRaw.slice(0, -1)
-    : pathnameRaw;
-const fallbackMeta = getPageMeta(pathname);
-const staticPage = await getStaticPageBySlug(pathname, false);
-const managedPage = await getPageByPath(pathname, false);
-const shouldRenderManagedContent = Boolean(managedPage?.replaceRouteContent);
-const seo = managedPage?.seo || staticPage?.seo;
+export const prerender = true;
 
-const title =
-  seo?.metaTitle?.trim() ||
-  managedPage?.title?.trim() ||
-  staticPage?.title?.trim() ||
-  fallbackMeta.title;
-const description = seo?.metaDescription?.trim() || fallbackMeta.description;
-const siteUrl = (import.meta.env.PUBLIC_SITE_URL || "https://kaizenweb.co.uk").replace(
-  /\/$/,
-  "",
-);
-const canonicalUrl = seo?.canonicalUrl?.trim() || `${siteUrl}${pathname === "/" ? "/" : pathname}`;
-const robots =
-  seo?.noIndex || fallbackMeta.noIndex
-    ? "noindex, nofollow"
-    : import.meta.env.MODE === "development"
-      ? "noindex"
-      : "index, follow";
+export async function getStaticPaths() {
+  const paths = await getManagedRoutePaths();
+  return paths
+    .filter((pathname) => pathname !== "/")
+    .map((pathname) => ({
+      params: { slug: pathname.replace(/^\/+/, "") },
+    }));
+}
 
-let ogImage = fallbackMeta.image || DEFAULT_OG_IMAGE;
-try {
-  if (seo?.shareImage) {
-    ogImage = urlFor(seo.shareImage)
-      .width(1200)
-      .height(630)
-      .fit("crop")
-      .auto("format")
-      .url();
-  }
-} catch {
-  ogImage = fallbackMeta.image || DEFAULT_OG_IMAGE;
+const slugParam = Astro.params.slug;
+const slug = Array.isArray(slugParam) ? slugParam.join("/") : slugParam || "";
+const pathname = `/${slug}`.replace(/\/+$/, "") || "/";
+const page = await getPageByPath(pathname, false);
+
+if (!page || !page.replaceRouteContent) {
+  throw new Error(`No managed page found for path: ${pathname}`);
 }
 ---
 
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>{title}</title>
-    <meta name="description" content={description} />
-    <meta name="robots" content={robots} />
-    <meta name="author" content="Kaizen Web" />
-    <meta name="publisher" content="Kaizen Web" />
-    <meta property="og:site_name" content={SITE_NAME} />
-    <meta property="og:type" content="website" />
-    <meta property="og:title" content={title} />
-    <meta property="og:description" content={description} />
-    <meta property="og:url" content={canonicalUrl} />
-    {ogImage && <meta property="og:image" content={ogImage} />}
-    <meta
-      name="twitter:card"
-      content={ogImage ? "summary_large_image" : "summary"}
-    />
-    <meta name="twitter:title" content={title} />
-    <meta name="twitter:description" content={description} />
-    {ogImage && <meta name="twitter:image" content={ogImage} />}
-    <link rel="canonical" href={canonicalUrl} />
-  </head>
-  <body>
-    <AstroApp
-      url={pathname}
-      managedPage={shouldRenderManagedContent ? managedPage : null}
-      managedPath={pathname}
-      client:idle
-    />
-  </body>
-</html>
+<ReactRoutePage path={pathname}>
+  <ManagedRoutePage path={pathname} page={page} client:load />
+</ReactRoutePage>

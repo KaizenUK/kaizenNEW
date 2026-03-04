@@ -5,10 +5,10 @@
   "scripts": {
     "dev": "pnpm run clean:caches && astro dev --force",
     "dev:clean": "pnpm run clean:caches && astro dev --force",
-    "build": "rimraf dist .astro && cross-env NODE_OPTIONS='--max-old-space-size=6144' astro build",
+    "build": "rimraf dist .astro && cross-env NODE_OPTIONS='--max-old-space-size=6144' astro build && node scripts/generate-nginx-redirects.mjs",
     "build:snap:high-five": "astro build",
     "build:snap:all": "astro build",
-    "start": "node dist/server/entry.mjs",
+    "start": "astro preview",
     "test": "vitest --run --config vitest.config.ts",
     "clean:caches": "node -e \"const fs=require('node:fs'); for (const p of ['.vite','node_modules/.vite','.astro']) { try { fs.rmSync(p,{ recursive: true, force: true }); } catch {} }\"",
     "format.fix": "prettier --write .",
@@ -46,7 +46,6 @@
   },
   "devDependencies": {
     "@astrojs/check": "0.9.7-beta.1",
-    "@astrojs/node": "10.0.0-beta.6",
     "@astrojs/react": "5.0.0-beta.2",
     "@portabletext/block-tools": "^5.1.0",
     "@radix-ui/react-accordion": "^1.2.12",

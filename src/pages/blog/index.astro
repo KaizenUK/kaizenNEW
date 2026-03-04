@@ -10,13 +10,11 @@ import {
   urlFor,
 } from "../../lib/sanity/client";
 
-export const prerender = false;
-
-const isEditorPreview = Astro.cookies.get("kaizen_studio_auth")?.value === "1";
+export const prerender = true;
 
 const [staticPage, managedPage] = await Promise.all([
-  getStaticPageBySlug("/blog", isEditorPreview),
-  getPageByPath("/blog", isEditorPreview),
+  getStaticPageBySlug("/blog", false),
+  getPageByPath("/blog", false),
 ]);
 const shouldRenderManagedContent = Boolean(managedPage?.replaceRouteContent);
 const posts = shouldRenderManagedContent ? [] : await getAllPosts();

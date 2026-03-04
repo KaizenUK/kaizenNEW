@@ -5,7 +5,6 @@ import {
   SearchIcon, 
   CogIcon 
 } from "@sanity/icons"; // <--- Import icons here
-import { PostSeoStatsField } from "../../components/PostSeoStatsField";
 import { SeoMetaDescriptionField } from "../../components/SeoMetaDescriptionField";
 import { SeoMetaTitleField } from "../../components/SeoMetaTitleField";
 import { SlugQualityField } from "../../components/SlugQualityField";
@@ -161,14 +160,6 @@ export const post = defineType({
     }),
 
     // ── Settings group ─────────────────────────────────────────────
-    defineField({
-      name: "seoStatsPanel",
-      title: "SEO Stats",
-      type: "string",
-      readOnly: true,
-      group: "seo",
-      components: { field: PostSeoStatsField },
-    }),
     defineField({
       name: "author",
       type: "reference",

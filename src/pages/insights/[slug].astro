@@ -1,3 +1,15 @@
 ---
+import { getAllPosts } from "../../lib/sanity/client";
+
+export const prerender = true;
+
+export async function getStaticPaths() {
+  const posts = await getAllPosts();
+
+  return posts.map((post) => ({
+    params: { slug: post.slug },
+  }));
+}
+
 return Astro.redirect(`/blog/${Astro.params.slug ?? ""}`, 301);
 ---

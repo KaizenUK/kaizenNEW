@@ -1,4 +1,4 @@
-import { Suspense, lazy, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { Helmet } from "@/lib/helmet";
 import {
@@ -11,9 +11,8 @@ import {
 import { generateBreadcrumbSchema } from "@/lib/breadcrumb-schema";
 import Header from "@/components/layout/Header";
 import { isReactSnapPrerender } from "@/lib/prerender";
-
-const Footer = lazy(() => import("@/components/layout/Footer"));
-const OffCanvasMenu = lazy(() => import("@/components/layout/OffCanvasMenu"));
+import Footer from "@/components/layout/Footer";
+import OffCanvasMenu from "@/components/layout/OffCanvasMenu";
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -29,7 +28,9 @@ interface LayoutProps {
 const Layout: React.FC<LayoutProps> = ({ children, metaOverride }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [hasOpenedMobileMenu, setHasOpenedMobileMenu] = useState(false);
-  const [shouldRenderFooter, setShouldRenderFooter] = useState(false);
+  const [shouldRenderFooter, setShouldRenderFooter] = useState(
+    typeof window === "undefined",
+  );
   const location = useLocation();
 
   const normalizedPath =
@@ -214,23 +215,17 @@ const Layout: React.FC<LayoutProps> = ({ children, metaOverride }) => {
         <main className="flex-grow">{children}</main>
 
         {shouldRenderFooter ? (
-          <Suspense
-            fallback={<div className="min-h-[420px]" aria-hidden="true" />}
-          >
-            <Footer />
-          </Suspense>
+          <Footer />
         ) : (
           <div className="min-h-[420px]" aria-hidden="true" />
         )}
       </div>
 
       {mobileMenuOpen || hasOpenedMobileMenu ? (
-        <Suspense fallback={null}>
-          <OffCanvasMenu
-            isOpen={mobileMenuOpen}
-            onClose={() => setMobileMenuOpen(false)}
-          />
-        </Suspense>
+        <OffCanvasMenu
+          isOpen={mobileMenuOpen}
+          onClose={() => setMobileMenuOpen(false)}
+        />
       ) : null}
     </>
   );

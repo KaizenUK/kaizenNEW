@@ -1,6 +1,10 @@
 import { EyeOpenIcon } from "@sanity/icons";
 import type { DocumentActionComponent, SanityDocument } from "sanity";
 
+const EDITOR_API_ORIGIN = (
+  import.meta.env.VITE_EDITOR_API_ORIGIN || "http://127.0.0.1:54321/functions/v1"
+).replace(/\/+$/, "");
+
 function resolvePreviewUrl(
   type: string,
   id: string,
@@ -14,7 +18,8 @@ function resolvePreviewUrl(
   const cleanId = id.replace(/^drafts\./, "");
 
   if (type === "post" && slug) {
-    return `/preview/blog/${encodeURIComponent(slug)}?id=${encodeURIComponent(cleanId)}`;
+    const previewPath = `/preview-blog/${encodeURIComponent(slug)}?id=${encodeURIComponent(cleanId)}`;
+    return `${EDITOR_API_ORIGIN}/draft?path=${encodeURIComponent(previewPath)}`;
   }
   return null;
 }

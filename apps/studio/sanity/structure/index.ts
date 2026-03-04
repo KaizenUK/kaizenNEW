@@ -38,7 +38,7 @@ function resolvePostPreviewUrl(doc: SanityDocument): string {
 
   if (!slugValue) return "/blog";
 
-  const previewUrl = `/preview/blog/${encodeURIComponent(slugValue)}`;
+  const previewUrl = `/preview-blog/${encodeURIComponent(slugValue)}`;
   return docId ? `${previewUrl}?id=${encodeURIComponent(docId)}` : previewUrl;
 }
 

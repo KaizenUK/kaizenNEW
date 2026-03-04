@@ -17,7 +17,7 @@ const DOCUMENT_NAVIGATION_PREFIXES = [
   "/studio/",
   "/insights/",
   "/blogdetail/",
-  "/preview/blog/",
+  "/preview-blog/",
 ];
 
 function normalizePath(href: string): string {

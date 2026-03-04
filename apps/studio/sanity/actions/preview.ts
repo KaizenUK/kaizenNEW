@@ -1,6 +1,9 @@
 import type { DocumentActionComponent } from "sanity";
 
 const PREVIEWABLE_TYPES = new Set(["post"]);
+const EDITOR_API_ORIGIN = (
+  import.meta.env.VITE_EDITOR_API_ORIGIN || "http://127.0.0.1:54321/functions/v1"
+).replace(/\/+$/, "");
 
 function getSlug(doc: Record<string, unknown> | null): string {
   if (!doc) return "";
@@ -30,11 +33,11 @@ export const previewAction: DocumentActionComponent = (props) => {
   const normalizedSlug = slug.replace(/^\/+/, "").trim();
 
   if (!normalizedSlug) return null;
-  const previewPath = `/preview/blog/${encodeURIComponent(normalizedSlug)}${
+  const previewPath = `/preview-blog/${encodeURIComponent(normalizedSlug)}${
     docId ? `?id=${encodeURIComponent(docId)}` : ""
   }`;
 
-  const previewUrl = `/api/draft?path=${encodeURIComponent(previewPath)}`;
+  const previewUrl = `${EDITOR_API_ORIGIN}/draft?path=${encodeURIComponent(previewPath)}`;
 
   return {
     label: "Preview",

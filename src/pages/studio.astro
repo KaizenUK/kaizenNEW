@@ -1,0 +1,22 @@
+---
+export const prerender = true;
+
+const studioOrigin = (
+  import.meta.env.PUBLIC_STUDIO_URL || "https://studio.kaizenweb.co.uk"
+).replace(/\/+$/, "");
+---
+
+<!doctype html>
+<html lang="en-GB">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Kaizen CMS</title>
+    <meta name="robots" content="noindex, nofollow" />
+    <meta http-equiv="refresh" content={`0;url=${studioOrigin}`} />
+    <link rel="canonical" href={studioOrigin} />
+  </head>
+  <body style="font-family: Inter, system-ui, sans-serif; padding: 24px;">
+    Redirecting to <a href={studioOrigin}>{studioOrigin}</a>
+  </body>
+</html>

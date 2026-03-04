@@ -522,6 +522,14 @@ const PAGE_BY_SLUGS_QUERY = `*[_type == "page" && slug.current in $slugs][0] {
   }
 }`;
 
+const MANAGED_PAGE_ROUTES_QUERY = `*[
+  _type == "page" &&
+  coalesce(replaceRouteContent, false) == true &&
+  defined(slug.current)
+]{
+  "slug": slug.current
+}`;
+
 function normalizeRoutePath(pathname: string): string {
   const raw = String(pathname ?? "").trim();
   if (!raw || raw === "/") return "/";
@@ -669,4 +677,24 @@ export async function getPageByPath(
   });
 
   return normalizeManagedPage(page, pathname);
+}
+
+export async function getManagedRoutePaths(): Promise<string[]> {
+  if (!sanityClient) return [];
+
+  const pages = await sanityClient.fetch<Array<{ slug?: string }>>(
+    MANAGED_PAGE_ROUTES_QUERY,
+  );
+
+  return Array.from(
+    new Set(
+      (Array.isArray(pages) ? pages : [])
+        .map((page) => String(page?.slug ?? "").trim())
+        .filter(Boolean)
+        .map((slug) => {
+          if (slug === "home" || slug === "index") return "/";
+          return slug.startsWith("/") ? slug : `/${slug}`;
+        }),
+    ),
+  );
 }

@@ -1,14 +1,18 @@
 import type { DocumentActionComponent } from "sanity";
 
 const DEPLOYABLE_SCHEMA_TYPES = new Set(["post", "page", "staticPage"]);
+const EDITOR_API_ORIGIN = (
+  import.meta.env.VITE_EDITOR_API_ORIGIN || "http://127.0.0.1:54321/functions/v1"
+).replace(/\/+$/, "");
 
 async function triggerStudioDeploy(payload: {
   documentId?: string;
   schemaType?: string;
 }): Promise<void> {
-  const response = await fetch("/api/deploy", {
+  const response = await fetch(`${EDITOR_API_ORIGIN}/deploy`, {
     method: "POST",
     headers: { "content-type": "application/json" },
+    credentials: "include",
     body: JSON.stringify(payload),
   });
 

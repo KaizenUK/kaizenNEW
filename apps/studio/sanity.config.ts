@@ -16,11 +16,20 @@ import { studioStructure } from "./sanity/structure";
 import { singletonPlugin } from "./sanity/plugins/singleton";
 
 import Dashboard from "./sanity/components/Dashboard";
-import SeoDashboard from "./sanity/components/SeoDashboard";
 import SeoTasksDashboard from "./sanity/components/SeoTasksDashboard";
 import StudioNavbar from "./sanity/components/StudioNavbar";
 
 import { OpenPreviewAction } from "./sanity/actions/OpenPreviewAction";
+
+const editorApiOrigin = (
+  process.env.VITE_EDITOR_API_ORIGIN || "http://127.0.0.1:54321/functions/v1"
+).replace(/\/+$/, "");
+const publicSiteOrigin = (
+  process.env.VITE_PUBLIC_SITE_ORIGIN || "http://localhost:4321"
+).replace(/\/+$/, "");
+const studioOrigin = (
+  process.env.VITE_STUDIO_ORIGIN || "http://localhost:3333"
+).replace(/\/+$/, "");
 
 function normalizeDocumentId(value: unknown): string {
   return String(value ?? "").replace(/^drafts\./, "").trim();
@@ -47,16 +56,39 @@ function InVisionAction(props: any) {
       const slug = normalizeSlugPathSegment(doc.slug?.current);
       const docId = normalizeDocumentId(doc._id);
       const previewPath = slug
-        ? `/preview/blog/${encodeURIComponent(slug)}${
+        ? `/preview-blog/${encodeURIComponent(slug)}${
             docId ? `?id=${encodeURIComponent(docId)}` : ""
           }`
         : "/blog";
 
+      const draftUrl = `${editorApiOrigin}/draft?path=${encodeURIComponent(previewPath)}`;
       window.location.href = `/studio/presentation?preview=${encodeURIComponent(
-        previewPath,
+        draftUrl,
       )}`;
     },
   };
+}
+
+function buildDraftToggleUrl(disable = false): string {
+  const redirectPath = "/blog";
+  const disableSegment = disable ? "&disable=1" : "";
+  return `${editorApiOrigin}/draft?redirectTo=${encodeURIComponent(redirectPath)}${disableSegment}`;
+}
+
+function buildPostPreviewPath(doc: Record<string, string> | null): string {
+  const slug = normalizeSlugPathSegment(doc?.slug);
+  const docId = normalizeDocumentId(doc?.id);
+  return slug
+    ? `/preview-blog/${encodeURIComponent(slug)}${
+        docId ? `?id=${encodeURIComponent(docId)}` : ""
+      }`
+    : "/blog";
+}
+
+function buildPostPreviewUrl(doc: Record<string, string> | null): string {
+  const previewPath = buildPostPreviewPath(doc);
+  if (previewPath === "/blog") return `${publicSiteOrigin}/blog`;
+  return `${editorApiOrigin}/draft?path=${encodeURIComponent(previewPath)}`;
 }
 
 export default defineConfig({
@@ -87,42 +119,27 @@ export default defineConfig({
     tags({}),
     colorInput(),
     presentationTool({
-      allowOrigins: [
-        "http://localhost:4321",
-        "http://127.0.0.1:3333",
-        "http://localhost:3333",
-      ],
+      allowOrigins: [publicSiteOrigin, studioOrigin, "http://localhost:4321"],
       previewUrl: {
-        // The URL of your Astro site, localhost:4321 is the default for Astro
-        origin: "http://localhost:4321",
+        origin: publicSiteOrigin,
         initial: "/blog",
         previewMode: {
-          enable: "http://localhost:4321/api/draft?redirectTo=/blog",
-          disable: "http://localhost:4321/api/draft?disable=1&redirectTo=/blog",
+          enable: buildDraftToggleUrl(false),
+          disable: buildDraftToggleUrl(true),
         },
       },
       resolve: {
         locations: {
           post: {
             select: { title: "title", slug: "slug.current", id: "_id" },
-            resolve: (doc: Record<string, string> | null) => {
-              const slug = normalizeSlugPathSegment(doc?.slug);
-              const docId = normalizeDocumentId(doc?.id);
-              const href = slug
-                ? `/preview/blog/${encodeURIComponent(slug)}${
-                    docId ? `?id=${encodeURIComponent(docId)}` : ""
-                  }`
-                : "/blog";
-
-              return {
-                locations: [
-                  {
-                    title: doc?.title || "Post",
-                    href,
-                  },
-                ],
-              };
-            },
+            resolve: (doc: Record<string, string> | null) => ({
+              locations: [
+                {
+                  title: doc?.title || "Post",
+                  href: buildPostPreviewUrl(doc),
+                },
+              ],
+            }),
           },
         },
       },
@@ -147,11 +164,6 @@ export default defineConfig({
       name: "seoTasks",
       title: "SEO Tasks",
       component: SeoTasksDashboard,
-    },
-    {
-      name: "seo",
-      title: "Analytics",
-      component: SeoDashboard,
     },
     ...prev,
   ],
@@ -179,7 +191,7 @@ export default defineConfig({
           "current" in document.slug
             ? String((document.slug as { current?: string }).current ?? "").trim()
             : "";
-        if (slug) return `/preview/blog/${slug}`;
+        if (slug) return `${publicSiteOrigin}/blog/${slug}`;
       }
 
       return prev;
