@@ -15,11 +15,11 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  web-deploy:
-    name: Build and Deploy SSR
+  static-deploy:
+    name: Build and Deploy Static Sites
     runs-on: ubuntu-latest
     env:
-      NODE_OPTIONS: --max-old-space-size=6144 # High limit for the GitHub runner
+      NODE_OPTIONS: --max-old-space-size=6144
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -32,7 +32,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
           cache: pnpm
           cache-dependency-path: pnpm-lock.yaml
 
@@ -43,9 +43,10 @@ jobs:
         run: |
           pnpm install --frozen-lockfile
           pnpm run build
+          pnpm --dir apps/studio install --frozen-lockfile
+          pnpm --dir apps/studio run build
 
-      # --- PRODUCTION DEPLOY ---
-      - name: Deploy Production SSR on VPS
+      - name: Deploy Production Public Static on VPS
         if: github.ref == 'refs/heads/main' || (github.event_name == 'repository_dispatch' && (github.event.client_payload.target == 'main' || github.event.client_payload.target == 'prod' || github.event.client_payload.target == 'production' || github.event.client_payload.target == ''))
         uses: appleboy/ssh-action@v1.2.0
         with:
@@ -56,34 +57,44 @@ jobs:
           script_stop: true
           script: |
             set -euo pipefail
-            export APP_DIR="${{ secrets.VPS_APP_DIR_PROD }}"
-            export APP_NAME="${{ secrets.VPS_PM2_APP_PROD }}"
-            export PORT="${{ secrets.VPS_PORT_PROD || '4321' }}"
-            export NODE_OPTIONS="--max-old-space-size=3072" 
+
+            APP_DIR="${{ secrets.VPS_APP_DIR_PROD }}"
+            PUBLIC_WEB_ROOT="${{ secrets.VPS_WEB_ROOT_PROD }}"
+            REDIRECTS_INCLUDE_PATH="${{ secrets.VPS_NGINX_REDIRECTS_INCLUDE_PROD || '' }}"
+            PUBLIC_DOMAIN="${{ secrets.VPS_PUBLIC_DOMAIN_PROD || 'kaizenweb.co.uk' }}"
 
             cd "$APP_DIR"
             git config --global --add safe.directory "$APP_DIR"
-
-            # Sync to the "New Reality"
             git fetch origin main
             git reset --hard origin/main
 
-            # Build phase
             corepack enable
             corepack pnpm install --frozen-lockfile
             rm -rf dist .astro
             corepack pnpm run build
 
-            # Zero-Downtime Restart Logic
-            # Instead of delete, we use 'start' with '--update-env' which restarts if running
-            pm2 start dist/server/entry.mjs --name "$APP_NAME" --update-env || pm2 restart "$APP_NAME"
+            mkdir -p "$PUBLIC_WEB_ROOT"
+            rsync -a --delete dist/ "$PUBLIC_WEB_ROOT/"
 
-            # Health Check (Wait for boot)
-            sleep 5
-            curl -fsS "http://127.0.0.1:$PORT/" || (pm2 logs "$APP_NAME" --lines 50 && exit 1)
+            if [ -n "$REDIRECTS_INCLUDE_PATH" ]; then
+              if command -v sudo >/dev/null 2>&1; then
+                SUDO="sudo"
+              else
+                SUDO=""
+              fi
 
-      # --- STAGING DEPLOY ---
-      - name: Deploy Staging SSR on VPS
+              $SUDO install -m 0644 dist/redirects.generated.conf "$REDIRECTS_INCLUDE_PATH"
+              $SUDO nginx -t
+              if command -v systemctl >/dev/null 2>&1; then
+                $SUDO systemctl reload nginx
+              else
+                $SUDO service nginx reload
+              fi
+            fi
+
+            curl -fsS -H "Host: $PUBLIC_DOMAIN" http://127.0.0.1/ >/dev/null
+
+      - name: Deploy Staging Public Static on VPS
         if: github.ref == 'refs/heads/stage' || (github.event_name == 'repository_dispatch' && (github.event.client_payload.target == 'stage' || github.event.client_payload.target == 'staging'))
         uses: appleboy/ssh-action@v1.2.0
         with:
@@ -94,23 +105,114 @@ jobs:
           script_stop: true
           script: |
             set -euo pipefail
-            export APP_DIR="${{ secrets.VPS_APP_DIR_STAGE }}"
-            export APP_NAME="${{ secrets.VPS_PM2_APP_STAGE }}"
-            export PORT="${{ secrets.VPS_PORT_STAGE || '4322' }}"
-            export NODE_OPTIONS="--max-old-space-size=3072"
+
+            APP_DIR="${{ secrets.VPS_APP_DIR_STAGE }}"
+            PUBLIC_WEB_ROOT="${{ secrets.VPS_WEB_ROOT_STAGE }}"
+            REDIRECTS_INCLUDE_PATH="${{ secrets.VPS_NGINX_REDIRECTS_INCLUDE_STAGE || '' }}"
+            PUBLIC_DOMAIN="${{ secrets.VPS_PUBLIC_DOMAIN_STAGE || 'stage.kaizenweb.co.uk' }}"
 
             cd "$APP_DIR"
+            git config --global --add safe.directory "$APP_DIR"
             git fetch origin stage
             git reset --hard origin/stage
 
             corepack enable
             corepack pnpm install --frozen-lockfile
+            rm -rf dist .astro
             corepack pnpm run build
 
-            pm2 start dist/server/entry.mjs --name "$APP_NAME" --update-env || pm2 restart "$APP_NAME"
+            mkdir -p "$PUBLIC_WEB_ROOT"
+            rsync -a --delete dist/ "$PUBLIC_WEB_ROOT/"
 
-            sleep 5
-            curl -fsS "http://127.0.0.1:$PORT/" || (pm2 logs "$APP_NAME" --lines 50 && exit 1)
+            if [ -n "$REDIRECTS_INCLUDE_PATH" ]; then
+              if command -v sudo >/dev/null 2>&1; then
+                SUDO="sudo"
+              else
+                SUDO=""
+              fi
+
+              $SUDO install -m 0644 dist/redirects.generated.conf "$REDIRECTS_INCLUDE_PATH"
+              $SUDO nginx -t
+              if command -v systemctl >/dev/null 2>&1; then
+                $SUDO systemctl reload nginx
+              else
+                $SUDO service nginx reload
+              fi
+            fi
+
+            curl -fsS -H "Host: $PUBLIC_DOMAIN" http://127.0.0.1/ >/dev/null
+
+      - name: Deploy Production Studio Static on VPS
+        if: github.ref == 'refs/heads/main' || (github.event_name == 'repository_dispatch' && (github.event.client_payload.target == 'main' || github.event.client_payload.target == 'prod' || github.event.client_payload.target == 'production' || github.event.client_payload.target == ''))
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          port: ${{ secrets.VPS_PORT || '22' }}
+          script_stop: true
+          script: |
+            set -euo pipefail
+
+            APP_DIR="${{ secrets.VPS_APP_DIR_PROD }}"
+            STUDIO_WEB_ROOT="${{ secrets.VPS_STUDIO_WEB_ROOT_PROD }}"
+            STUDIO_DOMAIN="${{ secrets.VPS_STUDIO_DOMAIN_PROD || 'studio.kaizenweb.co.uk' }}"
+
+            if [ -z "$STUDIO_WEB_ROOT" ]; then
+              echo "VPS_STUDIO_WEB_ROOT_PROD is empty. Skipping studio deploy."
+              exit 0
+            fi
+
+            cd "$APP_DIR"
+            git config --global --add safe.directory "$APP_DIR"
+            git fetch origin main
+            git reset --hard origin/main
+
+            corepack enable
+            corepack pnpm --dir apps/studio install --frozen-lockfile
+            rm -rf apps/studio/dist
+            corepack pnpm --dir apps/studio run build
+
+            mkdir -p "$STUDIO_WEB_ROOT/studio"
+            rsync -a --delete apps/studio/dist/ "$STUDIO_WEB_ROOT/studio/"
+
+            curl -fsS -H "Host: $STUDIO_DOMAIN" http://127.0.0.1/studio/ >/dev/null
+
+      - name: Deploy Staging Studio Static on VPS
+        if: github.ref == 'refs/heads/stage' || (github.event_name == 'repository_dispatch' && (github.event.client_payload.target == 'stage' || github.event.client_payload.target == 'staging'))
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          port: ${{ secrets.VPS_PORT || '22' }}
+          script_stop: true
+          script: |
+            set -euo pipefail
+
+            APP_DIR="${{ secrets.VPS_APP_DIR_STAGE }}"
+            STUDIO_WEB_ROOT="${{ secrets.VPS_STUDIO_WEB_ROOT_STAGE }}"
+            STUDIO_DOMAIN="${{ secrets.VPS_STUDIO_DOMAIN_STAGE || 'studio-stage.kaizenweb.co.uk' }}"
+
+            if [ -z "$STUDIO_WEB_ROOT" ]; then
+              echo "VPS_STUDIO_WEB_ROOT_STAGE is empty. Skipping studio deploy."
+              exit 0
+            fi
+
+            cd "$APP_DIR"
+            git config --global --add safe.directory "$APP_DIR"
+            git fetch origin stage
+            git reset --hard origin/stage
+
+            corepack enable
+            corepack pnpm --dir apps/studio install --frozen-lockfile
+            rm -rf apps/studio/dist
+            corepack pnpm --dir apps/studio run build
+
+            mkdir -p "$STUDIO_WEB_ROOT/studio"
+            rsync -a --delete apps/studio/dist/ "$STUDIO_WEB_ROOT/studio/"
+
+            curl -fsS -H "Host: $STUDIO_DOMAIN" http://127.0.0.1/studio/ >/dev/null
 
       - name: Discord Notification
         if: always()
@@ -118,4 +220,4 @@ jobs:
         with:
           webhook: ${{ secrets.DISCORD_WEBHOOK }}
           status: ${{ job.status }}
-          title: "Deployment to ${{ github.ref_name }}"
+          title: "Static deploy to ${{ github.ref_name }}"

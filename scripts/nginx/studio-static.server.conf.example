@@ -1,0 +1,39 @@
+# CloudPanel Nginx server block example for studio.kaizenweb.co.uk (static Studio output)
+#
+# Replace placeholder web root path before use.
+
+server {
+  listen 80;
+  listen [::]:80;
+  listen 443 ssl;
+  listen [::]:443 ssl;
+  http2 on;
+
+  server_name studio.kaizenweb.co.uk;
+
+  {{ssl_certificate_key}}
+  {{ssl_certificate}}
+
+  {{nginx_access_log}}
+  {{nginx_error_log}}
+
+  root /home/kaizenweb/public_html/studio.kaizenweb.co.uk;
+  index index.html;
+
+  if ($scheme != "https") {
+    return 301 https://$host$request_uri;
+  }
+
+  location ~ /.well-known {
+    auth_basic off;
+    allow all;
+  }
+
+  location = / {
+    return 302 /studio/;
+  }
+
+  location /studio/ {
+    try_files $uri $uri/ /studio/index.html;
+  }
+}
