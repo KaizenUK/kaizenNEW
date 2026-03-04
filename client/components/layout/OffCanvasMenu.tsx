@@ -1,8 +1,8 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
 import KaizenLogo from "@/components/KaizenLogo";
 import { cn } from "@/lib/utils";
 import { requiresDocumentNavigation } from "@/lib/navigation";
+import AppLink from "@/components/routing/AppLink";
 import {
   ArrowRight,
   BookOpen,
@@ -79,9 +79,9 @@ const OffCanvasMenu: React.FC<OffCanvasMenuProps> = ({ isOpen, onClose }) => {
         )}
       >
         <header className="flex items-center justify-between border-b border-white/10 px-5 py-4">
-          <Link to="/" className="flex items-center gap-2" onClick={onClose}>
+          <AppLink href="/" className="flex items-center gap-2" onClick={onClose}>
             <KaizenLogo className="h-6 w-[104px] text-white" />
-          </Link>
+          </AppLink>
           <button
             type="button"
             aria-label="Close menu"
@@ -152,9 +152,13 @@ const OffCanvasMenu: React.FC<OffCanvasMenuProps> = ({ isOpen, onClose }) => {
                                     {content}
                                   </a>
                                 ) : (
-                                  <Link to={item.href} className={itemClassName} onClick={onClose}>
+                                  <AppLink
+                                    href={item.href}
+                                    className={itemClassName}
+                                    onClick={onClose}
+                                  >
                                     {content}
-                                  </Link>
+                                  </AppLink>
                                 )}
                               </li>
                             );
@@ -170,21 +174,21 @@ const OffCanvasMenu: React.FC<OffCanvasMenuProps> = ({ isOpen, onClose }) => {
         </div>
 
         <footer className="space-y-2 border-t border-white/10 bg-[#060a11] px-4 py-4">
-          <Link
-            to="/performance-scanner"
+          <AppLink
+            href="/performance-scanner"
             onClick={onClose}
             className="inline-flex w-full items-center justify-center rounded-full border border-white/15 bg-white/[0.04] px-4 py-2.5 text-sm font-semibold text-slate-100 transition hover:border-cyan-300/55 hover:text-cyan-200"
           >
             Free Speed Test
-          </Link>
-          <Link
-            to="/contact"
+          </AppLink>
+          <AppLink
+            href="/contact"
             onClick={onClose}
             className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-gradient-to-r from-cyan-500 to-blue-500 px-4 py-2.5 text-sm font-semibold text-white shadow-[0_10px_25px_rgba(34,211,238,0.35)] transition hover:scale-[1.01]"
           >
             Start Your Project
             <ArrowRight size={14} />
-          </Link>
+          </AppLink>
           <div className="grid grid-cols-2 gap-2 pt-1">
             <a
               href="/blog"
@@ -194,14 +198,14 @@ const OffCanvasMenu: React.FC<OffCanvasMenuProps> = ({ isOpen, onClose }) => {
               <Newspaper size={13} />
               Blog
             </a>
-            <Link
-              to="/contact"
+            <AppLink
+              href="/contact"
               onClick={onClose}
               className="inline-flex items-center justify-center gap-2 rounded-full border border-white/15 px-3 py-2 text-xs font-medium text-slate-300 transition hover:border-cyan-300/45 hover:text-cyan-200"
             >
               <Mail size={13} />
               Contact
-            </Link>
+            </AppLink>
           </div>
         </footer>
       </aside>

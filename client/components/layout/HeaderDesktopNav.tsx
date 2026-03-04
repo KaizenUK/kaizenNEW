@@ -1,4 +1,3 @@
-import { Link, useLocation } from "react-router-dom";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import {
@@ -22,6 +21,7 @@ import {
   type ServiceItem,
 } from "./header-menu-data";
 import { requiresDocumentNavigation } from "@/lib/navigation";
+import AppLink from "@/components/routing/AppLink";
 
 const ICON_BY_PATTERN: Array<{
   match: RegExp;
@@ -46,7 +46,6 @@ export default function HeaderDesktopNav() {
   const [activeMenu, setActiveMenu] = useState<DesktopMenuKey | null>(null);
   const closeTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const navRef = useRef<HTMLElement | null>(null);
-  const location = useLocation();
 
   const clearCloseTimeout = useCallback(() => {
     if (closeTimeoutRef.current) {
@@ -54,10 +53,6 @@ export default function HeaderDesktopNav() {
       closeTimeoutRef.current = null;
     }
   }, []);
-
-  useEffect(() => {
-    setActiveMenu(null);
-  }, [location.pathname]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -222,13 +217,13 @@ export default function HeaderDesktopNav() {
                                   {content}
                                 </a>
                               ) : (
-                                <Link
-                                  to={item.href}
+                                <AppLink
+                                  href={item.href}
                                   className={itemClassName}
                                   onClick={() => setActiveMenu(null)}
                                 >
                                   {content}
-                                </Link>
+                                </AppLink>
                               )}
                             </motion.li>
                           );
@@ -252,22 +247,22 @@ export default function HeaderDesktopNav() {
                     <Gauge className="h-4 w-4" />
                     Free Speed Test
                   </a>
-                  <Link
-                    to="/contact"
+                  <AppLink
+                    href="/contact"
                     className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-cyan-500 to-blue-500 px-4 py-2 text-sm font-semibold text-white shadow-[0_10px_25px_rgba(34,211,238,0.35)] transition hover:scale-[1.02]"
                     onClick={() => setActiveMenu(null)}
                   >
                     Start Your Project
                     <ArrowRight className="h-4 w-4" />
-                  </Link>
-                  <Link
-                    to="/about"
+                  </AppLink>
+                  <AppLink
+                    href="/about"
                     className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-transparent px-4 py-2 text-sm font-semibold text-slate-300 transition hover:border-slate-300 hover:text-white"
                     onClick={() => setActiveMenu(null)}
                   >
                     <Globe2 className="h-4 w-4" />
                     About Kaizen
-                  </Link>
+                  </AppLink>
                 </motion.div>
               </div>
             </motion.div>

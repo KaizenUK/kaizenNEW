@@ -1,6 +1,4 @@
-import { Resend } from "npm:resend";
-
-const resend = new Resend(Deno.env.get("RESEND_API_KEY"));
+import { sendResendEmail } from "../_shared/resend.ts";
 const hubspotToken = Deno.env.get("HUBSPOT_ACCESS_TOKEN");
 
 const logoUrl = "https://kaizenweb.co.uk/kaizenweb-logo-light-mode-260x50.png";
@@ -117,7 +115,7 @@ Deno.serve(async (req) => {
     </html>
   `;
 
-  const emailReq = resend.emails.send({
+  const emailReq = sendResendEmail({
     from: "Kaizen Bot <system@kaizenweb.co.uk>",
     to: ["sales@kaizenweb.co.uk"],
     reply_to: record.email,

@@ -2,7 +2,7 @@
 export const prerender = false;
 
 const { path } = Astro.params;
-const studioPath = typeof path === "string" ? path : Array.isArray(path) ? path.join("/") : "";
+const studioPath = typeof path === "string" ? path : "";
 const target = `/studio/${studioPath}`.replace(/\/+$/, "");
 ---
 

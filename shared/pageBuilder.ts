@@ -83,6 +83,21 @@ export interface ManagedRichTextSection {
   settings?: ManagedSectionSettings;
 }
 
+export interface ManagedFeatureItem {
+  _key?: string;
+  _type?: "featureItem";
+  title?: string;
+  text?: string;
+}
+
+export interface ManagedFeaturesSection {
+  _type: "features";
+  _key?: string;
+  heading?: string;
+  items?: ManagedFeatureItem[];
+  settings?: ManagedSectionSettings;
+}
+
 export interface ManagedCtaSection {
   _type: "ctaSection";
   _key?: string;

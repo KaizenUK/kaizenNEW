@@ -30,10 +30,10 @@ Reach and maintain Lighthouse Performance at 90+ without changing visual design 
 3. Chasing warnings without validating in trace and Lighthouse deltas.
 
 ## Validation Protocol
-1. Run `npm run build:client`.
+1. Run `pnpm run build`.
 2. Run Lighthouse and compare JSON reports against previous baseline.
 3. Inspect critical request chain. Target: primarily `HTML -> index-*.js`.
-4. Check trace deltas with `npm run trace:summary`.
+4. Check trace deltas with `pnpm run trace:summary`.
 5. Keep changes only when trends improve or stay neutral with clear tradeoff.
 
 ## Definition of Done

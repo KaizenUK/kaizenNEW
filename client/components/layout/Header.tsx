@@ -1,4 +1,3 @@
-import { Link } from "react-router-dom";
 import KaizenLogo from "@/components/KaizenLogo";
 import { Mail, Newspaper } from "lucide-react";
 import {
@@ -7,6 +6,7 @@ import {
   XIcon,
 } from "@/components/icons/CriticalIcons";
 import HeaderDesktopNav from "./HeaderDesktopNav";
+import AppLink from "@/components/routing/AppLink";
 
 interface HeaderProps {
   mobileMenuOpen: boolean;
@@ -22,47 +22,47 @@ const Header: React.FC<HeaderProps> = ({
       <div className="site-header-wrap mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-8">
         <div className="site-header-inner flex items-center h-16">
           {/* Logo */}
-          <Link
-            to="/"
+          <AppLink
+            href="/"
             className="mr-5 flex flex-shrink-0 items-center gap-2 transition hover:opacity-85"
           >
             <KaizenLogo className="h-7 w-[122px] text-white" />
-          </Link>
+          </AppLink>
 
           <HeaderDesktopNav />
 
           {/* Right Actions - pushed to the right */}
           <div className="ml-auto flex items-center gap-1.5">
-            <Link
-              to="/blog"
+            <AppLink
+              href="/blog"
               aria-label="Open blog insights"
               className="hidden h-8 w-8 items-center justify-center rounded-full border border-white/15 text-slate-300 transition hover:border-cyan-300 hover:text-cyan-200 lg:inline-flex"
             >
               <Newspaper size={14} />
-            </Link>
+            </AppLink>
 
-            <Link
-              to="/contact"
+            <AppLink
+              href="/contact"
               aria-label="Contact Kaizen"
               className="hidden h-8 w-8 items-center justify-center rounded-full border border-white/15 text-slate-300 transition hover:border-cyan-300 hover:text-cyan-200 lg:inline-flex"
             >
               <Mail size={14} />
-            </Link>
+            </AppLink>
 
-            <Link
-              to="/performance-scanner"
+            <AppLink
+              href="/performance-scanner"
               className="site-header-speed hidden items-center gap-2 rounded-full border border-white/15 bg-white/[0.04] px-4 py-2 text-sm font-semibold text-slate-100 transition hover:border-cyan-300/55 hover:text-cyan-200 xl:inline-flex"
             >
               Free Speed Test
-            </Link>
+            </AppLink>
 
-            <Link
-              to="/contact"
+            <AppLink
+              href="/contact"
               className="site-header-cta hidden items-center gap-2 rounded-full bg-gradient-to-r from-cyan-500 to-blue-500 px-5 py-2.5 text-sm font-semibold text-white shadow-[0_10px_25px_rgba(34,211,238,0.35)] transition hover:scale-[1.02] sm:inline-flex"
             >
               Start Your Project
               <ArrowRightIcon size={14} />
-            </Link>
+            </AppLink>
 
             {/* Mobile Menu Button */}
             <button

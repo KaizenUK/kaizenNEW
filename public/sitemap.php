@@ -24,7 +24,7 @@ function build_loc(string $base, string $path): string {
     return rtrim($loc, '/');
 }
 
-// Read build timestamp if available (set during npm run build)
+// Read build timestamp if available (set during pnpm run build)
 $buildTimestamp = null;
 $timestampFile = dirname(__FILE__) . '/build-timestamp.txt';
 if (file_exists($timestampFile)) {

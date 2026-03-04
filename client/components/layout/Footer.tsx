@@ -1,15 +1,12 @@
 import { useState, type FormEvent } from "react";
-import { Link, useLocation } from "react-router-dom";
 import KaizenLogo from "@/components/KaizenLogo";
 import { ArrowRight, Linkedin, Instagram, Check } from "lucide-react";
-import { requiresDocumentNavigation } from "@/lib/navigation";
+import AppLink from "@/components/routing/AppLink";
 
 const CONSENT_TEXT =
   "I consent to receiving marketing emails from Kaizen Web Ltd about services, insights, and offers. I understand I can unsubscribe at any time.";
 
 const Footer: React.FC = () => {
-  const location = useLocation();
-
   const buildNumberRaw = (import.meta.env.VITE_BUILD_NUMBER || "").trim();
   const buildShaRaw = (import.meta.env.VITE_BUILD_SHA || "").trim();
   const buildShaShort = buildShaRaw ? buildShaRaw.slice(0, 7) : "";
@@ -66,7 +63,8 @@ const Footer: React.FC = () => {
           email: email.toLowerCase().trim(),
           marketing_consent: true,
           consent_text: CONSENT_TEXT,
-          source_page: location.pathname,
+          source_page:
+            typeof window !== "undefined" ? window.location.pathname : "/",
           user_agent: typeof navigator !== "undefined" ? navigator.userAgent : null,
         });
 
@@ -215,7 +213,7 @@ const Footer: React.FC = () => {
             <h2 className="text-4xl sm:text-5xl lg:text-6xl font-medium tracking-tight text-white max-w-xl">
               Get started today
             </h2>
-            <Link to="/contact" className="group flex items-center gap-0">
+            <AppLink href="/contact" className="group flex items-center gap-0">
               <span className="px-6 py-5 bg-cyan-500 text-white text-xs font-medium uppercase tracking-widest border border-cyan-500 transition-colors hover:bg-cyan-600 hover:border-cyan-600">
                 Start Your Project
               </span>
@@ -225,7 +223,7 @@ const Footer: React.FC = () => {
                   className="transition-transform group-hover:translate-x-1"
                 />
               </span>
-            </Link>
+            </AppLink>
           </div>
         </div>
 
@@ -251,12 +249,12 @@ const Footer: React.FC = () => {
                   <span className="block">Wirral, Merseyside</span>
                   <span className="block">United Kingdom</span>
                 </address>
-                <Link
-                  to="/contact"
+                <AppLink
+                  href="/contact"
                   className="text-white/60 hover:text-white transition text-sm text-left underline underline-offset-2"
                 >
                   Contact us
-                </Link>
+                </AppLink>
               </div>
             </div>
 
@@ -350,21 +348,12 @@ const Footer: React.FC = () => {
             <ul className="flex flex-wrap items-center justify-center gap-x-6 gap-y-3">
               {footerLinks.map((link) => (
                 <li key={link.href}>
-                  {requiresDocumentNavigation(link.href) ? (
-                    <a
-                      href={link.href}
-                      className="text-xs font-medium uppercase tracking-widest text-white/80 hover:text-white transition"
-                    >
-                      {link.label}
-                    </a>
-                  ) : (
-                    <Link
-                      to={link.href}
-                      className="text-xs font-medium uppercase tracking-widest text-white/80 hover:text-white transition"
-                    >
-                      {link.label}
-                    </Link>
-                  )}
+                  <AppLink
+                    href={link.href}
+                    className="text-xs font-medium uppercase tracking-widest text-white/80 hover:text-white transition"
+                  >
+                    {link.label}
+                  </AppLink>
                 </li>
               ))}
             </ul>
