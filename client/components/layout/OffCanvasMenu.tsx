@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import KaizenLogo from "@/components/KaizenLogo";
 import { cn } from "@/lib/utils";
+import { requiresDocumentNavigation } from "@/lib/navigation";
 import {
   ArrowRight,
   BookOpen,
@@ -27,9 +28,6 @@ interface OffCanvasMenuProps {
   isOpen: boolean;
   onClose: () => void;
 }
-
-const requiresDocumentNavigation = (href: string): boolean =>
-  /^\/(blog|studio|insights|blogdetail)(\/|$)/.test(href);
 
 const SECTION_CONFIG: Array<{ key: DesktopMenuKey; label: string }> = [
   { key: "services", label: "Services" },

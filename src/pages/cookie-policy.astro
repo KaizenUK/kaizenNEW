@@ -1,0 +1,56 @@
+---
+import StaticPageLayout from "../layouts/StaticPageLayout.astro";
+
+export const prerender = true;
+---
+
+<StaticPageLayout path="/cookie-policy">
+  <section class="bg-gradient-to-br from-kaizen-dark via-slate-900 to-kaizen-dark py-16 text-white md:py-24">
+    <div class="container mx-auto px-4">
+      <div class="mx-auto max-w-3xl text-center">
+        <h1 class="mb-6 text-5xl font-heading font-bold md:text-6xl">Cookie Policy</h1>
+        <p class="text-xl text-white/70">
+          A simple, clear list of the cookies this site uses and why.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="bg-white py-20 md:py-28">
+    <div class="container mx-auto px-4">
+      <div class="prose prose-lg mx-auto max-w-3xl text-kaizen-text-dark/80">
+        <h2 class="font-heading text-kaizen-dark">What Is a Cookie?</h2>
+        <p>
+          A cookie is a small text file stored in your browser. It helps a website remember you.
+          We use cookies to make the site function and improve your experience.
+        </p>
+
+        <h2 class="font-heading text-kaizen-dark">The Cookies We Use</h2>
+        <h3 class="font-heading text-kaizen-dark">Strictly Necessary Cookies</h3>
+        <p>
+          Essential cookies are required for the site to work, including cookie preference storage and core platform behavior.
+        </p>
+
+        <h3 class="font-heading text-kaizen-dark">Functional Cookies</h3>
+        <p>
+          Functional cookies support chat and scheduling features, including conversation memory and booking flow.
+        </p>
+
+        <h3 class="font-heading text-kaizen-dark">Analytics Cookies</h3>
+        <p>
+          Analytics cookies help us understand how visitors use the site. These only run when you consent.
+        </p>
+
+        <h2 class="font-heading text-kaizen-dark">How to Manage Consent</h2>
+        <p>
+          You can change cookie preferences at any time from our cookie controls, or manage cookies directly in your browser settings.
+        </p>
+
+        <p>
+          For personal data handling details, see our
+          <a href="/privacy-policy" class="font-semibold text-kaizen-cyan no-underline hover:underline"> Privacy Policy</a>.
+        </p>
+      </div>
+    </div>
+  </section>
+</StaticPageLayout>

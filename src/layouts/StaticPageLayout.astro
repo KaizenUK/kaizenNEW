@@ -1,0 +1,101 @@
+---
+import "../../client/global.css";
+import {
+  DEFAULT_OG_IMAGE,
+  SITE_NAME,
+  getPageMeta,
+} from "../../client/lib/seo";
+
+interface Props {
+  path: string;
+  title?: string;
+  description?: string;
+  robots?: string;
+}
+
+const {
+  path,
+  title: titleOverride,
+  description: descriptionOverride,
+  robots: robotsOverride,
+} = Astro.props;
+
+const meta = getPageMeta(path);
+const title = titleOverride || meta.title;
+const description = descriptionOverride || meta.description;
+const siteUrl = (import.meta.env.PUBLIC_SITE_URL || "https://kaizenweb.co.uk").replace(
+  /\/$/,
+  "",
+);
+const canonicalUrl = `${siteUrl}${path === "/" ? "/" : path}`;
+const robots =
+  robotsOverride ||
+  (meta.noIndex
+    ? "noindex, nofollow"
+    : import.meta.env.MODE === "development"
+      ? "noindex"
+      : "index, follow");
+const ogImage = meta.image || DEFAULT_OG_IMAGE;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="robots" content={robots} />
+    <meta name="author" content="Kaizen Web" />
+    <meta name="publisher" content="Kaizen Web" />
+    <meta property="og:site_name" content={SITE_NAME} />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonicalUrl} />
+    {ogImage && <meta property="og:image" content={ogImage} />}
+    <meta
+      name="twitter:card"
+      content={ogImage ? "summary_large_image" : "summary"}
+    />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    {ogImage && <meta name="twitter:image" content={ogImage} />}
+    <link rel="canonical" href={canonicalUrl} />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body class="min-h-screen bg-white text-kaizen-text-dark antialiased">
+    <header class="sticky top-0 z-40 border-b border-black/5 bg-white/95 backdrop-blur">
+      <div class="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6 lg:px-8">
+        <a href="/" class="inline-flex items-center gap-3">
+          <img src="/logo.svg" alt="Kaizen Web" width="126" height="28" class="h-7 w-auto" />
+        </a>
+        <nav class="flex items-center gap-3 text-sm">
+          <a href="/blog" class="rounded-full px-3 py-2 text-kaizen-text-dark/70 transition hover:bg-kaizen-light hover:text-kaizen-text-dark">Blog</a>
+          <a href="/contact" class="rounded-full bg-kaizen-dark px-4 py-2 font-semibold text-white transition hover:opacity-90">Contact</a>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <slot />
+    </main>
+
+    <footer class="border-t border-black/5 bg-kaizen-light py-8">
+      <div class="mx-auto flex max-w-6xl flex-col items-start justify-between gap-4 px-4 text-sm text-kaizen-text-dark/70 sm:flex-row sm:items-center sm:px-6 lg:px-8">
+        <p>© {new Date().getFullYear()} Kaizen Web Ltd</p>
+        <div class="flex flex-wrap gap-4">
+          <a href="/privacy-policy" class="hover:text-kaizen-text-dark">Privacy</a>
+          <a href="/cookie-policy" class="hover:text-kaizen-text-dark">Cookies</a>
+          <a href="/gdpr-policy" class="hover:text-kaizen-text-dark">GDPR</a>
+          <a href="/terms-and-conditions" class="hover:text-kaizen-text-dark">Terms</a>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

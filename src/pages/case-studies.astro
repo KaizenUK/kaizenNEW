@@ -1,0 +1,125 @@
+---
+import StaticPageLayout from "../layouts/StaticPageLayout.astro";
+
+export const prerender = true;
+
+const caseStudies = [
+  {
+    client: "International Sweepstakes Casino",
+    summary:
+      "Architecting a dual-currency gaming economy for an international sweepstakes casino: moving from single-currency to legally-compliant sweepstakes across 43 US states, delivering 42% ARPU growth while maintaining financial-grade reliability.",
+    services: ["System Economics", "Live Ops", "Complex Integrations"],
+    slug: "high-five-games",
+  },
+  {
+    client: "A.S Collections",
+    summary:
+      "A complete, modern redesign for a Liverpool debt recovery firm that needed to build trust and authority.",
+    services: ["Web Design", "Content Strategy", "WordPress"],
+    slug: "as-collections",
+  },
+  {
+    client: "Helen Moore Hairdressing",
+    summary:
+      "A 0-to-1 build for a Wirral-based salon, resulting in high local rankings and a 24/7 online booking system.",
+    services: ["Web Design", "Local SEO", "Booking System"],
+    slug: "helen-moore-hairdressing",
+  },
+  {
+    client: "Independent Retailer, Liverpool",
+    summary:
+      "A high-performance headless e-commerce build to fix a slow, clunky site and boost mobile conversions.",
+    services: ["E-commerce", "Headless (React)", "Performance"],
+    slug: "independent-retailer",
+  },
+];
+---
+
+<StaticPageLayout path="/case-studies">
+  <section class="flex min-h-[60vh] items-center bg-white py-20">
+    <div class="container mx-auto max-w-4xl px-4">
+      <h1 class="mb-8 text-5xl font-heading font-black leading-tight text-kaizen-dark md:text-6xl lg:text-7xl">
+        Fewer Projects. Better Results.
+      </h1>
+      <p class="text-xl leading-relaxed text-kaizen-text-dark/70 md:text-2xl">
+        We are not a high-volume, churn-and-burn agency. We take on fewer
+        clients so we can apply full focus to each engagement.
+      </p>
+    </div>
+  </section>
+
+  <section class="bg-kaizen-light py-20">
+    <div class="container mx-auto max-w-5xl px-4">
+      <h2 class="mb-16 text-4xl font-heading font-bold text-kaizen-dark md:text-5xl">
+        Our Work
+      </h2>
+
+      <ul class="space-y-0">
+        {caseStudies.map((study) => (
+          <li>
+            <a
+              href={`/case-studies/${study.slug}`}
+              class="group block border-b border-kaizen-light bg-transparent px-8 py-12 transition hover:bg-white"
+            >
+              <div class="grid grid-cols-1 items-start gap-8 lg:grid-cols-2">
+                <div>
+                  <h3 class="mb-4 text-3xl font-heading font-bold text-kaizen-dark transition group-hover:text-kaizen-cyan md:text-4xl">
+                    {study.client}
+                  </h3>
+                  <p class="text-lg leading-relaxed text-kaizen-text-dark/70">
+                    {study.summary}
+                  </p>
+                </div>
+
+                <div class="flex h-full flex-col justify-between">
+                  <div>
+                    <p class="mb-4 text-xs font-mono font-bold tracking-widest text-kaizen-text-dark/50">
+                      SERVICES PROVIDED
+                    </p>
+                    <div class="flex flex-wrap gap-3">
+                      {study.services.map((service) => (
+                        <span class="inline-block rounded-full border border-kaizen-light bg-white px-4 py-2 text-sm font-medium text-kaizen-dark transition group-hover:border-kaizen-cyan">
+                          {service}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div class="mt-6 flex items-center gap-2 font-medium text-kaizen-cyan">
+                    Read Case Study
+                    <span aria-hidden="true">-&gt;</span>
+                  </div>
+                </div>
+              </div>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <section class="bg-kaizen-dark py-20 text-white md:py-32">
+    <div class="container mx-auto max-w-3xl px-4 text-center">
+      <h2 class="mb-8 text-4xl font-heading font-black md:text-5xl lg:text-6xl">
+        Ready to Be Our Next Case Study?
+      </h2>
+      <p class="mb-12 text-xl leading-relaxed text-white/80">
+        Let's talk about the results we can get for you.
+      </p>
+      <div class="flex flex-col items-center justify-center gap-6 sm:flex-row">
+        <a
+          href="/contact"
+          class="rounded-lg bg-gradient-to-r from-kaizen-cyan to-kaizen-lime px-8 py-3 font-heading font-bold text-kaizen-dark transition hover:shadow-lg hover:shadow-kaizen-cyan/50"
+        >
+          Get in Touch
+        </a>
+        <a
+          href="/project-rescue"
+          class="rounded-lg border-2 border-white/30 px-8 py-3 font-heading font-bold text-white transition hover:border-kaizen-cyan hover:text-kaizen-cyan"
+        >
+          Book a 15 Minute Call
+        </a>
+      </div>
+    </div>
+  </section>
+</StaticPageLayout>

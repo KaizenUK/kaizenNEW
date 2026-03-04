@@ -1,0 +1,99 @@
+---
+import StaticPageLayout from "../layouts/StaticPageLayout.astro";
+
+export const prerender = true;
+
+const recommendedReads = [
+  {
+    title: "Five Website Mistakes That Quietly Kill Sales",
+    slug: "website-mistakes-liverpool",
+    description: "Learn the common pitfalls that are costing you conversions.",
+  },
+  {
+    title: "How Much Does a Website Cost in Liverpool in 2025?",
+    slug: "how-much-does-a-website-cost-in-liverpool-in-2025",
+    description: "Transparent pricing guide for serious web projects.",
+  },
+  {
+    title: "How to Choose a Web Design Agency Without the Fluff",
+    slug: "choose-web-design-agency-liverpool",
+    description: "Questions to ask before hiring. Red flags to watch for.",
+  },
+];
+---
+
+<StaticPageLayout
+  path="/thank-you"
+  robots="noindex, follow"
+>
+  <section class="bg-gray-950 px-4 py-20 text-white">
+    <div class="container mx-auto max-w-4xl">
+      <div class="mb-16 text-center">
+        <div class="mb-6 inline-flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-r from-kaizen-cyan to-kaizen-lime text-3xl text-gray-950">
+          &#10003;
+        </div>
+
+        <h1 class="mb-6 text-5xl font-heading font-bold md:text-6xl">
+          We've received your request.
+        </h1>
+
+        <p class="mx-auto mb-8 max-w-2xl text-xl leading-relaxed text-gray-400">
+          If you booked a call, check your email for the calendar invite. We
+          look forward to speaking.
+        </p>
+
+        <div class="flex flex-wrap justify-center gap-4">
+          <a
+            href="/"
+            class="inline-flex items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-kaizen-cyan to-kaizen-lime px-8 py-3 font-heading font-bold text-gray-950 transition hover:shadow-lg hover:shadow-kaizen-cyan/50"
+          >
+            Back to Home
+            <span aria-hidden="true">-&gt;</span>
+          </a>
+
+          <a
+            href="/web-design-liverpool"
+            class="inline-flex items-center justify-center gap-2 rounded-lg border-2 border-kaizen-cyan px-8 py-3 font-heading font-bold text-kaizen-cyan transition hover:bg-kaizen-cyan/10"
+          >
+            Explore Web Design Services
+            <span aria-hidden="true">-&gt;</span>
+          </a>
+
+          <a
+            href="/blog"
+            class="inline-flex items-center justify-center gap-2 rounded-lg border-2 border-white/30 px-8 py-3 font-heading font-bold text-white/70 transition hover:border-white/60 hover:text-white"
+          >
+            Read Our Blog
+            <span aria-hidden="true">-&gt;</span>
+          </a>
+        </div>
+      </div>
+
+      <div class="mt-20 border-t border-gray-800 pt-20">
+        <h2 class="mb-12 text-center text-3xl font-heading font-bold">
+          Recommended Reads
+        </h2>
+
+        <div class="grid grid-cols-1 gap-8 md:grid-cols-3">
+          {recommendedReads.map((read) => (
+            <a
+              href={`/blog/${read.slug}`}
+              class="group block h-full rounded-lg border border-gray-800 p-6 transition duration-300 hover:border-kaizen-cyan/50 hover:bg-gray-900/50"
+            >
+              <h3 class="mb-3 text-xl font-heading font-bold transition group-hover:text-kaizen-cyan">
+                {read.title}
+              </h3>
+              <p class="mb-4 text-sm leading-relaxed text-gray-400">
+                {read.description}
+              </p>
+              <div class="flex items-center gap-2 text-sm font-semibold text-kaizen-cyan">
+                Read Article
+                <span aria-hidden="true">-&gt;</span>
+              </div>
+            </a>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+</StaticPageLayout>

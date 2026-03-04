@@ -34,9 +34,7 @@ const ContractProductOwner = lazy(
   () => import("./pages/ContractProductOwner"),
 );
 const ProjectRescue = lazy(() => import("./pages/ProjectRescue"));
-const CaseStudies = lazy(() => import("./pages/CaseStudies"));
 const Contact = lazy(() => import("./pages/Contact"));
-const Services = lazy(() => import("./pages/Services"));
 const About = lazy(() => import("./pages/About"));
 const Pledge = lazy(() => import("./pages/Pledge"));
 const AgileCoaching = lazy(() => import("./pages/AgileCoaching"));
@@ -55,14 +53,9 @@ const KaizenRebuildCase = lazy(
 const HighFiveGamesCase = lazy(
   () => import("./pages/caseStudies/HighFiveGames"),
 );
-const PrivacyPolicy = lazy(() => import("./pages/PrivacyPolicy"));
-const CookiePolicy = lazy(() => import("./pages/CookiePolicy"));
-const GDPRPolicy = lazy(() => import("./pages/GDPRPolicy"));
-const ThankYou = lazy(() => import("./pages/ThankYou"));
 const PerformanceScanner = lazy(
   () => import("./pages/PerformanceScanner"),
 );
-const TermsAndConditions = lazy(() => import("./pages/TermsAndConditions"));
 
 // ── Minimal loading shell (matches site background) ───────────────
 
@@ -120,7 +113,7 @@ export default function OtherRoutes({
   return (
     <Suspense fallback={<RouteLoading />}>
       <Routes>
-        <Route path="/services" element={<Services />} />
+        <Route path="/services" element={<ServerRouteHandoff />} />
         <Route path="/web-design-liverpool" element={<WebDesignLiverpool />} />
         <Route path="/web-design-chester" element={<WebDesignChester />} />
         <Route path="/web-design-warrington" element={<WebDesignWarrington />} />
@@ -153,7 +146,7 @@ export default function OtherRoutes({
           path="/product-owner"
           element={<Navigate to="/contract-product-owner" replace />}
         />
-        <Route path="/case-studies" element={<CaseStudies />} />
+        <Route path="/case-studies" element={<ServerRouteHandoff />} />
         <Route path="/case-studies/as-collections" element={<AsCollectionsCase />} />
         <Route
           path="/case-studies/helen-moore-hairdressing"
@@ -173,12 +166,12 @@ export default function OtherRoutes({
         <Route path="/insights/*" element={<ServerRouteHandoff />} />
         <Route path="/blogdetail/*" element={<ServerRouteHandoff />} />
         <Route path="/contact" element={<Contact />} />
-        <Route path="/thank-you" element={<ThankYou />} />
-        <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-        <Route path="/cookie-policy" element={<CookiePolicy />} />
-        <Route path="/gdpr-policy" element={<GDPRPolicy />} />
+        <Route path="/thank-you" element={<ServerRouteHandoff />} />
+        <Route path="/privacy-policy" element={<ServerRouteHandoff />} />
+        <Route path="/cookie-policy" element={<ServerRouteHandoff />} />
+        <Route path="/gdpr-policy" element={<ServerRouteHandoff />} />
         <Route path="/performance-scanner" element={<PerformanceScanner />} />
-        <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
+        <Route path="/terms-and-conditions" element={<ServerRouteHandoff />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </Suspense>

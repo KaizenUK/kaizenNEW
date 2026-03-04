@@ -2,12 +2,10 @@ import { useState, type FormEvent } from "react";
 import { Link, useLocation } from "react-router-dom";
 import KaizenLogo from "@/components/KaizenLogo";
 import { ArrowRight, Linkedin, Instagram, Check } from "lucide-react";
+import { requiresDocumentNavigation } from "@/lib/navigation";
 
 const CONSENT_TEXT =
   "I consent to receiving marketing emails from Kaizen Web Ltd about services, insights, and offers. I understand I can unsubscribe at any time.";
-
-const requiresDocumentNavigation = (href: string): boolean =>
-  /^\/(blog|studio|insights|blogdetail)(\/|$)/.test(href);
 
 const Footer: React.FC = () => {
   const location = useLocation();

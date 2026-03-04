@@ -4,6 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useCalendly } from "@/context/CalendlyContext";
 import { FaqSection } from "@/components/FaqSection";
+import { requiresDocumentNavigation } from "@/lib/navigation";
 import {
   ArrowRight,
   ArrowUpRight,
@@ -36,9 +37,6 @@ const staggerContainer = {
     },
   },
 };
-
-const requiresDocumentNavigation = (href: string): boolean =>
-  /^\/(blog|studio|insights|blogdetail)(\/|$)/.test(href);
 
 // Scroll-triggered fade-in component
 const ScrollReveal = ({

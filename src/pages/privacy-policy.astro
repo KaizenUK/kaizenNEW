@@ -1,0 +1,68 @@
+---
+import StaticPageLayout from "../layouts/StaticPageLayout.astro";
+
+export const prerender = true;
+---
+
+<StaticPageLayout path="/privacy-policy">
+  <section class="bg-gradient-to-br from-kaizen-dark via-slate-900 to-kaizen-dark py-16 text-white md:py-24">
+    <div class="container mx-auto px-4">
+      <div class="mx-auto max-w-3xl text-center">
+        <h1 class="mb-6 text-5xl font-heading font-bold md:text-6xl">Privacy Policy</h1>
+        <p class="text-xl text-white/70">
+          We're required to have this. You have a right to know what's happening with your data. Here's the simple, no-jargon version.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="bg-white py-20 md:py-28">
+    <div class="container mx-auto px-4">
+      <div class="prose prose-lg mx-auto max-w-3xl text-kaizen-text-dark/80">
+        <h2 class="font-heading text-kaizen-dark">Our Core Philosophy</h2>
+        <p>
+          Our business is built on trust. We have no interest in selling your data or sending you spam.
+          This policy explains what little data we do collect and why we need it to run our business.
+        </p>
+
+        <h2 class="font-heading text-kaizen-dark">What Data We Collect & Why</h2>
+        <h3 class="font-heading text-kaizen-dark">Data You Give Us Directly</h3>
+        <p>
+          When you use our live chat, you may provide your name or email. When you book a call via Calendly,
+          you provide your name, email, and any other info you put in the form. We use this data only to
+          communicate with you for that specific conversation or meeting.
+        </p>
+
+        <h3 class="font-heading text-kaizen-dark">Data We Collect Automatically</h3>
+        <p>Like most websites, we use a few tools that collect non-personal data. This includes:</p>
+        <ul>
+          <li>
+            <strong>Essential Cookies:</strong> our platform and tools use cookies to function, such as
+            remembering your chat history or making booking flow work.
+          </li>
+          <li>
+            <strong>Analytics Cookies:</strong> we use standard analytics to understand usage patterns and
+            improve site performance.
+          </li>
+        </ul>
+
+        <h2 class="font-heading text-kaizen-dark">What We Will Never Do</h2>
+        <ul>
+          <li>We will never sell your data to any third party.</li>
+          <li>We will never send you marketing spam you did not ask for.</li>
+        </ul>
+
+        <h2 class="font-heading text-kaizen-dark">Your Rights (GDPR)</h2>
+        <p>
+          You have the right to request access to the data we hold about you, and the right to request deletion.
+          Contact us via live chat or email <strong>privacy@kaizenweb.co.uk</strong> and we will handle it promptly.
+        </p>
+
+        <p>
+          For more details on cookies, see our
+          <a href="/cookie-policy" class="font-semibold text-kaizen-cyan no-underline hover:underline"> Cookie Policy</a>.
+        </p>
+      </div>
+    </div>
+  </section>
+</StaticPageLayout>

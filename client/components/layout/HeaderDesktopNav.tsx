@@ -21,9 +21,7 @@ import {
   type ServiceColumn,
   type ServiceItem,
 } from "./header-menu-data";
-
-const requiresDocumentNavigation = (href: string): boolean =>
-  /^\/(blog|studio|insights|blogdetail)(\/|$)/.test(href);
+import { requiresDocumentNavigation } from "@/lib/navigation";
 
 const ICON_BY_PATTERN: Array<{
   match: RegExp;

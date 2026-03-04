@@ -1,0 +1,22 @@
+---
+import StaticPageLayout from "../layouts/StaticPageLayout.astro";
+import { termsContent } from "../../shared/legal";
+
+export const prerender = true;
+---
+
+<StaticPageLayout path="/terms-and-conditions">
+  <section class="bg-white py-16 md:py-24">
+    <div class="container mx-auto max-w-4xl px-4">
+      <h1 class="mb-6 text-4xl font-heading font-bold text-kaizen-dark md:text-5xl">
+        Terms and Conditions
+      </h1>
+      <p class="mb-10 text-lg text-kaizen-text-dark/70">
+        Full legal terms for services provided by Kaizen Web Ltd.
+      </p>
+      <div class="rounded-xl border border-black/10 bg-white p-6 md:p-8">
+        <pre class="whitespace-pre-wrap font-body text-base leading-relaxed text-kaizen-text-dark/80">{termsContent.trim()}</pre>
+      </div>
+    </div>
+  </section>
+</StaticPageLayout>
