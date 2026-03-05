@@ -59,8 +59,6 @@ try {
     shouldRenderManagedContent && managedPage ? (
       <ManagedPageRenderer
         page={managedPage}
-        routePath="/blog"
-        withLayout={false}
       />
     ) : (
       <BlogIndex posts={posts} />

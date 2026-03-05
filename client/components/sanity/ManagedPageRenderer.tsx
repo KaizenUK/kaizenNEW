@@ -1,5 +1,4 @@
 import { lazy, Suspense } from "react";
-import Layout from "@/components/Layout";
 import type { ManagedPageData, ManagedPageSection } from "@shared/pageBuilder";
 
 // ── Lazy-loaded section components ────────────────────────────────
@@ -51,12 +50,6 @@ const LayoutRowSection = lazy(
 const SpacerSection = lazy(
   () => import("@/components/page-builder/sections/SpacerSection"),
 );
-
-const SITE_URL = "https://kaizenweb.co.uk";
-
-function sanitizeImageUrl(value: unknown): string {
-  return String(value ?? "");
-}
 
 function renderSection(section: ManagedPageSection) {
   let element: React.ReactNode;
@@ -116,20 +109,11 @@ function renderSection(section: ManagedPageSection) {
 
 export default function ManagedPageRenderer({
   page,
-  routePath,
-  withLayout = true,
+  routePath: _routePath,
 }: {
   page: ManagedPageData;
-  routePath: string;
-  withLayout?: boolean;
+  routePath?: string;
 }) {
-  const seo = page.seo || {};
-  const title = seo.metaTitle || page.title || "Kaizen Web";
-  const description =
-    seo.metaDescription ||
-    "Managed page content from Sanity Presentation mode.";
-  const canonicalUrl = seo.canonicalUrl || `${SITE_URL}${routePath || "/"}`;
-  const ogImage = sanitizeImageUrl(seo.shareImage?.asset?.url);
   const sections = Array.isArray(page.content) ? page.content : [];
 
   const content = (
@@ -163,19 +147,5 @@ export default function ManagedPageRenderer({
     </div>
   );
 
-  if (!withLayout) return content;
-
-  return (
-    <Layout
-      metaOverride={{
-        title,
-        description,
-        canonicalUrl,
-        image: ogImage || undefined,
-        noIndex: Boolean(seo.noIndex),
-      }}
-    >
-      {content}
-    </Layout>
-  );
+  return content;
 }

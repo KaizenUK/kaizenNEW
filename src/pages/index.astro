@@ -1,8 +1,32 @@
 ---
-import ReactRoutePage from "../layouts/ReactRoutePage.astro";
-import DirectReactPage from "../../client/static/DirectReactPage";
+import StaticPageLayout from "../layouts/StaticPageLayout.astro";
+import { HeroRemotionSequence } from "../../client/components/homepage/HeroRemotionSequence";
+import {
+  SocialMediaWarning,
+  CredibilitySection,
+} from "../../client/components/homepage/ValueProposition";
+import { PerformanceShowcase } from "../../client/components/homepage/PerformanceShowcase";
+import { ServiceShowcase } from "../../client/components/homepage/ServiceShowcase";
+import {
+  PricingSlider,
+  PricingCTABanner,
+  AIPriceNarrative,
+  SEOFAQSection,
+  LocalMap,
+} from "../../client/components/homepage/BelowFoldSections";
+
+export const prerender = true;
 ---
 
-<ReactRoutePage path="/">
-  <DirectReactPage path="/" client:load />
-</ReactRoutePage>
+<StaticPageLayout path="/">
+  <HeroRemotionSequence client:load />
+  <SocialMediaWarning client:visible />
+  <PerformanceShowcase client:visible />
+  <CredibilitySection client:visible />
+  <ServiceShowcase client:visible />
+  <PricingSlider client:visible />
+  <PricingCTABanner client:visible />
+  <AIPriceNarrative client:visible />
+  <LocalMap client:visible />
+  <SEOFAQSection client:visible />
+</StaticPageLayout>

@@ -1,6 +1,6 @@
 ---
-import ReactRoutePage from "../layouts/ReactRoutePage.astro";
-import ManagedRoutePage from "../../client/static/ManagedRoutePage";
+import StaticPageLayout from "../layouts/StaticPageLayout.astro";
+import ManagedPageRenderer from "../../client/components/sanity/ManagedPageRenderer";
 import { getManagedRoutePaths, getPageByPath } from "../lib/sanity/client";
 
 export const prerender = true;
@@ -22,8 +22,19 @@ const page = await getPageByPath(pathname, false);
 if (!page || !page.replaceRouteContent) {
   throw new Error(`No managed page found for path: ${pathname}`);
 }
+
+const title = page.seo?.metaTitle || page.title || undefined;
+const description = page.seo?.metaDescription || undefined;
+const robots = page.seo?.noIndex ? "noindex, nofollow" : undefined;
+const canonical = page.seo?.canonicalUrl || undefined;
 ---
 
-<ReactRoutePage path={pathname}>
-  <ManagedRoutePage path={pathname} page={page} client:load />
-</ReactRoutePage>
+<StaticPageLayout
+  path={pathname}
+  title={title}
+  description={description}
+  robots={robots}
+  canonical={canonical}
+>
+  <ManagedPageRenderer page={page} client:load />
+</StaticPageLayout>
