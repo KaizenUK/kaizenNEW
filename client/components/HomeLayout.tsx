@@ -2,11 +2,13 @@ import { Suspense, lazy, useEffect, useState, type ReactNode } from "react";
 import { useLocation } from "react-router-dom";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
+import RouterBoundary from "@/components/routing/RouterBoundary";
 
 const OffCanvasMenu = lazy(() => import("@/components/layout/OffCanvasMenu"));
 
 interface HomeLayoutProps {
   children: ReactNode;
+  path?: string;
 }
 
 const HOME_URL = "https://kaizenweb.co.uk";
@@ -43,7 +45,7 @@ const upsertCanonical = (href: string) => {
   canonical.setAttribute("href", href);
 };
 
-const HomeLayout = ({ children }: HomeLayoutProps) => {
+const HomeLayoutContent = ({ children }: HomeLayoutProps) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [hasOpenedMobileMenu, setHasOpenedMobileMenu] = useState(false);
   const location = useLocation();
@@ -106,6 +108,14 @@ const HomeLayout = ({ children }: HomeLayoutProps) => {
         </Suspense>
       ) : null}
     </>
+  );
+};
+
+const HomeLayout = (props: HomeLayoutProps) => {
+  return (
+    <RouterBoundary initialPath={props.path}>
+      <HomeLayoutContent {...props} />
+    </RouterBoundary>
   );
 };
 

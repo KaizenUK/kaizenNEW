@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import Layout from "@/components/Layout";
-import { Link, useNavigate } from "react-router-dom";
+import AppLink from "@/components/routing/AppLink";
 import { motion } from "framer-motion";
 import { useCalendly } from "@/context/CalendlyContext";
 import { FaqSection } from "@/components/FaqSection";
@@ -92,13 +92,17 @@ const CTAButton = ({
   openCalendly?: boolean;
 }) => {
   const { openCalendly } = useCalendly();
-  const navigate = useNavigate();
+  const goToContact = () => {
+    if (typeof window !== "undefined") {
+      window.location.assign("/contact");
+    }
+  };
 
   const handleClick = () => {
     if (openCalendlyProp) {
       openCalendly();
     } else if (openContact) {
-      navigate("/contact");
+      goToContact();
     }
     if (onClick) {
       onClick();
@@ -395,8 +399,8 @@ export default function AgileCoaching() {
                     </div>
                   </a>
                 ) : (
-                  <Link
-                    to={item.link}
+                  <AppLink
+                    href={item.link}
                     className="block p-8 bg-kaizen-light rounded-2xl border border-kaizen-light hover:border-kaizen-cyan transition group h-full"
                   >
                     <div className="mb-6 p-4 w-16 h-16 bg-gradient-to-br from-kaizen-cyan/20 to-kaizen-lime/20 rounded-xl flex items-center justify-center">
@@ -414,7 +418,7 @@ export default function AgileCoaching() {
                     <div className="text-kaizen-cyan font-medium flex items-center gap-2 hover:gap-3 transition">
                       {item.linkText} <ArrowUpRight size={18} />
                     </div>
-                  </Link>
+                  </AppLink>
                 )}
               </motion.div>
             ))}

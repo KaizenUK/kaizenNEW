@@ -7,7 +7,7 @@ import {
   Smartphone,
   Search,
 } from "lucide-react";
-import { Link } from "react-router-dom";
+import AppLink from "@/components/routing/AppLink";
 import { motion } from "framer-motion";
 
 const fadeInUp = {
@@ -49,13 +49,13 @@ export default function HelenMooreHairdressingCase() {
         {/* Right: Content */}
         <div className="w-full lg:w-1/2 flex items-center p-8 lg:p-20">
           <div className="max-w-xl">
-            <Link
-              to="/case-studies"
+            <AppLink
+              href="/case-studies"
               className="inline-flex items-center gap-2 text-slate-400 hover:text-slate-900 transition mb-8 text-sm font-medium"
             >
               <ArrowLeft size={16} />
               Back to Case Studies
-            </Link>
+            </AppLink>
 
             <motion.div
               initial="hidden"
@@ -193,13 +193,13 @@ export default function HelenMooreHairdressingCase() {
             Share a few details about your project and we will come back with a
             straightforward, no-fluff quote.
           </p>
-          <Link
-            to="/contact"
+          <AppLink
+            href="/contact"
             className="inline-flex items-center gap-2 px-8 py-3 rounded-full bg-white text-slate-900 font-heading font-bold hover:bg-slate-100 transition"
           >
             Get a Quote Like This
             <ArrowUpRight size={18} />
-          </Link>
+          </AppLink>
         </div>
       </section>
 
@@ -207,28 +207,28 @@ export default function HelenMooreHairdressingCase() {
       <section className="bg-white py-16 px-4 border-t border-slate-100">
         <div className="container mx-auto max-w-5xl">
           <div className="flex items-center justify-between">
-            <Link
-              to="/case-studies/as-collections"
+            <AppLink
+              href="/case-studies/as-collections"
               className="group flex items-center gap-3 text-slate-900 hover:text-rose-500 transition"
             >
               <span className="group-hover:-translate-x-1 transition">←</span>
               Previous Case Study
-            </Link>
+            </AppLink>
 
-            <Link
-              to="/case-studies"
+            <AppLink
+              href="/case-studies"
               className="text-slate-400 hover:text-slate-900 transition text-sm font-medium"
             >
               View All
-            </Link>
+            </AppLink>
 
-            <Link
-              to="/case-studies/kaizen-rebuild"
+            <AppLink
+              href="/case-studies/kaizen-rebuild"
               className="group flex items-center gap-3 text-slate-900 hover:text-rose-500 transition"
             >
               Next Case Study
               <span className="group-hover:translate-x-1 transition">→</span>
-            </Link>
+            </AppLink>
           </div>
         </div>
       </section>

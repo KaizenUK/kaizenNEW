@@ -16,7 +16,7 @@ import {
   ChevronDown,
   type LucideIcon,
 } from "lucide-react";
-import { Link, useNavigate } from "react-router-dom";
+import AppLink from "@/components/routing/AppLink";
 import SpeedScanner from "@/components/SpeedScanner";
 
 /* ==========================================================================
@@ -289,7 +289,11 @@ function FaqItem({
    MAIN PAGE COMPONENT
    ========================================================================== */
 export default function WebDesignWirral() {
-  const navigate = useNavigate();
+  const goToContact = () => {
+    if (typeof window !== "undefined") {
+      window.location.assign("/contact");
+    }
+  };
   const heroRef = useRef<HTMLElement>(null);
   const { scrollYProgress } = useScroll({
     target: heroRef,
@@ -487,7 +491,7 @@ export default function WebDesignWirral() {
               className="flex flex-col sm:flex-row gap-4"
             >
               <button
-                onClick={() => navigate("/contact")}
+                onClick={goToContact}
                 className="group inline-flex items-center justify-center gap-3 px-8 py-4 rounded-full bg-gradient-to-r from-emerald-500 to-teal-500 text-white font-bold text-lg shadow-lg shadow-emerald-500/25 hover:shadow-emerald-500/40 transition-all duration-300 hover:-translate-y-1"
               >
                 Get in Touch
@@ -496,12 +500,12 @@ export default function WebDesignWirral() {
                   className="group-hover:translate-x-1 transition-transform"
                 />
               </button>
-              <Link
-                to="/contact"
+              <AppLink
+                href="/contact"
                 className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full border border-slate-600 text-slate-300 font-medium hover:bg-slate-800 hover:text-white hover:border-slate-500 transition-all duration-300"
               >
                 Book a Call
-              </Link>
+              </AppLink>
             </motion.div>
           </div>
 
@@ -841,7 +845,7 @@ export default function WebDesignWirral() {
             className="flex flex-col sm:flex-row justify-center gap-4"
           >
             <button
-              onClick={() => navigate("/contact")}
+              onClick={goToContact}
               className="group inline-flex items-center justify-center gap-3 px-10 py-5 rounded-full bg-gradient-to-r from-emerald-500 to-teal-500 text-white font-bold text-lg shadow-lg shadow-emerald-500/25 hover:shadow-emerald-500/40 transition-all duration-300 hover:-translate-y-1"
             >
               Get in Touch
@@ -850,12 +854,12 @@ export default function WebDesignWirral() {
                 className="group-hover:translate-x-1 transition-transform"
               />
             </button>
-            <Link
-              to="/contact"
+            <AppLink
+              href="/contact"
               className="inline-flex items-center justify-center gap-2 px-10 py-5 rounded-full border border-slate-600 text-slate-300 font-medium text-lg hover:bg-slate-800 hover:text-white hover:border-slate-500 transition-all duration-300"
             >
               Book a Discovery Call
-            </Link>
+            </AppLink>
           </motion.div>
         </div>
       </section>

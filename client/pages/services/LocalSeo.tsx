@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import Layout from "@/components/Layout";
-import { Link, useNavigate } from "react-router-dom";
+import AppLink from "@/components/routing/AppLink";
 import { motion } from "framer-motion";
 import { ArrowRight, ArrowUpRight, MapPin, FileText, Star } from "lucide-react";
 import { useCalendly } from "@/context/CalendlyContext";
@@ -118,13 +118,14 @@ const CTAButton = ({
   openCalendly?: boolean;
 }) => {
   const { openCalendly } = useCalendly();
-  const navigate = useNavigate();
 
   const handleClick = () => {
     if (openCalendlyProp) {
       openCalendly();
     } else if (openContact) {
-      navigate("/contact");
+      if (typeof window !== "undefined") {
+        window.location.assign("/contact");
+      }
     }
     if (onClick) {
       onClick();
@@ -182,13 +183,13 @@ export default function LocalSeo() {
                 transition={{ delay: 0.8, duration: 0.6 }}
               >
                 <CTAButton text="Get in Touch" openContact />
-                <Link
-                  to="/contact"
+                <AppLink
+                  href="/contact"
                   className="px-8 py-3 rounded-full border-2 border-kaizen-text-light/30 text-kaizen-text-light font-heading font-bold hover:border-kaizen-cyan transition inline-flex items-center justify-center gap-2"
                 >
                   Get a Free Local Audit
                   <ArrowUpRight size={18} />
-                </Link>
+                </AppLink>
               </motion.div>
             </div>
 
@@ -505,8 +506,8 @@ export default function LocalSeo() {
               },
             ].map((card, index) => (
               <motion.div key={index} variants={fadeInUp}>
-                <Link
-                  to={card.link}
+                <AppLink
+                  href={card.link}
                   className="p-8 bg-kaizen-light rounded-2xl border border-kaizen-light hover:border-kaizen-cyan transition group block h-full"
                 >
                   <h3 className="text-2xl font-heading font-bold mb-4 text-kaizen-dark group-hover:text-kaizen-cyan transition">
@@ -518,7 +519,7 @@ export default function LocalSeo() {
                   <div className="text-kaizen-cyan font-medium flex items-center gap-2 hover:gap-3 transition">
                     Explore <ArrowUpRight size={16} />
                   </div>
-                </Link>
+                </AppLink>
               </motion.div>
             ))}
           </motion.div>

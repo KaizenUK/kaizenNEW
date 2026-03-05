@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import Layout from "@/components/Layout";
+import AppLink from "@/components/routing/AppLink";
 import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
-import { Link, useNavigate } from "react-router-dom";
 import { useCalendly } from "@/context/CalendlyContext";
 import { FaqSection } from "@/components/FaqSection";
 
@@ -134,7 +134,11 @@ function KineticTypography() {
 
 export default function DigitalTransformation() {
   const { openCalendly } = useCalendly();
-  const navigate = useNavigate();
+  const goToContact = () => {
+    if (typeof window !== "undefined") {
+      window.location.assign("/contact");
+    }
+  };
 
   return (
     <Layout>
@@ -191,7 +195,7 @@ export default function DigitalTransformation() {
               <button
                 onClick={(e) => {
                   e.preventDefault();
-                  navigate("/contact");
+                  goToContact();
                 }}
                 className="px-8 py-3 rounded-lg border-2 border-kaizen-cyan text-kaizen-cyan font-heading font-bold hover:bg-kaizen-cyan/10 transition"
               >
@@ -440,8 +444,8 @@ export default function DigitalTransformation() {
                 viewport={{ once: true, margin: "-100px" }}
                 transition={{ delay: index * 0.1 }}
               >
-                <Link
-                  to={card.link}
+                <AppLink
+                  href={card.link}
                   className="group block p-8 bg-white rounded-2xl border border-kaizen-light hover:border-kaizen-cyan transition h-full"
                 >
                   <h3 className="text-2xl font-heading font-bold mb-3 text-kaizen-dark group-hover:text-kaizen-cyan transition">
@@ -457,7 +461,7 @@ export default function DigitalTransformation() {
                       className="group-hover:translate-x-1 transition"
                     />
                   </div>
-                </Link>
+                </AppLink>
               </motion.div>
             ))}
           </div>
@@ -522,7 +526,7 @@ export default function DigitalTransformation() {
             <button
               onClick={(e) => {
                 e.preventDefault();
-                navigate("/contact");
+                goToContact();
               }}
               className="px-8 py-3 rounded-lg border-2 border-white/30 text-white font-heading font-bold hover:border-kaizen-cyan hover:text-kaizen-cyan transition"
             >

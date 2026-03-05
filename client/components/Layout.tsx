@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { Helmet } from "@/lib/helmet";
+import RouterBoundary from "@/components/routing/RouterBoundary";
 import {
   buildLocalBusinessSchema,
   getPageMeta,
@@ -16,6 +17,7 @@ import OffCanvasMenu from "@/components/layout/OffCanvasMenu";
 
 interface LayoutProps {
   children: React.ReactNode;
+  path?: string;
   metaOverride?: {
     title?: string;
     description?: string;
@@ -25,7 +27,7 @@ interface LayoutProps {
   };
 }
 
-const Layout: React.FC<LayoutProps> = ({ children, metaOverride }) => {
+const LayoutContent: React.FC<LayoutProps> = ({ children, metaOverride }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [hasOpenedMobileMenu, setHasOpenedMobileMenu] = useState(false);
   const [shouldRenderFooter, setShouldRenderFooter] = useState(
@@ -228,6 +230,14 @@ const Layout: React.FC<LayoutProps> = ({ children, metaOverride }) => {
         />
       ) : null}
     </>
+  );
+};
+
+const Layout: React.FC<LayoutProps> = (props) => {
+  return (
+    <RouterBoundary initialPath={props.path}>
+      <LayoutContent {...props} />
+    </RouterBoundary>
   );
 };
 

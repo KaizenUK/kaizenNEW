@@ -4,7 +4,7 @@ import { Helmet } from "@/lib/helmet";
 import { FaqSection } from "@/components/FaqSection";
 import { motion } from "framer-motion";
 import { AlertTriangle, CheckCircle, XCircle, ArrowRight } from "lucide-react";
-import { Link } from "react-router-dom";
+import AppLink from "@/components/routing/AppLink";
 import { useCalendly } from "@/context/CalendlyContext";
 
 const EASE_OUT = [0.16, 1, 0.3, 1] as const;
@@ -141,13 +141,13 @@ export default function ProjectRescue() {
                   and Live Ops governance at scale.
                 </p>
                 <div className="mt-4">
-                  <Link
-                    to="/case-studies/high-five-games"
+                  <AppLink
+                    href="/case-studies/high-five-games"
                     className="inline-flex items-center gap-2 text-kaizen-cyan hover:text-white transition font-semibold"
                   >
                     Read the case study
                     <ArrowRight size={18} />
-                  </Link>
+                  </AppLink>
                 </div>
               </div>
             </motion.div>

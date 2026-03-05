@@ -33,16 +33,37 @@ function toUrlOrigin(value: string): string {
   }
 }
 
+function isLocalOrigin(value: string): boolean {
+  const origin = toUrlOrigin(value);
+  return /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/i.test(origin);
+}
+
 const editorApiOrigin = (
-  import.meta.env.VITE_EDITOR_API_ORIGIN || "http://127.0.0.1:54321/functions/v1"
+  import.meta.env.VITE_EDITOR_API_ORIGIN || "https://kaizenweb.co.uk/editor-api"
 ).replace(/\/+$/, "");
 const publicSiteOrigin = (
-  import.meta.env.VITE_PUBLIC_SITE_ORIGIN || "http://localhost:4321"
+  import.meta.env.VITE_PUBLIC_SITE_ORIGIN || "https://kaizenweb.co.uk"
 ).replace(/\/+$/, "");
 const studioOrigin = (
-  import.meta.env.VITE_STUDIO_ORIGIN || "http://localhost:3333"
+  import.meta.env.VITE_STUDIO_ORIGIN || "https://studio.kaizenweb.co.uk"
 ).replace(/\/+$/, "");
 const editorApiHostOrigin = toUrlOrigin(editorApiOrigin);
+const includeLocalDevOrigins =
+  isLocalOrigin(editorApiOrigin) ||
+  isLocalOrigin(publicSiteOrigin) ||
+  isLocalOrigin(studioOrigin);
+const presentationAllowOrigins = Array.from(
+  new Set(
+    [
+      publicSiteOrigin,
+      studioOrigin,
+      editorApiHostOrigin,
+      ...(includeLocalDevOrigins
+        ? ["http://localhost:4321", "http://127.0.0.1:54321"]
+        : []),
+    ].map(normalizeOrigin),
+  ),
+);
 
 function normalizeDocumentId(value: unknown): string {
   return String(value ?? "").replace(/^drafts\./, "").trim();
@@ -132,13 +153,7 @@ export default defineConfig({
     tags({}),
     colorInput(),
     presentationTool({
-      allowOrigins: [
-        publicSiteOrigin,
-        studioOrigin,
-        editorApiHostOrigin,
-        "http://localhost:4321",
-        "http://127.0.0.1:54321",
-      ].map(normalizeOrigin),
+      allowOrigins: presentationAllowOrigins,
       previewUrl: {
         origin: publicSiteOrigin,
         initial: "/blog",

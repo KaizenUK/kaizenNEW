@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import Layout from "@/components/Layout";
-import { Link, useNavigate } from "react-router-dom";
+import AppLink from "@/components/routing/AppLink";
 import { motion } from "framer-motion";
 import { useCalendly } from "@/context/CalendlyContext";
 import { FaqSection } from "@/components/FaqSection";
@@ -124,13 +124,14 @@ const CTAButton = ({
   openCalendly?: boolean;
 }) => {
   const { openCalendly } = useCalendly();
-  const navigate = useNavigate();
 
   const handleClick = () => {
     if (openCalendlyProp) {
       openCalendly();
     } else if (openContact) {
-      navigate("/contact");
+      if (typeof window !== "undefined") {
+        window.location.assign("/contact");
+      }
     }
     if (onClick) {
       onClick();
@@ -153,8 +154,12 @@ const CTAButton = ({
 };
 
 export default function Ecommerce() {
-  const navigate = useNavigate();
   const { openCalendly: openCalendlyFromContext } = useCalendly();
+  const goToContact = () => {
+    if (typeof window !== "undefined") {
+      window.location.assign("/contact");
+    }
+  };
 
   return (
     <Layout>
@@ -207,7 +212,7 @@ export default function Ecommerce() {
               transition={{ delay: 0.8, duration: 0.6 }}
             >
               <button
-                onClick={() => navigate("/contact")}
+                onClick={goToContact}
                 className="px-6 py-3 rounded-lg bg-gradient-to-r from-kaizen-cyan to-kaizen-lime text-slate-900 font-heading font-bold inline-flex items-center justify-center gap-2 transition-all hover:shadow-lg hover:shadow-kaizen-cyan/50"
               >
                 Get in Touch
@@ -581,8 +586,8 @@ export default function Ecommerce() {
               },
             ].map((card, index) => (
               <motion.div key={index} variants={fadeInUp}>
-                <Link
-                  to={card.link}
+                <AppLink
+                  href={card.link}
                   className="p-8 bg-white rounded-2xl border border-kaizen-light hover:border-kaizen-cyan transition group block h-full"
                 >
                   <h3 className="text-2xl font-heading font-bold mb-4 text-kaizen-dark group-hover:text-kaizen-cyan transition">
@@ -594,7 +599,7 @@ export default function Ecommerce() {
                   <div className="text-kaizen-cyan font-medium flex items-center gap-2 hover:gap-3 transition">
                     Explore <ArrowUpRight size={16} />
                   </div>
-                </Link>
+                </AppLink>
               </motion.div>
             ))}
           </motion.div>

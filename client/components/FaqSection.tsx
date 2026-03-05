@@ -1,8 +1,7 @@
 import { useEffect, useId, useMemo } from "react";
 import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
-
-import { Link } from "react-router-dom";
+import AppLink from "@/components/routing/AppLink";
 
 import {
   Accordion,
@@ -121,13 +120,13 @@ export function FaqSection({
           <p className="text-gray-700 mb-6">
             Still have questions? We're here to help.
           </p>
-          <Link
-            to="/contact"
+          <AppLink
+            href="/contact"
             className="px-8 py-4 rounded-lg bg-gradient-to-r from-kaizen-cyan to-kaizen-lime text-gray-950 font-heading font-bold hover:shadow-lg hover:scale-105 transition-all inline-flex items-center gap-2"
           >
             Get in Touch
             <ArrowRight size={20} />
-          </Link>
+          </AppLink>
         </motion.div>
       </div>
     </section>

@@ -1,6 +1,6 @@
 import React from "react";
 import Layout from "@/components/Layout";
-import { Link } from "react-router-dom";
+import AppLink from "@/components/routing/AppLink";
 import { motion } from "framer-motion";
 import { ArrowRight, Check } from "lucide-react";
 import { useCalendly } from "@/context/CalendlyContext";
@@ -97,13 +97,13 @@ export default function CityCentre() {
                 Book a Discovery Call
                 <ArrowRight size={20} />
               </button>
-              <Link
-                to="/contact"
+              <AppLink
+                href="/contact"
                 className="px-8 py-4 rounded-lg border-2 border-white text-white font-heading font-bold hover:bg-white/10 transition inline-flex items-center justify-center gap-2 text-lg"
               >
                 Get in Touch
                 <ArrowRight size={20} />
-              </Link>
+              </AppLink>
             </motion.div>
           </motion.div>
         </div>
@@ -350,13 +350,13 @@ export default function CityCentre() {
                 Book a Discovery Call
                 <ArrowRight size={20} />
               </button>
-              <Link
-                to="/project-rescue"
+              <AppLink
+                href="/project-rescue"
                 className="px-8 py-4 rounded-lg border-2 border-white text-white font-heading font-bold hover:bg-white/10 transition inline-flex items-center justify-center gap-2 text-lg"
               >
                 Explore Project Rescue
                 <ArrowRight size={20} />
-              </Link>
+              </AppLink>
             </motion.div>
 
             <p className="text-white/50 text-sm mt-12">

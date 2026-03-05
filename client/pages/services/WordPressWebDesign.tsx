@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import Layout from "@/components/Layout";
-import { Link, useNavigate } from "react-router-dom";
+import AppLink from "@/components/routing/AppLink";
 import { motion } from "framer-motion";
 import { Helmet } from "@/lib/helmet";
 import { useCalendly } from "@/context/CalendlyContext";
@@ -89,13 +89,14 @@ const CTAButton = ({
   openCalendly?: boolean;
 }) => {
   const { openCalendly } = useCalendly();
-  const navigate = useNavigate();
 
   const handleClick = () => {
     if (openCalendlyProp) {
       openCalendly();
     } else if (openContact) {
-      navigate("/contact");
+      if (typeof window !== "undefined") {
+        window.location.assign("/contact");
+      }
     }
     if (onClick) {
       onClick();
@@ -436,12 +437,12 @@ export default function WordPressWebDesign() {
                 variants={fadeInUp}
                 className="p-8 bg-kaizen-light rounded-2xl border border-kaizen-light"
               >
-                <Link
-                  to={`/case-studies/${caseStudy.slug.toLowerCase()}`}
+                <AppLink
+                  href={`/case-studies/${caseStudy.slug.toLowerCase()}`}
                   className="text-sm font-bold text-kaizen-cyan uppercase tracking-wide mb-2 hover:opacity-80 transition inline-block"
                 >
                   {caseStudy.client}
-                </Link>
+                </AppLink>
                 <p className="text-xs font-medium text-kaizen-text-dark/60 mb-6">
                   {caseStudy.industry}
                 </p>
@@ -465,12 +466,12 @@ export default function WordPressWebDesign() {
                     </p>
                   </div>
 
-                  <Link
-                    to={`/case-studies/${caseStudy.slug.toLowerCase()}`}
+                  <AppLink
+                    href={`/case-studies/${caseStudy.slug.toLowerCase()}`}
                     className="inline-flex items-center gap-2 text-kaizen-cyan font-medium hover:gap-3 transition"
                   >
                     Read Full Case Study <ArrowRight size={18} />
-                  </Link>
+                  </AppLink>
                 </div>
               </motion.div>
             ))}
@@ -494,8 +495,8 @@ export default function WordPressWebDesign() {
             whileInView="visible"
             viewport={{ once: true, margin: "-100px" }}
           >
-            <Link
-              to="/web-design-liverpool"
+            <AppLink
+              href="/web-design-liverpool"
               className="block p-8 md:p-12 bg-white rounded-2xl border border-kaizen-light hover:border-kaizen-cyan transition group"
             >
               <h3 className="text-3xl md:text-4xl font-heading font-bold mb-4 text-kaizen-dark group-hover:text-kaizen-cyan transition">
@@ -509,7 +510,7 @@ export default function WordPressWebDesign() {
               <div className="text-kaizen-cyan font-medium flex items-center gap-2 hover:gap-3 transition">
                 Explore Headless Web Design <ArrowUpRight size={20} />
               </div>
-            </Link>
+            </AppLink>
           </motion.div>
         </div>
       </section>
@@ -574,12 +575,12 @@ export default function WordPressWebDesign() {
             transition={{ duration: 0.6, delay: 0.2 }}
           >
             Got a broken WordPress site? We also offer {""}
-            <Link
-              to="/project-rescue"
+            <AppLink
+              href="/project-rescue"
               className="text-kaizen-cyan hover:underline"
             >
               project rescue services
-            </Link>
+            </AppLink>
             .
           </motion.p>
         </div>

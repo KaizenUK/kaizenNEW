@@ -14,7 +14,7 @@ import {
   Lock,
   AlertCircle,
 } from "lucide-react";
-import { Link } from "react-router-dom";
+import AppLink from "@/components/routing/AppLink";
 import { motion } from "framer-motion";
 import { useCalendly } from "@/context/CalendlyContext";
 
@@ -60,13 +60,13 @@ export default function HighFiveGamesCase() {
         <div className="absolute inset-0 bg-gradient-to-t from-slate-950 to-transparent z-10" />
 
         <div className="relative z-20 container mx-auto max-w-5xl">
-          <Link
-            to="/case-studies"
+          <AppLink
+            href="/case-studies"
             className="inline-flex items-center gap-2 text-slate-400 hover:text-blue-400 transition mb-12 font-mono text-sm"
           >
             <ArrowLeft size={16} />
             ../case-studies
-          </Link>
+          </AppLink>
 
           <motion.div
             initial="hidden"
@@ -1117,28 +1117,28 @@ export default function HighFiveGamesCase() {
       <section className="bg-slate-950 py-16 px-4 border-t border-slate-900">
         <div className="container mx-auto max-w-5xl">
           <div className="flex items-center justify-between">
-            <Link
-              to="/case-studies/independent-retailer"
+            <AppLink
+              href="/case-studies/independent-retailer"
               className="group flex items-center gap-3 text-white hover:text-blue-400 transition"
             >
               <span className="group-hover:-translate-x-1 transition">←</span>
               Previous Case Study
-            </Link>
+            </AppLink>
 
-            <Link
-              to="/case-studies"
+            <AppLink
+              href="/case-studies"
               className="text-slate-400 hover:text-white transition text-sm font-medium"
             >
               View All
-            </Link>
+            </AppLink>
 
-            <Link
-              to="/case-studies/as-collections"
+            <AppLink
+              href="/case-studies/as-collections"
               className="group flex items-center gap-3 text-white hover:text-blue-400 transition"
             >
               Next Case Study
               <span className="group-hover:translate-x-1 transition">→</span>
-            </Link>
+            </AppLink>
           </div>
         </div>
       </section>

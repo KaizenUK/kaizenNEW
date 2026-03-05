@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Layout from "@/components/Layout";
-import { Link, useNavigate } from "react-router-dom";
+import AppLink from "@/components/routing/AppLink";
 import { motion } from "framer-motion";
 import { useCalendly } from "@/context/CalendlyContext";
 import {
@@ -188,7 +188,11 @@ const FlipCard = ({
 };
 
 export default function ContractProductOwner() {
-  const navigate = useNavigate();
+  const goToContact = () => {
+    if (typeof window !== "undefined") {
+      window.location.assign("/contact");
+    }
+  };
   const { openCalendly: openCalendlyFromContext } = useCalendly();
 
   const comparisonRows = [
@@ -281,7 +285,7 @@ export default function ContractProductOwner() {
                 <ArrowRight size={18} />
               </button>
               <button
-                onClick={() => navigate("/contact")}
+                onClick={() => goToContact()}
                 className="px-8 py-3 rounded-lg border-2 border-kaizen-cyan text-kaizen-cyan font-heading font-bold hover:bg-kaizen-cyan/10 transition inline-flex items-center justify-center gap-2"
               >
                 Get in Touch
@@ -696,8 +700,8 @@ export default function ContractProductOwner() {
               },
             ].map((item, index) => (
               <motion.div key={index} variants={fadeInUp}>
-                <Link
-                  to={item.link}
+                <AppLink
+                  href={item.link}
                   onClick={() => window.scrollTo(0, 0)}
                   className="block p-8 bg-white rounded-2xl border border-kaizen-light hover:border-kaizen-cyan transition group h-full"
                 >
@@ -716,7 +720,7 @@ export default function ContractProductOwner() {
                   <div className="text-kaizen-cyan font-medium flex items-center gap-2 hover:gap-3 transition">
                     {item.linkText} <ArrowUpRight size={18} />
                   </div>
-                </Link>
+                </AppLink>
               </motion.div>
             ))}
           </motion.div>
@@ -751,7 +755,7 @@ export default function ContractProductOwner() {
               <ArrowRight size={18} />
             </button>
             <button
-              onClick={() => navigate("/contact")}
+              onClick={() => goToContact()}
               className="px-8 py-3 rounded-lg border-2 border-kaizen-text-light/30 text-kaizen-text-light font-heading font-bold hover:border-kaizen-cyan transition inline-flex items-center justify-center gap-2"
             >
               Get in Touch

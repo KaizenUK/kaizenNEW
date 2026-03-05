@@ -1,7 +1,7 @@
 import Layout from "@/components/Layout";
 import { Helmet } from "@/lib/helmet";
 import { ArrowLeft, ArrowUpRight } from "lucide-react";
-import { Link } from "react-router-dom";
+import AppLink from "@/components/routing/AppLink";
 import { motion } from "framer-motion";
 
 const fadeInUp = {
@@ -31,13 +31,13 @@ export default function AsCollectionsCase() {
         </div>
 
         <div className="relative container mx-auto max-w-4xl">
-          <Link
-            to="/case-studies"
+          <AppLink
+            href="/case-studies"
             className="inline-flex items-center gap-2 text-white/80 hover:text-white transition mb-12"
           >
             <ArrowLeft size={18} />
             Back to Case Studies
-          </Link>
+          </AppLink>
 
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -247,8 +247,8 @@ export default function AsCollectionsCase() {
                 viewport={{ once: true }}
                 transition={{ delay: index * 0.1 }}
               >
-                <Link
-                  to={card.link}
+                <AppLink
+                  href={card.link}
                   className="group block p-8 bg-kaizen-light rounded-2xl border border-kaizen-light hover:border-kaizen-cyan transition h-full"
                 >
                   <h3 className="text-2xl font-heading font-bold mb-3 text-kaizen-dark group-hover:text-kaizen-cyan transition">
@@ -264,7 +264,7 @@ export default function AsCollectionsCase() {
                       className="group-hover:translate-y-[-2px] group-hover:translate-x-[2px] transition"
                     />
                   </div>
-                </Link>
+                </AppLink>
               </motion.div>
             ))}
           </div>
@@ -275,28 +275,28 @@ export default function AsCollectionsCase() {
       <section className="bg-kaizen-light py-16 px-4 border-t border-kaizen-light">
         <div className="container mx-auto max-w-5xl">
           <div className="flex items-center justify-between">
-            <Link
-              to="/case-studies/high-five-games"
+            <AppLink
+              href="/case-studies/high-five-games"
               className="group flex items-center gap-3 text-kaizen-dark hover:text-kaizen-cyan transition"
             >
               <span className="group-hover:-translate-x-1 transition">←</span>
               Previous Case Study
-            </Link>
+            </AppLink>
 
-            <Link
-              to="/case-studies"
+            <AppLink
+              href="/case-studies"
               className="text-kaizen-cyan hover:text-kaizen-dark transition text-sm font-medium"
             >
               View All
-            </Link>
+            </AppLink>
 
-            <Link
-              to="/case-studies/helen-moore-hairdressing"
+            <AppLink
+              href="/case-studies/helen-moore-hairdressing"
               className="group flex items-center gap-3 text-kaizen-dark hover:text-kaizen-cyan transition"
             >
               Next Case Study
               <span className="group-hover:translate-x-1 transition">→</span>
-            </Link>
+            </AppLink>
           </div>
         </div>
       </section>

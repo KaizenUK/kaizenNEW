@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router-dom";
+import AppLink from "@/components/routing/AppLink";
 import Layout from "@/components/Layout";
 import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
@@ -62,7 +62,11 @@ const containerVariants = {
 };
 
 export default function CaseStudies() {
-  const navigate = useNavigate();
+  const goToContact = () => {
+    if (typeof window !== "undefined") {
+      window.location.assign("/contact");
+    }
+  };
   const { openCalendly: openCalendlyFromContext } = useCalendly();
 
   return (
@@ -115,8 +119,8 @@ export default function CaseStudies() {
           >
             {caseStudies.map((study, index) => (
               <motion.li key={study.id} variants={fadeInUp}>
-                <Link
-                  to={`/case-studies/${study.slug}`}
+                <AppLink
+                  href={`/case-studies/${study.slug}`}
                   className="group block border-b border-kaizen-light py-12 px-8 transition hover:bg-white"
                 >
                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
@@ -158,7 +162,7 @@ export default function CaseStudies() {
                       </div>
                     </div>
                   </div>
-                </Link>
+                </AppLink>
               </motion.li>
             ))}
           </motion.ul>
@@ -196,7 +200,7 @@ export default function CaseStudies() {
             transition={{ duration: 0.6, delay: 0.2 }}
           >
             <button
-              onClick={() => navigate("/contact")}
+              onClick={() => goToContact()}
               className="px-8 py-3 rounded-lg bg-gradient-to-r from-kaizen-cyan to-kaizen-lime text-kaizen-dark font-heading font-bold hover:shadow-lg hover:shadow-kaizen-cyan/50 transition"
             >
               Get in Touch
