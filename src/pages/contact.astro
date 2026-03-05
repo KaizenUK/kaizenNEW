@@ -1,8 +1,55 @@
 ---
-import ReactRoutePage from "../layouts/ReactRoutePage.astro";
-import DirectReactPage from "../../client/static/DirectReactPage";
+import StaticPageLayout from "../layouts/StaticPageLayout.astro";
+import { ContactFormBox } from "../../client/components/ContactFormBox";
+
+export const prerender = true;
+
+const calendlyUrl = "https://calendly.com/sean-kaizenweb/30-minute-meeting-clone";
 ---
 
-<ReactRoutePage path="/contact">
-  <DirectReactPage path="/contact" client:load />
-</ReactRoutePage>
+<StaticPageLayout path="/contact">
+  <section class="min-h-screen bg-gradient-to-br from-kaizen-dark via-slate-900 to-kaizen-dark py-20 text-white">
+    <div class="container mx-auto px-4">
+      <div class="mx-auto max-w-5xl">
+        <div class="mb-12 text-center">
+          <h1 class="mb-6 text-5xl font-heading font-bold leading-tight md:text-6xl lg:text-7xl">Let's Talk.</h1>
+          <p class="text-xl leading-relaxed text-white/70">
+            Pick whichever route is easiest: book a quick call or send a message and we will come back with clear next steps.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 items-start gap-12 lg:grid-cols-2">
+          <article class="flex h-full flex-col rounded-2xl border border-white/10 bg-white/5 p-8 backdrop-blur-sm">
+            <h2 class="mb-4 text-2xl font-heading font-bold text-white">Prefer to schedule?</h2>
+            <p class="mb-8 flex-grow text-lg leading-relaxed text-white/70">
+              Book a 15-minute, no-pressure call. We will discuss the current bottleneck, scope, and whether we are a good fit.
+            </p>
+            <a
+              href={calendlyUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="inline-flex items-center justify-center gap-2 rounded-xl bg-kaizen-cyan px-6 py-4 text-lg font-bold text-kaizen-dark transition hover:opacity-90"
+            >
+              Book a Call
+              <span aria-hidden="true">-&gt;</span>
+            </a>
+          </article>
+
+          <ContactFormBox client:load />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="bg-white py-20 md:py-28">
+    <div class="container mx-auto px-4">
+      <div class="mx-auto max-w-3xl text-center">
+        <h2 class="mb-8 text-4xl font-heading font-bold text-kaizen-dark md:text-5xl">What to Expect</h2>
+        <p class="text-lg leading-relaxed text-kaizen-text-dark/70 md:text-xl">
+          No long sales scripts. We run a short discovery conversation, identify the real problem, and give you practical options in plain
+          English.
+        </p>
+      </div>
+    </div>
+  </section>
+</StaticPageLayout>

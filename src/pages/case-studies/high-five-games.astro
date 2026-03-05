@@ -1,11 +1,213 @@
 ---
-import ReactRoutePage from "../../layouts/ReactRoutePage.astro";
-import RoutedReactPage from "../../../client/static/RoutedReactPage";
+import StaticPageLayout from "../../layouts/StaticPageLayout.astro";
+
+export const prerender = true;
+
+const headlineMetrics = [
+  { label: "ARPU Growth", value: "+42%" },
+  { label: "Churn Reduction", value: "-21%" },
+  { label: "Payment Success", value: "99.1%" },
+  { label: "Regulatory Violations", value: "0" },
+];
+
+const contextPoints = [
+  {
+    title: "Starting Position",
+    copy:
+      "A social-gaming platform with 10M+ player accounts and single-currency mechanics was hitting monetisation and retention limits.",
+  },
+  {
+    title: "Market Opportunity",
+    copy:
+      "Sweepstakes mechanics offered a compliant expansion path across most US states, with stronger engagement signals in internal data.",
+  },
+  {
+    title: "Technical Scope",
+    copy:
+      "The programme required dual-wallet architecture, compliance rule engines, game adaptation, payments, fraud controls, and phased rollout.",
+  },
+];
+
+const phases = [
+  {
+    phase: "Phase 1",
+    title: "Dual wallet foundation",
+    months: "Months 1-2",
+    outcome: "Ledger split delivered with zero data loss.",
+  },
+  {
+    phase: "Phase 2",
+    title: "Compliance framework",
+    months: "Months 2-3",
+    outcome: "Operational compliance controls for 43+ states.",
+  },
+  {
+    phase: "Phase 3",
+    title: "Game engine adaptation",
+    months: "Months 3-5",
+    outcome: "Large game catalogue support for dual-currency play.",
+  },
+  {
+    phase: "Phase 4",
+    title: "Payments and redemption",
+    months: "Months 5-6",
+    outcome: "Reliable payout and anti-fraud transaction flow.",
+  },
+  {
+    phase: "Phase 5",
+    title: "Launch and optimisation",
+    months: "Month 6+",
+    outcome: "State expansion and ongoing live-ops tuning.",
+  },
+];
+
+const challenges = [
+  {
+    title: "KYC friction at redemption",
+    problem: "Identity checks created a measurable drop-off during prize redemptions.",
+    solution: "A redesigned verification flow with staged prompts and clearer education.",
+    result: "Drop-off reduced to an acceptable operational range.",
+  },
+  {
+    title: "Regulatory ambiguity in selected states",
+    problem: "Policy movement introduced launch risk in a subset of target states.",
+    solution: "Staggered launch, legal review loops, and revised compliance documentation.",
+    result: "No regulatory violations and safer rollout posture.",
+  },
+  {
+    title: "Performance overhead in game adaptation",
+    problem: "Adapter-layer latency affected loading performance during early rollout.",
+    solution: "Architecture refactor plus caching and async wallet-query strategy.",
+    result: "Latency reduced to near-imperceptible levels for players.",
+  },
+];
+
+const calendlyUrl = "https://calendly.com/sean-kaizenweb/30-minute-meeting-clone";
 ---
 
-<ReactRoutePage path="/case-studies/high-five-games">
-  <RoutedReactPage
-    path="/case-studies/high-five-games" 
-    client:load
-  />
-</ReactRoutePage>
+<StaticPageLayout
+  path="/case-studies/high-five-games"
+  title="International Sweepstakes Casino Case Study | Kaizen Web"
+  description="How we led a social-to-sweepstakes platform transition across 43+ US jurisdictions with strong operational and revenue outcomes."
+>
+  <section class="bg-gradient-to-b from-slate-950 via-blue-950 to-slate-950 py-24 text-white md:py-32">
+    <div class="container mx-auto max-w-5xl px-4">
+      <a href="/case-studies" class="mb-10 inline-flex items-center gap-2 font-mono text-sm text-slate-400 transition hover:text-blue-400">
+        <span aria-hidden="true">&larr;</span>
+        ../case-studies
+      </a>
+      <p class="mb-4 inline-block rounded border border-blue-500/30 bg-blue-500/10 px-3 py-1 text-xs font-mono font-bold uppercase tracking-widest text-blue-400">
+        System Economics and Live Ops
+      </p>
+      <h1 class="mb-6 text-5xl font-heading font-black leading-tight md:text-6xl lg:text-7xl">
+        From Social to Sweepstakes: Architecting a Dual-Currency Economy
+      </h1>
+      <p class="max-w-4xl text-xl leading-relaxed text-slate-300 md:text-2xl">
+        We were contracted into senior product leadership to guide a complex transition from social-only play to a compliant sweepstakes
+        model across 43+ US jurisdictions.
+      </p>
+    </div>
+  </section>
+
+  <section class="border-t border-slate-900 bg-slate-950 py-20">
+    <div class="container mx-auto max-w-6xl px-4">
+      <h2 class="mb-10 text-4xl font-heading font-bold text-white">Executive Summary</h2>
+      <p class="mb-8 max-w-4xl text-lg leading-relaxed text-slate-300">
+        The programme combined product economics, regulatory constraints, and multi-system engineering. We coordinated delivery across
+        platform, payments, compliance, and live-ops teams while maintaining service reliability during migration.
+      </p>
+      <div class="grid grid-cols-2 gap-4 md:grid-cols-4">
+        {
+          headlineMetrics.map((item) => (
+            <article class="rounded-xl border border-blue-500/30 bg-slate-900/50 p-5">
+              <p class="mb-2 text-xs uppercase tracking-wider text-slate-400">{item.label}</p>
+              <p class="text-3xl font-heading font-bold text-white">{item.value}</p>
+            </article>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="border-t border-slate-900 bg-slate-950 py-20">
+    <div class="container mx-auto max-w-5xl px-4">
+      <h2 class="mb-10 text-4xl font-heading font-bold text-white">Business Context and Opportunity</h2>
+      <div class="space-y-5">
+        {
+          contextPoints.map((item) => (
+            <article class="rounded-xl border border-slate-800 bg-slate-900/30 p-6">
+              <h3 class="mb-2 text-2xl font-heading font-bold text-white">{item.title}</h3>
+              <p class="text-slate-300">{item.copy}</p>
+            </article>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="bg-slate-950 py-20">
+    <div class="container mx-auto max-w-5xl px-4">
+      <h2 class="mb-10 text-4xl font-heading font-bold text-white">Five-Phase Execution Plan</h2>
+      <div class="space-y-4">
+        {
+          phases.map((item) => (
+            <article class="rounded-xl border border-slate-700 bg-slate-900/50 p-5">
+              <div class="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
+                <div>
+                  <p class="text-xs font-mono font-bold uppercase tracking-widest text-blue-400">{item.phase}</p>
+                  <h3 class="text-xl font-heading font-bold text-white">{item.title}</h3>
+                  <p class="text-sm text-slate-400">{item.months}</p>
+                </div>
+                <p class="text-sm text-slate-300 md:max-w-sm md:text-right">{item.outcome}</p>
+              </div>
+            </article>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="border-t border-slate-900 bg-slate-950 py-20">
+    <div class="container mx-auto max-w-5xl px-4">
+      <h2 class="mb-10 text-4xl font-heading font-bold text-white">Challenges and Pivots</h2>
+      <div class="space-y-5">
+        {
+          challenges.map((item) => (
+            <article class="rounded-xl border border-slate-800 bg-slate-900/30 p-6">
+              <h3 class="mb-3 text-xl font-heading font-bold text-white">{item.title}</h3>
+              <p class="mb-2 text-sm text-slate-300"><strong class="text-white">Problem:</strong> {item.problem}</p>
+              <p class="mb-2 text-sm text-slate-300"><strong class="text-white">Solution:</strong> {item.solution}</p>
+              <p class="text-sm text-green-400"><strong>Result:</strong> {item.result}</p>
+            </article>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="border-t border-slate-900 bg-slate-950 py-20">
+    <div class="container mx-auto max-w-3xl px-4 text-center">
+      <h2 class="mb-6 text-4xl font-heading font-bold text-white md:text-5xl">Complex Systems Need Senior Delivery</h2>
+      <p class="mb-8 text-lg text-slate-300">
+        We apply the same playbook to client transformation work: clear requirements, phased risk control, and measurable outcomes.
+      </p>
+      <a
+        href={calendlyUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-8 py-4 font-heading font-bold text-white transition hover:bg-blue-500"
+      >
+        Book a Technical Discovery Call
+        <span aria-hidden="true">-&gt;</span>
+      </a>
+    </div>
+  </section>
+
+  <section class="border-t border-slate-900 bg-slate-950 py-12">
+    <div class="container mx-auto flex max-w-5xl items-center justify-between gap-4 px-4 text-sm font-medium">
+      <a href="/case-studies/independent-retailer" class="text-white transition hover:text-blue-400">&larr; Previous Case Study</a>
+      <a href="/case-studies" class="text-slate-400 transition hover:text-white">View All</a>
+      <a href="/case-studies/as-collections" class="text-white transition hover:text-blue-400">Next Case Study &rarr;</a>
+    </div>
+  </section>
+</StaticPageLayout>

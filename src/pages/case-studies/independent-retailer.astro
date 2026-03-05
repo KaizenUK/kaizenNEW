@@ -1,12 +1,150 @@
 ---
-import ReactRoutePage from "../../layouts/ReactRoutePage.astro";
-import RoutedReactPage from "../../../client/static/RoutedReactPage";
+import StaticPageLayout from "../../layouts/StaticPageLayout.astro";
+
+export const prerender = true;
+
+const summary = [
+  {
+    heading: "The Problem",
+    copy:
+      "A slow, clunky e-commerce stack was losing mobile users and bleeding conversions.",
+  },
+  {
+    heading: "The Solution",
+    copy:
+      "A modern headless rebuild with a faster frontend and cleaner commerce architecture.",
+  },
+  {
+    heading: "Services Provided",
+    copy: "E-commerce architecture, headless frontend, and performance optimisation.",
+  },
+];
+
+const solutionPoints = [
+  {
+    title: "Sub-1 second core page loads",
+    copy: "We reduced high-intent page load times from over 5 seconds to under 1 second.",
+  },
+  {
+    title: "Mobile-first conversion paths",
+    copy: "Checkout and product navigation were rebuilt around thumb-first behaviour and reduced friction.",
+  },
+  {
+    title: "Scalable technical baseline",
+    copy: "The platform can now scale catalogue and traffic without recurring architecture rewrites.",
+  },
+  {
+    title: "Reliable stock visibility",
+    copy: "Real-time inventory sync reduced oversell risk and improved customer confidence at checkout.",
+  },
+];
 ---
 
-<ReactRoutePage path="/case-studies/independent-retailer">
-  <RoutedReactPage
-    path="/case-studies/independent-retailer"
-  
-    client:load
-  />
-</ReactRoutePage>
+<StaticPageLayout
+  path="/case-studies/independent-retailer"
+  title="Independent Retailer Case Study | Kaizen Web"
+  description="How we rebuilt a Liverpool retailer's e-commerce experience with a high-performance headless architecture."
+>
+  <section class="relative bg-gradient-to-b from-amber-500 to-amber-600 py-24 text-white md:py-32">
+    <div class="container mx-auto max-w-5xl px-4">
+      <a href="/case-studies" class="mb-10 inline-flex items-center gap-2 text-white/80 transition hover:text-white">
+        <span aria-hidden="true">&larr;</span>
+        Back to Case Studies
+      </a>
+      <p class="mb-4 text-xs font-mono font-bold uppercase tracking-[0.2em] text-amber-100">Case Study</p>
+      <h1 class="mb-6 text-5xl font-heading font-black leading-tight md:text-6xl lg:text-7xl">
+        Independent Retailer, Liverpool
+      </h1>
+      <p class="max-w-3xl text-xl text-white/85 md:text-2xl">
+        A high-performance headless e-commerce build to fix a slow legacy site and unlock mobile conversion growth.
+      </p>
+    </div>
+  </section>
+
+  <section class="border-b border-kaizen-light bg-white py-16">
+    <div class="container mx-auto max-w-6xl px-4">
+      <div class="grid grid-cols-1 gap-8 md:grid-cols-3 md:gap-12">
+        {
+          summary.map((item) => (
+            <article>
+              <h2 class="mb-3 text-sm font-mono font-bold uppercase tracking-widest text-kaizen-cyan">{item.heading}</h2>
+              <p class="text-lg leading-relaxed text-kaizen-text-dark">{item.copy}</p>
+            </article>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="bg-kaizen-light py-20 md:py-28">
+    <div class="container mx-auto max-w-4xl px-4">
+      <article class="mb-16">
+        <h2 class="mb-6 text-4xl font-heading font-bold text-kaizen-dark md:text-5xl">The Challenge</h2>
+        <p class="text-lg leading-relaxed text-kaizen-text-dark/75">
+          The previous storefront was technically bloated and unreliable on mobile. Load time alone was enough to hurt ranking signals,
+          cart progression, and repeat-customer confidence.
+        </p>
+      </article>
+
+      <article class="mb-16">
+        <h2 class="mb-6 text-4xl font-heading font-bold text-kaizen-dark md:text-5xl">The Solution</h2>
+        <p class="mb-8 text-lg leading-relaxed text-kaizen-text-dark/75">
+          We replaced the stack with a headless architecture built for speed and operational stability, then optimised the purchase flow for
+          real mobile behaviour.
+        </p>
+        <ul class="space-y-5">
+          {
+            solutionPoints.map((item) => (
+              <li class="rounded-2xl border border-kaizen-light bg-white p-6">
+                <h3 class="mb-2 text-xl font-heading font-bold text-kaizen-dark">{item.title}</h3>
+                <p class="text-kaizen-text-dark/75">{item.copy}</p>
+              </li>
+            ))
+          }
+        </ul>
+      </article>
+
+      <article>
+        <h2 class="mb-6 text-4xl font-heading font-bold text-kaizen-dark md:text-5xl">The Result</h2>
+        <p class="text-lg leading-relaxed text-kaizen-text-dark/75">
+          The new platform is materially faster, easier to manage, and designed to convert. Mobile abandonment dropped while product browsing
+          and checkout reliability improved.
+        </p>
+      </article>
+    </div>
+  </section>
+
+  <section class="bg-white py-20">
+    <div class="container mx-auto max-w-5xl px-4">
+      <h2 class="mb-10 text-center text-4xl font-heading font-bold text-kaizen-dark md:text-5xl">Need a Similar Result?</h2>
+      <div class="grid grid-cols-1 gap-8 md:grid-cols-2">
+        <a
+          href="/services/ecommerce"
+          class="group rounded-2xl border border-kaizen-light bg-kaizen-light p-8 transition hover:border-kaizen-cyan"
+        >
+          <h3 class="mb-3 text-2xl font-heading font-bold text-kaizen-dark transition group-hover:text-kaizen-cyan">
+            View E-commerce Services
+          </h3>
+          <p class="text-kaizen-text-dark/70">How we structure fast storefronts, stable catalogues, and conversion-first user journeys.</p>
+        </a>
+        <a
+          href="/digital-transformation"
+          class="group rounded-2xl border border-kaizen-light bg-kaizen-light p-8 transition hover:border-kaizen-cyan"
+        >
+          <h3 class="mb-3 text-2xl font-heading font-bold text-kaizen-dark transition group-hover:text-kaizen-cyan">
+            Explore Digital Transformation
+          </h3>
+          <p class="text-kaizen-text-dark/70">Framework for replacing fragile legacy systems with modern, maintainable architecture.</p>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="border-t border-kaizen-light bg-kaizen-light py-12">
+    <div class="container mx-auto flex max-w-5xl items-center justify-between gap-4 px-4 text-sm font-medium">
+      <a href="/case-studies/helen-moore-hairdressing" class="text-kaizen-dark transition hover:text-kaizen-cyan">&larr; Previous Case Study</a>
+      <a href="/case-studies" class="text-kaizen-cyan transition hover:text-kaizen-dark">View All</a>
+      <a href="/case-studies/as-collections" class="text-kaizen-dark transition hover:text-kaizen-cyan">Next Case Study &rarr;</a>
+    </div>
+  </section>
+</StaticPageLayout>

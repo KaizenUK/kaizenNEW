@@ -1,11 +1,139 @@
 ---
-import ReactRoutePage from "../layouts/ReactRoutePage.astro";
-import DirectReactPage from "../../client/static/DirectReactPage";
+import StaticPageLayout from "../layouts/StaticPageLayout.astro";
+import SpeedScanner from "../../client/components/SpeedScanner";
+
+export const prerender = true;
+
+const stats = [
+  {
+    stat: "53%",
+    description: "of visits are abandoned when mobile load time is over 3 seconds.",
+  },
+  {
+    stat: "7%",
+    description: "average conversion drop for every extra second of delay.",
+  },
+  {
+    stat: "90+",
+    description: "target score for strong Core Web Vitals performance.",
+  },
+];
+
+const vitals = [
+  {
+    code: "LCP",
+    title: "Largest Contentful Paint",
+    description: "How quickly the main content appears. Slow LCP hurts both rankings and trust.",
+  },
+  {
+    code: "CLS",
+    title: "Cumulative Layout Shift",
+    description: "How stable the page is while loading. Layout jumps are a major UX failure.",
+  },
+  {
+    code: "TBT",
+    title: "Total Blocking Time",
+    description: "How responsive your page is while scripts execute. High TBT breaks click actions.",
+  },
+];
+
+const faqs = [
+  {
+    question: "How does speed affect ranking?",
+    answer:
+      "Core Web Vitals are ranking signals. If your pages fail LCP, CLS, and TBT thresholds, visibility suffers even when content quality is strong.",
+  },
+  {
+    question: "Can this be fixed without a rebuild?",
+    answer:
+      "Sometimes. Image, script, and hosting improvements can help. But if the foundation is bloated, rebuilding on a lean stack is often faster and cheaper long-term.",
+  },
+  {
+    question: "What score should I aim for?",
+    answer:
+      "For competitive terms, aim for 90+ on mobile with stable field data, not just one-off synthetic checks.",
+  },
+];
 ---
 
-<ReactRoutePage path="/performance-scanner">
-  <DirectReactPage
-    path="/performance-scanner"
-    client:load
-  />
-</ReactRoutePage>
+<StaticPageLayout path="/performance-scanner">
+  <section class="relative overflow-hidden bg-slate-950 py-20 text-white md:py-28">
+    <div class="container mx-auto max-w-5xl px-4">
+      <p class="mb-4 inline-flex items-center gap-2 rounded-full border border-red-500/30 bg-red-500/10 px-4 py-2 text-sm font-medium text-red-300">
+        Free Performance Audit
+      </p>
+      <h1 class="mb-6 text-4xl font-heading font-black leading-tight md:text-5xl lg:text-6xl">
+        Is Your Website Too Slow to Convert?
+      </h1>
+      <p class="mb-12 max-w-3xl text-xl leading-relaxed text-slate-300">
+        Run a live speed check, review your Core Web Vitals, and get practical priorities to improve ranking and conversion performance.
+      </p>
+
+      <div class="grid grid-cols-1 gap-6 md:grid-cols-3">
+        {
+          stats.map((item) => (
+            <article class="rounded-2xl border border-slate-700/60 bg-slate-800/50 p-6">
+              <p class="mb-2 text-3xl font-heading font-black text-white">{item.stat}</p>
+              <p class="text-sm text-slate-300">{item.description}</p>
+            </article>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="bg-slate-900 py-16 md:py-24">
+    <div class="container mx-auto max-w-6xl px-4">
+      <SpeedScanner client:load />
+    </div>
+  </section>
+
+  <section class="bg-slate-950 py-20 text-white md:py-28">
+    <div class="container mx-auto max-w-6xl px-4">
+      <h2 class="mb-10 text-center text-4xl font-heading font-bold md:text-5xl">What the Report Measures</h2>
+      <div class="grid grid-cols-1 gap-6 md:grid-cols-3">
+        {
+          vitals.map((item) => (
+            <article class="rounded-2xl border border-slate-700/60 bg-slate-900/60 p-7">
+              <p class="mb-2 text-xs font-bold uppercase tracking-wider text-amber-300">{item.code}</p>
+              <h3 class="mb-3 text-2xl font-heading font-bold text-white">{item.title}</h3>
+              <p class="text-slate-300">{item.description}</p>
+            </article>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="bg-white py-20 md:py-28">
+    <div class="container mx-auto max-w-4xl px-4">
+      <h2 class="mb-8 text-4xl font-heading font-bold text-kaizen-dark md:text-5xl">Common Questions</h2>
+      <div class="space-y-4">
+        {
+          faqs.map((item) => (
+            <details class="rounded-xl border border-kaizen-light bg-kaizen-light/30 p-5">
+              <summary class="cursor-pointer list-none text-lg font-semibold text-kaizen-dark">{item.question}</summary>
+              <p class="mt-3 text-kaizen-text-dark/75">{item.answer}</p>
+            </details>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="bg-kaizen-dark py-20 text-white">
+    <div class="container mx-auto max-w-3xl px-4 text-center">
+      <h2 class="mb-6 text-4xl font-heading font-bold md:text-5xl">Want Help Fixing It?</h2>
+      <p class="mb-8 text-lg text-white/80">
+        We can turn the report into a clear action plan and implement the highest-impact improvements first.
+      </p>
+      <a
+        href="/contact"
+        class="inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-kaizen-cyan to-kaizen-lime px-8 py-3 font-heading font-bold text-kaizen-dark transition hover:opacity-90"
+      >
+        Book a Speed Review
+        <span aria-hidden="true">-&gt;</span>
+      </a>
+    </div>
+  </section>
+</StaticPageLayout>

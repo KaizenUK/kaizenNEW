@@ -1,11 +1,131 @@
 ---
-import ReactRoutePage from "../../layouts/ReactRoutePage.astro";
-import RoutedReactPage from "../../../client/static/RoutedReactPage";
+import StaticPageLayout from "../../layouts/StaticPageLayout.astro";
+
+export const prerender = true;
+
+const stack = [
+  {
+    name: "React",
+    copy: "Component-driven UI architecture for maintainability.",
+  },
+  {
+    name: "Vite",
+    copy: "Faster build and iteration cycle for delivery teams.",
+  },
+  {
+    name: "Headless CMS",
+    copy: "Content flexibility without frontend performance compromise.",
+  },
+  {
+    name: "Node + VPS Ops",
+    copy: "Controlled infrastructure, deployment automation, and hardening.",
+  },
+];
+
+const hardening = [
+  "Route-level metadata and canonical cleanup for duplicate-content control.",
+  "Security header and TLS automation checks as part of deployment hygiene.",
+  "Asset, bundle, and routing cleanup to remove dead weight and improve consistency.",
+];
+
+const calendlyUrl = "https://calendly.com/sean-kaizenweb/30-minute-meeting-clone";
 ---
 
-<ReactRoutePage path="/case-studies/kaizen-rebuild">
-  <RoutedReactPage
-    path="/case-studies/kaizen-rebuild" 
-    client:load
-  />
-</ReactRoutePage>
+<StaticPageLayout
+  path="/case-studies/kaizen-rebuild"
+  title="Kaizen Web Rebuild Case Study | React + Vite Migration"
+  description="How we rebuilt our own stack to a faster React + Vite architecture with stronger technical and SEO foundations."
+>
+  <section class="bg-slate-950 py-24 text-white md:py-32">
+    <div class="container mx-auto max-w-5xl px-4">
+      <a href="/case-studies" class="mb-10 inline-flex items-center gap-2 font-mono text-sm text-slate-400 transition hover:text-cyan-400">
+        <span aria-hidden="true">&larr;</span>
+        ../case-studies
+      </a>
+      <p class="mb-4 inline-block rounded border border-cyan-500/30 bg-cyan-500/10 px-3 py-1 text-xs font-mono font-bold uppercase tracking-widest text-cyan-400">
+        The Blueprint
+      </p>
+      <h1 class="mb-6 text-5xl font-heading font-black leading-tight md:text-6xl lg:text-7xl">
+        Building Kaizen: <span class="text-cyan-400">Fixing Our Own House</span>
+      </h1>
+      <p class="max-w-3xl text-xl text-slate-400 md:text-2xl">
+        We migrated from a legacy setup to a high-performance modern stack. This case study covers the technical tradeoffs, cleanup work,
+        and operational outcomes.
+      </p>
+    </div>
+  </section>
+
+  <section class="border-t border-slate-900 bg-slate-950 py-20">
+    <div class="container mx-auto max-w-4xl px-4">
+      <h2 class="mb-6 text-4xl font-heading font-bold text-white">The Pain</h2>
+      <div class="space-y-4 text-lg leading-relaxed text-slate-400">
+        <p>
+          We were selling performance-first engineering while running on technical debt: stale pages, inconsistent SEO behaviour, and
+          avoidable rendering overhead.
+        </p>
+        <p>
+          Rebuild goals were simple: reduce bloat, improve deployment confidence, and align the public platform with the standards we apply
+          to client work.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="bg-slate-950 py-20">
+    <div class="container mx-auto max-w-6xl px-4">
+      <h2 class="mb-10 text-center text-4xl font-heading font-bold text-white">The Stack</h2>
+      <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
+        {
+          stack.map((item) => (
+            <article class="rounded-2xl border border-slate-800 bg-slate-900/50 p-7">
+              <h3 class="mb-2 text-2xl font-heading font-bold text-white">{item.name}</h3>
+              <p class="text-slate-400">{item.copy}</p>
+            </article>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="border-t border-slate-900 bg-slate-950 py-20">
+    <div class="container mx-auto max-w-4xl px-4">
+      <h2 class="mb-8 text-4xl font-heading font-bold text-white">SEO and Performance Hardening</h2>
+      <ul class="space-y-4">
+        {
+          hardening.map((item) => (
+            <li class="rounded-xl border border-slate-800 bg-slate-900/40 p-5 text-slate-300">{item}</li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <section class="bg-slate-950 py-20">
+    <div class="container mx-auto max-w-4xl px-4">
+      <article class="rounded-3xl border border-cyan-500/30 bg-gradient-to-br from-slate-900 to-slate-950 p-8 md:p-12">
+        <h2 class="mb-2 text-xl font-mono text-cyan-400">Project Valuation</h2>
+        <p class="mb-6 text-4xl font-heading font-bold text-white md:text-5xl">GBP 12,000 - 15,000</p>
+        <p class="mb-8 text-slate-300">
+          Scope covered strategy, UX, React delivery, CMS integration, server operations, and post-launch hardening.
+        </p>
+        <a
+          href={calendlyUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="inline-flex items-center gap-2 rounded-lg bg-cyan-500 px-8 py-4 font-heading font-bold text-slate-950 transition hover:bg-cyan-400"
+        >
+          Book a Technical Discovery Call
+          <span aria-hidden="true">-&gt;</span>
+        </a>
+      </article>
+    </div>
+  </section>
+
+  <section class="border-t border-slate-900 bg-slate-950 py-12">
+    <div class="container mx-auto flex max-w-5xl items-center justify-between gap-4 px-4 text-sm font-medium">
+      <a href="/case-studies/helen-moore-hairdressing" class="text-white transition hover:text-cyan-400">&larr; Previous Case Study</a>
+      <a href="/case-studies" class="text-slate-400 transition hover:text-white">View All</a>
+      <a href="/case-studies/as-collections" class="text-white transition hover:text-cyan-400">Next Case Study &rarr;</a>
+    </div>
+  </section>
+</StaticPageLayout>
