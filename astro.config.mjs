@@ -38,7 +38,6 @@ export default defineConfig({
         "react-ga4",
         "lucide-react",
         "jspdf",
-        "react-router-dom",
         "@radix-ui/react-accordion",
         "clsx",
         "tailwind-merge",
@@ -54,14 +53,6 @@ export default defineConfig({
         {
           find: "react-compiler-runtime",
           replacement: path.resolve("./src/lib/reactCompilerRuntimeShim.ts"),
-        },
-        {
-          find: /^react-router-dom$/,
-          replacement: path.resolve("./node_modules/react-router-dom/dist/index.mjs"),
-        },
-        {
-          find: /^react-router$/,
-          replacement: path.resolve("./node_modules/react-router/dist/development/index.mjs"),
         },
       ],
       dedupe: ["react", "react-dom"],

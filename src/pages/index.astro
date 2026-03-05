@@ -1,8 +1,8 @@
 ---
 import ReactRoutePage from "../layouts/ReactRoutePage.astro";
-import RoutedReactPage from "../../client/static/RoutedReactPage";
+import DirectReactPage from "../../client/static/DirectReactPage";
 ---
 
 <ReactRoutePage path="/">
-  <RoutedReactPage path="/" client:load />
+  <DirectReactPage path="/" client:load />
 </ReactRoutePage>

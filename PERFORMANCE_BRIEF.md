@@ -9,13 +9,12 @@ Reach and maintain Lighthouse Performance at 90+ without changing visual design 
 3. Measure after every change. Keep only proven wins.
 
 ## Current Architecture to Preserve
-1. `client/App.tsx`: home route eager, all other routes lazy.
+1. Astro static routing via `src/pages/*` with per-route React islands.
 2. `client/pages/Index.tsx`: below-the-fold sections deferred with `IntersectionObserver`.
 3. `client/components/layout/Header.tsx`: desktop nav loaded lazily and desktop-only gated.
 4. `client/components/layout/HeaderDesktopNav.tsx`: mega-menu logic isolated from initial mobile payload.
 5. `client/components/layout/header-menu-data.ts`: loaded on menu hover only.
-6. `client/components/RouteChangeTracker.tsx`: lazy-loaded after idle, not in initial critical path.
-7. `vite.config.ts`: modulepreload polyfill disabled (`build.modulePreload.polyfill = false`).
+6. `client/components/layout/Footer.tsx` and modals remain deferred where possible.
 
 ## Rules for Performance Work
 1. Do not add eager imports in homepage/header for non-critical features.
@@ -45,4 +44,4 @@ Reach and maintain Lighthouse Performance at 90+ without changing visual design 
 ## Notes for Future Builders
 1. This project already made major gains by reducing initial JS and isolating desktop/nav logic.
 2. Remaining Lighthouse variability at this level (90-94) is normal run-to-run noise.
-3. Further major gains likely require architectural shifts (SSR/prerender), not micro-tuning.
+3. Further major gains likely require reducing island JS and media payloads, not reintroducing runtime routing.

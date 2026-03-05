@@ -1,7 +1,7 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { ArrowRight, ArrowUpRight } from "lucide-react";
-import { Link } from "react-router-dom";
+import AppLink from "@/components/routing/AppLink";
 
 /**
  * Section 2: Social Media Warning (The Pain)
@@ -91,13 +91,13 @@ export const CredibilitySection: React.FC = () => {
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
               >
-                <Link
-                  to="/case-studies/helen-moore-hairdressing"
+                <AppLink
+                  href="/case-studies/helen-moore-hairdressing"
                   className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg border border-white/15 bg-white/5 text-white font-heading font-semibold hover:bg-white/10 transition"
                 >
                   See proof in a case study
                   <ArrowUpRight size={18} />
-                </Link>
+                </AppLink>
               </motion.div>
               <motion.button
                 onClick={() => {

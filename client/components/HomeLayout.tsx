@@ -1,8 +1,7 @@
 import { Suspense, lazy, useEffect, useState, type ReactNode } from "react";
-import { useLocation } from "react-router-dom";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
-import RouterBoundary from "@/components/routing/RouterBoundary";
+import { useRoutePath } from "@/components/routing/RoutePathContext";
 
 const OffCanvasMenu = lazy(() => import("@/components/layout/OffCanvasMenu"));
 
@@ -45,16 +44,16 @@ const upsertCanonical = (href: string) => {
   canonical.setAttribute("href", href);
 };
 
-const HomeLayoutContent = ({ children }: HomeLayoutProps) => {
+const HomeLayoutContent = ({ children, path }: HomeLayoutProps) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [hasOpenedMobileMenu, setHasOpenedMobileMenu] = useState(false);
-  const location = useLocation();
+  const routePath = useRoutePath(path || "/");
 
   useEffect(() => {
     if (typeof window !== "undefined") {
       window.scrollTo(0, 0);
     }
-  }, [location.pathname]);
+  }, [routePath]);
 
   useEffect(() => {
     if (typeof document === "undefined") return;
@@ -79,7 +78,7 @@ const HomeLayoutContent = ({ children }: HomeLayoutProps) => {
     upsertMeta("name", "twitter:description", HOME_DESCRIPTION);
     upsertMeta("name", "twitter:image", HOME_OG_IMAGE);
     upsertMeta("name", "twitter:site", "@kaizenweblpool");
-  }, [location.pathname]);
+  }, [routePath]);
 
   useEffect(() => {
     if (!mobileMenuOpen) return;
@@ -112,11 +111,7 @@ const HomeLayoutContent = ({ children }: HomeLayoutProps) => {
 };
 
 const HomeLayout = (props: HomeLayoutProps) => {
-  return (
-    <RouterBoundary initialPath={props.path}>
-      <HomeLayoutContent {...props} />
-    </RouterBoundary>
-  );
+  return <HomeLayoutContent {...props} />;
 };
 
 export default HomeLayout;

@@ -1,15 +1,19 @@
 import React, { Suspense, useState, lazy } from "react";
 import { motion } from "framer-motion";
 import { ArrowRight, ChevronRight } from "lucide-react";
-import { useNavigate } from "react-router-dom";
 
 const FaqSection = lazy(() =>
   import("@/components/FaqSection").then((m) => ({ default: m.FaqSection })),
 );
 
+function goToContact() {
+  if (typeof window !== "undefined") {
+    window.location.assign("/contact");
+  }
+}
+
 export const PricingSlider = () => {
   const [tier, setTier] = useState(0);
-  const navigate = useNavigate();
 
   const tiers = [
     {
@@ -214,7 +218,7 @@ export const PricingSlider = () => {
                   </div>
 
                   <button
-                    onClick={() => navigate("/contact")}
+                    onClick={goToContact}
                     className="mt-6 w-full px-6 py-3 rounded-lg bg-gradient-to-r from-kaizen-cyan to-kaizen-lime text-gray-950 font-heading font-bold hover:shadow-lg hover:scale-105 transition-all inline-flex items-center justify-center gap-2"
                   >
                     {currentTier.cta}
@@ -389,8 +393,6 @@ export const SEOFAQSection = () => {
 };
 
 export const LocalMap = () => {
-  const navigate = useNavigate();
-
   return (
     <section className="py-20 md:py-32 bg-gray-950 text-white relative overflow-hidden">
       <div className="container mx-auto px-4 relative z-10">
@@ -447,7 +449,7 @@ export const LocalMap = () => {
                 <ArrowRight size={20} />
               </button>
               <button
-                onClick={() => navigate("/contact")}
+                onClick={goToContact}
                 className="px-8 py-4 rounded-lg border-2 border-white/20 text-white font-heading font-bold hover:border-kaizen-cyan hover:text-kaizen-cyan transition-all inline-flex items-center gap-2"
               >
                 Start Your Project
@@ -480,4 +482,3 @@ export const LocalMap = () => {
     </section>
   );
 };
-

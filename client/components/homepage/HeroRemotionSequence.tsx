@@ -1,5 +1,4 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
 import {
   ArrowRightIcon,
   ArrowUpRightIcon,
@@ -64,7 +63,11 @@ const LighthouseGauge: React.FC = () => {
 };
 
 export const HeroRemotionSequence: React.FC = () => {
-  const navigate = useNavigate();
+  const goToContact = () => {
+    if (typeof window !== "undefined") {
+      window.location.assign("/contact");
+    }
+  };
 
   return (
     <section className="home-hero relative isolate min-h-[100vh] text-white flex items-start lg:items-center py-20 overflow-hidden">
@@ -121,7 +124,7 @@ export const HeroRemotionSequence: React.FC = () => {
 
             <div className="home-hero-actions flex flex-col sm:flex-row items-start gap-4 mb-8">
               <button
-                onClick={() => navigate("/contact")}
+                onClick={goToContact}
                 className="home-hero-btn-primary px-8 py-4 rounded-lg bg-white text-black font-heading font-bold text-lg inline-flex items-center justify-center gap-2 transform-gpu transition-all duration-200 hover:scale-105 hover:shadow-[0_0_20px_rgba(255,255,255,0.5)] active:scale-95"
               >
                 Start Your Project

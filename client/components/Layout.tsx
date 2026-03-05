@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
 import { Helmet } from "@/lib/helmet";
-import RouterBoundary from "@/components/routing/RouterBoundary";
+import { useRoutePath } from "@/components/routing/RoutePathContext";
 import {
   buildLocalBusinessSchema,
   getPageMeta,
@@ -27,18 +26,14 @@ interface LayoutProps {
   };
 }
 
-const LayoutContent: React.FC<LayoutProps> = ({ children, metaOverride }) => {
+const LayoutContent: React.FC<LayoutProps> = ({ children, metaOverride, path }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [hasOpenedMobileMenu, setHasOpenedMobileMenu] = useState(false);
   const [shouldRenderFooter, setShouldRenderFooter] = useState(
     typeof window === "undefined",
   );
-  const location = useLocation();
+  const normalizedPath = useRoutePath(path || "/");
 
-  const normalizedPath =
-    location.pathname !== "/" && location.pathname.endsWith("/")
-      ? location.pathname.slice(0, -1)
-      : location.pathname;
   const meta = getPageMeta(normalizedPath);
   const canonicalUrlBase =
     normalizedPath === "/" ? SITE_URL : `${SITE_URL}${normalizedPath}`;
@@ -60,7 +55,7 @@ const LayoutContent: React.FC<LayoutProps> = ({ children, metaOverride }) => {
     if (typeof window !== "undefined") {
       window.scrollTo(0, 0);
     }
-  }, [location.pathname]);
+  }, [normalizedPath]);
 
   useEffect(() => {
     if (!mobileMenuOpen) return;
@@ -234,11 +229,7 @@ const LayoutContent: React.FC<LayoutProps> = ({ children, metaOverride }) => {
 };
 
 const Layout: React.FC<LayoutProps> = (props) => {
-  return (
-    <RouterBoundary initialPath={props.path}>
-      <LayoutContent {...props} />
-    </RouterBoundary>
-  );
+  return <LayoutContent {...props} />;
 };
 
 export default Layout;

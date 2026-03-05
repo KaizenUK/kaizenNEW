@@ -1,7 +1,6 @@
-import { BrowserRouter, MemoryRouter } from "react-router-dom";
 import { HelmetProvider } from "@/lib/helmet";
 import { CalendlyProvider } from "@/context/CalendlyContext";
-import IndexPage from "@/pages/Index";
+import { RoutePathProvider } from "@/components/routing/RoutePathContext";
 import WebDesignLiverpoolPage from "@/pages/services/WebDesignLiverpool";
 import WebDesignChesterPage from "@/pages/services/WebDesignChester";
 import WebDesignWarringtonPage from "@/pages/services/WebDesignWarrington";
@@ -20,8 +19,6 @@ import HelenMooreHairdressingPage from "@/pages/caseStudies/HelenMooreHairdressi
 import IndependentRetailerPage from "@/pages/caseStudies/IndependentRetailer";
 import KaizenRebuildPage from "@/pages/caseStudies/KaizenRebuild";
 import HighFiveGamesPage from "@/pages/caseStudies/HighFiveGames";
-import ContactPage from "@/pages/Contact";
-import PerformanceScannerPage from "@/pages/PerformanceScanner";
 import "../global.css";
 
 type RoutedReactPageProps = {
@@ -29,7 +26,6 @@ type RoutedReactPageProps = {
 };
 
 const PAGE_COMPONENTS_BY_PATH: Record<string, React.ComponentType> = {
-  "/": IndexPage,
   "/web-design-liverpool": WebDesignLiverpoolPage,
   "/web-design-chester": WebDesignChesterPage,
   "/web-design-warrington": WebDesignWarringtonPage,
@@ -48,29 +44,22 @@ const PAGE_COMPONENTS_BY_PATH: Record<string, React.ComponentType> = {
   "/case-studies/independent-retailer": IndependentRetailerPage,
   "/case-studies/kaizen-rebuild": KaizenRebuildPage,
   "/case-studies/high-five-games": HighFiveGamesPage,
-  "/contact": ContactPage,
-  "/performance-scanner": PerformanceScannerPage,
 };
 
 export default function RoutedReactPage({ path }: RoutedReactPageProps) {
-  const isServer = typeof window === "undefined";
   const PageComponent = PAGE_COMPONENTS_BY_PATH[path];
 
   if (!PageComponent) {
     throw new Error(`No routed React page registered for path: ${path}`);
   }
 
-  const content = (
-    <HelmetProvider>
-      <CalendlyProvider>
-        <PageComponent />
-      </CalendlyProvider>
-    </HelmetProvider>
+  return (
+    <RoutePathProvider path={path}>
+      <HelmetProvider>
+        <CalendlyProvider>
+          <PageComponent />
+        </CalendlyProvider>
+      </HelmetProvider>
+    </RoutePathProvider>
   );
-
-  if (isServer) {
-    return <MemoryRouter initialEntries={[path]}>{content}</MemoryRouter>;
-  }
-
-  return <BrowserRouter>{content}</BrowserRouter>;
 }
