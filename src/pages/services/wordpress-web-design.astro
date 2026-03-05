@@ -1,12 +1,353 @@
 ---
-import ReactRoutePage from "../../layouts/ReactRoutePage.astro";
-import RoutedReactPage from "../../../client/static/RoutedReactPage";
----
+import StaticPageLayout from "../../layouts/StaticPageLayout.astro";
 
-<ReactRoutePage path="/services/wordpress-web-design">
-  <RoutedReactPage
-    path="/services/wordpress-web-design"
-  
-    client:load
-  />
-</ReactRoutePage>
+export const prerender = true;
+
+const calendlyUrl =
+  "https://calendly.com/sean-kaizenweb/30-minute-meeting-clone";
+
+const methodCards = [
+  {
+    title: "Total Control, No Bloat",
+    copy: "Custom WordPress builds with block editor flexibility and none of the usual heavy theme overhead.",
+  },
+  {
+    title: "Fast and Secure",
+    copy: "Performance-first architecture and practical hardening so your site stays fast and stable.",
+  },
+  {
+    title: "Works with Your Stack",
+    copy: "WooCommerce, bookings, and custom features integrated cleanly without unnecessary drag.",
+  },
+];
+
+const caseStudies = [
+  {
+    client: "Helen Moore Hairdressing",
+    industry: "Boutique Salon - Wirral",
+    problem:
+      "Top-rated local salon with no website and no digital booking capability.",
+    outcome:
+      "Fast, elegant WordPress site with 24/7 online booking and better local visibility.",
+    link: "/case-studies/helen-moore-hairdressing",
+  },
+  {
+    client: "A.S Collections",
+    industry: "Professional Services - Liverpool",
+    problem:
+      "Dated site, poor mobile performance, and low trust in a competitive niche.",
+    outcome:
+      "Modern high-performance rebuild that is easy for the internal team to update.",
+    link: "/case-studies/as-collections",
+  },
+];
+
+const faqs = [
+  {
+    question: "Is WordPress secure for business?",
+    answer:
+      "Yes, when it is engineered and maintained correctly. We deploy hardened builds and keep update hygiene under control.",
+  },
+  {
+    question: "Is this a template build?",
+    answer:
+      "No. We ship bespoke builds with clean code and clear architecture, tailored to your business goals.",
+  },
+  {
+    question: "Can my team edit content themselves?",
+    answer:
+      "Yes. We configure the editor around your workflow so content changes are straightforward.",
+  },
+];
+
+const faqSchema = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: faqs.map((item) => ({
+    "@type": "Question",
+    name: item.question,
+    acceptedAnswer: {
+      "@type": "Answer",
+      text: item.answer,
+    },
+  })),
+});
+
+const serviceSchema = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "Service",
+  name: "WordPress Web Design Liverpool",
+  description:
+    "Custom WordPress web design and development for Liverpool and Wirral businesses. Fast, secure, easy-to-manage websites.",
+  provider: {
+    "@type": "Organization",
+    name: "Kaizen Web",
+    url: "https://kaizenweb.co.uk",
+  },
+  areaServed: {
+    "@type": "City",
+    name: "Liverpool",
+  },
+  image:
+    "https://cdn.builder.io/api/v1/image/assets%2Fe4ae46bbd81b4b95bef54d66dd9748cc%2Fa18f81c064614dceb4a9d1fcb2c9f64b?format=webp&width=800",
+});
+---
+<StaticPageLayout
+  path="/services/wordpress-web-design"
+  title="WordPress Web Design Liverpool | Fast and Easy to Edit"
+  description="Custom WordPress sites for Liverpool businesses. Fast, secure, and easy to update with clean architecture."
+>
+  <script type="application/ld+json" set:html={serviceSchema} is:inline></script>
+  <script type="application/ld+json" set:html={faqSchema} is:inline></script>
+
+  <section class="relative min-h-screen overflow-hidden bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 py-20">
+    <div class="container relative z-10 mx-auto px-4">
+      <div class="grid grid-cols-1 items-center gap-12 md:grid-cols-2">
+        <div class="rounded-2xl border border-white/20 bg-white/95 p-8 shadow-2xl backdrop-blur-sm md:p-12">
+          <h1 class="mb-6 text-4xl font-heading font-black leading-tight text-kaizen-dark md:text-5xl lg:text-6xl">
+            {
+              ["WordPress", "Sites Built", "Right.", "Liverpool."].map(
+                (word) => <span class="block">{word}</span>,
+              )
+            }
+          </h1>
+          <p class="mb-8 text-lg leading-relaxed text-kaizen-text-dark/70">
+            WordPress you can actually edit yourself. Fast, secure builds with
+            clean code, no heavy themes, and no plugin chaos.
+          </p>
+          <div class="flex flex-col gap-4 sm:flex-row">
+            <a
+              href="/contact"
+              class="inline-flex items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-kaizen-cyan to-kaizen-lime px-8 py-3 font-heading font-bold text-kaizen-dark transition hover:shadow-lg hover:shadow-kaizen-cyan/50"
+            >
+              Get in Touch
+              <span aria-hidden="true">-&gt;</span>
+            </a>
+            <a
+              href={calendlyUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="inline-flex items-center justify-center gap-2 rounded-lg border-2 border-kaizen-cyan px-8 py-3 font-heading font-bold text-kaizen-cyan transition hover:bg-kaizen-cyan/10"
+            >
+              Book a 15 Minute Call
+              <span aria-hidden="true">-&gt;</span>
+            </a>
+          </div>
+        </div>
+
+        <div class="hidden md:block">
+          <img
+            src="https://cdn.builder.io/api/v1/image/assets%2Fe4ae46bbd81b4b95bef54d66dd9748cc%2Fa18f81c064614dceb4a9d1fcb2c9f64b?format=webp&width=800"
+            alt="WordPress editor interface"
+            width="800"
+            height="600"
+            class="h-full w-full rounded-2xl object-cover"
+            loading="lazy"
+            decoding="async"
+          />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="bg-white py-20 md:py-32">
+    <div class="container mx-auto px-4">
+      <h2 class="mb-8 text-4xl font-heading font-bold text-kaizen-dark md:text-5xl">
+        A WordPress Site Does Not Have to Be Slow.
+      </h2>
+      <p class="max-w-3xl text-xl leading-relaxed text-kaizen-text-dark/70">
+        WordPress is not the problem. Bloated themes and weak implementation are
+        the problem. We deliver lean builds that keep the familiar editor while
+        meeting modern performance expectations.
+      </p>
+    </div>
+  </section>
+
+  <section class="bg-kaizen-light py-20 md:py-32">
+    <div class="container mx-auto px-4">
+      <h2 class="mb-16 text-center text-4xl font-heading font-bold text-kaizen-dark md:text-5xl">
+        The Kaizen WordPress Method
+      </h2>
+      <div class="grid grid-cols-1 gap-8 md:grid-cols-3">
+        {
+          methodCards.map((item) => (
+            <article class="rounded-2xl border border-kaizen-light bg-white p-8 transition hover:border-kaizen-cyan">
+              <h3 class="mb-4 text-2xl font-heading font-bold text-kaizen-dark">
+                {item.title}
+              </h3>
+              <p class="text-lg leading-relaxed text-kaizen-text-dark/70">
+                {item.copy}
+              </p>
+            </article>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="bg-white py-20 md:py-24">
+    <div class="container mx-auto px-4">
+      <div class="mx-auto max-w-3xl rounded-2xl border border-kaizen-light bg-kaizen-light p-6 md:p-8">
+        <p class="mb-3 text-xs font-mono uppercase tracking-[0.25em] text-kaizen-cyan">
+          WordPress or React?
+        </p>
+        <h2 class="mb-4 text-2xl font-heading font-bold text-kaizen-dark md:text-3xl">
+          Is WordPress right for my business?
+        </h2>
+        <p class="mb-4 text-base leading-relaxed text-kaizen-text-dark/80 md:text-lg">
+          WordPress is ideal for many small and mid-size businesses that need a
+          flexible, easy-to-manage site and fast editing workflow.
+        </p>
+        <p class="mb-4 text-base leading-relaxed text-kaizen-text-dark/80 md:text-lg">
+          If you later move to headless or React, your team can keep a familiar
+          content workflow while we upgrade your frontend architecture.
+        </p>
+        <a
+          href="/blog/wordpress-vs-react-business-roi"
+          class="inline-flex items-center gap-2 text-sm font-heading font-semibold text-kaizen-cyan hover:text-kaizen-lime md:text-base"
+        >
+          Read: WordPress vs React ROI guide
+          <span aria-hidden="true">-&gt;</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="bg-white py-20 md:py-32">
+    <div class="container mx-auto px-4">
+      <h2 class="mb-16 text-center text-4xl font-heading font-bold text-kaizen-dark md:text-5xl">
+        Real Results for Local Businesses
+      </h2>
+      <div class="mx-auto grid max-w-5xl grid-cols-1 gap-12 md:grid-cols-2">
+        {
+          caseStudies.map((item) => (
+            <article class="rounded-2xl border border-kaizen-light bg-kaizen-light p-8">
+              <a
+                href={item.link}
+                class="mb-2 inline-block text-sm font-bold uppercase tracking-wide text-kaizen-cyan transition hover:opacity-80"
+              >
+                {item.client}
+              </a>
+              <p class="mb-6 text-xs font-medium text-kaizen-text-dark/60">
+                {item.industry}
+              </p>
+              <div class="space-y-6">
+                <div>
+                  <h4 class="mb-2 font-heading font-bold text-kaizen-dark">
+                    The Problem
+                  </h4>
+                  <p class="leading-relaxed text-kaizen-text-dark/70">
+                    {item.problem}
+                  </p>
+                </div>
+                <div>
+                  <h4 class="mb-2 font-heading font-bold text-kaizen-dark">
+                    The Outcome
+                  </h4>
+                  <p class="leading-relaxed text-kaizen-text-dark/70">
+                    {item.outcome}
+                  </p>
+                </div>
+                <a
+                  href={item.link}
+                  class="inline-flex items-center gap-2 font-medium text-kaizen-cyan"
+                >
+                  Read Full Case Study
+                  <span aria-hidden="true">-&gt;</span>
+                </a>
+              </div>
+            </article>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="bg-kaizen-light py-20 md:py-32">
+    <div class="container mx-auto px-4">
+      <h2 class="mb-12 text-center text-4xl font-heading font-bold text-kaizen-dark md:text-5xl">
+        Looking for Ultimate Performance?
+      </h2>
+      <div class="mx-auto max-w-2xl">
+        <a
+          href="/web-design-liverpool"
+          class="group block rounded-2xl border border-kaizen-light bg-white p-8 transition hover:border-kaizen-cyan md:p-12"
+        >
+          <h3 class="mb-4 text-3xl font-heading font-bold text-kaizen-dark transition group-hover:text-kaizen-cyan md:text-4xl">
+            Need a Headless Build?
+          </h3>
+          <p class="mb-6 text-lg leading-relaxed text-kaizen-text-dark/70">
+            For brands that need maximum speed and full custom frontend
+            behaviour, we also deliver high-performance headless builds.
+          </p>
+          <p class="font-medium text-kaizen-cyan">Explore Headless Web Design -&gt;</p>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="bg-slate-50 py-20 md:py-32">
+    <div class="container mx-auto px-4">
+      <div class="mx-auto max-w-3xl">
+        <div class="mb-12 text-center">
+          <p class="mb-4 text-xs font-mono uppercase tracking-[0.25em] text-kaizen-cyan">
+            Common Questions
+          </p>
+          <h2 class="text-4xl font-heading font-bold text-kaizen-dark md:text-5xl">
+            WordPress Web Design FAQs
+          </h2>
+        </div>
+        <div class="space-y-4">
+          {
+            faqs.map((item) => (
+              <details class="rounded-xl border border-gray-200 bg-white p-6">
+                <summary class="cursor-pointer text-lg font-heading font-bold text-kaizen-dark">
+                  {item.question}
+                </summary>
+                <p class="mt-4 leading-relaxed text-kaizen-text-dark/70">
+                  {item.answer}
+                </p>
+              </details>
+            ))
+          }
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="bg-kaizen-dark py-20 text-kaizen-text-light md:py-32">
+    <div class="container mx-auto px-4 text-center">
+      <h2 class="mb-8 text-4xl font-heading font-bold md:text-5xl">
+        Get a WordPress Site You Can Rely On.
+      </h2>
+      <p class="mx-auto mb-12 max-w-2xl text-xl leading-relaxed text-kaizen-text-light/80">
+        Let's talk about a fast, secure WordPress build for your Liverpool
+        business.
+      </p>
+      <div class="flex flex-col justify-center gap-6 sm:flex-row">
+        <a
+          href="/contact"
+          class="inline-flex items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-kaizen-cyan to-kaizen-lime px-8 py-3 font-heading font-bold text-kaizen-dark transition hover:shadow-lg hover:shadow-kaizen-cyan/50"
+        >
+          Get in Touch
+          <span aria-hidden="true">-&gt;</span>
+        </a>
+        <a
+          href={calendlyUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="inline-flex items-center justify-center gap-2 rounded-lg border-2 border-kaizen-text-light/30 px-8 py-3 font-heading font-bold text-kaizen-text-light transition hover:border-kaizen-cyan"
+        >
+          Book a 15 Minute Call
+          <span aria-hidden="true">-&gt;</span>
+        </a>
+      </div>
+      <p class="mt-8 text-sm text-kaizen-text-light/70">
+        Got a broken WordPress build? See
+        <a href="/project-rescue" class="text-kaizen-cyan hover:underline">
+          project rescue services
+        </a>.
+      </p>
+    </div>
+  </section>
+</StaticPageLayout>

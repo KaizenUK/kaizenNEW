@@ -1,0 +1,311 @@
+---
+import SpeedScanner from "../../../client/components/SpeedScanner";
+
+interface Feature {
+  title: string;
+  description: string;
+}
+
+interface Sector {
+  title: string;
+  location: string;
+  description: string;
+}
+
+interface FaqItem {
+  question: string;
+  answer: string;
+}
+
+interface Props {
+  badge: string;
+  heroLines: string[];
+  heroDescription: string;
+  featureIntro: string;
+  sectorsIntro: string;
+  finalDescription: string;
+  features: Feature[];
+  sectors: Sector[];
+  faqs: FaqItem[];
+}
+
+const {
+  badge,
+  heroLines,
+  heroDescription,
+  featureIntro,
+  sectorsIntro,
+  finalDescription,
+  features,
+  sectors,
+  faqs,
+} = Astro.props;
+
+const comparisons = [
+  {
+    feature: "Page Load Speed",
+    typical: "5-8 seconds",
+    kaizen: "Under 2 seconds",
+  },
+  {
+    feature: "Mobile Experience",
+    typical: "Afterthought",
+    kaizen: "Designed first",
+  },
+  {
+    feature: "Google Rankings",
+    typical: "Hope for the best",
+    kaizen: "Built to perform",
+  },
+  {
+    feature: "Code Ownership",
+    typical: "Locked in or leased",
+    kaizen: "100% yours",
+  },
+  {
+    feature: "After Launch Support",
+    typical: "Hard to reach",
+    kaizen: "30-day snagging included",
+  },
+];
+
+const faqSchema = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: faqs.map((item) => ({
+    "@type": "Question",
+    name: item.question,
+    acceptedAnswer: {
+      "@type": "Answer",
+      text: item.answer,
+    },
+  })),
+});
+---
+
+<script type="application/ld+json" set:html={faqSchema} is:inline></script>
+
+<section class="relative min-h-[90vh] overflow-hidden bg-slate-950 py-24 lg:py-32">
+  <div class="container relative z-10 mx-auto max-w-6xl px-4">
+    <div class="max-w-3xl">
+      <p class="mb-8 inline-flex rounded-full border border-red-500/20 bg-red-500/10 px-4 py-2 text-sm font-medium text-red-400">
+        {badge}
+      </p>
+
+      <h1 class="mb-8 text-5xl font-heading font-black leading-[1.05] text-white md:text-6xl lg:text-7xl">
+        {heroLines.slice(0, 2).map((line) => <span class="block">{line}</span>)}
+        {heroLines[2] && (
+          <span class="block bg-gradient-to-r from-red-400 via-rose-400 to-red-300 bg-clip-text text-transparent">
+            {heroLines[2]}
+          </span>
+        )}
+      </h1>
+
+      <p class="mb-10 max-w-2xl text-xl leading-relaxed text-slate-300 md:text-2xl">
+        {heroDescription}
+      </p>
+
+      <div class="flex flex-col gap-4 sm:flex-row">
+        <a
+          href="/contact"
+          class="inline-flex items-center justify-center gap-3 rounded-full bg-gradient-to-r from-red-500 to-rose-500 px-8 py-4 text-lg font-bold text-white shadow-lg shadow-red-500/25 transition-all duration-300 hover:-translate-y-1 hover:shadow-red-500/40"
+        >
+          Get in Touch
+          <span aria-hidden="true">-&gt;</span>
+        </a>
+        <a
+          href="/contact"
+          class="inline-flex items-center justify-center gap-2 rounded-full border border-slate-600 px-8 py-4 font-medium text-slate-300 transition-all duration-300 hover:border-slate-500 hover:bg-slate-800 hover:text-white"
+        >
+          Book a Call
+        </a>
+      </div>
+    </div>
+
+    <div class="mt-20 grid max-w-xl grid-cols-3 gap-8">
+      {
+        [
+          { value: "96+", label: "Speed score" },
+          { value: "99%", label: "Uptime" },
+          { value: "30 day", label: "Support" },
+        ].map((stat) => (
+          <div class="text-center">
+            <p class="mb-1 text-3xl font-black text-white md:text-4xl">{stat.value}</p>
+            <p class="text-xs font-medium uppercase tracking-wider text-slate-500">
+              {stat.label}
+            </p>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<section class="relative overflow-hidden bg-white px-4 py-24">
+  <div class="container relative z-10 mx-auto max-w-6xl">
+    <div class="mb-16 text-center">
+      <p class="mb-6 inline-flex items-center gap-2 rounded-full bg-amber-100 px-4 py-2 text-sm font-medium text-amber-700">
+        Free Speed Check
+      </p>
+      <h2 class="mb-6 text-3xl font-heading font-bold text-slate-900 md:text-5xl">
+        Is Your Website Slowing You Down?
+      </h2>
+      <p class="mx-auto max-w-2xl text-lg text-slate-600">
+        If your site takes more than three seconds to load, you are losing
+        visitors and rankings. Test yours below.
+      </p>
+    </div>
+
+    <SpeedScanner client:load />
+  </div>
+</section>
+
+<section class="bg-slate-50 px-4 py-24">
+  <div class="container mx-auto max-w-6xl">
+    <div class="mb-16 text-center">
+      <h2 class="mb-6 text-3xl font-heading font-bold text-slate-900 md:text-5xl">
+        Why Businesses Choose Us
+      </h2>
+      <p class="mx-auto max-w-2xl text-lg text-slate-600">{featureIntro}</p>
+    </div>
+
+    <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
+      {
+        features.map((feature) => (
+          <article class="h-full rounded-3xl border border-slate-200 bg-white p-8 transition-all duration-300 hover:border-red-500/50">
+            <h3 class="mb-3 text-xl font-bold text-slate-900">{feature.title}</h3>
+            <p class="leading-relaxed text-slate-600">{feature.description}</p>
+          </article>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<section class="bg-slate-950 px-4 py-24">
+  <div class="container mx-auto max-w-6xl">
+    <div class="mb-16 text-center">
+      <p class="mb-6 inline-flex rounded-full border border-red-500/20 bg-red-500/10 px-4 py-2 text-sm font-medium text-red-400">
+        Local Expertise
+      </p>
+      <h2 class="mb-6 text-3xl font-heading font-bold text-white md:text-5xl">
+        Built for Your Local Market
+      </h2>
+      <p class="mx-auto max-w-2xl text-lg text-slate-400">{sectorsIntro}</p>
+    </div>
+
+    <div class="grid grid-cols-1 gap-6 md:grid-cols-3">
+      {
+        sectors.map((sector) => (
+          <article class="h-full rounded-3xl border border-slate-700/50 bg-gradient-to-b from-slate-800/50 to-slate-900/50 p-8 backdrop-blur-sm transition-all duration-300 hover:border-red-500/30">
+            <p class="mb-2 text-xs font-medium uppercase tracking-wider text-red-400">
+              {sector.location}
+            </p>
+            <h3 class="mb-3 text-xl font-bold text-white">{sector.title}</h3>
+            <p class="leading-relaxed text-slate-400">{sector.description}</p>
+          </article>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<section class="bg-white px-4 py-24">
+  <div class="container mx-auto max-w-4xl">
+    <div class="mb-16 text-center">
+      <h2 class="mb-6 text-3xl font-heading font-bold text-slate-900 md:text-5xl">
+        The Difference
+      </h2>
+      <p class="text-lg text-slate-600">
+        What you get with us versus a typical web designer.
+      </p>
+    </div>
+
+    <div class="rounded-3xl border border-slate-200 bg-slate-50 p-6 md:p-8">
+      <div class="hidden grid-cols-3 gap-4 border-b border-slate-200 pb-4 md:grid">
+        <div class="text-sm font-bold uppercase tracking-wider text-slate-500">Feature</div>
+        <div class="text-center text-sm font-bold uppercase tracking-wider text-red-500">
+          Typical
+        </div>
+        <div class="text-center text-sm font-bold uppercase tracking-wider text-emerald-500">
+          Kaizen
+        </div>
+      </div>
+
+      <div class="mt-4 space-y-2">
+        {
+          comparisons.map((row) => (
+            <div class="grid grid-cols-1 gap-4 rounded-2xl p-4 transition-colors hover:bg-slate-100 md:grid-cols-3">
+              <p class="flex items-center font-medium text-slate-900">{row.feature}</p>
+              <p class="text-sm text-slate-500 md:text-center">{row.typical}</p>
+              <p class="text-sm font-medium text-emerald-700 md:text-center">{row.kaizen}</p>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="bg-slate-50 px-4 py-24">
+  <div class="container mx-auto max-w-3xl">
+    <div class="mb-16 text-center">
+      <h2 class="mb-6 text-3xl font-heading font-bold text-slate-900 md:text-5xl">
+        Common Questions
+      </h2>
+      <p class="text-lg text-slate-600">
+        Straight answers to the things people ask most.
+      </p>
+    </div>
+
+    <div class="rounded-3xl border border-slate-200 bg-white p-8 md:p-10">
+      <div class="space-y-4">
+        {
+          faqs.map((faq) => (
+            <details class="rounded-xl border border-gray-200 bg-white p-6">
+              <summary class="cursor-pointer text-lg font-heading font-semibold text-slate-900">
+                {faq.question}
+              </summary>
+              <p class="mt-4 leading-relaxed text-slate-600">{faq.answer}</p>
+            </details>
+          ))
+        }
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="bg-slate-950 px-4 py-32">
+  <div class="container mx-auto max-w-4xl text-center">
+    <p class="mb-8 inline-flex rounded-full border border-red-500/20 bg-red-500/10 px-4 py-2 text-sm font-medium text-red-400">
+      Ready When You Are
+    </p>
+
+    <h2 class="mb-8 text-4xl font-heading font-bold text-white md:text-6xl">
+      Lets Build Something
+      <span class="block bg-gradient-to-r from-red-400 to-rose-400 bg-clip-text text-transparent">
+        That Works
+      </span>
+    </h2>
+
+    <p class="mx-auto mb-12 max-w-2xl text-xl leading-relaxed text-slate-400">
+      {finalDescription}
+    </p>
+
+    <div class="flex flex-col justify-center gap-4 sm:flex-row">
+      <a
+        href="/contact"
+        class="inline-flex items-center justify-center gap-3 rounded-full bg-gradient-to-r from-red-500 to-rose-500 px-10 py-5 text-lg font-bold text-white shadow-lg shadow-red-500/25 transition-all duration-300 hover:-translate-y-1 hover:shadow-red-500/40"
+      >
+        Get in Touch
+        <span aria-hidden="true">-&gt;</span>
+      </a>
+      <a
+        href="/contact"
+        class="inline-flex items-center justify-center gap-2 rounded-full border border-slate-600 px-10 py-5 text-lg font-medium text-slate-300 transition-all duration-300 hover:border-slate-500 hover:bg-slate-800 hover:text-white"
+      >
+        Book a Discovery Call
+      </a>
+    </div>
+  </div>
+</section>

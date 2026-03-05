@@ -1,11 +1,324 @@
 ---
-import ReactRoutePage from "../layouts/ReactRoutePage.astro";
-import RoutedReactPage from "../../client/static/RoutedReactPage";
----
+import StaticPageLayout from "../layouts/StaticPageLayout.astro";
 
-<ReactRoutePage path="/digital-transformation">
-  <RoutedReactPage
-    path="/digital-transformation" 
-    client:load
-  />
-</ReactRoutePage>
+export const prerender = true;
+
+const calendlyUrl =
+  "https://calendly.com/sean-kaizenweb/30-minute-meeting-clone";
+
+const whoWeHelp = [
+  {
+    title: "Offline Businesses",
+    desc: "Successful teams still running on paper, spreadsheets, and manual handoffs. We design your first connected operating system.",
+  },
+  {
+    title: "Online But Chaotic Businesses",
+    desc: "Systems do not talk, admin overhead is constant, and teams are stuck in copy-paste workflows. We fix that.",
+  },
+];
+
+const painPoints = [
+  {
+    title: "You Do Copy-Paste Work",
+    desc: "Customer data gets manually moved between tools all day.",
+  },
+  {
+    title: "Your Systems Do Not Talk",
+    desc: "Website, booking, sales, and finance tools are disconnected.",
+  },
+  {
+    title: "You Are Drowning in Admin",
+    desc: "Teams spend more time managing work than delivering it.",
+  },
+];
+
+const processSteps = [
+  {
+    step: "01",
+    title: "Audit",
+    desc: "We map your real workflow end-to-end and identify commercial bottlenecks.",
+  },
+  {
+    step: "02",
+    title: "Automate",
+    desc: "We connect your current tools and automate repetitive admin tasks.",
+  },
+  {
+    step: "03",
+    title: "Give Teams Control",
+    desc: "We deliver a documented operating model and train your team to run it.",
+  },
+];
+
+const faqs = [
+  {
+    question: "How does AI lower operational costs?",
+    answer:
+      "By automating repetitive tasks and integrating your core systems so your team spends time on value, not admin.",
+  },
+  {
+    question: "How long does a transformation project take?",
+    answer:
+      "Most engagements run in agile sprints over 3 to 6 months depending on complexity, with usable outputs from early stages.",
+  },
+];
+
+const faqSchema = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: faqs.map((item) => ({
+    "@type": "Question",
+    name: item.question,
+    acceptedAnswer: {
+      "@type": "Answer",
+      text: item.answer,
+    },
+  })),
+});
+---
+<StaticPageLayout path="/digital-transformation">
+  <script type="application/ld+json" set:html={faqSchema} is:inline></script>
+
+  <section class="min-h-screen bg-white px-4 py-20">
+    <div class="container mx-auto max-w-4xl">
+      <h1 class="mb-6 text-5xl font-heading font-black leading-tight text-kaizen-dark md:text-6xl lg:text-7xl">
+        Digital Transformation Liverpool
+      </h1>
+      <h2 class="mb-12 text-2xl font-heading font-semibold leading-tight text-kaizen-dark md:text-3xl">
+        Automated. Integrated. Flowing.
+      </h2>
+
+      <div class="mt-16 space-y-8">
+        <div>
+          <h2 class="mb-6 text-4xl font-heading font-black text-kaizen-dark md:text-5xl">
+            Stop working in chaos.
+          </h2>
+          <p class="max-w-3xl text-xl leading-relaxed text-kaizen-text-dark/70 md:text-2xl">
+            You do not need buzzwords. You need systems that talk to each
+            other, less manual admin, and workflows that support predictable
+            delivery.
+          </p>
+        </div>
+
+        <div class="flex flex-col gap-4 pt-4 sm:flex-row">
+          <a
+            href={calendlyUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="inline-flex items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-kaizen-cyan to-kaizen-lime px-8 py-3 font-heading font-bold text-kaizen-dark transition hover:shadow-lg hover:shadow-kaizen-cyan/50"
+          >
+            Book a Process Audit
+            <span aria-hidden="true">-&gt;</span>
+          </a>
+
+          <a
+            href="/contact"
+            class="inline-flex items-center justify-center gap-2 rounded-lg border-2 border-kaizen-cyan px-8 py-3 font-heading font-bold text-kaizen-cyan transition hover:bg-kaizen-cyan/10"
+          >
+            Get in Touch
+            <span aria-hidden="true">-&gt;</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="bg-kaizen-light px-4 py-24">
+    <div class="container mx-auto max-w-6xl">
+      <h2 class="mb-8 text-4xl font-heading font-bold text-kaizen-dark md:text-5xl">
+        Who We Help
+      </h2>
+
+      <p class="mb-12 max-w-3xl text-lg leading-relaxed text-kaizen-text-dark/70 md:text-xl">
+        We use automation and AI to connect the systems you already rely on,
+        remove repetitive admin, and create cleaner handoffs between sales,
+        delivery, and finance.
+      </p>
+
+      <div class="grid grid-cols-1 gap-8 md:grid-cols-2">
+        {
+          whoWeHelp.map((item) => (
+            <article class="rounded-2xl border border-kaizen-light bg-white p-8">
+              <h3 class="mb-4 text-2xl font-heading font-bold text-kaizen-dark">
+                {item.title}
+              </h3>
+              <p class="text-lg leading-relaxed text-kaizen-text-dark/70">
+                {item.desc}
+              </p>
+            </article>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="bg-white px-4 py-24">
+    <div class="container mx-auto max-w-6xl">
+      <h2 class="mb-16 text-4xl font-heading font-bold text-kaizen-dark md:text-5xl">
+        Your Business is Leaking Time and Money if...
+      </h2>
+
+      <div class="grid grid-cols-1 gap-8 md:grid-cols-3">
+        {
+          painPoints.map((item) => (
+            <article class="rounded-2xl border border-kaizen-light bg-kaizen-light p-8">
+              <h3 class="mb-4 text-2xl font-heading font-bold text-kaizen-dark">
+                {item.title}
+              </h3>
+              <p class="leading-relaxed text-kaizen-text-dark/70">{item.desc}</p>
+            </article>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="bg-kaizen-light px-4 py-24">
+    <div class="container mx-auto max-w-4xl">
+      <h2 class="mb-8 text-4xl font-heading font-bold text-kaizen-dark md:text-5xl">
+        This is Our Expertise
+      </h2>
+
+      <h3 class="mb-6 text-2xl font-heading font-semibold text-kaizen-cyan">
+        Real-World Proof: Fixing a Liverpool Firm
+      </h3>
+
+      <p class="text-lg leading-relaxed text-kaizen-text-dark/70">
+        We have led full digital and operational transformations for Liverpool
+        firms by mapping real workflows, rebuilding broken handoffs, and
+        implementing automation that teams actually adopt.
+      </p>
+    </div>
+  </section>
+
+  <section class="bg-white px-4 py-24">
+    <div class="container mx-auto max-w-4xl">
+      <h2 class="mb-16 text-4xl font-heading font-bold text-kaizen-dark md:text-5xl">
+        Our Fix and Deliver Process
+      </h2>
+
+      <div class="space-y-12">
+        {
+          processSteps.map((item) => (
+            <article class="flex gap-8">
+              <div class="flex-shrink-0">
+                <div class="flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-kaizen-cyan to-kaizen-lime">
+                  <span class="text-xl font-heading font-black text-kaizen-dark">
+                    {item.step}
+                  </span>
+                </div>
+              </div>
+
+              <div class="flex-grow">
+                <h3 class="mb-3 text-2xl font-heading font-bold text-kaizen-dark">
+                  {item.title}
+                </h3>
+                <p class="text-lg leading-relaxed text-kaizen-text-dark/70">
+                  {item.desc}
+                </p>
+              </div>
+            </article>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="bg-kaizen-light px-4 py-24">
+    <div class="container mx-auto max-w-5xl">
+      <h2 class="mb-16 text-4xl font-heading font-bold text-kaizen-dark md:text-5xl">
+        Where This Connects
+      </h2>
+
+      <div class="grid grid-cols-1 gap-8 md:grid-cols-2">
+        <a
+          href="/contract-product-owner"
+          class="group block h-full rounded-2xl border border-kaizen-light bg-white p-8 transition hover:border-kaizen-cyan"
+        >
+          <h3 class="mb-3 text-2xl font-heading font-bold text-kaizen-dark transition group-hover:text-kaizen-cyan">
+            Complex Projects
+          </h3>
+          <p class="mb-6 text-kaizen-text-dark/70">
+            A core component of our Contract Product Owner delivery approach.
+          </p>
+          <p class="font-medium text-kaizen-cyan">Explore Product Ownership -&gt;</p>
+        </a>
+
+        <a
+          href="/web-design-liverpool"
+          class="group block h-full rounded-2xl border border-kaizen-light bg-white p-8 transition hover:border-kaizen-cyan"
+        >
+          <h3 class="mb-3 text-2xl font-heading font-bold text-kaizen-dark transition group-hover:text-kaizen-cyan">
+            Web Design
+          </h3>
+          <p class="mb-6 text-kaizen-text-dark/70">
+            Transformation often starts with a site that connects to internal
+            systems from day one.
+          </p>
+          <p class="font-medium text-kaizen-cyan">Explore Web Design -&gt;</p>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="bg-slate-50 py-20 md:py-32">
+    <div class="container mx-auto px-4">
+      <div class="mx-auto max-w-3xl">
+        <div class="mb-12 text-center">
+          <p class="mb-4 text-xs font-mono uppercase tracking-[0.25em] text-kaizen-cyan">
+            Common Questions
+          </p>
+          <h2 class="text-4xl font-heading font-bold text-kaizen-dark md:text-5xl">
+            Digital Transformation FAQs
+          </h2>
+        </div>
+        <div class="space-y-4">
+          {
+            faqs.map((item) => (
+              <details class="rounded-xl border border-gray-200 bg-white p-6">
+                <summary class="cursor-pointer text-lg font-heading font-bold text-kaizen-dark">
+                  {item.question}
+                </summary>
+                <p class="mt-4 leading-relaxed text-kaizen-text-dark/70">
+                  {item.answer}
+                </p>
+              </details>
+            ))
+          }
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="bg-kaizen-dark px-4 py-20 text-white md:py-32">
+    <div class="container mx-auto max-w-3xl text-center">
+      <h2 class="mb-8 text-4xl font-heading font-black md:text-5xl lg:text-6xl">
+        Stop Wasting Time.
+      </h2>
+
+      <p class="mb-12 text-xl leading-relaxed text-white/80">
+        Lets find and fix the operational chaos in your business.
+      </p>
+
+      <div class="flex flex-col items-center justify-center gap-6 sm:flex-row">
+        <a
+          href={calendlyUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="inline-flex items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-kaizen-cyan to-kaizen-lime px-8 py-3 font-heading font-bold text-kaizen-dark transition hover:shadow-lg hover:shadow-kaizen-cyan/50"
+        >
+          Book a Process Audit
+          <span aria-hidden="true">-&gt;</span>
+        </a>
+
+        <a
+          href="/contact"
+          class="inline-flex items-center justify-center gap-2 rounded-lg border-2 border-white/30 px-8 py-3 font-heading font-bold text-white transition hover:border-kaizen-cyan hover:text-kaizen-cyan"
+        >
+          Get in Touch
+          <span aria-hidden="true">-&gt;</span>
+        </a>
+      </div>
+    </div>
+  </section>
+</StaticPageLayout>

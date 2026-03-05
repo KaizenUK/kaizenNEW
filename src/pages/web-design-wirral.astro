@@ -1,11 +1,100 @@
 ---
-import ReactRoutePage from "../layouts/ReactRoutePage.astro";
-import RoutedReactPage from "../../client/static/RoutedReactPage";
----
+import StaticPageLayout from "../layouts/StaticPageLayout.astro";
+import WebDesignCityPage from "../components/static/WebDesignCityPage.astro";
 
-<ReactRoutePage path="/web-design-wirral">
-  <RoutedReactPage
-    path="/web-design-wirral" 
-    client:load
+export const prerender = true;
+
+const features = [
+  {
+    title: "Fast by Default",
+    description:
+      "Sub-2s loading standards built in from day one.",
+  },
+  {
+    title: "Solid and Secure",
+    description:
+      "Stable hosting, backups, and practical security controls.",
+  },
+  {
+    title: "Local and Accountable",
+    description:
+      "North West team, direct contact, and straightforward delivery.",
+  },
+  {
+    title: "Built to Rank",
+    description:
+      "Search-ready websites designed to improve local Wirral visibility.",
+  },
+];
+
+const sectors = [
+  {
+    title: "Salons and Beauty",
+    location: "Wallasey and West Kirby",
+    description:
+      "Booking-focused websites that move users from social to appointments.",
+  },
+  {
+    title: "Local Retail and Hospitality",
+    location: "Hoylake and New Brighton",
+    description:
+      "Experience-led sites for cafes, restaurants, and local shops.",
+  },
+  {
+    title: "Trades and Services",
+    location: "Birkenhead and beyond",
+    description:
+      "Lead-generation websites for local trades and service businesses.",
+  },
+];
+
+const faqs = [
+  {
+    question: "Why choose a local Wirral agency?",
+    answer:
+      "Local context matters. We build around how customers on the peninsula actually search and buy.",
+  },
+  {
+    question: "How much does a website cost on the Wirral?",
+    answer:
+      "Scope drives price. We provide fixed quotes after discovery so there are no surprise costs.",
+  },
+  {
+    question: "How long does build take?",
+    answer:
+      "Most projects run four to six weeks with clear staged delivery.",
+  },
+  {
+    question: "Do you work with WordPress?",
+    answer:
+      "Yes, but for speed-critical needs we often recommend custom architecture.",
+  },
+  {
+    question: "What post-launch support is included?",
+    answer:
+      "30 days of snagging support, plus optional retained support plans.",
+  },
+  {
+    question: "Can you fix a slow or broken existing site?",
+    answer:
+      "Yes. We offer technical audit and rescue projects.",
+  },
+];
+---
+<StaticPageLayout
+  path="/web-design-wirral"
+  title="Web Design Wirral | Local Sites That Get Results"
+  description="Fast, professional websites for Wirral businesses that need rankings, trust, and enquiries."
+>
+  <WebDesignCityPage
+    badge="Web Design Wirral"
+    heroLines={["Fast Websites", "for Wirral", "Businesses."]}
+    heroDescription="Professional websites that help Wirral businesses rank locally and turn visitors into enquiries."
+    featureIntro="From salons to trades, we build websites that are fast, credible, and conversion focused."
+    sectorsIntro="Built for businesses across Wallasey, Hoylake, New Brighton, Birkenhead, and beyond."
+    finalDescription="If local trust and visibility drive your business, your website needs to perform from first click."
+    features={features}
+    sectors={sectors}
+    faqs={faqs}
   />
-</ReactRoutePage>
+</StaticPageLayout>

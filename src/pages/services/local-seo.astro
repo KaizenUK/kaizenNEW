@@ -1,11 +1,319 @@
 ---
-import ReactRoutePage from "../../layouts/ReactRoutePage.astro";
-import RoutedReactPage from "../../../client/static/RoutedReactPage";
----
+import StaticPageLayout from "../../layouts/StaticPageLayout.astro";
 
-<ReactRoutePage path="/services/local-seo">
-  <RoutedReactPage
-    path="/services/local-seo" 
-    client:load
-  />
-</ReactRoutePage>
+export const prerender = true;
+
+const calendlyUrl =
+  "https://calendly.com/sean-kaizenweb/30-minute-meeting-clone";
+
+const localTactics = [
+  {
+    title: "Google Business Profile",
+    copy: 'We set up your profile properly so you show up for local searches like "near me" and "in Liverpool".',
+  },
+  {
+    title: "Location Pages",
+    copy: "We create pages for the areas you serve so you can be found where your customers are searching.",
+  },
+  {
+    title: "Reviews and Trust",
+    copy: "We help improve review flow and listing consistency so Google can trust your business data.",
+  },
+];
+
+const processSteps = [
+  {
+    step: "01",
+    title: "Audit",
+    copy: "We review your current visibility, your profile quality, and who is outranking you and why.",
+  },
+  {
+    step: "02",
+    title: "Optimise",
+    copy: "We fix technical and listing issues, update local relevance, and align your NAP details everywhere.",
+  },
+  {
+    step: "03",
+    title: "Content and Authority",
+    copy: "We publish local-focused content that expands your keyword footprint and authority.",
+  },
+];
+---
+<StaticPageLayout path="/services/local-seo">
+  <section class="min-h-screen bg-kaizen-dark py-20 text-kaizen-text-light">
+    <div class="container mx-auto px-4">
+      <div class="grid grid-cols-1 items-center gap-12 md:grid-cols-2">
+        <div class="max-w-2xl">
+          <h1 class="mb-8 text-5xl font-heading font-bold leading-tight md:text-6xl">
+            Fast Websites for Liverpool Businesses
+          </h1>
+          <div class="mb-12 space-y-6 text-xl leading-relaxed text-kaizen-text-light/80">
+            <p>
+              SEO is not enough on its own. If your website is slow or
+              confusing, people leave and buy from someone else.
+            </p>
+            <p>
+              We build fast, professional websites first, then optimise your
+              local presence so you rank and convert.
+            </p>
+          </div>
+          <div class="flex flex-col gap-6 sm:flex-row">
+            <a
+              href="/contact"
+              class="inline-flex items-center justify-center gap-2 rounded-full bg-gradient-to-r from-kaizen-cyan to-kaizen-lime px-8 py-3 font-heading font-bold text-kaizen-dark transition hover:opacity-90"
+            >
+              Get in Touch
+              <span aria-hidden="true">-&gt;</span>
+            </a>
+            <a
+              href={calendlyUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="inline-flex items-center justify-center gap-2 rounded-full border-2 border-kaizen-text-light/30 px-8 py-3 font-heading font-bold text-kaizen-text-light transition hover:border-kaizen-cyan"
+            >
+              Get a Free Local Audit
+              <span aria-hidden="true">-&gt;</span>
+            </a>
+          </div>
+        </div>
+        <div class="hidden md:block">
+          <div class="overflow-hidden rounded-2xl border border-kaizen-cyan/30">
+            <img
+              src="https://cdn.builder.io/api/v1/image/assets%2Fe4ae46bbd81b4b95bef54d66dd9748cc%2F2bcd66303b6e425ab616ce3ad62975b8?format=webp&width=800"
+              alt="Google local search results"
+              width="800"
+              height="600"
+              class="h-full w-full object-cover"
+              loading="lazy"
+              decoding="async"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="bg-white py-20 md:py-32">
+    <div class="container mx-auto px-4">
+      <h2 class="mb-12 text-4xl font-heading font-bold text-kaizen-dark md:text-5xl">
+        Why Speed Matters More Than SEO
+      </h2>
+      <div class="grid max-w-4xl grid-cols-1 gap-12 md:grid-cols-2">
+        <div class="space-y-6">
+          <p class="text-xl leading-relaxed text-kaizen-text-dark/70">
+            Most local SEO campaigns fail because they chase rankings without
+            fixing the site experience. Google rewards fast, useful pages.
+          </p>
+          <p class="text-xl leading-relaxed text-kaizen-text-dark/70">
+            We build for users first, then optimise for search. That is what
+            creates stable rankings and better enquiries.
+          </p>
+        </div>
+        <div class="space-y-6 rounded-2xl border border-kaizen-light bg-kaizen-light p-8">
+          <div>
+            <h3 class="mb-3 text-sm font-bold uppercase tracking-wide text-kaizen-cyan">
+              Why fast sites rank better
+            </h3>
+            <ul class="space-y-3 text-lg text-kaizen-text-dark/70">
+              <li><strong>Built for speed:</strong> no bloated plugin stack.</li>
+              <li><strong>Clear structure:</strong> easier for Google to parse.</li>
+              <li><strong>Reliable:</strong> fewer technical failures.</li>
+              <li><strong>Better UX:</strong> stronger conversion signals.</li>
+            </ul>
+          </div>
+          <div class="border-t border-kaizen-light pt-6">
+            <h3 class="mb-3 text-sm font-bold uppercase tracking-wide text-kaizen-cyan">
+              What you get
+            </h3>
+            <p class="text-lg text-kaizen-text-dark/70">
+              A fast local-first website and a properly optimised Google
+              Business Profile.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="bg-kaizen-light py-20 md:py-32">
+    <div class="container mx-auto px-4">
+      <h2 class="mb-16 text-center text-4xl font-heading font-bold text-kaizen-dark md:text-5xl">
+        Get Found on Google
+      </h2>
+      <div class="grid grid-cols-1 gap-8 md:grid-cols-3">
+        {
+          localTactics.map((item) => (
+            <article class="rounded-2xl border border-kaizen-light bg-white p-8 transition hover:border-kaizen-cyan">
+              <h3 class="mb-4 text-2xl font-heading font-bold text-kaizen-dark">
+                {item.title}
+              </h3>
+              <p class="text-lg leading-relaxed text-kaizen-text-dark/70">
+                {item.copy}
+              </p>
+            </article>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="bg-white py-20 md:py-32">
+    <div class="container mx-auto px-4">
+      <h2 class="mb-12 text-center text-4xl font-heading font-bold text-kaizen-dark md:text-5xl">
+        Real Results: From Invisible to Fully Booked
+      </h2>
+      <div class="mx-auto grid max-w-5xl grid-cols-1 items-center gap-12 md:grid-cols-2">
+        <div class="space-y-6">
+          <div>
+            <h3 class="mb-3 text-sm font-bold uppercase tracking-wide text-kaizen-cyan">
+              Client: Helen Moore Hairdressing
+            </h3>
+            <p class="text-xs uppercase tracking-wide text-kaizen-text-dark/60">
+              Boutique Salon - Wallasey Village, Wirral
+            </p>
+          </div>
+          <div>
+            <h4 class="mb-4 text-2xl font-heading font-bold text-kaizen-dark">
+              The Problem
+            </h4>
+            <p class="text-lg leading-relaxed text-kaizen-text-dark/70">
+              Great local reputation but no real online footprint or local search
+              visibility.
+            </p>
+          </div>
+          <div>
+            <h4 class="mb-4 text-2xl font-heading font-bold text-kaizen-dark">
+              The Fix
+            </h4>
+            <p class="text-lg leading-relaxed text-kaizen-text-dark/70">
+              Local-first website plus full Google Business Profile optimisation
+              for core terms.
+            </p>
+          </div>
+          <div>
+            <h4 class="mb-4 text-2xl font-heading font-bold text-kaizen-dark">
+              The Result
+            </h4>
+            <p class="mb-6 text-lg leading-relaxed text-kaizen-text-dark/70">
+              Rank #1 for key local terms and consistent booking enquiries from
+              new local clients.
+            </p>
+            <a
+              href="https://helenmoorehairdressing.co.uk"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="inline-flex items-center gap-2 font-medium text-kaizen-cyan"
+            >
+              View Live Site
+              <span aria-hidden="true">-&gt;</span>
+            </a>
+          </div>
+        </div>
+        <div class="flex h-96 items-center justify-center rounded-2xl border border-kaizen-cyan/30 bg-gradient-to-br from-kaizen-cyan/20 to-kaizen-lime/20 p-8">
+          <div class="text-center">
+            <p class="text-xl font-heading font-bold text-kaizen-text-dark/60">
+              #1 Local Rankings
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="bg-kaizen-dark py-20 text-kaizen-text-light md:py-32">
+    <div class="container mx-auto px-4">
+      <h2 class="mb-16 text-center text-4xl font-heading font-bold md:text-5xl">
+        How We Improve Your Rankings
+      </h2>
+      <div class="mx-auto max-w-3xl">
+        {
+          processSteps.map((item, index) => (
+            <article class="mb-12 flex gap-8 last:mb-0">
+              <div class="flex flex-col items-center">
+                <div class="flex h-24 w-24 flex-shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-kaizen-cyan to-kaizen-lime">
+                  <span class="text-2xl font-heading font-bold text-kaizen-dark">
+                    {item.step}
+                  </span>
+                </div>
+                {index < 2 && <div class="mt-4 h-20 w-1 bg-gradient-to-b from-kaizen-cyan to-kaizen-lime"></div>}
+              </div>
+              <div class="pb-4 pt-4">
+                <h3 class="mb-3 text-2xl font-heading font-bold text-kaizen-text-light">
+                  {item.title}
+                </h3>
+                <p class="max-w-xl text-lg leading-relaxed text-kaizen-text-light/80">
+                  {item.copy}
+                </p>
+              </div>
+            </article>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="bg-white py-20 md:py-32">
+    <div class="container mx-auto px-4">
+      <h2 class="mb-16 text-center text-4xl font-heading font-bold text-kaizen-dark md:text-5xl">
+        More Than Just SEO
+      </h2>
+      <div class="mx-auto grid max-w-3xl grid-cols-1 gap-8 md:grid-cols-2">
+        <a
+          href="/web-design-liverpool"
+          class="group block h-full rounded-2xl border border-kaizen-light bg-kaizen-light p-8 transition hover:border-kaizen-cyan"
+        >
+          <h3 class="mb-4 text-2xl font-heading font-bold text-kaizen-dark transition group-hover:text-kaizen-cyan">
+            Web Design
+          </h3>
+          <p class="mb-6 text-lg leading-relaxed text-kaizen-text-dark/70">
+            Traffic is useless if the site is slow. See how we build fast sites
+            that convert.
+          </p>
+          <p class="font-medium text-kaizen-cyan">Explore -&gt;</p>
+        </a>
+        <a
+          href="/agile-coaching"
+          class="group block h-full rounded-2xl border border-kaizen-light bg-kaizen-light p-8 transition hover:border-kaizen-cyan"
+        >
+          <h3 class="mb-4 text-2xl font-heading font-bold text-kaizen-dark transition group-hover:text-kaizen-cyan">
+            Agile Coaching
+          </h3>
+          <p class="mb-6 text-lg leading-relaxed text-kaizen-text-dark/70">
+            We use disciplined delivery systems and can help your team improve
+            workflow too.
+          </p>
+          <p class="font-medium text-kaizen-cyan">Explore -&gt;</p>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="bg-kaizen-dark py-20 text-kaizen-text-light md:py-32">
+    <div class="container mx-auto px-4 text-center">
+      <h2 class="mb-8 text-4xl font-heading font-bold md:text-5xl">
+        Stop Being Invisible in Liverpool.
+      </h2>
+      <p class="mx-auto mb-12 max-w-2xl text-xl leading-relaxed text-kaizen-text-light/80">
+        Let's get your business on the map.
+      </p>
+      <div class="flex flex-col justify-center gap-6 sm:flex-row">
+        <a
+          href="/contact"
+          class="inline-flex items-center justify-center gap-2 rounded-full bg-gradient-to-r from-kaizen-cyan to-kaizen-lime px-8 py-3 font-heading font-bold text-kaizen-dark transition hover:opacity-90"
+        >
+          Get in Touch
+          <span aria-hidden="true">-&gt;</span>
+        </a>
+        <a
+          href={calendlyUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="inline-flex items-center justify-center gap-2 rounded-full border-2 border-kaizen-text-light/30 px-8 py-3 font-heading font-bold text-kaizen-text-light transition hover:border-kaizen-cyan"
+        >
+          Book a 15 Minute Call
+          <span aria-hidden="true">-&gt;</span>
+        </a>
+      </div>
+    </div>
+  </section>
+</StaticPageLayout>
