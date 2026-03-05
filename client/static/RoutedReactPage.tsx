@@ -9,11 +9,6 @@ import LocalSeoPage from "@/pages/services/LocalSeo";
 import EcommercePage from "@/pages/services/Ecommerce";
 import WordPressWebDesignPage from "@/pages/services/WordPressWebDesign";
 import DigitalTransformationPage from "@/pages/services/DigitalTransformation";
-import AboutPage from "@/pages/About";
-import PledgePage from "@/pages/Pledge";
-import ContractProductOwnerPage from "@/pages/ContractProductOwner";
-import ProjectRescuePage from "@/pages/ProjectRescue";
-import AgileCoachingPage from "@/pages/AgileCoaching";
 import AsCollectionsPage from "@/pages/caseStudies/AsCollections";
 import HelenMooreHairdressingPage from "@/pages/caseStudies/HelenMooreHairdressing";
 import IndependentRetailerPage from "@/pages/caseStudies/IndependentRetailer";
@@ -34,11 +29,6 @@ const PAGE_COMPONENTS_BY_PATH: Record<string, React.ComponentType> = {
   "/services/ecommerce": EcommercePage,
   "/services/wordpress-web-design": WordPressWebDesignPage,
   "/digital-transformation": DigitalTransformationPage,
-  "/about": AboutPage,
-  "/pledge": PledgePage,
-  "/contract-product-owner": ContractProductOwnerPage,
-  "/project-rescue": ProjectRescuePage,
-  "/agile-coaching": AgileCoachingPage,
   "/case-studies/as-collections": AsCollectionsPage,
   "/case-studies/helen-moore-hairdressing": HelenMooreHairdressingPage,
   "/case-studies/independent-retailer": IndependentRetailerPage,

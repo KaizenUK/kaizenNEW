@@ -1,11 +1,118 @@
 ---
-import ReactRoutePage from "../layouts/ReactRoutePage.astro";
-import RoutedReactPage from "../../client/static/RoutedReactPage";
+import StaticPageLayout from "../layouts/StaticPageLayout.astro";
+
+export const prerender = true;
+
+const calendlyUrl =
+  "https://calendly.com/sean-kaizenweb/30-minute-meeting-clone";
+
+const pledgeSections = [
+  {
+    label: "01. AI & EXPERTISE",
+    content: `Let's start with the big one: AI.
+
+Yes, we use it. It's 2026, and any agency that says they don't is either lying to you or just plain inefficient. We're neither. We are not traditional, university-educated developers stuck in old ways. We are modern, agile, and relentlessly curious.
+
+We use AI as a co-pilot, not as the chef. A prompt can't understand your business strategy, design a unique brand, or build a secure app. We use it to handle grunt work, which means we spend more time on what matters: strategy, custom design, and maintainable code.`,
+  },
+  {
+    label: "02. PRICING",
+    content: `Our pledge also covers your money.
+
+The price we quote is the price you will pay. Period. If we've undercharged you or underestimated the work, that's on us. We'll take the hit and learn from it.
+
+The only time that changes is if scope changes. If new requirements are added after agreement, we have an honest conversation and agree a fair adjustment.`,
+  },
+  {
+    label: "03. PROCESS",
+    content: `The same goes for our process.
+
+We won't disappear. We provide 45 days of free snagging after launch. If you find a bug, we fix it. We'll also make minor tweaks for free within reason.
+
+For bigger changes, we'll agree clearly whether it's a new feature or a quick fix. Full scope is agreed at the start so there are no surprises.`,
+  },
+  {
+    label: "04. FIT",
+    content: `Finally, our pledge is to be honest about fit.
+
+We're looking for partners, and that requires the right match on both sides. We'll tell you if we don't think we're right for your project.
+
+We don't build cheap quick-fix sites. We're a premium expert-led team for businesses serious about growth. If that's you, you'll get full transparency.`,
+  },
+];
 ---
 
-<ReactRoutePage path="/pledge">
-  <RoutedReactPage
-    path="/pledge" 
-    client:load
-  />
-</ReactRoutePage>
+<StaticPageLayout path="/pledge">
+  <section class="bg-slate-900 px-4 py-24 text-white md:py-32">
+    <div class="mx-auto max-w-4xl">
+      <h1 class="font-mono text-4xl font-bold leading-tight text-kaizen-cyan md:text-6xl">
+        &gt; Our "No-BS" Pledge.
+      </h1>
+      <div class="mt-10 space-y-3 font-mono text-sm text-gray-400 md:text-base">
+        <p>// This page exists because you deserve to know exactly how we work.</p>
+        <p>// No marketing jargon. No black box. No surprise bills.</p>
+        <p>// Transparent partnership. Clear expectations.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="bg-white py-20">
+    <div class="mx-auto grid max-w-7xl grid-cols-1 gap-12 px-4 lg:grid-cols-2">
+      <div class="hidden lg:flex">
+        <div class="sticky top-24 h-fit w-full rounded-2xl border border-kaizen-light bg-kaizen-light/50 p-8">
+          <h2 class="text-5xl font-heading font-black text-kaizen-dark md:text-6xl">
+            Our Terms
+          </h2>
+          <p class="mt-4 text-base text-kaizen-text-dark/70">
+            No hidden process, no hidden scope, no hidden costs.
+          </p>
+        </div>
+      </div>
+      <div class="space-y-20">
+        {
+          pledgeSections.map((section) => (
+            <article class="min-h-60">
+              <h3 class="mb-8 text-4xl font-heading font-black text-kaizen-dark md:text-5xl">
+                {section.label}
+              </h3>
+              <div class="space-y-4 text-lg leading-relaxed text-kaizen-text-dark/70">
+                {section.content.split("\n\n").map((paragraph) => (
+                  <p>{paragraph}</p>
+                ))}
+              </div>
+            </article>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="bg-kaizen-dark px-4 py-20 text-white md:py-32">
+    <div class="mx-auto max-w-3xl text-center">
+      <h2 class="mb-8 text-4xl font-heading font-black md:text-5xl lg:text-6xl">
+        Ready for a transparent partner?
+      </h2>
+      <p class="mb-12 text-xl leading-relaxed text-white/80">
+        Now you know exactly how we work. Let's talk about your project.
+      </p>
+      <div class="flex flex-col items-center justify-center gap-6 sm:flex-row">
+        <a
+          href="/contact"
+          class="inline-flex items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-kaizen-cyan to-kaizen-lime px-8 py-3 font-heading font-bold text-kaizen-dark transition hover:shadow-lg hover:shadow-kaizen-cyan/50"
+        >
+          Get in Touch
+          <span aria-hidden="true">-&gt;</span>
+        </a>
+        <a
+          href={calendlyUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="inline-flex items-center justify-center gap-2 rounded-lg border-2 border-white/30 px-8 py-3 font-heading font-bold text-white transition hover:border-kaizen-cyan hover:text-kaizen-cyan"
+        >
+          Book a 15 Minute Call
+          <span aria-hidden="true">-&gt;</span>
+        </a>
+      </div>
+    </div>
+  </section>
+</StaticPageLayout>

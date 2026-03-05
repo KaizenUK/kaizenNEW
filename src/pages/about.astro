@@ -1,11 +1,151 @@
 ---
-import ReactRoutePage from "../layouts/ReactRoutePage.astro";
-import RoutedReactPage from "../../client/static/RoutedReactPage";
+import StaticPageLayout from "../layouts/StaticPageLayout.astro";
+
+export const prerender = true;
 ---
 
-<ReactRoutePage path="/about">
-  <RoutedReactPage
-    path="/about" 
-    client:load
-  />
-</ReactRoutePage>
+<StaticPageLayout path="/about">
+  <section class="min-h-screen bg-white py-20">
+    <div class="container mx-auto px-4">
+      <div class="grid grid-cols-1 items-center gap-16 lg:grid-cols-2">
+        <div class="max-w-2xl">
+          <h1 class="mb-6 text-6xl font-heading font-black leading-tight text-kaizen-dark md:text-7xl lg:text-8xl">
+            Stop overcomplicating your website.
+          </h1>
+          <p class="text-xl leading-relaxed text-kaizen-dark/70 md:text-2xl">
+            Traditional agencies are slow, expensive, and love jargon. We use
+            modern technology to build fast, effective websites that just work.
+          </p>
+          <a
+            href="/contact"
+            class="mt-8 inline-flex items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-kaizen-cyan to-kaizen-lime px-8 py-3 font-heading font-bold text-kaizen-dark transition hover:shadow-lg hover:shadow-kaizen-cyan/50"
+          >
+            Let's talk
+            <span aria-hidden="true">-&gt;</span>
+          </a>
+        </div>
+        <div class="hidden justify-center lg:flex lg:justify-end">
+          <div class="rounded-3xl border border-kaizen-light bg-kaizen-light/60 p-8 text-center">
+            <p class="text-sm font-mono uppercase tracking-widest text-kaizen-cyan">
+              Kaizen
+            </p>
+            <p class="mt-3 text-xl font-heading font-bold text-kaizen-dark">
+              Continuous Improvement
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="bg-kaizen-light py-20 md:py-32">
+    <div class="container mx-auto px-4">
+      <div class="mx-auto max-w-3xl">
+        <h2 class="mb-8 text-4xl font-heading font-black text-kaizen-dark md:text-5xl">
+          Continuous improvement. For your business.
+        </h2>
+        <div class="space-y-6 text-xl leading-relaxed text-kaizen-dark/70">
+          <p>
+            Kaizen means "continuous improvement". Most agencies launch your
+            site and disappear. That's not how we work.
+          </p>
+          <p>
+            Your website should grow with your business. We stick around to
+            make sure you keep winning. Better speed. Better conversions.
+            Better results.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="bg-white py-20 md:py-32">
+    <div class="container mx-auto px-4">
+      <h2 class="mb-16 text-center text-4xl font-heading font-black text-kaizen-dark md:text-5xl">
+        Here's what's different.
+      </h2>
+      <div class="mx-auto grid max-w-6xl grid-cols-1 gap-8 md:grid-cols-3">
+        <article class="rounded-3xl bg-kaizen-light/50 p-8 md:p-10">
+          <h3 class="mb-4 text-2xl font-heading font-bold text-kaizen-dark">
+            We don't guess.
+          </h3>
+          <p class="text-lg leading-relaxed text-kaizen-dark/70">
+            We use data to see exactly what's working and what isn't. That's
+            how we know if your site is actually generating leads.
+          </p>
+        </article>
+        <article class="rounded-3xl bg-kaizen-light/50 p-8 md:p-10">
+          <h3 class="mb-4 text-2xl font-heading font-bold text-kaizen-dark">
+            Speed wins.
+          </h3>
+          <p class="text-lg leading-relaxed text-kaizen-dark/70">
+            Fast sites convert. Slow sites lose customers. We make sure your
+            site loads instantly so people stay.
+          </p>
+        </article>
+        <article class="rounded-3xl bg-kaizen-light/50 p-8 md:p-10">
+          <h3 class="mb-4 text-2xl font-heading font-bold text-kaizen-dark">
+            No tech-talk.
+          </h3>
+          <p class="text-lg leading-relaxed text-kaizen-dark/70">
+            We speak plain English. We handle the complex stuff so you can
+            focus on running your business.
+          </p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="bg-kaizen-light py-20 md:py-32">
+    <div class="container mx-auto px-4">
+      <div class="mx-auto max-w-3xl">
+        <h2 class="mb-8 text-4xl font-heading font-black text-kaizen-dark md:text-5xl">
+          You don't pay for the hours. You pay for the result.
+        </h2>
+        <div class="space-y-6 text-xl leading-relaxed text-kaizen-dark/70">
+          <p>
+            Old agencies charge by the hour. More hours, more money. We use
+            modern tools, AI, and automation so we can work faster and cheaper,
+            and you get a better site.
+          </p>
+          <p>
+            Don't pay us for the time we spent typing. Pay us because we took
+            your site from a score of 40 to a score of 98. That's proof.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="bg-white py-20 md:py-32">
+    <div class="container mx-auto px-4">
+      <div class="mx-auto max-w-3xl text-center">
+        <h2 class="mb-8 text-4xl font-heading font-black text-kaizen-dark md:text-5xl">
+          We're operators. Not coders.
+        </h2>
+        <p class="text-xl leading-relaxed text-kaizen-dark/70">
+          We use AI and modern automation to do work that used to take a full
+          team. We focus on outcomes: faster builds, better performance, lower
+          cost.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="bg-kaizen-dark py-20 text-white md:py-32">
+    <div class="container mx-auto px-4">
+      <div class="mx-auto max-w-3xl text-center">
+        <h2 class="mb-8 text-5xl font-heading font-black md:text-6xl">
+          Ready for something different?
+        </h2>
+        <a
+          href="/contact"
+          class="inline-flex items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-kaizen-cyan to-kaizen-lime px-8 py-3 font-heading font-bold text-kaizen-dark transition hover:shadow-lg hover:shadow-kaizen-cyan/50"
+        >
+          Let's build
+          <span aria-hidden="true">-&gt;</span>
+        </a>
+      </div>
+    </div>
+  </section>
+</StaticPageLayout>

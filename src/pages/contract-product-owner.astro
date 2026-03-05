@@ -1,12 +1,473 @@
 ---
-import ReactRoutePage from "../layouts/ReactRoutePage.astro";
-import RoutedReactPage from "../../client/static/RoutedReactPage";
----
+import StaticPageLayout from "../layouts/StaticPageLayout.astro";
 
-<ReactRoutePage path="/contract-product-owner">
-  <RoutedReactPage
-    path="/contract-product-owner"
-  
-    client:load
-  />
-</ReactRoutePage>
+export const prerender = true;
+
+const calendlyUrl =
+  "https://calendly.com/sean-kaizenweb/30-minute-meeting-clone";
+
+const comparisonRows = [
+  {
+    feature: "Primary Focus",
+    pm: "Dates and deadlines.",
+    po: "Value and ROI.",
+  },
+  {
+    feature: "The Big Question",
+    pm: '"When is this due?"',
+    po: '"Should we build this at all?"',
+  },
+  {
+    feature: "Handling Scope",
+    pm: '"Yes, we can add that (Change Order)."',
+    po: "\"No, that adds no value. Let's do this instead.\"",
+  },
+  {
+    feature: "Success Metric",
+    pm: "The project was delivered on time.",
+    po: "The product makes money or saves time.",
+  },
+  {
+    feature: "Relationship",
+    pm: "Middle-man between you and the developers.",
+    po: "Strategic partner leading the developers.",
+  },
+];
+
+const experienceCards = [
+  {
+    title: "High-Stakes Platform Delivery",
+    proof:
+      "I've owned product strategy for platforms handling over £150m in revenue and millions of transactions, including a zero-downtime legacy migration at Playtech.",
+    matters:
+      "I know how to de-risk your most critical projects. I am not intimidated by complexity.",
+  },
+  {
+    title: "Managing Complex Teams & Suppliers",
+    proof:
+      "At High 5 Games, I was the central PO coordinating workflows between art, music, dev, and B2B clients like MGM and FanDuel.",
+    matters:
+      "I save you from managing chaotic suppliers. I become the single point of contact that forces everyone to align.",
+  },
+  {
+    title: "Driving Real Transformation",
+    proof:
+      "I don't just manage projects; I fix processes. I've led digital transformations at firms like SMD Credit Solutions and implemented new Agile workflows.",
+    matters:
+      "I don't just deliver your project; I leave your team and workflow more efficient than I found them.",
+  },
+  {
+    title: "Building Products From Scratch",
+    proof:
+      "At LeoVegas, I built the company's first multilingual player support platform from the ground up, creating a vital feedback loop that channelled player insights directly to the dev team.",
+    matters:
+      "I know how to take a simple idea, listen to users, and turn it into a fully functional, value-driving product.",
+  },
+];
+
+const processSteps = [
+  {
+    step: "01",
+    title: "Audit & Align",
+    copy: 'I join your team, audit the entire project, and interview stakeholders. We establish a single, clear "to-do" list (the backlog) and get everyone aligned.',
+  },
+  {
+    step: "02",
+    title: "Prioritise & Manage",
+    copy: "I ruthlessly prioritise the work based on business value. I run the weekly sprints, clear roadblocks for the team, and shield them from distractions.",
+  },
+  {
+    step: "03",
+    title: "Deliver & Report",
+    copy: "I manage the release process and provide you with a simple, no-jargon report every week. You see constant, predictable progress.",
+  },
+];
+
+const hireScenarios = [
+  {
+    title: "You're a Founder Who's Too Busy",
+    copy: "You can't be in every technical meeting. I step in and run the project so you can run your business.",
+  },
+  {
+    title: "Your Project is Stuck or Chaotic",
+    copy: "The project is drifting, deadlines are being missed, and the team is confused. I step in, create clarity, and get it back on track.",
+  },
+  {
+    title: "You're Juggling Multiple Suppliers",
+    copy: "You have a dev team, a design agency, and a marketing consultant, but no one is talking. I become the single point of control to manage all of them.",
+  },
+];
+
+const kaizenLinks = [
+  {
+    title: "Agile Coaching",
+    copy: "I've implemented Agile workflows that became company models. If you want us to train your own team, we can coach them.",
+    link: "/agile-coaching",
+    linkText: "Explore Agile Coaching",
+  },
+  {
+    title: "Our Web Design Projects",
+    copy: "This is the same expert process we use to manage all of our web design and development projects.",
+    link: "/web-design-liverpool",
+    linkText: "Explore Web Design",
+  },
+];
+---
+<StaticPageLayout
+  path="/contract-product-owner"
+  title="Contract Product Owner Services | Kaizen Web"
+  description="Hands-on contract Product Owner leadership to stabilise complex software delivery, protect ROI, and drive your project to release."
+>
+  <section class="min-h-screen bg-white py-20">
+    <div class="container mx-auto px-4">
+      <div class="max-w-4xl">
+        <h1 class="mb-6 text-5xl font-heading font-black leading-tight text-kaizen-dark md:text-6xl lg:text-7xl">
+          {
+            ["Contract", "Product", "Owner", "Services"].map((word) => (
+              <span class="block">{word}</span>
+            ))
+          }
+        </h1>
+        <h2 class="mb-12 text-2xl font-heading font-semibold leading-tight text-kaizen-dark md:text-3xl">
+          Your project needs a leader, not just a manager.
+        </h2>
+        <p class="mb-8 max-w-3xl text-lg leading-relaxed text-kaizen-text-dark/70 md:text-xl">
+          I'm <strong>Sean McDonnell</strong>, founder of Kaizen. While
+          <strong> we </strong>
+          are a full-service agency, this is <strong>my</strong> specialist
+          service. I step in personally to take full responsibility for your
+          complex project, manage your team, and
+          <strong> drive it relentlessly to delivery.</strong> No excuses.
+        </p>
+        <div class="flex flex-col gap-4 sm:flex-row">
+          <a
+            href={calendlyUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="inline-flex items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-kaizen-cyan to-kaizen-lime px-8 py-3 font-heading font-bold text-kaizen-dark transition hover:shadow-lg hover:shadow-kaizen-cyan/50"
+          >
+            Book a 15 Minute Call with Sean
+            <span aria-hidden="true">-&gt;</span>
+          </a>
+          <a
+            href="/contact"
+            class="inline-flex items-center justify-center gap-2 rounded-lg border-2 border-kaizen-cyan px-8 py-3 font-heading font-bold text-kaizen-cyan transition hover:bg-kaizen-cyan/10"
+          >
+            Get in Touch
+            <span aria-hidden="true">-&gt;</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="bg-kaizen-light py-20 md:py-32">
+    <div class="container mx-auto px-4">
+      <div class="max-w-3xl">
+        <h2 class="mb-8 text-4xl font-heading font-bold text-kaizen-dark md:text-5xl">
+          Why Your Project is Failing (And How I Fix It)
+        </h2>
+        <p class="mb-8 text-lg leading-relaxed text-kaizen-text-dark/70 md:text-xl">
+          Most projects fail from a lack of a single, accountable owner. Not a
+          "project manager" who just shuffles tasks, but one person who has the
+          authority to make decisions, protect your budget, and act as the
+          single, expert link between your business goals and your technical
+          team.
+        </p>
+        <div>
+          <h3 class="mb-4 text-2xl font-heading font-bold text-kaizen-dark">
+            My job is to:
+          </h3>
+          <p class="text-lg leading-relaxed text-kaizen-text-dark/70">
+            Act as your expert representative, de-risk your investment, and
+            ensure what you <em>ask for</em> is what gets <em>built</em>.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="bg-white py-20 md:py-32">
+    <div class="container mx-auto px-4">
+      <h2 class="mb-6 text-4xl font-heading font-bold text-kaizen-dark md:mb-16 md:text-5xl">
+        My Experience, Your Peace of Mind
+      </h2>
+      <div class="mx-auto mb-8 max-w-4xl text-center">
+        <p class="text-lg text-kaizen-text-dark/70">
+          Why this experience matters to your project.
+        </p>
+      </div>
+      <div class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
+        {
+          experienceCards.map((card) => (
+            <article class="h-full rounded-2xl border border-kaizen-light bg-kaizen-light p-6">
+              <h3 class="mb-3 text-base font-heading font-bold leading-snug text-kaizen-dark">
+                {card.title}
+              </h3>
+              <p class="mb-1 text-xs font-semibold uppercase tracking-wide text-kaizen-cyan">
+                Proof
+              </p>
+              <p class="mb-4 text-sm leading-relaxed text-kaizen-text-dark/70">
+                {card.proof}
+              </p>
+              <p class="mb-1 text-xs font-semibold uppercase tracking-wide text-kaizen-cyan">
+                Why It Matters
+              </p>
+              <p class="text-sm leading-relaxed text-kaizen-text-dark/80">
+                {card.matters}
+              </p>
+            </article>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="bg-white py-20 md:py-32">
+    <div class="container mx-auto px-4">
+      <h2 class="mb-16 text-center text-4xl font-heading font-bold text-kaizen-dark md:text-5xl">
+        How I Work: My "Fix & Deliver" Process
+      </h2>
+      <div class="mx-auto max-w-3xl space-y-8">
+        {
+          processSteps.map((item) => (
+            <article class="flex items-start gap-8 md:gap-12">
+              <div class="flex-shrink-0">
+                <div class="flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-kaizen-cyan to-kaizen-lime">
+                  <span class="text-xl font-heading font-black text-kaizen-dark">
+                    {item.step}
+                  </span>
+                </div>
+              </div>
+              <div class="flex-grow pt-2">
+                <h3 class="mb-4 text-2xl font-heading font-bold text-kaizen-dark md:text-3xl">
+                  {item.title}
+                </h3>
+                <p class="text-lg leading-relaxed text-kaizen-text-dark/70">
+                  {item.copy}
+                </p>
+              </div>
+            </article>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="bg-kaizen-light py-20 md:py-32">
+    <div class="container mx-auto px-4">
+      <div class="mx-auto mb-12 max-w-4xl">
+        <h2 class="mb-6 text-4xl font-heading font-bold text-kaizen-dark md:text-5xl">
+          Why We Use Product Owners, Not Project Managers
+        </h2>
+        <p class="text-lg leading-relaxed text-kaizen-text-dark/70 md:text-xl">
+          Most agencies assign you a Project Manager. Their job is to protect
+          the agency's margin. At Kaizen, I step in as a Contract Product
+          Owner. My job is to protect your ROI.
+        </p>
+        <p class="mt-4 text-lg leading-relaxed text-kaizen-text-dark/70">
+          It sounds like a subtle title change, but the difference in delivery
+          is massive.
+        </p>
+      </div>
+
+      <div class="mx-auto max-w-4xl">
+        <div class="hidden overflow-x-auto md:block">
+          <div class="min-w-[640px] rounded-2xl border border-kaizen-light bg-white shadow-sm">
+            <div class="grid grid-cols-3 border-b border-kaizen-light/70">
+              <div class="bg-kaizen-light/70 p-4 text-sm font-heading font-semibold text-kaizen-dark">
+                Feature
+              </div>
+              <div class="border-l border-kaizen-light/70 bg-red-50 p-4 text-sm font-heading font-semibold text-kaizen-dark">
+                Project Manager (Traditional Agency)
+              </div>
+              <div class="border-l border-kaizen-light/70 bg-green-50 p-4 text-sm font-heading font-semibold text-kaizen-dark">
+                Product Owner (Kaizen)
+              </div>
+            </div>
+            {
+              comparisonRows.map((row, index) => (
+                <div
+                  class={`grid grid-cols-3 border-t border-kaizen-light/60 ${index % 2 === 0 ? "bg-white" : "bg-kaizen-light/40"}`}
+                >
+                  <div class="p-4 text-sm font-heading font-semibold text-kaizen-dark">
+                    {row.feature}
+                  </div>
+                  <div class="border-l border-kaizen-light/60 p-4 text-sm text-kaizen-text-dark/80">
+                    {row.pm}
+                  </div>
+                  <div class="border-l border-kaizen-light/60 bg-green-50/60 p-4 text-sm text-kaizen-text-dark/90">
+                    {row.po}
+                  </div>
+                </div>
+              ))
+            }
+          </div>
+        </div>
+
+        <div class="space-y-4 md:hidden">
+          {
+            comparisonRows.map((row) => (
+              <article class="overflow-hidden rounded-2xl border border-kaizen-light bg-white shadow-sm">
+                <div class="border-b border-kaizen-light/70 bg-kaizen-light/70 px-4 py-3">
+                  <p class="text-sm font-heading font-semibold text-kaizen-dark">
+                    {row.feature}
+                  </p>
+                </div>
+                <div class="divide-y divide-kaizen-light/60">
+                  <div class="bg-red-50 p-4">
+                    <p class="mb-1 text-xs font-semibold uppercase tracking-wide text-red-700">
+                      Project Manager (Traditional Agency)
+                    </p>
+                    <p class="text-sm text-kaizen-text-dark/80">{row.pm}</p>
+                  </div>
+                  <div class="bg-green-50/70 p-4">
+                    <p class="mb-1 text-xs font-semibold uppercase tracking-wide text-green-800">
+                      Product Owner (Kaizen)
+                    </p>
+                    <p class="text-sm text-kaizen-text-dark/90">{row.po}</p>
+                  </div>
+                </div>
+              </article>
+            ))
+          }
+        </div>
+
+        <p class="mt-6 text-sm text-kaizen-text-dark/80 md:text-base">
+          <span class="font-semibold">The bottom line:</span> If you want
+          someone to send you a weekly status report, hire a Project Manager.
+          If you want someone to take ownership of the backlog, make the hard
+          commercial decisions, and ensure the software actually solves the
+          business problem, you need a Product Owner.
+        </p>
+      </div>
+
+      <div class="mx-auto mt-12 max-w-4xl border-t border-kaizen-light pt-10">
+        <h3 class="mb-4 text-2xl font-heading font-bold text-kaizen-dark md:text-3xl">
+          FAQ: Do I need a Product Owner or a Project Manager?
+        </h3>
+        <p class="mb-4 text-lg leading-relaxed text-kaizen-text-dark/80">
+          A Project Manager asks: <strong>"When will this be done?"</strong>
+          They focus on dates, status reports, and Gantt charts.
+        </p>
+        <p class="mb-4 text-lg leading-relaxed text-kaizen-text-dark/80">
+          A Product Owner asks:
+          <strong> "Should we build this at all?"</strong> I focus on value,
+          risk, and what the work does to your bottom line.
+        </p>
+        <p class="text-lg leading-relaxed text-kaizen-text-dark/80">
+          If your team is building the wrong features on time, you do not have
+          a delivery problem, you have a strategy problem. That is where a
+          Product Owner pays for themselves very quickly.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="bg-kaizen-light py-20 md:py-32">
+    <div class="container mx-auto px-4">
+      <h2 class="mb-16 text-center text-4xl font-heading font-bold text-kaizen-dark md:text-5xl">
+        Professional Accreditations
+      </h2>
+      <div class="mx-auto grid max-w-4xl grid-cols-1 gap-8 md:grid-cols-3">
+        {
+          [
+            "PRINCE2 Certified",
+            "Project Management Institute (PMI) Member",
+            "HubSpot Certified",
+          ].map((title) => (
+            <article class="text-center">
+              <div class="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-xl bg-gradient-to-br from-kaizen-cyan/20 to-kaizen-lime/20">
+                <span class="text-2xl text-kaizen-cyan">✓</span>
+              </div>
+              <p class="text-xl font-heading font-bold text-kaizen-dark">
+                {title}
+              </p>
+            </article>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="bg-white py-20 md:py-32">
+    <div class="container mx-auto px-4">
+      <h2 class="mb-16 text-center text-4xl font-heading font-bold text-kaizen-dark md:text-5xl">
+        When to Hire a Contract PO
+      </h2>
+      <div class="mx-auto grid max-w-5xl grid-cols-1 gap-8 md:grid-cols-3">
+        {
+          hireScenarios.map((item) => (
+            <article class="rounded-2xl border border-kaizen-light bg-kaizen-light p-8 transition hover:border-kaizen-cyan">
+              <h3 class="mb-4 text-2xl font-heading font-bold text-kaizen-dark">
+                {item.title}
+              </h3>
+              <p class="text-lg leading-relaxed text-kaizen-text-dark/70">
+                {item.copy}
+              </p>
+            </article>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="bg-kaizen-light py-20 md:py-32">
+    <div class="container mx-auto px-4">
+      <h2 class="mb-16 text-center text-4xl font-heading font-bold text-kaizen-dark md:text-5xl">
+        How This Fits With Kaizen
+      </h2>
+      <div class="mx-auto grid max-w-3xl grid-cols-1 gap-8 md:grid-cols-2">
+        {
+          kaizenLinks.map((item) => (
+            <a
+              href={item.link}
+              class="group block h-full rounded-2xl border border-kaizen-light bg-white p-8 transition hover:border-kaizen-cyan"
+            >
+              <h3 class="mb-4 text-2xl font-heading font-bold text-kaizen-dark transition group-hover:text-kaizen-cyan">
+                {item.title}
+              </h3>
+              <p class="mb-6 text-lg leading-relaxed text-kaizen-text-dark/70">
+                {item.copy}
+              </p>
+              <p class="flex items-center gap-2 font-medium text-kaizen-cyan">
+                {item.linkText}
+                <span aria-hidden="true">-&gt;</span>
+              </p>
+            </a>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="bg-kaizen-dark py-20 text-kaizen-text-light md:py-32">
+    <div class="container mx-auto px-4 text-center">
+      <h2 class="mb-8 text-4xl font-heading font-bold text-kaizen-text-light md:text-5xl">
+        Get Your Project Delivered. No Excuses.
+      </h2>
+      <p class="mx-auto mb-12 max-w-2xl text-xl leading-relaxed text-kaizen-text-light/80">
+        Let's talk about your project. Book a 15-minute, confidential call with
+        me, Sean, to see how I can help.
+      </p>
+      <div class="flex flex-col justify-center gap-6 sm:flex-row">
+        <a
+          href={calendlyUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="inline-flex items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-kaizen-cyan to-kaizen-lime px-8 py-3 font-heading font-bold text-kaizen-dark transition hover:shadow-lg hover:shadow-kaizen-cyan/50"
+        >
+          Book a 15 Minute Call with Sean
+          <span aria-hidden="true">-&gt;</span>
+        </a>
+        <a
+          href="/contact"
+          class="inline-flex items-center justify-center gap-2 rounded-lg border-2 border-kaizen-text-light/30 px-8 py-3 font-heading font-bold text-kaizen-text-light transition hover:border-kaizen-cyan"
+        >
+          Get in Touch
+          <span aria-hidden="true">-&gt;</span>
+        </a>
+      </div>
+    </div>
+  </section>
+</StaticPageLayout>
