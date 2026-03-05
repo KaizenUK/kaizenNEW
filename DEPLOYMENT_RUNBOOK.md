@@ -201,6 +201,19 @@ corepack pnpm dlx supabase login
 corepack pnpm dlx supabase link --project-ref YOUR_SUPABASE_PROJECT_REF
 ```
 
+If you prefer non-interactive auth, set `SUPABASE_ACCESS_TOKEN` in your env file instead of running `supabase login`.
+
+### Recommended shortcut workflow (repo scripts)
+
+1. Copy [scripts/supabase/editor-secrets.env.example](/Users/seanmcdonnell/Documents/GitHub/kaizenNEW/scripts/supabase/editor-secrets.env.example) to `scripts/supabase/editor-secrets.env` and fill real values.
+2. Run:
+
+```bash
+pnpm supabase:editor:secrets -- --env-file scripts/supabase/editor-secrets.env
+pnpm supabase:editor:deploy -- --env-file scripts/supabase/editor-secrets.env
+pnpm supabase:editor:smoke https://kbqraygsegcclzhsmpvz.functions.supabase.co
+```
+
 ### Set required Supabase secrets
 
 Run once, then re-run when values change:
@@ -212,7 +225,7 @@ corepack pnpm dlx supabase secrets set \
   SANITY_API_TOKEN=your_sanity_token \
   ALLOWED_STUDIO_ORIGINS=https://studio.kaizenweb.co.uk,http://localhost:3333 \
   VITE_PUBLIC_SITE_ORIGIN=https://kaizenweb.co.uk \
-  VITE_EDITOR_API_ORIGIN=https://api.kaizenweb.co.uk/functions/v1 \
+  VITE_EDITOR_API_ORIGIN=https://kbqraygsegcclzhsmpvz.functions.supabase.co \
   VITE_STUDIO_ORIGIN=https://studio.kaizenweb.co.uk \
   VITE_EDITOR_COOKIE_DOMAIN=.kaizenweb.co.uk \
   GITHUB_DEPLOY_TOKEN=your_github_token \
@@ -243,10 +256,10 @@ corepack pnpm dlx supabase functions deploy newsletter-alert --no-verify-jwt
 corepack pnpm dlx supabase functions list
 ```
 
-Then ensure your API host routes to Supabase edge (for example `api.kaizenweb.co.uk -> https://<project-ref>.functions.supabase.co`) and smoke-test:
+Using default Supabase Functions host, smoke-test:
 
 ```bash
-curl -i "https://api.kaizenweb.co.uk/functions/v1/draft?path=/blog"
+curl -i "https://kbqraygsegcclzhsmpvz.functions.supabase.co/draft?path=/blog"
 ```
 
 Expected unauthenticated response: `401` JSON (`Studio authentication required`).

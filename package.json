@@ -13,7 +13,10 @@
     "clean:caches": "node -e \"const fs=require('node:fs'); for (const p of ['.vite','node_modules/.vite','.astro']) { try { fs.rmSync(p,{ recursive: true, force: true }); } catch {} }\"",
     "format.fix": "prettier --write .",
     "typecheck": "astro check && tsc --noEmit",
-    "trace:summary": "node scripts/trace-summary.mjs"
+    "trace:summary": "node scripts/trace-summary.mjs",
+    "supabase:editor:secrets": "bash scripts/supabase/set-editor-secrets.sh",
+    "supabase:editor:deploy": "bash scripts/supabase/deploy-editor-functions.sh",
+    "supabase:editor:smoke": "bash scripts/supabase/smoke-editor-api.sh"
   },
   "dependencies": {
     "@builder.io/react": "^9.1.2",
