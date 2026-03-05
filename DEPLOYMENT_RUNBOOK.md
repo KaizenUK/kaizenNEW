@@ -98,6 +98,15 @@ server {
   # Generated from scripts/generate-nginx-redirects.mjs
   include /etc/nginx/snippets/kaizen-redirects.generated.conf;
 
+  # Forward editor API calls to Supabase Edge Functions.
+  location /editor-api/ {
+    proxy_pass https://kbqraygsegcclzhsmpvz.functions.supabase.co/;
+    proxy_set_header Host kbqraygsegcclzhsmpvz.functions.supabase.co;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto $scheme;
+    proxy_ssl_server_name on;
+  }
+
   location / {
     try_files $uri $uri/ /index.html;
   }
@@ -191,7 +200,19 @@ Deploy and configure these functions:
 - `preview-blog`
 - `deploy`
 
-These endpoints are called directly from browser navigation/fetch, so deploy them with JWT verification disabled.
+These endpoints are called from browser navigation/fetch. Keep JWT verification disabled, and expose them through a first-party domain/path (recommended: `https://kaizenweb.co.uk/editor-api`) so editor session cookies are sent.
+
+Recommended Nginx path proxy:
+
+```nginx
+location /editor-api/ {
+  proxy_pass https://kbqraygsegcclzhsmpvz.functions.supabase.co/;
+  proxy_set_header Host kbqraygsegcclzhsmpvz.functions.supabase.co;
+  proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+  proxy_set_header X-Forwarded-Proto $scheme;
+  proxy_ssl_server_name on;
+}
+```
 
 ### One-time project link
 
@@ -211,7 +232,7 @@ If you prefer non-interactive auth, set `SUPABASE_ACCESS_TOKEN` in your env file
 ```bash
 pnpm supabase:editor:secrets -- --env-file scripts/supabase/editor-secrets.env
 pnpm supabase:editor:deploy -- --env-file scripts/supabase/editor-secrets.env
-pnpm supabase:editor:smoke https://kbqraygsegcclzhsmpvz.functions.supabase.co
+pnpm supabase:editor:smoke https://kaizenweb.co.uk/editor-api
 ```
 
 ### Set required Supabase secrets
@@ -223,9 +244,9 @@ corepack pnpm dlx supabase secrets set \
   SANITY_PROJECT_ID=your_project_id \
   SANITY_DATASET=production \
   SANITY_API_TOKEN=your_sanity_token \
-  ALLOWED_STUDIO_ORIGINS=https://studio.kaizenweb.co.uk,http://localhost:3333 \
+  ALLOWED_STUDIO_ORIGINS=https://studio.kaizenweb.co.uk,https://kaizenweb.co.uk,http://localhost:3333 \
   VITE_PUBLIC_SITE_ORIGIN=https://kaizenweb.co.uk \
-  VITE_EDITOR_API_ORIGIN=https://kbqraygsegcclzhsmpvz.functions.supabase.co \
+  VITE_EDITOR_API_ORIGIN=https://kaizenweb.co.uk/editor-api \
   VITE_STUDIO_ORIGIN=https://studio.kaizenweb.co.uk \
   VITE_EDITOR_COOKIE_DOMAIN=.kaizenweb.co.uk \
   GITHUB_DEPLOY_TOKEN=your_github_token \
@@ -256,10 +277,10 @@ corepack pnpm dlx supabase functions deploy newsletter-alert --no-verify-jwt
 corepack pnpm dlx supabase functions list
 ```
 
-Using default Supabase Functions host, smoke-test:
+Using your first-party editor API path, smoke-test:
 
 ```bash
-curl -i "https://kbqraygsegcclzhsmpvz.functions.supabase.co/draft?path=/blog"
+curl -i "https://kaizenweb.co.uk/editor-api/draft?path=/blog"
 ```
 
 Expected unauthenticated response: `401` JSON (`Studio authentication required`).

@@ -21,15 +21,28 @@ import StudioNavbar from "./sanity/components/StudioNavbar";
 
 import { OpenPreviewAction } from "./sanity/actions/OpenPreviewAction";
 
+function normalizeOrigin(value: string): string {
+  return String(value).replace(/\/+$/, "");
+}
+
+function toUrlOrigin(value: string): string {
+  try {
+    return new URL(value).origin;
+  } catch {
+    return normalizeOrigin(value);
+  }
+}
+
 const editorApiOrigin = (
-  process.env.VITE_EDITOR_API_ORIGIN || "http://127.0.0.1:54321/functions/v1"
+  import.meta.env.VITE_EDITOR_API_ORIGIN || "http://127.0.0.1:54321/functions/v1"
 ).replace(/\/+$/, "");
 const publicSiteOrigin = (
-  process.env.VITE_PUBLIC_SITE_ORIGIN || "http://localhost:4321"
+  import.meta.env.VITE_PUBLIC_SITE_ORIGIN || "http://localhost:4321"
 ).replace(/\/+$/, "");
 const studioOrigin = (
-  process.env.VITE_STUDIO_ORIGIN || "http://localhost:3333"
+  import.meta.env.VITE_STUDIO_ORIGIN || "http://localhost:3333"
 ).replace(/\/+$/, "");
+const editorApiHostOrigin = toUrlOrigin(editorApiOrigin);
 
 function normalizeDocumentId(value: unknown): string {
   return String(value ?? "").replace(/^drafts\./, "").trim();
@@ -119,7 +132,13 @@ export default defineConfig({
     tags({}),
     colorInput(),
     presentationTool({
-      allowOrigins: [publicSiteOrigin, studioOrigin, "http://localhost:4321"],
+      allowOrigins: [
+        publicSiteOrigin,
+        studioOrigin,
+        editorApiHostOrigin,
+        "http://localhost:4321",
+        "http://127.0.0.1:54321",
+      ].map(normalizeOrigin),
       previewUrl: {
         origin: publicSiteOrigin,
         initial: "/blog",
