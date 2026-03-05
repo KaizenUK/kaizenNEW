@@ -51,9 +51,9 @@ const Header: React.FC<HeaderProps> = ({
 
             <AppLink
               href="/performance-scanner"
-              className="site-header-speed hidden items-center gap-2 rounded-full border border-white/15 bg-white/[0.04] px-4 py-2 text-sm font-semibold text-slate-100 transition hover:border-cyan-300/55 hover:text-cyan-200 xl:inline-flex"
+              className="site-header-speed hidden items-center gap-2 rounded-full border border-white/15 bg-white/[0.04] px-4 py-2 text-sm font-semibold text-slate-100 transition hover:border-cyan-300/55 hover:text-cyan-200 lg:inline-flex"
             >
-              Free Speed Test
+              Page Scanner
             </AppLink>
 
             <AppLink

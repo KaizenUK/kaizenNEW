@@ -1,4 +1,9 @@
-export type DesktopMenuKey = "services" | "insights" | "case-studies" | "about";
+export type DesktopMenuKey =
+  | "pages"
+  | "services"
+  | "insights"
+  | "case-studies"
+  | "about";
 
 export interface ServiceItem {
   label: string;
@@ -11,6 +16,100 @@ export interface ServiceColumn {
   title: string;
   items: ServiceItem[];
 }
+
+const pagesMenu: ServiceColumn[] = [
+  {
+    title: "Core Pages",
+    items: [
+      {
+        label: "Home",
+        href: "/",
+        description: "Kaizen front page.",
+      },
+      {
+        label: "About",
+        href: "/about",
+        description: "How we work and what we deliver.",
+      },
+      {
+        label: "Contact",
+        href: "/contact",
+        description: "Speak to the team.",
+      },
+      {
+        label: "Blog",
+        href: "/blog",
+        description: "Latest insights and guides.",
+      },
+      {
+        label: "Page Scanner",
+        href: "/performance-scanner",
+        description: "Run a live speed and performance test.",
+        highlight: true,
+      },
+    ],
+  },
+  {
+    title: "Service Pages",
+    items: [
+      {
+        label: "Local SEO",
+        href: "/services/local-seo",
+        description: "Search growth for local intent.",
+      },
+      {
+        label: "WordPress Web Design",
+        href: "/services/wordpress-web-design",
+        description: "Custom WordPress builds.",
+      },
+      {
+        label: "E-commerce Development",
+        href: "/services/ecommerce",
+        description: "Stores built to convert.",
+      },
+      {
+        label: "Digital Transformation",
+        href: "/digital-transformation",
+        description: "Automation and systems delivery.",
+      },
+      {
+        label: "Project Rescue",
+        href: "/project-rescue",
+        description: "Recover failing builds quickly.",
+      },
+    ],
+  },
+  {
+    title: "Location Pages",
+    items: [
+      {
+        label: "Web Design Liverpool",
+        href: "/web-design-liverpool",
+        description: "Liverpool page.",
+      },
+      {
+        label: "Web Design Wirral",
+        href: "/web-design-wirral",
+        description: "Wirral page.",
+      },
+      {
+        label: "Web Design Chester",
+        href: "/web-design-chester",
+        description: "Chester page.",
+      },
+      {
+        label: "Web Design Warrington",
+        href: "/web-design-warrington",
+        description: "Warrington page.",
+      },
+      {
+        label: "All Case Studies",
+        href: "/case-studies",
+        description: "View outcomes across client work.",
+      },
+    ],
+  },
+];
 
 const servicesMenu: ServiceColumn[] = [
   {
@@ -136,6 +235,7 @@ const aboutMenu: ServiceColumn[] = [
 ];
 
 export const getMenuData = (menu: DesktopMenuKey): ServiceColumn[] => {
+  if (menu === "pages") return pagesMenu;
   if (menu === "insights") return insightsMenu;
   if (menu === "case-studies") return caseStudiesMenu;
   if (menu === "about") return aboutMenu;

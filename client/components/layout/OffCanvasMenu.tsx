@@ -30,6 +30,7 @@ interface OffCanvasMenuProps {
 }
 
 const SECTION_CONFIG: Array<{ key: DesktopMenuKey; label: string }> = [
+  { key: "pages", label: "Pages" },
   { key: "services", label: "Services" },
   { key: "insights", label: "Insights" },
   { key: "case-studies", label: "Case Studies" },
@@ -179,7 +180,7 @@ const OffCanvasMenu: React.FC<OffCanvasMenuProps> = ({ isOpen, onClose }) => {
             onClick={onClose}
             className="inline-flex w-full items-center justify-center rounded-full border border-white/15 bg-white/[0.04] px-4 py-2.5 text-sm font-semibold text-slate-100 transition hover:border-cyan-300/55 hover:text-cyan-200"
           >
-            Free Speed Test
+            Page Scanner
           </AppLink>
           <AppLink
             href="/contact"

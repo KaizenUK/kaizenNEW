@@ -97,6 +97,7 @@ export default function HeaderDesktopNav() {
   const activeColumns: ServiceColumn[] = activeMenu ? getMenuData(activeMenu) : [];
 
   const menuTriggers: { key: DesktopMenuKey; label: string }[] = [
+    { key: "pages", label: "Pages" },
     { key: "services", label: "Services" },
     { key: "insights", label: "Insights" },
     { key: "case-studies", label: "Case Studies" },
@@ -158,8 +159,8 @@ export default function HeaderDesktopNav() {
               <div className="relative p-6">
                 <div
                   className={`grid gap-8 ${
-                    activeMenu === "services"
-                      ? "grid-cols-2"
+                    activeColumns.length >= 3
+                      ? "grid-cols-1 lg:grid-cols-3"
                       : activeColumns.length > 1
                         ? "grid-cols-2"
                         : "grid-cols-1"
@@ -245,7 +246,7 @@ export default function HeaderDesktopNav() {
                     onClick={() => setActiveMenu(null)}
                   >
                     <Gauge className="h-4 w-4" />
-                    Free Speed Test
+                    Page Scanner
                   </a>
                   <AppLink
                     href="/contact"
