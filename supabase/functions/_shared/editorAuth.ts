@@ -54,11 +54,6 @@ function getAllowedOrigins(): string[] {
   const studioOrigin = normalizeOrigin(getEnv("VITE_STUDIO_ORIGIN") || getEnv("STUDIO_ORIGIN"));
   if (studioOrigin) fromEnv.push(studioOrigin);
 
-  const publicSiteOrigin = normalizeOrigin(
-    getEnv("VITE_PUBLIC_SITE_ORIGIN") || getEnv("PUBLIC_SITE_ORIGIN"),
-  );
-  if (publicSiteOrigin) fromEnv.push(publicSiteOrigin);
-
   return Array.from(new Set(fromEnv));
 }
 

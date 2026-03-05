@@ -185,13 +185,73 @@ curl -fsS -H "Host: studio.kaizenweb.co.uk" http://127.0.0.1/studio/ >/dev/null
 
 ## Supabase Edge Functions (Editor API)
 
-Deploy and configure:
+Deploy and configure these functions:
 
 - `draft`
 - `preview-blog`
 - `deploy`
 
-Minimum secrets/env on Supabase project:
+These endpoints are called directly from browser navigation/fetch, so deploy them with JWT verification disabled.
+
+### One-time project link
+
+```bash
+corepack enable
+corepack pnpm dlx supabase login
+corepack pnpm dlx supabase link --project-ref YOUR_SUPABASE_PROJECT_REF
+```
+
+### Set required Supabase secrets
+
+Run once, then re-run when values change:
+
+```bash
+corepack pnpm dlx supabase secrets set \
+  SANITY_PROJECT_ID=your_project_id \
+  SANITY_DATASET=production \
+  SANITY_API_TOKEN=your_sanity_token \
+  ALLOWED_STUDIO_ORIGINS=https://studio.kaizenweb.co.uk,http://localhost:3333 \
+  VITE_PUBLIC_SITE_ORIGIN=https://kaizenweb.co.uk \
+  VITE_EDITOR_API_ORIGIN=https://api.kaizenweb.co.uk/functions/v1 \
+  VITE_STUDIO_ORIGIN=https://studio.kaizenweb.co.uk \
+  VITE_EDITOR_COOKIE_DOMAIN=.kaizenweb.co.uk \
+  GITHUB_DEPLOY_TOKEN=your_github_token \
+  GITHUB_DEPLOY_REPO=YOUR_ORG/KaizenNEW \
+  GITHUB_DEPLOY_EVENT_TYPE=sanity-update \
+  GITHUB_DEPLOY_TARGET=main
+```
+
+### Deploy edge functions
+
+```bash
+corepack pnpm dlx supabase functions deploy draft --no-verify-jwt
+corepack pnpm dlx supabase functions deploy preview-blog --no-verify-jwt
+corepack pnpm dlx supabase functions deploy deploy --no-verify-jwt
+```
+
+Optional (if you use alert functions in production):
+
+```bash
+corepack pnpm dlx supabase functions deploy contact-alert --no-verify-jwt
+corepack pnpm dlx supabase functions deploy scanner-alert --no-verify-jwt
+corepack pnpm dlx supabase functions deploy newsletter-alert --no-verify-jwt
+```
+
+### Verify deployment
+
+```bash
+corepack pnpm dlx supabase functions list
+```
+
+Then ensure your API host routes to Supabase edge (for example `api.kaizenweb.co.uk -> https://<project-ref>.functions.supabase.co`) and smoke-test:
+
+```bash
+curl -i "https://api.kaizenweb.co.uk/functions/v1/draft?path=/blog"
+```
+
+Expected unauthenticated response: `401` JSON (`Studio authentication required`).
+
+### Required secrets/env recap
 
 - `SANITY_PROJECT_ID` or `PUBLIC_SANITY_PROJECT_ID`
 - `SANITY_DATASET` or `PUBLIC_SANITY_DATASET`
