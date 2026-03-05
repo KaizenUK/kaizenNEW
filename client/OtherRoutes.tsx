@@ -1,5 +1,5 @@
 import { lazy, Suspense, useEffect } from "react";
-import { Navigate, Route, Routes, useLocation } from "react-router-dom";
+import { Route, Routes, useLocation } from "react-router-dom";
 import type { ManagedPageData } from "@shared/pageBuilder";
 
 // ── Lazy-loaded route components ──────────────────────────────────
@@ -10,52 +10,6 @@ const ManagedPageRenderer = lazy(
   () => import("@/components/sanity/ManagedPageRenderer"),
 );
 const NotFound = lazy(() => import("./pages/NotFound"));
-const LocalSeo = lazy(() => import("./pages/services/LocalSeo"));
-const DigitalTransformation = lazy(
-  () => import("./pages/services/DigitalTransformation"),
-);
-const Ecommerce = lazy(() => import("./pages/services/Ecommerce"));
-const WordPressWebDesign = lazy(
-  () => import("./pages/services/WordPressWebDesign"),
-);
-const WebDesignWirral = lazy(
-  () => import("./pages/services/WebDesignWirral"),
-);
-const WebDesignLiverpool = lazy(
-  () => import("./pages/services/WebDesignLiverpool"),
-);
-const WebDesignChester = lazy(
-  () => import("./pages/services/WebDesignChester"),
-);
-const WebDesignWarrington = lazy(
-  () => import("./pages/services/WebDesignWarrington"),
-);
-const ContractProductOwner = lazy(
-  () => import("./pages/ContractProductOwner"),
-);
-const ProjectRescue = lazy(() => import("./pages/ProjectRescue"));
-const Contact = lazy(() => import("./pages/Contact"));
-const About = lazy(() => import("./pages/About"));
-const Pledge = lazy(() => import("./pages/Pledge"));
-const AgileCoaching = lazy(() => import("./pages/AgileCoaching"));
-const AsCollectionsCase = lazy(
-  () => import("./pages/caseStudies/AsCollections"),
-);
-const HelenMooreHairdressingCase = lazy(
-  () => import("./pages/caseStudies/HelenMooreHairdressing"),
-);
-const IndependentRetailerCase = lazy(
-  () => import("./pages/caseStudies/IndependentRetailer"),
-);
-const KaizenRebuildCase = lazy(
-  () => import("./pages/caseStudies/KaizenRebuild"),
-);
-const HighFiveGamesCase = lazy(
-  () => import("./pages/caseStudies/HighFiveGames"),
-);
-const PerformanceScanner = lazy(
-  () => import("./pages/PerformanceScanner"),
-);
 
 // ── Minimal loading shell (matches site background) ───────────────
 
@@ -114,63 +68,69 @@ export default function OtherRoutes({
     <Suspense fallback={<RouteLoading />}>
       <Routes>
         <Route path="/services" element={<ServerRouteHandoff />} />
-        <Route path="/web-design-liverpool" element={<WebDesignLiverpool />} />
-        <Route path="/web-design-chester" element={<WebDesignChester />} />
-        <Route path="/web-design-warrington" element={<WebDesignWarrington />} />
+        <Route path="/web-design-liverpool" element={<ServerRouteHandoff />} />
+        <Route path="/web-design-chester" element={<ServerRouteHandoff />} />
+        <Route path="/web-design-warrington" element={<ServerRouteHandoff />} />
         <Route
           path="/services/web-design-liverpool"
-          element={<Navigate to="/web-design-liverpool" replace />}
+          element={<ServerRouteHandoff />}
         />
         <Route
           path="/web-design-liverpool-city-centre"
-          element={<Navigate to="/web-design-liverpool" replace />}
+          element={<ServerRouteHandoff />}
         />
-        <Route path="/services/local-seo" element={<LocalSeo />} />
-        <Route path="/digital-transformation" element={<DigitalTransformation />} />
+        <Route path="/services/local-seo" element={<ServerRouteHandoff />} />
+        <Route path="/digital-transformation" element={<ServerRouteHandoff />} />
         <Route
           path="/services/digital-transformation"
-          element={<Navigate to="/digital-transformation" replace />}
+          element={<ServerRouteHandoff />}
         />
-        <Route path="/services/ecommerce" element={<Ecommerce />} />
+        <Route path="/services/ecommerce" element={<ServerRouteHandoff />} />
         <Route
           path="/services/wordpress-web-design"
-          element={<WordPressWebDesign />}
+          element={<ServerRouteHandoff />}
         />
-        <Route path="/web-design-wirral" element={<WebDesignWirral />} />
-        <Route path="/contract-product-owner" element={<ContractProductOwner />} />
-        <Route path="/project-rescue" element={<ProjectRescue />} />
-        <Route path="/about" element={<About />} />
-        <Route path="/pledge" element={<Pledge />} />
-        <Route path="/agile-coaching" element={<AgileCoaching />} />
+        <Route path="/web-design-wirral" element={<ServerRouteHandoff />} />
+        <Route path="/contract-product-owner" element={<ServerRouteHandoff />} />
+        <Route path="/project-rescue" element={<ServerRouteHandoff />} />
+        <Route path="/about" element={<ServerRouteHandoff />} />
+        <Route path="/pledge" element={<ServerRouteHandoff />} />
+        <Route path="/agile-coaching" element={<ServerRouteHandoff />} />
         <Route
           path="/product-owner"
-          element={<Navigate to="/contract-product-owner" replace />}
+          element={<ServerRouteHandoff />}
         />
         <Route path="/case-studies" element={<ServerRouteHandoff />} />
-        <Route path="/case-studies/as-collections" element={<AsCollectionsCase />} />
+        <Route
+          path="/case-studies/as-collections"
+          element={<ServerRouteHandoff />}
+        />
         <Route
           path="/case-studies/helen-moore-hairdressing"
-          element={<HelenMooreHairdressingCase />}
+          element={<ServerRouteHandoff />}
         />
         <Route
           path="/case-studies/independent-retailer"
-          element={<IndependentRetailerCase />}
+          element={<ServerRouteHandoff />}
         />
-        <Route path="/case-studies/kaizen-rebuild" element={<KaizenRebuildCase />} />
+        <Route
+          path="/case-studies/kaizen-rebuild"
+          element={<ServerRouteHandoff />}
+        />
         <Route
           path="/case-studies/high-five-games"
-          element={<HighFiveGamesCase />}
+          element={<ServerRouteHandoff />}
         />
         <Route path="/blog/*" element={<ServerRouteHandoff />} />
         <Route path="/studio/*" element={<ServerRouteHandoff />} />
         <Route path="/insights/*" element={<ServerRouteHandoff />} />
         <Route path="/blogdetail/*" element={<ServerRouteHandoff />} />
-        <Route path="/contact" element={<Contact />} />
+        <Route path="/contact" element={<ServerRouteHandoff />} />
         <Route path="/thank-you" element={<ServerRouteHandoff />} />
         <Route path="/privacy-policy" element={<ServerRouteHandoff />} />
         <Route path="/cookie-policy" element={<ServerRouteHandoff />} />
         <Route path="/gdpr-policy" element={<ServerRouteHandoff />} />
-        <Route path="/performance-scanner" element={<PerformanceScanner />} />
+        <Route path="/performance-scanner" element={<ServerRouteHandoff />} />
         <Route path="/terms-and-conditions" element={<ServerRouteHandoff />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
