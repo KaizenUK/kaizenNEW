@@ -1,121 +1,96 @@
 ---
 /**
- * Three core services — card grid, Sumsub-style.
- * Static Astro component.
+ * Services section — spacious, bright, easy to scan.
+ * Each service gets one core memorable idea (SUCCESS principle #1).
  */
 const services = [
   {
-    eyebrow: "Web Design",
-    title: "Beautiful sites that actually convert",
+    number: "01",
+    title: "Web Design",
+    hook: "Your website has 3 seconds to convince someone to stay.",
     description:
-      "We design and build clean, modern websites that load fast, rank well on Google, and turn visitors into customers. No bloat, no fluff — just results.",
-    points: [
-      "Custom design tailored to your brand",
-      "Blazing-fast load times out of the box",
-      "Built to meet Google's quality standards",
-    ],
-    href: "/contact",
+      "We design sites that pass that test — fast, clean, and built to turn visitors into paying customers. Not just pretty. Profitable.",
     cta: "Start a project",
-    accent: "cyan",
+    href: "/contact",
   },
   {
-    eyebrow: "Performance Auditing",
-    title: "Find out what's holding your site back",
+    number: "02",
+    title: "Performance Auditing",
+    hook: "A 1-second delay in load time costs 7% of conversions.",
     description:
-      "A full health check of your website — speed, Google scores, accessibility, and the invisible problems costing you customers. Clear report, plain English.",
-    points: [
-      "Page speed and load time analysis",
-      "Google ranking factor review",
-      "Prioritised fix list you can act on",
-    ],
-    href: "/performance-scanner",
+      "We'll show you exactly what's slowing your site down and what it's costing you — in a plain-English report you can actually act on.",
     cta: "Run a free audit",
-    accent: "lime",
+    href: "/performance-scanner",
   },
   {
-    eyebrow: "Product Owner for Hire",
-    title: "Expert project leadership, on demand",
+    number: "03",
+    title: "Product Owner for Hire",
+    hook: "Most web projects fail because nobody's steering the ship.",
     description:
-      "Your web project needs someone who knows what good looks like. We step in as your product owner — managing priorities, talking to developers, and making sure things ship on time.",
-    points: [
-      "Hands-on guidance from day one",
-      "No long-term contracts required",
-      "Experienced with teams of all sizes",
-    ],
-    href: "/contract-product-owner",
+      "We step in as your product owner — managing priorities, talking to developers, and making sure your project ships on time and on budget.",
     cta: "Learn more",
-    accent: "cyan",
+    href: "/contract-product-owner",
   },
 ];
 ---
 
-<section class="py-20 md:py-28 bg-white relative">
+<section class="py-28 md:py-36 bg-white">
   <div class="mx-auto max-w-[1440px] px-6 lg:px-12">
-    <div class="text-center mb-16">
+    <!-- Section header -->
+    <div class="mb-20 md:mb-28 max-w-2xl">
       <p
-        class="text-sm font-medium tracking-wide text-kaizen-cyan uppercase mb-4"
+        class="text-xs font-medium tracking-[0.25em] text-gray-400 uppercase mb-5 font-body"
       >
         What We Do
       </p>
       <h2
-        class="text-3xl md:text-4xl lg:text-5xl font-heading font-bold text-gray-950"
+        class="text-4xl md:text-5xl lg:text-6xl font-heading font-bold text-gray-950 leading-tight"
       >
         Three ways we help
       </h2>
     </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+    <!-- Service rows -->
+    <div class="space-y-0">
       {
-        services.map((s) => (
-          <div class="group relative rounded-2xl border border-gray-200 bg-white p-8 md:p-10 flex flex-col transition-all duration-300 hover:border-gray-300 hover:shadow-xl">
-            <p
-              class:list={[
-                "text-xs font-semibold tracking-wide uppercase mb-3",
-                s.accent === "lime"
-                  ? "text-kaizen-lime"
-                  : "text-kaizen-cyan",
-              ]}
-            >
-              {s.eyebrow}
-            </p>
+        services.map((s, i) => (
+          <div
+            class:list={[
+              "group grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-12 py-16 md:py-20",
+              i < services.length - 1 && "border-b border-gray-200",
+            ]}
+          >
+            {/* Number + title */}
+            <div class="md:col-span-4 flex flex-col">
+              <span class="text-sm font-body text-gray-300 mb-4 block">
+                {s.number}
+              </span>
+              <h3 class="text-3xl md:text-4xl font-heading font-bold text-gray-950 leading-tight">
+                {s.title}
+              </h3>
+            </div>
 
-            <h3 class="text-xl md:text-2xl font-heading font-bold text-gray-950 mb-4 leading-snug">
-              {s.title}
-            </h3>
+            {/* Hook + description */}
+            <div class="md:col-span-5 flex flex-col justify-center">
+              <p class="text-xl md:text-2xl font-body font-medium text-gray-950 leading-snug mb-4">
+                {s.hook}
+              </p>
+              <p class="text-base md:text-lg font-body text-gray-500 leading-relaxed">
+                {s.description}
+              </p>
+            </div>
 
-            <p class="text-gray-600 leading-relaxed mb-6">{s.description}</p>
-
-            <ul class="space-y-3 text-gray-700 mb-8">
-              {s.points.map((point) => (
-                <li class="flex items-start gap-3">
-                  <span
-                    class:list={[
-                      "mt-1.5 h-2 w-2 rounded-full flex-shrink-0",
-                      s.accent === "lime"
-                        ? "bg-kaizen-lime"
-                        : "bg-kaizen-cyan",
-                    ]}
-                  />
-                  {point}
-                </li>
-              ))}
-            </ul>
-
-            <div class="mt-auto">
+            {/* CTA */}
+            <div class="md:col-span-3 flex items-center md:justify-end">
               <a
                 href={s.href}
-                class:list={[
-                  "inline-flex items-center gap-2 font-heading font-semibold transition-colors",
-                  s.accent === "lime"
-                    ? "text-kaizen-lime hover:text-green-600"
-                    : "text-kaizen-cyan hover:text-cyan-700",
-                ]}
+                class="inline-flex items-center gap-3 font-heading font-bold text-lg text-gray-950 transition-all duration-200 group-hover:gap-5"
               >
                 {s.cta}
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  width="18"
-                  height="18"
+                  width="20"
+                  height="20"
                   viewBox="0 0 24 24"
                   fill="none"
                   stroke="currentColor"
@@ -123,6 +98,7 @@ const services = [
                   stroke-linecap="round"
                   stroke-linejoin="round"
                   aria-hidden="true"
+                  class="transition-transform duration-200 group-hover:translate-x-1"
                 >
                   <path d="M5 12h14" />
                   <path d="m12 5 7 7-7 7" />
