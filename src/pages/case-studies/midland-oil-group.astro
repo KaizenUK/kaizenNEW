@@ -1,0 +1,202 @@
+---
+import StaticPageLayout from "../../layouts/StaticPageLayout.astro";
+
+export const prerender = true;
+
+const summary = [
+  {
+    heading: "The Problem",
+    copy:
+      "A WordPress/Beaver Builder site that was slow, plugin-dependent, and built around products — not the people buying them.",
+  },
+  {
+    heading: "The Solution",
+    copy:
+      "A custom-built platform with sector-first navigation, an AI-powered oil finder, and proper service architecture.",
+  },
+  {
+    heading: "Services Provided",
+    copy: "Web design, information architecture, AI tooling, performance engineering.",
+  },
+];
+
+const beforeItems = [
+  "WordPress/Beaver Builder — plugin-dependent, slow, hard to maintain",
+  "Product-first IA — users had to already know what oil they wanted",
+  "Flat navigation with no context or guidance",
+  "Every enquiry required human intervention — no self-serve tools",
+  "Downloads page as a flat file dump",
+  "Sustainability and Waste Oil buried as orphan pages",
+  "No ISO accreditation visibility — trust signals missing",
+  "T&Cs as a PDF download — no proper legal infrastructure",
+  "Generic theme design with no visual identity",
+  "No social presence linked from site",
+];
+
+const afterItems = [
+  {
+    title: "Custom-built platform",
+    copy: "Performant, maintainable, zero plugin debt. Built to scale with the business, not against it.",
+  },
+  {
+    title: "Sector-first information architecture",
+    copy: "Users enter via their industry — automotive, marine, industrial — not a product catalogue. The site meets them where they are.",
+  },
+  {
+    title: "Ask MOG\u2122 — AI oil finder",
+    copy: "A branded, trademarked AI tool that self-serves product recommendations. Customers find the right oil without picking up the phone.",
+  },
+  {
+    title: "Structured Technical Library",
+    copy: "TDS documents and technical resources organised properly — searchable, browsable, not buried in a file dump.",
+  },
+  {
+    title: "All 8 services given equal weight",
+    copy: "Proper service hub with clean URLs and dedicated pages. Sustainability and Waste Oil positioned as real services, not afterthoughts.",
+  },
+  {
+    title: "Trust infrastructure",
+    copy: "ISO 9001 & ISO 14001 badges in the footer. Full Legal Centre with dedicated GDPR, Cookie Policy and T&C pages. Companies House number visible.",
+  },
+  {
+    title: "Purpose-built design",
+    copy: "Strong visual hierarchy, consistent brand across all four sub-brands, and LinkedIn linked from the footer.",
+  },
+];
+
+const outcomes = [
+  "Reduced friction to find the right product — sector-first navigation plus Ask MOG\u2122 handles it",
+  "Scalable product catalogue without WooCommerce complexity",
+  "Self-serve capability cuts the load on the sales operation",
+  "Stronger credibility positioning with ISO badges, legal infrastructure, and company transparency",
+  "Sustainability properly showcased — critical for procurement and ESG-conscious buyers",
+  "Brand coherence across all four sub-brands for the first time",
+];
+---
+
+<StaticPageLayout
+  path="/case-studies/midland-oil-group/"
+  title="Midland Oil Group Case Study | Kaizen Web"
+  description="How we rebuilt Midland Oil Group's digital presence — replacing a slow WordPress site with a custom platform, AI-powered oil finder, and sector-first navigation."
+>
+  <section class="relative bg-gray-950 py-24 text-white md:py-32">
+    <div class="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_30%_20%,rgba(6,182,212,0.08),transparent_60%)]"></div>
+    <div class="container relative mx-auto max-w-5xl px-4">
+      <a href="/case-studies/" class="mb-10 inline-flex items-center gap-2 text-white/50 transition hover:text-white font-body text-sm">
+        <span aria-hidden="true">&larr;</span>
+        Back to Case Studies
+      </a>
+      <p class="mb-4 text-xs font-body font-medium uppercase tracking-[0.25em] text-white/40">Case Study</p>
+      <h1 class="mb-6 text-5xl font-heading font-bold leading-tight md:text-6xl lg:text-7xl">Midland Oil Group</h1>
+      <p class="max-w-3xl text-xl text-white/60 md:text-2xl font-body">
+        From a generic WordPress site to a custom platform with AI-powered product discovery — built around how their customers actually buy.
+      </p>
+    </div>
+  </section>
+
+  <section class="border-b border-gray-200 bg-white py-16">
+    <div class="container mx-auto max-w-6xl px-4">
+      <div class="grid grid-cols-1 gap-8 md:grid-cols-3 md:gap-12">
+        {
+          summary.map((item) => (
+            <article>
+              <h2 class="mb-3 text-[11px] font-body font-semibold uppercase tracking-[0.2em] text-gray-400">{item.heading}</h2>
+              <p class="text-lg leading-relaxed text-gray-700 font-body">{item.copy}</p>
+            </article>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="bg-[#f5f5f3] py-20 md:py-28">
+    <div class="container mx-auto max-w-4xl px-4">
+      <article class="mb-20">
+        <h2 class="mb-8 text-4xl font-heading font-bold text-gray-950 md:text-5xl">Before</h2>
+        <p class="mb-8 text-lg leading-relaxed text-gray-500 font-body">
+          Midland Oil Group had a WordPress/Beaver Builder site that looked like every other industrial supplier. Slow, generic, and built around a product catalogue that assumed visitors already knew what they needed.
+        </p>
+        <ul class="space-y-4">
+          {
+            beforeItems.map((item) => (
+              <li class="flex items-start gap-4 text-base leading-relaxed text-gray-600 font-body">
+                <span class="mt-1.5 block h-2 w-2 shrink-0 rounded-full bg-gray-300" aria-hidden="true"></span>
+                {item}
+              </li>
+            ))
+          }
+        </ul>
+      </article>
+
+      <article class="mb-20">
+        <h2 class="mb-8 text-4xl font-heading font-bold text-gray-950 md:text-5xl">After</h2>
+        <p class="mb-10 text-lg leading-relaxed text-gray-500 font-body">
+          We rebuilt everything from the ground up. Not just the design — the way the entire site thinks about its users.
+        </p>
+        <div class="space-y-6">
+          {
+            afterItems.map((item) => (
+              <div class="py-6 border-b border-gray-200 last:border-0">
+                <h3 class="mb-2 text-xl font-heading font-bold text-gray-950">{item.title}</h3>
+                <p class="text-base text-gray-500 font-body leading-relaxed">{item.copy}</p>
+              </div>
+            ))
+          }
+        </div>
+      </article>
+
+      <article>
+        <h2 class="mb-8 text-4xl font-heading font-bold text-gray-950 md:text-5xl">The Outcome</h2>
+        <p class="mb-8 text-lg leading-relaxed text-gray-500 font-body">
+          The new platform doesn't just look better — it changes how the business operates online.
+        </p>
+        <ul class="space-y-4">
+          {
+            outcomes.map((item) => (
+              <li class="flex items-start gap-4 text-base leading-relaxed text-gray-700 font-body">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="rgb(6 182 212)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mt-0.5 shrink-0" aria-hidden="true">
+                  <path d="M20 6 9 17l-5-5"></path>
+                </svg>
+                {item}
+              </li>
+            ))
+          }
+        </ul>
+      </article>
+    </div>
+  </section>
+
+  <section class="bg-white py-20">
+    <div class="container mx-auto max-w-5xl px-4">
+      <h2 class="mb-10 text-4xl font-heading font-bold text-gray-950 md:text-5xl">Need something similar?</h2>
+      <div class="grid grid-cols-1 gap-8 md:grid-cols-2">
+        <a
+          href="/services/"
+          class="group block border-b border-gray-200 py-8 transition"
+        >
+          <h3 class="mb-3 text-2xl font-heading font-bold text-gray-950 transition group-hover:text-gray-600">
+            See all services
+          </h3>
+          <p class="text-gray-500 font-body">Web design, performance, product ownership — see how we can help your business.</p>
+        </a>
+        <a
+          href="/contact/"
+          class="group block border-b border-gray-200 py-8 transition"
+        >
+          <h3 class="mb-3 text-2xl font-heading font-bold text-gray-950 transition group-hover:text-gray-600">
+            Start a conversation
+          </h3>
+          <p class="text-gray-500 font-body">Tell us what you're working with and we'll tell you honestly what it needs.</p>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="border-t border-gray-200 bg-[#f5f5f3] py-12">
+    <div class="container mx-auto flex max-w-5xl items-center justify-between gap-4 px-4 text-sm font-medium font-body">
+      <a href="/case-studies/kaizen-rebuild/" class="text-gray-950 transition hover:text-gray-500">&larr; Previous</a>
+      <a href="/case-studies/" class="text-gray-400 transition hover:text-gray-950">View All</a>
+      <a href="/case-studies/as-collections/" class="text-gray-950 transition hover:text-gray-500">Next &rarr;</a>
+    </div>
+  </section>
+</StaticPageLayout>

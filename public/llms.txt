@@ -47,7 +47,7 @@ Kaizen Web is a senior-led digital agency that builds high-performance, revenue-
 
 - [/case-studies](https://kaizenweb.co.uk/case-studies) — Portfolio of no-BS case studies for Liverpool & Wirral businesses.
 - [/case-studies/kaizen-rebuild](https://kaizenweb.co.uk/case-studies/kaizen-rebuild) — Technical deep dive: how we migrated Kaizen from legacy to React + Vite + Headless architecture.
-- [/case-studies/high-five-games](https://kaizenweb.co.uk/case-studies/high-five-games) — Enterprise case study: architecting a dual-currency gaming economy for an international sweepstakes casino, delivering 42% ARPU growth.
+- [/case-studies/midland-oil-group](https://kaizenweb.co.uk/case-studies/midland-oil-group) — Full platform rebuild for Midland Oil Group: custom architecture, AI-powered product discovery, and sector-first navigation replacing a slow WordPress site.
 - [/case-studies/as-collections](https://kaizenweb.co.uk/case-studies/as-collections) — How we improved online presence and operations for As Collections.
 - [/case-studies/helen-moore-hairdressing](https://kaizenweb.co.uk/case-studies/helen-moore-hairdressing) — Local hairdressing salon: online booking system and improved local visibility.
 

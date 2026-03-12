@@ -1,0 +1,218 @@
+---
+/**
+ * Google Reviews carousel — static data, auto-scrolling.
+ * CSS-only infinite scroll with JS for pause-on-hover and drag.
+ * Replace review data below when new reviews come in.
+ */
+
+interface Review {
+  author: string;
+  rating: 5 | 4;
+  text: string;
+  date: string; // ISO date for schema
+  relative: string; // Display date e.g. "2 months ago"
+}
+
+const reviews: Review[] = [
+  {
+    author: "B Loughran",
+    rating: 5,
+    text: "So happy with the advice and communication I've received from Sean at Kaizen. I didn't know where to begin with creating my website and Sean made the whole process straightforward and stress-free.",
+    date: "2026-03-05",
+    relative: "1 week ago",
+  },
+  {
+    author: "Helen Parry",
+    rating: 5,
+    text: "Kaizen are highly professional and incredibly knowledgeable. Communication is amazing and work done to an incredible high standard. Couldn't recommend more highly.",
+    date: "2026-02-26",
+    relative: "2 weeks ago",
+  },
+  {
+    author: "Cassie Wolf",
+    rating: 5,
+    text: "I was having difficulties with the formatting of my old site. After many years, I needed to use it again but it was outdated and broken. Kaizen got it back up and running perfectly.",
+    date: "2026-02-12",
+    relative: "4 weeks ago",
+  },
+  {
+    author: "Paul Taylor",
+    rating: 5,
+    text: "We are extremely impressed with the service provided. From start to finish, they were easy to work with, responsive, and delivered exactly what we needed.",
+    date: "2026-02-12",
+    relative: "4 weeks ago",
+  },
+];
+
+// Duplicate for seamless infinite scroll
+const allReviews = [...reviews, ...reviews];
+
+// Schema markup
+const schemaJson = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "LocalBusiness",
+  name: "Kaizen Web",
+  aggregateRating: {
+    "@type": "AggregateRating",
+    ratingValue: "5.0",
+    reviewCount: String(reviews.length),
+    bestRating: "5",
+    worstRating: "1",
+  },
+  review: reviews.map((r) => ({
+    "@type": "Review",
+    author: { "@type": "Person", name: r.author },
+    datePublished: r.date,
+    reviewRating: {
+      "@type": "Rating",
+      ratingValue: String(r.rating),
+      bestRating: "5",
+      worstRating: "1",
+    },
+    reviewBody: r.text,
+  })),
+});
+---
+
+<section class="py-28 md:py-36 bg-white overflow-hidden">
+  <div class="mx-auto max-w-[1440px] px-6 lg:px-12 mb-16 md:mb-20">
+    <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-6">
+      <div>
+        <p
+          class="text-xs font-medium tracking-[0.25em] text-gray-400 uppercase mb-5 font-body"
+        >
+          Reviews
+        </p>
+        <h2
+          class="text-4xl md:text-5xl lg:text-6xl font-heading font-bold text-gray-950 leading-tight"
+        >
+          Don't take our word for it.
+        </h2>
+      </div>
+      <a
+        href="https://www.google.com/maps/place/?q=place_id:ChIJA6LmO4Mhe0gR6N1ohnoK7ZE"
+        target="_blank"
+        rel="noreferrer"
+        class="inline-flex items-center gap-2 text-sm font-body text-gray-400 hover:text-gray-950 transition-colors shrink-0"
+      >
+        <svg viewBox="0 0 24 24" width="18" height="18" class="shrink-0" aria-hidden="true">
+          <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4"/>
+          <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+          <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
+          <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+        </svg>
+        View on Google
+      </a>
+    </div>
+  </div>
+
+  <!-- Carousel track -->
+  <div class="reviews-carousel" aria-label="Customer reviews">
+    <div class="reviews-track">
+      {allReviews.map((review, i) => (
+        <div class="review-card" role="group" aria-label={`Review by ${review.author}`}>
+          <!-- Stars -->
+          <div class="flex gap-0.5 mb-5" aria-label={`${review.rating} out of 5 stars`}>
+            {Array.from({ length: review.rating }).map(() => (
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="#FBBC05" aria-hidden="true">
+                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+              </svg>
+            ))}
+          </div>
+
+          <p class="text-base md:text-lg font-body text-gray-700 leading-relaxed mb-6 line-clamp-5">
+            "{review.text}"
+          </p>
+
+          <div class="mt-auto">
+            <p class="text-sm font-heading font-bold text-gray-950">{review.author}</p>
+            <p class="text-xs font-body text-gray-400 mt-1">{review.relative}</p>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+
+  <script type="application/ld+json" set:html={schemaJson} />
+</section>
+
+<style>
+  .reviews-carousel {
+    position: relative;
+    width: 100%;
+  }
+
+  .reviews-track {
+    display: flex;
+    gap: 1.5rem;
+    animation: scroll-reviews 40s linear infinite;
+    width: max-content;
+    padding: 0 0.75rem;
+  }
+
+  .reviews-carousel:hover .reviews-track {
+    animation-play-state: paused;
+  }
+
+  .review-card {
+    flex: 0 0 auto;
+    width: 360px;
+    padding: 2rem;
+    background: #f9f9f8;
+    border-radius: 16px;
+    display: flex;
+    flex-direction: column;
+    transition: background-color 0.3s ease;
+  }
+
+  .review-card:hover {
+    background: #f0f0ee;
+  }
+
+  @media (max-width: 640px) {
+    .review-card {
+      width: 300px;
+      padding: 1.5rem;
+    }
+  }
+
+  @keyframes scroll-reviews {
+    0% {
+      transform: translateX(0);
+    }
+    100% {
+      transform: translateX(-50%);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .reviews-track {
+      animation: none;
+      flex-wrap: wrap;
+      width: auto;
+      justify-content: center;
+    }
+  }
+
+  /* Fade edges */
+  .reviews-carousel::before,
+  .reviews-carousel::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 4rem;
+    z-index: 2;
+    pointer-events: none;
+  }
+
+  .reviews-carousel::before {
+    left: 0;
+    background: linear-gradient(to right, white, transparent);
+  }
+
+  .reviews-carousel::after {
+    right: 0;
+    background: linear-gradient(to left, white, transparent);
+  }
+</style>

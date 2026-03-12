@@ -1,0 +1,125 @@
+---
+/**
+ * Homepage case study spotlight — visual before/after with screenshot.
+ * Sits between WhyUs and FAQ. Shows the transformation at a glance.
+ */
+const before = [
+  "Slow WordPress site with plugin debt",
+  "Users had to know the product to find it",
+  "Every enquiry needed a phone call",
+  "No trust signals, no legal infrastructure",
+];
+
+const after = [
+  "Custom platform — fast, scalable, zero plugins",
+  "Sector-first navigation meets users where they are",
+  "AI oil finder self-serves recommendations",
+  "ISO badges, legal centre, brand coherence",
+];
+---
+
+<section class="py-28 md:py-36 bg-[#f5f5f3]">
+  <div class="mx-auto max-w-[1440px] px-6 lg:px-12">
+    <!-- Header -->
+    <div class="mb-12 md:mb-16 max-w-2xl">
+      <p
+        class="text-xs font-medium tracking-[0.25em] text-gray-400 uppercase mb-5 font-body"
+      >
+        Recent work
+      </p>
+      <h2
+        class="text-4xl md:text-5xl lg:text-6xl font-heading font-bold text-gray-950 leading-tight"
+      >
+        Midland Oil Group
+      </h2>
+      <p class="mt-6 text-lg md:text-xl text-gray-500 font-body leading-relaxed max-w-xl">
+        A generic WordPress site rebuilt into a custom platform with AI-powered product discovery.
+      </p>
+    </div>
+
+    <!-- Screenshot -->
+    <div class="mb-16 md:mb-20 spotlight-img-wrap">
+      <img
+        src="/images/case-studies/midland-oil-group-hero.webp"
+        alt="Midland Oil Group homepage — custom-built platform featuring sector-first navigation and AI-powered oil finder for UK lubricant specialists"
+        width="2196"
+        height="1147"
+        loading="lazy"
+        decoding="async"
+        class="w-full rounded-2xl"
+      />
+    </div>
+
+    <!-- Before / After grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-16 md:gap-20">
+      <!-- Before -->
+      <div>
+        <p class="text-[11px] font-body font-semibold uppercase tracking-[0.2em] text-gray-300 mb-8">Before</p>
+        <ul class="space-y-5">
+          {before.map((item) => (
+            <li class="flex items-start gap-4 text-base md:text-lg font-body text-gray-400 leading-relaxed">
+              <span class="mt-2 block h-1.5 w-1.5 shrink-0 rounded-full bg-gray-300" aria-hidden="true"></span>
+              {item}
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <!-- After -->
+      <div>
+        <p class="text-[11px] font-body font-semibold uppercase tracking-[0.2em] text-gray-950 mb-8">After</p>
+        <ul class="space-y-5">
+          {after.map((item) => (
+            <li class="flex items-start gap-4 text-base md:text-lg font-body text-gray-950 leading-relaxed">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgb(6 182 212)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="mt-1 shrink-0" aria-hidden="true">
+                <path d="M20 6 9 17l-5-5"></path>
+              </svg>
+              {item}
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+
+    <!-- CTA -->
+    <div class="mt-16 pt-16 border-t border-gray-300/50">
+      <a
+        href="/case-studies/midland-oil-group/"
+        class="inline-flex items-center gap-3 font-heading font-bold text-lg text-gray-950 transition-all duration-200 hover:gap-5"
+      >
+        Read the full case study
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+          class="transition-transform duration-200"
+        >
+          <path d="M5 12h14" />
+          <path d="m12 5 7 7-7 7" />
+        </svg>
+      </a>
+    </div>
+  </div>
+</section>
+
+<style>
+  .spotlight-img-wrap {
+    position: relative;
+  }
+
+  .spotlight-img-wrap::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 1rem;
+    box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.05);
+    pointer-events: none;
+  }
+</style>

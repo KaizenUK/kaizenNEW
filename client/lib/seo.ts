@@ -327,10 +327,10 @@ const pageMeta: Record<string, Partial<PageMeta>> = {
     description:
       "A technical deep dive into how we migrated Kaizen Web from a legacy setup to a high-performance React + Vite + Headless architecture.",
   },
-  "/case-studies/high-five-games": {
-    title: "Gaming Platform Migration Case Study | Kaizen",
+  "/case-studies/midland-oil-group": {
+    title: "Midland Oil Group Case Study | Kaizen Web",
     description:
-      "A technical deep dive into a dual-currency platform migration: moving from pure social play to a regulated model across 43 US states, with strong commercial and operational outcomes.",
+      "How we rebuilt Midland Oil Group's digital presence — replacing a slow WordPress site with a custom platform, AI-powered oil finder, and sector-first navigation.",
   },
   "/performance-scanner": {
     title: "Free Website Speed Test | Check Your Google PageSpeed Score",

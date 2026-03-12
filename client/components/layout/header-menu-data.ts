@@ -273,8 +273,8 @@ const menuDefinitions: Record<DesktopMenuKey, DesktopMenuDefinition> = {
         title: "Platforms & Delivery",
         items: [
           {
-            label: "Gaming Platform Migration",
-            href: "/case-studies/high-five-games/",
+            label: "Midland Oil Group",
+            href: "/case-studies/midland-oil-group/",
           },
           {
             label: "Kaizen Rebuild",

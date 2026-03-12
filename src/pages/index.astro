@@ -5,6 +5,8 @@ import Services from "../components/homepage/Services.astro";
 import Problem from "../components/homepage/Problem.astro";
 import Process from "../components/homepage/Process.astro";
 import WhyUs from "../components/homepage/WhyUs.astro";
+import CaseSpotlight from "../components/homepage/CaseSpotlight.astro";
+import Reviews from "../components/homepage/Reviews.astro";
 import FinalCTA from "../components/homepage/FinalCTA.astro";
 import { HomepageFAQ } from "../../client/components/homepage/HomepageFAQ";
 
@@ -21,6 +23,8 @@ export const prerender = true;
   <Problem />
   <Process />
   <WhyUs />
+  <CaseSpotlight />
+  <Reviews />
   <HomepageFAQ client:visible />
   <FinalCTA />
 </StaticPageLayout>
