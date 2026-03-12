@@ -2,7 +2,7 @@ export const termsContent = `
 STANDARD TERMS AND CONDITIONS OF BUSINESS
 Kaizen Web Ltd (Trading as Kaizen Ltd)
 Company Registration No: 17007703
-Registered Address: 3 Hopfield Road, Moreton, CH46 9RH
+Registered Address: Suite A, 82 James Carter Road, Mildenhall, Bury St. Edmunds, England, IP28 7DE
 Effective Date: February 2026
 
 1. Definitions

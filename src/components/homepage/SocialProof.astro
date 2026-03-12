@@ -1,0 +1,60 @@
+---
+/**
+ * Social proof section — credibility stats and positioning.
+ * Like Sumsub's ROI/stats block — large numbers with context.
+ * Static Astro component.
+ */
+const stats = [
+  {
+    value: "96",
+    suffix: "%",
+    label: "Performance score on our own site — we practise what we preach",
+  },
+  {
+    value: "0.8",
+    suffix: "s",
+    label: "Average page load time across client sites we've optimised",
+  },
+  {
+    value: "2-4",
+    suffix: " weeks",
+    label: "Typical turnaround from kickoff to launch",
+  },
+  {
+    value: "0",
+    suffix: " lock-in",
+    label: "No long contracts — month-to-month support, cancel any time",
+  },
+];
+---
+
+<section class="py-20 md:py-28 bg-white relative">
+  <div class="mx-auto max-w-[1440px] px-6 lg:px-12">
+    <div class="text-center mb-16">
+      <p
+        class="text-sm font-medium tracking-wide text-kaizen-cyan uppercase mb-4"
+      >
+        By the Numbers
+      </p>
+      <h2
+        class="text-3xl md:text-4xl lg:text-5xl font-heading font-bold text-gray-950"
+      >
+        We let the results speak
+      </h2>
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+      {
+        stats.map((stat) => (
+          <div class="text-center p-6">
+            <p class="text-5xl md:text-6xl font-heading font-black bg-gradient-to-r from-kaizen-cyan to-kaizen-lime bg-clip-text text-transparent mb-3">
+              {stat.value}
+              <span class="text-3xl md:text-4xl">{stat.suffix}</span>
+            </p>
+            <p class="text-gray-600 leading-relaxed text-sm">{stat.label}</p>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</section>

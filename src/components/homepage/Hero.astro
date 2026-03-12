@@ -1,0 +1,118 @@
+---
+/**
+ * Homepage Hero — full-width, Sumsub-style.
+ * Static Astro component (no JS shipped).
+ */
+---
+
+<section class="relative isolate overflow-hidden bg-[#020617] text-white">
+  <!-- Mesh gradient background -->
+  <div class="hero-mesh-bg absolute inset-0 -z-10">
+    <div class="hero-mesh-blob hero-mesh-blob--violet"></div>
+    <div class="hero-mesh-blob hero-mesh-blob--teal"></div>
+    <div class="hero-mesh-blob hero-mesh-blob--gold"></div>
+  </div>
+
+  <svg
+    class="absolute inset-0 w-full h-full pointer-events-none opacity-20 -z-10"
+    preserveAspectRatio="none"
+  >
+    <defs>
+      <pattern
+        id="hero-grid"
+        width="60"
+        height="60"
+        patternUnits="userSpaceOnUse"
+      >
+        <path
+          d="M 60 0 L 0 0 0 60"
+          fill="none"
+          stroke="rgba(6, 182, 212, 0.08)"
+          stroke-width="0.5"
+        />
+      </pattern>
+    </defs>
+    <rect width="100%" height="100%" fill="url(#hero-grid)" />
+  </svg>
+
+  <div class="hero-spotlight absolute -z-10 opacity-60"></div>
+
+  <div
+    class="pointer-events-none absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-[#020617] to-transparent -z-10"
+  >
+  </div>
+
+  <div class="mx-auto max-w-[1440px] px-6 lg:px-12 pt-20 pb-24 md:pt-28 md:pb-32 lg:pt-36 lg:pb-40">
+    <div class="max-w-3xl home-reveal home-reveal-1">
+      <p
+        class="text-sm font-medium tracking-wide text-kaizen-cyan mb-5 uppercase"
+      >
+        Web Performance &amp; Design
+      </p>
+
+      <h1
+        class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-heading font-black leading-[1.08] mb-6"
+      >
+        Your website should be<br class="hidden sm:block" /> your hardest-working employee.
+      </h1>
+
+      <p
+        class="text-lg md:text-xl text-white/80 leading-relaxed mb-10 max-w-2xl"
+      >
+        Most sites are too slow, too cluttered, and invisible to Google.
+        We fix that. Faster pages, better rankings, more enquiries —
+        without starting from scratch.
+      </p>
+
+      <div class="flex flex-col sm:flex-row items-start gap-4 mb-10">
+        <a
+          href="/contact"
+          class="px-8 py-4 rounded-lg bg-white text-gray-950 font-heading font-bold text-lg inline-flex items-center justify-center gap-2 transition-all duration-200 hover:scale-[1.03] hover:shadow-[0_0_24px_rgba(255,255,255,0.4)] active:scale-[0.97]"
+        >
+          Talk to Us
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+          >
+            <path d="M5 12h14"></path>
+            <path d="m12 5 7 7-7 7"></path>
+          </svg>
+        </a>
+
+        <a
+          href="/performance-scanner"
+          class="px-8 py-4 rounded-lg border-2 border-white/25 text-white font-heading font-bold text-lg inline-flex items-center justify-center gap-2 transition-all duration-200 hover:scale-[1.03] hover:border-kaizen-cyan hover:text-kaizen-cyan active:scale-[0.97]"
+        >
+          Free Site Audit
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+          >
+            <path d="M7 17 17 7"></path>
+            <path d="M7 7h10v10"></path>
+          </svg>
+        </a>
+      </div>
+
+      <p class="text-sm text-white/45">
+        Trusted by e-commerce brands, SaaS teams, and growing businesses across the UK.
+      </p>
+    </div>
+  </div>
+</section>

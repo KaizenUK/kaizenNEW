@@ -1,0 +1,60 @@
+---
+/**
+ * How It Works — simple 3-step process.
+ * Keeps things concrete and reduces anxiety for non-technical buyers.
+ * Static Astro component.
+ */
+const steps = [
+  {
+    number: "01",
+    title: "We audit your site",
+    description:
+      "We run a full health check — speed, Google scores, design, and usability. You get a clear report in plain English, not a wall of jargon.",
+  },
+  {
+    number: "02",
+    title: "We build a plan",
+    description:
+      "Based on what we find, we put together a prioritised roadmap. You'll know exactly what needs doing, what it costs, and what difference it makes.",
+  },
+  {
+    number: "03",
+    title: "We make it happen",
+    description:
+      "We get to work — fixing, redesigning, or rebuilding. You see progress every week with a dedicated point of contact throughout.",
+  },
+];
+---
+
+<section class="py-20 md:py-28 bg-gray-50 relative">
+  <div class="mx-auto max-w-[1440px] px-6 lg:px-12">
+    <div class="text-center mb-16">
+      <p
+        class="text-sm font-medium tracking-wide text-kaizen-cyan uppercase mb-4"
+      >
+        How It Works
+      </p>
+      <h2
+        class="text-3xl md:text-4xl lg:text-5xl font-heading font-bold text-gray-950"
+      >
+        Simple, transparent, no surprises
+      </h2>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-12">
+      {
+        steps.map((step) => (
+          <div class="relative">
+            <p class="text-6xl md:text-7xl font-heading font-black text-gray-200 mb-4 select-none">
+              {step.number}
+            </p>
+            <h3 class="text-xl md:text-2xl font-heading font-bold text-gray-950 mb-3">
+              {step.title}
+            </h3>
+            <p class="text-gray-600 leading-relaxed">{step.description}</p>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</section>

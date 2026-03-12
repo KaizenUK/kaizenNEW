@@ -36,20 +36,20 @@ const defaultMeta: PageMeta = {
 
 const pageMeta: Record<string, Partial<PageMeta>> = {
   "/": {
-    title: "Web Design Liverpool & Wirral | Fast Custom Sites | Kaizen",
+    title: "Web Design & Performance Experts | Kaizen Web",
     description:
-      "We build fast websites for Liverpool & Wirral businesses. £2k-£15k, 2-4 week turnaround. No WordPress bloat. Just speed and leads.",
+      "We make websites faster, better designed, and easier to find on Google. Web design, performance auditing, and product ownership — no jargon, just results.",
     keywords: [
-      "web design wirral",
-      "web design liverpool",
-      "wirral web designer",
-      "fast websites wirral",
-      "custom websites wirral",
-      "web design merseyside",
-      "liverpool web design",
+      "web design agency",
+      "website performance",
+      "core web vitals",
+      "website speed optimisation",
+      "product owner for hire",
+      "performance audit",
       "kaizen web",
-      "web design pricing",
-      "liverpool web designer",
+      "web design uk",
+      "fast websites",
+      "wordpress optimisation",
     ],
   },
   "/services": {

@@ -127,7 +127,7 @@ export default function SectionWrapper({
   // Font family override
   const fontStyle: React.CSSProperties = {};
   if (fontFamily) {
-    fontStyle.fontFamily = `"${fontFamily}", "Space Grotesk", system-ui, sans-serif`;
+    fontStyle.fontFamily = `"${fontFamily}", "Inter", system-ui, sans-serif`;
   }
 
   const wrapperClasses = [

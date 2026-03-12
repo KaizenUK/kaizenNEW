@@ -92,7 +92,7 @@ export const HeroComposition: React.FC<HeroCompositionProps> = ({
           fontWeight: 'bold',
           color: 'white',
           textAlign: 'center',
-          fontFamily: 'Space Grotesk, sans-serif',
+          fontFamily: 'Inter, sans-serif',
           marginBottom: '1rem',
           opacity: titleProgress,
         }}
@@ -120,7 +120,7 @@ export const HeroComposition: React.FC<HeroCompositionProps> = ({
           fontSize: '1.5rem',
           color: 'rgba(255, 255, 255, 0.8)',
           textAlign: 'center',
-          fontFamily: 'Space Grotesk, sans-serif',
+          fontFamily: 'Inter, sans-serif',
           maxWidth: '800px',
           opacity: subtitleProgress,
         }}

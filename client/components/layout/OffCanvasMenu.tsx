@@ -1,216 +1,209 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+import { ArrowRight, ChevronDown, X } from "lucide-react";
 import KaizenLogo from "@/components/KaizenLogo";
-import { cn } from "@/lib/utils";
-import { requiresDocumentNavigation } from "@/lib/navigation";
 import AppLink from "@/components/routing/AppLink";
-import {
-  ArrowRight,
-  BookOpen,
-  Briefcase,
-  ChevronDown,
-  LifeBuoy,
-  Mail,
-  MapPin,
-  Newspaper,
-  ShoppingBag,
-  Sparkles,
-  TrendingUp,
-  Users,
-  X,
-} from "lucide-react";
-import {
-  getMenuData,
-  type DesktopMenuKey,
-  type ServiceItem,
-} from "./header-menu-data";
+import { requiresDocumentNavigation } from "@/lib/navigation";
+import { cn } from "@/lib/utils";
+import { getMenuData, type DesktopMenuKey } from "./header-menu-data";
 
 interface OffCanvasMenuProps {
   isOpen: boolean;
   onClose: () => void;
 }
 
-const SECTION_CONFIG: Array<{ key: DesktopMenuKey; label: string }> = [
-  { key: "pages", label: "Pages" },
+const sections: Array<{ key: DesktopMenuKey; label: string }> = [
   { key: "services", label: "Services" },
-  { key: "insights", label: "Insights" },
-  { key: "case-studies", label: "Case Studies" },
-  { key: "about", label: "About" },
+  { key: "pages", label: "Pages" },
+  { key: "insights", label: "Resources" },
+  { key: "about", label: "Company" },
 ];
 
-const ICON_BY_PATTERN: Array<{
-  match: RegExp;
-  icon: React.ComponentType<{ className?: string }>;
-}> = [
-  { match: /local-seo|liverpool|wirral|chester|warrington|agency/i, icon: MapPin },
-  { match: /wordpress|web-design|ecommerce|shop|asset/i, icon: ShoppingBag },
-  { match: /project-rescue|rescue|failing|fix/i, icon: LifeBuoy },
-  { match: /product-owner|strategy|owner|transformation/i, icon: Briefcase },
-  { match: /agile|coaching|community/i, icon: Users },
-  { match: /blog|insight|article|learn|documentation/i, icon: BookOpen },
-  { match: /case-studies|case-study|results|traffic|conversion/i, icon: TrendingUp },
-];
+const directLinks = [{ href: "/case-studies", label: "Case Studies" }];
 
-function resolveItemIcon(item: ServiceItem) {
-  const haystack = `${item.href} ${item.label} ${item.description}`.toLowerCase();
-  const resolved = ICON_BY_PATTERN.find(({ match }) => match.test(haystack));
-  return resolved?.icon ?? Sparkles;
-}
+const panelMotion = {
+  initial: { opacity: 0, y: -12, scale: 0.98 },
+  animate: { opacity: 1, y: 0, scale: 1 },
+  exit: { opacity: 0, y: -12, scale: 0.98 },
+  transition: { duration: 0.22, ease: [0.16, 1, 0.3, 1] as const },
+};
 
 const OffCanvasMenu: React.FC<OffCanvasMenuProps> = ({ isOpen, onClose }) => {
-  const [expandedSection, setExpandedSection] = useState<DesktopMenuKey>("services");
+  const [openKey, setOpenKey] = useState<DesktopMenuKey>("services");
 
-  const toggleSection = (section: DesktopMenuKey) => {
-    setExpandedSection((current) => (current === section ? "services" : section));
+  const menuSections = useMemo(
+    () =>
+      sections.map((section) => ({
+        ...section,
+        columns: getMenuData(section.key),
+      })),
+    [],
+  );
+
+  const handleSectionToggle = (key: DesktopMenuKey) => {
+    setOpenKey(key);
   };
 
   return (
-    <>
-      <div
-        className={cn(
-          "fixed inset-0 z-40 bg-black/60 backdrop-blur-sm transition-opacity duration-300",
-          isOpen ? "pointer-events-auto opacity-100" : "pointer-events-none opacity-0",
-        )}
-        onClick={onClose}
-      />
-
-      <aside
-        className={cn(
-          "fixed inset-y-0 left-0 z-50 flex w-[22rem] max-w-[88vw] transform flex-col overflow-hidden border-r border-white/10 bg-[#070c15]/98 shadow-[0_18px_42px_rgba(0,0,0,0.55)] transition-transform duration-300 ease-out",
-          isOpen ? "translate-x-0" : "-translate-x-full",
-        )}
-      >
-        <header className="flex items-center justify-between border-b border-white/10 px-5 py-4">
-          <AppLink href="/" className="flex items-center gap-2" onClick={onClose}>
-            <KaizenLogo className="h-6 w-[104px] text-white" />
-          </AppLink>
-          <button
-            type="button"
-            aria-label="Close menu"
-            className="rounded-full p-2 text-slate-300 transition hover:bg-white/10 hover:text-white"
+    <AnimatePresence>
+      {isOpen ? (
+        <>
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2, ease: "easeOut" }}
+            className="fixed inset-0 z-40 bg-black/50 backdrop-blur-[5px] lg:hidden"
             onClick={onClose}
+          />
+
+          <motion.aside
+            {...panelMotion}
+            className="fixed inset-x-2 top-[74px] bottom-2 z-50 flex flex-col overflow-hidden rounded-[24px] border border-black/10 bg-white shadow-[0_20px_48px_rgba(4,29,47,0.22)] lg:hidden"
           >
-            <X size={18} />
-          </button>
-        </header>
+            <header className="flex items-center justify-between border-b border-black/10 px-5 py-4">
+              <AppLink href="/" className="flex items-center" onClick={onClose}>
+                <KaizenLogo className="h-[28px] w-[126px] text-[#001133]" />
+              </AppLink>
 
-        <div className="flex-1 space-y-2 overflow-y-auto px-3 py-4">
-          {SECTION_CONFIG.map((section) => {
-            const isExpanded = expandedSection === section.key;
-            const columns = getMenuData(section.key);
+              <button
+                type="button"
+                aria-label="Close menu"
+                className="rounded-full p-2 text-[#16181d] transition hover:bg-[#edf1f7]"
+                onClick={onClose}
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </header>
 
-            return (
-              <section key={section.key} className="rounded-xl border border-white/10 bg-white/[0.02]">
-                <button
-                  type="button"
-                  onClick={() => toggleSection(section.key)}
-                  className="flex w-full items-center justify-between px-3 py-3 text-left text-[15px] font-semibold text-slate-100 transition hover:bg-white/[0.04]"
-                >
-                  <span>{section.label}</span>
-                  <ChevronDown
-                    size={16}
-                    className={cn(
-                      "text-slate-400 transition-transform duration-200",
-                      isExpanded && "rotate-180 text-cyan-300",
-                    )}
-                  />
-                </button>
+            <div className="flex-1 overflow-y-auto px-4 py-4">
+              <div className="space-y-2">
+                {menuSections.map((section) => {
+                  const isOpenSection = openKey === section.key;
 
-                {isExpanded && (
-                  <div className="space-y-3 border-t border-white/10 px-2 pb-2 pt-2">
-                    {columns.map((column) => (
-                      <div key={column.title}>
-                        <p className="px-2 pb-1 text-[11px] font-semibold uppercase tracking-[0.08em] text-slate-400">
-                          {column.title}
-                        </p>
-                        <ul className="space-y-1">
-                          {column.items.map((item) => {
-                            const ItemIcon = resolveItemIcon(item);
-                            const itemClassName = cn(
-                              "group flex items-start gap-3 rounded-lg border border-transparent px-2 py-2 transition hover:border-white/10 hover:bg-white/[0.05]",
-                              item.highlight && "border-cyan-400/30 bg-cyan-400/[0.07]",
-                            );
+                  return (
+                    <div
+                      key={section.key}
+                      className="overflow-hidden rounded-[20px] border border-black/10 bg-[#f7f9fc]"
+                    >
+                      <button
+                        type="button"
+                        onClick={() => handleSectionToggle(section.key)}
+                        className="flex w-full items-center justify-between px-4 py-4 text-left text-[17px] font-medium leading-none text-[#16181d]"
+                      >
+                        <span>{section.label}</span>
+                        <ChevronDown
+                          className={cn(
+                            "h-4 w-4 text-[#5a6475] transition-transform duration-200",
+                            isOpenSection && "rotate-180",
+                          )}
+                        />
+                      </button>
 
-                            const content = (
-                              <>
-                                <span className="mt-0.5 inline-flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-md border border-white/10 bg-white/[0.06] text-slate-200 transition group-hover:text-cyan-200">
-                                  <ItemIcon className="h-3.5 w-3.5" />
-                                </span>
-                                <span className="min-w-0">
-                                  <span className="block text-sm font-medium text-slate-100 group-hover:text-cyan-300">
-                                    {item.label}
-                                  </span>
-                                  <span className="mt-0.5 block text-xs text-slate-400 group-hover:text-slate-300">
-                                    {item.description}
-                                  </span>
-                                </span>
-                              </>
-                            );
+                      <AnimatePresence initial={false}>
+                        {isOpenSection ? (
+                          <motion.div
+                            initial={{ height: 0, opacity: 0 }}
+                            animate={{ height: "auto", opacity: 1 }}
+                            exit={{ height: 0, opacity: 0 }}
+                            transition={{ duration: 0.22, ease: "easeOut" }}
+                            className="overflow-hidden border-t border-black/10 bg-white"
+                          >
+                            <div className="space-y-5 px-4 py-4">
+                              {section.columns.map((column) => (
+                                <div key={column.title}>
+                                  <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#6d7788]">
+                                    {column.title}
+                                  </p>
+                                  <ul className="mt-3 space-y-1">
+                                    {column.items.map((item) => {
+                                      const content = (
+                                        <>
+                                          <span className="inline-flex w-full items-center gap-3">
+                                            <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-[#34ffc2]" />
+                                            <span className="text-[16px] font-medium leading-6 text-[#16181d]">
+                                              {item.label}
+                                            </span>
+                                          </span>
+                                          <span className="pl-[18px] text-sm leading-5 text-[#5a6475]">
+                                            {item.description}
+                                          </span>
+                                        </>
+                                      );
 
-                            return (
-                              <li key={item.href}>
-                                {requiresDocumentNavigation(item.href) ? (
-                                  <a href={item.href} className={itemClassName} onClick={onClose}>
-                                    {content}
-                                  </a>
-                                ) : (
-                                  <AppLink
-                                    href={item.href}
-                                    className={itemClassName}
-                                    onClick={onClose}
-                                  >
-                                    {content}
-                                  </AppLink>
-                                )}
-                              </li>
-                            );
-                          })}
-                        </ul>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </section>
-            );
-          })}
-        </div>
+                                      const linkClassName =
+                                        "group flex flex-col gap-1 rounded-2xl px-1 py-2 transition-colors duration-200 hover:text-[#1764ff]";
 
-        <footer className="space-y-2 border-t border-white/10 bg-[#060a11] px-4 py-4">
-          <AppLink
-            href="/performance-scanner"
-            onClick={onClose}
-            className="inline-flex w-full items-center justify-center rounded-full border border-white/15 bg-white/[0.04] px-4 py-2.5 text-sm font-semibold text-slate-100 transition hover:border-cyan-300/55 hover:text-cyan-200"
-          >
-            Page Scanner
-          </AppLink>
-          <AppLink
-            href="/contact"
-            onClick={onClose}
-            className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-gradient-to-r from-cyan-500 to-blue-500 px-4 py-2.5 text-sm font-semibold text-white shadow-[0_10px_25px_rgba(34,211,238,0.35)] transition hover:scale-[1.01]"
-          >
-            Start Your Project
-            <ArrowRight size={14} />
-          </AppLink>
-          <div className="grid grid-cols-2 gap-2 pt-1">
-            <a
-              href="/blog"
-              onClick={onClose}
-              className="inline-flex items-center justify-center gap-2 rounded-full border border-white/15 px-3 py-2 text-xs font-medium text-slate-300 transition hover:border-cyan-300/45 hover:text-cyan-200"
-            >
-              <Newspaper size={13} />
-              Blog
-            </a>
-            <AppLink
-              href="/contact"
-              onClick={onClose}
-              className="inline-flex items-center justify-center gap-2 rounded-full border border-white/15 px-3 py-2 text-xs font-medium text-slate-300 transition hover:border-cyan-300/45 hover:text-cyan-200"
-            >
-              <Mail size={13} />
-              Contact
-            </AppLink>
-          </div>
-        </footer>
-      </aside>
-    </>
+                                      return (
+                                        <li key={item.href}>
+                                          {requiresDocumentNavigation(item.href) ? (
+                                            <a
+                                              href={item.href}
+                                              className={linkClassName}
+                                              onClick={onClose}
+                                            >
+                                              {content}
+                                            </a>
+                                          ) : (
+                                            <AppLink
+                                              href={item.href}
+                                              className={linkClassName}
+                                              onClick={onClose}
+                                            >
+                                              {content}
+                                            </AppLink>
+                                          )}
+                                        </li>
+                                      );
+                                    })}
+                                  </ul>
+                                </div>
+                              ))}
+                            </div>
+                          </motion.div>
+                        ) : null}
+                      </AnimatePresence>
+                    </div>
+                  );
+                })}
+              </div>
+
+              <div className="mt-4 rounded-[20px] border border-black/10 bg-white px-4 py-3">
+                {directLinks.map(({ href, label }) => (
+                  <AppLink
+                    key={href}
+                    href={href}
+                    onClick={onClose}
+                    className="flex items-center justify-between rounded-2xl py-2 text-[16px] font-medium text-[#16181d] transition-colors duration-200 hover:text-[#1764ff]"
+                  >
+                    <span>{label}</span>
+                    <ArrowRight className="h-4 w-4" />
+                  </AppLink>
+                ))}
+              </div>
+            </div>
+
+            <footer className="grid gap-2 border-t border-black/10 bg-white px-4 py-4">
+              <AppLink
+                href="/performance-scanner"
+                onClick={onClose}
+                className="inline-flex items-center justify-center rounded-2xl border border-black/10 px-4 py-3 text-[15px] font-medium text-[#16181d] transition-colors duration-200 hover:bg-[#edf1f7]"
+              >
+                Page Scanner
+              </AppLink>
+              <AppLink
+                href="/contact"
+                onClick={onClose}
+                className="inline-flex items-center justify-center gap-2 rounded-2xl bg-[#1764ff] px-4 py-3 text-[15px] font-medium text-white transition-colors duration-200 hover:bg-[#0f53df]"
+              >
+                Start Your Project
+                <ArrowRight className="h-4 w-4" />
+              </AppLink>
+            </footer>
+          </motion.aside>
+        </>
+      ) : null}
+    </AnimatePresence>
   );
 };
 

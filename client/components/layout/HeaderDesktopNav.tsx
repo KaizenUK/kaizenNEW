@@ -1,47 +1,15 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import {
-  ArrowRight,
-  BookOpen,
-  Briefcase,
-  Gauge,
-  Globe2,
-  LifeBuoy,
-  MapPin,
-  ShoppingBag,
-  Sparkles,
-  TrendingUp,
-  Users,
-} from "lucide-react";
-import { ChevronDownIcon } from "@/components/icons/CriticalIcons";
+import { ArrowRight } from "lucide-react";
 import {
   getMenuData,
   type DesktopMenuKey,
   type ServiceColumn,
-  type ServiceItem,
 } from "./header-menu-data";
 import { requiresDocumentNavigation } from "@/lib/navigation";
 import AppLink from "@/components/routing/AppLink";
 
-const ICON_BY_PATTERN: Array<{
-  match: RegExp;
-  icon: React.ComponentType<{ className?: string }>;
-}> = [
-  { match: /local-seo|liverpool|wirral|chester|warrington|agency/i, icon: MapPin },
-  { match: /wordpress|web-design|ecommerce|shop|asset/i, icon: ShoppingBag },
-  { match: /project-rescue|rescue|failing|fix/i, icon: LifeBuoy },
-  { match: /product-owner|strategy|owner|transformation/i, icon: Briefcase },
-  { match: /agile|coaching|community/i, icon: Users },
-  { match: /blog|insight|article|learn|documentation/i, icon: BookOpen },
-  { match: /case-studies|case-study|results|traffic|conversion/i, icon: TrendingUp },
-];
-
-function resolveItemIcon(item: ServiceItem) {
-  const haystack = `${item.href} ${item.label} ${item.description}`.toLowerCase();
-  const resolved = ICON_BY_PATTERN.find(({ match }) => match.test(haystack));
-  return resolved?.icon ?? Sparkles;
-}
-
+/** Sumsub-style nav: floating container, plain text triggers, mega-menu with promo card */
 export default function HeaderDesktopNav() {
   const [activeMenu, setActiveMenu] = useState<DesktopMenuKey | null>(null);
   const closeTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -61,12 +29,10 @@ export default function HeaderDesktopNav() {
         setActiveMenu(null);
       }
     };
-
     if (activeMenu) {
       document.addEventListener("mousedown", handleClickOutside);
-      return () => {
+      return () =>
         document.removeEventListener("mousedown", handleClickOutside);
-      };
     }
   }, [activeMenu]);
 
@@ -87,184 +53,197 @@ export default function HeaderDesktopNav() {
   const handleMenuLeave = () => {
     closeTimeoutRef.current = setTimeout(() => {
       setActiveMenu(null);
-    }, 180);
+    }, 200);
   };
 
-  const handlePanelEnter = () => {
-    clearCloseTimeout();
-  };
+  const handlePanelEnter = () => clearCloseTimeout();
 
-  const activeColumns: ServiceColumn[] = activeMenu ? getMenuData(activeMenu) : [];
+  const activeColumns: ServiceColumn[] = activeMenu
+    ? getMenuData(activeMenu)
+    : [];
 
-  const menuTriggers: { key: DesktopMenuKey; label: string }[] = [
-    { key: "pages", label: "Pages" },
+  // Sumsub pattern: multiple dropdown menus — plain text, no chevrons
+  const dropdownTriggers: { key: DesktopMenuKey; label: string }[] = [
     { key: "services", label: "Services" },
-    { key: "insights", label: "Insights" },
-    { key: "case-studies", label: "Case Studies" },
-    { key: "about", label: "About" },
+    { key: "insights", label: "Resources" },
+    { key: "about", label: "Company" },
   ];
+
+  // Direct links (no dropdown)
+  const directLinks: { href: string; label: string }[] = [
+    { href: "/case-studies", label: "Case Studies" },
+  ];
+
+  // Promo card config per menu
+  const promoCards: Partial<
+    Record<
+      DesktopMenuKey,
+      { title: string; description: string; href: string; cta: string }
+    >
+  > = {
+    services: {
+      title: "Not sure where to start?",
+      description:
+        "Run our free performance audit and get a clear picture of what needs fixing.",
+      href: "/performance-scanner",
+      cta: "Free Site Audit",
+    },
+    insights: {
+      title: "Latest from the blog",
+      description:
+        "Practical guides on web performance, design, and digital strategy.",
+      href: "/blog",
+      cta: "Read the Blog",
+    },
+    about: {
+      title: "Let's talk",
+      description:
+        "Whether you need a new site or help rescuing an existing one, we're here.",
+      href: "/contact",
+      cta: "Get in Touch",
+    },
+  };
+
+  const promo = activeMenu ? promoCards[activeMenu] : null;
 
   return (
     <nav
       ref={navRef}
-      className="site-header-nav relative hidden flex-1 items-center lg:flex"
+      className="relative hidden items-center lg:flex"
       aria-label="Main navigation"
       onMouseLeave={handleMenuLeave}
       onMouseEnter={clearCloseTimeout}
     >
-      <div className="flex items-center gap-1">
-        {menuTriggers.map(({ key, label }) => (
-          <motion.button
+      {/* Nav triggers — plain text, no chevrons (Sumsub style) */}
+      <div className="flex items-center gap-0.5">
+        {dropdownTriggers.map(({ key, label }) => (
+          <button
             key={key}
             type="button"
             onMouseEnter={() => handleMenuEnter(key)}
             onFocus={() => handleMenuEnter(key)}
             onClick={() => handleMenuClick(key)}
-            whileHover={{ backgroundColor: "rgba(255, 255, 255, 0.1)" }}
-            transition={{ duration: 0.2 }}
-            className={`flex items-center gap-2 rounded-xl px-4 py-2 text-sm font-medium transition-colors duration-150 ${
+            className={`px-3 py-1.5 text-[13px] font-medium transition-colors duration-150 ${
               activeMenu === key
-                ? "bg-white/12 text-white"
-                : "text-slate-200 hover:bg-white/8 hover:text-white"
+                ? "text-white"
+                : "text-slate-400 hover:text-white"
             }`}
             aria-expanded={activeMenu === key}
           >
             {label}
-            <motion.span
-              animate={{ rotate: activeMenu === key ? 180 : 0 }}
-              transition={{ duration: 0.22, ease: [0.4, 0, 0.2, 1] }}
-              className={activeMenu === key ? "text-cyan-300" : "text-slate-500"}
-            >
-              <ChevronDownIcon size={14} />
-            </motion.span>
-          </motion.button>
+          </button>
+        ))}
+
+        {directLinks.map(({ href, label }) => (
+          <AppLink
+            key={href}
+            href={href}
+            className="px-3 py-1.5 text-[13px] font-medium text-slate-400 transition-colors duration-150 hover:text-white"
+          >
+            {label}
+          </AppLink>
         ))}
       </div>
 
+      {/* Mega-menu dropdown — anchored below the floating container */}
       <AnimatePresence>
         {activeMenu && (
           <div
-            className="absolute left-0 top-full z-[80] w-[min(1120px,calc(100vw-3rem))] pt-2"
+            className="fixed left-0 right-0 top-[76px] z-50"
             onMouseEnter={handlePanelEnter}
             onMouseLeave={handleMenuLeave}
           >
+            {/* Backdrop */}
             <motion.div
-              initial={{ opacity: 0, y: -12, scale: 0.985 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: -12, scale: 0.985 }}
-              transition={{ duration: 0.2, ease: [0.4, 0, 0.2, 1] }}
-              className="overflow-hidden rounded-2xl border border-white/10 bg-[#0b1019]/96 shadow-[0_30px_80px_rgba(0,0,0,0.58)] backdrop-blur-xl"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.15 }}
+              className="fixed inset-0 top-[76px] bg-black/30"
+              onClick={() => setActiveMenu(null)}
+            />
+
+            {/* Panel — rounded to match floating container */}
+            <motion.div
+              initial={{ opacity: 0, y: -6 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -6 }}
+              transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
+              className="relative mx-auto max-w-[1440px] px-4 lg:px-6"
             >
-              <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_90%_20%,rgba(34,211,238,0.12),transparent_42%),radial-gradient(circle_at_15%_80%,rgba(59,130,246,0.1),transparent_45%)]" />
-              <div className="relative p-6">
-                <div
-                  className={`grid gap-8 ${
-                    activeColumns.length >= 3
-                      ? "grid-cols-1 lg:grid-cols-3"
-                      : activeColumns.length > 1
-                        ? "grid-cols-2"
-                        : "grid-cols-1"
-                  }`}
-                >
-                  {activeColumns.map((column, columnIndex) => (
-                    <motion.section
-                      key={column.title}
-                      initial={{ opacity: 0, y: 8 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.2, delay: columnIndex * 0.04 }}
+              <div className="overflow-hidden rounded-2xl border border-white/8 bg-[#0a0f1a] shadow-[0_32px_80px_rgba(0,0,0,0.5)]">
+                <div className="flex">
+                  {/* Left — Promo card (Sumsub has a video here, we use a gradient card) */}
+                  {promo && (
+                    <div className="hidden w-72 shrink-0 border-r border-white/6 bg-linear-to-br from-[#0f172a] to-[#0a1628] p-6 lg:flex lg:flex-col lg:justify-between">
+                      <div>
+                        <h3 className="mb-2 text-[15px] font-semibold text-white">
+                          {promo.title}
+                        </h3>
+                        <p className="text-sm leading-relaxed text-slate-400">
+                          {promo.description}
+                        </p>
+                      </div>
+                      <AppLink
+                        href={promo.href}
+                        onClick={() => setActiveMenu(null)}
+                        className="mt-6 inline-flex items-center gap-2 text-[13px] font-semibold text-[#06b6d4] transition hover:text-white"
+                      >
+                        {promo.cta}
+                        <ArrowRight className="h-3.5 w-3.5" />
+                      </AppLink>
+                    </div>
+                  )}
+
+                  {/* Right — Text-only link columns */}
+                  <div className="flex-1 p-6">
+                    <div
+                      className={`grid gap-8 ${
+                        activeColumns.length >= 3
+                          ? "grid-cols-3"
+                          : activeColumns.length === 2
+                            ? "grid-cols-2"
+                            : "grid-cols-1 max-w-sm"
+                      }`}
                     >
-                      <h3 className="mb-4 text-sm font-semibold uppercase tracking-[0.08em] text-slate-400">
-                        {column.title}
-                      </h3>
-                      <ul className="space-y-2">
-                        {column.items.map((item, itemIndex) => {
-                          const ItemIcon = resolveItemIcon(item);
-                          const itemClassName =
-                            "group flex items-start gap-3 rounded-xl border border-transparent px-3 py-3 transition hover:border-white/10 hover:bg-white/[0.05]";
+                      {activeColumns.map((column) => (
+                        <div key={column.title}>
+                          <h3 className="mb-3 text-[11px] font-semibold uppercase tracking-widest text-slate-500">
+                            {column.title}
+                          </h3>
+                          <ul className="space-y-0.5">
+                            {column.items.map((item) => {
+                              const cls =
+                                "block rounded-lg px-2 py-1.5 text-[14px] font-medium text-slate-300 transition-colors duration-150 hover:bg-white/[0.04] hover:text-white";
 
-                          const content = (
-                            <>
-                              <span className="mt-0.5 inline-flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg border border-white/10 bg-white/[0.06] text-slate-200 transition-all duration-300 group-hover:scale-[1.03] group-hover:border-cyan-400/40 group-hover:text-cyan-200">
-                                <ItemIcon className="h-4 w-4" />
-                              </span>
-                              <span className="min-w-0">
-                                <span className="flex items-center gap-2 text-sm font-semibold text-slate-100 group-hover:text-cyan-300">
-                                  {item.label}
-                                  <ArrowRight className="h-3.5 w-3.5 -translate-x-1 opacity-0 transition-all duration-200 group-hover:translate-x-0 group-hover:opacity-100" />
-                                </span>
-                                <span className="mt-0.5 block text-xs text-slate-400 group-hover:text-slate-300">
-                                  {item.description}
-                                </span>
-                              </span>
-                            </>
-                          );
-
-                          return (
-                            <motion.li
-                              key={item.href}
-                              initial={{ opacity: 0, x: -8 }}
-                              animate={{ opacity: 1, x: 0 }}
-                              transition={{
-                                duration: 0.2,
-                                delay: columnIndex * 0.04 + itemIndex * 0.03,
-                              }}
-                            >
-                              {requiresDocumentNavigation(item.href) ? (
-                                <a
-                                  href={item.href}
-                                  className={itemClassName}
-                                  onClick={() => setActiveMenu(null)}
-                                >
-                                  {content}
-                                </a>
-                              ) : (
-                                <AppLink
-                                  href={item.href}
-                                  className={itemClassName}
-                                  onClick={() => setActiveMenu(null)}
-                                >
-                                  {content}
-                                </AppLink>
-                              )}
-                            </motion.li>
-                          );
-                        })}
-                      </ul>
-                    </motion.section>
-                  ))}
+                              return (
+                                <li key={item.href}>
+                                  {requiresDocumentNavigation(item.href) ? (
+                                    <a
+                                      href={item.href}
+                                      className={cls}
+                                      onClick={() => setActiveMenu(null)}
+                                    >
+                                      {item.label}
+                                    </a>
+                                  ) : (
+                                    <AppLink
+                                      href={item.href}
+                                      className={cls}
+                                      onClick={() => setActiveMenu(null)}
+                                    >
+                                      {item.label}
+                                    </AppLink>
+                                  )}
+                                </li>
+                              );
+                            })}
+                          </ul>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
                 </div>
-
-                <motion.div
-                  initial={{ opacity: 0, y: 8 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.2, delay: 0.08 }}
-                  className="mt-6 flex flex-wrap items-center gap-3 border-t border-white/10 pt-4"
-                >
-                  <a
-                    href="/performance-scanner"
-                    className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/[0.04] px-4 py-2 text-sm font-semibold text-slate-100 transition hover:border-cyan-300/55 hover:text-cyan-200"
-                    onClick={() => setActiveMenu(null)}
-                  >
-                    <Gauge className="h-4 w-4" />
-                    Page Scanner
-                  </a>
-                  <AppLink
-                    href="/contact"
-                    className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-cyan-500 to-blue-500 px-4 py-2 text-sm font-semibold text-white shadow-[0_10px_25px_rgba(34,211,238,0.35)] transition hover:scale-[1.02]"
-                    onClick={() => setActiveMenu(null)}
-                  >
-                    Start Your Project
-                    <ArrowRight className="h-4 w-4" />
-                  </AppLink>
-                  <AppLink
-                    href="/about"
-                    className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-transparent px-4 py-2 text-sm font-semibold text-slate-300 transition hover:border-slate-300 hover:text-white"
-                    onClick={() => setActiveMenu(null)}
-                  >
-                    <Globe2 className="h-4 w-4" />
-                    About Kaizen
-                  </AppLink>
-                </motion.div>
               </div>
             </motion.div>
           </div>

@@ -1,32 +1,28 @@
 ---
 import StaticPageLayout from "../layouts/StaticPageLayout.astro";
-import { HeroRemotionSequence } from "../../client/components/homepage/HeroRemotionSequence";
-import {
-  SocialMediaWarning,
-  CredibilitySection,
-} from "../../client/components/homepage/ValueProposition";
-import { PerformanceShowcase } from "../../client/components/homepage/PerformanceShowcase";
-import { ServiceShowcase } from "../../client/components/homepage/ServiceShowcase";
-import {
-  PricingSlider,
-  PricingCTABanner,
-  AIPriceNarrative,
-  SEOFAQSection,
-  LocalMap,
-} from "../../client/components/homepage/BelowFoldSections";
+import Hero from "../components/homepage/Hero.astro";
+import Services from "../components/homepage/Services.astro";
+import Problem from "../components/homepage/Problem.astro";
+import SocialProof from "../components/homepage/SocialProof.astro";
+import Process from "../components/homepage/Process.astro";
+import WhyUs from "../components/homepage/WhyUs.astro";
+import FinalCTA from "../components/homepage/FinalCTA.astro";
+import { HomepageFAQ } from "../../client/components/homepage/HomepageFAQ";
 
 export const prerender = true;
 ---
 
-<StaticPageLayout path="/">
-  <HeroRemotionSequence client:load />
-  <SocialMediaWarning client:visible />
-  <PerformanceShowcase client:visible />
-  <CredibilitySection client:visible />
-  <ServiceShowcase client:visible />
-  <PricingSlider client:visible />
-  <PricingCTABanner client:visible />
-  <AIPriceNarrative client:visible />
-  <LocalMap client:visible />
-  <SEOFAQSection client:visible />
+<StaticPageLayout
+  path="/"
+  title="Web Design & Performance Experts | Kaizen Web"
+  description="We make websites faster, better designed, and easier to find on Google. Web design, performance auditing, and product ownership — no jargon, just results."
+>
+  <Hero />
+  <Services />
+  <Problem />
+  <SocialProof />
+  <Process />
+  <WhyUs />
+  <HomepageFAQ client:visible />
+  <FinalCTA />
 </StaticPageLayout>
