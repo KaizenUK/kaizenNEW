@@ -8,27 +8,27 @@ const items = [
   {
     question: "Do you only build new websites, or can you fix existing ones?",
     answer:
-      "Both. Most of our work involves improving existing sites — making them faster, easier to use, and better at converting visitors. If a rebuild makes more sense, we'll tell you honestly.",
+      "Both. Sometimes a site needs a fresh start, sometimes it just needs the right fixes. We'll look at what you've got and tell you honestly which makes more sense.",
   },
   {
     question: "My site is on WordPress. Can you still help?",
     answer:
-      "Absolutely. WordPress is where we do a lot of our best work. We optimise what you've already got — cleaning up slow plugins, improving page speed, and fixing the issues that hold your Google rankings back.",
+      "Absolutely. We work with WordPress every day — cleaning up slow plugins, improving page speed, and fixing the issues that quietly kill your Google rankings.",
   },
   {
     question: "I'm not technical — will I understand what you're doing?",
     answer:
-      "That's the whole point. We explain everything in plain English. No jargon, no acronyms, no assuming you know what a CDN is. You'll always know what we're doing and why.",
+      "That's the whole point. Everything gets explained in plain English. No jargon, no acronyms, no assuming you know what a CDN is. You'll always know what's happening and why.",
   },
   {
     question: "What does a performance audit actually include?",
     answer:
-      "We check your page load speed, Google's quality scores, mobile usability, accessibility, and security. You get a clear report with a prioritised list of what to fix — and what difference each fix will make.",
+      "Page speed, Google's quality scores, mobile usability, accessibility, and security. You get a clear report with a prioritised list of fixes — and what each one will actually change.",
   },
   {
     question: "How much does it cost?",
     answer:
-      "It depends on what you need. A performance audit starts from a few hundred pounds. Web design projects typically range from £2k to £15k. We'll always give you a clear quote upfront — no surprises.",
+      "It depends on what you need. A performance audit starts from a few hundred pounds. Design projects typically range from £2k to £15k. You'll always get a clear quote upfront — no surprises.",
   },
 ];
 
