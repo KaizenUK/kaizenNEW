@@ -24,6 +24,7 @@ import {
   type MenuLink,
   type MenuSocialLink,
 } from "./header-menu-data";
+import StartProjectButton from "./StartProjectButton";
 
 interface HeaderProps {
   mobileMenuOpen: boolean;
@@ -285,13 +286,7 @@ const Header: React.FC<HeaderProps> = ({
                 Free Audit
               </AppLink>
 
-              <AppLink
-                href="/contact/"
-                className="hidden items-center gap-2 rounded-xl bg-[#1764ff] px-4 py-2 text-[16px] font-medium leading-[1.4] text-white transition-colors duration-200 hover:bg-[#0f53df] sm:inline-flex"
-              >
-                Start Your Project
-                <ArrowRight className="h-4 w-4" />
-              </AppLink>
+              <StartProjectButton className="hidden sm:inline-flex" />
 
               <button
                 type="button"

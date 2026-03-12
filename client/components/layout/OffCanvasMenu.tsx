@@ -19,6 +19,7 @@ import {
   type MenuLink,
   type MenuSocialLink,
 } from "./header-menu-data";
+import StartProjectButton from "./StartProjectButton";
 
 interface OffCanvasMenuProps {
   isOpen: boolean;
@@ -300,14 +301,7 @@ const OffCanvasMenu: React.FC<OffCanvasMenuProps> = ({ isOpen, onClose }) => {
                 <Sparkles className="h-4 w-4" />
                 Free Audit
               </AppLink>
-              <AppLink
-                href="/contact/"
-                onClick={deferClose}
-                className="inline-flex items-center justify-center gap-2 rounded-2xl bg-[#1764ff] px-4 py-3 text-[15px] font-medium text-white transition-colors duration-200 hover:bg-[#0f53df]"
-              >
-                Start Your Project
-                <ArrowRight className="h-4 w-4" />
-              </AppLink>
+              <StartProjectButton onClick={deferClose} compact className="w-full" />
             </footer>
           </motion.aside>
         </>
