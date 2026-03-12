@@ -1,98 +1,85 @@
 ---
 /**
  * The Problem section — why most websites underperform.
- * Replaces the old "social media warning" with something more relevant
- * to the new positioning as a solutions provider.
+ * Bright, spacious layout. Concrete stats anchored to real impact.
  * Static Astro component.
  */
 ---
 
-<section class="py-20 md:py-28 bg-gray-950 text-white relative overflow-hidden">
-  <div
-    class="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_20%_0,rgba(6,182,212,0.12),transparent_50%)]"
-  >
-  </div>
+<section class="py-28 md:py-36 bg-[#f5f5f3]">
+  <div class="mx-auto max-w-[1440px] px-6 lg:px-12">
+    <!-- Header -->
+    <div class="mb-20 md:mb-28 max-w-3xl">
+      <p
+        class="text-xs font-medium tracking-[0.25em] text-gray-400 uppercase mb-5 font-body"
+      >
+        The Problem
+      </p>
+      <h2
+        class="text-4xl md:text-5xl lg:text-6xl font-heading font-bold text-gray-950 leading-tight mb-8"
+      >
+        Right now, your website is turning people away.
+      </h2>
+      <p class="text-lg md:text-xl font-body text-gray-500 leading-relaxed max-w-2xl">
+        Not because of how it looks — because of how it performs.
+        Every extra second of load time is a customer who gave up and went to your competitor instead.
+      </p>
+    </div>
 
-  <div class="mx-auto max-w-[1440px] px-6 lg:px-12 relative z-10">
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
-      <!-- Left: the problem -->
-      <div>
-        <p
-          class="text-sm font-medium tracking-wide text-amber-400 uppercase mb-5"
-        >
-          The Problem
+    <!-- Stats — concrete, anchored to physical equivalents -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-px bg-gray-200 rounded-2xl overflow-hidden mb-16">
+      <div class="bg-white p-10 md:p-14">
+        <p class="text-6xl md:text-7xl font-heading font-bold text-gray-950 mb-4">
+          53%
         </p>
-
-        <h2
-          class="text-3xl md:text-4xl lg:text-5xl font-heading font-bold leading-tight mb-6"
-        >
-          Your website is probably costing you customers right now.
-        </h2>
-
-        <p class="text-lg text-white/75 leading-relaxed mb-8 max-w-xl">
-          Slow pages, poor Google scores, and outdated designs don't just look
-          bad — they actively push people away. Every second of load time costs
-          you visitors, and Google notices too.
+        <p class="text-base font-body text-gray-500 leading-relaxed">
+          of visitors leave if your page takes more than <strong class="text-gray-950">3 seconds</strong> to load. That's half your traffic — gone before they see a word.
         </p>
-
-        <a
-          href="/performance-scanner"
-          class="inline-flex items-center gap-2 px-6 py-3 rounded-lg border border-white/15 bg-white/5 text-white font-heading font-semibold hover:bg-white/10 transition"
-        >
-          Check your site for free
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="18"
-            height="18"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            aria-hidden="true"
-          >
-            <path d="M7 17 17 7"></path>
-            <path d="M7 7h10v10"></path>
-          </svg>
-        </a>
       </div>
 
-      <!-- Right: concrete stats -->
-      <div class="grid grid-cols-2 gap-6">
-        <div
-          class="rounded-2xl bg-white/5 border border-white/10 p-6 md:p-8"
-        >
-          <p class="text-4xl md:text-5xl font-heading font-black text-kaizen-cyan mb-2">
-            53%
-          </p>
-          <p class="text-sm text-white/60 leading-relaxed">
-            of visitors leave if a page takes more than 3 seconds to load
-          </p>
-        </div>
-
-        <div
-          class="rounded-2xl bg-white/5 border border-white/10 p-6 md:p-8"
-        >
-          <p class="text-4xl md:text-5xl font-heading font-black text-kaizen-lime mb-2">
-            70%
-          </p>
-          <p class="text-sm text-white/60 leading-relaxed">
-            of small business websites fail Google's quality checks
-          </p>
-        </div>
-
-        <div
-          class="rounded-2xl bg-white/5 border border-white/10 p-6 md:p-8 col-span-2"
-        >
-          <p class="text-4xl md:text-5xl font-heading font-black text-white mb-2">
-            Page 2
-          </p>
-          <p class="text-sm text-white/60 leading-relaxed">
-            is where slow sites end up on Google — and nobody scrolls that far
-          </p>
-        </div>
+      <div class="bg-white p-10 md:p-14">
+        <p class="text-6xl md:text-7xl font-heading font-bold text-gray-950 mb-4">
+          70%
+        </p>
+        <p class="text-base font-body text-gray-500 leading-relaxed">
+          of small business websites <strong class="text-gray-950">fail Google's Core Web Vitals</strong>. If yours is one of them, you're invisible to searchers.
+        </p>
       </div>
+
+      <div class="bg-white p-10 md:p-14">
+        <p class="text-6xl md:text-7xl font-heading font-bold text-gray-950 mb-4">
+          0.63%
+        </p>
+        <p class="text-base font-body text-gray-500 leading-relaxed">
+          of people click a result on <strong class="text-gray-950">page two of Google</strong>. If your site is slow, that's where it ends up.
+        </p>
+      </div>
+    </div>
+
+    <!-- CTA — testable claim, invites them to verify -->
+    <div class="flex items-center gap-6">
+      <a
+        href="/performance-scanner"
+        class="inline-flex items-center gap-3 px-10 py-5 rounded-lg bg-gray-950 text-white font-heading font-bold text-xl transition-all duration-200 hover:scale-[1.03] hover:bg-gray-800 active:scale-[0.97]"
+      >
+        See how your site scores
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="22"
+          height="22"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+        >
+          <path d="M7 17 17 7"></path>
+          <path d="M7 7h10v10"></path>
+        </svg>
+      </a>
+      <span class="text-sm font-body text-gray-400">Free. Takes 30 seconds.</span>
     </div>
   </div>
 </section>
