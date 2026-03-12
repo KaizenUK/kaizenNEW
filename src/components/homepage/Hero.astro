@@ -1,79 +1,61 @@
 ---
 /**
- * Homepage Hero — full-width, Sumsub-style.
- * Static Astro component (no JS shipped).
+ * Homepage Hero — light bg with subtle isometric 3D tiles.
+ * Inspired by Aramco "Shoot for the Future" aesthetic.
+ * Static Astro component (CSS-only animations, no JS shipped).
  */
 ---
 
-<section class="relative isolate overflow-hidden bg-[#020617] text-white">
-  <!-- Mesh gradient background -->
-  <div class="hero-mesh-bg absolute inset-0 -z-10">
-    <div class="hero-mesh-blob hero-mesh-blob--violet"></div>
-    <div class="hero-mesh-blob hero-mesh-blob--teal"></div>
-    <div class="hero-mesh-blob hero-mesh-blob--gold"></div>
+<section class="hero-section relative bg-[#f5f5f3] text-gray-950">
+  <!-- Scattered individual isometric tiles -->
+  <div class="hero-tile hero-tile--1" aria-hidden="true">
+    <div class="hero-tile__face"></div>
+  </div>
+  <div class="hero-tile hero-tile--2" aria-hidden="true">
+    <div class="hero-tile__face hero-tile__face--accent"></div>
+  </div>
+  <div class="hero-tile hero-tile--3" aria-hidden="true">
+    <div class="hero-tile__face"></div>
+  </div>
+  <div class="hero-tile hero-tile--4" aria-hidden="true">
+    <div class="hero-tile__face hero-tile__face--accent"></div>
+  </div>
+  <div class="hero-tile hero-tile--5" aria-hidden="true">
+    <div class="hero-tile__face"></div>
   </div>
 
-  <svg
-    class="absolute inset-0 w-full h-full pointer-events-none opacity-20 -z-10"
-    preserveAspectRatio="none"
-  >
-    <defs>
-      <pattern
-        id="hero-grid"
-        width="60"
-        height="60"
-        patternUnits="userSpaceOnUse"
-      >
-        <path
-          d="M 60 0 L 0 0 0 60"
-          fill="none"
-          stroke="rgba(6, 182, 212, 0.08)"
-          stroke-width="0.5"
-        />
-      </pattern>
-    </defs>
-    <rect width="100%" height="100%" fill="url(#hero-grid)" />
-  </svg>
-
-  <div class="hero-spotlight absolute -z-10 opacity-60"></div>
-
-  <div
-    class="pointer-events-none absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-[#020617] to-transparent -z-10"
-  >
-  </div>
-
-  <div class="mx-auto max-w-[1440px] px-6 lg:px-12 pt-20 pb-24 md:pt-28 md:pb-32 lg:pt-36 lg:pb-40">
-    <div class="max-w-3xl home-reveal home-reveal-1">
+  <!-- Content -->
+  <div class="hero-content relative mx-auto max-w-[1440px] px-6 lg:px-12 pt-32 pb-32 md:pt-40 md:pb-40 lg:pt-48 lg:pb-48">
+    <div class="max-w-5xl mx-auto text-center home-reveal home-reveal-1">
       <p
-        class="text-sm font-medium tracking-wide text-kaizen-cyan mb-5 uppercase"
+        class="text-xs sm:text-sm font-medium tracking-[0.25em] text-gray-500 mb-6 uppercase font-body"
       >
-        Web Performance &amp; Design
+        Web Performance & Web Design
       </p>
 
       <h1
-        class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-heading font-black leading-[1.08] mb-6"
+        class="hero-heading font-heading font-bold leading-none mb-8 tracking-tight uppercase text-gray-950"
       >
-        Your website should be<br class="hidden sm:block" /> your hardest-working employee.
+        Always Be<br />Better.
       </h1>
 
       <p
-        class="text-lg md:text-xl text-white/80 leading-relaxed mb-10 max-w-2xl"
+        class="text-base md:text-lg text-gray-500 leading-relaxed mb-12 max-w-xl mx-auto font-body"
       >
-        Most sites are too slow, too cluttered, and invisible to Google.
-        We fix that. Faster pages, better rankings, more enquiries —
-        without starting from scratch.
+        We design, build and continuously refine websites that don't just look
+        stunning — they rank higher, load faster and outperform your competitors.
       </p>
 
-      <div class="flex flex-col sm:flex-row items-start gap-4 mb-10">
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
         <a
           href="/contact"
-          class="px-8 py-4 rounded-lg bg-white text-gray-950 font-heading font-bold text-lg inline-flex items-center justify-center gap-2 transition-all duration-200 hover:scale-[1.03] hover:shadow-[0_0_24px_rgba(255,255,255,0.4)] active:scale-[0.97]"
+          class="px-10 py-5 rounded-lg bg-gray-950 text-white font-heading font-bold text-xl inline-flex items-center justify-center gap-3 transition-all duration-200 hover:scale-[1.03] hover:bg-gray-800 active:scale-[0.97]"
         >
           Talk to Us
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            width="20"
-            height="20"
+            width="22"
+            height="22"
             viewBox="0 0 24 24"
             fill="none"
             stroke="currentColor"
@@ -89,13 +71,13 @@
 
         <a
           href="/performance-scanner"
-          class="px-8 py-4 rounded-lg border-2 border-white/25 text-white font-heading font-bold text-lg inline-flex items-center justify-center gap-2 transition-all duration-200 hover:scale-[1.03] hover:border-kaizen-cyan hover:text-kaizen-cyan active:scale-[0.97]"
+          class="px-10 py-5 rounded-lg border-2 border-gray-950/20 text-gray-950 font-heading font-bold text-xl inline-flex items-center justify-center gap-3 transition-all duration-200 hover:scale-[1.03] hover:border-gray-950 active:scale-[0.97]"
         >
           Free Site Audit
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            width="20"
-            height="20"
+            width="22"
+            height="22"
             viewBox="0 0 24 24"
             fill="none"
             stroke="currentColor"
@@ -109,10 +91,156 @@
           </svg>
         </a>
       </div>
-
-      <p class="text-sm text-white/45">
-        Trusted by e-commerce brands, SaaS teams, and growing businesses across the UK.
-      </p>
     </div>
   </div>
 </section>
+
+<style>
+  .hero-section {
+    min-height: 100vh;
+    min-height: 100dvh;
+  }
+
+  /* ── Heading — massive ──────────────────────────────────── */
+  .hero-heading {
+    font-size: clamp(5rem, 15vw, 13rem);
+  }
+
+  /* ── Individual scattered tiles ─────────────────────────── */
+  .hero-tile {
+    position: absolute;
+    z-index: 1;
+    pointer-events: none;
+    transform: rotateX(60deg) rotateZ(-45deg);
+    transform-style: preserve-3d;
+  }
+
+  .hero-tile__face {
+    border-radius: 10px;
+    background: #eaeae8;
+    position: relative;
+    transform-style: preserve-3d;
+    box-shadow: 0 8px 24px -8px rgba(0, 0, 0, 0.08);
+    animation: tile-float 8s ease-in-out infinite both;
+  }
+
+  .hero-tile__face::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 10px;
+    background: linear-gradient(135deg, rgba(255,255,255,0.4) 0%, transparent 50%);
+  }
+
+  .hero-tile__face--accent {
+    background: rgba(6, 182, 212, 0.45);
+    animation-name: tile-float-accent;
+  }
+
+  /* ── Tile 1 — top-right, large ─────────────────────────── */
+  .hero-tile--1 {
+    top: 8%;
+    right: 6%;
+  }
+  .hero-tile--1 .hero-tile__face {
+    width: 200px;
+    height: 200px;
+    animation-delay: 0s;
+  }
+
+  /* ── Tile 2 — bottom-left, medium, accent ──────────────── */
+  .hero-tile--2 {
+    bottom: 12%;
+    left: 4%;
+  }
+  .hero-tile--2 .hero-tile__face {
+    width: 180px;
+    height: 180px;
+    animation-delay: -2s;
+  }
+
+  /* ── Tile 3 — top-left, small ──────────────────────────── */
+  .hero-tile--3 {
+    top: 18%;
+    left: 10%;
+  }
+  .hero-tile--3 .hero-tile__face {
+    width: 120px;
+    height: 120px;
+    animation-delay: -4s;
+  }
+
+  /* ── Tile 4 — bottom-right, small, accent ──────────────── */
+  .hero-tile--4 {
+    bottom: 18%;
+    right: 12%;
+  }
+  .hero-tile--4 .hero-tile__face {
+    width: 140px;
+    height: 140px;
+    animation-delay: -3s;
+  }
+
+  /* ── Tile 5 — center-left, medium ──────────────────────── */
+  .hero-tile--5 {
+    top: 55%;
+    left: 2%;
+  }
+  .hero-tile--5 .hero-tile__face {
+    width: 160px;
+    height: 160px;
+    animation-delay: -5s;
+  }
+
+  /* ── Float animations ──────────────────────────────────── */
+  @keyframes tile-float {
+    0%, 100% {
+      transform: translateZ(0);
+    }
+    50% {
+      transform: translateZ(16px);
+    }
+  }
+
+  @keyframes tile-float-accent {
+    0%, 100% {
+      transform: translateZ(6px);
+    }
+    50% {
+      transform: translateZ(28px);
+    }
+  }
+
+  /* ── Content z-index ────────────────────────────────────── */
+  .hero-content {
+    position: relative;
+    z-index: 2;
+  }
+
+  /* ── Reduced motion ─────────────────────────────────────── */
+  @media (prefers-reduced-motion: reduce) {
+    .hero-tile__face {
+      animation: none;
+    }
+  }
+
+  /* ── Responsive ─────────────────────────────────────────── */
+  @media (max-width: 1024px) {
+    .hero-tile--1 .hero-tile__face { width: 150px; height: 150px; }
+    .hero-tile--2 .hero-tile__face { width: 130px; height: 130px; }
+    .hero-tile--3 .hero-tile__face { width: 90px; height: 90px; }
+    .hero-tile--4 .hero-tile__face { width: 100px; height: 100px; }
+    .hero-tile--5 .hero-tile__face { width: 120px; height: 120px; }
+  }
+
+  @media (max-width: 640px) {
+    .hero-tile--3,
+    .hero-tile--5 {
+      display: none;
+    }
+
+    .hero-tile--1 .hero-tile__face { width: 110px; height: 110px; }
+    .hero-tile--2 .hero-tile__face { width: 100px; height: 100px; }
+    .hero-tile--4 .hero-tile__face { width: 80px; height: 80px; }
+  }
+</style>
