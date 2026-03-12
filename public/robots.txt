@@ -1,18 +1,12 @@
-User-agent: Googlebot
-Allow: /
-
-User-agent: Bingbot
-Allow: /
-
-User-agent: Twitterbot
-Allow: /
-
-User-agent: facebookexternalhit
-Allow: /
-
 User-agent: *
 Disallow: /cms
 Disallow: /cms/
+Disallow: /studio
+Disallow: /studio/
+Disallow: /editor-api
+Disallow: /editor-api/
+Disallow: /preview-blog
+Disallow: /preview-blog/
 Allow: /
 
-Sitemap: https://kaizenweb.co.uk/sitemap.php
+Sitemap: https://kaizenweb.co.uk/sitemap.xml

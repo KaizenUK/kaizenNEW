@@ -52,6 +52,7 @@ try {
   ogDescription={layoutDescription}
   image={ogImage}
   canonical={post.seo?.canonicalUrl}
+  robots={post.seo?.noIndex ? "noindex, nofollow" : undefined}
   ogType="article"
 >
   <BlogPost post={post} />

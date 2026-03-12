@@ -1,6 +1,7 @@
 ---
 import "../styles/linear.css";
 import BlogNav from "../components/blog/BlogNav.astro";
+import { resolveCanonicalUrl } from "../lib/site";
 
 interface Props {
   title: string;
@@ -28,11 +29,7 @@ const {
   isPreview = false,
 } = Astro.props;
 
-const siteUrl = (import.meta.env.PUBLIC_SITE_URL || "https://kaizenweb.co.uk").replace(
-  /\/$/,
-  "",
-);
-const canonical = canonicalProp || `${siteUrl}${Astro.url.pathname}`;
+const canonical = resolveCanonicalUrl(canonicalProp, Astro.url.pathname);
 const socialTitle = ogTitle || title;
 const socialDescription = ogDescription || description;
 const socialImage = ogImage || image;

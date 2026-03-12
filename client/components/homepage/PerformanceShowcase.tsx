@@ -176,9 +176,7 @@ export const PerformanceShowcase: React.FC = () => {
                 own site. We build yours to the same standard.
               </p>
               <motion.a
-                href="https://gtmetrix.com/reports/kaizenweb.co.uk/e2VJJsxv/"
-                target="_blank"
-                rel="noopener noreferrer"
+                href="/performance-scanner"
                 className="inline-flex items-center gap-2 px-6 py-3 rounded-lg border-2 border-kaizen-cyan/50 text-kaizen-cyan font-heading font-bold transition-all duration-300"
                 whileHover={{
                   scale: 1.05,
@@ -187,7 +185,7 @@ export const PerformanceShowcase: React.FC = () => {
                 }}
                 whileTap={{ scale: 0.95 }}
               >
-                View Full Report
+                Run the Free Scanner
                 <ArrowUpRight size={18} />
               </motion.a>
             </motion.div>

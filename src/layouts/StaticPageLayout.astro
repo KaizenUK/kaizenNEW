@@ -6,6 +6,7 @@ import {
   SITE_NAME,
   getPageMeta,
 } from "../../client/lib/seo";
+import { resolveCanonicalUrl } from "../lib/site";
 
 interface Props {
   path: string;
@@ -26,11 +27,7 @@ const {
 const meta = getPageMeta(path);
 const title = titleOverride || meta.title;
 const description = descriptionOverride || meta.description;
-const siteUrl = (import.meta.env.PUBLIC_SITE_URL || "https://kaizenweb.co.uk").replace(
-  /\/$/,
-  "",
-);
-const canonicalUrl = canonicalOverride || `${siteUrl}${path === "/" ? "/" : path}`;
+const canonicalUrl = resolveCanonicalUrl(canonicalOverride, path);
 const robots =
   robotsOverride ||
   (meta.noIndex

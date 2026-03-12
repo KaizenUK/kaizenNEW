@@ -1,6 +1,7 @@
 import { createClient } from "@sanity/client";
 import { createImageUrlBuilder } from "@sanity/image-url";
 import type { SanityImageSource } from "@sanity/image-url";
+import { getStudioUrl } from "../site";
 import type {
   ManagedCallToAction,
   ManagedCtaSection,
@@ -49,6 +50,7 @@ function getEnv(key: string): string | undefined {
 const projectId = getEnv("PUBLIC_SANITY_PROJECT_ID") ?? getEnv("SANITY_PROJECT_ID") ?? "";
 const dataset = getEnv("PUBLIC_SANITY_DATASET") ?? getEnv("SANITY_DATASET") ?? "production";
 const token = getEnv("SANITY_API_TOKEN");
+const studioUrl = getStudioUrl();
 
 const hasSanityConfig = Boolean(projectId && dataset);
 
@@ -172,7 +174,7 @@ export const previewClient = hasSanityConfig
       perspective: "previewDrafts",
       stega: {
         enabled: true,
-        studioUrl: "/studio",
+        studioUrl,
       },
     })
   : null;
@@ -258,6 +260,7 @@ const POST_PROJECTION = `
     metaTitle,
     metaDescription,
     canonicalUrl,
+    noIndex,
     shareImage {
       ...,
       asset->${IMAGE_ASSET_PROJECTION}

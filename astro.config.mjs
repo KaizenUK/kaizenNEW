@@ -3,7 +3,9 @@ import react from "@astrojs/react";
 import path from "node:path";
 
 export default defineConfig({
+  site: "https://kaizenweb.co.uk",
   output: "static",
+  trailingSlash: "always",
 
   // Memory Management: Essential for small VPS stability
   build: {
