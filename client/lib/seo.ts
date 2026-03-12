@@ -36,20 +36,22 @@ const defaultMeta: PageMeta = {
 
 const pageMeta: Record<string, Partial<PageMeta>> = {
   "/": {
-    title: "Web Design & Performance Experts | Kaizen Web",
+    title: "Web Design & Website Performance Optimisation | Kaizen Web",
     description:
-      "We make websites faster, better designed, and easier to find on Google. Web design, performance auditing, and product ownership — no jargon, just results.",
+      "Websites that rank higher, load faster and convert visitors into customers. Web design, WordPress speed optimisation, and performance audits — built for results.",
     keywords: [
-      "web design agency",
-      "website performance",
-      "core web vitals",
-      "website speed optimisation",
-      "product owner for hire",
-      "performance audit",
-      "kaizen web",
-      "web design uk",
-      "fast websites",
-      "wordpress optimisation",
+      "website not converting visitors",
+      "wordpress site running slow",
+      "website performance audit",
+      "small business web design uk",
+      "improve google page speed score",
+      "wordpress speed optimisation",
+      "website losing customers",
+      "core web vitals failing",
+      "hire a product owner",
+      "web design for small business",
+      "fix slow wordpress site",
+      "website redesign agency",
     ],
   },
   "/services": {

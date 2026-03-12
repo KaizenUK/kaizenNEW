@@ -18,6 +18,7 @@ interface FaqSectionProps {
   heading: string;
   eyebrow?: string;
   items: FaqItem[];
+  secondColumn?: FaqItem[];
   id?: string;
   className?: string;
 }
@@ -26,18 +27,21 @@ export function FaqSection({
   heading,
   eyebrow = "FAQ",
   items,
+  secondColumn,
   id,
   className = "bg-white",
 }: FaqSectionProps) {
   const schemaInstanceId = useId().replace(/:/g, "");
   const schemaScriptId = `faq-schema-${schemaInstanceId}`;
 
+  const allItems = secondColumn ? [...items, ...secondColumn] : items;
+
   const faqSchemaJson = useMemo(
     () =>
       JSON.stringify({
         "@context": "https://schema.org",
         "@type": "FAQPage",
-        mainEntity: items.map((item) => ({
+        mainEntity: allItems.map((item) => ({
           "@type": "Question",
           name: item.question,
           acceptedAnswer: {
@@ -46,7 +50,7 @@ export function FaqSection({
           },
         })),
       }),
-    [items],
+    [allItems],
   );
 
   useEffect(() => {
@@ -92,24 +96,47 @@ export function FaqSection({
           </h2>
         </motion.div>
 
-        {/* Accordion — full width, clean dividers */}
-        <div className="max-w-3xl">
-          <Accordion type="single" collapsible className="w-full">
-            {items.map((item, index) => (
-              <AccordionItem
-                key={index}
-                value={`item-${index}`}
-                className="border-b border-gray-200 py-2"
-              >
-                <AccordionTrigger className="text-left text-xl md:text-2xl lg:text-3xl font-heading font-bold text-gray-950 hover:text-gray-600 transition-colors">
-                  {item.question}
-                </AccordionTrigger>
-                <AccordionContent className="text-base md:text-lg font-body text-gray-500 leading-relaxed">
-                  {item.answer}
-                </AccordionContent>
-              </AccordionItem>
-            ))}
-          </Accordion>
+        {/* Accordion columns */}
+        <div className={secondColumn ? "grid grid-cols-1 lg:grid-cols-2 gap-x-16 gap-y-0" : ""}>
+          <div className={secondColumn ? "" : "max-w-3xl"}>
+            <Accordion type="single" collapsible className="w-full">
+              {items.map((item, index) => (
+                <AccordionItem
+                  key={index}
+                  value={`item-${index}`}
+                  className="border-b border-gray-200 py-2"
+                >
+                  <AccordionTrigger className="text-left text-xl md:text-2xl font-heading font-bold text-gray-950 hover:text-gray-600 transition-colors">
+                    {item.question}
+                  </AccordionTrigger>
+                  <AccordionContent className="text-base md:text-lg font-body text-gray-500 leading-relaxed">
+                    {item.answer}
+                  </AccordionContent>
+                </AccordionItem>
+              ))}
+            </Accordion>
+          </div>
+
+          {secondColumn && (
+            <div>
+              <Accordion type="single" collapsible className="w-full">
+                {secondColumn.map((item, index) => (
+                  <AccordionItem
+                    key={index}
+                    value={`item-b-${index}`}
+                    className="border-b border-gray-200 py-2"
+                  >
+                    <AccordionTrigger className="text-left text-xl md:text-2xl font-heading font-bold text-gray-950 hover:text-gray-600 transition-colors">
+                      {item.question}
+                    </AccordionTrigger>
+                    <AccordionContent className="text-base md:text-lg font-body text-gray-500 leading-relaxed">
+                      {item.answer}
+                    </AccordionContent>
+                  </AccordionItem>
+                ))}
+              </Accordion>
+            </div>
+          )}
         </div>
 
         {/* CTA — minimal */}
