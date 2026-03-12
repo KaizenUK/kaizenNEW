@@ -16,11 +16,6 @@ const items = [
       "Absolutely. WordPress is where we do a lot of our best work. We optimise what you've already got — cleaning up slow plugins, improving page speed, and fixing the issues that hold your Google rankings back.",
   },
   {
-    question: "How long does a typical project take?",
-    answer:
-      "Most projects are delivered within 2 to 4 weeks, depending on scope. Performance audits are usually turned around in a few days. We'll give you a clear timeline before we start.",
-  },
-  {
     question: "I'm not technical — will I understand what you're doing?",
     answer:
       "That's the whole point. We explain everything in plain English. No jargon, no acronyms, no assuming you know what a CDN is. You'll always know what we're doing and why.",
@@ -31,16 +26,6 @@ const items = [
       "We check your page load speed, Google's quality scores, mobile usability, accessibility, and security. You get a clear report with a prioritised list of what to fix — and what difference each fix will make.",
   },
   {
-    question: "Do I need to sign a long-term contract?",
-    answer:
-      "No. All our support and maintenance plans are month-to-month. You stay because it's working, not because you're locked in.",
-  },
-  {
-    question: "What does a Product Owner for Hire actually do?",
-    answer:
-      "They manage your web project day-to-day — setting priorities, coordinating with developers, reviewing work, and making sure what gets built is what your business actually needs. Think of it as expert project leadership without the full-time salary.",
-  },
-  {
     question: "How much does it cost?",
     answer:
       "It depends on what you need. A performance audit starts from a few hundred pounds. Web design projects typically range from £2k to £15k. We'll always give you a clear quote upfront — no surprises.",
@@ -49,12 +34,12 @@ const items = [
 
 export function HomepageFAQ() {
   return (
-    <Suspense fallback={<div className="py-16 bg-gray-50" />}>
+    <Suspense fallback={<div className="py-16 bg-white" />}>
       <FaqSection
-        heading="Questions we get asked a lot"
-        eyebrow="Common Questions"
+        heading="Got questions? Good."
+        eyebrow="Before you ask"
         items={items}
-        className="bg-gray-50"
+        className="bg-white"
       />
     </Suspense>
   );

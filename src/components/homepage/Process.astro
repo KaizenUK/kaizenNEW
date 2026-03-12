@@ -1,57 +1,80 @@
 ---
 /**
- * How It Works — simple 3-step process.
- * Keeps things concrete and reduces anxiety for non-technical buyers.
- * Static Astro component.
+ * How We Work — dark section with a touch of colour.
+ * Framed as "we" not "it". Confident, concrete, no fluff.
+ * SUCCESS: Simple (3 beats), Concrete (show don't tell),
+ * Emotional (removes anxiety), Credible (testable claim at end).
  */
 const steps = [
   {
-    number: "01",
-    title: "We audit your site",
-    description:
-      "We run a full health check — speed, Google scores, design, and usability. You get a clear report in plain English, not a wall of jargon.",
+    label: "Listen",
+    heading: "We start by shutting up and listening.",
+    body: "No pitch deck. No assumptions. We dig into your business, your customers, and what's actually going wrong. You talk, we take notes.",
   },
   {
-    number: "02",
-    title: "We build a plan",
-    description:
-      "Based on what we find, we put together a prioritised roadmap. You'll know exactly what needs doing, what it costs, and what difference it makes.",
+    label: "Build",
+    heading: "We fix what matters first.",
+    body: "No six-month roadmaps. We find the things costing you the most customers and fix those first — so you see results while we're still working.",
   },
   {
-    number: "03",
-    title: "We make it happen",
-    description:
-      "We get to work — fixing, redesigning, or rebuilding. You see progress every week with a dedicated point of contact throughout.",
+    label: "Improve",
+    heading: "We never call it finished.",
+    body: "Kaizen means continuous improvement. We measure, learn, and iterate. Your site gets better every month — not just on launch day.",
   },
 ];
 ---
 
-<section class="py-20 md:py-28 bg-gray-50 relative">
-  <div class="mx-auto max-w-[1440px] px-6 lg:px-12">
-    <div class="text-center mb-16">
+<section class="py-28 md:py-36 bg-gray-950 text-white relative overflow-hidden">
+  <!-- Subtle accent glow -->
+  <div
+    class="pointer-events-none absolute -top-1/2 -right-1/4 w-[800px] h-[800px] rounded-full bg-kaizen-cyan/[0.04] blur-3xl"
+    aria-hidden="true"
+  ></div>
+
+  <div class="mx-auto max-w-[1440px] px-6 lg:px-12 relative z-10">
+    <!-- Header -->
+    <div class="mb-20 md:mb-28 max-w-2xl">
       <p
-        class="text-sm font-medium tracking-wide text-kaizen-cyan uppercase mb-4"
+        class="text-xs font-medium tracking-[0.25em] text-kaizen-cyan uppercase mb-5 font-body"
       >
-        How It Works
+        How We Work
       </p>
       <h2
-        class="text-3xl md:text-4xl lg:text-5xl font-heading font-bold text-gray-950"
+        class="text-4xl md:text-5xl lg:text-6xl font-heading font-bold text-white leading-tight"
       >
-        Simple, transparent, no surprises
+        No jargon.<br />No surprises.
       </h2>
     </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-12">
+    <!-- Steps -->
+    <div class="space-y-0">
       {
-        steps.map((step) => (
-          <div class="relative">
-            <p class="text-6xl md:text-7xl font-heading font-black text-gray-200 mb-4 select-none">
-              {step.number}
-            </p>
-            <h3 class="text-xl md:text-2xl font-heading font-bold text-gray-950 mb-3">
-              {step.title}
-            </h3>
-            <p class="text-gray-600 leading-relaxed">{step.description}</p>
+        steps.map((step, i) => (
+          <div
+            class:list={[
+              "grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-12 py-16 md:py-20",
+              i < steps.length - 1 && "border-b border-white/10",
+            ]}
+          >
+            {/* Label */}
+            <div class="md:col-span-3 flex items-baseline gap-4">
+              <span class="text-sm font-body text-kaizen-cyan tracking-wide">
+                0{i + 1}
+              </span>
+              <h3 class="text-2xl md:text-3xl font-heading font-bold text-white">
+                {step.label}
+              </h3>
+            </div>
+
+            {/* Content */}
+            <div class="md:col-span-9">
+              <p class="text-xl md:text-2xl font-body font-medium text-white leading-snug mb-4">
+                {step.heading}
+              </p>
+              <p class="text-base md:text-lg font-body text-white/50 leading-relaxed max-w-2xl">
+                {step.body}
+              </p>
+            </div>
           </div>
         ))
       }

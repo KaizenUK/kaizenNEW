@@ -1,85 +1,154 @@
 ---
 /**
- * The Problem section — why most websites underperform.
- * Bright, spacious layout. Concrete stats anchored to real impact.
- * Static Astro component.
+ * The Problem section — story-driven with scroll spotlight.
+ * Uses scroll position to highlight the line closest to a
+ * trigger point (40% from top of viewport).
  */
 ---
 
-<section class="py-28 md:py-36 bg-[#f5f5f3]">
+<section class="py-28 md:py-36 bg-white" id="problem-section">
   <div class="mx-auto max-w-[1440px] px-6 lg:px-12">
-    <!-- Header -->
-    <div class="mb-20 md:mb-28 max-w-3xl">
+    <div class="max-w-3xl mx-auto">
       <p
-        class="text-xs font-medium tracking-[0.25em] text-gray-400 uppercase mb-5 font-body"
+        class="text-xs font-medium tracking-[0.25em] text-gray-400 uppercase mb-16 font-body"
       >
-        The Problem
+        Sound familiar?
       </p>
-      <h2
-        class="text-4xl md:text-5xl lg:text-6xl font-heading font-bold text-gray-950 leading-tight mb-8"
-      >
-        Right now, your website is turning people away.
-      </h2>
-      <p class="text-lg md:text-xl font-body text-gray-500 leading-relaxed max-w-2xl">
-        Not because of how it looks — because of how it performs.
-        Every extra second of load time is a customer who gave up and went to your competitor instead.
-      </p>
-    </div>
 
-    <!-- Stats — concrete, anchored to physical equivalents -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-px bg-gray-200 rounded-2xl overflow-hidden mb-16">
-      <div class="bg-white p-10 md:p-14">
-        <p class="text-6xl md:text-7xl font-heading font-bold text-gray-950 mb-4">
-          53%
+      <div class="story-stack">
+        <p class="story-line story-line--active" data-story="0">
+          Someone searches for exactly what you sell.
         </p>
-        <p class="text-base font-body text-gray-500 leading-relaxed">
-          of visitors leave if your page takes more than <strong class="text-gray-950">3 seconds</strong> to load. That's half your traffic — gone before they see a word.
+
+        <p class="story-line" data-story="1">
+          Your site appears. They click.
+        </p>
+
+        <p class="story-line" data-story="2">
+          They wait. The page loads slowly. Something looks off on their phone. The text is hard to read.
+        </p>
+
+        <p class="story-line" data-story="3">
+          They hit back — and click your competitor instead.
+        </p>
+
+        <p class="story-line story-line--closing" data-story="4">
+          This happens hundreds of times a month on most small business websites. Not because the business isn't good — because the site doesn't do its job.
         </p>
       </div>
 
-      <div class="bg-white p-10 md:p-14">
-        <p class="text-6xl md:text-7xl font-heading font-bold text-gray-950 mb-4">
-          70%
-        </p>
-        <p class="text-base font-body text-gray-500 leading-relaxed">
-          of small business websites <strong class="text-gray-950">fail Google's Core Web Vitals</strong>. If yours is one of them, you're invisible to searchers.
-        </p>
-      </div>
-
-      <div class="bg-white p-10 md:p-14">
-        <p class="text-6xl md:text-7xl font-heading font-bold text-gray-950 mb-4">
-          0.63%
-        </p>
-        <p class="text-base font-body text-gray-500 leading-relaxed">
-          of people click a result on <strong class="text-gray-950">page two of Google</strong>. If your site is slow, that's where it ends up.
-        </p>
-      </div>
-    </div>
-
-    <!-- CTA — testable claim, invites them to verify -->
-    <div class="flex items-center gap-6">
-      <a
-        href="/performance-scanner"
-        class="inline-flex items-center gap-3 px-10 py-5 rounded-lg bg-gray-950 text-white font-heading font-bold text-xl transition-all duration-200 hover:scale-[1.03] hover:bg-gray-800 active:scale-[0.97]"
-      >
-        See how your site scores
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="22"
-          height="22"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          aria-hidden="true"
+      <div class="flex flex-col sm:flex-row items-start sm:items-center gap-6 pt-16">
+        <a
+          href="/performance-scanner"
+          class="inline-flex items-center gap-3 px-10 py-5 rounded-lg bg-gray-950 text-white font-heading font-bold text-xl transition-all duration-200 hover:scale-[1.03] hover:bg-gray-800 active:scale-[0.97]"
         >
-          <path d="M7 17 17 7"></path>
-          <path d="M7 7h10v10"></path>
-        </svg>
-      </a>
-      <span class="text-sm font-body text-gray-400">Free. Takes 30 seconds.</span>
+          Is this happening to you?
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="22"
+            height="22"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+          >
+            <path d="M7 17 17 7"></path>
+            <path d="M7 7h10v10"></path>
+          </svg>
+        </a>
+        <span class="text-sm font-body text-gray-400">Free audit. 30 seconds.</span>
+      </div>
     </div>
   </div>
 </section>
+
+<style>
+  .story-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 3.5rem;
+  }
+
+  @media (min-width: 768px) {
+    .story-stack {
+      gap: 5rem;
+    }
+  }
+
+  .story-line {
+    font-family: 'DM Sans', system-ui, sans-serif;
+    font-weight: 500;
+    font-size: clamp(1.5rem, 3.5vw, 2.5rem);
+    line-height: 1.3;
+    color: rgb(220 220 220);
+    transition: color 0.4s ease;
+  }
+
+  .story-line--active {
+    color: rgb(3 7 18);
+  }
+
+  /* Closing line has a softer peak */
+  .story-line--closing {
+    font-size: clamp(1.1rem, 2vw, 1.25rem);
+    line-height: 1.6;
+    max-width: 40rem;
+  }
+
+  .story-line--closing.story-line--active {
+    color: rgb(120 120 120);
+  }
+</style>
+
+<script>
+  const section = document.getElementById('problem-section');
+  const lines = document.querySelectorAll<HTMLElement>('.story-line');
+
+  if (!section || !lines.length) throw new Error('Problem section not found');
+
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  if (reducedMotion) {
+    lines.forEach((l) => l.classList.add('story-line--active'));
+  } else {
+    let ticking = false;
+
+    function updateSpotlight() {
+      // Trigger point: 40% down from the top of the viewport
+      const trigger = window.innerHeight * 0.4;
+      let bestIdx = 0;
+      let bestDist = Infinity;
+
+      lines.forEach((line, i) => {
+        const rect = line.getBoundingClientRect();
+        const lineCenter = rect.top + rect.height / 2;
+        const dist = Math.abs(lineCenter - trigger);
+
+        if (dist < bestDist) {
+          bestDist = dist;
+          bestIdx = i;
+        }
+      });
+
+      lines.forEach((l, i) => {
+        l.classList.toggle('story-line--active', i === bestIdx);
+      });
+
+      ticking = false;
+    }
+
+    function onScroll() {
+      if (!ticking) {
+        requestAnimationFrame(updateSpotlight);
+        ticking = true;
+      }
+    }
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+    // Run once on load
+    updateSpotlight();
+  }
+</script>
