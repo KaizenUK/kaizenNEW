@@ -1,0 +1,597 @@
+---
+/**
+ * "30 Seconds" — show, don't tell.
+ * A visual timer that makes slow loading times visceral.
+ * Two side-by-side browser mockups: one crawls, one snaps to life.
+ * The visitor watches the slow side tick up and FEELS the pain.
+ * SUCCESS: Unexpected (timer is uncomfortable), Concrete (real seconds), Emotional (anxiety).
+ */
+---
+
+<section class="py-28 md:py-36 bg-gray-950 overflow-hidden" id="thirty-seconds">
+  <div class="mx-auto max-w-[1440px] px-6 lg:px-12">
+    <!-- Header -->
+    <div class="mb-16 md:mb-24 max-w-3xl">
+      <p
+        class="text-xs font-medium tracking-[0.25em] text-gray-500 uppercase mb-5 font-body"
+      >
+        The real cost of slow
+      </p>
+      <h2
+        class="text-4xl md:text-5xl lg:text-6xl font-heading font-bold text-white leading-tight mb-6"
+      >
+        8 seconds. That's all you get.
+      </h2>
+      <p class="text-lg md:text-xl text-gray-400 font-body leading-relaxed">
+        That's how long a visitor waits before they give up and leave. Watch what happens when your site loads like it's 2005 — and what happens when it doesn't.
+      </p>
+    </div>
+
+    <!-- Two browser mockups side by side -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-10">
+      <!-- SLOW SITE -->
+      <div class="thirty-browser" data-speed="slow">
+        <div class="thirty-browser-bar">
+          <div class="thirty-dots">
+            <span class="thirty-dot thirty-dot--red"></span>
+            <span class="thirty-dot thirty-dot--yellow"></span>
+            <span class="thirty-dot thirty-dot--green"></span>
+          </div>
+          <div class="thirty-url">
+            <span class="thirty-url-text">your-current-site.co.uk</span>
+          </div>
+          <div class="thirty-timer thirty-timer--slow" data-timer="slow">
+            <span class="thirty-timer-value">0.0</span><span class="thirty-timer-unit">s</span>
+          </div>
+        </div>
+        <div class="thirty-viewport thirty-viewport--slow">
+          <!-- Loading state -->
+          <div class="thirty-loading" data-loading="slow">
+            <div class="thirty-spinner"></div>
+            <p class="thirty-loading-text">Loading…</p>
+          </div>
+          <!-- Skeleton that slowly fills in -->
+          <div class="thirty-skeleton" data-skeleton="slow">
+            <div class="thirty-skel-hero"></div>
+            <div class="thirty-skel-nav">
+              <div class="thirty-skel-bar" style="width:30%"></div>
+              <div class="thirty-skel-bar" style="width:20%"></div>
+              <div class="thirty-skel-bar" style="width:25%"></div>
+            </div>
+            <div class="thirty-skel-content">
+              <div class="thirty-skel-line" style="width:90%"></div>
+              <div class="thirty-skel-line" style="width:75%"></div>
+              <div class="thirty-skel-line" style="width:82%"></div>
+              <div class="thirty-skel-line" style="width:60%"></div>
+            </div>
+            <div class="thirty-skel-img"></div>
+          </div>
+          <!-- Visitor left message -->
+          <div class="thirty-abandoned" data-abandoned="slow">
+            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="text-red-400 mb-3">
+              <circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/>
+            </svg>
+            <p class="text-red-400 font-heading font-bold text-lg">Visitor left.</p>
+            <p class="text-gray-500 font-body text-sm mt-1">Page still loading.</p>
+          </div>
+        </div>
+        <p class="text-center text-gray-500 font-body text-sm mt-4">Typical slow site</p>
+      </div>
+
+      <!-- FAST SITE -->
+      <div class="thirty-browser" data-speed="fast">
+        <div class="thirty-browser-bar">
+          <div class="thirty-dots">
+            <span class="thirty-dot thirty-dot--red"></span>
+            <span class="thirty-dot thirty-dot--yellow"></span>
+            <span class="thirty-dot thirty-dot--green"></span>
+          </div>
+          <div class="thirty-url">
+            <span class="thirty-url-text">your-site-after-kaizen.co.uk</span>
+          </div>
+          <div class="thirty-timer thirty-timer--fast" data-timer="fast">
+            <span class="thirty-timer-value">0.0</span><span class="thirty-timer-unit">s</span>
+          </div>
+        </div>
+        <div class="thirty-viewport thirty-viewport--fast">
+          <!-- Loading state (brief) -->
+          <div class="thirty-loading" data-loading="fast">
+            <div class="thirty-spinner thirty-spinner--fast"></div>
+          </div>
+          <!-- Fully loaded state -->
+          <div class="thirty-loaded" data-loaded="fast">
+            <div class="thirty-site-hero">
+              <div class="thirty-site-logo"></div>
+              <div class="thirty-site-nav-row">
+                <div class="thirty-site-nav-item"></div>
+                <div class="thirty-site-nav-item"></div>
+                <div class="thirty-site-nav-item"></div>
+              </div>
+              <div class="thirty-site-heading"></div>
+              <div class="thirty-site-subheading"></div>
+              <div class="thirty-site-cta"></div>
+            </div>
+            <div class="thirty-site-content">
+              <div class="thirty-site-cards">
+                <div class="thirty-site-card"></div>
+                <div class="thirty-site-card"></div>
+                <div class="thirty-site-card"></div>
+              </div>
+            </div>
+          </div>
+          <!-- Success badge -->
+          <div class="thirty-success" data-success="fast">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-emerald-400">
+              <path d="M20 6 9 17l-5-5"/>
+            </svg>
+            <span class="text-emerald-400 font-heading font-bold text-sm">Loaded in 1.2s</span>
+          </div>
+        </div>
+        <p class="text-center text-gray-500 font-body text-sm mt-4">After Kaizen</p>
+      </div>
+    </div>
+
+    <!-- Stats bar -->
+    <div class="mt-16 md:mt-20 grid grid-cols-1 sm:grid-cols-3 gap-8 border-t border-white/10 pt-12">
+      <div>
+        <p class="text-4xl md:text-5xl font-heading font-bold text-white">53%</p>
+        <p class="text-gray-500 font-body text-base mt-2">of visitors leave if a page takes more than 3 seconds to load</p>
+      </div>
+      <div>
+        <p class="text-4xl md:text-5xl font-heading font-bold text-white">£2.6M</p>
+        <p class="text-gray-500 font-body text-base mt-2">lost revenue per year for every 1-second delay — for a site doing £100k/month</p>
+      </div>
+      <div>
+        <p class="text-4xl md:text-5xl font-heading font-bold text-white">0.1s</p>
+        <p class="text-gray-500 font-body text-base mt-2">improvement in load time increases conversions by 8% on average</p>
+      </div>
+    </div>
+
+    <!-- Replay button -->
+    <div class="mt-12 text-center">
+      <button
+        type="button"
+        class="thirty-replay inline-flex items-center gap-3 px-8 py-4 rounded-lg border border-white/20 text-white font-heading font-bold text-lg hover:bg-white/5 transition-all duration-200"
+        data-replay
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
+          <path d="M3 3v5h5"/>
+          <path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"/>
+          <path d="M21 21v-5h-5"/>
+        </svg>
+        Watch again
+      </button>
+    </div>
+  </div>
+</section>
+
+<style>
+  /* Browser chrome */
+  .thirty-browser {
+    border-radius: 16px;
+    overflow: hidden;
+    background: rgb(17 17 17);
+    border: 1px solid rgb(255 255 255 / 0.08);
+  }
+
+  .thirty-browser-bar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    background: rgb(30 30 30);
+    border-bottom: 1px solid rgb(255 255 255 / 0.06);
+  }
+
+  .thirty-dots {
+    display: flex;
+    gap: 6px;
+  }
+
+  .thirty-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+  }
+
+  .thirty-dot--red { background: #ff5f57; }
+  .thirty-dot--yellow { background: #febc2e; }
+  .thirty-dot--green { background: #28c840; }
+
+  .thirty-url {
+    flex: 1;
+    background: rgb(20 20 20);
+    border-radius: 6px;
+    padding: 4px 12px;
+  }
+
+  .thirty-url-text {
+    color: rgb(255 255 255 / 0.4);
+    font-family: 'DM Sans', system-ui, sans-serif;
+    font-size: 12px;
+  }
+
+  .thirty-timer {
+    display: flex;
+    align-items: baseline;
+    gap: 1px;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .thirty-timer-value {
+    font-family: 'DM Sans', system-ui, sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    min-width: 3ch;
+    text-align: right;
+  }
+
+  .thirty-timer-unit {
+    font-family: 'DM Sans', system-ui, sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+    color: rgb(255 255 255 / 0.4);
+  }
+
+  .thirty-timer--slow .thirty-timer-value { color: #f87171; }
+  .thirty-timer--fast .thirty-timer-value { color: #34d399; }
+
+  /* Viewport */
+  .thirty-viewport {
+    position: relative;
+    aspect-ratio: 16 / 10;
+    overflow: hidden;
+  }
+
+  /* Loading spinner */
+  .thirty-loading {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    background: rgb(17 17 17);
+    z-index: 3;
+  }
+
+  .thirty-spinner {
+    width: 28px;
+    height: 28px;
+    border: 3px solid rgb(255 255 255 / 0.1);
+    border-top-color: rgb(255 255 255 / 0.5);
+    border-radius: 50%;
+    animation: thirty-spin 1s linear infinite;
+  }
+
+  .thirty-spinner--fast {
+    border-top-color: #34d399;
+  }
+
+  .thirty-loading-text {
+    color: rgb(255 255 255 / 0.3);
+    font-family: 'DM Sans', system-ui, sans-serif;
+    font-size: 13px;
+  }
+
+  @keyframes thirty-spin {
+    to { transform: rotate(360deg); }
+  }
+
+  /* Skeleton (slow site) */
+  .thirty-skeleton {
+    position: absolute;
+    inset: 0;
+    padding: 16px;
+    opacity: 0;
+    z-index: 2;
+  }
+
+  .thirty-skel-hero {
+    width: 100%;
+    height: 35%;
+    background: rgb(255 255 255 / 0.04);
+    border-radius: 8px;
+    margin-bottom: 12px;
+  }
+
+  .thirty-skel-nav {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+
+  .thirty-skel-bar {
+    height: 8px;
+    background: rgb(255 255 255 / 0.06);
+    border-radius: 4px;
+  }
+
+  .thirty-skel-content {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+
+  .thirty-skel-line {
+    height: 8px;
+    background: rgb(255 255 255 / 0.05);
+    border-radius: 4px;
+  }
+
+  .thirty-skel-img {
+    width: 60%;
+    height: 20%;
+    background: rgb(255 255 255 / 0.03);
+    border-radius: 8px;
+  }
+
+  /* Abandoned overlay */
+  .thirty-abandoned {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: rgb(17 17 17 / 0.9);
+    opacity: 0;
+    z-index: 4;
+    pointer-events: none;
+  }
+
+  /* Fast site loaded state */
+  .thirty-loaded {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    z-index: 2;
+    background: #fafafa;
+  }
+
+  .thirty-site-hero {
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+    padding: 12px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    height: 55%;
+    justify-content: center;
+    align-items: flex-start;
+  }
+
+  .thirty-site-logo {
+    width: 60px;
+    height: 8px;
+    background: rgb(255 255 255 / 0.6);
+    border-radius: 2px;
+    position: absolute;
+    top: 12px;
+    left: 16px;
+  }
+
+  .thirty-site-nav-row {
+    display: flex;
+    gap: 8px;
+    position: absolute;
+    top: 12px;
+    right: 16px;
+  }
+
+  .thirty-site-nav-item {
+    width: 32px;
+    height: 6px;
+    background: rgb(255 255 255 / 0.3);
+    border-radius: 2px;
+  }
+
+  .thirty-site-heading {
+    width: 70%;
+    height: 14px;
+    background: rgb(255 255 255 / 0.9);
+    border-radius: 3px;
+  }
+
+  .thirty-site-subheading {
+    width: 50%;
+    height: 8px;
+    background: rgb(255 255 255 / 0.4);
+    border-radius: 2px;
+  }
+
+  .thirty-site-cta {
+    width: 80px;
+    height: 22px;
+    background: #34d399;
+    border-radius: 4px;
+    margin-top: 4px;
+  }
+
+  .thirty-site-content {
+    padding: 12px 16px;
+  }
+
+  .thirty-site-cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+  }
+
+  .thirty-site-card {
+    aspect-ratio: 1;
+    background: #f0f0f0;
+    border-radius: 6px;
+    border: 1px solid #e5e5e5;
+  }
+
+  /* Success badge */
+  .thirty-success {
+    position: absolute;
+    bottom: 12px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: rgb(0 0 0 / 0.7);
+    backdrop-filter: blur(8px);
+    padding: 6px 14px;
+    border-radius: 999px;
+    opacity: 0;
+    z-index: 5;
+  }
+
+  /* Reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    .thirty-spinner { animation: none; }
+    .thirty-skeleton,
+    .thirty-loaded,
+    .thirty-success,
+    .thirty-abandoned,
+    .thirty-loading {
+      transition: none !important;
+    }
+  }
+</style>
+
+<script>
+  function initThirtySeconds() {
+    const section = document.getElementById('thirty-seconds');
+    if (!section) return;
+
+    const slowTimer = section.querySelector('[data-timer="slow"] .thirty-timer-value') as HTMLElement;
+    const fastTimer = section.querySelector('[data-timer="fast"] .thirty-timer-value') as HTMLElement;
+    const slowLoading = section.querySelector('[data-loading="slow"]') as HTMLElement;
+    const fastLoading = section.querySelector('[data-loading="fast"]') as HTMLElement;
+    const slowSkeleton = section.querySelector('[data-skeleton="slow"]') as HTMLElement;
+    const slowAbandoned = section.querySelector('[data-abandoned="slow"]') as HTMLElement;
+    const fastLoaded = section.querySelector('[data-loaded="fast"]') as HTMLElement;
+    const fastSuccess = section.querySelector('[data-success="fast"]') as HTMLElement;
+    const replayBtn = section.querySelector('[data-replay]') as HTMLElement;
+
+    if (!slowTimer || !fastTimer) return;
+
+    let animationFrame: number;
+    let startTime: number;
+    let hasRun = false;
+
+    function reset() {
+      cancelAnimationFrame(animationFrame);
+      slowTimer.textContent = '0.0';
+      fastTimer.textContent = '0.0';
+
+      slowLoading.style.opacity = '1';
+      slowSkeleton.style.opacity = '0';
+      slowAbandoned.style.opacity = '0';
+      slowAbandoned.style.transition = '';
+
+      fastLoading.style.opacity = '1';
+      fastLoaded.style.opacity = '0';
+      fastSuccess.style.opacity = '0';
+      fastLoaded.style.transition = '';
+      fastSuccess.style.transition = '';
+      slowSkeleton.style.transition = '';
+      slowLoading.style.transition = '';
+      fastLoading.style.transition = '';
+    }
+
+    function run() {
+      reset();
+      hasRun = true;
+
+      const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      if (prefersReducedMotion) {
+        // Static version: just show the end states
+        slowTimer.textContent = '8.4';
+        fastTimer.textContent = '1.2';
+        slowLoading.style.opacity = '0';
+        slowSkeleton.style.opacity = '1';
+        slowAbandoned.style.opacity = '1';
+        fastLoading.style.opacity = '0';
+        fastLoaded.style.opacity = '1';
+        fastSuccess.style.opacity = '1';
+        return;
+      }
+
+      startTime = performance.now();
+
+      function tick() {
+        const elapsed = (performance.now() - startTime) / 1000;
+
+        // Slow timer runs up to ~8.4s then stops
+        const slowTime = Math.min(elapsed, 8.4);
+        slowTimer.textContent = slowTime.toFixed(1);
+
+        // Fast timer runs to 1.2s then stops
+        const fastTime = Math.min(elapsed, 1.2);
+        fastTimer.textContent = fastTime.toFixed(1);
+
+        // Slow site: show skeleton at 2s (partially loaded)
+        if (elapsed >= 2) {
+          slowLoading.style.transition = 'opacity 0.6s ease';
+          slowLoading.style.opacity = '0.3';
+          slowSkeleton.style.transition = 'opacity 1.5s ease';
+          slowSkeleton.style.opacity = '1';
+        }
+
+        // Fast site: loaded at 1.2s
+        if (elapsed >= 1.2) {
+          fastLoading.style.transition = 'opacity 0.15s ease';
+          fastLoading.style.opacity = '0';
+          fastLoaded.style.transition = 'opacity 0.3s ease';
+          fastLoaded.style.opacity = '1';
+        }
+
+        // Fast site: show success badge at 1.6s
+        if (elapsed >= 1.6) {
+          fastSuccess.style.transition = 'opacity 0.3s ease';
+          fastSuccess.style.opacity = '1';
+        }
+
+        // Slow site: visitor leaves at 8s
+        if (elapsed >= 8) {
+          slowAbandoned.style.transition = 'opacity 0.4s ease';
+          slowAbandoned.style.opacity = '1';
+        }
+
+        // Stop animation at 9s
+        if (elapsed < 9) {
+          animationFrame = requestAnimationFrame(tick);
+        }
+      }
+
+      animationFrame = requestAnimationFrame(tick);
+    }
+
+    // Intersection Observer — auto-play when scrolled into view
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting && !hasRun) {
+            // Small delay so the user sees the initial state first
+            setTimeout(run, 400);
+          }
+        });
+      },
+      { threshold: 0.3 }
+    );
+
+    observer.observe(section);
+
+    // Replay button
+    if (replayBtn) {
+      replayBtn.addEventListener('click', () => {
+        hasRun = false;
+        run();
+      });
+    }
+  }
+
+  // Run on initial load and after view transitions
+  initThirtySeconds();
+  document.addEventListener('astro:page-load', initThirtySeconds);
+</script>

@@ -8,6 +8,8 @@ import WhyUs from "../components/homepage/WhyUs.astro";
 import CaseSpotlight from "../components/homepage/CaseSpotlight.astro";
 import Reviews from "../components/homepage/Reviews.astro";
 import FinalCTA from "../components/homepage/FinalCTA.astro";
+import AboutKaizen from "../components/homepage/AboutKaizen.astro";
+import ThirtySeconds from "../components/homepage/ThirtySeconds.astro";
 import { HomepageFAQ } from "../../client/components/homepage/HomepageFAQ";
 
 export const prerender = true;
@@ -22,7 +24,9 @@ export const prerender = true;
   <Services />
   <Problem />
   <Process />
+  <AboutKaizen />
   <WhyUs />
+  <ThirtySeconds />
   <CaseSpotlight />
   <Reviews />
   <HomepageFAQ client:visible />

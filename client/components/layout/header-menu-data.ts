@@ -242,13 +242,12 @@ const menuDefinitions: Record<DesktopMenuKey, DesktopMenuDefinition> = {
       title: "Real work, real constraints, real outcomes.",
       description:
         "A sample of projects where we improved delivery, performance, conversion, or all three.",
-      href: "/case-studies/",
-      ctaLabel: "View all case studies",
+      href: "/case-studies/midland-oil-group/",
+      ctaLabel: "View case study",
       media: {
         type: "image",
-        src:
-          "https://cdn.builder.io/api/v1/image/assets%2Fe4ae46bbd81b4b95bef54d66dd9748cc%2Fa18f81c064614dceb4a9d1fcb2c9f64b?format=webp&width=1600",
-        alt: "Kaizen case study preview",
+        src: "/images/case-studies/midland-oil-group-hero.webp",
+        alt: "Midland Oil Group homepage — custom-built platform featuring sector-first navigation and AI-powered oil finder",
       },
     },
     primaryColumns: [
@@ -379,7 +378,6 @@ export const dropdownTriggers: Array<{
   label: string;
 }> = [
   { key: "services", label: menuDefinitions.services.label },
-  { key: "locations", label: menuDefinitions.locations.label },
   { key: "insights", label: menuDefinitions.insights.label },
   { key: "about", label: menuDefinitions.about.label },
   { key: "case-studies", label: menuDefinitions["case-studies"].label },
