@@ -30,8 +30,6 @@ interface HeaderProps {
   onMobileMenuChange: (open: boolean) => void;
 }
 
-const directLinks = [{ href: "/case-studies", label: "Case Studies" }];
-
 const panelMotion = {
   initial: { opacity: 0, y: -10 },
   animate: { opacity: 1, y: 0 },
@@ -127,6 +125,12 @@ const Header: React.FC<HeaderProps> = ({
       clearTimeout(closeTimeoutRef.current);
       closeTimeoutRef.current = null;
     }
+  }, []);
+
+  const deferMenuClose = useCallback(() => {
+    window.setTimeout(() => {
+      setActiveMenu(null);
+    }, 0);
   }, []);
 
   useEffect(() => {
@@ -269,18 +273,6 @@ const Header: React.FC<HeaderProps> = ({
                   );
                 })}
 
-                {directLinks.map(({ href, label }) => (
-                  <AppLink
-                    key={href}
-                    href={href}
-                    onMouseEnter={() => setActiveMenu(null)}
-                    className={`relative z-[1] flex items-center rounded-lg px-7 py-2 text-[16px] font-medium leading-[1.4] text-[#16181d] transition-all duration-200 ${
-                      activeMenu ? "opacity-50 hover:opacity-100" : "opacity-100"
-                    }`}
-                  >
-                    {label}
-                  </AppLink>
-                ))}
               </div>
             </nav>
 
@@ -350,7 +342,7 @@ const Header: React.FC<HeaderProps> = ({
                           >
                             <AppLink
                               href={activeMenuData.promo.href}
-                              onClick={() => setActiveMenu(null)}
+                              onClick={deferMenuClose}
                               className="group flex w-[30%] min-w-[24rem] max-w-[29rem] shrink-0 flex-col border-r border-black/10 px-8 py-8"
                             >
                               <div className="overflow-hidden rounded-[18px] bg-[#edf2fb]">
@@ -415,7 +407,7 @@ const Header: React.FC<HeaderProps> = ({
                                           <li key={item.href}>
                                             <MenuAnchor
                                               item={item}
-                                              onClick={() => setActiveMenu(null)}
+                                              onClick={deferMenuClose}
                                               className="group inline-flex items-start py-[6px] text-[#16181d] transition-colors duration-200 hover:text-[#1764ff]"
                                             >
                                               <span className="mt-[11px] h-[6px] w-0 shrink-0 rounded-full bg-[#84cc16] transition-all duration-200 group-hover:mr-3 group-hover:w-5" />
@@ -456,7 +448,7 @@ const Header: React.FC<HeaderProps> = ({
                                               <li key={item.href}>
                                                 <MenuAnchor
                                                   item={item}
-                                                  onClick={() => setActiveMenu(null)}
+                                                  onClick={deferMenuClose}
                                                   className="group inline-flex items-center gap-2 py-[3px] text-[15px] leading-7 text-[#3a4458] transition-colors duration-200 hover:text-[#1764ff]"
                                                 >
                                                   <span>{item.label}</span>

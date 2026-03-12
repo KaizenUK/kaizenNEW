@@ -1,4 +1,4 @@
-import { useMemo, useState, type ReactNode } from "react";
+import { useCallback, useMemo, useState, type ReactNode } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import {
   ArrowRight,
@@ -24,8 +24,6 @@ interface OffCanvasMenuProps {
   isOpen: boolean;
   onClose: () => void;
 }
-
-const directLinks = [{ href: "/case-studies", label: "Case Studies" }];
 
 const panelMotion = {
   initial: { opacity: 0, y: -12, scale: 0.98 },
@@ -74,6 +72,11 @@ function MobileLink({
 
 const OffCanvasMenu: React.FC<OffCanvasMenuProps> = ({ isOpen, onClose }) => {
   const [openKey, setOpenKey] = useState<DesktopMenuKey>("services");
+  const deferClose = useCallback(() => {
+    window.setTimeout(() => {
+      onClose();
+    }, 0);
+  }, [onClose]);
 
   const menuSections = useMemo(
     () => dropdownTriggers.map((section) => getDesktopMenu(section.key)),
@@ -98,7 +101,7 @@ const OffCanvasMenu: React.FC<OffCanvasMenuProps> = ({ isOpen, onClose }) => {
             className="fixed inset-x-2 top-[74px] bottom-2 z-50 flex flex-col overflow-hidden rounded-[22px] border border-black/10 bg-white shadow-[0_20px_48px_rgba(4,29,47,0.22)] lg:hidden"
           >
             <header className="flex items-center justify-between border-b border-black/10 px-5 py-4">
-              <AppLink href="/" className="flex items-center" onClick={onClose}>
+              <AppLink href="/" className="flex items-center" onClick={deferClose}>
                 <KaizenLogo className="h-[28px] w-[126px] text-[#001133]" />
               </AppLink>
 
@@ -148,7 +151,7 @@ const OffCanvasMenu: React.FC<OffCanvasMenuProps> = ({ isOpen, onClose }) => {
                             <div className="space-y-5 px-4 py-4">
                               <AppLink
                                 href={section.promo.href}
-                                onClick={onClose}
+                                onClick={deferClose}
                                 className="group block overflow-hidden rounded-[18px] border border-black/10 bg-[#f7f9fc] p-3"
                               >
                                 <div className="overflow-hidden rounded-[14px] bg-[#edf2fb]">
@@ -202,11 +205,11 @@ const OffCanvasMenu: React.FC<OffCanvasMenuProps> = ({ isOpen, onClose }) => {
                                   <ul className="mt-3 space-y-1">
                                     {column.items.map((item) => (
                                       <li key={item.href}>
-                                        <MobileLink
-                                          item={item}
-                                          onClose={onClose}
-                                          className="group flex items-start gap-3 rounded-2xl px-1 py-2 transition-colors duration-200 hover:text-[#1764ff]"
-                                        >
+                                          <MobileLink
+                                            item={item}
+                                            onClose={deferClose}
+                                            className="group flex items-start gap-3 rounded-2xl px-1 py-2 transition-colors duration-200 hover:text-[#1764ff]"
+                                          >
                                           <span className="mt-[11px] h-1.5 w-1.5 shrink-0 rounded-full bg-[#84cc16]" />
                                           <span className="inline-flex items-center gap-2 text-[16px] font-medium leading-6 text-[#16181d]">
                                             <span>{item.label}</span>
@@ -240,7 +243,7 @@ const OffCanvasMenu: React.FC<OffCanvasMenuProps> = ({ isOpen, onClose }) => {
                                         <li key={item.href}>
                                           <MobileLink
                                             item={item}
-                                            onClose={onClose}
+                                            onClose={deferClose}
                                             className="group inline-flex items-center gap-2 rounded-2xl px-1 py-2 text-[15px] leading-6 text-[#3a4458] transition-colors duration-200 hover:text-[#1764ff]"
                                           >
                                             <span>{item.label}</span>
@@ -264,7 +267,7 @@ const OffCanvasMenu: React.FC<OffCanvasMenuProps> = ({ isOpen, onClose }) => {
                                         <AppLink
                                           key={social.href}
                                           href={social.href}
-                                          onClick={onClose}
+                                          onClick={deferClose}
                                           target="_blank"
                                           rel="noreferrer"
                                           className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-[#f2f5fa] text-[#33415d] transition-all duration-200 hover:bg-[#1764ff] hover:text-white"
@@ -286,25 +289,12 @@ const OffCanvasMenu: React.FC<OffCanvasMenuProps> = ({ isOpen, onClose }) => {
                 })}
               </div>
 
-              <div className="mt-4 rounded-[20px] border border-black/10 bg-white px-4 py-3">
-                {directLinks.map(({ href, label }) => (
-                  <AppLink
-                    key={href}
-                    href={href}
-                    onClick={onClose}
-                    className="flex items-center justify-between rounded-2xl py-2 text-[16px] font-medium text-[#16181d] transition-colors duration-200 hover:text-[#1764ff]"
-                  >
-                    <span>{label}</span>
-                    <ArrowRight className="h-4 w-4" />
-                  </AppLink>
-                ))}
-              </div>
             </div>
 
             <footer className="grid gap-2 border-t border-black/10 bg-white px-4 py-4">
               <AppLink
                 href="/performance-scanner"
-                onClick={onClose}
+                onClick={deferClose}
                 className="inline-flex items-center justify-center gap-2 rounded-2xl border border-[#c5d4f1] bg-[#f4f7fe] px-4 py-3 text-[15px] font-medium text-[#133a86] transition-all duration-200 hover:border-[#1764ff] hover:bg-white hover:text-[#1764ff]"
               >
                 <Sparkles className="h-4 w-4" />
@@ -312,7 +302,7 @@ const OffCanvasMenu: React.FC<OffCanvasMenuProps> = ({ isOpen, onClose }) => {
               </AppLink>
               <AppLink
                 href="/contact"
-                onClick={onClose}
+                onClick={deferClose}
                 className="inline-flex items-center justify-center gap-2 rounded-2xl bg-[#1764ff] px-4 py-3 text-[15px] font-medium text-white transition-colors duration-200 hover:bg-[#0f53df]"
               >
                 Start Your Project

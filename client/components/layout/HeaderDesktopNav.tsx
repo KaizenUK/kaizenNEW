@@ -71,7 +71,7 @@ export default function HeaderDesktopNav() {
 
   // Direct links (no dropdown)
   const directLinks: { href: string; label: string }[] = [
-    { href: "/case-studies", label: "Case Studies" },
+    { href: "/case-studies/", label: "Case Studies" },
   ];
 
   // Promo card config per menu

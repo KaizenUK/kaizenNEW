@@ -5,9 +5,9 @@ export const prerender = true;
 
 const caseStudies = [
   {
-    client: "International Sweepstakes Casino",
+    client: "Gaming Platform Migration",
     summary:
-      "Architecting a dual-currency gaming economy for an international sweepstakes casino: moving from single-currency to legally-compliant sweepstakes across 43 US states, delivering 42% ARPU growth while maintaining financial-grade reliability.",
+      "A dual-currency platform migration for a high-scale gaming business, balancing compliance, retention, and financial-grade reliability.",
     services: ["System Economics", "Live Ops", "Complex Integrations"],
     slug: "high-five-games",
   },
@@ -58,7 +58,7 @@ const caseStudies = [
         {caseStudies.map((study) => (
           <li>
             <a
-              href={`/case-studies/${study.slug}`}
+              href={`/case-studies/${study.slug}/`}
               class="group block border-b border-kaizen-light bg-transparent px-8 py-12 transition hover:bg-white"
             >
               <div class="grid grid-cols-1 items-start gap-8 lg:grid-cols-2">

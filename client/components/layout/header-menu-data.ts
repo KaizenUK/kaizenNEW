@@ -242,7 +242,7 @@ const menuDefinitions: Record<DesktopMenuKey, DesktopMenuDefinition> = {
       title: "Real work, real constraints, real outcomes.",
       description:
         "A sample of projects where we improved delivery, performance, conversion, or all three.",
-      href: "/case-studies",
+      href: "/case-studies/",
       ctaLabel: "View all case studies",
       media: {
         type: "image",
@@ -253,23 +253,47 @@ const menuDefinitions: Record<DesktopMenuKey, DesktopMenuDefinition> = {
     },
     primaryColumns: [
       {
-        title: "Selected Work",
+        title: "Client Work",
         items: [
           {
-            label: "High Five Games",
-            href: "/case-studies/high-five-games",
-          },
-          {
             label: "AS Collections",
-            href: "/case-studies/as-collections",
+            href: "/case-studies/as-collections/",
           },
           {
             label: "Independent Retailer",
-            href: "/case-studies/independent-retailer",
+            href: "/case-studies/independent-retailer/",
           },
           {
             label: "Helen Moore Hairdressing",
-            href: "/case-studies/helen-moore-hairdressing",
+            href: "/case-studies/helen-moore-hairdressing/",
+          },
+        ],
+      },
+      {
+        title: "Platforms & Delivery",
+        items: [
+          {
+            label: "Gaming Platform Migration",
+            href: "/case-studies/high-five-games/",
+          },
+          {
+            label: "Kaizen Rebuild",
+            href: "/case-studies/kaizen-rebuild/",
+          },
+        ],
+      },
+    ],
+    utilitySections: [
+      {
+        title: "Browse",
+        items: [
+          {
+            label: "All Case Studies",
+            href: "/case-studies/",
+          },
+          {
+            label: "Start Your Project",
+            href: "/contact",
           },
         ],
       },
@@ -358,6 +382,7 @@ export const dropdownTriggers: Array<{
   { key: "locations", label: menuDefinitions.locations.label },
   { key: "insights", label: menuDefinitions.insights.label },
   { key: "about", label: menuDefinitions.about.label },
+  { key: "case-studies", label: menuDefinitions["case-studies"].label },
 ];
 
 export const getDesktopMenu = (menu: DesktopMenuKey): DesktopMenuDefinition =>
