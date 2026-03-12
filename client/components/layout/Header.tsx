@@ -278,7 +278,7 @@ const Header: React.FC<HeaderProps> = ({
 
             <div className="ml-auto flex items-center gap-2 pr-1">
               <AppLink
-                href="/performance-scanner"
+                href="/performance-scanner/"
                 className="hidden items-center gap-2 rounded-xl border border-[#c5d4f1] bg-[#f4f7fe] px-4 py-2 text-[15px] font-medium leading-[1.4] text-[#133a86] shadow-[inset_0_1px_0_rgba(255,255,255,0.8)] transition-all duration-200 hover:border-[#1764ff] hover:bg-white hover:text-[#1764ff] lg:inline-flex"
               >
                 <Sparkles className="h-4 w-4" />
@@ -286,7 +286,7 @@ const Header: React.FC<HeaderProps> = ({
               </AppLink>
 
               <AppLink
-                href="/contact"
+                href="/contact/"
                 className="hidden items-center gap-2 rounded-xl bg-[#1764ff] px-4 py-2 text-[16px] font-medium leading-[1.4] text-white transition-colors duration-200 hover:bg-[#0f53df] sm:inline-flex"
               >
                 Start Your Project

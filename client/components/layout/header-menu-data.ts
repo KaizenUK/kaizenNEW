@@ -72,7 +72,7 @@ const menuDefinitions: Record<DesktopMenuKey, DesktopMenuDefinition> = {
       title: "Websites built to bring work in.",
       description:
         "Fast delivery, sober technical decisions, and a commercial focus from first brief to launch.",
-      href: "/services/ecommerce",
+      href: "/services/ecommerce/",
       ctaLabel: "Explore services",
       media: {
         type: "image",
@@ -87,15 +87,15 @@ const menuDefinitions: Record<DesktopMenuKey, DesktopMenuDefinition> = {
         items: [
           {
             label: "Local SEO",
-            href: "/services/local-seo",
+            href: "/services/local-seo/",
           },
           {
             label: "WordPress Web Design",
-            href: "/services/wordpress-web-design",
+            href: "/services/wordpress-web-design/",
           },
           {
             label: "E-commerce Development",
-            href: "/services/ecommerce",
+            href: "/services/ecommerce/",
           },
         ],
       },
@@ -104,20 +104,20 @@ const menuDefinitions: Record<DesktopMenuKey, DesktopMenuDefinition> = {
         items: [
           {
             label: "Project Rescue",
-            href: "/project-rescue",
+            href: "/project-rescue/",
             badge: "New",
           },
           {
             label: "Contract Product Owner",
-            href: "/contract-product-owner",
+            href: "/contract-product-owner/",
           },
           {
             label: "Agile Coaching",
-            href: "/agile-coaching",
+            href: "/agile-coaching/",
           },
           {
             label: "Digital Transformation",
-            href: "/digital-transformation",
+            href: "/digital-transformation/",
           },
         ],
       },
@@ -130,7 +130,7 @@ const menuDefinitions: Record<DesktopMenuKey, DesktopMenuDefinition> = {
       title: "Local landing pages, without local-page nonsense.",
       description:
         "The same delivery standard, tuned for Liverpool, Chester, Warrington, and Wirral search intent.",
-      href: "/web-design-liverpool",
+      href: "/web-design-liverpool/",
       ctaLabel: "Browse locations",
       media: {
         type: "image",
@@ -144,15 +144,15 @@ const menuDefinitions: Record<DesktopMenuKey, DesktopMenuDefinition> = {
         items: [
           {
             label: "Web Design Liverpool",
-            href: "/web-design-liverpool",
+            href: "/web-design-liverpool/",
           },
           {
             label: "Web Design Wirral",
-            href: "/web-design-wirral",
+            href: "/web-design-wirral/",
           },
           {
             label: "Liverpool City Centre",
-            href: "/web-design-liverpool-city-centre",
+            href: "/web-design-liverpool-city-centre/",
           },
         ],
       },
@@ -161,11 +161,11 @@ const menuDefinitions: Record<DesktopMenuKey, DesktopMenuDefinition> = {
         items: [
           {
             label: "Web Design Chester",
-            href: "/web-design-chester",
+            href: "/web-design-chester/",
           },
           {
             label: "Web Design Warrington",
-            href: "/web-design-warrington",
+            href: "/web-design-warrington/",
           },
         ],
       },
@@ -178,7 +178,7 @@ const menuDefinitions: Record<DesktopMenuKey, DesktopMenuDefinition> = {
       title: "Useful writing, not placeholder content.",
       description:
         "Notes on recovery work, performance, commercial web design, and the decisions behind real delivery.",
-      href: "/blog",
+      href: "/blog/",
       ctaLabel: "Read insights",
       media: {
         type: "image",
@@ -193,15 +193,15 @@ const menuDefinitions: Record<DesktopMenuKey, DesktopMenuDefinition> = {
         items: [
           {
             label: "Web Design Costs in Liverpool 2025",
-            href: "/blog/how-much-does-a-website-cost-in-liverpool-in-2025",
+            href: "/blog/how-much-does-a-website-cost-in-liverpool-in-2025/",
           },
           {
             label: "How to Choose a Web Agency",
-            href: "/blog/choose-web-design-agency-liverpool",
+            href: "/blog/choose-web-design-agency-liverpool/",
           },
           {
             label: "Website Mistakes to Avoid",
-            href: "/blog/website-mistakes-liverpool",
+            href: "/blog/website-mistakes-liverpool/",
           },
         ],
       },
@@ -210,15 +210,15 @@ const menuDefinitions: Record<DesktopMenuKey, DesktopMenuDefinition> = {
         items: [
           {
             label: "WordPress vs React ROI",
-            href: "/blog/wordpress-vs-react-business-roi",
+            href: "/blog/wordpress-vs-react-business-roi/",
           },
           {
             label: "Fix a Failing Software Project",
-            href: "/blog/fix-failing-software-project-financial-guide",
+            href: "/blog/fix-failing-software-project-financial-guide/",
           },
           {
             label: "More Than a Refresh",
-            href: "/blog/more-than-a-refresh-why-we-rebuilt-the-kaizen-website",
+            href: "/blog/more-than-a-refresh-why-we-rebuilt-the-kaizen-website/",
           },
         ],
       },
@@ -229,7 +229,7 @@ const menuDefinitions: Record<DesktopMenuKey, DesktopMenuDefinition> = {
         items: [
           {
             label: "All Articles",
-            href: "/blog",
+            href: "/blog/",
           },
         ],
       },
@@ -293,7 +293,7 @@ const menuDefinitions: Record<DesktopMenuKey, DesktopMenuDefinition> = {
           },
           {
             label: "Start Your Project",
-            href: "/contact",
+            href: "/contact/",
           },
         ],
       },
@@ -306,7 +306,7 @@ const menuDefinitions: Record<DesktopMenuKey, DesktopMenuDefinition> = {
       title: "Small team, sharp standards.",
       description:
         "The company page should tell people how you work. Ours does, and it points at the evidence too.",
-      href: "/about",
+      href: "/about/",
       ctaLabel: "About Kaizen",
       media: {
         type: "image",
@@ -321,15 +321,15 @@ const menuDefinitions: Record<DesktopMenuKey, DesktopMenuDefinition> = {
         items: [
           {
             label: "About Kaizen",
-            href: "/about",
+            href: "/about/",
           },
           {
             label: "Our Pledge",
-            href: "/pledge",
+            href: "/pledge/",
           },
           {
             label: "Contact",
-            href: "/contact",
+            href: "/contact/",
           },
         ],
       },

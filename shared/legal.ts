@@ -1,3 +1,9 @@
+export const LEGAL_COMPANY_NAME = "Kaizen Web Ltd";
+export const TRADING_NAME = "Kaizen Ltd";
+export const COMPANY_NUMBER = "17007703";
+export const REGISTERED_OFFICE_ADDRESS =
+  "Suite A, 82 James Carter Road, Mildenhall, Bury St. Edmunds, England, IP28 7DE";
+
 export const termsContent = `
 STANDARD TERMS AND CONDITIONS OF BUSINESS
 Kaizen Web Ltd (Trading as Kaizen Ltd)

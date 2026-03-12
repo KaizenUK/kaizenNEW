@@ -1,6 +1,7 @@
 ---
 import "../styles/linear.css";
 import BlogNav from "../components/blog/BlogNav.astro";
+import SiteFooter from "../../client/components/layout/SiteFooter";
 import { resolveCanonicalUrl } from "../lib/site";
 
 interface Props {
@@ -38,6 +39,8 @@ const robotsContent =
 const buildNumber = String(import.meta.env.VITE_BUILD_NUMBER ?? "").trim();
 const buildSha = String(import.meta.env.VITE_BUILD_SHA ?? "").trim().slice(0, 7);
 const buildLabel = buildNumber || buildSha || "local";
+const footerBuildLabel =
+  buildNumber && buildSha ? `${buildLabel} (${buildSha})` : buildLabel;
 ---
 
 <!doctype html>
@@ -74,10 +77,6 @@ const buildLabel = buildNumber || buildSha || "local";
   <body class="min-h-full bg-[#0a0a0a] text-gray-200 antialiased">
     <BlogNav />
     <slot />
-    <footer class="border-t border-white/10 py-6 text-center">
-      <p class="text-[11px] font-mono tracking-wide text-gray-500">
-        Build {buildLabel}
-        {buildNumber && buildSha && <span class="text-gray-600"> ({buildSha})</span>}
-      </p>
+    <SiteFooter buildLabel={footerBuildLabel} />
   </body>
 </html>

@@ -293,7 +293,7 @@ const OffCanvasMenu: React.FC<OffCanvasMenuProps> = ({ isOpen, onClose }) => {
 
             <footer className="grid gap-2 border-t border-black/10 bg-white px-4 py-4">
               <AppLink
-                href="/performance-scanner"
+                href="/performance-scanner/"
                 onClick={deferClose}
                 className="inline-flex items-center justify-center gap-2 rounded-2xl border border-[#c5d4f1] bg-[#f4f7fe] px-4 py-3 text-[15px] font-medium text-[#133a86] transition-all duration-200 hover:border-[#1764ff] hover:bg-white hover:text-[#1764ff]"
               >
@@ -301,7 +301,7 @@ const OffCanvasMenu: React.FC<OffCanvasMenuProps> = ({ isOpen, onClose }) => {
                 Free Audit
               </AppLink>
               <AppLink
-                href="/contact"
+                href="/contact/"
                 onClick={deferClose}
                 className="inline-flex items-center justify-center gap-2 rounded-2xl bg-[#1764ff] px-4 py-3 text-[15px] font-medium text-white transition-colors duration-200 hover:bg-[#0f53df]"
               >
