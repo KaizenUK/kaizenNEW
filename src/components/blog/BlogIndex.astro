@@ -26,7 +26,13 @@ const imageFor = (
   if (!source) return null;
 
   try {
-    return urlFor(source).width(width).height(height).fit("crop").auto("format").url();
+    return urlFor(source)
+      .width(width)
+      .height(height)
+      .fit("crop")
+      .quality(72)
+      .format("webp")
+      .url();
   } catch {
     return null;
   }
@@ -101,9 +107,9 @@ const postImageFor = (
             </div>
 
             {
-              postImageFor(featuredPost, 1440, 720) ? (
+              postImageFor(featuredPost, 1200, 675) ? (
                 <img
-                  src={postImageFor(featuredPost, 1440, 720)!}
+                  src={postImageFor(featuredPost, 1200, 675)!}
                   alt={featuredPost.title}
                   loading="lazy"
                   decoding="async"
@@ -121,9 +127,9 @@ const postImageFor = (
               class="linear-card group relative flex flex-col gap-4 p-5 sm:p-6"
             >
               {
-                postImageFor(post, 900, 520) ? (
+                postImageFor(post, 720, 420) ? (
                   <img
-                    src={postImageFor(post, 900, 520)!}
+                    src={postImageFor(post, 720, 420)!}
                     alt={post.title}
                     loading="lazy"
                     decoding="async"

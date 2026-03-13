@@ -128,9 +128,10 @@ const components: PortableTextComponents = {
     },
     image: ({ value }) => {
       const imageUrl = urlFor(value)
-        .width(1360)
+        .width(1200)
         .fit("max")
-        .auto("format")
+        .quality(72)
+        .format("webp")
         .url();
       const altText =
         typeof value?.alt === "string" && value.alt.trim()

@@ -29,16 +29,22 @@ const imageFor = (
   if (!source) return null;
 
   try {
-    return urlFor(source).width(width).height(height).fit("crop").auto("format").url();
+    return urlFor(source)
+      .width(width)
+      .height(height)
+      .fit("crop")
+      .quality(72)
+      .format("webp")
+      .url();
   } catch {
     return null;
   }
 };
 
 const coverImageUrl =
-  imageFor(post.mainImage, 1360, 780) ??
-  imageFor(post.coverImage, 1360, 780);
-const authorImageUrl = imageFor(post.author?.image, 72, 72);
+  imageFor(post.mainImage, 1200, 690) ??
+  imageFor(post.coverImage, 1200, 690);
+const authorImageUrl = imageFor(post.author?.image, 96, 96);
 const studioDocumentId = post._id.replace(/^drafts\./, "");
 const studioEditorCookieName = "kaizen_studio_auth";
 const studioUrl = getStudioUrl();
