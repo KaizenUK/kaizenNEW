@@ -970,233 +970,226 @@ export default function SpeedScanner() {
   const shouldGate = score !== null && score < 90 && !isEmailSubmitted;
 
   return (
-    <section
+    <div
       id="live-performance-scanner"
-      className="relative py-16 md:py-20 bg-gray-950 text-white overflow-hidden"
+      className="w-full max-w-4xl mx-auto text-white"
     >
-      {/* Background Ambience */}
-      <div className="pointer-events-none absolute inset-0 opacity-70 bg-[radial-gradient(circle_at_10%_10%,rgba(6,182,212,0.12),transparent_55%),radial-gradient(circle_at_90%_90%,rgba(59,130,246,0.10),transparent_60%)]" />
+      <div className="p-8 md:p-12 rounded-2xl border border-white/10 bg-white/4 relative overflow-hidden">
+        <div className="text-center mb-10">
+          <p className="text-xs font-medium uppercase tracking-[0.25em] text-cyan-400/60 mb-4">
+            Live audit
+          </p>
+          <h2 className="text-3xl md:text-4xl font-bold text-white mb-3">
+            Paste your URL. Get answers in 30 seconds.
+          </h2>
+          <p className="text-white/40 text-base">
+            No sign-up. No install. Just the same data Google uses to rank you.
+          </p>
+        </div>
 
-      <div className="container mx-auto px-4 relative z-10">
-        <div className="w-full max-w-4xl mx-auto p-8 rounded-3xl border border-cyan-500/20 bg-slate-900/60 backdrop-blur-xl shadow-[0_0_50px_-15px_rgba(6,182,212,0.2)] relative overflow-hidden">
-          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-2/3 h-1 bg-gradient-to-r from-transparent via-cyan-500 to-transparent opacity-50 blur-sm" />
-
-          <div className="text-center mb-8 relative z-10">
-            <h2 className="text-3xl md:text-4xl font-bold text-white mb-3">
-              Don&apos;t Guess. Test.
-            </h2>
-            <p className="text-slate-400 text-lg">
-              Enter your URL. Watch the audit run in real-time.
-            </p>
+        {/* INPUT AREA */}
+        <div className="flex flex-col md:flex-row gap-4 mb-8 max-w-2xl mx-auto">
+          <div className="relative flex-1">
+            <div className="pointer-events-none absolute inset-y-0 left-5 flex items-center text-sm text-white/30">
+              https://
+            </div>
+            <input
+              type="text"
+              inputMode="url"
+              placeholder="yourwebsite.co.uk"
+              value={url}
+              onChange={(e) => {
+                const next = e.target.value
+                  .trimStart()
+                  .replace(/^https?:\/\//i, "")
+                  .replace(/^\/+/, "");
+                setUrl(next);
+              }}
+              className="w-full px-6 py-4 pl-[108px] rounded-lg bg-white/[0.05] border border-white/10 text-white focus:border-cyan-500 focus:outline-none focus:ring-1 focus:ring-cyan-500 transition-all placeholder:text-white/20"
+            />
           </div>
+          <button
+            onClick={runAudit}
+            disabled={loading}
+            className="px-8 py-4 rounded-lg font-bold text-gray-950 bg-white hover:bg-gray-100 transition-all hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
+          >
+            {loading ? "Scanning..." : "Run Audit"}
+          </button>
+        </div>
 
-          {/* INPUT AREA */}
-          <div className="flex flex-col md:flex-row gap-4 relative z-10 mb-8 max-w-2xl mx-auto">
-            <div className="relative flex-1">
-              <div className="pointer-events-none absolute inset-y-0 left-5 flex items-center font-mono text-sm text-slate-500">
-                https://
-              </div>
-              <input
-                type="text"
-                inputMode="url"
-                placeholder="yourwebsite.co.uk"
-                value={url}
-                onChange={(e) => {
-                  const next = e.target.value
-                    .trimStart()
-                    .replace(/^https?:\/\//i, "")
-                    .replace(/^\/+/, "");
-                  setUrl(next);
-                }}
-                className="w-full px-6 py-4 pl-[108px] rounded-full bg-black/40 border border-slate-700 text-white focus:border-cyan-500 focus:outline-none focus:ring-1 focus:ring-cyan-500 transition-all placeholder:text-slate-600"
-              />
-            </div>
-            <button
-              onClick={runAudit}
-              disabled={loading}
-              className="px-8 py-4 rounded-full font-bold text-white bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 shadow-lg shadow-cyan-500/20 transition-all hover:shadow-cyan-500/40 hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
-            >
-              {loading ? "Scanning..." : "Run Audit"}
-            </button>
+        {/* STATUS TEXT */}
+        {loading && statusMsg && (
+          <div className="text-center text-cyan-400 animate-pulse text-sm mb-4">
+            {statusMsg}
           </div>
+        )}
+        {!loading && statusMsg.startsWith("Error") && (
+          <div className="text-center text-sm mb-4 text-red-400">
+            {statusMsg}
+          </div>
+        )}
 
-          {/* STATUS TEXT */}
-          {loading && statusMsg && (
-            <div className="text-center text-cyan-400 animate-pulse font-mono text-sm mb-4">
-              {statusMsg}
+        {/* RESULTS AREA */}
+        {score !== null && (
+          <div className="grid grid-cols-1 md:grid-cols-[140px_1fr] gap-8 items-start bg-white/[0.03] p-8 rounded-xl border border-white/5 mt-8 relative overflow-hidden">
+            {/* Screenshot */}
+            <div className="relative mx-auto border-[4px] border-white/10 rounded-2xl overflow-hidden w-full max-w-[120px] aspect-[393/852] bg-gray-900">
+              {screenshot ? (
+                <img
+                  src={screenshot}
+                  alt="Site screenshot"
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <div className="w-full h-full bg-gray-800 animate-pulse" />
+              )}
             </div>
-          )}
-          {!loading && statusMsg.startsWith("Error") && (
-            <div className="text-center font-mono text-sm mb-4 text-red-300">
-              {statusMsg}
-            </div>
-          )}
 
-          {/* RESULTS AREA */}
-          {score !== null && (
-            <div className="animate-in fade-in slide-in-from-bottom-4 duration-700 grid grid-cols-1 md:grid-cols-2 gap-8 items-center bg-black/20 p-8 rounded-2xl border border-white/5 mt-8 relative overflow-hidden">
-              {/* Screenshot */}
-              <div className="relative mx-auto border-[6px] border-slate-800 rounded-[2rem] overflow-hidden shadow-2xl w-full max-w-[120px] aspect-[393/852] bg-slate-800">
-                {screenshot ? (
-                  <img
-                    src={screenshot}
-                    alt="Site Screenshot"
-                    className="w-full h-full object-cover"
-                  />
-                ) : (
-                  <div className="w-full h-full bg-slate-700 animate-pulse" />
-                )}
-                <div className="absolute inset-0 bg-gradient-to-tr from-white/10 to-transparent pointer-events-none" />
-              </div>
-
-              {/* Data & Gate */}
-              <div className="text-center md:text-left flex flex-col items-center md:items-start z-10 w-full">
-                <div className="inline-flex items-center justify-center w-24 h-24 rounded-full border-4 border-slate-800 bg-slate-900 relative mb-4 shadow-lg">
+            {/* Data & Gate */}
+            <div className="flex flex-col items-center md:items-start w-full">
+              {/* Score + label */}
+              <div className="flex items-center gap-5 mb-6">
+                <div className="inline-flex items-center justify-center w-20 h-20 rounded-full border-2 border-white/10 bg-gray-950">
                   <span
-                    className={`text-4xl font-black ${score < 50 ? "text-red-500" : score < 90 ? "text-orange-500" : "text-green-500"}`}
+                    className={`text-3xl font-bold ${score < 50 ? "text-red-500" : score < 90 ? "text-orange-400" : "text-green-500"}`}
                   >
                     {score}
                   </span>
                 </div>
-
-                <div className="relative w-full">
-                  <div
-                    className={
-                      shouldGate
-                        ? "blur-sm select-none pointer-events-none opacity-60"
-                        : ""
-                    }
-                  >
-                    <h3 className="text-2xl text-white font-bold mb-2">
-                      {score < 90
-                        ? "Consultant Report Ready"
-                        : "Excellent Score!"}
-                    </h3>
-                    <p className="text-slate-400 text-sm mb-5 leading-relaxed">
-                      {score < 90
-                        ? "Unlock the full PDF fix plan (this is written in plain English + metrics)."
-                        : "Download a polished PDF report for your records."}
-                    </p>
-
-                    {/* Metrics Grid */}
-                    <div className="rounded-xl bg-black/25 border border-white/5 p-4 mb-5">
-                      <div className="text-xs font-mono tracking-[0.25em] text-cyan-300 uppercase mb-3">
-                        Core Web Vitals
-                      </div>
-                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-left">
-                        {/* Metric 1 */}
-                        <div className="rounded-lg border border-white/5 bg-black/20 p-3">
-                          <div className="text-[11px] text-slate-400 font-mono">
-                            Load Speed
-                          </div>
-                          <div className="text-white font-bold">
-                            {metrics.lcp || "-"}
-                          </div>
-                        </div>
-                        {/* Metric 2 */}
-                        <div className="rounded-lg border border-white/5 bg-black/20 p-3">
-                          <div className="text-[11px] text-slate-400 font-mono">
-                            Interactivity
-                          </div>
-                          <div className="text-white font-bold">
-                            {metrics.tbt || "-"}
-                          </div>
-                        </div>
-                        {/* Metric 3 */}
-                        <div className="rounded-lg border border-white/5 bg-black/20 p-3">
-                          <div className="text-[11px] text-slate-400 font-mono">
-                            CLS
-                          </div>
-                          <div className="text-white font-bold">
-                            {metrics.cls || "-"}
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    <button
-                      onClick={downloadPDF}
-                      disabled={pdfLoading}
-                      className="flex items-center justify-center gap-2 w-full md:w-auto px-6 py-3 rounded-lg bg-white text-black font-bold hover:bg-slate-200 transition-colors shadow-lg shadow-white/10 disabled:opacity-60 disabled:cursor-not-allowed"
-                    >
-                      <svg
-                        className="w-5 h-5"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth="2"
-                          d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
-                        />
-                      </svg>
-                      {pdfLoading ? "Building PDF..." : "Download PDF Report"}
-                    </button>
-                  </div>
-
-                  {/* The Gate Overlay */}
-                  {shouldGate && (
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <div className="w-full rounded-2xl border border-white/10 bg-slate-950/70 backdrop-blur-md p-5 shadow-[0_0_40px_-18px_rgba(6,182,212,0.45)]">
-                        <h3 className="text-xl text-white font-bold mb-2">
-                          Detailed Report Locked
-                        </h3>
-                        <p className="text-slate-400 text-sm mb-4 leading-relaxed">
-                          Your site has critical performance issues. Unlock the
-                          full PDF fix plan.
-                        </p>
-                        <div className="flex flex-col sm:flex-row gap-2 mb-4">
-                          <input
-                            type="email"
-                            inputMode="email"
-                            placeholder="Enter email to unlock"
-                            className="flex-1 px-4 py-3 rounded-lg bg-slate-800/80 border border-slate-600 text-white text-sm focus:outline-none focus:ring-1 focus:ring-cyan-500"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                          />
-                          <button
-                            onClick={handleUnlock}
-                            className="px-4 py-3 bg-cyan-600 hover:bg-cyan-500 text-white text-sm font-bold rounded-lg transition-colors whitespace-nowrap"
-                          >
-                            Unlock
-                          </button>
-                        </div>
-
-                        {/* Consent Checkbox */}
-                        <div className="mb-4 p-3 bg-slate-800/50 rounded-lg border border-slate-700">
-                          <label className="flex items-start gap-3 cursor-pointer">
-                            <input
-                              type="checkbox"
-                              checked={consentToMarketing}
-                              onChange={(e) =>
-                                setConsentToMarketing(e.target.checked)
-                              }
-                              className="mt-1 rounded border-slate-600 cursor-pointer accent-cyan-500"
-                            />
-                            <span className="text-xs text-slate-300 leading-relaxed">
-                              I consent to receiving marketing emails from
-                              Kaizen about performance optimisation tips and
-                              services.
-                            </span>
-                          </label>
-                        </div>
-
-                        {emailError && (
-                          <p className="text-red-400 text-xs mt-2">
-                            {emailError}
-                          </p>
-                        )}
-                      </div>
-                    </div>
-                  )}
+                <div>
+                  <p className="text-white font-bold text-lg">
+                    {score >= 90
+                      ? "Strong performance."
+                      : score >= 50
+                        ? "Room for improvement."
+                        : "Needs attention."}
+                  </p>
+                  <p className="text-white/40 text-sm">
+                    Mobile score out of 100
+                  </p>
                 </div>
               </div>
+
+              <div className="relative w-full">
+                <div
+                  className={
+                    shouldGate
+                      ? "blur-sm select-none pointer-events-none opacity-60"
+                      : ""
+                  }
+                >
+                  {/* Metrics Grid */}
+                  <div className="rounded-lg bg-white/[0.03] border border-white/5 p-5 mb-6">
+                    <p className="text-xs font-medium uppercase tracking-[0.2em] text-white/30 mb-4">
+                      Core Web Vitals
+                    </p>
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-left">
+                      <div className="rounded-lg border border-white/5 bg-white/[0.02] p-3">
+                        <p className="text-[11px] text-white/40 mb-1">
+                          Load Speed (LCP)
+                        </p>
+                        <p className="text-white font-bold">
+                          {metrics.lcp || "-"}
+                        </p>
+                      </div>
+                      <div className="rounded-lg border border-white/5 bg-white/[0.02] p-3">
+                        <p className="text-[11px] text-white/40 mb-1">
+                          Interactivity (TBT)
+                        </p>
+                        <p className="text-white font-bold">
+                          {metrics.tbt || "-"}
+                        </p>
+                      </div>
+                      <div className="rounded-lg border border-white/5 bg-white/[0.02] p-3">
+                        <p className="text-[11px] text-white/40 mb-1">
+                          Layout Shift (CLS)
+                        </p>
+                        <p className="text-white font-bold">
+                          {metrics.cls || "-"}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <button
+                    onClick={downloadPDF}
+                    disabled={pdfLoading}
+                    className="flex items-center justify-center gap-2 w-full md:w-auto px-6 py-3 rounded-lg bg-white text-gray-950 font-bold hover:bg-gray-100 transition-all hover:scale-[1.02] active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed"
+                  >
+                    <svg
+                      className="w-5 h-5"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
+                      />
+                    </svg>
+                    {pdfLoading ? "Building PDF..." : "Download PDF Report"}
+                  </button>
+                </div>
+
+                {/* The Gate Overlay */}
+                {shouldGate && (
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <div className="w-full rounded-xl border border-white/10 bg-gray-950/80 backdrop-blur-md p-6">
+                      <h3 className="text-lg text-white font-bold mb-2">
+                        Your full report is ready.
+                      </h3>
+                      <p className="text-white/40 text-sm mb-4 leading-relaxed">
+                        Pop your email in and we&apos;ll unlock the detailed PDF
+                        with plain-English recommendations.
+                      </p>
+                      <div className="flex flex-col sm:flex-row gap-2 mb-4">
+                        <input
+                          type="email"
+                          inputMode="email"
+                          placeholder="name@company.co.uk"
+                          className="flex-1 px-4 py-3 rounded-lg bg-white/[0.05] border border-white/10 text-white text-sm focus:outline-none focus:ring-1 focus:ring-cyan-500 placeholder:text-white/20"
+                          value={email}
+                          onChange={(e) => setEmail(e.target.value)}
+                        />
+                        <button
+                          onClick={handleUnlock}
+                          className="px-5 py-3 bg-white hover:bg-gray-100 text-gray-950 text-sm font-bold rounded-lg transition-all whitespace-nowrap"
+                        >
+                          Unlock report
+                        </button>
+                      </div>
+
+                      {/* Consent Checkbox */}
+                      <label className="flex items-start gap-3 cursor-pointer">
+                        <input
+                          type="checkbox"
+                          checked={consentToMarketing}
+                          onChange={(e) =>
+                            setConsentToMarketing(e.target.checked)
+                          }
+                          className="mt-1 rounded border-white/20 cursor-pointer accent-cyan-500"
+                        />
+                        <span className="text-xs text-white/30 leading-relaxed">
+                          I&apos;m happy to receive occasional tips on website
+                          performance from Kaizen.
+                        </span>
+                      </label>
+
+                      {emailError && (
+                        <p className="text-red-400 text-xs mt-3">
+                          {emailError}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
-          )}
-        </div>
+          </div>
+        )}
       </div>
-    </section>
+    </div>
   );
 }

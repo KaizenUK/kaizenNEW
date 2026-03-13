@@ -1,104 +1,181 @@
 ---
 import StaticPageLayout from "../layouts/StaticPageLayout.astro";
+import ContactCTAButton from "../../client/components/ContactCTAButton";
 
 export const prerender = true;
 
-const pledgeSections = [
+/* ── Commitments ──────────────────────────────────────────── */
+const commitments = [
   {
-    label: "01. AI & EXPERTISE",
-    content: `Let's start with the big one: AI.
-
-Yes, we use it. It's 2026, and any agency that says they don't is either lying to you or just plain inefficient. We're neither. We are not traditional, university-educated developers stuck in old ways. We are modern, agile, and relentlessly curious.
-
-We use AI as a co-pilot, not as the chef. A prompt can't understand your business strategy, design a unique brand, or build a secure app. We use it to handle grunt work, which means we spend more time on what matters: strategy, custom design, and maintainable code.`,
+    num: "01",
+    title: "AI is a tool, not a shortcut.",
+    copy: "Yes, Kaizen uses AI. It handles the repetitive work so more time goes into the things that actually matter — your strategy, your design, your site's architecture. A prompt can't understand your customers or design a brand. It can save hours on the grunt work so the thinking gets the attention it deserves.",
   },
   {
-    label: "02. PRICING",
-    content: `Our pledge also covers your money.
-
-The price we quote is the price you will pay. Period. If we've undercharged you or underestimated the work, that's on us. We'll take the hit and learn from it.
-
-The only time that changes is if scope changes. If new requirements are added after agreement, we have an honest conversation and agree a fair adjustment.`,
+    num: "02",
+    title: "The quote is the quote.",
+    copy: "The price agreed is the price you pay. If the work takes longer than expected, that's not your problem. The only thing that changes the number is if the scope changes — and that's always a conversation, never a surprise on an invoice.",
   },
   {
-    label: "03. PROCESS",
-    content: `The same goes for our process.
-
-We won't disappear. We provide 45 days of free snagging after launch. If you find a bug, we fix it. We'll also make minor tweaks for free within reason.
-
-For bigger changes, we'll agree clearly whether it's a new feature or a quick fix. Full scope is agreed at the start so there are no surprises.`,
+    num: "03",
+    title: "30 days of snagging. Free.",
+    copy: "After launch, you get 30 days where any bug or issue gets fixed at no extra cost. Minor tweaks within reason are included too. If something bigger comes up, you'll know whether it's a fix or a new feature before any work starts.",
   },
   {
-    label: "04. FIT",
-    content: `Finally, our pledge is to be honest about fit.
-
-We're looking for partners, and that requires the right match on both sides. We'll tell you if we don't think we're right for your project.
-
-We don't build cheap quick-fix sites. We're a premium expert-led team for businesses serious about growth. If that's you, you'll get full transparency.`,
+    num: "04",
+    title: "Sometimes the answer is no.",
+    copy: "Not every project is the right fit. If Kaizen isn't the right choice for what you need, you'll hear that upfront — not three weeks into a project that's going sideways. The same goes the other way. This works best when both sides are genuinely invested.",
   },
 ];
 ---
 
-<StaticPageLayout path="/pledge">
-  <section class="bg-slate-900 px-4 py-24 text-white md:py-32">
-    <div class="mx-auto max-w-4xl">
-      <h1 class="font-mono text-4xl font-bold leading-tight text-kaizen-cyan md:text-6xl">
-        &gt; Our "No-BS" Pledge.
-      </h1>
-      <div class="mt-10 space-y-3 font-mono text-sm text-gray-400 md:text-base">
-        <p>// This page exists because you deserve to know exactly how we work.</p>
-        <p>// No marketing jargon. No black box. No surprise bills.</p>
-        <p>// Transparent partnership. Clear expectations.</p>
+<StaticPageLayout
+  path="/pledge"
+  title="The Kaizen Pledge | What You Can Expect"
+  description="No surprise bills. No disappearing acts. No jargon. Here's exactly what working with Kaizen looks like — before you commit to anything."
+>
+  <!-- ═══ HERO ═══ -->
+  <section class="relative bg-[#f5f5f3] pt-36 pb-28 md:pt-44 md:pb-36">
+    <div class="mx-auto max-w-[1440px] px-6 lg:px-12">
+      <div class="max-w-3xl">
+        <p
+          class="text-xs font-medium font-body uppercase tracking-[0.25em] text-gray-400 mb-6"
+        >
+          The pledge
+        </p>
+        <h1
+          class="text-4xl md:text-5xl lg:text-6xl font-heading font-bold text-gray-950 leading-tight mb-8"
+        >
+          Here's what you can expect.<br />
+          <span class="text-gray-400">Before you commit to anything.</span>
+        </h1>
+        <p class="text-lg md:text-xl text-gray-500 font-body leading-relaxed">
+          Most agencies talk about transparency. This page actually does it.
+          No spin, no small print — just how this works, written down so
+          you can hold Kaizen to it.
+        </p>
       </div>
     </div>
   </section>
 
-  <section class="bg-white py-20">
-    <div class="mx-auto grid max-w-7xl grid-cols-1 gap-12 px-4 lg:grid-cols-2">
-      <div class="hidden lg:flex">
-        <div class="sticky top-24 h-fit w-full rounded-2xl border border-kaizen-light bg-kaizen-light/50 p-8">
-          <h2 class="text-5xl font-heading font-black text-kaizen-dark md:text-6xl">
-            Our Terms
-          </h2>
-          <p class="mt-4 text-base text-kaizen-text-dark/70">
-            No hidden process, no hidden scope, no hidden costs.
-          </p>
-        </div>
+  <!-- ═══ COMMITMENTS ═══ -->
+  <section class="py-28 md:py-36 bg-gray-950 text-white relative overflow-hidden">
+    <div
+      class="pointer-events-none absolute -top-1/2 -right-1/4 w-[800px] h-[800px] rounded-full bg-kaizen-cyan/[0.04] blur-3xl"
+      aria-hidden="true"
+    ></div>
+
+    <div class="mx-auto max-w-[1440px] px-6 lg:px-12 relative z-10">
+      <div class="max-w-3xl mb-20 md:mb-28">
+        <p
+          class="text-xs font-medium font-body uppercase tracking-[0.25em] text-white/40 mb-6"
+        >
+          What you're signing up for
+        </p>
+        <h2
+          class="text-4xl md:text-5xl lg:text-6xl font-heading font-bold text-white leading-tight"
+        >
+          No surprises.<br />On either side.
+        </h2>
       </div>
-      <div class="space-y-20">
+
+      <div class="space-y-0">
         {
-          pledgeSections.map((section) => (
-            <article class="min-h-60">
-              <h3 class="mb-8 text-4xl font-heading font-black text-kaizen-dark md:text-5xl">
-                {section.label}
-              </h3>
-              <div class="space-y-4 text-lg leading-relaxed text-kaizen-text-dark/70">
-                {section.content.split("\n\n").map((paragraph) => (
-                  <p>{paragraph}</p>
-                ))}
+          commitments.map((item, i) => (
+            <div
+              class:list={[
+                "grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-12 py-16 md:py-20",
+                i < commitments.length - 1 && "border-b border-white/10",
+              ]}
+            >
+              <div class="md:col-span-4 lg:col-span-3">
+                <span class="text-sm font-body text-kaizen-cyan tracking-wide block mb-2">
+                  {item.num}
+                </span>
+                <h3 class="text-2xl md:text-3xl font-heading font-bold text-white">
+                  {item.title}
+                </h3>
               </div>
-            </article>
+              <div class="md:col-span-8 lg:col-span-9">
+                <p class="text-base md:text-lg font-body text-white/50 leading-relaxed max-w-2xl">
+                  {item.copy}
+                </p>
+              </div>
+            </div>
           ))
         }
       </div>
     </div>
   </section>
 
-  <section class="bg-kaizen-dark px-4 py-20 text-white md:py-32">
-    <div class="mx-auto max-w-3xl text-center">
-      <h2 class="mb-8 text-4xl font-heading font-black md:text-5xl lg:text-6xl">
-        Ready for a transparent partner?
-      </h2>
-      <p class="mb-12 text-xl leading-relaxed text-white/80">
-        Now you know exactly how we work. Let's talk about your project.
-      </p>
-      <a
-        href="/contact/"
-        class="inline-flex items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-kaizen-cyan to-kaizen-lime px-8 py-3 font-heading font-bold text-kaizen-dark transition hover:shadow-lg hover:shadow-kaizen-cyan/50"
-      >
-        Get in Touch
-        <span aria-hidden="true">-&gt;</span>
-      </a>
+  <!-- ═══ THE SHORT VERSION ═══ -->
+  <section class="py-28 md:py-36 bg-white">
+    <div class="mx-auto max-w-[1440px] px-6 lg:px-12">
+      <div class="max-w-3xl mx-auto text-center">
+        <h2
+          class="text-4xl md:text-5xl font-heading font-bold text-gray-950 leading-tight mb-8"
+        >
+          The short version.
+        </h2>
+        <p class="text-lg md:text-xl text-gray-500 font-body leading-relaxed">
+          You'll know what's happening, what it costs, and what you're getting —
+          at every stage. If something changes, you'll hear about it before it
+          hits your inbox. That's it. That's the pledge.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ CTA ═══ -->
+  <section class="py-28 md:py-36 bg-gray-950 text-white relative overflow-hidden">
+    <div
+      class="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_30%_50%,rgba(6,182,212,0.08),transparent_60%)]"
+    ></div>
+
+    <div class="mx-auto max-w-[1440px] px-6 lg:px-12 relative z-10">
+      <div class="max-w-3xl">
+        <p
+          class="text-xs font-medium font-body uppercase tracking-[0.25em] text-white/40 mb-8"
+        >
+          Next step
+        </p>
+        <h2
+          class="text-4xl md:text-5xl lg:text-6xl font-heading font-bold text-white leading-tight mb-8"
+        >
+          Now you know how this works.<br />
+          <span class="text-gray-500">Ready to see if it fits?</span>
+        </h2>
+        <p class="text-lg md:text-xl text-white/50 font-body leading-relaxed mb-14 max-w-2xl">
+          A quick conversation is the easiest way to find out. No pitch deck,
+          no pressure — just a proper look at what you need and whether Kaizen
+          is the right fit.
+        </p>
+
+        <div class="flex flex-col sm:flex-row items-start gap-6">
+          <ContactCTAButton label="Start a conversation" client:load />
+          <a
+            href="/performance-scanner/"
+            class="inline-flex items-center gap-3 px-10 py-5 rounded-lg border border-white/20 text-white font-heading font-bold text-xl transition-all duration-200 hover:scale-[1.03] hover:border-white/50 active:scale-[0.97]"
+          >
+            Free site audit
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="22"
+              height="22"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <path d="M7 17 17 7"></path>
+              <path d="M7 7h10v10"></path>
+            </svg>
+          </a>
+        </div>
+      </div>
     </div>
   </section>
 </StaticPageLayout>

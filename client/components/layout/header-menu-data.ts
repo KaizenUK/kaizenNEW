@@ -10,8 +10,9 @@ export interface MenuLink {
   label: string;
   href: string;
   description?: string;
-  badge?: "New";
+  badge?: "New" | "Soon";
   external?: boolean;
+  comingSoon?: boolean;
 }
 
 export interface MenuColumn {
@@ -52,7 +53,7 @@ export interface DesktopMenuDefinition {
     description: string;
     href: string;
     ctaLabel?: string;
-    media: PromoMedia;
+    media?: PromoMedia;
   };
   primaryColumns: MenuColumn[];
   utilitySections?: MenuUtilitySection[];
@@ -68,12 +69,6 @@ const menuDefinitions: Record<DesktopMenuKey, DesktopMenuDefinition> = {
         "We focus the public site around the services that fit the current strategy: WordPress rebuilds, technical SEO foundations, and hands-on product leadership.",
       href: "/services/wordpress-web-design/",
       ctaLabel: "See core services",
-      media: {
-        type: "image",
-        src:
-          "https://cdn.builder.io/api/v1/image/assets%2Fe4ae46bbd81b4b95bef54d66dd9748cc%2F85912ce9f05a4f7cb336598a47962b01?format=webp&width=1600",
-        alt: "Kaizen service showcase",
-      },
     },
     primaryColumns: [
       {
@@ -215,6 +210,8 @@ const menuDefinitions: Record<DesktopMenuKey, DesktopMenuDefinition> = {
           {
             label: "Helen Moore Hairdressing",
             href: "/case-studies/helen-moore-hairdressing/",
+            badge: "Soon",
+            comingSoon: true,
           },
         ],
       },
@@ -239,17 +236,11 @@ const menuDefinitions: Record<DesktopMenuKey, DesktopMenuDefinition> = {
     key: "about",
     label: "Company",
     promo: {
-      title: "Small team. Sharp standards.",
+      title: "One person. Sharp standards.",
       description:
         "The public site is getting leaner, but the trust signals stay. This is where people can understand how we work and who they are hiring.",
       href: "/about/",
       ctaLabel: "About Kaizen",
-      media: {
-        type: "image",
-        src:
-          "https://cdn.builder.io/api/v1/image/assets%2Fe4ae46bbd81b4b95bef54d66dd9748cc%2Fa18f81c064614dceb4a9d1fcb2c9f64b?format=webp&width=1600",
-        alt: "Kaizen company preview",
-      },
     },
     primaryColumns: [
       {

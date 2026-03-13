@@ -1,36 +1,93 @@
 ---
 import StaticPageLayout from "../layouts/StaticPageLayout.astro";
+import ContactCTAButton from "../../client/components/ContactCTAButton";
 
 export const prerender = true;
+
+/* ── What you get — concrete outcomes ─────────────────────── */
+const outcomes = [
+  {
+    num: "01",
+    title: "One person. The whole way.",
+    copy: "From first conversation to launch and beyond. No account managers. No handoffs. No repeating yourself to someone new every fortnight. You deal with the person doing the work.",
+  },
+  {
+    num: "02",
+    title: "Advice before invoices.",
+    copy: "Sometimes your site needs rebuilding. Sometimes it needs three things fixing. You'll know which before any work starts — and you'll understand exactly why.",
+  },
+  {
+    num: "03",
+    title: "Built to perform, not just look nice.",
+    copy: "Every site passes Google's Core Web Vitals. Every page loads fast on every device. That's not a bonus — it's the baseline. If it doesn't perform, it doesn't ship.",
+  },
+  {
+    num: "04",
+    title: "Plain English. Every step.",
+    copy: "No jargon. No acronyms dropped to sound clever. You'll understand every recommendation, every decision, and exactly what it means for your business.",
+  },
+];
 ---
 
-<StaticPageLayout path="/about">
-  <section class="min-h-screen bg-white py-20">
-    <div class="container mx-auto px-4">
-      <div class="grid grid-cols-1 items-center gap-16 lg:grid-cols-2">
-        <div class="max-w-2xl">
-          <h1 class="mb-6 text-6xl font-heading font-black leading-tight text-kaizen-dark md:text-7xl lg:text-8xl">
-            Stop overcomplicating your website.
-          </h1>
-          <p class="text-xl leading-relaxed text-kaizen-dark/70 md:text-2xl">
-            Traditional agencies are slow, expensive, and love jargon. We use
-            modern technology to build fast, effective websites that just work.
-          </p>
-          <a
-            href="/contact/"
-            class="mt-8 inline-flex items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-kaizen-cyan to-kaizen-lime px-8 py-3 font-heading font-bold text-kaizen-dark transition hover:shadow-lg hover:shadow-kaizen-cyan/50"
+<StaticPageLayout
+  path="/about"
+  title="About Kaizen Web | Web Design That Actually Works"
+  description="Kaizen means continuous improvement. One person, start to finish. No jargon, no handoffs. Websites that perform as hard as your business does."
+>
+  <!-- ═══ HERO ═══ -->
+  <section class="relative bg-[#f5f5f3] pt-36 pb-28 md:pt-44 md:pb-36">
+    <div class="mx-auto max-w-[1440px] px-6 lg:px-12">
+      <div class="max-w-3xl">
+        <p
+          class="text-xs font-medium font-body uppercase tracking-[0.25em] text-gray-400 mb-6"
+        >
+          About
+        </p>
+        <h1
+          class="text-4xl md:text-5xl lg:text-6xl font-heading font-bold text-gray-950 leading-tight mb-8"
+        >
+          You've been through the agency thing before.
+        </h1>
+        <p class="text-lg md:text-xl text-gray-500 font-body leading-relaxed mb-6">
+          The big pitch. The fancy proposal. Three months of back-and-forth
+          with someone who's never looked at your site. Then a bill for something
+          that doesn't quite work — and the person who sold it to you has moved on
+          to the next client.
+        </p>
+        <p class="text-lg md:text-xl text-gray-500 font-body leading-relaxed">
+          This isn't that.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ THE NAME ═══ -->
+  <section class="py-28 md:py-36 bg-white">
+    <div class="mx-auto max-w-[1440px] px-6 lg:px-12">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24">
+        <div>
+          <h2
+            class="text-5xl md:text-6xl lg:text-7xl font-heading font-bold text-gray-950 leading-none mb-8"
           >
-            Let's talk
-            <span aria-hidden="true">-&gt;</span>
-          </a>
+            Kaizen.
+          </h2>
+          <p
+            class="text-2xl md:text-3xl font-heading font-bold text-gray-950 leading-snug"
+          >
+            It's a Japanese word.<br />It means continuous improvement.
+          </p>
         </div>
-        <div class="hidden justify-center lg:flex lg:justify-end">
-          <div class="rounded-3xl border border-kaizen-light bg-kaizen-light/60 p-8 text-center">
-            <p class="text-sm font-mono uppercase tracking-widest text-kaizen-cyan">
-              Kaizen
+        <div class="lg:pt-8">
+          <div class="border-l-2 border-gray-200 pl-8 lg:pl-10">
+            <p class="text-lg md:text-xl text-gray-500 font-body leading-relaxed mb-6">
+              Not "launch and leave." The idea that something can always be
+              better — and that small, consistent changes beat one big expensive
+              gamble every time.
             </p>
-            <p class="mt-3 text-xl font-heading font-bold text-kaizen-dark">
-              Continuous Improvement
+            <p class="text-lg md:text-xl text-gray-500 font-body leading-relaxed">
+              Your website isn't a one-off project. It's a living thing.
+              It should get sharper, faster, and more effective every month —
+              not just on the day it goes live.
             </p>
           </div>
         </div>
@@ -38,113 +95,141 @@ export const prerender = true;
     </div>
   </section>
 
-  <section class="bg-kaizen-light py-20 md:py-32">
-    <div class="container mx-auto px-4">
-      <div class="mx-auto max-w-3xl">
-        <h2 class="mb-8 text-4xl font-heading font-black text-kaizen-dark md:text-5xl">
-          Continuous improvement. For your business.
-        </h2>
-        <div class="space-y-6 text-xl leading-relaxed text-kaizen-dark/70">
-          <p>
-            Kaizen means "continuous improvement". Most agencies launch your
-            site and disappear. That's not how we work.
-          </p>
-          <p>
-            Your website should grow with your business. We stick around to
-            make sure you keep winning. Better speed. Better conversions.
-            Better results.
-          </p>
-        </div>
-      </div>
-    </div>
-  </section>
+  <!-- ═══ HOW THIS IS DIFFERENT ═══ -->
+  <section class="py-28 md:py-36 bg-gray-950 text-white relative overflow-hidden">
+    <div
+      class="pointer-events-none absolute -top-1/2 -right-1/4 w-[800px] h-[800px] rounded-full bg-kaizen-cyan/[0.04] blur-3xl"
+      aria-hidden="true"
+    ></div>
 
-  <section class="bg-white py-20 md:py-32">
-    <div class="container mx-auto px-4">
-      <h2 class="mb-16 text-center text-4xl font-heading font-black text-kaizen-dark md:text-5xl">
-        Here's what's different.
-      </h2>
-      <div class="mx-auto grid max-w-6xl grid-cols-1 gap-8 md:grid-cols-3">
-        <article class="rounded-3xl bg-kaizen-light/50 p-8 md:p-10">
-          <h3 class="mb-4 text-2xl font-heading font-bold text-kaizen-dark">
-            We don't guess.
-          </h3>
-          <p class="text-lg leading-relaxed text-kaizen-dark/70">
-            We use data to see exactly what's working and what isn't. That's
-            how we know if your site is actually generating leads.
-          </p>
-        </article>
-        <article class="rounded-3xl bg-kaizen-light/50 p-8 md:p-10">
-          <h3 class="mb-4 text-2xl font-heading font-bold text-kaizen-dark">
-            Speed wins.
-          </h3>
-          <p class="text-lg leading-relaxed text-kaizen-dark/70">
-            Fast sites convert. Slow sites lose customers. We make sure your
-            site loads instantly so people stay.
-          </p>
-        </article>
-        <article class="rounded-3xl bg-kaizen-light/50 p-8 md:p-10">
-          <h3 class="mb-4 text-2xl font-heading font-bold text-kaizen-dark">
-            No tech-talk.
-          </h3>
-          <p class="text-lg leading-relaxed text-kaizen-dark/70">
-            We speak plain English. We handle the complex stuff so you can
-            focus on running your business.
-          </p>
-        </article>
-      </div>
-    </div>
-  </section>
-
-  <section class="bg-kaizen-light py-20 md:py-32">
-    <div class="container mx-auto px-4">
-      <div class="mx-auto max-w-3xl">
-        <h2 class="mb-8 text-4xl font-heading font-black text-kaizen-dark md:text-5xl">
-          You don't pay for the hours. You pay for the result.
-        </h2>
-        <div class="space-y-6 text-xl leading-relaxed text-kaizen-dark/70">
-          <p>
-            Old agencies charge by the hour. More hours, more money. We use
-            modern tools, AI, and automation so we can work faster and cheaper,
-            and you get a better site.
-          </p>
-          <p>
-            Don't pay us for the time we spent typing. Pay us because we took
-            your site from a score of 40 to a score of 98. That's proof.
-          </p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section class="bg-white py-20 md:py-32">
-    <div class="container mx-auto px-4">
-      <div class="mx-auto max-w-3xl text-center">
-        <h2 class="mb-8 text-4xl font-heading font-black text-kaizen-dark md:text-5xl">
-          We're operators. Not coders.
-        </h2>
-        <p class="text-xl leading-relaxed text-kaizen-dark/70">
-          We use AI and modern automation to do work that used to take a full
-          team. We focus on outcomes: faster builds, better performance, lower
-          cost.
-        </p>
-      </div>
-    </div>
-  </section>
-
-  <section class="bg-kaizen-dark py-20 text-white md:py-32">
-    <div class="container mx-auto px-4">
-      <div class="mx-auto max-w-3xl text-center">
-        <h2 class="mb-8 text-5xl font-heading font-black md:text-6xl">
-          Ready for something different?
-        </h2>
-        <a
-          href="/contact/"
-          class="inline-flex items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-kaizen-cyan to-kaizen-lime px-8 py-3 font-heading font-bold text-kaizen-dark transition hover:shadow-lg hover:shadow-kaizen-cyan/50"
+    <div class="mx-auto max-w-[1440px] px-6 lg:px-12 relative z-10">
+      <div class="max-w-3xl mb-20 md:mb-28">
+        <p
+          class="text-xs font-medium font-body uppercase tracking-[0.25em] text-white/40 mb-6"
         >
-          Let's build
-          <span aria-hidden="true">-&gt;</span>
-        </a>
+          How this works
+        </p>
+        <h2
+          class="text-4xl md:text-5xl lg:text-6xl font-heading font-bold text-white leading-tight"
+        >
+          No layers.<br />No runaround.
+        </h2>
+      </div>
+
+      <div class="space-y-0">
+        {
+          outcomes.map((item, i) => (
+            <div
+              class:list={[
+                "grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-12 py-16 md:py-20",
+                i < outcomes.length - 1 && "border-b border-white/10",
+              ]}
+            >
+              <div class="md:col-span-4 lg:col-span-3">
+                <span class="text-sm font-body text-kaizen-cyan tracking-wide block mb-2">
+                  {item.num}
+                </span>
+                <h3 class="text-2xl md:text-3xl font-heading font-bold text-white">
+                  {item.title}
+                </h3>
+              </div>
+              <div class="md:col-span-8 lg:col-span-9">
+                <p class="text-base md:text-lg font-body text-white/50 leading-relaxed max-w-2xl">
+                  {item.copy}
+                </p>
+              </div>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ THE PERSONAL BIT ═══ -->
+  <section class="py-28 md:py-36 bg-[#f5f5f3]">
+    <div class="mx-auto max-w-[1440px] px-6 lg:px-12">
+      <div class="max-w-3xl mx-auto">
+        <p
+          class="text-xs font-medium font-body uppercase tracking-[0.25em] text-gray-400 mb-6"
+        >
+          The personal bit
+        </p>
+        <h2
+          class="text-4xl md:text-5xl font-heading font-bold text-gray-950 leading-tight mb-10"
+        >
+          Based on the Wirral.<br />
+          <span class="text-gray-400">Working across the UK.</span>
+        </h2>
+        <div class="space-y-6 text-lg md:text-xl text-gray-500 font-body leading-relaxed">
+          <p>
+            Most of the businesses Kaizen works with are small to mid-sized
+            companies who know their website isn't pulling its weight — but don't
+            know where to start fixing it. Or they've tried, and it didn't work
+            out.
+          </p>
+          <p>
+            When you work with Kaizen, you deal with the same person from first
+            conversation to final delivery. No handoffs. No disappearing into a
+            queue. No "I'll pass that on."
+          </p>
+          <p>
+            Fewer projects, done properly. If Kaizen takes you on, you get full
+            attention — not whatever's left after the bigger clients.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ CTA ═══ -->
+  <section class="py-28 md:py-36 bg-gray-950 text-white relative overflow-hidden">
+    <div
+      class="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_30%_50%,rgba(6,182,212,0.08),transparent_60%)]"
+    ></div>
+
+    <div class="mx-auto max-w-[1440px] px-6 lg:px-12 relative z-10">
+      <div class="max-w-3xl">
+        <p
+          class="text-xs font-medium font-body uppercase tracking-[0.25em] text-white/40 mb-8"
+        >
+          Next step
+        </p>
+        <h2
+          class="text-4xl md:text-5xl lg:text-6xl font-heading font-bold text-white leading-tight mb-8"
+        >
+          A conversation costs nothing.<br />
+          <span class="text-gray-500">The wrong website costs everything.</span>
+        </h2>
+        <p class="text-lg md:text-xl text-white/50 font-body leading-relaxed mb-14 max-w-2xl">
+          Whether you need a ground-up rebuild or just want someone to look at
+          what you've got and tell you what's actually going on — that's a good
+          place to start.
+        </p>
+
+        <div class="flex flex-col sm:flex-row items-start gap-6">
+          <ContactCTAButton label="Start a conversation" client:load />
+          <a
+            href="/performance-scanner/"
+            class="inline-flex items-center gap-3 px-10 py-5 rounded-lg border border-white/20 text-white font-heading font-bold text-xl transition-all duration-200 hover:scale-[1.03] hover:border-white/50 active:scale-[0.97]"
+          >
+            Free site audit
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="22"
+              height="22"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <path d="M7 17 17 7"></path>
+              <path d="M7 7h10v10"></path>
+            </svg>
+          </a>
+        </div>
       </div>
     </div>
   </section>

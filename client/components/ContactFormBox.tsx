@@ -344,7 +344,7 @@ export const ContactFormBox = () => {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     onBlur={handleEmailBlur}
-                    placeholder="name@email.co"
+                    placeholder="name@company.co.uk"
                     className={`w-full bg-gray-800/50 border text-white placeholder:text-white/40 placeholder:text-xs rounded-lg px-4 py-3 text-sm focus:outline-none transition ${
                       emailError
                         ? "border-red-500 focus:border-red-500"

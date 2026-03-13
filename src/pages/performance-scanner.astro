@@ -1,122 +1,224 @@
 ---
 import StaticPageLayout from "../layouts/StaticPageLayout.astro";
 import SpeedScanner from "../../client/components/SpeedScanner";
+import ContactCTAButton from "../../client/components/ContactCTAButton";
 
 export const prerender = true;
-
-const stats = [
-  {
-    stat: "53%",
-    description: "of visits are abandoned when mobile load time is over 3 seconds.",
-  },
-  {
-    stat: "7%",
-    description: "average conversion drop for every extra second of delay.",
-  },
-  {
-    stat: "90+",
-    description: "target score for strong Core Web Vitals performance.",
-  },
-];
 
 const vitals = [
   {
     code: "LCP",
     title: "Largest Contentful Paint",
-    description: "How quickly the main content appears. Slow LCP hurts both rankings and trust.",
+    plain: "How quickly the main content appears.",
+    why: "A visitor lands on your page and sees nothing but white for two seconds. They don't wait — they hit back. That's a lost customer before your site even loaded.",
   },
   {
     code: "CLS",
     title: "Cumulative Layout Shift",
-    description: "How stable the page is while loading. Layout jumps are a major UX failure.",
+    plain: "How much the page jumps around while loading.",
+    why: "Someone goes to tap your phone number and the page shifts — now they've hit an ad. It feels broken. They don't try again.",
   },
   {
     code: "TBT",
     title: "Total Blocking Time",
-    description: "How responsive your page is while scripts execute. High TBT breaks click actions.",
+    plain: "How long the page is frozen while scripts load.",
+    why: "Your visitor taps 'Get a quote' and nothing happens. They tap again. Still nothing. By the time the page responds, they've already decided you're not worth the hassle.",
   },
 ];
 
 const faqs = [
   {
-    question: "How does speed affect ranking?",
+    question: "Why is my WordPress site so slow?",
     answer:
-      "Core Web Vitals are ranking signals. If your pages fail LCP, CLS, and TBT thresholds, visibility suffers even when content quality is strong.",
+      "Usually it's one of three things: unoptimised images, too many plugins loading scripts on every page, or a bloated theme or page builder like Elementor or Divi. The theme alone can add 2–3 seconds of load time before your content even appears.",
   },
   {
-    question: "Can this be fixed without a rebuild?",
+    question: "What is a good Google PageSpeed score?",
     answer:
-      "Sometimes. Image, script, and hosting improvements can help. But if the foundation is bloated, rebuilding on a lean stack is often faster and cheaper long-term.",
+      "Google considers 90+ a pass. For competitive search terms, that's the minimum you need to avoid losing rankings. Below 50 means your site is actively costing you traffic — and probably customers too.",
   },
   {
-    question: "What score should I aim for?",
+    question: "Does website speed affect Google rankings?",
     answer:
-      "For competitive terms, aim for 90+ on mobile with stable field data, not just one-off synthetic checks.",
+      "Yes. Since 2021, Google uses Core Web Vitals — load speed, visual stability, and interactivity — as direct ranking signals. A slow site loses visibility even when the content is strong.",
+  },
+  {
+    question: "Why is my mobile score lower than desktop?",
+    answer:
+      "Mobile devices have less processing power and often slower connections, so everything takes longer. Google also indexes and ranks based on your mobile score, not desktop — so that's the number that actually matters.",
+  },
+  {
+    question: "What are Core Web Vitals?",
+    answer:
+      "Three metrics Google uses to measure your site's real-world performance: how fast the main content loads (LCP), how stable the layout is while loading (CLS), and how quickly the page responds when someone interacts with it (TBT). Fail these and your rankings suffer.",
+  },
+  {
+    question: "What is the difference between lab data and field data?",
+    answer:
+      "Lab data is what this tool gives you — a simulated test under controlled conditions, useful for diagnosing specific problems. Field data comes from real visitors over time and shows up in Google Search Console. Google uses both, but field data is what actually determines your Core Web Vitals pass or fail.",
+  },
+  {
+    question: "How often should I test my website speed?",
+    answer:
+      "After any significant change — a new plugin, a theme update, adding images or video. Beyond that, once a month is enough to catch issues before they affect your rankings. Scores can shift without you touching anything if your hosting degrades or a plugin updates in the background.",
+  },
+  {
+    question: "Why did my PageSpeed score drop suddenly?",
+    answer:
+      "Common culprits: a plugin updated and added heavier scripts, your hosting provider moved you to a slower server, or someone uploaded uncompressed images. Sometimes Google updates its scoring thresholds too. Running a fresh test will show you exactly what changed.",
   },
 ];
+
+const faqSchema = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: faqs.map((item) => ({
+    "@type": "Question",
+    name: item.question,
+    acceptedAnswer: {
+      "@type": "Answer",
+      text: item.answer,
+    },
+  })),
+});
 ---
 
 <StaticPageLayout
   path="/performance-scanner"
-  description="Your slow website is costing you customers. Run a free PageSpeed check to find out what is holding you back and fixes. Instant results. Fix your site speed now."
+  title="Test Your Website Speed | Free Core Web Vitals Check | Kaizen Web"
+  description="Test your website speed against Google's Core Web Vitals. See exactly what's slowing you down, what it's costing you, and what to fix first. Free. Instant. Plain English."
 >
-  <section class="relative overflow-hidden bg-slate-950 py-20 text-white md:py-28">
-    <div class="container mx-auto max-w-5xl px-4">
-      <p class="mb-4 inline-flex items-center gap-2 rounded-full border border-red-500/30 bg-red-500/10 px-4 py-2 text-sm font-medium text-red-300">
-        Free Performance Audit
-      </p>
-      <h1 class="mb-6 text-4xl font-heading font-black leading-tight md:text-5xl lg:text-6xl">
-        Is Your Website Too Slow to Convert?
-      </h1>
-      <p class="mb-12 max-w-3xl text-xl leading-relaxed text-slate-300">
-        Run a live speed check, review your Core Web Vitals, and get practical priorities to improve ranking and conversion performance.
-      </p>
+  <script type="application/ld+json" set:html={faqSchema} is:inline />
+  <!-- ═══ HERO ═══ -->
+  <section class="relative bg-[#f5f5f3] pt-36 pb-28 md:pt-44 md:pb-36">
+    <div class="mx-auto max-w-[1440px] px-6 lg:px-12">
+      <div class="max-w-3xl">
+        <p
+          class="text-xs font-medium font-body uppercase tracking-[0.25em] text-gray-400 mb-6"
+        >
+          Free website speed test
+        </p>
+        <h1
+          class="text-4xl md:text-5xl lg:text-6xl font-heading font-bold text-gray-950 leading-tight mb-8"
+        >
+          Test your website speed.<br />
+          <span class="text-gray-400">See what's costing you customers.</span>
+        </h1>
+        <p class="text-lg md:text-xl text-gray-500 font-body leading-relaxed">
+          Someone visits your site, waits three seconds, and leaves. They
+          don't complain — they just go to a competitor. This tool runs a live
+          audit against Google's Core Web Vitals so you can see exactly where
+          the problem is, and what to fix first.
+        </p>
+      </div>
 
-      <div class="grid grid-cols-1 gap-6 md:grid-cols-3">
-        {
-          stats.map((item) => (
-            <article class="rounded-2xl border border-slate-700/60 bg-slate-800/50 p-6">
-              <p class="mb-2 text-3xl font-heading font-black text-white">{item.stat}</p>
-              <p class="text-sm text-slate-300">{item.description}</p>
-            </article>
-          ))
-        }
+      <!-- Stats -->
+      <div class="mt-16 grid grid-cols-1 gap-6 md:grid-cols-3 max-w-4xl">
+        <div class="border-l-2 border-gray-300 pl-6">
+          <p class="text-4xl font-heading font-bold text-gray-950">53%</p>
+          <p class="mt-2 text-sm text-gray-500 font-body leading-relaxed">
+            of mobile visitors leave if a page takes over 3 seconds. That's more than half your traffic — gone before they see a thing.
+          </p>
+        </div>
+        <div class="border-l-2 border-gray-300 pl-6">
+          <p class="text-4xl font-heading font-bold text-gray-950">7%</p>
+          <p class="mt-2 text-sm text-gray-500 font-body leading-relaxed">
+            drop in conversions for every extra second of load time. Two seconds slow? That's 14% of your leads, gone.
+          </p>
+        </div>
+        <div class="border-l-2 border-gray-300 pl-6">
+          <p class="text-4xl font-heading font-bold text-gray-950">90+</p>
+          <p class="mt-2 text-sm text-gray-500 font-body leading-relaxed">
+            the score Google considers "good" for Core Web Vitals.
+          </p>
+        </div>
       </div>
     </div>
   </section>
 
-  <section class="bg-slate-900 py-16 md:py-24">
-    <div class="container mx-auto max-w-6xl px-4">
+  <!-- ═══ SCANNER ═══ -->
+  <section class="bg-gray-950 py-20 md:py-28 relative overflow-hidden">
+    <div
+      class="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_50%_0%,rgba(6,182,212,0.06),transparent_60%)]"
+    ></div>
+    <div class="mx-auto max-w-[1440px] px-6 lg:px-12 relative z-10">
       <SpeedScanner client:load />
     </div>
   </section>
 
-  <section class="bg-slate-950 py-20 text-white md:py-28">
-    <div class="container mx-auto max-w-6xl px-4">
-      <h2 class="mb-10 text-center text-4xl font-heading font-bold md:text-5xl">What the Report Measures</h2>
-      <div class="grid grid-cols-1 gap-6 md:grid-cols-3">
+  <!-- ═══ WHAT IT MEASURES ═══ -->
+  <section class="py-28 md:py-36 bg-white">
+    <div class="mx-auto max-w-[1440px] px-6 lg:px-12">
+      <div class="max-w-3xl mb-20">
+        <p
+          class="text-xs font-medium font-body uppercase tracking-[0.25em] text-gray-400 mb-6"
+        >
+          What it measures
+        </p>
+        <h2
+          class="text-4xl md:text-5xl font-heading font-bold text-gray-950 leading-tight"
+        >
+          Core Web Vitals — the three metrics<br />
+          <span class="text-gray-400">Google actually ranks you on.</span>
+        </h2>
+      </div>
+
+      <div class="space-y-0">
         {
-          vitals.map((item) => (
-            <article class="rounded-2xl border border-slate-700/60 bg-slate-900/60 p-7">
-              <p class="mb-2 text-xs font-bold uppercase tracking-wider text-amber-300">{item.code}</p>
-              <h3 class="mb-3 text-2xl font-heading font-bold text-white">{item.title}</h3>
-              <p class="text-slate-300">{item.description}</p>
-            </article>
+          vitals.map((item, i) => (
+            <div
+              class:list={[
+                "grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-12 py-16 md:py-20",
+                i < vitals.length - 1 && "border-b border-gray-200",
+              ]}
+            >
+              <div class="md:col-span-4 lg:col-span-3">
+                <span class="text-sm font-body text-cyan-600 tracking-wide block mb-2">
+                  {item.code}
+                </span>
+                <h3 class="text-2xl md:text-3xl font-heading font-bold text-gray-950">
+                  {item.title}
+                </h3>
+              </div>
+              <div class="md:col-span-8 lg:col-span-9">
+                <p class="text-lg font-body font-medium text-gray-950 mb-3">
+                  {item.plain}
+                </p>
+                <p class="text-base font-body text-gray-500 leading-relaxed max-w-2xl">
+                  {item.why}
+                </p>
+              </div>
+            </div>
           ))
         }
       </div>
     </div>
   </section>
 
-  <section class="bg-white py-20 md:py-28">
-    <div class="container mx-auto max-w-4xl px-4">
-      <h2 class="mb-8 text-4xl font-heading font-bold text-kaizen-dark md:text-5xl">Common Questions</h2>
-      <div class="space-y-4">
+  <!-- ═══ FAQ ═══ -->
+  <section class="py-28 md:py-36 bg-[#f5f5f3]">
+    <div class="mx-auto max-w-[1440px] px-6 lg:px-12">
+      <div class="mb-16">
+        <p
+          class="text-xs font-medium font-body uppercase tracking-[0.25em] text-gray-400 mb-6"
+        >
+          Common questions
+        </p>
+        <h2
+          class="text-4xl md:text-5xl font-heading font-bold text-gray-950 leading-tight"
+        >
+          You're probably wondering.
+        </h2>
+      </div>
+
+      <div class="grid grid-cols-1 gap-4 lg:grid-cols-2 lg:gap-x-12">
         {
           faqs.map((item) => (
-            <details class="rounded-xl border border-kaizen-light bg-kaizen-light/30 p-5">
-              <summary class="cursor-pointer list-none text-lg font-semibold text-kaizen-dark">{item.question}</summary>
-              <p class="mt-3 text-kaizen-text-dark/75">{item.answer}</p>
+            <details class="rounded-xl border border-gray-200 bg-white p-6">
+              <summary class="cursor-pointer text-lg font-heading font-bold text-gray-950">
+                {item.question}
+              </summary>
+              <p class="mt-4 leading-relaxed text-gray-600">{item.answer}</p>
             </details>
           ))
         }
@@ -124,19 +226,56 @@ const faqs = [
     </div>
   </section>
 
-  <section class="bg-kaizen-dark py-20 text-white">
-    <div class="container mx-auto max-w-3xl px-4 text-center">
-      <h2 class="mb-6 text-4xl font-heading font-bold md:text-5xl">Want Help Fixing It?</h2>
-      <p class="mb-8 text-lg text-white/80">
-        We can turn the report into a clear action plan and implement the highest-impact improvements first.
-      </p>
-      <a
-        href="/contact/"
-        class="inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-kaizen-cyan to-kaizen-lime px-8 py-3 font-heading font-bold text-kaizen-dark transition hover:opacity-90"
-      >
-        Book a Speed Review
-        <span aria-hidden="true">-&gt;</span>
-      </a>
+  <!-- ═══ CTA ═══ -->
+  <section class="py-28 md:py-36 bg-gray-950 text-white relative overflow-hidden">
+    <div
+      class="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_30%_50%,rgba(6,182,212,0.08),transparent_60%)]"
+    ></div>
+
+    <div class="mx-auto max-w-[1440px] px-6 lg:px-12 relative z-10">
+      <div class="max-w-3xl">
+        <p
+          class="text-xs font-medium font-body uppercase tracking-[0.25em] text-white/40 mb-8"
+        >
+          Next step
+        </p>
+        <h2
+          class="text-4xl md:text-5xl lg:text-6xl font-heading font-bold text-white leading-tight mb-8"
+        >
+          Know what's wrong.<br />
+          <span class="text-gray-500">Now let's fix it.</span>
+        </h2>
+        <p class="text-lg md:text-xl text-white/50 font-body leading-relaxed mb-14 max-w-2xl">
+          A report tells you what's broken. Kaizen tells you what to do about it
+          — and can do the work too. Whether it's image optimisation, code
+          cleanup, or a full rebuild, the fix starts with a conversation.
+        </p>
+
+        <div class="flex flex-col sm:flex-row items-start gap-6">
+          <ContactCTAButton label="Start a conversation" client:load />
+          <a
+            href="/services/local-seo/"
+            class="inline-flex items-center gap-3 px-10 py-5 rounded-lg border border-white/20 text-white font-heading font-bold text-xl transition-all duration-200 hover:scale-[1.03] hover:border-white/50 active:scale-[0.97]"
+          >
+            Learn about Local SEO
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="22"
+              height="22"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <path d="M5 12h14"></path>
+              <path d="m12 5 7 7-7 7"></path>
+            </svg>
+          </a>
+        </div>
+      </div>
     </div>
   </section>
 </StaticPageLayout>

@@ -340,31 +340,33 @@ const Header: React.FC<HeaderProps> = ({
                               onClick={deferMenuClose}
                               className="group flex w-[30%] min-w-[24rem] max-w-[29rem] shrink-0 flex-col border-r border-black/10 px-8 py-8"
                             >
-                              <div className="overflow-hidden rounded-[18px] bg-[#edf2fb]">
-                                {activeMenuData.promo.media.type === "video" ? (
-                                  <video
-                                    autoPlay
-                                    muted
-                                    loop
-                                    playsInline
-                                    poster={activeMenuData.promo.media.poster}
-                                    className="aspect-[16/10] h-auto w-full object-cover transition-transform duration-300 group-hover:scale-[1.04]"
-                                  >
-                                    <source
+                              {activeMenuData.promo.media ? (
+                                <div className="overflow-hidden rounded-[18px] bg-[#edf2fb]">
+                                  {activeMenuData.promo.media.type === "video" ? (
+                                    <video
+                                      autoPlay
+                                      muted
+                                      loop
+                                      playsInline
+                                      poster={activeMenuData.promo.media.poster}
+                                      className="aspect-[16/10] h-auto w-full object-cover transition-transform duration-300 group-hover:scale-[1.04]"
+                                    >
+                                      <source
+                                        src={activeMenuData.promo.media.src}
+                                        type="video/mp4"
+                                      />
+                                    </video>
+                                  ) : (
+                                    <img
                                       src={activeMenuData.promo.media.src}
-                                      type="video/mp4"
+                                      alt={activeMenuData.promo.media.alt}
+                                      className="aspect-[16/10] h-auto w-full object-cover transition-transform duration-300 group-hover:scale-[1.04]"
+                                      loading="lazy"
+                                      decoding="async"
                                     />
-                                  </video>
-                                ) : (
-                                  <img
-                                    src={activeMenuData.promo.media.src}
-                                    alt={activeMenuData.promo.media.alt}
-                                    className="aspect-[16/10] h-auto w-full object-cover transition-transform duration-300 group-hover:scale-[1.04]"
-                                    loading="lazy"
-                                    decoding="async"
-                                  />
-                                )}
-                              </div>
+                                  )}
+                                </div>
+                              ) : null}
 
                               <div className="mt-5 space-y-2">
                                 <h3 className="text-[28px] font-semibold leading-[1.08] text-[#16181d] transition-opacity duration-200 group-hover:opacity-80">
@@ -400,24 +402,37 @@ const Header: React.FC<HeaderProps> = ({
                                       <ul className="mt-3 flex flex-col">
                                         {column.items.map((item) => (
                                           <li key={item.href}>
-                                            <MenuAnchor
-                                              item={item}
-                                              onClick={deferMenuClose}
-                                              className="group inline-flex items-start py-[6px] text-[#16181d] transition-colors duration-200 hover:text-[#1764ff]"
-                                            >
-                                              <span className="mt-[11px] h-[6px] w-0 shrink-0 rounded-full bg-[#84cc16] transition-all duration-200 group-hover:mr-3 group-hover:w-5" />
-                                              <span className="inline-flex items-center gap-2 text-[18px] font-medium leading-[1.5]">
-                                                <span>{item.label}</span>
-                                                {item.badge ? (
-                                                  <span className="rounded-sm bg-[#e5f3cf] px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-[0.08em] text-[#355413]">
-                                                    {item.badge}
-                                                  </span>
-                                                ) : null}
-                                                {(item.external || isExternalHref(item.href)) ? (
-                                                  <ArrowUpRight className="h-4 w-4 text-[#73809a]" />
-                                                ) : null}
+                                            {item.comingSoon ? (
+                                              <span className="inline-flex items-start py-[6px] text-[#16181d]/30 cursor-default">
+                                                <span className="inline-flex items-center gap-2 text-[18px] font-medium leading-[1.5]">
+                                                  <span>{item.label}</span>
+                                                  {item.badge ? (
+                                                    <span className="shrink-0 whitespace-nowrap rounded-sm bg-[#f0f0ee] px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-[0.08em] text-[#8a8a86]">
+                                                      {item.badge}
+                                                    </span>
+                                                  ) : null}
+                                                </span>
                                               </span>
-                                            </MenuAnchor>
+                                            ) : (
+                                              <MenuAnchor
+                                                item={item}
+                                                onClick={deferMenuClose}
+                                                className="group inline-flex items-start py-[6px] text-[#16181d] transition-colors duration-200 hover:text-[#1764ff]"
+                                              >
+                                                <span className="mt-[11px] h-[6px] w-0 shrink-0 rounded-full bg-[#84cc16] transition-all duration-200 group-hover:mr-3 group-hover:w-5" />
+                                                <span className="inline-flex items-center gap-2 text-[18px] font-medium leading-[1.5]">
+                                                  <span>{item.label}</span>
+                                                  {item.badge ? (
+                                                    <span className="rounded-sm bg-[#e5f3cf] px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-[0.08em] text-[#355413]">
+                                                      {item.badge}
+                                                    </span>
+                                                  ) : null}
+                                                  {(item.external || isExternalHref(item.href)) ? (
+                                                    <ArrowUpRight className="h-4 w-4 text-[#73809a]" />
+                                                  ) : null}
+                                                </span>
+                                              </MenuAnchor>
+                                            )}
                                           </li>
                                         ))}
                                       </ul>
