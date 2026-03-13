@@ -37,3 +37,4 @@ scripts/supabase/editor-secrets.env
 kaizen-perf/
 terms.txt
 terms.docx
+*.zip

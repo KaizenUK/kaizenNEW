@@ -1,7 +1,6 @@
 import type { APIRoute } from "astro";
 import { promises as fs } from "node:fs";
 import path from "node:path";
-import { fileURLToPath } from "node:url";
 import {
   getAllPosts,
   getManagedRoutePaths,
@@ -18,7 +17,9 @@ import {
 
 export const prerender = true;
 
-const PAGES_DIR = fileURLToPath(new URL(".", import.meta.url));
+// process.cwd() is the project root in both dev and build.
+// import.meta.url can't be trusted — Astro bundles this file to a temp location at build time.
+const PAGES_DIR = path.join(process.cwd(), "src", "pages");
 const EXCLUDED_SITEMAP_ROUTES = new Set([
   "/studio/",
   "/thank-you/",
@@ -27,6 +28,8 @@ const EXCLUDED_SITEMAP_ROUTES = new Set([
   "/privacy-policy/",
   "/cookie-policy/",
   "/gdpr-policy/",
+  "/elementor-test-landing/",
+  "/case-studies/high-five-games/",
 ]);
 
 interface SitemapEntry {
