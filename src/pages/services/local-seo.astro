@@ -1,294 +1,970 @@
 ---
 import StaticPageLayout from "../../layouts/StaticPageLayout.astro";
+import ContactCTAButton from "../../../client/components/ContactCTAButton";
 
 export const prerender = true;
 
-const localTactics = [
+/* ── The blind spots ────────────────────────────────────────── */
+const blindSpots = [
   {
-    title: "Google Business Profile",
-    copy: 'We set up your profile properly so you show up for local searches like "near me" and "in Liverpool".',
+    title: "Your site's structure",
+    question: "Has your SEO agency ever mentioned Information Architecture?",
+    copy: "This is how your pages are organised, linked together, and prioritised. It's what tells Google which pages matter most. Get it wrong and Google spreads your ranking power thinly across everything instead of concentrating it where it counts. Most SEO agencies optimise what's on the page. They never question whether the way the site is organised is the actual problem.",
+    insight: "Perfect keywords on a badly structured site still won't rank.",
   },
   {
-    title: "Location Pages",
-    copy: "We create pages for the areas you serve so you can be found where your customers are searching.",
+    title: "The invisible queue",
+    question: "What loads before your visitor sees anything?",
+    copy: "Before anyone sees your site, their browser downloads and processes all your CSS files and JavaScript. If there's a queue of 14 stylesheets and 23 scripts, nothing appears until they're done. Your SEO report says 'slow page speed'. The real cause? A page builder dumping 400KB of code your page doesn't even use.",
+    insight: "Google has a limited budget for processing your pages. If they're expensive to render, it may skip some entirely.",
   },
   {
-    title: "Reviews and Trust",
-    copy: "We help improve review flow and listing consistency so Google can trust your business data.",
+    title: "Hidden code bloat",
+    question: "Your About page might have more code than the BBC homepage.",
+    copy: "A clean page has around 800 building blocks of code. A page-builder page? Often 3,000 to 5,000. Every one of those is something the browser has to read, arrange, and paint on screen. More code means slower scrolling, laggy buttons, and a score Google uses for ranking called INP (Interaction to Next Paint). The SEO report flags the score. Nobody looks at why it's bad.",
+    insight: "Google says keep it under 1,400. Most theme-built pages blow past that 3 or 4 times over.",
+  },
+  {
+    title: "Wasted crawl budget",
+    question: "Is Google even bothering to look at your best pages?",
+    copy: "Google gives every site a limit on how many pages it will visit. If your site has hundreds of tag pages, duplicate archives, and junk URLs — Google burns through that limit on pages that don't matter. By the time it reaches the ones you actually want ranked, it might just... not.",
+    insight: "Tidying up your site structure can mean Google checks your important pages more often — and ranks them sooner.",
+  },
+  {
+    title: "The page that jumps",
+    question: "Does your content shift around while loading?",
+    copy: "Images without set sizes, fonts swapping in, ads appearing late — they all shove your content around mid-load. It's annoying for visitors and it's something Google directly measures (called Cumulative Layout Shift). Your SEO agency reports the score. Actually fixing it means changing the code — setting image sizes, reserving space for ads, loading fonts properly.",
+    insight: "A score above 0.1 is classed as poor. Most off-the-shelf theme sites sit between 0.15 and 0.4.",
+  },
+  {
+    title: "Scripts you never asked for",
+    question: "How many extras are slowing you down?",
+    copy: "Chat widgets. Analytics. Heatmaps. Social media embeds. Cookie banners. Every one of them adds code that fights with your actual content for attention. We've looked at sites where these extras made up 70% of everything the page had to load. The SEO agency never mentioned it because they didn't know to look.",
+    insight: "Some of these scripts add half a second to your load time on their own. That can be the difference between page one and page two.",
   },
 ];
 
-const processSteps = [
+/* ── The real cost comparison ───────────────────────────────── */
+const costComparison = {
+  retainer: {
+    label: "Monthly SEO retainer",
+    monthly: "£500–£2,000",
+    annual: "£6,000–£24,000",
+    items: [
+      "Monthly reports showing the same problems",
+      "Small tweaks to page descriptions",
+      "Blog posts you didn't ask for",
+      "Keyword tracking dashboards",
+      "Link building that might help, might not",
+      "The same broken site, month after month",
+    ],
+  },
+  fix: {
+    label: "Fix it once. Properly.",
+    monthly: "£0 after",
+    annual: "One-off investment",
+    items: [
+      "Site fixed or rebuilt at the code level",
+      "Google's speed checks passing on every page",
+      "A structure that tells Google what matters",
+      "Data markup Google can actually read",
+      "Mobile experience that turns visitors into customers",
+      "A foundation that gets stronger over time",
+    ],
+  },
+};
+
+/* ── DNH protocol ───────────────────────────────────────────── */
+const dnhSteps = [
   {
     step: "01",
-    title: "Audit",
-    copy: "We review your current visibility, your profile quality, and who is outranking you and why.",
+    title: "Snapshot everything first",
+    copy: "Before we change a thing, we record every page, every URL, every redirect, and where you currently rank. This is your safety net.",
   },
   {
     step: "02",
-    title: "Optimise",
-    copy: "We fix technical and listing issues, update local relevance, and align your NAP details everywhere.",
+    title: "Map every redirect",
+    copy: "If a URL changes, we set up a permanent redirect to the new one. Every backlink, every bookmark, every Google result — they all still work. Nothing goes missing.",
   },
   {
     step: "03",
-    title: "Content and Authority",
-    copy: "We publish local-focused content that expands your keyword footprint and authority.",
+    title: "Carry over your data",
+    copy: "All the structured information Google knows about your business — your markup, your social tags, your page descriptions — gets carried over or rebuilt properly. Google's understanding of who you are stays intact.",
+  },
+  {
+    step: "04",
+    title: "Watch it after launch",
+    copy: "We keep an eye on Search Console and crawl errors after going live. If anything slips, we catch it fast. Your SEO agency should see improvements, not surprises.",
   },
 ];
+
+/* ── FAQ ─────────────────────────────────────────────────────── */
+const faqs = [
+  {
+    question: "Do I actually need ongoing SEO to rank locally?",
+    answer:
+      "Not always. If your site is fast, well-structured, mobile-friendly, and has proper data markup — Google can do its job without help. Plenty of businesses rank well locally without a monthly SEO spend, because the site itself does the heavy lifting. Ongoing SEO makes sense in competitive industries, but it should build on a solid foundation — not compensate for a broken one.",
+  },
+  {
+    question: "Why isn't my site ranking even though I'm paying for SEO?",
+    answer:
+      "Usually because the SEO work sits on top of a site with fundamental technical problems. Slow speed, poor mobile experience, missing data markup, bad structure. Those undermine everything else. We fix the foundation so the SEO work you're already paying for can actually take effect.",
+  },
+  {
+    question: "What is Information Architecture?",
+    answer:
+      "It's how your site's content is structured and connected — your URL layout, internal links, navigation, and page groupings. Google uses it to understand which pages matter most and how topics relate to each other. Poor structure means Google can't figure out what your site is about, so it spreads your ranking power thinly instead of concentrating it where it counts.",
+  },
+  {
+    question: "What are Core Web Vitals?",
+    answer:
+      "Google's way of scoring three things: how fast your site loads, how quickly it responds when someone taps something, and how stable the layout is while loading. They're a direct ranking factor. Most sites built with heavy themes or page builders fail these checks because of bloated code, unoptimised images, and scripts that block the page from appearing.",
+  },
+  {
+    question: "Will I lose my rankings if you change my site?",
+    answer:
+      "No. We follow a Do No Harm protocol — every URL is mapped, every redirect is handled, all your data markup is preserved or improved. We snapshot your rankings before we start and monitor them after launch. Everything you've built up stays intact. The technical improvements just let it work harder.",
+  },
+  {
+    question: "Can I keep my SEO agency?",
+    answer:
+      "Absolutely — and they'll probably thank you. SEO agencies do their best work when the site underneath is fast, well-structured, and technically sound. We handle the code-level stuff they can't (or won't), and their content, strategy, and link building suddenly becomes far more effective.",
+  },
+  {
+    question: "What does the SEO agency vetting involve?",
+    answer:
+      "We review the work your current agency has done — what they've changed, what they're reporting, and whether it's actually moved the needle. We'll tell you if they're doing solid work, if the reports are just vanity metrics, or if there are gaps. Think of it as a second opinion from someone who understands the technical side.",
+  },
+  {
+    question: "How long until I see results?",
+    answer:
+      "Google recrawls most sites within days of a speed improvement. You'll typically see the speed scores improve in Search Console within about a month. Ranking movement varies, but clients often see things shift within 4–8 weeks. Unlike retainer-based SEO, the fixes compound over time — they don't stop working when you stop paying.",
+  },
+  {
+    question: "How is this different from what my SEO agency does?",
+    answer:
+      "They optimise content, build links, and track rankings — they work with what the site gives them. We work on the site itself — the code, the structure, the speed, the data markup. They're decorating the house. We're fixing the foundations.",
+  },
+  {
+    question: "Is a monthly retainer ever worth it?",
+    answer:
+      "In competitive industries, yes — ongoing SEO can be valuable. But only on top of a technically sound site. If your agency is spending half their time working around your site's limitations, that's money going toward patching problems rather than building on strengths. Fix the site first. Then decide if you still need monthly support.",
+  },
+];
+
+const faqSchema = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: faqs.map((item) => ({
+    "@type": "Question",
+    name: item.question,
+    acceptedAnswer: {
+      "@type": "Answer",
+      text: item.answer,
+    },
+  })),
+});
+
+const serviceSchema = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "Service",
+  name: "Local SEO Technical Foundations",
+  description:
+    "Technical website fixes that improve local search rankings — page speed, Core Web Vitals, Information Architecture, structured data, mobile optimisation, and Google Business Profile setup.",
+  provider: {
+    "@type": "Organization",
+    name: "Kaizen Web",
+    url: "https://kaizenweb.co.uk",
+  },
+});
 ---
-<StaticPageLayout path="/services/local-seo">
-  <section class="min-h-screen bg-kaizen-dark py-20 text-kaizen-text-light">
-    <div class="container mx-auto px-4">
-      <div class="grid grid-cols-1 items-center gap-12 md:grid-cols-2">
-        <div class="max-w-2xl">
-          <h1 class="mb-8 text-5xl font-heading font-bold leading-tight md:text-6xl">
-            Fast Websites for Liverpool Businesses
-          </h1>
-          <div class="mb-12 space-y-6 text-xl leading-relaxed text-kaizen-text-light/80">
-            <p>
-              SEO is not enough on its own. If your website is slow or
-              confusing, people leave and buy from someone else.
-            </p>
-            <p>
-              We build fast, professional websites first, then optimise your
-              local presence so you rank and convert.
-            </p>
-          </div>
-          <a
-            href="/contact"
-            class="inline-flex items-center justify-center gap-2 rounded-full bg-gradient-to-r from-kaizen-cyan to-kaizen-lime px-8 py-3 font-heading font-bold text-kaizen-dark transition hover:opacity-90"
+
+<StaticPageLayout
+  path="/services/local-seo"
+  title="Local SEO | Fix Your Site, Fix Your Rankings | Kaizen Web"
+  description="We're not an SEO agency. But if your site isn't ranking locally, the problem is usually the site — not the SEO. We fix the technical foundations so Google can actually rank you."
+>
+  <script type="application/ld+json" set:html={serviceSchema} is:inline />
+  <script type="application/ld+json" set:html={faqSchema} is:inline />
+
+  <!-- ═══ HERO ═══ -->
+  <section class="bg-white py-28 md:py-36">
+    <div class="mx-auto max-w-[1440px] px-6 sm:px-10 lg:px-16 xl:px-24">
+      <p
+        class="mb-6 text-xs font-medium font-body uppercase tracking-[0.25em] text-gray-400"
+      >
+        Local SEO
+      </p>
+      <h1
+        class="max-w-4xl text-5xl font-heading font-bold leading-[1.1] text-gray-950 md:text-6xl lg:text-7xl"
+      >
+        We're not an<br />
+        SEO agency.<br />
+        <span class="text-gray-400">But you're in<br />the right place.</span>
+      </h1>
+      <p class="mt-8 max-w-2xl text-xl leading-relaxed text-gray-600">
+        If your business isn't showing up locally, the problem probably isn't
+        your SEO. It's your website. Slow, badly structured, failing the
+        checks Google actually uses to decide who ranks.
+      </p>
+      <p class="mt-4 max-w-2xl text-lg leading-relaxed text-gray-500">
+        We fix that part. The foundation. Once it's solid, everything you
+        build on top — SEO, content, reputation — actually sticks.
+      </p>
+      <div class="mt-10 flex flex-col gap-4 sm:flex-row">
+        <a
+          href="/contact/"
+          class="group relative isolate inline-flex items-center justify-center overflow-hidden rounded-[18px] border border-white/25 px-6 py-3 text-[16px] text-white no-underline shadow-[0_12px_32px_rgba(10,34,102,0.34)] transition-transform duration-200 hover:-translate-y-px hover:shadow-[0_18px_40px_rgba(10,34,102,0.4)]"
+        >
+          <span
+            class="pointer-events-none absolute inset-0 rounded-[inherit] bg-[linear-gradient(135deg,#266bff_0%,#1658e8_56%,#0c3eb9_100%)]"
+          ></span>
+          <span
+            class="pointer-events-none absolute inset-px rounded-[inherit] bg-[linear-gradient(180deg,rgba(255,255,255,0.2)_0%,rgba(255,255,255,0.08)_20%,rgba(8,38,112,0.16)_100%)]"
+          ></span>
+          <span
+            class="pointer-events-none absolute inset-0 rounded-[inherit] shadow-[inset_0_1px_0_rgba(255,255,255,0.42),inset_0_-1px_0_rgba(255,255,255,0.08)]"
+          ></span>
+          <span
+            class="relative z-1 inline-flex items-center gap-2 whitespace-nowrap font-medium tracking-[-0.01em] text-white"
           >
-            Get in Touch
-            <span aria-hidden="true">-&gt;</span>
-          </a>
-        </div>
-        <div class="hidden md:block">
-          <div class="overflow-hidden rounded-2xl border border-kaizen-cyan/30">
-            <img
-              src="https://cdn.builder.io/api/v1/image/assets%2Fe4ae46bbd81b4b95bef54d66dd9748cc%2F2bcd66303b6e425ab616ce3ad62975b8?format=webp&width=800"
-              alt="Google local search results"
-              width="800"
-              height="600"
-              class="h-full w-full object-cover"
-              loading="lazy"
-              decoding="async"
-            />
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section class="bg-white py-20 md:py-32">
-    <div class="container mx-auto px-4">
-      <h2 class="mb-12 text-4xl font-heading font-bold text-kaizen-dark md:text-5xl">
-        Why Speed Matters More Than SEO
-      </h2>
-      <div class="grid max-w-4xl grid-cols-1 gap-12 md:grid-cols-2">
-        <div class="space-y-6">
-          <p class="text-xl leading-relaxed text-kaizen-text-dark/70">
-            Most local SEO campaigns fail because they chase rankings without
-            fixing the site experience. Google rewards fast, useful pages.
-          </p>
-          <p class="text-xl leading-relaxed text-kaizen-text-dark/70">
-            We build for users first, then optimise for search. That is what
-            creates stable rankings and better enquiries.
-          </p>
-        </div>
-        <div class="space-y-6 rounded-2xl border border-kaizen-light bg-kaizen-light p-8">
-          <div>
-            <h3 class="mb-3 text-sm font-bold uppercase tracking-wide text-kaizen-cyan">
-              Why fast sites rank better
-            </h3>
-            <ul class="space-y-3 text-lg text-kaizen-text-dark/70">
-              <li><strong>Built for speed:</strong> no bloated plugin stack.</li>
-              <li><strong>Clear structure:</strong> easier for Google to parse.</li>
-              <li><strong>Reliable:</strong> fewer technical failures.</li>
-              <li><strong>Better UX:</strong> stronger conversion signals.</li>
-            </ul>
-          </div>
-          <div class="border-t border-kaizen-light pt-6">
-            <h3 class="mb-3 text-sm font-bold uppercase tracking-wide text-kaizen-cyan">
-              What you get
-            </h3>
-            <p class="text-lg text-kaizen-text-dark/70">
-              A fast local-first website and a properly optimised Google
-              Business Profile.
-            </p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section class="bg-kaizen-light py-20 md:py-32">
-    <div class="container mx-auto px-4">
-      <h2 class="mb-16 text-center text-4xl font-heading font-bold text-kaizen-dark md:text-5xl">
-        Get Found on Google
-      </h2>
-      <div class="grid grid-cols-1 gap-8 md:grid-cols-3">
-        {
-          localTactics.map((item) => (
-            <article class="rounded-2xl border border-kaizen-light bg-white p-8 transition hover:border-kaizen-cyan">
-              <h3 class="mb-4 text-2xl font-heading font-bold text-kaizen-dark">
-                {item.title}
-              </h3>
-              <p class="text-lg leading-relaxed text-kaizen-text-dark/70">
-                {item.copy}
-              </p>
-            </article>
-          ))
-        }
-      </div>
-    </div>
-  </section>
-
-  <section class="bg-white py-20 md:py-32">
-    <div class="container mx-auto px-4">
-      <h2 class="mb-12 text-center text-4xl font-heading font-bold text-kaizen-dark md:text-5xl">
-        Real Results: From Invisible to Fully Booked
-      </h2>
-      <div class="mx-auto grid max-w-5xl grid-cols-1 items-center gap-12 md:grid-cols-2">
-        <div class="space-y-6">
-          <div>
-            <h3 class="mb-3 text-sm font-bold uppercase tracking-wide text-kaizen-cyan">
-              Client: Helen Moore Hairdressing
-            </h3>
-            <p class="text-xs uppercase tracking-wide text-kaizen-text-dark/60">
-              Boutique Salon - Wallasey Village, Wirral
-            </p>
-          </div>
-          <div>
-            <h4 class="mb-4 text-2xl font-heading font-bold text-kaizen-dark">
-              The Problem
-            </h4>
-            <p class="text-lg leading-relaxed text-kaizen-text-dark/70">
-              Great local reputation but no real online footprint or local search
-              visibility.
-            </p>
-          </div>
-          <div>
-            <h4 class="mb-4 text-2xl font-heading font-bold text-kaizen-dark">
-              The Fix
-            </h4>
-            <p class="text-lg leading-relaxed text-kaizen-text-dark/70">
-              Local-first website plus full Google Business Profile optimisation
-              for core terms.
-            </p>
-          </div>
-          <div>
-            <h4 class="mb-4 text-2xl font-heading font-bold text-kaizen-dark">
-              The Result
-            </h4>
-            <p class="mb-6 text-lg leading-relaxed text-kaizen-text-dark/70">
-              Rank #1 for key local terms and consistent booking enquiries from
-              new local clients.
-            </p>
-            <a
-              href="https://helenmoorehairdressing.co.uk"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="inline-flex items-center gap-2 font-medium text-kaizen-cyan"
+            <span>Get a technical audit</span>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-4 w-4 transition-transform duration-200 group-hover:translate-x-0.5"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              ><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg
             >
-              View Live Site
-              <span aria-hidden="true">-&gt;</span>
-            </a>
-          </div>
-        </div>
-        <div class="flex h-96 items-center justify-center rounded-2xl border border-kaizen-cyan/30 bg-gradient-to-br from-kaizen-cyan/20 to-kaizen-lime/20 p-8">
-          <div class="text-center">
-            <p class="text-xl font-heading font-bold text-kaizen-text-dark/60">
-              #1 Local Rankings
-            </p>
-          </div>
-        </div>
+          </span>
+        </a>
+        <a
+          href="/performance-scanner/"
+          class="inline-flex items-center justify-center gap-2 rounded-[18px] border border-gray-200 px-6 py-3 text-[16px] font-medium text-gray-950 no-underline transition-all duration-200 hover:-translate-y-px hover:border-gray-300"
+        >
+          <span>Run a free site scan</span>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-4 w-4"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            ><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg
+          >
+        </a>
       </div>
     </div>
   </section>
 
-  <section class="bg-kaizen-dark py-20 text-kaizen-text-light md:py-32">
-    <div class="container mx-auto px-4">
-      <h2 class="mb-16 text-center text-4xl font-heading font-bold md:text-5xl">
-        How We Improve Your Rankings
+  <!-- ═══ MOBILE (Concrete + Triggers + Emotional) ═══ -->
+  <section class="bg-gray-950 py-28 md:py-36">
+    <div class="mx-auto max-w-[1440px] px-6 sm:px-10 lg:px-16 xl:px-24">
+      <p
+        class="mb-6 text-xs font-medium font-body uppercase tracking-[0.25em] text-gray-500"
+      >
+        Mobile is not optional
+      </p>
+      <h2
+        class="max-w-3xl text-4xl font-heading font-bold leading-tight text-white md:text-5xl"
+      >
+        76% of local searches<br />
+        <span class="text-gray-500">happen on a phone.</span>
       </h2>
-      <div class="mx-auto max-w-3xl">
+      <p class="mt-6 max-w-2xl text-lg leading-relaxed text-gray-400">
+        Think about the last time you searched for something nearby. You were
+        standing somewhere, phone in hand, and you needed an answer quickly.
+        That's your customer. Every day.
+      </p>
+
+      <!-- The journey -->
+      <div class="mt-16">
+        <p class="text-sm font-bold uppercase tracking-wider text-gray-500 mb-8">
+          Follow the customer
+        </p>
+        <div class="grid grid-cols-1 gap-0 md:grid-cols-5">
+          <div class="relative border-t-2 border-cyan-400 pt-6 pb-8 md:pr-6">
+            <div class="absolute -top-3 left-0 flex h-6 w-6 items-center justify-center rounded-full bg-cyan-400">
+              <span class="text-xs font-bold text-gray-950">1</span>
+            </div>
+            <p class="mt-2 text-sm font-bold text-white">
+              "Plumber near me"
+            </p>
+            <p class="mt-1 text-sm text-gray-500">
+              Kitchen's flooding. They grab their phone. Google shows three
+              results.
+            </p>
+          </div>
+          <div class="relative border-t-2 border-cyan-400 pt-6 pb-8 md:pr-6">
+            <div class="absolute -top-3 left-0 flex h-6 w-6 items-center justify-center rounded-full bg-cyan-400">
+              <span class="text-xs font-bold text-gray-950">2</span>
+            </div>
+            <p class="mt-2 text-sm font-bold text-white">
+              They tap your link
+            </p>
+            <p class="mt-1 text-sm text-gray-500">
+              Blank screen. Loading spinner. Their thumb's already hovering over
+              the back button.
+            </p>
+          </div>
+          <div class="relative border-t-2 border-white/10 pt-6 pb-8 md:pr-6">
+            <div class="absolute -top-3 left-0 flex h-6 w-6 items-center justify-center rounded-full bg-white/10">
+              <span class="text-xs font-bold text-gray-500">3</span>
+            </div>
+            <p class="mt-2 text-sm font-bold text-white">
+              3 seconds pass
+            </p>
+            <p class="mt-1 text-sm text-gray-500">
+              Hero image still loading. Text jumping around. A cookie banner
+              covers half the screen. Can't find your number.
+            </p>
+          </div>
+          <div class="relative border-t-2 border-white/10 pt-6 pb-8 md:pr-6">
+            <div class="absolute -top-3 left-0 flex h-6 w-6 items-center justify-center rounded-full bg-white/10">
+              <span class="text-xs font-bold text-gray-500">4</span>
+            </div>
+            <p class="mt-2 text-sm font-bold text-white">
+              They hit back
+            </p>
+            <p class="mt-1 text-sm text-gray-500">
+              Google records the bounce. Under 5 seconds. They're already
+              tapping the next result.
+            </p>
+          </div>
+          <div class="relative border-t-2 border-white/10 pt-6 pb-8">
+            <div class="absolute -top-3 left-0 flex h-6 w-6 items-center justify-center rounded-full bg-white/10">
+              <span class="text-xs font-bold text-gray-500">5</span>
+            </div>
+            <p class="mt-2 text-sm font-bold text-white">
+              Your competitor answers
+            </p>
+            <p class="mt-1 text-sm text-gray-500">
+              Their site loaded instantly. Phone number right there. Click to
+              call. Job booked. You never knew they were looking.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Stats -->
+      <div class="mt-16 grid grid-cols-1 gap-8 md:grid-cols-3">
+        <div class="rounded-2xl border border-white/10 p-8">
+          <p class="text-4xl font-heading font-bold text-cyan-400">100%</p>
+          <p class="mt-3 text-sm font-bold uppercase tracking-wider text-gray-500">
+            Mobile-first indexing
+          </p>
+          <p class="mt-2 text-sm leading-relaxed text-gray-400">
+            Google ranks you based on the mobile version of your site. Not
+            desktop. If mobile is poor, it doesn't matter how good your site
+            looks on a laptop.
+          </p>
+        </div>
+        <div class="rounded-2xl border border-white/10 p-8">
+          <p class="text-4xl font-heading font-bold text-cyan-400">88%</p>
+          <p class="mt-3 text-sm font-bold uppercase tracking-wider text-gray-500">
+            Won't come back
+          </p>
+          <p class="mt-2 text-sm leading-relaxed text-gray-400">
+            88% of people who have a bad mobile experience won't return. For
+            a local business, that's not a statistic. That's a customer
+            walking into your competitor's door.
+          </p>
+        </div>
+        <div class="rounded-2xl border border-white/10 p-8">
+          <p class="text-4xl font-heading font-bold text-cyan-400">1.4s</p>
+          <p class="mt-3 text-sm font-bold uppercase tracking-wider text-gray-500">
+            That's your window
+          </p>
+          <p class="mt-2 text-sm leading-relaxed text-gray-400">
+            On a phone, attention drifts after about 1.4 seconds. If your
+            page takes 4 seconds to show anything meaningful, you've lost
+            them twice over.
+          </p>
+        </div>
+      </div>
+
+      <div class="mt-12 rounded-xl border border-white/10 p-6 md:p-8">
+        <p class="text-lg leading-relaxed text-gray-400">
+          <strong class="text-white">Mobile isn't a nice-to-have. It's your shopfront.</strong>
+          For local businesses, mobile is the first — and often only — impression.
+          A site that's been "made responsive" by shrinking the desktop version
+          isn't mobile-optimised. It's a big site crammed onto a small screen.
+          We build mobile-first: the phone experience comes first, desktop
+          scales up from there.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ THE BLIND SPOTS (Unexpected + Social Currency) ═══ -->
+  <section class="bg-white py-28 md:py-36">
+    <div class="mx-auto max-w-[1440px] px-6 sm:px-10 lg:px-16 xl:px-24">
+      <p
+        class="mb-6 text-xs font-medium font-body uppercase tracking-[0.25em] text-gray-400"
+      >
+        What SEO agencies miss
+      </p>
+      <h2
+        class="max-w-3xl text-4xl font-heading font-bold leading-tight text-gray-950 md:text-5xl"
+      >
+        Six things killing your rankings<br />
+        <span class="text-gray-400">that nobody's told you about.</span>
+      </h2>
+      <p class="mt-6 max-w-2xl text-lg leading-relaxed text-gray-600">
+        Not because anyone's hiding them. These are code-level problems, and most
+        SEO agencies don't work at the code level. They optimise content. We fix
+        the machine it runs on.
+      </p>
+
+      <div class="mt-16 space-y-0">
         {
-          processSteps.map((item, index) => (
-            <article class="mb-12 flex gap-8 last:mb-0">
-              <div class="flex flex-col items-center">
-                <div class="flex h-24 w-24 flex-shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-kaizen-cyan to-kaizen-lime">
-                  <span class="text-2xl font-heading font-bold text-kaizen-dark">
-                    {item.step}
-                  </span>
-                </div>
-                {index < 2 && <div class="mt-4 h-20 w-1 bg-gradient-to-b from-kaizen-cyan to-kaizen-lime"></div>}
-              </div>
-              <div class="pb-4 pt-4">
-                <h3 class="mb-3 text-2xl font-heading font-bold text-kaizen-text-light">
+          blindSpots.map((item, i) => (
+            <div class={`grid grid-cols-1 gap-8 border-t border-gray-200 py-10 lg:grid-cols-[240px_1fr_280px] ${i === blindSpots.length - 1 ? 'border-b' : ''}`}>
+              <div>
+                <span class="text-sm font-medium font-body text-gray-400">
+                  {String(i + 1).padStart(2, '0')}
+                </span>
+                <h3 class="mt-1 text-xl font-heading font-bold text-gray-950">
                   {item.title}
                 </h3>
-                <p class="max-w-xl text-lg leading-relaxed text-kaizen-text-light/80">
+              </div>
+              <div>
+                <p class="text-sm font-bold uppercase tracking-wider text-cyan-600/70 mb-3">
+                  {item.question}
+                </p>
+                <p class="leading-relaxed text-gray-600">
                   {item.copy}
                 </p>
               </div>
-            </article>
+              <div class="rounded-lg bg-[#f5f5f3] p-5">
+                <p class="text-xs font-bold uppercase tracking-wider text-gray-400 mb-2">
+                  Why it matters
+                </p>
+                <p class="text-sm leading-relaxed text-gray-500">
+                  {item.insight}
+                </p>
+              </div>
+            </div>
           ))
         }
       </div>
     </div>
   </section>
 
-  <section class="bg-white py-20 md:py-32">
-    <div class="container mx-auto px-4">
-      <h2 class="mb-16 text-center text-4xl font-heading font-bold text-kaizen-dark md:text-5xl">
-        More Than Just SEO
+  <!-- ═══ THE REAL COST (Concrete + Emotional + Practical Value) ═══ -->
+  <section class="bg-[#f5f5f3] py-28 md:py-36">
+    <div class="mx-auto max-w-[1440px] px-6 sm:px-10 lg:px-16 xl:px-24">
+      <p
+        class="mb-6 text-xs font-medium font-body uppercase tracking-[0.25em] text-gray-400"
+      >
+        The maths
+      </p>
+      <h2
+        class="max-w-3xl text-4xl font-heading font-bold leading-tight text-gray-950 md:text-5xl"
+      >
+        Paying monthly to work around<br />
+        <span class="text-gray-400">a problem you could just fix.</span>
       </h2>
-      <div class="mx-auto grid max-w-3xl grid-cols-1 gap-8 md:grid-cols-2">
-        <a
-          href="/web-design-liverpool"
-          class="group block h-full rounded-2xl border border-kaizen-light bg-kaizen-light p-8 transition hover:border-kaizen-cyan"
-        >
-          <h3 class="mb-4 text-2xl font-heading font-bold text-kaizen-dark transition group-hover:text-kaizen-cyan">
-            Web Design
-          </h3>
-          <p class="mb-6 text-lg leading-relaxed text-kaizen-text-dark/70">
-            Traffic is useless if the site is slow. See how we build fast sites
-            that convert.
+      <p class="mt-6 max-w-2xl text-lg leading-relaxed text-gray-600">
+        After 12 months of retainer fees, you'll have spent thousands — and
+        you'll still have the same slow, badly structured site underneath.
+        The retainer compensates for a problem. Fixing the site removes it.
+      </p>
+
+      <div class="mt-16 grid grid-cols-1 gap-8 md:grid-cols-2">
+        <!-- Retainer side -->
+        <div class="rounded-2xl border border-gray-200 bg-white p-8 md:p-10">
+          <p class="text-sm font-bold uppercase tracking-wider text-gray-400">
+            {costComparison.retainer.label}
           </p>
-          <p class="font-medium text-kaizen-cyan">Explore -&gt;</p>
-        </a>
-        <a
-          href="/agile-coaching"
-          class="group block h-full rounded-2xl border border-kaizen-light bg-kaizen-light p-8 transition hover:border-kaizen-cyan"
-        >
-          <h3 class="mb-4 text-2xl font-heading font-bold text-kaizen-dark transition group-hover:text-kaizen-cyan">
-            Agile Coaching
-          </h3>
-          <p class="mb-6 text-lg leading-relaxed text-kaizen-text-dark/70">
-            We use disciplined delivery systems and can help your team improve
-            workflow too.
+          <p class="mt-3 text-4xl font-heading font-bold text-gray-950">
+            {costComparison.retainer.monthly}<span class="text-lg text-gray-400">/month</span>
           </p>
-          <p class="font-medium text-kaizen-cyan">Explore -&gt;</p>
-        </a>
+          <p class="mt-1 text-sm text-gray-400">
+            {costComparison.retainer.annual} per year, ongoing
+          </p>
+          <ul class="mt-8 space-y-3">
+            {
+              costComparison.retainer.items.map((item) => (
+                <li class="flex items-start gap-3 text-gray-500">
+                  <svg
+                    class="mt-0.5 h-5 w-5 shrink-0 text-gray-300"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path d="M5 12h14"></path>
+                  </svg>
+                  <span>{item}</span>
+                </li>
+              ))
+            }
+          </ul>
+        </div>
+
+        <!-- Fix side -->
+        <div class="rounded-2xl border-2 border-gray-950 bg-gray-950 p-8 text-white md:p-10">
+          <div class="flex items-center gap-3">
+            <p class="text-sm font-bold uppercase tracking-wider text-gray-500">
+              {costComparison.fix.label}
+            </p>
+            <span class="rounded-full bg-cyan-400/15 px-3 py-1 text-xs font-bold uppercase tracking-wider text-cyan-400">
+              Recommended
+            </span>
+          </div>
+          <p class="mt-3 text-4xl font-heading font-bold text-white">
+            {costComparison.fix.monthly}
+          </p>
+          <p class="mt-1 text-sm text-gray-500">
+            {costComparison.fix.annual}
+          </p>
+          <ul class="mt-8 space-y-3">
+            {
+              costComparison.fix.items.map((item) => (
+                <li class="flex items-start gap-3 text-gray-300">
+                  <svg
+                    class="mt-0.5 h-5 w-5 shrink-0 text-cyan-400"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2.5"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path d="M20 6 9 17l-5-5"></path>
+                  </svg>
+                  <span>{item}</span>
+                </li>
+              ))
+            }
+          </ul>
+        </div>
       </div>
     </div>
   </section>
 
-  <section class="bg-kaizen-dark py-20 text-kaizen-text-light md:py-32">
-    <div class="container mx-auto px-4 text-center">
-      <h2 class="mb-8 text-4xl font-heading font-bold md:text-5xl">
-        Stop Being Invisible in Liverpool.
+  <!-- ═══ PATTERN INTERRUPT ═══ -->
+  <section class="bg-gray-950 py-24 md:py-32">
+    <div class="mx-auto max-w-[1440px] px-6 sm:px-10 lg:px-16 xl:px-24">
+      <div class="mx-auto max-w-3xl text-center">
+        <p
+          class="text-5xl font-heading font-bold leading-tight text-white md:text-6xl lg:text-7xl"
+        >
+          You don't need<br />
+          more SEO.<br />
+          You need a<br />
+          <span class="text-cyan-400">better site.</span>
+        </p>
+        <p class="mt-8 text-xl text-gray-400">
+          Fix the foundation. The rankings follow.
+        </p>
+        <div class="mt-10 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
+          <ContactCTAButton label="Talk to us about your site" client:load />
+          <a
+            href="tel:+441514530008"
+            class="group inline-flex items-center justify-center rounded-[18px] border border-white/15 px-5 py-2.5 text-[16px] text-white/60 no-underline transition-all duration-200 hover:-translate-y-px hover:text-white"
+          >
+            <span class="inline-flex items-center gap-2 whitespace-nowrap font-medium tracking-[-0.01em]">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-4 w-4"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                ><path
+                  d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"
+                ></path></svg
+              >
+              <span>0151 453 0008</span>
+            </span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ DO NO HARM (Credible + Practical Value) ═══ -->
+  <section class="bg-white py-28 md:py-36">
+    <div class="mx-auto max-w-[1440px] px-6 sm:px-10 lg:px-16 xl:px-24">
+      <div class="grid grid-cols-1 items-start gap-16 lg:grid-cols-[1fr_1.2fr]">
+        <div>
+          <p
+            class="mb-6 text-xs font-medium font-body uppercase tracking-[0.25em] text-gray-400"
+          >
+            Do No Harm
+          </p>
+          <h2
+            class="text-4xl font-heading font-bold leading-tight text-gray-950 md:text-5xl"
+          >
+            Keep everything<br />
+            <span class="text-gray-400">you've already earned.</span>
+          </h2>
+          <p class="mt-6 text-lg leading-relaxed text-gray-600">
+            The biggest worry with changing your site is losing what you've
+            built up — your rankings, your backlinks, your history with Google.
+            We get it. That's why we follow a Do No Harm protocol on every
+            project.
+          </p>
+          <p class="mt-4 text-lg leading-relaxed text-gray-600">
+            Everything gets recorded before we start. Everything carries over.
+            Your SEO equity doesn't just survive — it gets a stronger foundation
+            underneath it.
+          </p>
+          <p class="mt-4 text-lg leading-relaxed text-gray-600">
+            If you have an SEO agency, keep them. Once the site is right, their
+            work lands harder.
+          </p>
+        </div>
+        <div class="space-y-0">
+          {
+            dnhSteps.map((item, i) => (
+              <div class={`flex gap-6 py-8 ${i > 0 ? 'border-t border-gray-200' : ''}`}>
+                <span class="text-sm font-medium font-body text-gray-400 pt-1">
+                  {item.step}
+                </span>
+                <div>
+                  <h3 class="text-xl font-heading font-bold text-gray-950">
+                    {item.title}
+                  </h3>
+                  <p class="mt-2 leading-relaxed text-gray-600">
+                    {item.copy}
+                  </p>
+                </div>
+              </div>
+            ))
+          }
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ CASE STUDY: HELEN MOORE (Stories + Credible) ═══ -->
+  <section class="bg-[#f5f5f3] py-28 md:py-36">
+    <div class="mx-auto max-w-[1440px] px-6 sm:px-10 lg:px-16 xl:px-24">
+      <div class="grid grid-cols-1 items-start gap-16 lg:grid-cols-2">
+        <div>
+          <p
+            class="mb-6 text-xs font-medium font-body uppercase tracking-[0.25em] text-gray-400"
+          >
+            Real result
+          </p>
+          <h2
+            class="text-4xl font-heading font-bold leading-tight text-gray-950 md:text-5xl"
+          >
+            Fixed the site.<br />
+            <span class="text-gray-400">Rankings followed.</span>
+          </h2>
+          <p class="mt-6 text-lg leading-relaxed text-gray-600">
+            Helen Moore Hairdressing had a great local reputation in Wallasey
+            Village but was invisible online. Searching for hairdressers in
+            the area turned up nothing.
+          </p>
+          <p class="mt-4 text-lg leading-relaxed text-gray-600">
+            The problem wasn't missing SEO. It was the site. Slow, outdated,
+            nothing for Google to work with. No data markup, no Google Business
+            Profile, no structure.
+          </p>
+          <p class="mt-4 text-lg leading-relaxed text-gray-600">
+            We built a fast, properly structured site with local data markup
+            and a fully set up Google Business Profile. No retainer. No monthly
+            spend. Just a site that did its job.
+          </p>
+        </div>
+        <div class="rounded-xl bg-gray-950 p-8 md:p-10">
+          <h3 class="text-2xl font-heading font-bold text-white">
+            Helen Moore Hairdressing
+          </h3>
+          <p class="mt-1 text-sm text-gray-500">
+            Boutique salon — Wallasey Village, Wirral
+          </p>
+          <div class="mt-8 space-y-6">
+            <div class="border-t border-white/10 pt-6">
+              <p class="text-sm font-bold uppercase tracking-wider text-gray-500">
+                Before
+              </p>
+              <p class="mt-2 text-lg text-gray-400">
+                Invisible online. Not on Google Maps. Zero enquiries from search.
+              </p>
+            </div>
+            <div class="border-t border-white/10 pt-6">
+              <p class="text-sm font-bold uppercase tracking-wider text-gray-500">
+                What we did
+              </p>
+              <ul class="mt-2 space-y-2 text-gray-400">
+                <li class="flex items-start gap-2.5">
+                  <svg
+                    class="mt-0.5 h-5 w-5 shrink-0 text-cyan-500"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2.5"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg
+                  >
+                  <span>Fast, mobile-first site</span>
+                </li>
+                <li class="flex items-start gap-2.5">
+                  <svg
+                    class="mt-0.5 h-5 w-5 shrink-0 text-cyan-500"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2.5"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg
+                  >
+                  <span>Proper site structure and linking</span>
+                </li>
+                <li class="flex items-start gap-2.5">
+                  <svg
+                    class="mt-0.5 h-5 w-5 shrink-0 text-cyan-500"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2.5"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg
+                  >
+                  <span>Local data markup and schema</span>
+                </li>
+                <li class="flex items-start gap-2.5">
+                  <svg
+                    class="mt-0.5 h-5 w-5 shrink-0 text-cyan-500"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2.5"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg
+                  >
+                  <span>Google Business Profile setup</span>
+                </li>
+              </ul>
+            </div>
+            <div class="border-t border-white/10 pt-6">
+              <p class="text-sm font-bold uppercase tracking-wider text-gray-500">
+                After
+              </p>
+              <p class="mt-2 text-2xl font-heading font-bold text-cyan-400">
+                #1 for local search terms
+              </p>
+              <p class="mt-2 text-gray-400">
+                Consistent bookings from new local clients. No SEO retainer.
+                No monthly spend. Just a properly built site doing its job.
+              </p>
+            </div>
+          </div>
+          <a
+            href="/case-studies/helen-moore-hairdressing/"
+            class="group relative isolate mt-8 inline-flex items-center justify-center overflow-hidden rounded-[18px] border border-white/25 px-5 py-2.5 text-[15px] text-white no-underline shadow-[0_12px_32px_rgba(10,34,102,0.34)] transition-transform duration-200 hover:-translate-y-px hover:shadow-[0_18px_40px_rgba(10,34,102,0.4)]"
+          >
+            <span
+              class="pointer-events-none absolute inset-0 rounded-[inherit] bg-[linear-gradient(135deg,#266bff_0%,#1658e8_56%,#0c3eb9_100%)]"
+            ></span>
+            <span
+              class="pointer-events-none absolute inset-px rounded-[inherit] bg-[linear-gradient(180deg,rgba(255,255,255,0.2)_0%,rgba(255,255,255,0.08)_20%,rgba(8,38,112,0.16)_100%)]"
+            ></span>
+            <span
+              class="pointer-events-none absolute inset-0 rounded-[inherit] shadow-[inset_0_1px_0_rgba(255,255,255,0.42),inset_0_-1px_0_rgba(255,255,255,0.08)]"
+            ></span>
+            <span
+              class="relative z-1 inline-flex items-center gap-2 whitespace-nowrap font-medium tracking-[-0.01em] text-white"
+            >
+              <span>See Helen Moore's full case study</span>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-4 w-4 transition-transform duration-200 group-hover:translate-x-0.5"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                ><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg
+              >
+            </span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ ALREADY HAVE AN SEO AGENCY? ═══ -->
+  <section class="bg-white py-28 md:py-36">
+    <div class="mx-auto max-w-[1440px] px-6 sm:px-10 lg:px-16 xl:px-24">
+      <div class="mx-auto max-w-3xl text-center">
+        <p
+          class="mb-6 text-xs font-medium font-body uppercase tracking-[0.25em] text-gray-400"
+        >
+          Already paying for SEO?
+        </p>
+        <h2
+          class="text-4xl font-heading font-bold leading-tight text-gray-950 md:text-5xl"
+        >
+          Keep your agency.<br />
+          <span class="text-gray-400">Fix what's underneath.</span>
+        </h2>
+        <p class="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-gray-600">
+          We're not here to replace them. We're here to make their work land.
+          They do strategy, content, and links. We do speed, structure, and code.
+          Put those together and the rankings actually move.
+        </p>
+        <div class="mt-12 grid grid-cols-1 gap-6 text-left sm:grid-cols-3">
+          <div class="rounded-xl bg-[#f5f5f3] p-6">
+            <p class="text-sm font-bold uppercase tracking-wider text-gray-400">
+              Your SEO agency
+            </p>
+            <ul class="mt-3 space-y-2 text-gray-600">
+              <li>Keyword research</li>
+              <li>Content strategy</li>
+              <li>Link building</li>
+              <li>Monthly reporting</li>
+            </ul>
+          </div>
+          <div class="rounded-xl bg-[#f5f5f3] p-6">
+            <p class="text-sm font-bold uppercase tracking-wider text-gray-400">
+              What we do
+            </p>
+            <ul class="mt-3 space-y-2 text-gray-600">
+              <li>Site structure</li>
+              <li>Speed and Core Web Vitals</li>
+              <li>Data markup and schema</li>
+              <li>Mobile-first builds</li>
+            </ul>
+          </div>
+          <div class="rounded-xl bg-gray-950 p-6 text-white">
+            <p class="text-sm font-bold uppercase tracking-wider text-cyan-400">
+              The result
+            </p>
+            <ul class="mt-3 space-y-2 text-gray-300">
+              <li>SEO spend actually works</li>
+              <li>Rankings climb and stay</li>
+              <li>Technical blockers gone</li>
+              <li>Compounds over time</li>
+            </ul>
+          </div>
+        </div>
+        <div class="mt-10 rounded-xl border border-gray-200 bg-[#f5f5f3] p-6 text-left md:p-8">
+          <p class="text-sm font-bold uppercase tracking-wider text-gray-400">
+            Not sure your SEO agency is any good?
+          </p>
+          <p class="mt-3 text-lg leading-relaxed text-gray-600">
+            We can vet them. We'll review what they've done, what's actually
+            working, and where the gaps are. A straight second opinion from
+            someone who understands the technical side — so you can decide
+            whether to keep them, change scope, or move on.
+          </p>
+          <div class="mt-5">
+            <ContactCTAButton label="Ask about agency vetting" client:load />
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ FAQ ═══ -->
+  <section class="bg-[#f5f5f3] py-28 md:py-36">
+    <div class="mx-auto max-w-[1440px] px-6 sm:px-10 lg:px-16 xl:px-24">
+      <div class="mb-16">
+        <p
+          class="mb-6 text-xs font-medium font-body uppercase tracking-[0.25em] text-gray-400"
+        >
+          Common questions
+        </p>
+        <h2 class="text-4xl font-heading font-bold text-gray-950 md:text-5xl">
+          Local SEO FAQ
+        </h2>
+      </div>
+      <div class="grid grid-cols-1 gap-4 lg:grid-cols-2 lg:gap-x-12">
+        {
+          faqs.map((item) => (
+            <details class="rounded-xl border border-gray-200 bg-white p-6">
+              <summary class="cursor-pointer text-lg font-heading font-bold text-gray-950">
+                {item.question}
+              </summary>
+              <p class="mt-4 leading-relaxed text-gray-600">{item.answer}</p>
+            </details>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ CTA ═══ -->
+  <section class="bg-gray-950 py-28 md:py-36">
+    <div
+      class="mx-auto max-w-[1440px] px-6 sm:px-10 lg:px-16 xl:px-24 text-center"
+    >
+      <h2 class="text-4xl font-heading font-bold text-white md:text-5xl">
+        Build on rock.<br />
+        <span class="text-gray-500">Not on sand.</span>
       </h2>
-      <p class="mx-auto mb-12 max-w-2xl text-xl leading-relaxed text-kaizen-text-light/80">
-        Let's get your business on the map.
+      <p class="mx-auto mt-6 max-w-2xl text-xl leading-relaxed text-gray-400">
+        Fix it once. Let everything you build on top — SEO, content,
+        reputation — actually compound. Stop paying monthly to work around
+        problems that can be solved.
       </p>
-      <a
-        href="/contact"
-        class="inline-flex items-center justify-center gap-2 rounded-full bg-gradient-to-r from-kaizen-cyan to-kaizen-lime px-8 py-3 font-heading font-bold text-kaizen-dark transition hover:opacity-90"
-      >
-        Get in Touch
-        <span aria-hidden="true">-&gt;</span>
-      </a>
+      <div class="mt-10 flex flex-col justify-center gap-4 sm:flex-row">
+        <a
+          href="/contact/"
+          class="group relative isolate inline-flex items-center justify-center overflow-hidden rounded-[18px] border border-white/25 px-6 py-3 text-[16px] text-white no-underline shadow-[0_12px_32px_rgba(10,34,102,0.34)] transition-transform duration-200 hover:-translate-y-px hover:shadow-[0_18px_40px_rgba(10,34,102,0.4)]"
+        >
+          <span
+            class="pointer-events-none absolute inset-0 rounded-[inherit] bg-[linear-gradient(135deg,#266bff_0%,#1658e8_56%,#0c3eb9_100%)]"
+          ></span>
+          <span
+            class="pointer-events-none absolute inset-px rounded-[inherit] bg-[linear-gradient(180deg,rgba(255,255,255,0.2)_0%,rgba(255,255,255,0.08)_20%,rgba(8,38,112,0.16)_100%)]"
+          ></span>
+          <span
+            class="pointer-events-none absolute inset-0 rounded-[inherit] shadow-[inset_0_1px_0_rgba(255,255,255,0.42),inset_0_-1px_0_rgba(255,255,255,0.08)]"
+          ></span>
+          <span
+            class="relative z-1 inline-flex items-center gap-2 whitespace-nowrap font-medium tracking-[-0.01em] text-white"
+          >
+            <span>Get a technical audit</span>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-4 w-4 transition-transform duration-200 group-hover:translate-x-0.5"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              ><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg
+            >
+          </span>
+        </a>
+        <a
+          href="/performance-scanner/"
+          class="inline-flex items-center justify-center gap-2 rounded-[18px] border border-white/15 px-6 py-3 text-[16px] font-medium text-white/60 no-underline transition-all duration-200 hover:-translate-y-px hover:text-white"
+        >
+          <span>Free site scan</span>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-4 w-4"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            ><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg
+          >
+        </a>
+      </div>
     </div>
   </section>
 </StaticPageLayout>

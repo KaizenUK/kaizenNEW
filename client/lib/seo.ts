@@ -126,15 +126,16 @@ const pageMeta: Record<string, Partial<PageMeta>> = {
     ],
   },
   "/services/local-seo": {
-    title: "Local SEO Liverpool | Sites That Work & Rank | Kaizen",
+    title: "Local SEO | Fix Your Site, Fix Your Rankings | Kaizen Web",
     description:
-      "Local SEO starts with a fast website, not keywords. We build sites people want to use, then make sure Google finds them. Liverpool & Wirral.",
+      "We're not an SEO agency. But if your site isn't ranking locally, the problem is usually the site — not the SEO. We fix the technical foundations so Google can actually rank you.",
     keywords: [
-      "local seo liverpool",
-      "local seo wirral",
+      "local seo",
+      "core web vitals",
+      "technical seo",
+      "page speed",
       "google business profile",
-      "google map pack",
-      "liverpool seo",
+      "site not ranking",
     ],
   },
   "/services/ecommerce": {
