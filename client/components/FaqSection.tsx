@@ -147,7 +147,7 @@ export function FaqSection({
           className="mt-16 flex items-center gap-6"
         >
           <AppLink
-            href="/contact"
+            href="/contact/"
             className="inline-flex items-center gap-3 px-10 py-5 rounded-lg bg-gray-950 text-white font-heading font-bold text-xl hover:scale-[1.03] hover:bg-gray-800 active:scale-[0.97] transition-all duration-200"
           >
             Ask us anything

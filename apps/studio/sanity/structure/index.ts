@@ -3,6 +3,10 @@ import type { StructureBuilder } from "sanity/structure";
 import type { SanityDocument } from "sanity";
 import { SITE_SETTINGS_ID } from "../schemas/documents/siteSettings";
 import {
+  ACTIVE_PUBLIC_PAGE_SLUGS,
+  ACTIVE_STATIC_SEO_ROUTES,
+} from "../../../../shared/publicRoutePolicy.js";
+import {
   EarthGlobeIcon,
   EditIcon,
   CalendarIcon,
@@ -50,6 +54,8 @@ function cleanDocumentId(documentId: string): string {
 // Keep it simple for now: ONLY the form view.
 // (If/when you re-add SEO, add it back here once the plugin versions match your React/Sanity setup.)
 const postViews = (S: StructureBuilder) => [S.view.form()];
+const ACTIVE_PAGE_SLUGS = [...ACTIVE_PUBLIC_PAGE_SLUGS];
+const ACTIVE_STATIC_ROUTES = [...ACTIVE_STATIC_SEO_ROUTES];
 
 // --- Structure ---
 
@@ -69,8 +75,12 @@ export const studioStructure = (S: StructureBuilder) =>
             .title("Drafts")
             .apiVersion("2024-01-01")
             .filter(
-              '_type in ["post","page","staticPage"] && _originalId in path("drafts.**")',
+              '(_type == "post" || (_type == "page" && slug.current in $allowedPageSlugs) || (_type == "staticPage" && slug.current in $allowedStaticRoutes)) && _originalId in path("drafts.**")',
             )
+            .params({
+              allowedPageSlugs: ACTIVE_PAGE_SLUGS,
+              allowedStaticRoutes: ACTIVE_STATIC_ROUTES,
+            })
             .defaultOrdering([{ field: "_updatedAt", direction: "desc" }])
             // IMPORTANT: force schemaType for the document pane
             .child((documentId) =>
@@ -160,8 +170,11 @@ export const studioStructure = (S: StructureBuilder) =>
         .id("all-pages")
         .icon(EarthGlobeIcon)
         .child(
-          S.documentTypeList("page")
+          S.documentList()
             .title("All Pages")
+            .apiVersion("2024-01-01")
+            .filter('_type == "page" && slug.current in $allowedPageSlugs')
+            .params({ allowedPageSlugs: ACTIVE_PAGE_SLUGS })
             .defaultOrdering([{ field: "_updatedAt", direction: "desc" }])
             .child((documentId) =>
               S.document()
@@ -179,7 +192,10 @@ export const studioStructure = (S: StructureBuilder) =>
           S.documentList()
             .title("Draft Pages")
             .apiVersion("2024-01-01")
-            .filter('_type == "page" && _originalId in path("drafts.**")')
+            .filter(
+              '_type == "page" && _originalId in path("drafts.**") && slug.current in $allowedPageSlugs',
+            )
+            .params({ allowedPageSlugs: ACTIVE_PAGE_SLUGS })
             .defaultOrdering([{ field: "_updatedAt", direction: "desc" }])
             .child((documentId) =>
               S.document().documentId(documentId).schemaType("page"),
@@ -192,8 +208,11 @@ export const studioStructure = (S: StructureBuilder) =>
         .id("static-seo-pages")
         .icon(SearchIcon)
         .child(
-          S.documentTypeList("staticPage")
+          S.documentList()
             .title("Static SEO Pages")
+            .apiVersion("2024-01-01")
+            .filter('_type == "staticPage" && slug.current in $allowedStaticRoutes')
+            .params({ allowedStaticRoutes: ACTIVE_STATIC_ROUTES })
             .defaultOrdering([{ field: "slug.current", direction: "asc" }])
             .child((documentId) =>
               S.document()

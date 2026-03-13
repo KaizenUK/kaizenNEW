@@ -5,7 +5,7 @@ import AppLink from "@/components/routing/AppLink";
 
 /**
  * Section 5: Two Verticals
- * Web Design + Project Rescue — the two core ways we help.
+ * Web delivery + product leadership — the two core ways we help.
  */
 export const ServiceShowcase: React.FC = () => {
   return (
@@ -50,14 +50,13 @@ export const ServiceShowcase: React.FC = () => {
                 Websites That Work for a Living
               </h3>
               <p className="text-base text-slate-200 mb-6 max-w-md">
-                For Wirral businesses that want leads, not just a web presence.
-                Fast on mobile. Clean for Google. Built to convert visitors into
-                enquiries.
+                For teams that need a site to carry commercial weight. Fast on
+                mobile. Clean for Google. Built to turn attention into action.
               </p>
               <ul className="space-y-3 text-base text-slate-200/90 mb-8">
                 <li className="flex items-center gap-3">
                   <span className="text-cyan-400">&#10003;</span>
-                  Local SEO baked in from the start
+                  Technical SEO baked in from the start
                 </li>
                 <li className="flex items-center gap-3">
                   <span className="text-cyan-400">&#10003;</span>
@@ -70,7 +69,7 @@ export const ServiceShowcase: React.FC = () => {
               </ul>
               <div className="mt-auto">
                 <AppLink
-                  href="/contact"
+                  href="/contact/"
                   className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-cyan-300 to-cyan-200 text-slate-950 px-5 py-2.5 text-sm font-heading font-semibold shadow-lg hover:shadow-cyan-400/60 hover:-translate-y-0.5 transition-all"
                 >
                   Start Your Project
@@ -80,7 +79,7 @@ export const ServiceShowcase: React.FC = () => {
             </div>
           </motion.div>
 
-          {/* Vertical 2: Project Rescue */}
+          {/* Vertical 2: Product leadership */}
           <motion.div
             initial={{ opacity: 0, x: 24, rotate: 0.3 }}
             whileInView={{ opacity: 1, x: 0, rotate: 0 }}
@@ -92,35 +91,36 @@ export const ServiceShowcase: React.FC = () => {
             <div className="absolute inset-0 opacity-30 bg-[radial-gradient(circle_at_15%_0,rgba(190,242,100,0.5),transparent_55%),radial-gradient(circle_at_90%_100%,rgba(22,163,74,0.5),transparent_55%)]" />
             <div className="relative p-8 md:p-10 flex flex-col h-full">
               <p className="text-xs font-mono tracking-[0.25em] text-lime-300 mb-4 uppercase">
-                Project Rescue
+                Product Leadership
               </p>
               <h3 className="text-3xl md:text-4xl font-heading font-bold mb-4">
-                Stuck Project? We'll Get It Shipped.
+                Need a serious owner on the delivery?
               </h3>
               <p className="text-base text-slate-100 mb-6 max-w-md">
-                Late, over budget, or falling apart. We step in, find the
-                problems, fix the architecture, and get you to launch.
+                When delivery is drifting, priorities are muddy, or suppliers
+                are pulling in different directions, we step in and take control
+                of the backlog and the commercial decisions.
               </p>
               <ul className="space-y-3 text-base text-slate-100/90 mb-8">
                 <li className="flex items-center gap-3">
                   <span className="text-lime-400">&#10003;</span>
-                  Rapid triage — we diagnose in days, not weeks
+                  Senior product ownership with commercial judgment
                 </li>
                 <li className="flex items-center gap-3">
                   <span className="text-lime-400">&#10003;</span>
-                  Honest timelines you can actually hold us to
+                  Clear prioritisation the team can actually follow
                 </li>
                 <li className="flex items-center gap-3">
                   <span className="text-lime-400">&#10003;</span>
-                  We ship where others stall
+                  Fewer meetings, better delivery decisions
                 </li>
               </ul>
               <div className="mt-auto flex items-center gap-4">
                 <AppLink
-                  href="/project-rescue"
+                  href="/contract-product-owner/"
                   className="inline-flex items-center gap-2 rounded-full bg-lime-300 text-slate-950 px-5 py-2.5 text-sm font-heading font-semibold shadow-lg hover:bg-lime-200 hover:shadow-lime-300/40 hover:-translate-y-0.5 transition-all"
                 >
-                  Get Help Now
+                  See Product Owner Support
                   <ArrowRight size={18} />
                 </AppLink>
               </div>

@@ -15,6 +15,12 @@ function normalizeOrigin(value: string): string {
   return String(value).replace(/\/+$/, "").trim().toLowerCase();
 }
 
+function normalizeUrlOrigin(value: string): string {
+  const parsed = parseOrigin(value);
+  if (!parsed) return normalizeOrigin(value);
+  return normalizeOrigin(parsed.origin);
+}
+
 function parseOrigin(value: string): URL | null {
   try {
     return new URL(value);
@@ -48,10 +54,19 @@ function parseCookieHeader(header: string | null): Record<string, string> {
 function getAllowedOrigins(): string[] {
   const fromEnv = getEnv("ALLOWED_STUDIO_ORIGINS")
     .split(",")
-    .map((entry) => normalizeOrigin(entry))
+    .map((entry) => normalizeUrlOrigin(entry))
     .filter(Boolean);
 
-  const studioOrigin = normalizeOrigin(getEnv("VITE_STUDIO_ORIGIN") || getEnv("STUDIO_ORIGIN"));
+  const publicSiteOrigin = normalizeUrlOrigin(
+    getEnv("VITE_PUBLIC_SITE_ORIGIN") || getEnv("PUBLIC_SITE_ORIGIN"),
+  );
+  const studioOrigin = normalizeUrlOrigin(
+    getEnv("VITE_STUDIO_ORIGIN") ||
+      getEnv("STUDIO_ORIGIN") ||
+      getEnv("PUBLIC_STUDIO_URL") ||
+      getEnv("STUDIO_URL"),
+  );
+  if (publicSiteOrigin) fromEnv.push(publicSiteOrigin);
   if (studioOrigin) fromEnv.push(studioOrigin);
 
   return Array.from(new Set(fromEnv));
@@ -71,11 +86,11 @@ export function getPublicSiteOrigin(): string {
   ).replace(/\/+$/, "");
 }
 
-export function getStudioOrigin(): string {
+export function getStudioUrl(): string {
   return (
-    getEnv("VITE_STUDIO_ORIGIN") ||
-    getEnv("STUDIO_ORIGIN") ||
-    "https://studio.kaizenweb.co.uk"
+    getEnv("PUBLIC_STUDIO_URL") ||
+    getEnv("STUDIO_URL") ||
+    `${getEnv("VITE_STUDIO_ORIGIN") || getEnv("STUDIO_ORIGIN") || "https://kaizenweb.co.uk"}/studio`
   ).replace(/\/+$/, "");
 }
 

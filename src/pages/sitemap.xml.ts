@@ -14,6 +14,7 @@ import {
   normalizeSitePath,
   resolveCanonicalUrl,
 } from "../lib/site";
+import { RETIRED_PUBLIC_PATHS } from "../../shared/publicRoutePolicy.js";
 
 export const prerender = true;
 
@@ -29,7 +30,7 @@ const EXCLUDED_SITEMAP_ROUTES = new Set([
   "/cookie-policy/",
   "/gdpr-policy/",
   "/elementor-test-landing/",
-  "/case-studies/high-five-games/",
+  ...RETIRED_PUBLIC_PATHS,
 ]);
 
 interface SitemapEntry {

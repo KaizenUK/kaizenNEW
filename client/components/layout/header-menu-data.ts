@@ -1,7 +1,4 @@
-import { DEFAULT_OG_IMAGE } from "@/lib/seo";
-
 export type DesktopMenuKey =
-  | "locations"
   | "services"
   | "insights"
   | "case-studies"
@@ -21,9 +18,6 @@ export interface MenuColumn {
   title?: string;
   items: MenuLink[];
 }
-
-export type ServiceItem = MenuLink;
-export type ServiceColumn = MenuColumn;
 
 export interface MenuSocialLink {
   label: string;
@@ -69,11 +63,11 @@ const menuDefinitions: Record<DesktopMenuKey, DesktopMenuDefinition> = {
     key: "services",
     label: "Services",
     promo: {
-      title: "Websites built to bring work in.",
+      title: "Senior delivery for websites that need to earn their keep.",
       description:
-        "Fast delivery, sober technical decisions, and a commercial focus from first brief to launch.",
-      href: "/services/",
-      ctaLabel: "Explore services",
+        "We focus the public site around the services that fit the current strategy: WordPress rebuilds, technical SEO foundations, and hands-on product leadership.",
+      href: "/services/wordpress-web-design/",
+      ctaLabel: "See core services",
       media: {
         type: "image",
         src:
@@ -83,85 +77,44 @@ const menuDefinitions: Record<DesktopMenuKey, DesktopMenuDefinition> = {
     },
     primaryColumns: [
       {
-        title: "Build & Growth",
+        title: "Build & Foundations",
         items: [
-          {
-            label: "Local SEO",
-            href: "/services/local-seo/",
-          },
           {
             label: "WordPress Web Design",
             href: "/services/wordpress-web-design/",
           },
+          {
+            label: "Local SEO",
+            href: "/services/local-seo/",
+          },
         ],
       },
       {
-        title: "Product & Delivery",
+        title: "Leadership",
         items: [
-          {
-            label: "Project Rescue",
-            href: "/project-rescue/",
-            badge: "New",
-          },
           {
             label: "Contract Product Owner",
             href: "/contract-product-owner/",
           },
-          {
-            label: "Agile Coaching",
-            href: "/agile-coaching/",
-          },
-          {
-            label: "Digital Transformation",
-            href: "/digital-transformation/",
-          },
         ],
       },
     ],
-  },
-  locations: {
-    key: "locations",
-    label: "Locations",
-    promo: {
-      title: "Local landing pages, without local-page nonsense.",
-      description:
-        "The same delivery standard, tuned for Liverpool, Chester, Warrington, and Wirral search intent.",
-      href: "/web-design-liverpool/",
-      ctaLabel: "Browse locations",
-      media: {
-        type: "image",
-        src: DEFAULT_OG_IMAGE,
-        alt: "Kaizen site preview",
-      },
-    },
-    primaryColumns: [
+    utilitySections: [
       {
-        title: "Merseyside",
+        title: "Proof & Next Steps",
         items: [
           {
-            label: "Web Design Liverpool",
-            href: "/web-design-liverpool/",
+            label: "Case Studies",
+            href: "/case-studies/",
           },
           {
-            label: "Web Design Wirral",
-            href: "/web-design-wirral/",
+            label: "Free Audit",
+            href: "/performance-scanner/",
+            badge: "New",
           },
           {
-            label: "Liverpool City Centre",
-            href: "/web-design-liverpool-city-centre/",
-          },
-        ],
-      },
-      {
-        title: "Cheshire",
-        items: [
-          {
-            label: "Web Design Chester",
-            href: "/web-design-chester/",
-          },
-          {
-            label: "Web Design Warrington",
-            href: "/web-design-warrington/",
+            label: "Contact",
+            href: "/contact/",
           },
         ],
       },
@@ -171,16 +124,16 @@ const menuDefinitions: Record<DesktopMenuKey, DesktopMenuDefinition> = {
     key: "insights",
     label: "Insights",
     promo: {
-      title: "Useful writing, not placeholder content.",
+      title: "Useful writing, not filler.",
       description:
-        "Notes on recovery work, performance, commercial web design, and the decisions behind real delivery.",
+        "Notes on rebuilds, performance, technical SEO, and commercial decisions from the work we actually do.",
       href: "/blog/",
       ctaLabel: "Read insights",
       media: {
         type: "image",
         src:
           "https://cdn.builder.io/api/v1/image/assets%2Fe4ae46bbd81b4b95bef54d66dd9748cc%2F2bcd66303b6e425ab616ce3ad62975b8?format=webp&width=1600",
-        alt: "Kaizen resources preview",
+        alt: "Kaizen insights preview",
       },
     },
     primaryColumns: [
@@ -235,45 +188,33 @@ const menuDefinitions: Record<DesktopMenuKey, DesktopMenuDefinition> = {
     key: "case-studies",
     label: "Case Studies",
     promo: {
-      title: "Real work, real constraints, real outcomes.",
+      title: "Two examples. Real constraints. Clear outcomes.",
       description:
-        "A sample of projects where we improved delivery, performance, conversion, or all three.",
+        "We are trimming the public proof down to the work that best fits the direction of the business right now.",
       href: "/case-studies/midland-oil-group/",
-      ctaLabel: "View case study",
+      ctaLabel: "View case studies",
       media: {
         type: "image",
         src: "/images/case-studies/midland-oil-group-hero.webp",
-        alt: "Midland Oil Group homepage — custom-built platform featuring sector-first navigation and AI-powered oil finder",
+        alt: "Midland Oil Group homepage preview",
       },
     },
     primaryColumns: [
       {
-        title: "Client Work",
-        items: [
-          {
-            label: "AS Collections",
-            href: "/case-studies/as-collections/",
-          },
-          {
-            label: "Independent Retailer",
-            href: "/case-studies/independent-retailer/",
-          },
-          {
-            label: "Helen Moore Hairdressing",
-            href: "/case-studies/helen-moore-hairdressing/",
-          },
-        ],
-      },
-      {
-        title: "Platforms & Delivery",
+        title: "Platform Rebuild",
         items: [
           {
             label: "Midland Oil Group",
             href: "/case-studies/midland-oil-group/",
           },
+        ],
+      },
+      {
+        title: "Local Growth",
+        items: [
           {
-            label: "Kaizen Rebuild",
-            href: "/case-studies/kaizen-rebuild/",
+            label: "Helen Moore Hairdressing",
+            href: "/case-studies/helen-moore-hairdressing/",
           },
         ],
       },
@@ -298,9 +239,9 @@ const menuDefinitions: Record<DesktopMenuKey, DesktopMenuDefinition> = {
     key: "about",
     label: "Company",
     promo: {
-      title: "Small team, sharp standards.",
+      title: "Small team. Sharp standards.",
       description:
-        "The company page should tell people how you work. Ours does, and it points at the evidence too.",
+        "The public site is getting leaner, but the trust signals stay. This is where people can understand how we work and who they are hiring.",
       href: "/about/",
       ctaLabel: "About Kaizen",
       media: {

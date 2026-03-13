@@ -45,7 +45,10 @@ const publicSiteOrigin = (
   import.meta.env.VITE_PUBLIC_SITE_ORIGIN || "https://kaizenweb.co.uk"
 ).replace(/\/+$/, "");
 const studioOrigin = (
-  import.meta.env.VITE_STUDIO_ORIGIN || "https://studio.kaizenweb.co.uk"
+  import.meta.env.VITE_STUDIO_ORIGIN || "https://kaizenweb.co.uk"
+).replace(/\/+$/, "");
+const studioUrl = (
+  import.meta.env.PUBLIC_STUDIO_URL || `${studioOrigin}/studio`
 ).replace(/\/+$/, "");
 const editorApiHostOrigin = toUrlOrigin(editorApiOrigin);
 const includeLocalDevOrigins =
@@ -96,7 +99,7 @@ function InVisionAction(props: any) {
         : "/blog";
 
       const draftUrl = `${editorApiOrigin}/draft?path=${encodeURIComponent(previewPath)}`;
-      window.location.href = `/studio/presentation?preview=${encodeURIComponent(
+      window.location.href = `${studioUrl}/presentation?preview=${encodeURIComponent(
         draftUrl,
       )}`;
     },

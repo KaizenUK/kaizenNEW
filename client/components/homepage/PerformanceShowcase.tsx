@@ -176,7 +176,7 @@ export const PerformanceShowcase: React.FC = () => {
                 own site. We build yours to the same standard.
               </p>
               <motion.a
-                href="/performance-scanner"
+                href="/performance-scanner/"
                 className="inline-flex items-center gap-2 px-6 py-3 rounded-lg border-2 border-kaizen-cyan/50 text-kaizen-cyan font-heading font-bold transition-all duration-300"
                 whileHover={{
                   scale: 1.05,

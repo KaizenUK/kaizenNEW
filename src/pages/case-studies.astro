@@ -8,42 +8,31 @@ const caseStudies = [
     client: "Midland Oil Group",
     summary:
       "A full platform rebuild — replacing a slow WordPress site with custom architecture, AI-powered product discovery, and sector-first navigation.",
-    services: ["Web Design", "AI Tooling", "Information Architecture", "Performance"],
+    services: ["Platform Rebuild", "AI Tooling", "Information Architecture", "Performance"],
     slug: "midland-oil-group",
-  },
-  {
-    client: "A.S Collections",
-    summary:
-      "A complete, modern redesign for a Liverpool debt recovery firm that needed to build trust and authority.",
-    services: ["Web Design", "Content Strategy", "WordPress"],
-    slug: "as-collections",
   },
   {
     client: "Helen Moore Hairdressing",
     summary:
-      "A 0-to-1 build for a Wirral-based salon, resulting in high local rankings and a 24/7 online booking system.",
+      "A salon site rebuilt around speed, trust, and easier booking — with the technical foundations needed to win local search.",
     services: ["Web Design", "Local SEO", "Booking System"],
     slug: "helen-moore-hairdressing",
-  },
-  {
-    client: "Independent Retailer, Liverpool",
-    summary:
-      "A high-performance headless e-commerce build to fix a slow, clunky site and boost mobile conversions.",
-    services: ["E-commerce", "Headless (React)", "Performance"],
-    slug: "independent-retailer",
   },
 ];
 ---
 
-<StaticPageLayout path="/case-studies">
+<StaticPageLayout
+  path="/case-studies"
+  description="Proof, not promises. Two public case studies showing the kind of rebuild, technical SEO foundation work, and delivery clarity Kaizen wants more of."
+>
   <section class="flex min-h-[60vh] items-center bg-white py-20">
     <div class="container mx-auto max-w-4xl px-4">
       <h1 class="mb-8 text-5xl font-heading font-black leading-tight text-kaizen-dark md:text-6xl lg:text-7xl">
-        Fewer Projects. Better Results.
+        Proof, trimmed to the work that matters most.
       </h1>
       <p class="text-xl leading-relaxed text-kaizen-text-dark/70 md:text-2xl">
-        We are not a high-volume, churn-and-burn agency. We take on fewer
-        clients so we can apply full focus to each engagement.
+        We are keeping the public proof tight: two projects that best represent
+        the kind of work we want more of.
       </p>
     </div>
   </section>
@@ -51,7 +40,7 @@ const caseStudies = [
   <section class="bg-kaizen-light py-20">
     <div class="container mx-auto max-w-5xl px-4">
       <h2 class="mb-16 text-4xl font-heading font-bold text-kaizen-dark md:text-5xl">
-        Our Work
+        Featured Case Studies
       </h2>
 
       <ul class="space-y-0">
@@ -101,23 +90,24 @@ const caseStudies = [
   <section class="bg-kaizen-dark py-20 text-white md:py-32">
     <div class="container mx-auto max-w-3xl px-4 text-center">
       <h2 class="mb-8 text-4xl font-heading font-black md:text-5xl lg:text-6xl">
-        Ready to Be Our Next Case Study?
+        Want work like this on your side?
       </h2>
       <p class="mb-12 text-xl leading-relaxed text-white/80">
-        Let's talk about the results we can get for you.
+        If the job is commercially important, technically messy, or both, we
+        should talk.
       </p>
       <div class="flex flex-col items-center justify-center gap-6 sm:flex-row">
         <a
-          href="/contact"
+          href="/contact/"
           class="rounded-lg bg-gradient-to-r from-kaizen-cyan to-kaizen-lime px-8 py-3 font-heading font-bold text-kaizen-dark transition hover:shadow-lg hover:shadow-kaizen-cyan/50"
         >
           Get in Touch
         </a>
         <a
-          href="/project-rescue"
+          href="/performance-scanner/"
           class="rounded-lg border-2 border-white/30 px-8 py-3 font-heading font-bold text-white transition hover:border-kaizen-cyan hover:text-kaizen-cyan"
         >
-          Explore Project Rescue
+          Run the Free Audit
         </a>
       </div>
     </div>

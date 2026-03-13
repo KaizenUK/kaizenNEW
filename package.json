@@ -5,7 +5,10 @@
   "scripts": {
     "dev": "pnpm run clean:caches && astro dev --force",
     "dev:clean": "pnpm run clean:caches && astro dev --force",
-    "build": "rimraf dist .astro && cross-env NODE_OPTIONS='--max-old-space-size=6144' astro build && node scripts/generate-nginx-redirects.mjs",
+    "build": "pnpm run build:site && pnpm run build:studio && pnpm run build:stage:studio",
+    "build:site": "rimraf dist .astro && cross-env NODE_OPTIONS='--max-old-space-size=6144' astro build && node scripts/generate-nginx-redirects.mjs",
+    "build:studio": "pnpm --dir apps/studio build",
+    "build:stage:studio": "node scripts/stage-studio-build.mjs",
     "build:snap:high-five": "astro build",
     "build:snap:all": "astro build",
     "start": "astro preview",
@@ -14,6 +17,7 @@
     "format.fix": "prettier --write .",
     "typecheck": "astro check && tsc --noEmit",
     "trace:summary": "node scripts/trace-summary.mjs",
+    "sync:seo:sanity": "node scripts/sync-seo-to-sanity.mjs",
     "supabase:editor:secrets": "bash scripts/supabase/set-editor-secrets.sh",
     "supabase:editor:deploy": "bash scripts/supabase/deploy-editor-functions.sh",
     "supabase:editor:smoke": "bash scripts/supabase/smoke-editor-api.sh"

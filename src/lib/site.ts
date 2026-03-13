@@ -1,5 +1,5 @@
 const DEFAULT_SITE_URL = "https://kaizenweb.co.uk";
-const DEFAULT_STUDIO_URL = "https://studio.kaizenweb.co.uk/studio";
+const DEFAULT_STUDIO_URL = "https://kaizenweb.co.uk/studio";
 
 function readEnv(key: string): string | undefined {
   const metaEnv = (import.meta.env ?? {}) as Record<string, unknown>;

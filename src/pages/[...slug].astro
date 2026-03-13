@@ -2,6 +2,7 @@
 import StaticPageLayout from "../layouts/StaticPageLayout.astro";
 import ManagedPageRenderer from "../../client/components/sanity/ManagedPageRenderer";
 import { getManagedRoutePaths, getPageByPath } from "../lib/sanity/client";
+import { RETIRED_PUBLIC_PATHS } from "../../shared/publicRoutePolicy.js";
 
 export const prerender = true;
 
@@ -9,6 +10,7 @@ export async function getStaticPaths() {
   const paths = await getManagedRoutePaths();
   return paths
     .filter((pathname) => pathname !== "/")
+    .filter((pathname) => !RETIRED_PUBLIC_PATHS.includes(`${pathname.replace(/\/+$/, "")}/`))
     .map((pathname) => ({
       params: { slug: pathname.replace(/^\/+/, "") },
     }));

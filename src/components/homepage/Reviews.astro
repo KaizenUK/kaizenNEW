@@ -4,6 +4,7 @@
  * CSS-only infinite scroll with JS for pause-on-hover and drag.
  * Replace review data below when new reviews come in.
  */
+import { buildLocalBusinessSchema } from "../../../client/lib/seo";
 
 interface Review {
   author: string;
@@ -49,9 +50,9 @@ const allReviews = [...reviews, ...reviews];
 
 // Schema markup
 const schemaJson = JSON.stringify({
-  "@context": "https://schema.org",
-  "@type": "LocalBusiness",
-  name: "Kaizen Web",
+  ...buildLocalBusinessSchema(
+    "Kaizen is a UK web consultancy focused on high-performance websites, technical SEO foundations, WordPress rebuilds, and hands-on product leadership.",
+  ),
   aggregateRating: {
     "@type": "AggregateRating",
     ratingValue: "5.0",

@@ -7,7 +7,8 @@ import {
   SITE_NAME,
   getPageMeta,
 } from "../../client/lib/seo";
-import { resolveCanonicalUrl } from "../lib/site";
+import { getPageByPath, getStaticPageBySlug, urlFor } from "../lib/sanity/client";
+import { normalizeSitePath, resolveCanonicalUrl } from "../lib/site";
 
 interface Props {
   path: string;
@@ -25,18 +26,42 @@ const {
   canonical: canonicalOverride,
 } = Astro.props;
 
+const normalizedPath = normalizeSitePath(path);
+const seoLookupPath =
+  normalizedPath === "/" ? "/" : normalizedPath.replace(/\/$/, "");
+const [managedPage, staticPage] = await Promise.all([
+  getPageByPath(seoLookupPath, false),
+  getStaticPageBySlug(seoLookupPath, false),
+]);
+const sanityTitle = managedPage?.seo?.metaTitle || staticPage?.seo?.metaTitle;
+const sanityDescription =
+  managedPage?.seo?.metaDescription || staticPage?.seo?.metaDescription;
+const sanityCanonical =
+  managedPage?.seo?.canonicalUrl || staticPage?.seo?.canonicalUrl;
+const sanityNoIndex =
+  managedPage?.seo?.noIndex ?? staticPage?.seo?.noIndex ?? false;
+let sanityOgImage: string | undefined;
+try {
+  const shareImage = managedPage?.seo?.shareImage || staticPage?.seo?.shareImage;
+  if (shareImage) {
+    sanityOgImage = urlFor(shareImage).width(1200).height(630).fit("crop").auto("format").url();
+  }
+} catch {
+  sanityOgImage = undefined;
+}
+
 const meta = getPageMeta(path);
-const title = titleOverride || meta.title;
-const description = descriptionOverride || meta.description;
-const canonicalUrl = resolveCanonicalUrl(canonicalOverride, path);
+const title = sanityTitle || titleOverride || meta.title;
+const description = sanityDescription || descriptionOverride || meta.description;
+const canonicalUrl = resolveCanonicalUrl(sanityCanonical || canonicalOverride, path);
 const robots =
   robotsOverride ||
-  (meta.noIndex
+  (sanityNoIndex || meta.noIndex
     ? "noindex, nofollow"
     : import.meta.env.MODE === "development"
       ? "noindex"
       : "index, follow");
-const ogImage = meta.image || DEFAULT_OG_IMAGE;
+const ogImage = sanityOgImage || meta.image || DEFAULT_OG_IMAGE;
 ---
 
 <!doctype html>

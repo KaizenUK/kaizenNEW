@@ -3,7 +3,7 @@
 This runbook is for the static architecture:
 
 - Public site: static Astro output served by Nginx
-- Studio: static Vite output served on `studio.*`
+- Studio: static Vite output staged into `/studio/` inside the same public deploy
 - Editor backend APIs (`/draft`, `/preview-blog/*`, `/deploy`): Supabase Edge functions
 
 ## Baseline
@@ -12,7 +12,6 @@ This runbook is for the static architecture:
 - Package manager: `pnpm` via `corepack`
 - Public app repo dir on VPS: `VPS_APP_DIR_PROD` / `VPS_APP_DIR_STAGE`
 - Public web roots: `VPS_WEB_ROOT_PROD` / `VPS_WEB_ROOT_STAGE`
-- Studio web roots: `VPS_STUDIO_WEB_ROOT_PROD` / `VPS_STUDIO_WEB_ROOT_STAGE`
 - Optional redirects include path:
   - `VPS_NGINX_REDIRECTS_INCLUDE_PROD`
   - `VPS_NGINX_REDIRECTS_INCLUDE_STAGE`
@@ -34,29 +33,20 @@ Public deploy:
 - `VPS_NGINX_REDIRECTS_INCLUDE_PROD` (optional)
 - `VPS_NGINX_REDIRECTS_INCLUDE_STAGE` (optional)
 
-Studio deploy (optional but recommended):
-
-- `VPS_STUDIO_WEB_ROOT_PROD`
-- `VPS_STUDIO_WEB_ROOT_STAGE`
-- `VPS_STUDIO_DOMAIN_PROD` (optional, default `studio.kaizenweb.co.uk`)
-- `VPS_STUDIO_DOMAIN_STAGE` (optional, default `studio-stage.kaizenweb.co.uk`)
-
-Important: current Studio config uses `basePath: "/studio"`. Deploy Studio build output into a `studio/` subdirectory under the Studio vhost root.
+Important: current Studio config uses `basePath: "/studio"`. The root `pnpm build` now stages Studio output into `dist/studio/`, so you deploy one artifact to one web root.
 
 ## Build and Deploy Model
 
 CI workflow now does:
 
 1. `pnpm install --frozen-lockfile`
-2. `pnpm build` (public static)
-3. `pnpm --dir apps/studio install --frozen-lockfile`
-4. `pnpm --dir apps/studio build`
-5. SSH to VPS
-6. Pull latest branch
-7. Build again on VPS
-8. `rsync` static output into Nginx web root
-9. Install `dist/redirects.generated.conf` into Nginx include path (if configured)
-10. Reload Nginx
+2. `pnpm build` (public site + Studio staged into `dist/studio/`)
+3. SSH to VPS
+4. Pull latest branch
+5. Build again on VPS
+6. `rsync` static output into the public web root
+7. Install `dist/redirects.generated.conf` into Nginx include path (if configured)
+8. Reload Nginx
 
 No PM2 runtime is required for the public site or Studio.
 
@@ -115,34 +105,6 @@ server {
 
 `www` -> apex redirect server should remain as-is.
 
-## CloudPanel Nginx Shape (Studio)
-
-Studio should be a separate vhost (recommended `studio.kaizenweb.co.uk`):
-Repo template: `scripts/nginx/studio-static.server.conf.example`
-
-```nginx
-server {
-  listen 80;
-  listen [::]:80;
-  listen 443 ssl;
-  listen [::]:443 ssl;
-  http2 on;
-
-  server_name studio.kaizenweb.co.uk;
-
-  root /home/kaizenweb/public_html/studio.kaizenweb.co.uk;
-  index index.html;
-
-  location = / {
-    return 302 /studio/;
-  }
-
-  location /studio/ {
-    try_files $uri $uri/ /studio/index.html;
-  }
-}
-```
-
 ## Manual Production Redeploy (Public Static)
 
 Run as your deploy user:
@@ -158,7 +120,7 @@ git fetch origin main
 git reset --hard origin/main
 corepack enable
 corepack pnpm install --frozen-lockfile
-rm -rf dist .astro
+rm -rf dist .astro apps/studio/dist
 corepack pnpm run build
 
 mkdir -p "$WEB_ROOT"
@@ -169,27 +131,7 @@ sudo nginx -t
 sudo systemctl reload nginx
 
 curl -fsS -H "Host: kaizenweb.co.uk" http://127.0.0.1/ >/dev/null
-```
-
-## Manual Production Redeploy (Studio Static)
-
-```bash
-set -euo pipefail
-APP_DIR="/home/kaizenweb/apps/kaizen-prod"
-STUDIO_ROOT="/home/kaizenweb/public_html/studio.kaizenweb.co.uk"
-
-cd "$APP_DIR"
-git fetch origin main
-git reset --hard origin/main
-corepack enable
-corepack pnpm --dir apps/studio install --frozen-lockfile
-rm -rf apps/studio/dist
-corepack pnpm --dir apps/studio run build
-
-mkdir -p "$STUDIO_ROOT/studio"
-rsync -a --delete apps/studio/dist/ "$STUDIO_ROOT/studio/"
-
-curl -fsS -H "Host: studio.kaizenweb.co.uk" http://127.0.0.1/studio/ >/dev/null
+curl -fsS -H "Host: kaizenweb.co.uk" http://127.0.0.1/studio/ >/dev/null
 ```
 
 ## Supabase Edge Functions (Editor API)
@@ -244,10 +186,11 @@ corepack pnpm dlx supabase secrets set \
   SANITY_PROJECT_ID=your_project_id \
   SANITY_DATASET=production \
   SANITY_API_TOKEN=your_sanity_token \
-  ALLOWED_STUDIO_ORIGINS=https://studio.kaizenweb.co.uk,https://kaizenweb.co.uk,http://localhost:3333 \
+  ALLOWED_STUDIO_ORIGINS=https://kaizenweb.co.uk,http://localhost:3333 \
   VITE_PUBLIC_SITE_ORIGIN=https://kaizenweb.co.uk \
   VITE_EDITOR_API_ORIGIN=https://kaizenweb.co.uk/editor-api \
-  VITE_STUDIO_ORIGIN=https://studio.kaizenweb.co.uk \
+  VITE_STUDIO_ORIGIN=https://kaizenweb.co.uk \
+  PUBLIC_STUDIO_URL=https://kaizenweb.co.uk/studio \
   VITE_EDITOR_COOKIE_DOMAIN=.kaizenweb.co.uk \
   GITHUB_DEPLOY_TOKEN=your_github_token \
   GITHUB_DEPLOY_REPO=YOUR_ORG/KaizenNEW \

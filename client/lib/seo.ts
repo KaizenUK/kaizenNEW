@@ -22,14 +22,15 @@ export const DEFAULT_OG_IMAGE =
   "https://cdn.builder.io/api/v1/image/assets%2Fe4ae46bbd81b4b95bef54d66dd9748cc%2F094cdc9be84c41ee9db80308cbe5ea73?format=webp&width=1200&height=630";
 
 const defaultMeta: PageMeta = {
-  title: "Web Design Liverpool & Wirral | Kaizen – Agile Web Development",
+  title:
+    "WordPress Rebuilds, Technical SEO & Product Leadership | Kaizen Web",
   description:
-    "Kaizen is a Liverpool and Wirral web design agency. We build fast, high-performance websites and offer Agile coaching to improve your team's workflow. No-BS, just results.",
+    "Kaizen is a UK web consultancy focused on high-performance websites, technical SEO foundations, WordPress rebuilds, and hands-on product leadership.",
   keywords: [
-    "web design liverpool",
-    "web design wirral",
-    "liverpool web design",
-    "agile web development",
+    "wordpress rebuilds",
+    "technical seo",
+    "product owner consultancy",
+    "website performance audit",
     "kaizen",
   ],
   image: DEFAULT_OG_IMAGE,
@@ -39,7 +40,7 @@ const pageMeta: Record<string, Partial<PageMeta>> = {
   "/": {
     title: "Web Design & Website Performance Optimisation | Kaizen Web",
     description:
-      "Websites that rank higher, load faster and convert visitors into customers. Web design, WordPress speed optimisation, and performance audits — built for results.",
+      "We build websites that look outstanding, convert your customers and perform with awe. From WordPress optimisation to performance audits, Kaizen has you covered",
     keywords: [
       "website not converting visitors",
       "wordpress site running slow",
@@ -55,80 +56,10 @@ const pageMeta: Record<string, Partial<PageMeta>> = {
       "website redesign agency",
     ],
   },
-  "/services": {
-    title:
-      "Digital Services Liverpool | Web Design & Product Strategy | Kaizen",
-    description:
-      "A product-led digital agency. Specialising in React Development, Software Rescue, and Agile Consultancy for Liverpool & Wirral SMEs.",
-  },
-  "/web-design-liverpool": {
-    title: "Web Design Liverpool | Fast Sites That Bring in Work",
-    description:
-      "Websites for Liverpool businesses who need more customers. Fast, professional, built to rank on Google. From £2k. City Centre to Merseyside.",
-    keywords: [
-      "web design liverpool",
-      "liverpool web design",
-      "web designer liverpool",
-      "fast websites liverpool",
-      "liverpool city centre web design",
-      "commercial district websites",
-    ],
-  },
-  "/web-design-chester": {
-    title: "Web Design Chester | Trusted Sites for Law & Finance",
-    description:
-      "Professional websites for Chester law firms and financial advisors. Fast, secure, built to win client trust. Business Park to City Centre.",
-    keywords: [
-      "web design chester",
-      "chester web design",
-      "web designer chester",
-      "chester business park web design",
-      "law firm web design chester",
-      "financial advisor websites",
-      "professional services chester",
-    ],
-  },
-  "/web-design-warrington": {
-    title: "Web Design Warrington | Sites Built for Business",
-    description:
-      "Reliable websites for Warrington businesses. Fast, professional, no fuss. Perfect for logistics, manufacturing, and trade firms. Omega to Town Centre.",
-    keywords: [
-      "web design warrington",
-      "warrington web design",
-      "web designer warrington",
-      "omega business park websites",
-      "birchwood park web design",
-      "warrington logistics websites",
-      "manufacturing web design",
-    ],
-  },
-  "/services/web-design-liverpool": {
-    title: "Enterprise Web Design Liverpool | React & Next.js Developers",
-    description:
-      "We build high-performance React websites for Liverpool's Commercial District and Knowledge Quarter. Faster, safer, and more profitable than WordPress.",
-    keywords: [
-      "web design liverpool",
-      "enterprise web design",
-      "react development liverpool",
-      "high-performance websites",
-      "commercial district web design",
-    ],
-  },
-  "/web-design-liverpool-city-centre": {
-    title: "Web Design Liverpool City Centre | Kaizen",
-    description:
-      "City centre web design for Liverpool businesses that need fast, conversion-focused sites with clear messaging and transparent pricing.",
-    keywords: [
-      "web design liverpool city centre",
-      "liverpool city centre web design",
-      "city centre websites",
-      "liverpool web design",
-    ],
-  },
   "/services/local-seo": {
     title: "Local SEO | Fix Your Site, Fix Your Rankings | Kaizen Web",
     description:
-      "We're not an SEO agency. But if your site isn't ranking locally, the problem is usually the site — not the SEO. We fix the technical foundations so Google can actually rank you.",
+      "We are not an SEO agency. But, if your site is struggling to rank despite you paying monthly for it, the site is the issue. Kaizen fixes your foundations.",
     keywords: [
       "local seo",
       "core web vitals",
@@ -138,85 +69,39 @@ const pageMeta: Record<string, Partial<PageMeta>> = {
       "site not ranking",
     ],
   },
-  "/services/ecommerce": {
-    title: "Shopify Experts Liverpool & Custom Ecommerce | Kaizen",
-    description:
-      "High-performance ecommerce. From Shopify setups to complex custom WooCommerce builds. We architect stores that convert.",
-    keywords: [
-      "ecommerce development liverpool",
-      "headless ecommerce",
-      "woocommerce liverpool",
-      "shopify developer liverpool",
-      "fast ecommerce",
-    ],
-  },
   "/services/wordpress-web-design": {
-    title: "WordPress Web Design Liverpool | Fast & Easy to Edit",
+    title: "WordPress Web Design | Fast, Easy to Run Sites | Kaizen",
     description:
-      "Custom WordPress sites for Liverpool businesses. Fast, secure, and easy to update yourself. No bloated themes, just clean code that works.",
+      "Rebuild? Improve? Migrate? We have 3 clear paths to guide you to a decent, custom coded website. Fix a slow WordPress or build something better.",
     keywords: [
-      "wordpress web design liverpool",
-      "wordpress developer wirral",
+      "wordpress web design",
+      "wordpress migration",
       "custom wordpress sites",
       "fast wordpress",
-      "woocommerce liverpool",
-    ],
-  },
-  "/digital-transformation": {
-    title: "Digital Transformation Liverpool | Business Automation | Kaizen",
-    description:
-      "We don't just build websites; we automate businesses. AI-integrated workflows and custom software to reduce admin time by up to 40%.",
-    keywords: [
-      "digital transformation liverpool",
-      "business process automation",
-      "workflow automation",
-      "business automation wirral",
-    ],
-  },
-  "/agile-coaching": {
-    title: "Agile Coaching Liverpool | Scrum & Kanban Consultancy | Kaizen",
-    description:
-      "Real Agile. No waffle. We coach Liverpool teams to move from chaotic workflows to strict sprints, improving delivery speed and team morale.",
-    keywords: [
-      "agile coaching liverpool",
-      "agile for smes",
-      "fix chaotic projects",
-      "agile project management",
+      "technical wordpress agency",
     ],
   },
   "/contract-product-owner": {
     title:
-      "Contract Product Owner Liverpool | Agile Strategy | Kaizen",
+      "Contract Product Owner | Delivery Leadership | Kaizen",
     description:
       "Stop hiring 'Yes Men'. Our Contract Product Owners prioritise ROI, manage the backlog, and ensure your software solves the actual business problem.",
     keywords: [
-      "contract product owner liverpool",
+      "contract product owner",
       "senior product owner",
       "agile product owner",
-      "sean mcdonnell",
-    ],
-  },
-  "/project-rescue": {
-    title: "Software Project Rescue Services Liverpool | Code Audits | Kaizen",
-    description:
-      "Stalled build? We fix failing software projects. Our AI diagnostics audit legacy code in minutes to help you decide: Rescue or Rebuild?",
-    keywords: [
-      "project rescue liverpool",
-      "contract product owner",
-      "failing web projects",
-      "agile rescue",
-      "product ownership",
+      "delivery leadership",
     ],
   },
   "/about": {
-    title: "About Kaizen | Liverpool Web Design & Agile Experts",
+    title: "About Kaizen | Web Performance & Delivery Leadership",
     description:
-      "We're not another faceless agency. Meet Sean, our founder—a local, world-class tech expert who is relentlessly focused on getting you results.",
+      "We're not another faceless agency. Meet Sean, our founder, and see how Kaizen approaches web performance, technical clarity, and commercial delivery.",
     keywords: [
       "about kaizen",
       "sean mcdonnell",
-      "liverpool tech",
-      "agile expert liverpool",
+      "web consultancy",
+      "product delivery",
     ],
   },
   "/pledge": {
@@ -230,53 +115,37 @@ const pageMeta: Record<string, Partial<PageMeta>> = {
       "our ai policy",
     ],
   },
-  "/web-design-wirral": {
-    title: "Web Design Wirral | Local Sites That Get Results",
-    description:
-      "Fast, professional websites for Wirral businesses. From Heswall to Birkenhead, we build sites that rank on Google and bring in customers.",
-    image:
-      "https://cdn.builder.io/api/v1/image/assets%2Fe4ae46bbd81b4b95bef54d66dd9748cc%2F094cdc9be84c41ee9db80308cbe5ea73?format=webp&width=1200&height=630",
-    keywords: [
-      "web design wirral",
-      "wirral web designer",
-      "web design heswall",
-      "web design west kirby",
-      "web design birkenhead",
-      "local websites wirral",
-    ],
-  },
   "/case-studies": {
-    title: "Case Studies | Liverpool Web Design Results | Kaizen",
+    title: "Case Studies | Kaizen Web",
     description:
-      'Proof, not promises. See our "no-BS" case studies for Liverpool & Wirral businesses. We deliver results.',
+      "Proof, not promises. Two public case studies showing the kind of rebuild, technical SEO foundation work, and delivery clarity Kaizen wants more of.",
     keywords: [
       "web design case studies",
-      "liverpool web design portfolio",
-      "as collections",
+      "midland oil group",
       "helen moore hairdressing",
     ],
   },
   "/contact": {
-    title: "Contact | Kaizen | Liverpool Web Design",
+    title: "Contact | Kaizen Web",
     description:
-      "Let's talk. Send us a message or give us a call and we will come back with clear next steps.",
-    keywords: ["contact kaizen", "liverpool web design contact"],
+      "Let's talk. Send us a message, tell us where the site or delivery process is hurting, and we will come back with clear next steps.",
+    keywords: ["contact kaizen", "website consultancy contact"],
   },
   "/thank-you": {
     title: "Thank You | Kaizen",
     description:
-      "Thanks for getting in touch with Kaizen. We'll respond quickly with practical next steps for your Liverpool or Wirral project.",
+      "Thanks for getting in touch with Kaizen. We'll respond quickly with practical next steps for your project.",
     noIndex: true,
     keywords: ["thank you", "enquiry received", "kaizen"],
   },
   "/blog": {
-    title: "Blog | Kaizen | Web Design & Agile Insights",
+    title: "Blog | Kaizen | Performance, SEO & Delivery Insights",
     description:
-      "Practical insights on web design, local SEO, and Agile project management for Liverpool & Wirral businesses.",
+      "Practical insights on website performance, technical SEO, WordPress rebuilds, and delivery leadership.",
     keywords: [
-      "web design blog",
-      "agile blog",
-      "local seo tips",
+      "website performance blog",
+      "technical seo blog",
+      "wordpress rebuild guide",
       "kaizen blog",
     ],
   },
@@ -311,35 +180,20 @@ const pageMeta: Record<string, Partial<PageMeta>> = {
       "Kaizen's GDPR commitments covering hosting, analytics, and customer data in the UK.",
     noIndex: true,
   },
-  "/case-studies/as-collections": {
-    title: "As Collections Case Study | Kaizen",
-    description:
-      "How we helped As Collections improve their online presence and streamline operations.",
-  },
   "/case-studies/helen-moore-hairdressing": {
     title: "Helen Moore Hairdressing Case Study | Kaizen",
     description:
       "Local hairdressing salon case study—how we built their online booking system and improved local visibility.",
   },
-  "/case-studies/independent-retailer": {
-    title: "Independent Retailer Case Study | Kaizen",
-    description:
-      "How we helped an independent retailer increase online sales and streamline their operations.",
-  },
-  "/case-studies/kaizen-rebuild": {
-    title: "Kaizen Rebuild Case Study | React + Vite Migration",
-    description:
-      "A technical deep dive into how we migrated Kaizen Web from a legacy setup to a high-performance React + Vite + Headless architecture.",
-  },
   "/case-studies/midland-oil-group": {
     title: "Midland Oil Group Case Study | Kaizen Web",
     description:
-      "How we rebuilt Midland Oil Group's digital presence — replacing a slow WordPress site with a custom platform, AI-powered oil finder, and sector-first navigation.",
+      "How we rebuilt Midland Oil Group - from a sluggish, confusing WordPress to high-end tech platform that transformed the business.",
   },
   "/performance-scanner": {
     title: "Free Website Speed Test | Check Your Google PageSpeed Score",
     description:
-      "Is your slow website costing you customers? Run a free Google PageSpeed test and check your Core Web Vitals. Get instant results and fix your mobile site speed today.",
+      "Your slow website is costing you customers. Run a free PageSpeed check to find out what is holding you back and fixes. Instant results. Fix your site speed now.",
     keywords: [
       "google pagespeed insights",
       "core web vitals",
@@ -365,9 +219,9 @@ const dynamicMeta: DynamicMetaMatcher[] = [
   {
     test: (pathname) => pathname.startsWith("/blog/"),
     meta: {
-      title: "Liverpool Web Design Insights | Kaizen Blog",
+      title: "Website Performance Insights | Kaizen Blog",
       description:
-        "Articles and guides from the Kaizen Liverpool team covering SEO, UX, content design, and agile ways of working.",
+        "Articles and guides from Kaizen covering performance, SEO, WordPress, UX, and delivery decisions.",
     },
   },
 ];

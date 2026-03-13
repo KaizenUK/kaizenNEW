@@ -5,6 +5,7 @@ import {
   type SanityPost,
   type SanityImageSource,
 } from "../../lib/sanity/client";
+import { getStudioUrl } from "../../lib/site";
 
 interface Props {
   post: SanityPost;
@@ -40,12 +41,13 @@ const coverImageUrl =
 const authorImageUrl = imageFor(post.author?.image, 72, 72);
 const studioDocumentId = post._id.replace(/^drafts\./, "");
 const studioEditorCookieName = "kaizen_studio_auth";
+const studioUrl = getStudioUrl();
 ---
 
 <article class="linear-container py-14 sm:py-20">
   <div class="mx-auto max-w-[680px]">
     <a
-      href="/blog"
+      href="/blog/"
       class="linear-meta inline-flex items-center gap-2 text-sky-300 hover:text-sky-200"
     >
       <span aria-hidden="true">&larr;</span>
@@ -58,6 +60,7 @@ const studioEditorCookieName = "kaizen_studio_auth";
         class="mb-4 hidden"
         data-editor-cookie={studioEditorCookieName}
         data-document-id={studioDocumentId}
+        data-studio-url={studioUrl}
       />
 
       <div class="linear-meta mb-4 flex items-center gap-4">
@@ -134,12 +137,13 @@ const studioEditorCookieName = "kaizen_studio_auth";
     const documentId = container.getAttribute("data-document-id");
     if (!documentId) return;
 
+    const studioUrl = container.getAttribute("data-studio-url");
+    if (!studioUrl) return;
+
     const hostname = window.location.hostname.replace(/^www\./, "");
     if (!hostname || hostname === "localhost" || hostname === "127.0.0.1") {
       return;
     }
-
-    const studioUrl = `${window.location.protocol}//studio.${hostname}/studio`;
 
     const link = document.createElement("a");
     link.href = `${studioUrl}/structure/post;${encodeURIComponent(documentId)}`;

@@ -42,42 +42,31 @@ const footerColumns: Array<{
   {
     title: "Services",
     links: [
-      { label: "All Services", href: "/services/" },
       { label: "Local SEO", href: "/services/local-seo/" },
       {
         label: "WordPress Web Design",
         href: "/services/wordpress-web-design/",
       },
-    ],
-  },
-  {
-    title: "Delivery",
-    links: [
-      { label: "Project Rescue", href: "/project-rescue/" },
       { label: "Contract Product Owner", href: "/contract-product-owner/" },
-      { label: "Agile Coaching", href: "/agile-coaching/" },
-      { label: "Digital Transformation", href: "/digital-transformation/" },
-    ],
-  },
-  {
-    title: "Locations",
-    links: [
-      { label: "Liverpool", href: "/web-design-liverpool/" },
-      { label: "Wirral", href: "/web-design-wirral/" },
-      { label: "Chester", href: "/web-design-chester/" },
-      { label: "Warrington", href: "/web-design-warrington/" },
     ],
   },
   {
     title: "Proof",
     links: [
       { label: "Case Studies", href: "/case-studies/" },
-      { label: "AS Collections", href: "/case-studies/as-collections/" },
+      { label: "Midland Oil Group", href: "/case-studies/midland-oil-group/" },
       {
         label: "Helen Moore Hairdressing",
         href: "/case-studies/helen-moore-hairdressing/",
       },
-      { label: "Kaizen Rebuild", href: "/case-studies/kaizen-rebuild/" },
+    ],
+  },
+  {
+    title: "Resources",
+    links: [
+      { label: "Blog", href: "/blog/" },
+      { label: "Performance Scanner", href: "/performance-scanner/" },
+      { label: "Contact", href: "/contact/" },
     ],
   },
   {
@@ -85,8 +74,7 @@ const footerColumns: Array<{
     links: [
       { label: "About", href: "/about/" },
       { label: "Our Pledge", href: "/pledge/" },
-      { label: "Insights", href: "/blog/" },
-      { label: "Contact", href: "/contact/" },
+      { label: "Blog", href: "/blog/" },
     ],
   },
   {

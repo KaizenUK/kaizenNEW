@@ -19,7 +19,21 @@
   # 3. Normalise /index.html requests to directory URLs
   RewriteRule ^(.*/)?index\.html$ /$1 [L,R=301]
 
-  # 4. EXCLUSIONS: Let /cms (WordPress) handle its own routing
+  # 4. Retired public routes: preserve equity, remove dead-weight pages
+  RewriteRule ^services/?$ /services/wordpress-web-design/ [L,R=301]
+  RewriteRule ^services/ecommerce/?$ /services/wordpress-web-design/ [L,R=301]
+  RewriteRule ^(services/contract-product-owner|services/digital-transformation|digital-transformation|agile-coaching|project-rescue|product-owner)/?$ /contract-product-owner/ [L,R=301]
+  RewriteRule ^(services/web-design-liverpool|web-design-liverpool|web-design-liverpool-city-centre|web-design-wirral|web-design-warrington|web-design-chester)/?$ / [L,R=301]
+  RewriteRule ^case-studies/(as-collections|high-five-games|independent-retailer|kaizen-rebuild)/?$ /case-studies/ [L,R=301]
+
+  # 5. Studio app now lives at /studio on the main domain
+  RewriteRule ^studio$ /studio/ [L,R=301]
+  RewriteCond %{REQUEST_URI} ^/studio/
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteRule ^studio/ /studio/index.html [L]
+
+  # 6. EXCLUSIONS: Let /cms (WordPress) handle its own routing
   RewriteRule ^cms/ - [L]
 </IfModule>
 

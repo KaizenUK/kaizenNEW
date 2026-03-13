@@ -1,6 +1,7 @@
 import { defineConfig } from "astro/config";
 import react from "@astrojs/react";
 import path from "node:path";
+import { PUBLIC_ROUTE_REDIRECTS } from "./shared/publicRoutePolicy.js";
 
 function sanitizeBrokenTransformHooks() {
   const seen = new Set();
@@ -62,12 +63,7 @@ export default defineConfig({
     concurrency: 1,
   },
 
-  redirects: {
-    "/services/web-design-liverpool": "/web-design-liverpool",
-    "/web-design-liverpool-city-centre": "/web-design-liverpool",
-    "/services/digital-transformation": "/digital-transformation",
-    "/product-owner": "/contract-product-owner",
-  },
+  redirects: PUBLIC_ROUTE_REDIRECTS,
 
   integrations: [react()],
 

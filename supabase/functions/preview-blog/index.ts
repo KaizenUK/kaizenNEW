@@ -1,7 +1,7 @@
 import {
   getCorsHeaders,
   getPublicSiteOrigin,
-  getStudioOrigin,
+  getStudioUrl,
   hasEditorCookie,
   isOriginAllowed,
 } from "../_shared/editorAuth.ts";
@@ -170,7 +170,7 @@ async function getPreviewPost(slug: string, id: string): Promise<PreviewPost | n
 
 function buildHtml(post: PreviewPost): string {
   const publicOrigin = getPublicSiteOrigin();
-  const studioOrigin = getStudioOrigin();
+  const studioUrl = getStudioUrl();
   const slug = String(post.slug ?? "").trim();
   const cleanId = String(post._id ?? "").replace(/^drafts\./, "").trim();
   const title = String(post.seo?.metaTitle ?? post.title ?? "Preview").trim();
@@ -178,8 +178,8 @@ function buildHtml(post: PreviewPost): string {
   const imageUrl = post.mainImage?.asset?.url || post.coverImage?.asset?.url || "";
   const liveUrl = slug ? `${publicOrigin}/blog/${encodeURIComponent(slug)}` : `${publicOrigin}/blog`;
   const editUrl = cleanId
-    ? `${studioOrigin}/intent/edit/id=${encodeURIComponent(cleanId)};type=post`
-    : `${studioOrigin}/structure`;
+    ? `${studioUrl}/intent/edit/id=${encodeURIComponent(cleanId)};type=post`
+    : `${studioUrl}/structure`;
   const bodyHtml = renderPortableBlocks(post.body);
 
   return `<!doctype html>
