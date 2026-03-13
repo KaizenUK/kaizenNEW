@@ -16,31 +16,36 @@ const blindSpots = [
     title: "The invisible queue",
     question: "What loads before your visitor sees anything?",
     copy: "Before anyone sees your site, their browser downloads and processes all your CSS files and JavaScript. If there's a queue of 14 stylesheets and 23 scripts, nothing appears until they're done. Your SEO report says 'slow page speed'. The real cause? A page builder dumping 400KB of code your page doesn't even use.",
-    insight: "Google has a limited budget for processing your pages. If they're expensive to render, it may skip some entirely.",
+    insight:
+      "Google has a limited budget for processing your pages. If they're expensive to render, it may skip some entirely.",
   },
   {
     title: "Hidden code bloat",
     question: "Your About page might have more code than the BBC homepage.",
     copy: "A clean page has around 800 building blocks of code. A page-builder page? Often 3,000 to 5,000. Every one of those is something the browser has to read, arrange, and paint on screen. More code means slower scrolling, laggy buttons, and a score Google uses for ranking called INP (Interaction to Next Paint). The SEO report flags the score. Nobody looks at why it's bad.",
-    insight: "Google says keep it under 1,400. Most theme-built pages blow past that 3 or 4 times over.",
+    insight:
+      "Google says keep it under 1,400. Most theme-built pages blow past that 3 or 4 times over.",
   },
   {
     title: "Wasted crawl budget",
     question: "Is Google even bothering to look at your best pages?",
     copy: "Google gives every site a limit on how many pages it will visit. If your site has hundreds of tag pages, duplicate archives, and junk URLs — Google burns through that limit on pages that don't matter. By the time it reaches the ones you actually want ranked, it might just... not.",
-    insight: "Tidying up your site structure can mean Google checks your important pages more often — and ranks them sooner.",
+    insight:
+      "Tidying up your site structure can mean Google checks your important pages more often — and ranks them sooner.",
   },
   {
     title: "The page that jumps",
     question: "Does your content shift around while loading?",
     copy: "Images without set sizes, fonts swapping in, ads appearing late — they all shove your content around mid-load. It's annoying for visitors and it's something Google directly measures (called Cumulative Layout Shift). Your SEO agency reports the score. Actually fixing it means changing the code — setting image sizes, reserving space for ads, loading fonts properly.",
-    insight: "A score above 0.1 is classed as poor. Most off-the-shelf theme sites sit between 0.15 and 0.4.",
+    insight:
+      "A score above 0.1 is classed as poor. Most off-the-shelf theme sites sit between 0.15 and 0.4.",
   },
   {
     title: "Scripts you never asked for",
     question: "How many extras are slowing you down?",
     copy: "Chat widgets. Analytics. Heatmaps. Social media embeds. Cookie banners. Every one of them adds code that fights with your actual content for attention. We've looked at sites where these extras made up 70% of everything the page had to load. The SEO agency never mentioned it because they didn't know to look.",
-    insight: "Some of these scripts add half a second to your load time on their own. That can be the difference between page one and page two.",
+    insight:
+      "Some of these scripts add half a second to your load time on their own. That can be the difference between page one and page two.",
   },
 ];
 
@@ -204,12 +209,12 @@ const serviceSchema = JSON.stringify({
       </h1>
       <p class="mt-8 max-w-2xl text-xl leading-relaxed text-gray-600">
         If your business isn't showing up locally, the problem probably isn't
-        your SEO. It's your website. Slow, badly structured, failing the
-        checks Google actually uses to decide who ranks.
+        your SEO. It's your website. Slow, badly structured, failing the checks
+        Google actually uses to decide who ranks.
       </p>
       <p class="mt-4 max-w-2xl text-lg leading-relaxed text-gray-500">
-        We fix that part. The foundation. Once it's solid, everything you
-        build on top — SEO, content, reputation — actually sticks.
+        We fix that part. The foundation. Once it's solid, everything you build
+        on top — SEO, content, reputation — actually sticks.
       </p>
       <div class="mt-10 flex flex-col gap-4 sm:flex-row">
         <a
@@ -283,71 +288,353 @@ const serviceSchema = JSON.stringify({
         That's your customer. Every day.
       </p>
 
-      <!-- The journey -->
+      <!-- The journey — phone mockups -->
       <div class="mt-16">
-        <p class="text-sm font-bold uppercase tracking-wider text-gray-500 mb-8">
+        <p
+          class="text-sm font-bold uppercase tracking-wider text-gray-500 mb-12"
+        >
           Follow the customer
         </p>
-        <div class="grid grid-cols-1 gap-0 md:grid-cols-5">
-          <div class="relative border-t-2 border-cyan-400 pt-6 pb-8 md:pr-6">
-            <div class="absolute -top-3 left-0 flex h-6 w-6 items-center justify-center rounded-full bg-cyan-400">
-              <span class="text-xs font-bold text-gray-950">1</span>
+
+        <div class="space-y-20 md:space-y-28">
+          <!-- Step 1: Search -->
+          <div
+            class="grid grid-cols-1 items-center gap-10 md:grid-cols-[280px_1fr] lg:grid-cols-[320px_1fr]"
+          >
+            <!-- Phone -->
+            <div class="mx-auto w-[260px] md:w-full">
+              <div
+                class="rounded-[2.5rem] border-[3px] border-white/20 bg-black p-3"
+              >
+                <div class="rounded-[2rem] bg-white overflow-hidden">
+                  <!-- Status bar -->
+                  <div
+                    class="flex items-center justify-between bg-white px-5 pt-3 pb-2"
+                  >
+                    <span class="text-[10px] font-semibold text-gray-950"
+                      >9:41</span
+                    >
+                    <div class="flex items-center gap-1">
+                      <div class="flex gap-[2px]">
+                        <div class="h-[10px] w-[3px] rounded-full bg-gray-950">
+                        </div>
+                        <div
+                          class="h-[8px] w-[3px] rounded-full bg-gray-950 mt-[2px]"
+                        >
+                        </div>
+                        <div
+                          class="h-[6px] w-[3px] rounded-full bg-gray-950 mt-[4px]"
+                        >
+                        </div>
+                        <div
+                          class="h-[4px] w-[3px] rounded-full bg-gray-300 mt-[6px]"
+                        >
+                        </div>
+                      </div>
+                      <div
+                        class="ml-1 h-[11px] w-[20px] rounded-[3px] border border-gray-950 relative"
+                      >
+                        <div
+                          class="absolute inset-[2px] right-[5px] rounded-[1px] bg-gray-950"
+                        >
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- Google search bar -->
+                  <div class="px-4 pb-3">
+                    <div
+                      class="flex items-center gap-2 rounded-full border border-gray-200 px-4 py-2.5 shadow-sm"
+                    >
+                      <svg
+                        class="h-4 w-4 text-[#4285F4]"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        ><circle cx="11" cy="11" r="8"></circle><path
+                          d="m21 21-4.3-4.3"></path></svg
+                      >
+                      <span class="typing-text text-sm text-gray-950">plumber near me</span>
+                    </div>
+                  </div>
+                  <!-- Search results -->
+                  <div class="space-y-0 px-4 pb-5">
+                    <div class="border-b border-gray-100 py-3">
+                      <p class="text-[10px] text-gray-400">yoursite.co.uk</p>
+                      <p class="text-[13px] font-medium text-[#1a0dab]">
+                        Your Plumbing Services
+                      </p>
+                      <p class="text-[11px] leading-snug text-gray-500">
+                        Local plumber covering all areas. Call today for a
+                        free...
+                      </p>
+                    </div>
+                    <div class="border-b border-gray-100 py-3">
+                      <p class="text-[10px] text-gray-400">competitor.co.uk</p>
+                      <p class="text-[13px] font-medium text-[#1a0dab]">
+                        Fast Response Plumbing
+                      </p>
+                      <p class="text-[11px] leading-snug text-gray-500">
+                        Emergency plumber. Available now. Call 0151...
+                      </p>
+                    </div>
+                    <div class="py-3">
+                      <p class="text-[10px] text-gray-400">
+                        anotherplumber.co.uk
+                      </p>
+                      <p class="text-[13px] font-medium text-[#1a0dab]">
+                        Mersey Plumbing Co
+                      </p>
+                      <p class="text-[11px] leading-snug text-gray-500">
+                        Trusted local plumbers. Over 20 years experience...
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
-            <p class="mt-2 text-sm font-bold text-white">
-              "Plumber near me"
-            </p>
-            <p class="mt-1 text-sm text-gray-500">
-              Kitchen's flooding. They grab their phone. Google shows three
-              results.
-            </p>
+            <!-- Copy -->
+            <div>
+              <span
+                class="inline-flex h-8 w-8 items-center justify-center rounded-full bg-cyan-400 text-sm font-bold text-gray-950"
+                >1</span
+              >
+              <h3 class="mt-4 text-2xl font-heading font-bold text-white">
+                "Plumber near me"
+              </h3>
+              <p class="mt-3 max-w-lg text-lg leading-relaxed text-gray-400">
+                Kitchen's flooding. They grab their phone. Google shows three
+                results. Your site is one of them. They tap.
+              </p>
+            </div>
           </div>
-          <div class="relative border-t-2 border-cyan-400 pt-6 pb-8 md:pr-6">
-            <div class="absolute -top-3 left-0 flex h-6 w-6 items-center justify-center rounded-full bg-cyan-400">
-              <span class="text-xs font-bold text-gray-950">2</span>
+
+          <!-- Step 2: Your slow site -->
+          <div
+            class="grid grid-cols-1 items-center gap-10 md:grid-cols-[280px_1fr] lg:grid-cols-[320px_1fr]"
+          >
+            <!-- Phone -->
+            <div class="mx-auto w-[260px] md:w-full">
+              <div
+                class="rounded-[2.5rem] border-[3px] border-white/20 bg-black p-3"
+              >
+                <div class="rounded-[2rem] bg-white overflow-hidden">
+                  <!-- Status bar -->
+                  <div
+                    class="flex items-center justify-between bg-white px-5 pt-3 pb-2"
+                  >
+                    <span class="text-[10px] font-semibold text-gray-950"
+                      >9:41</span
+                    >
+                    <div class="flex items-center gap-1">
+                      <div class="flex gap-[2px]">
+                        <div class="h-[10px] w-[3px] rounded-full bg-gray-950">
+                        </div>
+                        <div
+                          class="h-[8px] w-[3px] rounded-full bg-gray-950 mt-[2px]"
+                        >
+                        </div>
+                        <div
+                          class="h-[6px] w-[3px] rounded-full bg-gray-950 mt-[4px]"
+                        >
+                        </div>
+                        <div
+                          class="h-[4px] w-[3px] rounded-full bg-gray-300 mt-[6px]"
+                        >
+                        </div>
+                      </div>
+                      <div
+                        class="ml-1 h-[11px] w-[20px] rounded-[3px] border border-gray-950 relative"
+                      >
+                        <div
+                          class="absolute inset-[2px] right-[5px] rounded-[1px] bg-gray-950"
+                        >
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- Slow loading page -->
+                  <div class="px-4 pb-5 min-h-[220px] flex flex-col">
+                    <!-- Broken hero placeholder -->
+                    <div
+                      class="h-24 rounded-lg bg-gray-100 flex items-center justify-center"
+                    >
+                      <svg
+                        class="h-8 w-8 text-gray-300 animate-spin"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        ><path d="M21 12a9 9 0 1 1-6.219-8.56"></path></svg
+                      >
+                    </div>
+                    <!-- Cookie banner overlay -->
+                    <div
+                      class="mt-3 rounded-lg bg-gray-800 px-3 py-2.5 text-[10px] text-white leading-snug"
+                    >
+                      <p class="font-semibold">This site uses cookies</p>
+                      <p class="mt-1 text-white/60">
+                        We use cookies to improve blah blah blah...
+                      </p>
+                      <div class="mt-2 flex gap-2">
+                        <span
+                          class="rounded bg-blue-600 px-2.5 py-1 text-[9px] font-semibold"
+                          >Accept all</span
+                        >
+                        <span class="rounded bg-gray-600 px-2.5 py-1 text-[9px]"
+                          >Manage</span
+                        >
+                      </div>
+                    </div>
+                    <!-- Content barely visible -->
+                    <div class="mt-3 space-y-2">
+                      <div class="h-3 w-3/4 rounded bg-gray-100"></div>
+                      <div class="h-3 w-1/2 rounded bg-gray-100"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
-            <p class="mt-2 text-sm font-bold text-white">
-              They tap your link
-            </p>
-            <p class="mt-1 text-sm text-gray-500">
-              Blank screen. Loading spinner. Their thumb's already hovering over
-              the back button.
-            </p>
+            <!-- Copy -->
+            <div>
+              <span
+                class="inline-flex h-8 w-8 items-center justify-center rounded-full bg-white/10 text-sm font-bold text-gray-500"
+                >2</span
+              >
+              <h3 class="mt-4 text-2xl font-heading font-bold text-white">
+                3 seconds. Nothing useful.
+              </h3>
+              <p class="mt-3 max-w-lg text-lg leading-relaxed text-gray-400">
+                Image still loading. Text jumping around. A cookie banner
+                covering half the screen. They can't find your phone number.
+                Their thumb's on the back button. Nope, not gonna wait. They're
+                gone.
+              </p>
+            </div>
           </div>
-          <div class="relative border-t-2 border-white/10 pt-6 pb-8 md:pr-6">
-            <div class="absolute -top-3 left-0 flex h-6 w-6 items-center justify-center rounded-full bg-white/10">
-              <span class="text-xs font-bold text-gray-500">3</span>
+
+          <!-- Step 3: Competitor's fast site -->
+          <div
+            class="grid grid-cols-1 items-center gap-10 md:grid-cols-[280px_1fr] lg:grid-cols-[320px_1fr]"
+          >
+            <!-- Phone -->
+            <div class="mx-auto w-[260px] md:w-full">
+              <div
+                class="rounded-[2.5rem] border-[3px] border-cyan-400/40 bg-black p-3"
+              >
+                <div class="rounded-[2rem] bg-white overflow-hidden">
+                  <!-- Status bar -->
+                  <div
+                    class="flex items-center justify-between bg-gray-950 px-5 pt-3 pb-2"
+                  >
+                    <span class="text-[10px] font-semibold text-white"
+                      >9:41</span
+                    >
+                    <div class="flex items-center gap-1">
+                      <div class="flex gap-[2px]">
+                        <div class="h-[10px] w-[3px] rounded-full bg-white">
+                        </div>
+                        <div
+                          class="h-[8px] w-[3px] rounded-full bg-white mt-[2px]"
+                        >
+                        </div>
+                        <div
+                          class="h-[6px] w-[3px] rounded-full bg-white mt-[4px]"
+                        >
+                        </div>
+                        <div
+                          class="h-[4px] w-[3px] rounded-full bg-white/40 mt-[6px]"
+                        >
+                        </div>
+                      </div>
+                      <div
+                        class="ml-1 h-[11px] w-[20px] rounded-[3px] border border-white relative"
+                      >
+                        <div
+                          class="absolute inset-[2px] right-[5px] rounded-[1px] bg-green-400"
+                        >
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- Fast, clean site -->
+                  <div class="bg-gray-950 px-4 pb-5">
+                    <p
+                      class="text-[10px] font-semibold uppercase tracking-widest text-cyan-400 pt-4"
+                    >
+                      Emergency Plumber
+                    </p>
+                    <p class="mt-2 text-lg font-bold leading-tight text-white">
+                      Fast Response<br />Plumbing
+                    </p>
+                    <p class="mt-2 text-[11px] leading-snug text-gray-400">
+                      Available now. On-site within 30 minutes.
+                    </p>
+                    <!-- Click to call button -->
+                    <div
+                      class="mt-4 flex items-center justify-center gap-2 rounded-lg bg-cyan-400 py-3"
+                    >
+                      <svg
+                        class="h-4 w-4 text-gray-950"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2.5"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        ><path
+                          d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"
+                        ></path></svg
+                      >
+                      <span class="text-sm font-bold text-gray-950"
+                        >Call Now — 0151 XXX XXXX</span
+                      >
+                    </div>
+                    <!-- Trust signals -->
+                    <div class="mt-4 flex items-center gap-3">
+                      <div class="flex -space-x-1">
+                        <div
+                          class="h-6 w-6 rounded-full bg-yellow-400 flex items-center justify-center text-[8px]"
+                        >
+                          ⭐
+                        </div>
+                        <div
+                          class="h-6 w-6 rounded-full bg-yellow-400 flex items-center justify-center text-[8px]"
+                        >
+                          ⭐
+                        </div>
+                        <div
+                          class="h-6 w-6 rounded-full bg-yellow-400 flex items-center justify-center text-[8px]"
+                        >
+                          ⭐
+                        </div>
+                      </div>
+                      <span class="text-[10px] text-gray-400"
+                        >4.9 from 127 reviews</span
+                      >
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
-            <p class="mt-2 text-sm font-bold text-white">
-              3 seconds pass
-            </p>
-            <p class="mt-1 text-sm text-gray-500">
-              Hero image still loading. Text jumping around. A cookie banner
-              covers half the screen. Can't find your number.
-            </p>
-          </div>
-          <div class="relative border-t-2 border-white/10 pt-6 pb-8 md:pr-6">
-            <div class="absolute -top-3 left-0 flex h-6 w-6 items-center justify-center rounded-full bg-white/10">
-              <span class="text-xs font-bold text-gray-500">4</span>
+            <!-- Copy -->
+            <div>
+              <span
+                class="inline-flex h-8 w-8 items-center justify-center rounded-full bg-cyan-400 text-sm font-bold text-gray-950"
+                >3</span
+              >
+              <h3 class="mt-4 text-2xl font-heading font-bold text-white">
+                Your competitor answers.
+              </h3>
+              <p class="mt-3 max-w-lg text-lg leading-relaxed text-gray-400">
+                Their site loaded instantly. Phone number right there. Click to
+                call. Job booked.
+              </p>
+              <p class="mt-3 max-w-lg text-lg leading-relaxed text-gray-500">
+                You never knew they were looking.
+              </p>
             </div>
-            <p class="mt-2 text-sm font-bold text-white">
-              They hit back
-            </p>
-            <p class="mt-1 text-sm text-gray-500">
-              Google records the bounce. Under 5 seconds. They're already
-              tapping the next result.
-            </p>
-          </div>
-          <div class="relative border-t-2 border-white/10 pt-6 pb-8">
-            <div class="absolute -top-3 left-0 flex h-6 w-6 items-center justify-center rounded-full bg-white/10">
-              <span class="text-xs font-bold text-gray-500">5</span>
-            </div>
-            <p class="mt-2 text-sm font-bold text-white">
-              Your competitor answers
-            </p>
-            <p class="mt-1 text-sm text-gray-500">
-              Their site loaded instantly. Phone number right there. Click to
-              call. Job booked. You never knew they were looking.
-            </p>
           </div>
         </div>
       </div>
@@ -356,7 +643,9 @@ const serviceSchema = JSON.stringify({
       <div class="mt-16 grid grid-cols-1 gap-8 md:grid-cols-3">
         <div class="rounded-2xl border border-white/10 p-8">
           <p class="text-4xl font-heading font-bold text-cyan-400">100%</p>
-          <p class="mt-3 text-sm font-bold uppercase tracking-wider text-gray-500">
+          <p
+            class="mt-3 text-sm font-bold uppercase tracking-wider text-gray-500"
+          >
             Mobile-first indexing
           </p>
           <p class="mt-2 text-sm leading-relaxed text-gray-400">
@@ -367,36 +656,41 @@ const serviceSchema = JSON.stringify({
         </div>
         <div class="rounded-2xl border border-white/10 p-8">
           <p class="text-4xl font-heading font-bold text-cyan-400">88%</p>
-          <p class="mt-3 text-sm font-bold uppercase tracking-wider text-gray-500">
+          <p
+            class="mt-3 text-sm font-bold uppercase tracking-wider text-gray-500"
+          >
             Won't come back
           </p>
           <p class="mt-2 text-sm leading-relaxed text-gray-400">
-            88% of people who have a bad mobile experience won't return. For
-            a local business, that's not a statistic. That's a customer
-            walking into your competitor's door.
+            88% of people who have a bad mobile experience won't return. For a
+            local business, that's not a statistic. That's a customer walking
+            into your competitor's door.
           </p>
         </div>
         <div class="rounded-2xl border border-white/10 p-8">
           <p class="text-4xl font-heading font-bold text-cyan-400">1.4s</p>
-          <p class="mt-3 text-sm font-bold uppercase tracking-wider text-gray-500">
+          <p
+            class="mt-3 text-sm font-bold uppercase tracking-wider text-gray-500"
+          >
             That's your window
           </p>
           <p class="mt-2 text-sm leading-relaxed text-gray-400">
-            On a phone, attention drifts after about 1.4 seconds. If your
-            page takes 4 seconds to show anything meaningful, you've lost
-            them twice over.
+            On a phone, attention drifts after about 1.4 seconds. If your page
+            takes 4 seconds to show anything meaningful, you've lost them twice
+            over.
           </p>
         </div>
       </div>
 
       <div class="mt-12 rounded-xl border border-white/10 p-6 md:p-8">
         <p class="text-lg leading-relaxed text-gray-400">
-          <strong class="text-white">Mobile isn't a nice-to-have. It's your shopfront.</strong>
+          <strong class="text-white"
+            >Mobile isn't a nice-to-have. It's your shopfront.</strong
+          >
           For local businesses, mobile is the first — and often only — impression.
-          A site that's been "made responsive" by shrinking the desktop version
-          isn't mobile-optimised. It's a big site crammed onto a small screen.
-          We build mobile-first: the phone experience comes first, desktop
-          scales up from there.
+          A site that's been "made responsive" by shrinking the desktop version isn't
+          mobile-optimised. It's a big site crammed onto a small screen. We build
+          mobile-first: the phone experience comes first, desktop scales up from there.
         </p>
       </div>
     </div>
@@ -417,18 +711,20 @@ const serviceSchema = JSON.stringify({
         <span class="text-gray-400">that nobody's told you about.</span>
       </h2>
       <p class="mt-6 max-w-2xl text-lg leading-relaxed text-gray-600">
-        Not because anyone's hiding them. These are code-level problems, and most
-        SEO agencies don't work at the code level. They optimise content. We fix
-        the machine it runs on.
+        Not because anyone's hiding them. These are code-level problems, and
+        most SEO agencies don't work at the code level. They optimise content.
+        We fix the machine it runs on.
       </p>
 
       <div class="mt-16 space-y-0">
         {
           blindSpots.map((item, i) => (
-            <div class={`grid grid-cols-1 gap-8 border-t border-gray-200 py-10 lg:grid-cols-[240px_1fr_280px] ${i === blindSpots.length - 1 ? 'border-b' : ''}`}>
+            <div
+              class={`grid grid-cols-1 gap-8 border-t border-gray-200 py-10 lg:grid-cols-[240px_1fr_280px] ${i === blindSpots.length - 1 ? "border-b" : ""}`}
+            >
               <div>
                 <span class="text-sm font-medium font-body text-gray-400">
-                  {String(i + 1).padStart(2, '0')}
+                  {String(i + 1).padStart(2, "0")}
                 </span>
                 <h3 class="mt-1 text-xl font-heading font-bold text-gray-950">
                   {item.title}
@@ -438,9 +734,7 @@ const serviceSchema = JSON.stringify({
                 <p class="text-sm font-bold uppercase tracking-wider text-cyan-600/70 mb-3">
                   {item.question}
                 </p>
-                <p class="leading-relaxed text-gray-600">
-                  {item.copy}
-                </p>
+                <p class="leading-relaxed text-gray-600">{item.copy}</p>
               </div>
               <div class="rounded-lg bg-[#f5f5f3] p-5">
                 <p class="text-xs font-bold uppercase tracking-wider text-gray-400 mb-2">
@@ -473,8 +767,8 @@ const serviceSchema = JSON.stringify({
       </h2>
       <p class="mt-6 max-w-2xl text-lg leading-relaxed text-gray-600">
         After 12 months of retainer fees, you'll have spent thousands — and
-        you'll still have the same slow, badly structured site underneath.
-        The retainer compensates for a problem. Fixing the site removes it.
+        you'll still have the same slow, badly structured site underneath. The
+        retainer compensates for a problem. Fixing the site removes it.
       </p>
 
       <div class="mt-16 grid grid-cols-1 gap-8 md:grid-cols-2">
@@ -484,7 +778,9 @@ const serviceSchema = JSON.stringify({
             {costComparison.retainer.label}
           </p>
           <p class="mt-3 text-4xl font-heading font-bold text-gray-950">
-            {costComparison.retainer.monthly}<span class="text-lg text-gray-400">/month</span>
+            {costComparison.retainer.monthly}<span class="text-lg text-gray-400"
+              >/month</span
+            >
           </p>
           <p class="mt-1 text-sm text-gray-400">
             {costComparison.retainer.annual} per year, ongoing
@@ -502,7 +798,7 @@ const serviceSchema = JSON.stringify({
                     stroke-linecap="round"
                     stroke-linejoin="round"
                   >
-                    <path d="M5 12h14"></path>
+                    <path d="M5 12h14" />
                   </svg>
                   <span>{item}</span>
                 </li>
@@ -512,12 +808,16 @@ const serviceSchema = JSON.stringify({
         </div>
 
         <!-- Fix side -->
-        <div class="rounded-2xl border-2 border-gray-950 bg-gray-950 p-8 text-white md:p-10">
+        <div
+          class="rounded-2xl border-2 border-gray-950 bg-gray-950 p-8 text-white md:p-10"
+        >
           <div class="flex items-center gap-3">
             <p class="text-sm font-bold uppercase tracking-wider text-gray-500">
               {costComparison.fix.label}
             </p>
-            <span class="rounded-full bg-cyan-400/15 px-3 py-1 text-xs font-bold uppercase tracking-wider text-cyan-400">
+            <span
+              class="rounded-full bg-cyan-400/15 px-3 py-1 text-xs font-bold uppercase tracking-wider text-cyan-400"
+            >
               Recommended
             </span>
           </div>
@@ -540,7 +840,7 @@ const serviceSchema = JSON.stringify({
                     stroke-linecap="round"
                     stroke-linejoin="round"
                   >
-                    <path d="M20 6 9 17l-5-5"></path>
+                    <path d="M20 6 9 17l-5-5" />
                   </svg>
                   <span>{item}</span>
                 </li>
@@ -567,13 +867,17 @@ const serviceSchema = JSON.stringify({
         <p class="mt-8 text-xl text-gray-400">
           Fix the foundation. The rankings follow.
         </p>
-        <div class="mt-10 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
+        <div
+          class="mt-10 flex flex-col items-center gap-4 sm:flex-row sm:justify-center"
+        >
           <ContactCTAButton label="Talk to us about your site" client:load />
           <a
             href="tel:+441514530008"
             class="group inline-flex items-center justify-center rounded-[18px] border border-white/15 px-5 py-2.5 text-[16px] text-white/60 no-underline transition-all duration-200 hover:-translate-y-px hover:text-white"
           >
-            <span class="inline-flex items-center gap-2 whitespace-nowrap font-medium tracking-[-0.01em]">
+            <span
+              class="inline-flex items-center gap-2 whitespace-nowrap font-medium tracking-[-0.01em]"
+            >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 class="h-4 w-4"
@@ -630,7 +934,9 @@ const serviceSchema = JSON.stringify({
         <div class="space-y-0">
           {
             dnhSteps.map((item, i) => (
-              <div class={`flex gap-6 py-8 ${i > 0 ? 'border-t border-gray-200' : ''}`}>
+              <div
+                class={`flex gap-6 py-8 ${i > 0 ? "border-t border-gray-200" : ""}`}
+              >
                 <span class="text-sm font-medium font-body text-gray-400 pt-1">
                   {item.step}
                 </span>
@@ -638,9 +944,7 @@ const serviceSchema = JSON.stringify({
                   <h3 class="text-xl font-heading font-bold text-gray-950">
                     {item.title}
                   </h3>
-                  <p class="mt-2 leading-relaxed text-gray-600">
-                    {item.copy}
-                  </p>
+                  <p class="mt-2 leading-relaxed text-gray-600">{item.copy}</p>
                 </div>
               </div>
             ))
@@ -668,8 +972,8 @@ const serviceSchema = JSON.stringify({
           </h2>
           <p class="mt-6 text-lg leading-relaxed text-gray-600">
             Helen Moore Hairdressing had a great local reputation in Wallasey
-            Village but was invisible online. Searching for hairdressers in
-            the area turned up nothing.
+            Village but was invisible online. Searching for hairdressers in the
+            area turned up nothing.
           </p>
           <p class="mt-4 text-lg leading-relaxed text-gray-600">
             The problem wasn't missing SEO. It was the site. Slow, outdated,
@@ -677,8 +981,8 @@ const serviceSchema = JSON.stringify({
             Profile, no structure.
           </p>
           <p class="mt-4 text-lg leading-relaxed text-gray-600">
-            We built a fast, properly structured site with local data markup
-            and a fully set up Google Business Profile. No retainer. No monthly
+            We built a fast, properly structured site with local data markup and
+            a fully set up Google Business Profile. No retainer. No monthly
             spend. Just a site that did its job.
           </p>
         </div>
@@ -691,15 +995,20 @@ const serviceSchema = JSON.stringify({
           </p>
           <div class="mt-8 space-y-6">
             <div class="border-t border-white/10 pt-6">
-              <p class="text-sm font-bold uppercase tracking-wider text-gray-500">
+              <p
+                class="text-sm font-bold uppercase tracking-wider text-gray-500"
+              >
                 Before
               </p>
               <p class="mt-2 text-lg text-gray-400">
-                Invisible online. Not on Google Maps. Zero enquiries from search.
+                Invisible online. Not on Google Maps. Zero enquiries from
+                search.
               </p>
             </div>
             <div class="border-t border-white/10 pt-6">
-              <p class="text-sm font-bold uppercase tracking-wider text-gray-500">
+              <p
+                class="text-sm font-bold uppercase tracking-wider text-gray-500"
+              >
                 What we did
               </p>
               <ul class="mt-2 space-y-2 text-gray-400">
@@ -711,7 +1020,8 @@ const serviceSchema = JSON.stringify({
                     stroke="currentColor"
                     stroke-width="2.5"
                     stroke-linecap="round"
-                    stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg
+                    stroke-linejoin="round"
+                    ><path d="M20 6 9 17l-5-5"></path></svg
                   >
                   <span>Fast, mobile-first site</span>
                 </li>
@@ -723,7 +1033,8 @@ const serviceSchema = JSON.stringify({
                     stroke="currentColor"
                     stroke-width="2.5"
                     stroke-linecap="round"
-                    stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg
+                    stroke-linejoin="round"
+                    ><path d="M20 6 9 17l-5-5"></path></svg
                   >
                   <span>Proper site structure and linking</span>
                 </li>
@@ -735,7 +1046,8 @@ const serviceSchema = JSON.stringify({
                     stroke="currentColor"
                     stroke-width="2.5"
                     stroke-linecap="round"
-                    stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg
+                    stroke-linejoin="round"
+                    ><path d="M20 6 9 17l-5-5"></path></svg
                   >
                   <span>Local data markup and schema</span>
                 </li>
@@ -747,22 +1059,25 @@ const serviceSchema = JSON.stringify({
                     stroke="currentColor"
                     stroke-width="2.5"
                     stroke-linecap="round"
-                    stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg
+                    stroke-linejoin="round"
+                    ><path d="M20 6 9 17l-5-5"></path></svg
                   >
                   <span>Google Business Profile setup</span>
                 </li>
               </ul>
             </div>
             <div class="border-t border-white/10 pt-6">
-              <p class="text-sm font-bold uppercase tracking-wider text-gray-500">
+              <p
+                class="text-sm font-bold uppercase tracking-wider text-gray-500"
+              >
                 After
               </p>
               <p class="mt-2 text-2xl font-heading font-bold text-cyan-400">
                 #1 for local search terms
               </p>
               <p class="mt-2 text-gray-400">
-                Consistent bookings from new local clients. No SEO retainer.
-                No monthly spend. Just a properly built site doing its job.
+                Consistent bookings from new local clients. No SEO retainer. No
+                monthly spend. Just a properly built site doing its job.
               </p>
             </div>
           </div>
@@ -818,8 +1133,8 @@ const serviceSchema = JSON.stringify({
         </h2>
         <p class="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-gray-600">
           We're not here to replace them. We're here to make their work land.
-          They do strategy, content, and links. We do speed, structure, and code.
-          Put those together and the rankings actually move.
+          They do strategy, content, and links. We do speed, structure, and
+          code. Put those together and the rankings actually move.
         </p>
         <div class="mt-12 grid grid-cols-1 gap-6 text-left sm:grid-cols-3">
           <div class="rounded-xl bg-[#f5f5f3] p-6">
@@ -856,7 +1171,9 @@ const serviceSchema = JSON.stringify({
             </ul>
           </div>
         </div>
-        <div class="mt-10 rounded-xl border border-gray-200 bg-[#f5f5f3] p-6 text-left md:p-8">
+        <div
+          class="mt-10 rounded-xl border border-gray-200 bg-[#f5f5f3] p-6 text-left md:p-8"
+        >
           <p class="text-sm font-bold uppercase tracking-wider text-gray-400">
             Not sure your SEO agency is any good?
           </p>
@@ -912,9 +1229,9 @@ const serviceSchema = JSON.stringify({
         <span class="text-gray-500">Not on sand.</span>
       </h2>
       <p class="mx-auto mt-6 max-w-2xl text-xl leading-relaxed text-gray-400">
-        Fix it once. Let everything you build on top — SEO, content,
-        reputation — actually compound. Stop paying monthly to work around
-        problems that can be solved.
+        Fix it once. Let everything you build on top — SEO, content, reputation
+        — actually compound. Stop paying monthly to work around problems that
+        can be solved.
       </p>
       <div class="mt-10 flex flex-col justify-center gap-4 sm:flex-row">
         <a
@@ -967,4 +1284,26 @@ const serviceSchema = JSON.stringify({
       </div>
     </div>
   </section>
+  <style>
+    .typing-text {
+      display: inline-block;
+      overflow: hidden;
+      white-space: nowrap;
+      border-right: 2px solid #111827;
+      width: 0;
+      animation: typing 1.8s steps(15) 0.5s forwards, blink 0.6s step-end 0.5s 6;
+    }
+
+    @keyframes typing {
+      to {
+        width: 8.5em;
+      }
+    }
+
+    @keyframes blink {
+      50% {
+        border-color: transparent;
+      }
+    }
+  </style>
 </StaticPageLayout>
