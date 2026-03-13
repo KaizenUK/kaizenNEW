@@ -205,6 +205,20 @@ export function estimateReadTime(body: PortableTextBlock[] = []): number {
     .map((block) => {
       const blockCode = typeof block.code === "string" ? block.code : undefined;
       if (blockCode) return blockCode;
+      if (
+        block._type === "table" &&
+        Array.isArray(block.rows)
+      ) {
+        return block.rows
+          .flatMap((row: { cells?: Array<{ content?: string }> }) =>
+            Array.isArray(row?.cells)
+              ? row.cells.map((cell: { content?: string }) =>
+                  typeof cell?.content === "string" ? cell.content : "",
+                )
+              : [],
+          )
+          .join(" ");
+      }
       if (!Array.isArray(block.children)) return "";
       return block.children
         .map((child) => (typeof child?.text === "string" ? child.text : ""))

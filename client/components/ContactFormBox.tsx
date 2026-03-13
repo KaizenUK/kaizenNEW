@@ -6,7 +6,11 @@ import { BUSINESS_PHONE, BUSINESS_PHONE_HREF } from "@/lib/seo";
 type SubmitStatus = "idle" | "submitting" | "success" | "error";
 type FormStep = 1 | 2 | 3 | 4 | 5;
 
-export const ContactFormBox = () => {
+interface ContactFormBoxProps {
+  autoFocusFields?: boolean;
+}
+
+export const ContactFormBox = ({ autoFocusFields = true }: ContactFormBoxProps) => {
   // Form data
   const [name, setName] = useState("");
   const [surname, setSurname] = useState("");
@@ -205,7 +209,7 @@ export const ContactFormBox = () => {
         message: message.trim(),
         marketing_consent: consentToMarketing,
         consent_to_gdpr: consentToGDPR,
-        source_page: window.location.pathname,
+        source_page: window.location.pathname + window.location.search,
         user_agent:
           typeof navigator !== "undefined" ? navigator.userAgent : null,
       });
@@ -310,7 +314,7 @@ export const ContactFormBox = () => {
                       onChange={(e) => setName(e.target.value)}
                       placeholder="John"
                       className="w-full bg-gray-800/50 border border-white/10 text-white placeholder:text-white/40 placeholder:text-xs rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-cyan-500 transition"
-                      autoFocus
+                      autoFocus={autoFocusFields}
                     />
                   </div>
                   <div>

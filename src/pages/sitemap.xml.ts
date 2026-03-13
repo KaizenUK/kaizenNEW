@@ -30,6 +30,8 @@ const EXCLUDED_SITEMAP_ROUTES = new Set([
   "/cookie-policy/",
   "/gdpr-policy/",
   "/elementor-test-landing/",
+  "/review/",
+  "/get-started/",
   ...RETIRED_PUBLIC_PATHS,
 ]);
 

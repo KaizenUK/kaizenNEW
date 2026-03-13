@@ -33,6 +33,7 @@ export const richTextSection = defineType({
         }),
         defineArrayMember({ type: "callToAction" }),
         defineArrayMember({ type: "codeBlock" }),
+        defineArrayMember({ type: "table" }),
       ],
       validation: (Rule) => Rule.required().min(1),
     }),

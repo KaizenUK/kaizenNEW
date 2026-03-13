@@ -1,5 +1,18 @@
-import { PortableText } from "@portabletext/react";
 import type { SanityCallToAction } from "../../../src/lib/sanity/client";
+
+type TableCellValue = {
+  content?: string;
+};
+
+type TableRowValue = {
+  cells?: TableCellValue[];
+};
+
+type TableValue = {
+  caption?: string;
+  hasHeaderRow?: boolean;
+  rows?: TableRowValue[];
+};
 
 // ── CTA Button ─────────────────────────────────────────────────────
 
@@ -30,6 +43,20 @@ export function SectionHeading({ text }: { text: string }) {
       {text}
     </h2>
   );
+}
+
+function normalizeTableRows(value: TableValue): string[][] {
+  if (!Array.isArray(value.rows)) return [];
+
+  return value.rows
+    .map((row) =>
+      Array.isArray(row?.cells)
+        ? row.cells.map((cell) =>
+            typeof cell?.content === "string" ? cell.content.trim() : "",
+          )
+        : [],
+    )
+    .filter((row) => row.length > 0 && row.some((cell) => cell.length > 0));
 }
 
 // ── Portable Text components (for RichTextSection) ─────────────────
@@ -97,5 +124,60 @@ export const portableComponents = {
           <CtaButton cta={value} />
         </div>
       ) : null,
+    table: ({ value }: { value?: TableValue }) => {
+      if (!value) return null;
+
+      const rows = normalizeTableRows(value);
+      if (rows.length === 0) return null;
+
+      const hasHeaderRow = value.hasHeaderRow !== false;
+      const [headerRow, ...bodyRows] = rows;
+      const tableRows = hasHeaderRow ? bodyRows : rows;
+
+      return (
+        <figure className="my-8 overflow-hidden rounded-xl border border-white/10 bg-white/[0.03]">
+          <div className="overflow-x-auto">
+            <table className="min-w-full border-collapse text-left text-sm text-gray-200">
+              {hasHeaderRow && headerRow ? (
+                <thead className="bg-white/[0.04]">
+                  <tr>
+                    {headerRow.map((cell, index) => (
+                      <th
+                        key={`head-${index}`}
+                        scope="col"
+                        className="border-b border-white/10 px-4 py-3 font-semibold text-white"
+                      >
+                        <span className="whitespace-pre-line">{cell}</span>
+                      </th>
+                    ))}
+                  </tr>
+                </thead>
+              ) : null}
+              <tbody>
+                {(tableRows.length > 0 ? tableRows : hasHeaderRow ? [] : rows).map(
+                  (row, rowIndex) => (
+                    <tr key={`row-${rowIndex}`} className="align-top">
+                      {row.map((cell, cellIndex) => (
+                        <td
+                          key={`cell-${rowIndex}-${cellIndex}`}
+                          className="border-t border-white/10 px-4 py-3 text-gray-300"
+                        >
+                          <span className="whitespace-pre-line">{cell}</span>
+                        </td>
+                      ))}
+                    </tr>
+                  ),
+                )}
+              </tbody>
+            </table>
+          </div>
+          {value.caption ? (
+            <figcaption className="border-t border-white/10 px-4 py-3 text-sm text-gray-400">
+              {value.caption}
+            </figcaption>
+          ) : null}
+        </figure>
+      );
+    },
   },
 };

@@ -81,6 +81,7 @@ export const post = defineType({
         }),
         defineArrayMember({ type: "callToAction" }),
         defineArrayMember({ type: "codeBlock" }),
+        defineArrayMember({ type: "table" }),
         defineArrayMember({ type: "videoEmbed" }),
       ],
       validation: (Rule) => Rule.required().min(1),

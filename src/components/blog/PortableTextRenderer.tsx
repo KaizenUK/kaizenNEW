@@ -32,6 +32,20 @@ type VideoEmbedValue = {
   caption?: string;
 };
 
+type TableCellValue = {
+  content?: string;
+};
+
+type TableRowValue = {
+  cells?: TableCellValue[];
+};
+
+type TableValue = {
+  caption?: string;
+  hasHeaderRow?: boolean;
+  rows?: TableRowValue[];
+};
+
 interface PortableTextRendererProps {
   value?: PortableTextBlock[];
 }
@@ -55,6 +69,20 @@ function getVideoEmbedUrl(url: string): string | null {
   if (vimeoMatch) return `https://player.vimeo.com/video/${vimeoMatch[1]}`;
 
   return null;
+}
+
+function normalizeTableRows(value: TableValue): string[][] {
+  if (!Array.isArray(value.rows)) return [];
+
+  return value.rows
+    .map((row) =>
+      Array.isArray(row?.cells)
+        ? row.cells.map((cell) =>
+            typeof cell?.content === "string" ? cell.content.trim() : "",
+          )
+        : [],
+    )
+    .filter((row) => row.length > 0 && row.some((cell) => cell.length > 0));
 }
 
 const components: PortableTextComponents = {
@@ -208,6 +236,61 @@ const components: PortableTextComponents = {
               {video.caption}
             </figcaption>
           )}
+        </figure>
+      );
+    },
+    table: ({ value }) => {
+      const table = value as TableValue;
+      const rows = normalizeTableRows(table);
+
+      if (rows.length === 0) return null;
+
+      const hasHeaderRow = table.hasHeaderRow !== false;
+      const [headerRow, ...bodyRows] = rows;
+      const tableRows = hasHeaderRow ? bodyRows : rows;
+
+      return (
+        <figure className="my-8 overflow-hidden rounded-xl border border-white/10 bg-white/[0.03]">
+          <div className="overflow-x-auto">
+            <table className="min-w-full border-collapse text-left text-sm text-gray-200">
+              {hasHeaderRow && headerRow ? (
+                <thead className="bg-white/[0.04]">
+                  <tr>
+                    {headerRow.map((cell, index) => (
+                      <th
+                        key={`head-${index}`}
+                        scope="col"
+                        className="border-b border-white/10 px-4 py-3 font-semibold text-white"
+                      >
+                        <span className="whitespace-pre-line">{cell}</span>
+                      </th>
+                    ))}
+                  </tr>
+                </thead>
+              ) : null}
+              <tbody>
+                {(tableRows.length > 0 ? tableRows : hasHeaderRow ? [] : rows).map(
+                  (row, rowIndex) => (
+                    <tr key={`row-${rowIndex}`} className="align-top">
+                      {row.map((cell, cellIndex) => (
+                        <td
+                          key={`cell-${rowIndex}-${cellIndex}`}
+                          className="border-t border-white/10 px-4 py-3 text-gray-300 first:border-l-0"
+                        >
+                          <span className="whitespace-pre-line">{cell}</span>
+                        </td>
+                      ))}
+                    </tr>
+                  ),
+                )}
+              </tbody>
+            </table>
+          </div>
+          {table.caption ? (
+            <figcaption className="border-t border-white/10 px-4 py-3 text-sm text-gray-400">
+              {table.caption}
+            </figcaption>
+          ) : null}
         </figure>
       );
     },

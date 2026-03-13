@@ -1,0 +1,434 @@
+---
+import LandingPageLayout from "../layouts/LandingPageLayout.astro";
+import { ContactFormBox } from "../../client/components/ContactFormBox";
+import KaizenLogo from "../../client/components/KaizenLogo";
+
+export const prerender = true;
+---
+
+<LandingPageLayout
+  title="Fix Your Slow Website | Kaizen Web"
+>
+  <!-- ═══ UET TAG STUB ═══ -->
+  <!-- Replace YOUR_UET_TAG_ID with your Bing UET tag ID -->
+  <script is:inline>
+    (function(w,d,t,r,u){var f,n,i;w[u]=w[u]||[],f=function(){var o={ti:"YOUR_UET_TAG_ID",enableAutoSpaTracking:true};o.q=w[u],w[u]=new UET(o)},n=d.createElement(t),n.src=r,n.async=1,n.onload=n.onreadystatechange=function(){var s=this.readyState;s&&s!=="loaded"&&s!=="complete"||(f(),n.onload=n.onreadystatechange=null)},i=d.getElementsByTagName(t)[0],i.parentNode.insertBefore(n,i)})(window,document,"script","//bat.bing.com/bat.js","uetq");
+  </script>
+
+  <!-- ═══ MINIMAL HEADER ═══ -->
+  <header class="fixed top-0 inset-x-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-200/60">
+    <div class="mx-auto max-w-[1440px] px-6 lg:px-12 h-16 flex items-center justify-between">
+      <a href="https://kaizenweb.co.uk" class="inline-flex items-center">
+        <KaizenLogo className="h-7 w-[128px] text-[#001133]" client:load />
+      </a>
+      <a
+        href="#get-in-touch"
+        class="group relative isolate inline-flex items-center justify-center overflow-hidden rounded-[18px] border border-white/25 px-5 py-2.5 text-[14px] text-white no-underline shadow-[0_12px_32px_rgba(10,34,102,0.34)] transition-transform duration-200 hover:-translate-y-px"
+      >
+        <span class="pointer-events-none absolute inset-0 rounded-[inherit] bg-[linear-gradient(135deg,#266bff_0%,#1658e8_56%,#0c3eb9_100%)]"></span>
+        <span class="pointer-events-none absolute inset-px rounded-[inherit] bg-[linear-gradient(180deg,rgba(255,255,255,0.2)_0%,rgba(255,255,255,0.08)_20%,rgba(8,38,112,0.16)_100%)]"></span>
+        <span class="relative z-1 font-medium text-white whitespace-nowrap">Get a free quote</span>
+      </a>
+    </div>
+  </header>
+
+  <!-- ═══ HERO ═══ -->
+  <section class="relative bg-gray-950 text-white pt-36 pb-28 md:pt-48 md:pb-40 overflow-hidden">
+    <div
+      class="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_20%_50%,rgba(6,182,212,0.08),transparent_50%)]"
+    ></div>
+    <div
+      class="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_80%_20%,rgba(38,107,255,0.06),transparent_50%)]"
+    ></div>
+
+    <div class="mx-auto max-w-[1440px] px-6 lg:px-12 relative z-10">
+      <div class="max-w-3xl">
+        <h1
+          class="text-4xl md:text-5xl lg:text-6xl font-heading font-bold text-white leading-tight mb-8"
+        >
+          You've probably been<br />
+          putting this off.
+        </h1>
+        <p class="text-lg md:text-xl text-white/50 font-body leading-relaxed mb-12 max-w-2xl">
+          Sorting out your website feels like a massive job. You don't
+          know what it should cost, how long it'll take, or whether it'll
+          actually make a difference. So the slow, clunky site stays — and
+          every week it quietly loses you customers you'll never hear from.
+        </p>
+
+        <div class="flex flex-col sm:flex-row items-start gap-5">
+          <a
+            href="#get-in-touch"
+            class="group relative isolate inline-flex items-center justify-center overflow-hidden rounded-[18px] border border-white/25 px-10 py-5 text-xl text-white no-underline shadow-[0_12px_32px_rgba(10,34,102,0.34)] transition-transform duration-200 hover:-translate-y-px hover:shadow-[0_18px_40px_rgba(10,34,102,0.4)]"
+          >
+            <span class="pointer-events-none absolute inset-0 rounded-[inherit] bg-[linear-gradient(135deg,#266bff_0%,#1658e8_56%,#0c3eb9_100%)]"></span>
+            <span class="pointer-events-none absolute inset-px rounded-[inherit] bg-[linear-gradient(180deg,rgba(255,255,255,0.2)_0%,rgba(255,255,255,0.08)_20%,rgba(8,38,112,0.16)_100%)]"></span>
+            <span class="pointer-events-none absolute inset-0 rounded-[inherit] shadow-[inset_0_1px_0_rgba(255,255,255,0.42),inset_0_-1px_0_rgba(255,255,255,0.08)]"></span>
+            <span class="relative z-1 inline-flex items-center gap-2 whitespace-nowrap font-heading font-bold tracking-[-0.01em] text-white">
+              Get a free quote
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="transition-transform duration-200 group-hover:translate-x-0.5" aria-hidden="true"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
+            </span>
+          </a>
+          <span class="text-sm font-body text-white/20 self-center">Fixed-price. No obligation.</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ WHY IT'S SLOW ═══ -->
+  <section class="py-28 md:py-36 bg-white">
+    <div class="mx-auto max-w-[1440px] px-6 lg:px-12">
+      <div class="grid grid-cols-1 md:grid-cols-12 gap-12 md:gap-16">
+        <div class="md:col-span-4 lg:col-span-3">
+          <p
+            class="text-xs font-medium font-body uppercase tracking-[0.25em] text-gray-400 mb-6"
+          >
+            Why it's slow
+          </p>
+          <h2
+            class="text-3xl md:text-4xl font-heading font-bold text-gray-950 leading-tight"
+          >
+            It's not your hosting.<br />
+            It's how the site was built.
+          </h2>
+        </div>
+        <div class="md:col-span-8 lg:col-span-9">
+          <div class="max-w-2xl space-y-6 text-base md:text-lg font-body text-gray-500 leading-relaxed">
+            <p>
+              Your site was probably fine when it launched. Most are. But
+              WordPress sites collect weight over time — every plugin,
+              every theme update, every image uploaded at full resolution.
+              Three years in, your "fast" site takes 8 seconds to load on
+              a phone and scores 23 on Google PageSpeed.
+            </p>
+            <p>
+              Google notices. Your visitors notice. The only people who
+              don't notice are the ones who never make it past the
+              loading screen.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ WHAT IT'S COSTING YOU ═══ -->
+  <section class="py-20 md:py-28 bg-[#f5f5f3]">
+    <div class="mx-auto max-w-[1440px] px-6 lg:px-12">
+      <div class="max-w-3xl mb-16">
+        <p
+          class="text-xs font-medium font-body uppercase tracking-[0.25em] text-gray-400 mb-6"
+        >
+          The bit that stings
+        </p>
+        <h2
+          class="text-3xl md:text-4xl font-heading font-bold text-gray-950 leading-tight"
+        >
+          Think about how many people visited your site last month.
+          Now cut that number in half.
+        </h2>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-12 gap-12 md:gap-16">
+        <div class="md:col-span-4 lg:col-span-3">
+          <p class="text-5xl md:text-6xl font-heading font-bold text-gray-950">53%</p>
+          <p class="mt-3 text-base font-body text-gray-500 leading-relaxed">
+            of people leave a mobile page that takes over 3 seconds.
+            That's Google's own data.
+          </p>
+        </div>
+        <div class="md:col-span-8 lg:col-span-9">
+          <p class="text-base md:text-lg font-body text-gray-500 leading-relaxed max-w-2xl">
+            Every one of those people was interested enough to click.
+            They searched for something you sell, found you, and tapped
+            through. Then your site pushed them away before they read a
+            single word. They hit back, picked whoever loaded next, and
+            you never knew it happened. That's not a bad day — it's
+            every day.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ THIS ACTUALLY HAPPENED ═══ -->
+  <section class="py-28 md:py-36 bg-gray-950 text-white relative overflow-hidden">
+    <div
+      class="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_60%_50%,rgba(6,182,212,0.06),transparent_50%)]"
+    ></div>
+
+    <div class="mx-auto max-w-[1440px] px-6 lg:px-12 relative z-10">
+      <div class="max-w-3xl mb-20 md:mb-28">
+        <p
+          class="text-xs font-medium font-body uppercase tracking-[0.25em] text-white/40 mb-6"
+        >
+          This actually happened
+        </p>
+        <h2
+          class="text-4xl md:text-5xl font-heading font-bold text-white leading-tight"
+        >
+          A fuel distributor doubled their<br />
+          <span class="text-gray-500">enquiries. Same ad spend.</span>
+        </h2>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-12 gap-12 md:gap-16 items-start">
+        <div class="md:col-span-5">
+          <div class="flex items-end gap-8">
+            <div>
+              <p class="text-7xl md:text-8xl font-heading font-bold text-red-500/80">23</p>
+              <p class="mt-2 text-sm font-body text-white/30">PageSpeed before</p>
+            </div>
+            <svg class="w-8 h-8 text-white/20 shrink-0 mb-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+            </svg>
+            <div>
+              <p class="text-7xl md:text-8xl font-heading font-bold text-green-500">98</p>
+              <p class="mt-2 text-sm font-body text-white/30">PageSpeed after</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="md:col-span-7">
+          <div class="space-y-5 text-base font-body text-white/40 leading-relaxed">
+            <p>
+              Midland Oil Group had a WordPress site on a starter theme.
+              It scored 23 on PageSpeed and took 9 seconds to load on
+              mobile. They were spending money on ads but couldn't work
+              out why the phone had stopped ringing.
+            </p>
+            <p>
+              Kaizen rebuilt it from scratch — clean code, no page builder,
+              properly sized images. The new site scored 98 and loaded in
+              under 2 seconds.
+            </p>
+            <p class="text-white/60 font-heading font-bold text-lg">
+              Enquiries doubled within the first month. Nothing else
+              changed — same business, same ads, same services. Just a
+              website that stopped getting in the way.
+            </p>
+          </div>
+          <a
+            href="/case-studies/midland-oil-group/"
+            target="_blank"
+            class="inline-flex items-center gap-2 mt-8 text-sm font-body font-medium text-cyan-400 hover:text-cyan-300 transition-colors"
+          >
+            Read the full case study
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M7 17 17 7"></path>
+              <path d="M7 7h10v10"></path>
+            </svg>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ WHAT ACTUALLY CHANGES ═══ -->
+  <section class="py-28 md:py-36 bg-white">
+    <div class="mx-auto max-w-[1440px] px-6 lg:px-12">
+      <div class="max-w-3xl mb-20">
+        <p
+          class="text-xs font-medium font-body uppercase tracking-[0.25em] text-gray-400 mb-6"
+        >
+          After the rebuild
+        </p>
+        <h2
+          class="text-3xl md:text-4xl font-heading font-bold text-gray-950 leading-tight"
+        >
+          What changes when your site stops fighting against you.
+        </h2>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-16">
+        <div class="border-l-2 border-cyan-600 pl-6">
+          <h3 class="text-xl font-heading font-bold text-gray-950 mb-3">
+            People stay long enough to read it.
+          </h3>
+          <p class="text-base font-body text-gray-500 leading-relaxed">
+            Under 2 seconds on mobile. No white screen while plugins
+            fight for bandwidth. Your visitors see what you're selling
+            before they lose patience.
+          </p>
+        </div>
+        <div class="border-l-2 border-cyan-600 pl-6">
+          <h3 class="text-xl font-heading font-bold text-gray-950 mb-3">
+            Google can actually find you.
+          </h3>
+          <p class="text-base font-body text-gray-500 leading-relaxed">
+            Proper structure, data markup, Core Web Vitals that pass.
+            Every blog post and backlink starts compounding instead of
+            being wasted on a site Google can't read properly.
+          </p>
+        </div>
+        <div class="border-l-2 border-cyan-600 pl-6">
+          <h3 class="text-xl font-heading font-bold text-gray-950 mb-3">
+            Your ads stop being wasted money.
+          </h3>
+          <p class="text-base font-body text-gray-500 leading-relaxed">
+            Faster pages, better quality scores, lower cost per click.
+            Same budget, more leads — because people actually stick
+            around instead of bouncing.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ HOW IT WORKS ═══ -->
+  <section class="py-28 md:py-36 bg-[#f5f5f3]">
+    <div class="mx-auto max-w-[1440px] px-6 lg:px-12">
+      <div class="max-w-3xl mb-20">
+        <p
+          class="text-xs font-medium font-body uppercase tracking-[0.25em] text-gray-400 mb-6"
+        >
+          How it works
+        </p>
+        <h2
+          class="text-3xl md:text-4xl font-heading font-bold text-gray-950 leading-tight"
+        >
+          Three steps. The first one takes about five minutes.
+        </h2>
+      </div>
+
+      <div class="space-y-0">
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-12 py-16 md:py-20 border-b border-gray-300">
+          <div class="md:col-span-4 lg:col-span-3">
+            <span class="text-sm font-body text-cyan-600 tracking-wide block mb-2">01</span>
+            <h3 class="text-2xl md:text-3xl font-heading font-bold text-gray-950">
+              Send your URL
+            </h3>
+          </div>
+          <div class="md:col-span-8 lg:col-span-9">
+            <p class="text-base md:text-lg font-body text-gray-500 leading-relaxed max-w-2xl">
+              Fill in the form at the bottom of this page. Kaizen will
+              run the same tests Google uses to rank you and come back
+              with a specific breakdown of what's wrong — not a generic
+              checklist. You'll get a fixed-price quote within 48 hours.
+            </p>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-12 py-16 md:py-20 border-b border-gray-300">
+          <div class="md:col-span-4 lg:col-span-3">
+            <span class="text-sm font-body text-cyan-600 tracking-wide block mb-2">02</span>
+            <h3 class="text-2xl md:text-3xl font-heading font-bold text-gray-950">
+              Kaizen builds it
+            </h3>
+          </div>
+          <div class="md:col-span-8 lg:col-span-9">
+            <p class="text-base md:text-lg font-body text-gray-500 leading-relaxed max-w-2xl">
+              No page builder. No theme. Clean, hand-written code that
+              loads fast and does what it needs to. You see progress
+              throughout and approve everything before it goes live.
+              The price you agreed is the price you pay.
+            </p>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-12 py-16 md:py-20">
+          <div class="md:col-span-4 lg:col-span-3">
+            <span class="text-sm font-body text-cyan-600 tracking-wide block mb-2">03</span>
+            <h3 class="text-2xl md:text-3xl font-heading font-bold text-gray-950">
+              30 days of backup
+            </h3>
+          </div>
+          <div class="md:col-span-8 lg:col-span-9">
+            <p class="text-base md:text-lg font-body text-gray-500 leading-relaxed max-w-2xl">
+              After launch, anything that needs tweaking gets sorted at
+              no extra charge. If something bigger comes up, you'll know
+              before any work starts. And the site is yours — no lock-in,
+              no monthly fees, no platform you can't leave.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ CONTACT FORM ═══ -->
+  <section id="get-in-touch" class="py-28 md:py-36 bg-gray-950 text-white relative overflow-hidden">
+    <div
+      class="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_30%_50%,rgba(6,182,212,0.08),transparent_60%)]"
+    ></div>
+
+    <div class="mx-auto max-w-[1440px] px-6 lg:px-12 relative z-10">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24">
+        <!-- Left: Copy -->
+        <div class="max-w-lg">
+          <p
+            class="text-xs font-medium font-body uppercase tracking-[0.25em] text-white/40 mb-6"
+          >
+            Get started
+          </p>
+          <h2
+            class="text-4xl md:text-5xl font-heading font-bold text-white leading-tight mb-8"
+          >
+            Five minutes now<br />
+            <span class="text-gray-500">saves months of wondering.</span>
+          </h2>
+          <p class="text-lg text-white/50 font-body leading-relaxed mb-10">
+            Drop your details and your website URL. Kaizen will take
+            a proper look, tell you what's going wrong, and give you
+            a fixed-price quote to sort it out. If it's not the right
+            fit, you'll hear that too.
+          </p>
+
+          <div class="space-y-5 text-white/30 text-sm font-body">
+            <div class="flex items-start gap-3">
+              <svg class="w-5 h-5 text-cyan-400/60 mt-0.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+              </svg>
+              <span>Fixed-price — the number agreed is the number you pay</span>
+            </div>
+            <div class="flex items-start gap-3">
+              <svg class="w-5 h-5 text-cyan-400/60 mt-0.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+              </svg>
+              <span>No lock-in — you own your site, your code, everything</span>
+            </div>
+            <div class="flex items-start gap-3">
+              <svg class="w-5 h-5 text-cyan-400/60 mt-0.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+              </svg>
+              <span>No follow-up spam — just a reply with what Kaizen found</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Form -->
+        <div>
+          <ContactFormBox autoFocusFields={false} client:load />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ MINIMAL FOOTER ═══ -->
+  <footer class="bg-gray-950 border-t border-white/5 py-8">
+    <div class="mx-auto max-w-[1440px] px-6 lg:px-12">
+      <div class="flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-white/20 font-body">
+        <p>&copy; {new Date().getFullYear()} Kaizen Web Ltd. Company No. 17007703</p>
+        <a
+          href="https://kaizenweb.co.uk"
+          class="hover:text-white/40 transition-colors"
+        >
+          kaizenweb.co.uk
+        </a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ═══ CONVERSION TRACKING ═══ -->
+  <script is:inline>
+    document.addEventListener('submit', function() {
+      if (typeof window.uetq !== 'undefined') {
+        window.uetq.push('event', 'lead_form_submit', {
+          'event_category': 'conversion',
+          'event_label': 'get-started',
+          'event_value': 1
+        });
+      }
+    });
+  </script>
+</LandingPageLayout>
