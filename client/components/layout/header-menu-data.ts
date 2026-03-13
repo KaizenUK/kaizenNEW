@@ -72,7 +72,7 @@ const menuDefinitions: Record<DesktopMenuKey, DesktopMenuDefinition> = {
       title: "Websites built to bring work in.",
       description:
         "Fast delivery, sober technical decisions, and a commercial focus from first brief to launch.",
-      href: "/services/ecommerce/",
+      href: "/services/",
       ctaLabel: "Explore services",
       media: {
         type: "image",
@@ -92,10 +92,6 @@ const menuDefinitions: Record<DesktopMenuKey, DesktopMenuDefinition> = {
           {
             label: "WordPress Web Design",
             href: "/services/wordpress-web-design/",
-          },
-          {
-            label: "E-commerce Development",
-            href: "/services/ecommerce/",
           },
         ],
       },

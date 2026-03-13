@@ -1,279 +1,840 @@
 ---
 import StaticPageLayout from "../../layouts/StaticPageLayout.astro";
+import ContactCTAButton from "../../../client/components/ContactCTAButton";
+import ImageLightbox from "../../../client/components/ImageLightbox";
 
 export const prerender = true;
 
-const summary = [
+/* ── Before / After ─────────────────────────────────────────── */
+const beforeProblems = [
   {
-    heading: "The Problem",
-    copy: "A WordPress/Beaver Builder site that was slow, plugin-dependent, and built around products — not the people buying them.",
+    label: "Product-first thinking",
+    copy: "The site assumed visitors already knew what oil they needed. Most didn't. They knew their industry, their machine, their problem — not a product code.",
   },
   {
-    heading: "The Solution",
-    copy: "A custom-built platform with sector-first navigation, an AI-powered oil finder, and proper service architecture.",
+    label: "Homepage trying to rank for everything",
+    copy: "One page trying to compete for lubricants, oil manufacturing, waste oil collection, toll blending, and every sector they serve. That's not an SEO strategy — it's keyword cannibalisation. No dedicated landing pages, no topical authority, no chance of ranking for any of them properly.",
   },
   {
-    heading: "Services Provided",
-    copy: "Web design, information architecture, AI tooling, performance engineering.",
-  },
-];
-
-const beforeItems = [
-  "WordPress/Beaver Builder — plugin-dependent, slow, hard to maintain",
-  "Product-first IA — users had to already know what oil they wanted",
-  "Flat navigation with no context or guidance",
-  "Every enquiry required human intervention — no self-serve tools",
-  "Downloads page as a flat file dump",
-  "Sustainability and Waste Oil buried as orphan pages",
-  "No ISO accreditation visibility — trust signals missing",
-  "T&Cs as a PDF download — no proper legal infrastructure",
-  "Generic theme design with no visual identity",
-  "No social presence linked from site",
-];
-
-const afterItems = [
-  {
-    title: "Custom-built platform",
-    copy: "Performant, maintainable, zero plugin debt. Built to scale with the business, not against it.",
+    label: "No self-serve",
+    copy: "Every single enquiry went through the sales team. 'What oil do I need for X?' over and over, all day. The site couldn't answer the most basic question.",
   },
   {
-    title: "Sector-first information architecture",
-    copy: "Users enter via their industry — automotive, marine, industrial — not a product catalogue. The site meets them where they are.",
+    label: "Services hidden or missing",
+    copy: "Waste Oil Collection and Sustainability — two real revenue services — were buried as afterthought links in the top bar. Not positioned as services. Not visible.",
   },
   {
-    title: "Ask MOG\u2122 — AI oil finder",
-    copy: "A branded, trademarked AI tool that self-serves product recommendations. Customers find the right oil without picking up the phone.",
+    label: "Security risk",
+    copy: "WordPress core, Beaver Builder, plus a stack of plugins — all tightly coupled, all needing constant updates, all potential attack vectors. One missed patch and the entire site is exposed. For a business handling commercial contracts and procurement data, that's not a minor detail.",
   },
   {
-    title: "Structured Technical Library",
-    copy: "TDS documents and technical resources organised properly — searchable, browsable, not buried in a file dump.",
+    label: "No credibility signals",
+    copy: "ISO 9001 and ISO 14001 certified, but you'd never know from the website. No badges, no company number, no legal pages. For procurement teams and ESG-conscious buyers, that's a dealbreaker.",
   },
   {
-    title: "All 8 services given equal weight",
-    copy: "Proper service hub with clean URLs and dedicated pages. Sustainability and Waste Oil positioned as real services, not afterthoughts.",
+    label: "Generic everything",
+    copy: "Built on Beaver Builder with a stock template. No brand typography, no proper colour palette — just a teal that had nothing to do with the business. Four distinct sub-brands with no visual distinction between them. It looked like every other industrial supplier online.",
   },
   {
-    title: "Trust infrastructure",
-    copy: "ISO 9001 & ISO 14001 badges in the footer. Full Legal Centre with dedicated GDPR, Cookie Policy and T&C pages. Companies House number visible.",
-  },
-  {
-    title: "Purpose-built design",
-    copy: "Strong visual hierarchy, consistent brand across all four sub-brands, and LinkedIn linked from the footer.",
+    label: "Technical resources dumped in a list",
+    copy: "TDS documents and data sheets? A single downloads page with a flat list of files. No search, no filtering, no structure.",
   },
 ];
 
-const outcomes = [
-  "Reduced friction to find the right product — sector-first navigation plus Ask MOG\u2122 handles it",
-  "Scalable product catalogue without WooCommerce complexity",
-  "Self-serve capability cuts the load on the sales operation",
-  "Stronger credibility positioning with ISO badges, legal infrastructure, and company transparency",
-  "Sustainability properly showcased — critical for procurement and ESG-conscious buyers",
-  "Brand coherence across all four sub-brands for the first time",
+/* ── The walkthrough sections ───────────────────────────────── */
+const walkthrough = [
+  {
+    num: "01",
+    title: "Sector-first thinking",
+    subtitle: "Meet the customer where they are",
+    copy: "The old site said: 'Here are our products. Figure out which one you need.' The new site says: 'What industry are you in? Let's start there.' Automotive, marine, industrial, agriculture — visitors pick their world and the site narrows everything down from there. No catalogue browsing. No guesswork.",
+    img: "/images/case-studies/midland-oil-group/mog-new-sectors.webp",
+    alt: "Agricultural sector page showing sector-first navigation with filtered product grid",
+  },
+  {
+    num: "02",
+    title: "Navigation that actually helps",
+    subtitle: "Not just links — context",
+    copy: "The old navigation was a flat list of dropdowns. Click and hope. The new mega-nav gives you descriptions, summaries, and direct CTAs inside the dropdown itself. You can see what each section is about before you commit to clicking. Sectors, products, services, brands — all one layer deep, all scannable in seconds.",
+    img: "/images/case-studies/midland-oil-group/mog-mega-nav.webp",
+    alt: "Sectors mega-navigation dropdown showing all industries with descriptions and CTAs",
+  },
+  {
+    num: "03",
+    title: "Ask MOG\u2122",
+    subtitle: "The feature that changed the business",
+    copy: "This is the big one. Ask MOG\u2122 is a branded, trademarked AI-powered oil finder built into the site. A customer types in what they need — their vehicle, their machine, their application — and it recommends the right product. No phone call. No email. No waiting. The question that was clogging up the sales team all day, every day? The site answers it now.",
+    img: "/images/case-studies/midland-oil-group/mog-ask-mog.webp",
+    alt: "Ask MOG AI oil finder chat interface with vehicle type selection buttons",
+  },
+  {
+    num: "04",
+    title: "Every service, visible",
+    subtitle: "Eight services. All equal. All findable.",
+    copy: "Waste Oil Collection and Sustainability used to be orphaned links. Now they sit alongside Toll Blending, Oil Regeneration, and every other service — each with its own dedicated page, its own URL, its own story. For procurement teams comparing suppliers, this is the difference between 'they might do that' and 'they definitely do that'.",
+    img: "/images/case-studies/midland-oil-group/mog-services-hub.webp",
+    alt: "Services hub page showing all eight technical services in a clean grid layout",
+  },
+  {
+    num: "05",
+    title: "Four brands, one identity",
+    subtitle: "Coherent for the first time",
+    copy: "Midland Oil Group runs four sub-brands — Midland Oil, Varsynth, Kwikfill, and Midland Oil Refinery. On the old site, you'd barely know — the same stock template and off-brand teal everywhere. Each brand now has its own hub, its own logo, its own positioning statement, and a proper colour palette. Custom typography replaced the generic Beaver Builder defaults. One company, four specialisms, all visually connected for the first time.",
+    img: "/images/case-studies/midland-oil-group/mog-brands-on-homepage.webp",
+    alt: "Four sub-brands — Kwikfill, Midland Oil Refinery, Rods Oils, Varol — with logos and service links",
+  },
+  {
+    num: "06",
+    title: "Technical Library",
+    subtitle: "From file dump to resource hub",
+    copy: "Every TDS document, every data sheet, every technical resource — structured, searchable, browsable. The old Downloads page was a flat list you had to scroll through. Now a procurement team can find the exact spec sheet they need in seconds.",
+    img: "/images/case-studies/midland-oil-group/mog-technical-library.webp",
+    alt: "Searchable Technical Library with TDS documents filtered by product name",
+  },
+];
+
+/* ── Results / numbers ──────────────────────────────────────── */
+const results = [
+  {
+    stat: "5,000+",
+    label: "Product variations",
+    copy: "Browsable by sector, searchable by application. Not buried in a catalogue.",
+  },
+  {
+    stat: "8",
+    label: "Services now visible",
+    copy: "Up from 4 that were easy to find. Waste Oil and Sustainability finally positioned properly.",
+  },
+  {
+    stat: "0",
+    label: "Plugins",
+    copy: "Decoupled architecture. Every feature purpose-built. Nothing borrowed, nothing bolted on, nothing to break.",
+  },
 ];
 ---
 
 <StaticPageLayout
   path="/case-studies/midland-oil-group/"
   title="Midland Oil Group Case Study | Kaizen Web"
-  description="How we rebuilt Midland Oil Group's digital presence — replacing a slow WordPress site with a custom platform, AI-powered oil finder, and sector-first navigation."
+  description="How we rebuilt Midland Oil Group — from a generic WordPress site to a custom platform with AI-powered product discovery, sector-first navigation, and proper service architecture."
 >
-  <section class="relative bg-gray-950 py-24 text-white md:py-32">
+  <!-- ═══ HERO ═══ -->
+  <section class="relative bg-gray-950 py-28 md:py-40 overflow-hidden">
     <div
       class="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_30%_20%,rgba(6,182,212,0.08),transparent_60%)]"
     >
     </div>
-    <div class="container relative mx-auto max-w-5xl px-4">
+    <div
+      class="mx-auto max-w-[1440px] px-6 sm:px-10 lg:px-16 xl:px-24 relative"
+    >
       <a
         href="/case-studies/"
-        class="mb-10 inline-flex items-center gap-2 text-white/50 transition hover:text-white font-body text-sm"
+        class="mb-10 inline-flex items-center gap-2 text-white/40 transition hover:text-white font-body text-sm"
       >
         <span aria-hidden="true">&larr;</span>
-        Back to Case Studies
+         All case studies
       </a>
       <p
-        class="mb-4 text-xs font-body font-medium uppercase tracking-[0.25em] text-white/40"
+        class="mb-6 text-xs font-medium font-body uppercase tracking-[0.25em] text-white/40"
       >
-        Case Study
+        Case Study — Midland Oil Group
       </p>
       <h1
-        class="mb-6 text-5xl font-heading font-bold leading-tight md:text-6xl lg:text-7xl"
+        class="max-w-4xl text-5xl font-heading font-bold leading-[1.1] text-white md:text-6xl lg:text-7xl"
       >
-        Midland Oil Group
+        Their customers couldn't<br />
+        find what they needed.<br />
+        <span class="text-gray-500">Now the site finds it<br />for them.</span>
       </h1>
-      <p class="max-w-3xl text-xl text-white/60 md:text-2xl font-body">
-        From a generic WordPress site to a custom platform with AI-powered
-        product discovery — built around how their customers actually buy.
+      <p class="mt-8 max-w-2xl text-xl leading-relaxed text-gray-400">
+        <a href="https://midlandoilgroup.co.uk/" rel="nofollow noopener" target="_blank" class="text-white underline decoration-white/30 hover:decoration-white">Midland Oil Group</a>
+        supplies lubricants to every industry you can think of.
+        Over 5,000 product variations. Four sub-brands. The old site made all of
+        that harder to navigate, not easier. We rebuilt it from scratch around
+        one question:
+      </p>
+      <p class="mt-6 max-w-2xl text-3xl font-heading font-bold text-cyan-400 md:text-4xl">
+        How do their customers actually buy?
       </p>
     </div>
   </section>
 
-  <section class="border-b border-gray-200 bg-white py-16">
-    <div class="container mx-auto max-w-6xl px-4">
-      <div class="grid grid-cols-1 gap-8 md:grid-cols-3 md:gap-12">
+  <!-- ═══ HERO IMAGE — BEFORE / AFTER ═══ -->
+  <section class="bg-gray-950 pb-28 md:pb-36">
+    <div class="mx-auto max-w-[1440px] px-6 sm:px-10 lg:px-16 xl:px-24">
+      <div class="grid grid-cols-1 gap-8 md:grid-cols-2">
+        <figure>
+          <p class="mb-4 text-sm font-bold uppercase tracking-wider text-gray-500">
+            Before
+          </p>
+          <img
+            src="/images/case-studies/midland-oil-group/mog-old-homepage.webp"
+            alt="The old Midland Oil Group WordPress site — generic template, flat navigation, broken on mobile"
+            loading="eager"
+            decoding="async"
+            data-lightbox
+            class="w-full rounded-2xl border border-white/10"
+          />
+          <figcaption class="mt-3 text-sm text-gray-500">
+            Beaver Builder template. Off-brand colours. Broken on mobile.
+          </figcaption>
+        </figure>
+        <figure>
+          <p class="mb-4 text-sm font-bold uppercase tracking-wider text-cyan-400">
+            After
+          </p>
+          <img
+            src="/images/case-studies/midland-oil-group/mog-new-homepage.webp"
+            alt="The new Midland Oil Group platform — custom-built with sector-first navigation and responsive design"
+            loading="eager"
+            decoding="async"
+            data-lightbox
+            class="w-full rounded-2xl border border-cyan-400/20"
+          />
+          <figcaption class="mt-3 text-sm text-gray-500">
+            Custom-built. Proper typography. Brand colours. Responsive everywhere.
+          </figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ QUICK SUMMARY ═══ -->
+  <section class="bg-white py-20 border-b border-gray-200">
+    <div class="mx-auto max-w-[1440px] px-6 sm:px-10 lg:px-16 xl:px-24">
+      <div class="grid grid-cols-1 gap-10 md:grid-cols-3 md:gap-16">
+        <div>
+          <p
+            class="mb-3 text-xs font-medium font-body uppercase tracking-[0.25em] text-gray-400"
+          >
+            The client
+          </p>
+          <p class="text-lg leading-relaxed text-gray-700">
+            Lubricant manufacturer and supplier. West Midlands. Four sub-brands,
+            8 services, 5,000+ product variations. ISO 9001 &amp; 14001 certified.
+            <a href="https://midlandoilgroup.co.uk/" rel="nofollow noopener" target="_blank" class="text-cyan-600 underline decoration-cyan-600/30 hover:decoration-cyan-600">Visit the site&nbsp;&rarr;</a>
+          </p>
+        </div>
+        <div>
+          <p
+            class="mb-3 text-xs font-medium font-body uppercase tracking-[0.25em] text-gray-400"
+          >
+            What we did
+          </p>
+          <p class="text-lg leading-relaxed text-gray-700">
+            Complete rebuild on a decoupled architecture. Custom typography,
+            brand colour system, AI-powered product finder, sector-first
+            navigation, service architecture, technical resource library,
+            brand hub, legal infrastructure. No WordPress. No plugins.
+          </p>
+        </div>
+        <div>
+          <p
+            class="mb-3 text-xs font-medium font-body uppercase tracking-[0.25em] text-gray-400"
+          >
+            The shift
+          </p>
+          <p class="text-lg leading-relaxed text-gray-700">
+            From a tightly-coupled WordPress site that listed products and
+            waited for phone calls — to a decoupled platform that understands
+            what customers need and helps them find it themselves.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ THE PROBLEM ═══ -->
+  <section class="bg-white py-28 md:py-36">
+    <div class="mx-auto max-w-[1440px] px-6 sm:px-10 lg:px-16 xl:px-24">
+      <p
+        class="mb-6 text-xs font-medium font-body uppercase tracking-[0.25em] text-gray-400"
+      >
+        Where they were
+      </p>
+      <h2
+        class="max-w-3xl text-4xl font-heading font-bold leading-tight text-gray-950 md:text-5xl"
+      >
+        A catalogue that expected customers<br />
+        <span class="text-gray-400">to already know the answer.</span>
+      </h2>
+      <p class="mt-6 max-w-2xl text-lg leading-relaxed text-gray-600">
+        Midland Oil Group's old site was built like most industrial supplier
+        websites — product pages, a contact form, and a prayer that the right
+        people would find the right thing. The homepage was trying to rank for
+        everything at once. The whole thing ran on
+        <a href="/services/wordpress-web-design/" class="text-gray-700 underline decoration-gray-400 hover:decoration-gray-700">WordPress</a>
+        with Beaver Builder and a stack of plugins that made it a security
+        liability. It looked the part from a distance. Up close, it was working
+        against the business.
+      </p>
+
+      <!-- Before screenshot -->
+      <div class="mt-12">
+        <img
+          src="/images/case-studies/midland-oil-group/mog-old-homepage.webp"
+          alt="The old Midland Oil Group WordPress homepage with generic template design and product-first navigation"
+          loading="lazy"
+          decoding="async"
+          data-lightbox
+          class="w-full rounded-2xl border border-gray-200"
+        />
+        <p class="mt-3 text-sm text-gray-400 text-center">
+          The old site. Beaver Builder. Off-brand teal. Product-first thinking.
+        </p>
+      </div>
+
+      <div class="mt-20 space-y-0">
         {
-          summary.map((item) => (
-            <article>
-              <h2 class="mb-3 text-[11px] font-body font-semibold uppercase tracking-[0.2em] text-gray-400">
-                {item.heading}
-              </h2>
-              <p class="text-lg leading-relaxed text-gray-700 font-body">
-                {item.copy}
+          beforeProblems.map((item, i) => (
+            <div
+              class={`grid grid-cols-1 gap-4 border-t border-gray-200 py-8 md:grid-cols-[240px_1fr] md:gap-10 ${i === beforeProblems.length - 1 ? "border-b" : ""}`}
+            >
+              <p class="text-lg font-heading font-bold text-gray-950">
+                {item.label}
               </p>
-            </article>
+              <p class="leading-relaxed text-gray-600">{item.copy}</p>
+            </div>
           ))
         }
       </div>
     </div>
   </section>
 
-  <section class="bg-[#f5f5f3] py-20 md:py-28">
-    <div class="container mx-auto max-w-4xl px-4">
-      <article class="mb-20">
-        <h2
-          class="mb-8 text-4xl font-heading font-bold text-gray-950 md:text-5xl"
+  <!-- ═══ PATTERN INTERRUPT ═══ -->
+  <section class="bg-gray-950 py-24 md:py-32">
+    <div class="mx-auto max-w-[1440px] px-6 sm:px-10 lg:px-16 xl:px-24">
+      <div class="mx-auto max-w-3xl text-center">
+        <p
+          class="text-5xl font-heading font-bold leading-tight text-white md:text-6xl lg:text-7xl"
         >
-          Before
-        </h2>
-        <p class="mb-8 text-lg leading-relaxed text-gray-500 font-body">
-          Midland Oil Group had a WordPress/Beaver Builder site that looked like
-          every other industrial supplier. Slow, generic, and built around a
-          product catalogue that assumed visitors already knew what they needed.
+          Same products.<br />
+          Same expertise.<br />
+          <span class="text-cyan-400">Completely different<br />experience.</span>
         </p>
-        <ul class="space-y-4">
-          {
-            beforeItems.map((item) => (
-              <li class="flex items-start gap-4 text-base leading-relaxed text-gray-600 font-body">
-                <span
-                  class="mt-1.5 block h-2 w-2 shrink-0 rounded-full bg-gray-300"
-                  aria-hidden="true"
-                />
-                {item}
-              </li>
-            ))
-          }
-        </ul>
-      </article>
-
-      <article class="mb-20">
-        <h2
-          class="mb-8 text-4xl font-heading font-bold text-gray-950 md:text-5xl"
-        >
-          After
-        </h2>
-        <p class="mb-10 text-lg leading-relaxed text-gray-500 font-body">
-          We rebuilt everything from the ground up. Not just the design — the
-          way the entire site thinks about its users.
+        <p class="mt-8 text-xl text-gray-400">
+          Everything Midland Oil Group was great at was invisible. The rebuild
+          made it impossible to miss.
         </p>
-        <div class="space-y-6">
-          {
-            afterItems.map((item) => (
-              <div class="py-6 border-b border-gray-200 last:border-0">
-                <h3 class="mb-2 text-xl font-heading font-bold text-gray-950">
-                  {item.title}
-                </h3>
-                <p class="text-base text-gray-500 font-body leading-relaxed">
-                  {item.copy}
-                </p>
-              </div>
-            ))
-          }
-        </div>
-      </article>
-
-      <article>
-        <h2
-          class="mb-8 text-4xl font-heading font-bold text-gray-950 md:text-5xl"
-        >
-          The Outcome
-        </h2>
-        <p class="mb-8 text-lg leading-relaxed text-gray-500 font-body">
-          The new platform doesn't just look better — it changes how the
-          business operates online.
-        </p>
-        <ul class="space-y-4">
-          {
-            outcomes.map((item) => (
-              <li class="flex items-start gap-4 text-base leading-relaxed text-gray-700 font-body">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="20"
-                  height="20"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="rgb(6 182 212)"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  class="mt-0.5 shrink-0"
-                  aria-hidden="true"
-                >
-                  <path d="M20 6 9 17l-5-5" />
-                </svg>
-                {item}
-              </li>
-            ))
-          }
-        </ul>
-      </article>
+      </div>
     </div>
   </section>
 
-  <section class="bg-white py-20">
-    <div class="container mx-auto max-w-5xl px-4">
-      <h2
-        class="mb-10 text-4xl font-heading font-bold text-gray-950 md:text-5xl"
+  <!-- ═══ THE WALKTHROUGH ═══ -->
+  <section class="bg-white py-28 md:py-36">
+    <div class="mx-auto max-w-[1440px] px-6 sm:px-10 lg:px-16 xl:px-24">
+      <p
+        class="mb-6 text-xs font-medium font-body uppercase tracking-[0.25em] text-gray-400"
       >
-        Need something similar?
+        What changed
+      </p>
+      <h2
+        class="max-w-3xl text-4xl font-heading font-bold leading-tight text-gray-950 md:text-5xl"
+      >
+        A site that works the way<br />
+        <span class="text-gray-400">their customers think.</span>
       </h2>
-      <div class="grid grid-cols-1 gap-8 md:grid-cols-2">
-        <a
-          href="/services/"
-          class="group block border-b border-gray-200 py-8 transition"
-        >
-          <h3
-            class="mb-3 text-2xl font-heading font-bold text-gray-950 transition group-hover:text-gray-600"
+      <p class="mt-6 max-w-2xl text-lg leading-relaxed text-gray-600">
+        Six changes that turned a brochure site into a platform that earns its
+        keep every day.
+      </p>
+
+      <div class="mt-20 space-y-28 md:space-y-36">
+        {
+          walkthrough.map((item) => (
+            <div class="grid grid-cols-1 gap-12 lg:grid-cols-2 lg:items-center">
+              <div>
+                <span class="text-sm font-medium font-body text-gray-400">
+                  {item.num}
+                </span>
+                <h3 class="mt-2 text-3xl font-heading font-bold text-gray-950 md:text-4xl">
+                  {item.title}
+                </h3>
+                <p class="mt-1 text-sm font-bold uppercase tracking-wider text-cyan-600/70">
+                  {item.subtitle}
+                </p>
+                <p class="mt-5 text-lg leading-relaxed text-gray-600">
+                  {item.copy}
+                </p>
+              </div>
+              <img
+                src={item.img}
+                alt={item.alt}
+                loading="lazy"
+                decoding="async"
+                data-lightbox
+                class="w-full rounded-2xl border border-gray-200"
+              />
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ TRUST & CREDIBILITY ═══ -->
+  <section class="bg-[#f5f5f3] py-28 md:py-36">
+    <div class="mx-auto max-w-[1440px] px-6 sm:px-10 lg:px-16 xl:px-24">
+      <div class="grid grid-cols-1 gap-16 lg:grid-cols-[1fr_1.2fr] lg:items-start">
+        <div>
+          <p
+            class="mb-6 text-xs font-medium font-body uppercase tracking-[0.25em] text-gray-400"
           >
-            See all services
-          </h3>
-          <p class="text-gray-500 font-body">
-            Web design, performance, product ownership — see how we can help
-            your business.
+            Credibility that was always there
           </p>
-        </a>
-        <a
-          href="/contact/"
-          class="group block border-b border-gray-200 py-8 transition"
-        >
-          <h3
-            class="mb-3 text-2xl font-heading font-bold text-gray-950 transition group-hover:text-gray-600"
+          <h2
+            class="text-4xl font-heading font-bold leading-tight text-gray-950 md:text-5xl"
           >
-            Start a conversation
-          </h3>
-          <p class="text-gray-500 font-body">
-            Tell us what you're working with and we'll tell you honestly what it
-            needs.
+            ISO certified. 150+ years<br />
+            <span class="text-gray-400">combined experience. Finally visible.</span>
+          </h2>
+          <p class="mt-6 text-lg leading-relaxed text-gray-600">
+            Midland Oil Group had all the credentials. ISO 9001. ISO 14001. Decades
+            of expertise. A Companies House registration. None of it was on the
+            website.
           </p>
+          <p class="mt-4 text-lg leading-relaxed text-gray-600">
+            For anyone in procurement — especially in sectors where compliance and
+            ESG matter — a site without those signals is a site that gets skipped.
+            Now the badges are in the footer. The company number is visible. There's
+            a proper Legal Centre with dedicated GDPR, Cookie Policy, and T&amp;C
+            pages. The kind of infrastructure that says: we take this seriously.
+          </p>
+        </div>
+        <div>
+          <img
+            src="/images/case-studies/midland-oil-group/mog-footer-with-iso.webp"
+            alt="Footer showing ISO 9001 and ISO 14001 certification badges, company number, and LinkedIn link"
+            loading="lazy"
+            decoding="async"
+            data-lightbox
+            class="w-full rounded-2xl border border-gray-200"
+          />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ HOMEPAGE WALKTHROUGH ═══ -->
+  <section class="bg-white py-28 md:py-36">
+    <div class="mx-auto max-w-[1440px] px-6 sm:px-10 lg:px-16 xl:px-24">
+      <p
+        class="mb-6 text-xs font-medium font-body uppercase tracking-[0.25em] text-gray-400"
+      >
+        The homepage
+      </p>
+      <h2
+        class="max-w-3xl text-4xl font-heading font-bold leading-tight text-gray-950 md:text-5xl"
+      >
+        First impression, completely<br />
+        <span class="text-gray-400">redesigned.</span>
+      </h2>
+      <p class="mt-6 max-w-2xl text-lg leading-relaxed text-gray-600">
+        The homepage now does three things the old one never did: it tells you
+        what Midland Oil Group actually does, it shows you why they're credible,
+        and it gives you a way to find what you need — all without scrolling past
+        the fold.
+      </p>
+
+      <div class="mt-12 grid grid-cols-1 gap-8 md:grid-cols-2">
+        <img
+          src="/images/case-studies/midland-oil-group/mog-homepage-hero.webp"
+          alt="New homepage hero with UK Lubricant Specialists headline and oil droplet imagery"
+          loading="lazy"
+          decoding="async"
+          data-lightbox
+          class="w-full rounded-2xl border border-gray-200"
+        />
+        <img
+          src="/images/case-studies/midland-oil-group/mog-lubricant-lifecycle.webp"
+          alt="The Complete Lubricant Lifecycle section — Formulation, Manufacture, Regeneration, Disposal"
+          loading="lazy"
+          decoding="async"
+          data-lightbox
+          class="w-full rounded-2xl border border-gray-200"
+        />
+        <img
+          src="/images/case-studies/midland-oil-group/mog-brands-on-homepage.webp"
+          alt="Brands section showing four sub-brands with positioning statements"
+          loading="lazy"
+          decoding="async"
+          data-lightbox
+          class="w-full rounded-2xl border border-gray-200"
+        />
+        <img
+          src="/images/case-studies/midland-oil-group/mog-stats-by-the-numbers.webp"
+          alt="By The Numbers — 5,000+ product variations, 40+ years experience, 130+ industrial products"
+          loading="lazy"
+          decoding="async"
+          data-lightbox
+          class="w-full rounded-2xl border border-gray-200"
+        />
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ BEFORE / AFTER COMPARISON ═══ -->
+  <section class="bg-gray-950 py-28 md:py-36">
+    <div class="mx-auto max-w-[1440px] px-6 sm:px-10 lg:px-16 xl:px-24">
+      <p
+        class="mb-6 text-xs font-medium font-body uppercase tracking-[0.25em] text-gray-500"
+      >
+        Side by side
+      </p>
+      <h2
+        class="max-w-3xl text-4xl font-heading font-bold leading-tight text-white md:text-5xl"
+      >
+        Same company.<br />
+        <span class="text-gray-500">Completely different presence.</span>
+      </h2>
+
+      <div class="mt-16 grid grid-cols-1 gap-8 md:grid-cols-2">
+        <div>
+          <p
+            class="mb-4 text-sm font-bold uppercase tracking-wider text-gray-500"
+          >
+            Before
+          </p>
+          <img
+            src="/images/case-studies/midland-oil-group/mog-old-homepage.webp"
+            alt="Old Midland Oil Group WordPress site with generic template and flat navigation"
+            loading="lazy"
+            decoding="async"
+            data-lightbox
+            class="w-full rounded-2xl border border-white/10"
+          />
+          <ul class="mt-6 space-y-3 text-gray-500">
+            <li class="flex items-start gap-3">
+              <svg
+                class="mt-0.5 h-5 w-5 shrink-0 text-gray-700"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                ><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg
+              >
+              <span>Beaver Builder template with off-brand colours</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <svg
+                class="mt-0.5 h-5 w-5 shrink-0 text-gray-700"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                ><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg
+              >
+              <span>No brand typography or visual identity</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <svg
+                class="mt-0.5 h-5 w-5 shrink-0 text-gray-700"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                ><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg
+              >
+              <span>Flat nav, no self-serve tools</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <svg
+                class="mt-0.5 h-5 w-5 shrink-0 text-gray-700"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                ><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg
+              >
+              <span>Tightly-coupled WordPress — security liability</span>
+            </li>
+          </ul>
+        </div>
+        <div>
+          <p
+            class="mb-4 text-sm font-bold uppercase tracking-wider text-cyan-400"
+          >
+            After
+          </p>
+          <img
+            src="/images/case-studies/midland-oil-group/mog-new-homepage.webp"
+            alt="New Midland Oil Group custom platform with rich navigation and sector-first design"
+            loading="lazy"
+            decoding="async"
+            data-lightbox
+            class="w-full rounded-2xl border border-cyan-400/20"
+          />
+          <ul class="mt-6 space-y-3 text-gray-300">
+            <li class="flex items-start gap-3">
+              <svg
+                class="mt-0.5 h-5 w-5 shrink-0 text-cyan-400"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                ><path d="M20 6 9 17l-5-5"></path></svg
+              >
+              <span>Custom typography and brand colour system</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <svg
+                class="mt-0.5 h-5 w-5 shrink-0 text-cyan-400"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                ><path d="M20 6 9 17l-5-5"></path></svg
+              >
+              <span>Sector-first navigation with rich mega-nav</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <svg
+                class="mt-0.5 h-5 w-5 shrink-0 text-cyan-400"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                ><path d="M20 6 9 17l-5-5"></path></svg
+              >
+              <span>Ask MOG&#8482; answers the #1 customer question instantly</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <svg
+                class="mt-0.5 h-5 w-5 shrink-0 text-cyan-400"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                ><path d="M20 6 9 17l-5-5"></path></svg
+              >
+              <span>Decoupled, secure — no plugins, no attack surface</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ RESULTS ═══ -->
+  <section class="bg-[#f5f5f3] py-28 md:py-36">
+    <div class="mx-auto max-w-[1440px] px-6 sm:px-10 lg:px-16 xl:px-24">
+      <p
+        class="mb-6 text-xs font-medium font-body uppercase tracking-[0.25em] text-gray-400"
+      >
+        The outcome
+      </p>
+      <h2
+        class="max-w-3xl text-4xl font-heading font-bold leading-tight text-gray-950 md:text-5xl"
+      >
+        A platform that earns its keep.<br />
+        <span class="text-gray-400">Every single day.</span>
+      </h2>
+      <p class="mt-6 max-w-2xl text-lg leading-relaxed text-gray-600">
+        This isn't a website that sits there looking nice. It answers questions.
+        It helps people find products. It surfaces credibility. It sells services
+        the old site didn't even show. This is what a proper
+        <a href="/digital-transformation/" class="text-cyan-600 underline decoration-cyan-600/30 hover:decoration-cyan-600">digital transformation</a>
+        looks like — the business didn't change, but the way the world sees it did.
+      </p>
+
+      <div class="mt-16 grid grid-cols-1 gap-8 md:grid-cols-3">
+        {
+          results.map((item) => (
+            <div class="rounded-2xl border border-gray-200 bg-white p-8">
+              <p class="text-4xl font-heading font-bold text-cyan-600">
+                {item.stat}
+              </p>
+              <p class="mt-3 text-sm font-bold uppercase tracking-wider text-gray-400">
+                {item.label}
+              </p>
+              <p class="mt-3 text-sm leading-relaxed text-gray-500">
+                {item.copy}
+              </p>
+            </div>
+          ))
+        }
+      </div>
+
+      <div class="mt-12 rounded-xl bg-gray-950 p-8 md:p-10">
+        <div class="grid grid-cols-1 gap-8 md:grid-cols-2 md:items-center">
+          <div>
+            <p class="text-sm font-bold uppercase tracking-wider text-gray-500">
+              What this means for the business
+            </p>
+            <ul class="mt-6 space-y-4">
+              <li class="flex items-start gap-3 text-gray-300">
+                <svg
+                  class="mt-0.5 h-5 w-5 shrink-0 text-cyan-400"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  ><path d="M20 6 9 17l-5-5"></path></svg
+                >
+                <span
+                  >Customers find the right product without calling the sales team</span
+                >
+              </li>
+              <li class="flex items-start gap-3 text-gray-300">
+                <svg
+                  class="mt-0.5 h-5 w-5 shrink-0 text-cyan-400"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  ><path d="M20 6 9 17l-5-5"></path></svg
+                >
+                <span
+                  >Procurement teams see ISO compliance and trust signals
+                  immediately</span
+                >
+              </li>
+              <li class="flex items-start gap-3 text-gray-300">
+                <svg
+                  class="mt-0.5 h-5 w-5 shrink-0 text-cyan-400"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  ><path d="M20 6 9 17l-5-5"></path></svg
+                >
+                <span
+                  >Sustainability and Waste Oil — real revenue services — are
+                  visible for the first time</span
+                >
+              </li>
+              <li class="flex items-start gap-3 text-gray-300">
+                <svg
+                  class="mt-0.5 h-5 w-5 shrink-0 text-cyan-400"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  ><path d="M20 6 9 17l-5-5"></path></svg
+                >
+                <span
+                  >Four sub-brands presented coherently for the first time —
+                  strengthens every pitch</span
+                >
+              </li>
+              <li class="flex items-start gap-3 text-gray-300">
+                <svg
+                  class="mt-0.5 h-5 w-5 shrink-0 text-cyan-400"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  ><path d="M20 6 9 17l-5-5"></path></svg
+                >
+                <span
+                  >Technical data sheets findable in seconds, not buried in a
+                  file dump</span
+                >
+              </li>
+            </ul>
+          </div>
+          <div class="text-center md:text-right">
+            <p
+              class="text-5xl font-heading font-bold text-white md:text-6xl lg:text-7xl"
+            >
+              <span class="whitespace-nowrap">Ask MOG<sup class="text-[0.35em] align-super text-cyan-400">&#8482;</sup></span>
+            </p>
+            <p class="mt-4 text-sm text-gray-500">
+              Technology provided on license by Kaizen
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ CTA ═══ -->
+  <section class="bg-gray-950 py-28 md:py-36">
+    <div
+      class="mx-auto max-w-[1440px] px-6 sm:px-10 lg:px-16 xl:px-24 text-center"
+    >
+      <h2 class="text-4xl font-heading font-bold text-white md:text-5xl">
+        Your site should work<br />
+        <span class="text-gray-500">as hard as your business.</span>
+      </h2>
+      <p class="mx-auto mt-6 max-w-2xl text-xl leading-relaxed text-gray-400">
+        If your website is a brochure that waits for phone calls, it's costing
+        you more than you think. Whether you need a
+        <a href="/project-rescue/" class="text-gray-200 underline decoration-gray-500 hover:decoration-white">project rescue</a>
+        or a ground-up rebuild, the right site finds customers, answers
+        questions, and builds credibility — before anyone picks up the phone.
+      </p>
+      <div
+        class="mt-10 flex flex-col items-center gap-4 sm:flex-row sm:justify-center"
+      >
+        <ContactCTAButton label="Start a conversation" client:load />
+        <a
+          href="/case-studies/"
+          class="inline-flex items-center justify-center gap-2 rounded-[18px] border border-white/15 px-6 py-3 text-[16px] font-medium text-white/60 no-underline transition-all duration-200 hover:-translate-y-px hover:text-white"
+        >
+          <span>See more case studies</span>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-4 w-4"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            ><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg
+          >
         </a>
       </div>
     </div>
   </section>
 
-  <section class="border-t border-gray-200 bg-[#f5f5f3] py-12">
+  <!-- ═══ PREV / NEXT NAV ═══ -->
+  <section class="border-t border-white/10 bg-gray-950 py-12">
     <div
-      class="container mx-auto flex max-w-5xl items-center justify-between gap-4 px-4 text-sm font-medium font-body"
+      class="mx-auto flex max-w-[1440px] items-center justify-between gap-4 px-6 sm:px-10 lg:px-16 xl:px-24 text-sm font-medium font-body"
     >
       <a
         href="/case-studies/kaizen-rebuild/"
-        class="text-gray-950 transition hover:text-gray-500">&larr; Previous</a
+        class="text-white/60 transition hover:text-white">&larr; Previous</a
       >
       <a
         href="/case-studies/"
-        class="text-gray-400 transition hover:text-gray-950">View All</a
+        class="text-white/30 transition hover:text-white">All Case Studies</a
       >
       <a
         href="/case-studies/as-collections/"
-        class="text-gray-950 transition hover:text-gray-500">Next &rarr;</a
+        class="text-white/60 transition hover:text-white">Next &rarr;</a
       >
     </div>
   </section>
+
+  <!-- Lightbox overlay — mounted once, listens for clicks on any img[data-lightbox] -->
+  <ImageLightbox client:load />
 </StaticPageLayout>

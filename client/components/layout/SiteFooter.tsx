@@ -48,7 +48,6 @@ const footerColumns: Array<{
         label: "WordPress Web Design",
         href: "/services/wordpress-web-design/",
       },
-      { label: "E-commerce Development", href: "/services/ecommerce/" },
     ],
   },
   {
