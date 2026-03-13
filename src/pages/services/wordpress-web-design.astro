@@ -1,62 +1,120 @@
 ---
 import StaticPageLayout from "../../layouts/StaticPageLayout.astro";
+import ContactCTAButton from "../../../client/components/ContactCTAButton";
 
 export const prerender = true;
 
-const calendlyUrl =
-  "https://calendly.com/sean-kaizenweb/30-minute-meeting-clone";
-
-const methodCards = [
+/* ── Three paths ─────────────────────────────────────────────── */
+const paths = [
   {
-    title: "Total Control, No Bloat",
-    copy: "Custom WordPress builds with block editor flexibility and none of the usual heavy theme overhead.",
+    number: "01",
+    headline: "Move beyond WordPress entirely",
+    hook: "Same content. Same editor. But the frontend gets rebuilt with modern tools that load in under a second.",
+    description:
+      "We strip out everything that makes WordPress slow and rebuild the visitor-facing side with the same technology behind the fastest sites in the world. You still edit in a familiar dashboard. Your customers get a site that actually performs.",
+    ideal:
+      "Businesses ready to invest in the best possible version of their site.",
+    cta: "Explore migration",
+    tag: "Recommended",
+    tagColor: "cyan",
   },
   {
-    title: "Fast and Secure",
-    copy: "Performance-first architecture and practical hardening so your site stays fast and stable.",
+    number: "02",
+    headline: "Make your current WordPress site work harder",
+    hook: "Sometimes the smartest move is fixing the five things costing you customers right now.",
+    description:
+      "We audit your site, find what's dragging it down, and fix the problems that matter most — speed, mobile experience, calls to action, content gaps. No unnecessary rebuilds. Just targeted changes you can measure.",
+    ideal: "Businesses with a site that's 'okay' but not converting.",
+    cta: "Request a site audit",
+    tag: "Quick wins",
+    tagColor: "gray",
   },
   {
-    title: "Works with Your Stack",
-    copy: "WooCommerce, bookings, and custom features integrated cleanly without unnecessary drag.",
+    number: "03",
+    headline: "A clean WordPress build, done properly",
+    hook: "If WordPress is the right tool, we'll build it the way it should have been done the first time.",
+    description:
+      "No heavy themes. No plugin soup. Clean code, a block editor built around your workflow, and performance that doesn't embarrass you on Google. A site you can update yourself without breaking anything.",
+    ideal:
+      "Businesses that need WordPress — for plugins, familiarity, or budget.",
+    cta: "Discuss your WordPress build",
+    tag: "WordPress only",
+    tagColor: "gray",
   },
 ];
 
-const caseStudies = [
+/* ── The problem (story-driven) ──────────────────────────────── */
+const problems = [
   {
-    client: "Helen Moore Hairdressing",
-    industry: "Boutique Salon - Wirral",
-    problem:
-      "Top-rated local salon with no website and no digital booking capability.",
-    outcome:
-      "Fast, elegant WordPress site with 24/7 online booking and better local visibility.",
-    link: "/case-studies/helen-moore-hairdressing",
+    stat: "3 seconds",
+    detail:
+      "That's the window. After that, most customers leave. Most WordPress sites don't even finish loading in that time. And after 8 seconds, they're gone forever.",
   },
   {
-    client: "A.S Collections",
-    industry: "Professional Services - Liverpool",
-    problem:
-      "Dated site, poor mobile performance, and low trust in a competitive niche.",
-    outcome:
-      "Modern high-performance rebuild that is easy for the internal team to update.",
-    link: "/case-studies/as-collections",
+    stat: "70%",
+    detail:
+      "of small business websites have performance issues that directly hurt their Google rankings. Yours might be one of them.",
+  },
+  {
+    stat: "£0",
+    detail:
+      "is what a beautiful website earns when nobody can find it — or when they leave before it finishes loading.",
   },
 ];
 
+/* ── FAQ ─────────────────────────────────────────────────────── */
 const faqs = [
   {
-    question: "Is WordPress secure for business?",
+    question: "How do I know which option is right for me?",
     answer:
-      "Yes, when it is engineered and maintained correctly. We deploy hardened builds and keep update hygiene under control.",
+      "After a quick look at your current site, we'll recommend the option that makes the most sense for your goals and budget. Sometimes that means we talk you out of a rebuild.",
   },
   {
-    question: "Is this a template build?",
+    question: "Will I lose my Google rankings if I migrate?",
     answer:
-      "No. We ship bespoke builds with clean code and clear architecture, tailored to your business goals.",
+      "No. We handle redirects, metadata, and URL structure carefully so your existing rankings carry over. Most clients see rankings improve after migration because the new site is faster.",
   },
   {
-    question: "Can my team edit content themselves?",
+    question: "Can my team still edit the site themselves?",
     answer:
-      "Yes. We configure the editor around your workflow so content changes are straightforward.",
+      "Yes, in all three options. Whether you stay on WordPress or move to a modern frontend, you'll have a familiar editing experience. We configure the content dashboard around how your business actually works.",
+  },
+  {
+    question: "Is WordPress secure enough for a business site?",
+    answer:
+      "It can be, but most WordPress sites aren't set up securely. We harden every build — proper hosting, minimal plugins, regular updates, locked-down permissions. If security is a primary concern, option one removes most WordPress vulnerabilities entirely.",
+  },
+  {
+    question: "How long does each option take?",
+    answer:
+      "Targeted improvements can start delivering results within a week or two. A full WordPress build typically takes 4–6 weeks. A migration to modern tooling takes 6–10 weeks depending on complexity.",
+  },
+  {
+    question:
+      "My current site was built by someone else and I don't know what state it's in",
+    answer:
+      "That's fine — it's actually the most common starting point. We'll audit what you have, give you a clear picture of where things stand, and recommend the best path forward. No judgement on what came before.",
+  },
+  {
+    question: "Should I rebuild my WordPress site or just improve it?",
+    answer:
+      "It depends on what's wrong. If the core issues are speed, outdated design, or poor mobile experience, targeted improvements can make a big difference quickly. But if your site has been patched together over years with heavy themes and dozens of plugins, rebuilding — or migrating to a custom coded website — is usually the smarter long-term investment.",
+  },
+  {
+    question:
+      "What's the difference between a custom coded website and WordPress?",
+    answer:
+      "A custom coded website is built from scratch using modern technology. It loads faster, ranks better, and doesn't rely on plugins for core functionality. WordPress is a content management system that's flexible and familiar, but performance depends heavily on how it's built. We offer both — and we'll recommend whichever makes more sense for your situation.",
+  },
+  {
+    question: "My WordPress site has been hacked — what should I do?",
+    answer:
+      "First, don't panic. We can clean up a hacked WordPress site, harden it against future attacks, and assess whether the underlying build is secure enough going forward. In some cases, migrating away from WordPress entirely is the most secure option — it removes the attack surface that plugins and themes create.",
+  },
+  {
+    question: "Why is my WordPress site not ranking on Google?",
+    answer:
+      "Usually it's a combination of slow page speed, poor Core Web Vitals, thin content, and missing technical SEO basics. WordPress itself isn't the problem — but bloated themes and plugin-heavy builds create performance issues that Google penalises. We'll audit your site and tell you exactly what's holding it back.",
   },
 ];
 
@@ -76,185 +134,177 @@ const faqSchema = JSON.stringify({
 const serviceSchema = JSON.stringify({
   "@context": "https://schema.org",
   "@type": "Service",
-  name: "WordPress Web Design Liverpool",
+  name: "WordPress Web Design",
   description:
-    "Custom WordPress web design and development for Liverpool and Wirral businesses. Fast, secure, easy-to-manage websites.",
+    "Custom WordPress web design, performance optimisation, and modern migration services. Three clear paths: migrate beyond WordPress, improve your current site, or get a clean new build.",
   provider: {
     "@type": "Organization",
     name: "Kaizen Web",
     url: "https://kaizenweb.co.uk",
   },
-  areaServed: {
-    "@type": "City",
-    name: "Liverpool",
-  },
-  image:
-    "https://cdn.builder.io/api/v1/image/assets%2Fe4ae46bbd81b4b95bef54d66dd9748cc%2Fa18f81c064614dceb4a9d1fcb2c9f64b?format=webp&width=800",
 });
 ---
+
 <StaticPageLayout
   path="/services/wordpress-web-design"
-  title="WordPress Web Design Liverpool | Fast and Easy to Edit"
-  description="Custom WordPress sites for Liverpool businesses. Fast, secure, and easy to update with clean architecture."
+  title="WordPress Web Design | Custom Website vs WordPress | Kaizen Web"
+  description="Should you rebuild your WordPress site, improve what you have, or migrate to a custom coded website? Three clear paths — find the right one. Fix a slow WordPress site or build something better."
 >
-  <script type="application/ld+json" set:html={serviceSchema} is:inline></script>
-  <script type="application/ld+json" set:html={faqSchema} is:inline></script>
+  <script type="application/ld+json" set:html={serviceSchema} is:inline />
+  <script type="application/ld+json" set:html={faqSchema} is:inline />
 
-  <section class="relative min-h-screen overflow-hidden bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 py-20">
-    <div class="container relative z-10 mx-auto px-4">
-      <div class="grid grid-cols-1 items-center gap-12 md:grid-cols-2">
-        <div class="rounded-2xl border border-white/20 bg-white/95 p-8 shadow-2xl backdrop-blur-sm md:p-12">
-          <h1 class="mb-6 text-4xl font-heading font-black leading-tight text-kaizen-dark md:text-5xl lg:text-6xl">
-            {
-              ["WordPress", "Sites Built", "Right.", "Liverpool."].map(
-                (word) => <span class="block">{word}</span>,
-              )
-            }
-          </h1>
-          <p class="mb-8 text-lg leading-relaxed text-kaizen-text-dark/70">
-            WordPress you can actually edit yourself. Fast, secure builds with
-            clean code, no heavy themes, and no plugin chaos.
-          </p>
-          <div class="flex flex-col gap-4 sm:flex-row">
-            <a
-              href="/contact"
-              class="inline-flex items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-kaizen-cyan to-kaizen-lime px-8 py-3 font-heading font-bold text-kaizen-dark transition hover:shadow-lg hover:shadow-kaizen-cyan/50"
+  <!-- ═══ HERO ═══ -->
+  <section class="bg-white py-28 md:py-36">
+    <div class="mx-auto max-w-[1440px] px-6 sm:px-10 lg:px-16 xl:px-24">
+      <p
+        class="mb-6 text-xs font-medium font-body uppercase tracking-[0.25em] text-gray-400"
+      >
+        WordPress Web Design
+      </p>
+      <h1
+        class="max-w-4xl text-5xl font-heading font-bold leading-[1.1] text-gray-950 md:text-6xl lg:text-7xl"
+      >
+        WordPress web design<br />
+        that actually<br />
+        <span class="text-gray-400">earns its keep.</span>
+      </h1>
+      <p class="mt-8 max-w-2xl text-xl leading-relaxed text-gray-600">
+        If your site is slow, invisible on Google, or not bringing in enquiries
+        — there are three paths forward. The right one depends on where you are
+        now.
+      </p>
+      <div class="mt-10 flex flex-col gap-4 sm:flex-row">
+        <a
+          href="/contact"
+          class="group relative isolate inline-flex items-center justify-center overflow-hidden rounded-[18px] border border-white/25 px-6 py-3 text-[16px] text-white no-underline shadow-[0_12px_32px_rgba(10,34,102,0.34)] transition-transform duration-200 hover:-translate-y-px hover:shadow-[0_18px_40px_rgba(10,34,102,0.4)]"
+        >
+          <span
+            class="pointer-events-none absolute inset-0 rounded-[inherit] bg-[linear-gradient(135deg,#266bff_0%,#1658e8_56%,#0c3eb9_100%)]"
+          ></span>
+          <span
+            class="pointer-events-none absolute inset-px rounded-[inherit] bg-[linear-gradient(180deg,rgba(255,255,255,0.2)_0%,rgba(255,255,255,0.08)_20%,rgba(8,38,112,0.16)_100%)]"
+          ></span>
+          <span
+            class="pointer-events-none absolute inset-0 rounded-[inherit] shadow-[inset_0_1px_0_rgba(255,255,255,0.42),inset_0_-1px_0_rgba(255,255,255,0.08)]"
+          ></span>
+          <span
+            class="relative z-1 inline-flex items-center gap-2 whitespace-nowrap font-medium tracking-[-0.01em] text-white"
+          >
+            <span>Talk to us about your site</span>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-4 w-4 transition-transform duration-200 group-hover:translate-x-0.5"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              ><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg
             >
-              Get in Touch
-              <span aria-hidden="true">-&gt;</span>
-            </a>
-            <a
-              href={calendlyUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              class="inline-flex items-center justify-center gap-2 rounded-lg border-2 border-kaizen-cyan px-8 py-3 font-heading font-bold text-kaizen-cyan transition hover:bg-kaizen-cyan/10"
-            >
-              Book a 15 Minute Call
-              <span aria-hidden="true">-&gt;</span>
-            </a>
-          </div>
-        </div>
-
-        <div class="hidden md:block">
-          <img
-            src="https://cdn.builder.io/api/v1/image/assets%2Fe4ae46bbd81b4b95bef54d66dd9748cc%2Fa18f81c064614dceb4a9d1fcb2c9f64b?format=webp&width=800"
-            alt="WordPress editor interface"
-            width="800"
-            height="600"
-            class="h-full w-full rounded-2xl object-cover"
-            loading="lazy"
-            decoding="async"
-          />
-        </div>
+          </span>
+        </a>
       </div>
     </div>
   </section>
 
-  <section class="bg-white py-20 md:py-32">
-    <div class="container mx-auto px-4">
-      <h2 class="mb-8 text-4xl font-heading font-bold text-kaizen-dark md:text-5xl">
-        A WordPress Site Does Not Have to Be Slow.
-      </h2>
-      <p class="max-w-3xl text-xl leading-relaxed text-kaizen-text-dark/70">
-        WordPress is not the problem. Bloated themes and weak implementation are
-        the problem. We deliver lean builds that keep the familiar editor while
-        meeting modern performance expectations.
+  <!-- ═══ THE PROBLEM (Concrete + Emotional) ═══ -->
+  <section class="bg-gray-950 py-28 md:py-36">
+    <div class="mx-auto max-w-[1440px] px-6 sm:px-10 lg:px-16 xl:px-24">
+      <p
+        class="mb-6 text-xs font-medium font-body uppercase tracking-[0.25em] text-gray-500"
+      >
+        The real cost of a slow site
       </p>
-    </div>
-  </section>
-
-  <section class="bg-kaizen-light py-20 md:py-32">
-    <div class="container mx-auto px-4">
-      <h2 class="mb-16 text-center text-4xl font-heading font-bold text-kaizen-dark md:text-5xl">
-        The Kaizen WordPress Method
+      <h2
+        class="max-w-3xl text-4xl font-heading font-bold leading-tight text-white md:text-5xl"
+      >
+        Every day your site loads slowly,<br />someone chooses your competitor.
       </h2>
-      <div class="grid grid-cols-1 gap-8 md:grid-cols-3">
+      <p class="mt-6 max-w-2xl text-lg leading-relaxed text-gray-400">
+        WordPress site slow to load? Visitors leave before they see what you do.<br
+        />
+        Not ranking on Google? The people who need you can't find you.<br />
+        Both cost money. Every single day it stays like that.
+      </p>
+      <div class="mt-16 grid grid-cols-1 gap-12 md:grid-cols-3">
         {
-          methodCards.map((item) => (
-            <article class="rounded-2xl border border-kaizen-light bg-white p-8 transition hover:border-kaizen-cyan">
-              <h3 class="mb-4 text-2xl font-heading font-bold text-kaizen-dark">
-                {item.title}
-              </h3>
-              <p class="text-lg leading-relaxed text-kaizen-text-dark/70">
-                {item.copy}
+          problems.map((item) => (
+            <div class="border-t border-white/10 pt-8">
+              <p class="text-5xl font-heading font-bold text-white md:text-6xl">
+                {item.stat}
               </p>
-            </article>
+              <p class="mt-4 text-lg leading-relaxed text-gray-400">
+                {item.detail}
+              </p>
+            </div>
           ))
         }
       </div>
     </div>
   </section>
 
-  <section class="bg-white py-20 md:py-24">
-    <div class="container mx-auto px-4">
-      <div class="mx-auto max-w-3xl rounded-2xl border border-kaizen-light bg-kaizen-light p-6 md:p-8">
-        <p class="mb-3 text-xs font-mono uppercase tracking-[0.25em] text-kaizen-cyan">
-          WordPress or React?
-        </p>
-        <h2 class="mb-4 text-2xl font-heading font-bold text-kaizen-dark md:text-3xl">
-          Is WordPress right for my business?
-        </h2>
-        <p class="mb-4 text-base leading-relaxed text-kaizen-text-dark/80 md:text-lg">
-          WordPress is ideal for many small and mid-size businesses that need a
-          flexible, easy-to-manage site and fast editing workflow.
-        </p>
-        <p class="mb-4 text-base leading-relaxed text-kaizen-text-dark/80 md:text-lg">
-          If you later move to headless or React, your team can keep a familiar
-          content workflow while we upgrade your frontend architecture.
-        </p>
-        <a
-          href="/blog/wordpress-vs-react-business-roi"
-          class="inline-flex items-center gap-2 text-sm font-heading font-semibold text-kaizen-cyan hover:text-kaizen-lime md:text-base"
-        >
-          Read: WordPress vs React ROI guide
-          <span aria-hidden="true">-&gt;</span>
-        </a>
-      </div>
-    </div>
-  </section>
-
-  <section class="bg-white py-20 md:py-32">
-    <div class="container mx-auto px-4">
-      <h2 class="mb-16 text-center text-4xl font-heading font-bold text-kaizen-dark md:text-5xl">
-        Real Results for Local Businesses
+  <!-- ═══ THE THREE PATHS (Simple + Unexpected) ═══ -->
+  <section class="bg-white py-28 md:py-36">
+    <div class="mx-auto max-w-[1440px] px-6 sm:px-10 lg:px-16 xl:px-24">
+      <p
+        class="mb-6 text-xs font-medium font-body uppercase tracking-[0.25em] text-gray-400"
+      >
+        Three clear options
+      </p>
+      <h2
+        class="max-w-3xl text-4xl font-heading font-bold leading-tight text-gray-950 md:text-5xl"
+      >
+        Three paths forward.<br />
+        <span class="text-gray-400">One of them is yours.</span>
       </h2>
-      <div class="mx-auto grid max-w-5xl grid-cols-1 gap-12 md:grid-cols-2">
+      <div class="mt-16 grid grid-cols-1 gap-8 lg:grid-cols-3">
         {
-          caseStudies.map((item) => (
-            <article class="rounded-2xl border border-kaizen-light bg-kaizen-light p-8">
-              <a
-                href={item.link}
-                class="mb-2 inline-block text-sm font-bold uppercase tracking-wide text-kaizen-cyan transition hover:opacity-80"
+          paths.map((path) => (
+            <article
+              class={`relative flex flex-col rounded-2xl border p-8 md:p-10 ${path.tagColor === "cyan" ? "border-gray-950 bg-gray-950 text-white ring-2 ring-cyan-400/30" : "border-gray-200 bg-white text-gray-950"}`}
+            >
+              <span
+                class={`mb-6 inline-block self-start rounded-full px-4 py-1.5 text-xs font-bold uppercase tracking-wider ${
+                  path.tagColor === "cyan"
+                    ? "bg-cyan-400/15 text-cyan-400"
+                    : "bg-gray-100 text-gray-500"
+                }`}
               >
-                {item.client}
-              </a>
-              <p class="mb-6 text-xs font-medium text-kaizen-text-dark/60">
-                {item.industry}
+                {path.tag}
+              </span>
+              <p
+                class={`text-sm font-medium font-body ${path.tagColor === "cyan" ? "text-gray-500" : "text-gray-400"}`}
+              >
+                {path.number}
               </p>
-              <div class="space-y-6">
-                <div>
-                  <h4 class="mb-2 font-heading font-bold text-kaizen-dark">
-                    The Problem
-                  </h4>
-                  <p class="leading-relaxed text-kaizen-text-dark/70">
-                    {item.problem}
-                  </p>
-                </div>
-                <div>
-                  <h4 class="mb-2 font-heading font-bold text-kaizen-dark">
-                    The Outcome
-                  </h4>
-                  <p class="leading-relaxed text-kaizen-text-dark/70">
-                    {item.outcome}
-                  </p>
-                </div>
-                <a
-                  href={item.link}
-                  class="inline-flex items-center gap-2 font-medium text-kaizen-cyan"
+              <h3 class="mt-2 text-2xl font-heading font-bold md:text-3xl">
+                {path.headline}
+              </h3>
+              <p
+                class={`mt-4 text-lg leading-relaxed ${path.tagColor === "cyan" ? "text-gray-300" : "text-gray-600"}`}
+              >
+                {path.hook}
+              </p>
+              <p
+                class={`mt-4 leading-relaxed ${path.tagColor === "cyan" ? "text-gray-400" : "text-gray-500"}`}
+              >
+                {path.description}
+              </p>
+              <div
+                class={`mt-8 border-t pt-6 ${path.tagColor === "cyan" ? "border-white/10" : "border-gray-100"}`}
+              >
+                <p class="text-sm font-bold uppercase tracking-wider text-gray-400">
+                  Ideal for
+                </p>
+                <p
+                  class={`mt-1 ${path.tagColor === "cyan" ? "text-gray-300" : "text-gray-600"}`}
                 >
-                  Read Full Case Study
-                  <span aria-hidden="true">-&gt;</span>
-                </a>
+                  {path.ideal}
+                </p>
+              </div>
+              <div class="mt-auto pt-8">
+                <ContactCTAButton label={path.cta} client:load />
               </div>
             </article>
           ))
@@ -263,91 +313,617 @@ const serviceSchema = JSON.stringify({
     </div>
   </section>
 
-  <section class="bg-kaizen-light py-20 md:py-32">
-    <div class="container mx-auto px-4">
-      <h2 class="mb-12 text-center text-4xl font-heading font-bold text-kaizen-dark md:text-5xl">
-        Looking for Ultimate Performance?
-      </h2>
-      <div class="mx-auto max-w-2xl">
-        <a
-          href="/web-design-liverpool"
-          class="group block rounded-2xl border border-kaizen-light bg-white p-8 transition hover:border-kaizen-cyan md:p-12"
-        >
-          <h3 class="mb-4 text-3xl font-heading font-bold text-kaizen-dark transition group-hover:text-kaizen-cyan md:text-4xl">
-            Need a Headless Build?
-          </h3>
-          <p class="mb-6 text-lg leading-relaxed text-kaizen-text-dark/70">
-            For brands that need maximum speed and full custom frontend
-            behaviour, we also deliver high-performance headless builds.
+  <!-- ═══ WHY MIGRATION IS WORTH IT (Credible + Stories) ═══ -->
+  <section class="bg-[#f5f5f3] py-28 md:py-36">
+    <div class="mx-auto max-w-[1440px] px-6 sm:px-10 lg:px-16 xl:px-24">
+      <div class="grid grid-cols-1 items-start gap-16 lg:grid-cols-2">
+        <div>
+          <p
+            class="mb-6 text-xs font-medium font-body uppercase tracking-[0.25em] text-gray-400"
+          >
+            The WordPress ceiling
           </p>
-          <p class="font-medium text-kaizen-cyan">Explore Headless Web Design -&gt;</p>
+          <h2
+            class="text-4xl font-heading font-bold leading-tight text-gray-950 md:text-5xl"
+          >
+            There's a limit to how fast<br />WordPress can go.
+          </h2>
+          <p class="mt-6 text-lg leading-relaxed text-gray-600">
+            You can cache it. Optimise images. Strip plugins. And it'll still be
+            slower than a custom coded website built with modern tools. That's
+            not opinion — it's architecture. WordPress rebuilds every page from
+            a database, every time. A modern site serves pre-built pages
+            instantly.
+          </p>
+          <p class="mt-4 text-lg leading-relaxed text-gray-600">
+            The difference? Your visitors feel it. Google measures it. And your
+            competitors are already making the switch.
+          </p>
+        </div>
+        <div>
+          <div class="rounded-xl bg-white p-8">
+            <p class="text-sm font-bold uppercase tracking-wider text-gray-400">
+              Real result
+            </p>
+            <h3 class="mt-3 text-2xl font-heading font-bold text-gray-950">
+              Midland Oil Group
+            </h3>
+            <p class="mt-1 text-lg font-heading font-bold text-cyan-600">
+              8.4s → 0.4s
+            </p>
+            <p class="mt-3 leading-relaxed text-gray-600">
+              Decades in the lubricant industry. Solid reputation. But their
+              WordPress site took <strong class="text-gray-950"
+                >8.4 seconds</strong
+              > to load — customers were leaving before they saw a single product.
+              The business deserved better than what their website was showing.
+            </p>
+            <p class="mt-3 leading-relaxed text-gray-600">
+              We migrated them to a custom coded site. Same content, same
+              products. Load time: <strong class="text-gray-950"
+                >0.4 seconds</strong
+              >. Rankings improved within weeks.
+            </p>
+            <a
+              href="/case-studies/midland-oil-group"
+              class="group relative isolate mt-6 inline-flex items-center justify-center overflow-hidden rounded-[18px] border border-white/25 px-5 py-2.5 text-[15px] text-white no-underline shadow-[0_12px_32px_rgba(10,34,102,0.34)] transition-transform duration-200 hover:-translate-y-px hover:shadow-[0_18px_40px_rgba(10,34,102,0.4)]"
+            >
+              <span
+                class="pointer-events-none absolute inset-0 rounded-[inherit] bg-[linear-gradient(135deg,#266bff_0%,#1658e8_56%,#0c3eb9_100%)]"
+              ></span>
+              <span
+                class="pointer-events-none absolute inset-px rounded-[inherit] bg-[linear-gradient(180deg,rgba(255,255,255,0.2)_0%,rgba(255,255,255,0.08)_20%,rgba(8,38,112,0.16)_100%)]"
+              ></span>
+              <span
+                class="pointer-events-none absolute inset-0 rounded-[inherit] shadow-[inset_0_1px_0_rgba(255,255,255,0.42),inset_0_-1px_0_rgba(255,255,255,0.08)]"
+              ></span>
+              <span
+                class="relative z-1 inline-flex items-center gap-2 whitespace-nowrap font-medium tracking-[-0.01em] text-white"
+              >
+                <span>See how we transformed MOG's site</span>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-4 w-4 transition-transform duration-200 group-hover:translate-x-0.5"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  ><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"
+                  ></path></svg
+                >
+              </span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ PATTERN INTERRUPT (Unexpected + Emotional) ═══ -->
+  <section class="bg-gray-950 py-24 md:py-32">
+    <div class="mx-auto max-w-[1440px] px-6 sm:px-10 lg:px-16 xl:px-24">
+      <div class="mx-auto max-w-3xl text-center">
+        <p
+          class="text-5xl font-heading font-bold leading-tight text-white md:text-6xl lg:text-7xl"
+        >
+          This section loaded<br />
+          faster than your<br />
+          homepage.
+        </p>
+        <p class="mt-8 text-xl text-gray-400">
+          If that made you uncomfortable, we should talk.
+        </p>
+        <a
+          href="tel:+441514530008"
+          class="group relative isolate mt-10 inline-flex items-center justify-center overflow-hidden rounded-[18px] border border-white/25 px-5 py-2.5 text-[16px] text-white no-underline shadow-[0_12px_32px_rgba(10,34,102,0.34)] transition-transform duration-200 hover:-translate-y-px hover:shadow-[0_18px_40px_rgba(10,34,102,0.4)]"
+        >
+          <span
+            class="pointer-events-none absolute inset-0 rounded-[inherit] bg-[linear-gradient(135deg,#266bff_0%,#1658e8_56%,#0c3eb9_100%)]"
+          ></span>
+          <span
+            class="pointer-events-none absolute inset-px rounded-[inherit] bg-[linear-gradient(180deg,rgba(255,255,255,0.2)_0%,rgba(255,255,255,0.08)_20%,rgba(8,38,112,0.16)_100%)]"
+          ></span>
+          <span
+            class="pointer-events-none absolute inset-0 rounded-[inherit] shadow-[inset_0_1px_0_rgba(255,255,255,0.42),inset_0_-1px_0_rgba(255,255,255,0.08)]"
+          ></span>
+          <span
+            class="relative z-1 inline-flex items-center gap-2 whitespace-nowrap font-medium tracking-[-0.01em] text-white"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-4 w-4"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              ><path
+                d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"
+              ></path></svg
+            >
+            <span>0151 453 0008</span>
+          </span>
         </a>
       </div>
     </div>
   </section>
 
-  <section class="bg-slate-50 py-20 md:py-32">
-    <div class="container mx-auto px-4">
-      <div class="mx-auto max-w-3xl">
-        <div class="mb-12 text-center">
-          <p class="mb-4 text-xs font-mono uppercase tracking-[0.25em] text-kaizen-cyan">
-            Common Questions
-          </p>
-          <h2 class="text-4xl font-heading font-bold text-kaizen-dark md:text-5xl">
-            WordPress Web Design FAQs
-          </h2>
+  <!-- ═══ WHICH ONE IS RIGHT FOR ME? (Practical Value + Concrete) ═══ -->
+  <section class="bg-white py-28 md:py-36">
+    <div class="mx-auto max-w-[1440px] px-6 sm:px-10 lg:px-16 xl:px-24">
+      <div class="mb-16">
+        <p
+          class="mb-6 text-xs font-medium font-body uppercase tracking-[0.25em] text-gray-400"
+        >
+          Which one is right for me?
+        </p>
+        <h2
+          class="max-w-3xl text-4xl font-heading font-bold leading-tight text-gray-950 md:text-5xl"
+        >
+          Rebuild, improve, or start fresh?
+        </h2>
+        <p class="mt-6 max-w-2xl text-lg leading-relaxed text-gray-600">
+          Different situations call for different approaches. See which one
+          sounds like yours — or just get in touch and we'll point you in the
+          right direction.
+        </p>
+      </div>
+
+      <div class="space-y-0">
+        <!-- Migrate -->
+        <div
+          class="grid grid-cols-1 gap-8 border-t border-gray-200 py-10 lg:grid-cols-[200px_1fr_1fr_1fr]"
+        >
+          <div>
+            <span
+              class="inline-block rounded-full bg-cyan-400/15 px-4 py-1.5 text-xs font-bold uppercase tracking-wider text-cyan-600"
+            >
+              Migrate
+            </span>
+          </div>
+          <div>
+            <p
+              class="mb-2 text-sm font-bold uppercase tracking-wider text-gray-400"
+            >
+              You should choose this if
+            </p>
+            <ul class="space-y-2 text-gray-600">
+              <li>
+                <strong class="text-gray-950"
+                  >"My WordPress site is very slow"</strong
+                > — and no plugin or cache fix has made a real difference
+              </li>
+              <li>
+                <strong class="text-gray-950"
+                  >"WordPress not ranking on Google"</strong
+                > — you're invisible despite having good content
+              </li>
+              <li>
+                <strong class="text-gray-950"
+                  >"Should I rebuild my WordPress site?"</strong
+                > — you suspect it needs more than a refresh
+              </li>
+              <li>
+                <strong class="text-gray-950"
+                  >"WordPress vs custom website"</strong
+                > — you want the best result, not just the familiar one
+              </li>
+            </ul>
+          </div>
+          <div>
+            <p
+              class="mb-2 text-sm font-bold uppercase tracking-wider text-gray-400"
+            >
+              What you get
+            </p>
+            <ul class="space-y-2 text-gray-600">
+              <li>
+                <strong class="text-gray-950">Custom coded website</strong> — built
+                with modern technology, not themes
+              </li>
+              <li>
+                <strong class="text-gray-950">Sub-second loads</strong> — perfect
+                Core Web Vitals, no more slow pages
+              </li>
+              <li>
+                <strong class="text-gray-950">Same editor</strong> — familiar content
+                dashboard, no retraining
+              </li>
+              <li>
+                <strong class="text-gray-950">Future-proof</strong> — no plugin dependencies,
+                built to scale
+              </li>
+            </ul>
+          </div>
+          <div>
+            <p
+              class="mb-3 text-sm font-bold uppercase tracking-wider text-gray-400"
+            >
+              Sound familiar?
+            </p>
+            <ul class="space-y-3 text-gray-600">
+              <li class="flex items-start gap-2.5">
+                <svg
+                  class="mt-0.5 h-5 w-5 shrink-0 text-cyan-500"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg
+                >
+                <span>Site built years ago — loads slowly, looks dated</span>
+              </li>
+              <li class="flex items-start gap-2.5">
+                <svg
+                  class="mt-0.5 h-5 w-5 shrink-0 text-cyan-500"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg
+                >
+                <span>Competitors ranking above you on Google</span>
+              </li>
+              <li class="flex items-start gap-2.5">
+                <svg
+                  class="mt-0.5 h-5 w-5 shrink-0 text-cyan-500"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg
+                >
+                <span
+                  >Tried caching plugins, asked your dev to "speed it up" —
+                  nothing sticks</span
+                >
+              </li>
+            </ul>
+          </div>
         </div>
-        <div class="space-y-4">
-          {
-            faqs.map((item) => (
-              <details class="rounded-xl border border-gray-200 bg-white p-6">
-                <summary class="cursor-pointer text-lg font-heading font-bold text-kaizen-dark">
-                  {item.question}
-                </summary>
-                <p class="mt-4 leading-relaxed text-kaizen-text-dark/70">
-                  {item.answer}
-                </p>
-              </details>
-            ))
-          }
+
+        <!-- Improve -->
+        <div
+          class="grid grid-cols-1 gap-8 border-t border-gray-200 py-10 lg:grid-cols-[200px_1fr_1fr_1fr]"
+        >
+          <div>
+            <span
+              class="inline-block rounded-full bg-gray-100 px-4 py-1.5 text-xs font-bold uppercase tracking-wider text-gray-500"
+            >
+              Improve
+            </span>
+          </div>
+          <div>
+            <p
+              class="mb-2 text-sm font-bold uppercase tracking-wider text-gray-400"
+            >
+              You should choose this if
+            </p>
+            <ul class="space-y-2 text-gray-600">
+              <li>
+                <strong class="text-gray-950">"Fix slow WordPress site"</strong> —
+                you want it faster without starting again
+              </li>
+              <li>
+                <strong class="text-gray-950"
+                  >"WordPress site not getting enquiries"</strong
+                > — traffic but no conversions
+              </li>
+              <li>
+                <strong class="text-gray-950"
+                  >"WordPress site hacked — what to do?"</strong
+                > — security is a concern and you need it sorted
+              </li>
+              <li>
+                <strong class="text-gray-950">Not ready for a rebuild</strong> — you'd
+                rather improve what you have right now
+              </li>
+            </ul>
+          </div>
+          <div>
+            <p
+              class="mb-2 text-sm font-bold uppercase tracking-wider text-gray-400"
+            >
+              What you get
+            </p>
+            <ul class="space-y-2 text-gray-600">
+              <li>
+                <strong class="text-gray-950">Full audit</strong> — performance, UX,
+                security, and conversion review
+              </li>
+              <li>
+                <strong class="text-gray-950">Targeted fixes</strong> — the issues
+                costing you the most, first
+              </li>
+              <li>
+                <strong class="text-gray-950">Better mobile</strong> — faster loads,
+                clearer calls to action
+              </li>
+              <li>
+                <strong class="text-gray-950">Measurable results</strong> — improvements
+                you can track in analytics
+              </li>
+            </ul>
+          </div>
+          <div>
+            <p
+              class="mb-3 text-sm font-bold uppercase tracking-wider text-gray-400"
+            >
+              Sound familiar?
+            </p>
+            <ul class="space-y-3 text-gray-600">
+              <li class="flex items-start gap-2.5">
+                <svg
+                  class="mt-0.5 h-5 w-5 shrink-0 text-gray-400"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg
+                >
+                <span>Traffic's coming in but the phone isn't ringing</span>
+              </li>
+              <li class="flex items-start gap-2.5">
+                <svg
+                  class="mt-0.5 h-5 w-5 shrink-0 text-gray-400"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg
+                >
+                <span
+                  >Spent on ads and SEO — something between click and enquiry
+                  isn't working</span
+                >
+              </li>
+              <li class="flex items-start gap-2.5">
+                <svg
+                  class="mt-0.5 h-5 w-5 shrink-0 text-gray-400"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg
+                >
+                <span>Just want someone to tell you what's actually wrong</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- WordPress build -->
+        <div
+          class="grid grid-cols-1 gap-8 border-t border-b border-gray-200 py-10 lg:grid-cols-[200px_1fr_1fr_1fr]"
+        >
+          <div>
+            <span
+              class="inline-block rounded-full bg-gray-100 px-4 py-1.5 text-xs font-bold uppercase tracking-wider text-gray-500"
+            >
+              WordPress
+            </span>
+          </div>
+          <div>
+            <p
+              class="mb-2 text-sm font-bold uppercase tracking-wider text-gray-400"
+            >
+              You should choose this if
+            </p>
+            <ul class="space-y-2 text-gray-600">
+              <li>
+                <strong class="text-gray-950"
+                  >"Should I build my website with WordPress?"</strong
+                > — yes, if you need specific plugins or integrations
+              </li>
+              <li>
+                <strong class="text-gray-950">Team already on WordPress</strong> —
+                switching platforms would cause disruption
+              </li>
+              <li>
+                <strong class="text-gray-950">Speed to launch</strong> — you need
+                a new site on a platform you already know
+              </li>
+              <li>
+                <strong class="text-gray-950"
+                  >"WordPress or custom website?"</strong
+                > — WordPress makes sense when budget or familiarity is the priority
+              </li>
+            </ul>
+          </div>
+          <div>
+            <p
+              class="mb-2 text-sm font-bold uppercase tracking-wider text-gray-400"
+            >
+              What you get
+            </p>
+            <ul class="space-y-2 text-gray-600">
+              <li>
+                <strong class="text-gray-950">Custom code</strong> — clean build,
+                no bloated themes
+              </li>
+              <li>
+                <strong class="text-gray-950">Tailored editor</strong> — block editor
+                configured for your workflow
+              </li>
+              <li>
+                <strong class="text-gray-950">Lean setup</strong> — minimal plugins,
+                proper security
+              </li>
+              <li>
+                <strong class="text-gray-950">Self-sufficient</strong> — update confidently
+                without calling a developer
+              </li>
+            </ul>
+          </div>
+          <div>
+            <p
+              class="mb-3 text-sm font-bold uppercase tracking-wider text-gray-400"
+            >
+              Sound familiar?
+            </p>
+            <ul class="space-y-3 text-gray-600">
+              <li class="flex items-start gap-2.5">
+                <svg
+                  class="mt-0.5 h-5 w-5 shrink-0 text-gray-400"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg
+                >
+                <span
+                  >Last build: heavy theme, dozen plugins you didn't ask for</span
+                >
+              </li>
+              <li class="flex items-start gap-2.5">
+                <svg
+                  class="mt-0.5 h-5 w-5 shrink-0 text-gray-400"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg
+                >
+                <span>Breaks every time something gets updated</span>
+              </li>
+              <li class="flex items-start gap-2.5">
+                <svg
+                  class="mt-0.5 h-5 w-5 shrink-0 text-gray-400"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg
+                >
+                <span>Still need WordPress — but this time done properly</span>
+              </li>
+            </ul>
+          </div>
         </div>
       </div>
-    </div>
-  </section>
 
-  <section class="bg-kaizen-dark py-20 text-kaizen-text-light md:py-32">
-    <div class="container mx-auto px-4 text-center">
-      <h2 class="mb-8 text-4xl font-heading font-bold md:text-5xl">
-        Get a WordPress Site You Can Rely On.
-      </h2>
-      <p class="mx-auto mb-12 max-w-2xl text-xl leading-relaxed text-kaizen-text-light/80">
-        Let's talk about a fast, secure WordPress build for your Liverpool
-        business.
-      </p>
-      <div class="flex flex-col justify-center gap-6 sm:flex-row">
+      <div class="mt-16 text-center">
+        <p class="text-lg text-gray-600">
+          Still not sure? That's completely normal.
+        </p>
         <a
           href="/contact"
-          class="inline-flex items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-kaizen-cyan to-kaizen-lime px-8 py-3 font-heading font-bold text-kaizen-dark transition hover:shadow-lg hover:shadow-kaizen-cyan/50"
+          class="group relative isolate mt-6 inline-flex items-center justify-center overflow-hidden rounded-[18px] border border-white/25 px-6 py-3 text-[16px] text-white no-underline shadow-[0_12px_32px_rgba(10,34,102,0.34)] transition-transform duration-200 hover:-translate-y-px hover:shadow-[0_18px_40px_rgba(10,34,102,0.4)]"
         >
-          Get in Touch
-          <span aria-hidden="true">-&gt;</span>
-        </a>
-        <a
-          href={calendlyUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          class="inline-flex items-center justify-center gap-2 rounded-lg border-2 border-kaizen-text-light/30 px-8 py-3 font-heading font-bold text-kaizen-text-light transition hover:border-kaizen-cyan"
-        >
-          Book a 15 Minute Call
-          <span aria-hidden="true">-&gt;</span>
+          <span
+            class="pointer-events-none absolute inset-0 rounded-[inherit] bg-[linear-gradient(135deg,#266bff_0%,#1658e8_56%,#0c3eb9_100%)]"
+          ></span>
+          <span
+            class="pointer-events-none absolute inset-px rounded-[inherit] bg-[linear-gradient(180deg,rgba(255,255,255,0.2)_0%,rgba(255,255,255,0.08)_20%,rgba(8,38,112,0.16)_100%)]"
+          ></span>
+          <span
+            class="pointer-events-none absolute inset-0 rounded-[inherit] shadow-[inset_0_1px_0_rgba(255,255,255,0.42),inset_0_-1px_0_rgba(255,255,255,0.08)]"
+          ></span>
+          <span
+            class="relative z-1 inline-flex items-center gap-2 whitespace-nowrap font-medium tracking-[-0.01em] text-white"
+          >
+            <span>Let's figure it out together</span>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-4 w-4 transition-transform duration-200 group-hover:translate-x-0.5"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              ><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg
+            >
+          </span>
         </a>
       </div>
-      <p class="mt-8 text-sm text-kaizen-text-light/70">
-        Got a broken WordPress build? See
-        <a href="/project-rescue" class="text-kaizen-cyan hover:underline">
-          project rescue services
-        </a>.
+    </div>
+  </section>
+
+  <!-- ═══ FAQ (Credible + Practical Value) ═══ -->
+  <section class="bg-[#f5f5f3] py-28 md:py-36">
+    <div class="mx-auto max-w-[1440px] px-6 sm:px-10 lg:px-16 xl:px-24">
+      <div class="mb-16">
+        <p
+          class="mb-6 text-xs font-medium font-body uppercase tracking-[0.25em] text-gray-400"
+        >
+          Common questions
+        </p>
+        <h2 class="text-4xl font-heading font-bold text-gray-950 md:text-5xl">
+          WordPress web design FAQ
+        </h2>
+      </div>
+      <div class="grid grid-cols-1 gap-4 lg:grid-cols-2 lg:gap-x-12">
+        {
+          faqs.map((item) => (
+            <details class="rounded-xl border border-gray-200 bg-white p-6">
+              <summary class="cursor-pointer text-lg font-heading font-bold text-gray-950">
+                {item.question}
+              </summary>
+              <p class="mt-4 leading-relaxed text-gray-600">{item.answer}</p>
+            </details>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ CTA ═══ -->
+  <section class="bg-gray-950 py-28 md:py-36">
+    <div
+      class="mx-auto max-w-[1440px] px-6 sm:px-10 lg:px-16 xl:px-24 text-center"
+    >
+      <h2 class="text-4xl font-heading font-bold text-white md:text-5xl">
+        Every week you wait,<br />your competitors pull further ahead.
+      </h2>
+      <p class="mx-auto mt-6 max-w-2xl text-xl leading-relaxed text-gray-400">
+        Migration, tune-up, or clean rebuild — let's work out which one and get
+        moving.
       </p>
+      <div class="mt-10 flex flex-col justify-center gap-4 sm:flex-row">
+        <a
+          href="/contact"
+          class="group relative isolate inline-flex items-center justify-center overflow-hidden rounded-[18px] border border-white/25 px-6 py-3 text-[16px] text-white no-underline shadow-[0_12px_32px_rgba(10,34,102,0.34)] transition-transform duration-200 hover:-translate-y-px hover:shadow-[0_18px_40px_rgba(10,34,102,0.4)]"
+        >
+          <span
+            class="pointer-events-none absolute inset-0 rounded-[inherit] bg-[linear-gradient(135deg,#266bff_0%,#1658e8_56%,#0c3eb9_100%)]"
+          ></span>
+          <span
+            class="pointer-events-none absolute inset-px rounded-[inherit] bg-[linear-gradient(180deg,rgba(255,255,255,0.2)_0%,rgba(255,255,255,0.08)_20%,rgba(8,38,112,0.16)_100%)]"
+          ></span>
+          <span
+            class="pointer-events-none absolute inset-0 rounded-[inherit] shadow-[inset_0_1px_0_rgba(255,255,255,0.42),inset_0_-1px_0_rgba(255,255,255,0.08)]"
+          ></span>
+          <span
+            class="relative z-1 inline-flex items-center gap-2 whitespace-nowrap font-medium tracking-[-0.01em] text-white"
+          >
+            <span>Get in touch</span>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-4 w-4 transition-transform duration-200 group-hover:translate-x-0.5"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              ><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg
+            >
+          </span>
+        </a>
+      </div>
     </div>
   </section>
 </StaticPageLayout>

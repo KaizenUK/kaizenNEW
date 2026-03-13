@@ -3,9 +3,6 @@ import StaticPageLayout from "../layouts/StaticPageLayout.astro";
 
 export const prerender = true;
 
-const calendlyUrl =
-  "https://calendly.com/sean-kaizenweb/30-minute-meeting-clone";
-
 const comparisonRows = [
   {
     feature: "Primary Focus",
@@ -139,24 +136,13 @@ const kaizenLinks = [
           complex project, manage your team, and
           <strong> drive it relentlessly to delivery.</strong> No excuses.
         </p>
-        <div class="flex flex-col gap-4 sm:flex-row">
-          <a
-            href={calendlyUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            class="inline-flex items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-kaizen-cyan to-kaizen-lime px-8 py-3 font-heading font-bold text-kaizen-dark transition hover:shadow-lg hover:shadow-kaizen-cyan/50"
-          >
-            Book a 15 Minute Call with Sean
-            <span aria-hidden="true">-&gt;</span>
-          </a>
-          <a
-            href="/contact"
-            class="inline-flex items-center justify-center gap-2 rounded-lg border-2 border-kaizen-cyan px-8 py-3 font-heading font-bold text-kaizen-cyan transition hover:bg-kaizen-cyan/10"
-          >
-            Get in Touch
-            <span aria-hidden="true">-&gt;</span>
-          </a>
-        </div>
+        <a
+          href="/contact"
+          class="inline-flex items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-kaizen-cyan to-kaizen-lime px-8 py-3 font-heading font-bold text-kaizen-dark transition hover:shadow-lg hover:shadow-kaizen-cyan/50"
+        >
+          Get in Touch
+          <span aria-hidden="true">-&gt;</span>
+        </a>
       </div>
     </div>
   </section>
@@ -447,27 +433,15 @@ const kaizenLinks = [
         Get Your Project Delivered. No Excuses.
       </h2>
       <p class="mx-auto mb-12 max-w-2xl text-xl leading-relaxed text-kaizen-text-light/80">
-        Let's talk about your project. Book a 15-minute, confidential call with
-        me, Sean, to see how I can help.
+        Let's talk about your project. Get in touch to see how I can help.
       </p>
-      <div class="flex flex-col justify-center gap-6 sm:flex-row">
-        <a
-          href={calendlyUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          class="inline-flex items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-kaizen-cyan to-kaizen-lime px-8 py-3 font-heading font-bold text-kaizen-dark transition hover:shadow-lg hover:shadow-kaizen-cyan/50"
-        >
-          Book a 15 Minute Call with Sean
-          <span aria-hidden="true">-&gt;</span>
-        </a>
-        <a
-          href="/contact"
-          class="inline-flex items-center justify-center gap-2 rounded-lg border-2 border-kaizen-text-light/30 px-8 py-3 font-heading font-bold text-kaizen-text-light transition hover:border-kaizen-cyan"
-        >
-          Get in Touch
-          <span aria-hidden="true">-&gt;</span>
-        </a>
-      </div>
+      <a
+        href="/contact"
+        class="inline-flex items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-kaizen-cyan to-kaizen-lime px-8 py-3 font-heading font-bold text-kaizen-dark transition hover:shadow-lg hover:shadow-kaizen-cyan/50"
+      >
+        Get in Touch
+        <span aria-hidden="true">-&gt;</span>
+      </a>
     </div>
   </section>
 </StaticPageLayout>

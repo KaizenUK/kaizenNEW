@@ -185,7 +185,7 @@ export default function SiteFooter({ buildLabel }: FooterProps) {
           {/* Left — big statement */}
           <div>
             <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-white/30 font-body">
-              Kaizen Web
+              Kaizen
             </p>
             <h2 className="mt-5 max-w-[14ch] text-[clamp(2.75rem,5.5vw,5.4rem)] font-heading font-bold leading-[0.94] text-white">
               Websites built properly.

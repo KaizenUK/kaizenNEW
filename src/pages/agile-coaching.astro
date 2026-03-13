@@ -3,9 +3,6 @@ import StaticPageLayout from "../layouts/StaticPageLayout.astro";
 
 export const prerender = true;
 
-const calendlyUrl =
-  "https://calendly.com/sean-kaizenweb/30-minute-meeting-clone";
-
 const painPoints = [
   {
     title: "Missed Deadlines",
@@ -112,24 +109,13 @@ const faqSchema = JSON.stringify({
           use practical Agile coaching to get your team focused, your projects
           on track, and your work done faster. No jargon, just results.
         </p>
-        <div class="flex flex-col gap-4 sm:flex-row">
-          <a
-            href="/contact"
-            class="inline-flex items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-kaizen-cyan to-kaizen-lime px-8 py-3 font-heading font-bold text-kaizen-dark transition hover:shadow-lg hover:shadow-kaizen-cyan/50"
-          >
-            Get in Touch
-            <span aria-hidden="true">-&gt;</span>
-          </a>
-          <a
-            href={calendlyUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            class="inline-flex items-center justify-center gap-2 rounded-lg border-2 border-kaizen-cyan px-8 py-3 font-heading font-bold text-kaizen-cyan transition hover:bg-kaizen-cyan/10"
-          >
-            Book a 15 Minute Call
-            <span aria-hidden="true">-&gt;</span>
-          </a>
-        </div>
+        <a
+          href="/contact"
+          class="inline-flex items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-kaizen-cyan to-kaizen-lime px-8 py-3 font-heading font-bold text-kaizen-dark transition hover:shadow-lg hover:shadow-kaizen-cyan/50"
+        >
+          Get in Touch
+          <span aria-hidden="true">-&gt;</span>
+        </a>
       </div>
     </div>
   </section>
@@ -276,27 +262,15 @@ const faqSchema = JSON.stringify({
         Stop Running in Circles.
       </h2>
       <p class="mx-auto mb-12 max-w-2xl text-xl leading-relaxed text-kaizen-text-light/80">
-        Let's fix your workflow. Book a 15-minute, no-pressure call to see if
-        we can help.
+        Let's fix your workflow. Get in touch to see if we can help.
       </p>
-      <div class="flex flex-col justify-center gap-6 sm:flex-row">
-        <a
-          href="/contact"
-          class="inline-flex items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-kaizen-cyan to-kaizen-lime px-8 py-3 font-heading font-bold text-kaizen-dark transition hover:shadow-lg hover:shadow-kaizen-cyan/50"
-        >
-          Get in Touch
-          <span aria-hidden="true">-&gt;</span>
-        </a>
-        <a
-          href={calendlyUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          class="inline-flex items-center justify-center gap-2 rounded-lg border-2 border-kaizen-text-light/30 px-8 py-3 font-heading font-bold text-kaizen-text-light transition hover:border-kaizen-cyan"
-        >
-          Book a 15 Minute Call
-          <span aria-hidden="true">-&gt;</span>
-        </a>
-      </div>
+      <a
+        href="/contact"
+        class="inline-flex items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-kaizen-cyan to-kaizen-lime px-8 py-3 font-heading font-bold text-kaizen-dark transition hover:shadow-lg hover:shadow-kaizen-cyan/50"
+      >
+        Get in Touch
+        <span aria-hidden="true">-&gt;</span>
+      </a>
     </div>
   </section>
 </StaticPageLayout>

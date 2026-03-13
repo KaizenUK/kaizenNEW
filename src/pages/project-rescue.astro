@@ -3,9 +3,6 @@ import StaticPageLayout from "../layouts/StaticPageLayout.astro";
 
 export const prerender = true;
 
-const calendlyUrl =
-  "https://calendly.com/sean-kaizenweb/30-minute-meeting-clone";
-
 const symptoms = [
   "You've spent serious money but don't have usable software to show for it.",
   "Deadlines keep slipping and nobody can clearly explain why.",
@@ -135,12 +132,10 @@ const faqSchema = JSON.stringify({
         </p>
 
         <a
-          href={calendlyUrl}
-          target="_blank"
-          rel="noopener noreferrer"
+          href="/contact"
           class="inline-flex items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-kaizen-cyan to-kaizen-lime px-8 py-4 font-heading font-bold text-lg text-kaizen-dark transition hover:shadow-lg hover:shadow-kaizen-cyan/50"
         >
-          Book a Project Triage Call
+          Get in Touch
           <span aria-hidden="true">-&gt;</span>
         </a>
       </div>
@@ -331,16 +326,13 @@ const faqSchema = JSON.stringify({
           Stop the bleeding. Start shipping.
         </h2>
         <p class="mb-12 text-xl leading-relaxed text-white/80">
-          Book a free 30-minute triage call. We'll diagnose and tell you
-          honestly if we can help.
+          Get in touch and we'll diagnose and tell you honestly if we can help.
         </p>
         <a
-          href={calendlyUrl}
-          target="_blank"
-          rel="noopener noreferrer"
+          href="/contact"
           class="inline-flex items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-kaizen-cyan to-kaizen-lime px-8 py-4 font-heading font-bold text-lg text-kaizen-dark transition hover:shadow-lg hover:shadow-kaizen-cyan/50"
         >
-          Book a Free 30-Minute Triage Call
+          Get in Touch
           <span aria-hidden="true">-&gt;</span>
         </a>
       </div>

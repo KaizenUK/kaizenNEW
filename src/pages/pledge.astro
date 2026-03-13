@@ -3,9 +3,6 @@ import StaticPageLayout from "../layouts/StaticPageLayout.astro";
 
 export const prerender = true;
 
-const calendlyUrl =
-  "https://calendly.com/sean-kaizenweb/30-minute-meeting-clone";
-
 const pledgeSections = [
   {
     label: "01. AI & EXPERTISE",
@@ -95,24 +92,13 @@ We don't build cheap quick-fix sites. We're a premium expert-led team for busine
       <p class="mb-12 text-xl leading-relaxed text-white/80">
         Now you know exactly how we work. Let's talk about your project.
       </p>
-      <div class="flex flex-col items-center justify-center gap-6 sm:flex-row">
-        <a
-          href="/contact"
-          class="inline-flex items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-kaizen-cyan to-kaizen-lime px-8 py-3 font-heading font-bold text-kaizen-dark transition hover:shadow-lg hover:shadow-kaizen-cyan/50"
-        >
-          Get in Touch
-          <span aria-hidden="true">-&gt;</span>
-        </a>
-        <a
-          href={calendlyUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          class="inline-flex items-center justify-center gap-2 rounded-lg border-2 border-white/30 px-8 py-3 font-heading font-bold text-white transition hover:border-kaizen-cyan hover:text-kaizen-cyan"
-        >
-          Book a 15 Minute Call
-          <span aria-hidden="true">-&gt;</span>
-        </a>
-      </div>
+      <a
+        href="/contact"
+        class="inline-flex items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-kaizen-cyan to-kaizen-lime px-8 py-3 font-heading font-bold text-kaizen-dark transition hover:shadow-lg hover:shadow-kaizen-cyan/50"
+      >
+        Get in Touch
+        <span aria-hidden="true">-&gt;</span>
+      </a>
     </div>
   </section>
 </StaticPageLayout>

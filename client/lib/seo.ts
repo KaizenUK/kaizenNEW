@@ -258,8 +258,8 @@ const pageMeta: Record<string, Partial<PageMeta>> = {
   "/contact": {
     title: "Contact | Kaizen | Liverpool Web Design",
     description:
-      "Let's talk. Chat with us live, or book a 15-minute, no-pressure discovery call directly in our calendar.",
-    keywords: ["contact kaizen", "book a call", "liverpool web design contact"],
+      "Let's talk. Send us a message or give us a call and we will come back with clear next steps.",
+    keywords: ["contact kaizen", "liverpool web design contact"],
   },
   "/thank-you": {
     title: "Thank You | Kaizen",
@@ -300,7 +300,7 @@ const pageMeta: Record<string, Partial<PageMeta>> = {
   "/cookie-policy": {
     title: "Cookie Policy | Kaizen",
     description:
-      "A simple, clear list of the cookies this site uses for chat, analytics, and booking, and why we use them.",
+      "A simple, clear list of the cookies this site uses for chat and analytics, and why we use them.",
     noIndex: true,
     keywords: ["cookie policy", "cookie notice", "gdpr", "analytics cookies"],
   },

@@ -28,7 +28,7 @@ export const PricingSlider = () => {
       description: "Small Business / Marketing",
       price: "£2k – £5k",
       detail: "Custom design, lead gen focused.",
-      cta: "Book a Growth Call",
+      cta: "Get a Growth Quote",
     },
     {
       name: "Scale",
@@ -42,7 +42,7 @@ export const PricingSlider = () => {
       description: "SaaS / Web App",
       price: "£15k+",
       detail: "Complex logic, user portals.",
-      cta: "Book an Enterprise Call",
+      cta: "Get an Enterprise Quote",
     },
     {
       name: "Rescue",

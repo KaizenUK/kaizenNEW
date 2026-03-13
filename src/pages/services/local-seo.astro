@@ -3,9 +3,6 @@ import StaticPageLayout from "../../layouts/StaticPageLayout.astro";
 
 export const prerender = true;
 
-const calendlyUrl =
-  "https://calendly.com/sean-kaizenweb/30-minute-meeting-clone";
-
 const localTactics = [
   {
     title: "Google Business Profile",
@@ -57,24 +54,13 @@ const processSteps = [
               local presence so you rank and convert.
             </p>
           </div>
-          <div class="flex flex-col gap-6 sm:flex-row">
-            <a
-              href="/contact"
-              class="inline-flex items-center justify-center gap-2 rounded-full bg-gradient-to-r from-kaizen-cyan to-kaizen-lime px-8 py-3 font-heading font-bold text-kaizen-dark transition hover:opacity-90"
-            >
-              Get in Touch
-              <span aria-hidden="true">-&gt;</span>
-            </a>
-            <a
-              href={calendlyUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              class="inline-flex items-center justify-center gap-2 rounded-full border-2 border-kaizen-text-light/30 px-8 py-3 font-heading font-bold text-kaizen-text-light transition hover:border-kaizen-cyan"
-            >
-              Get a Free Local Audit
-              <span aria-hidden="true">-&gt;</span>
-            </a>
-          </div>
+          <a
+            href="/contact"
+            class="inline-flex items-center justify-center gap-2 rounded-full bg-gradient-to-r from-kaizen-cyan to-kaizen-lime px-8 py-3 font-heading font-bold text-kaizen-dark transition hover:opacity-90"
+          >
+            Get in Touch
+            <span aria-hidden="true">-&gt;</span>
+          </a>
         </div>
         <div class="hidden md:block">
           <div class="overflow-hidden rounded-2xl border border-kaizen-cyan/30">
@@ -296,24 +282,13 @@ const processSteps = [
       <p class="mx-auto mb-12 max-w-2xl text-xl leading-relaxed text-kaizen-text-light/80">
         Let's get your business on the map.
       </p>
-      <div class="flex flex-col justify-center gap-6 sm:flex-row">
-        <a
-          href="/contact"
-          class="inline-flex items-center justify-center gap-2 rounded-full bg-gradient-to-r from-kaizen-cyan to-kaizen-lime px-8 py-3 font-heading font-bold text-kaizen-dark transition hover:opacity-90"
-        >
-          Get in Touch
-          <span aria-hidden="true">-&gt;</span>
-        </a>
-        <a
-          href={calendlyUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          class="inline-flex items-center justify-center gap-2 rounded-full border-2 border-kaizen-text-light/30 px-8 py-3 font-heading font-bold text-kaizen-text-light transition hover:border-kaizen-cyan"
-        >
-          Book a 15 Minute Call
-          <span aria-hidden="true">-&gt;</span>
-        </a>
-      </div>
+      <a
+        href="/contact"
+        class="inline-flex items-center justify-center gap-2 rounded-full bg-gradient-to-r from-kaizen-cyan to-kaizen-lime px-8 py-3 font-heading font-bold text-kaizen-dark transition hover:opacity-90"
+      >
+        Get in Touch
+        <span aria-hidden="true">-&gt;</span>
+      </a>
     </div>
   </section>
 </StaticPageLayout>

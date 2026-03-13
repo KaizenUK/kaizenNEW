@@ -3,9 +3,6 @@ import StaticPageLayout from "../layouts/StaticPageLayout.astro";
 
 export const prerender = true;
 
-const calendlyUrl =
-  "https://calendly.com/sean-kaizenweb/30-minute-meeting-clone";
-
 const whoWeHelp = [
   {
     title: "Offline Businesses",
@@ -100,20 +97,10 @@ const faqSchema = JSON.stringify({
           </p>
         </div>
 
-        <div class="flex flex-col gap-4 pt-4 sm:flex-row">
-          <a
-            href={calendlyUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            class="inline-flex items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-kaizen-cyan to-kaizen-lime px-8 py-3 font-heading font-bold text-kaizen-dark transition hover:shadow-lg hover:shadow-kaizen-cyan/50"
-          >
-            Book a Process Audit
-            <span aria-hidden="true">-&gt;</span>
-          </a>
-
+        <div class="pt-4">
           <a
             href="/contact"
-            class="inline-flex items-center justify-center gap-2 rounded-lg border-2 border-kaizen-cyan px-8 py-3 font-heading font-bold text-kaizen-cyan transition hover:bg-kaizen-cyan/10"
+            class="inline-flex items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-kaizen-cyan to-kaizen-lime px-8 py-3 font-heading font-bold text-kaizen-dark transition hover:shadow-lg hover:shadow-kaizen-cyan/50"
           >
             Get in Touch
             <span aria-hidden="true">-&gt;</span>
@@ -300,25 +287,13 @@ const faqSchema = JSON.stringify({
         Lets find and fix the operational chaos in your business.
       </p>
 
-      <div class="flex flex-col items-center justify-center gap-6 sm:flex-row">
-        <a
-          href={calendlyUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          class="inline-flex items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-kaizen-cyan to-kaizen-lime px-8 py-3 font-heading font-bold text-kaizen-dark transition hover:shadow-lg hover:shadow-kaizen-cyan/50"
-        >
-          Book a Process Audit
-          <span aria-hidden="true">-&gt;</span>
-        </a>
-
-        <a
-          href="/contact"
-          class="inline-flex items-center justify-center gap-2 rounded-lg border-2 border-white/30 px-8 py-3 font-heading font-bold text-white transition hover:border-kaizen-cyan hover:text-kaizen-cyan"
-        >
-          Get in Touch
-          <span aria-hidden="true">-&gt;</span>
-        </a>
-      </div>
+      <a
+        href="/contact"
+        class="inline-flex items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-kaizen-cyan to-kaizen-lime px-8 py-3 font-heading font-bold text-kaizen-dark transition hover:shadow-lg hover:shadow-kaizen-cyan/50"
+      >
+        Get in Touch
+        <span aria-hidden="true">-&gt;</span>
+      </a>
     </div>
   </section>
 </StaticPageLayout>

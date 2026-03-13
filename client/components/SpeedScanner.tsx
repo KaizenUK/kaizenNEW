@@ -922,7 +922,7 @@ export default function SpeedScanner() {
         yPos + 26,
       );
       doc.text(
-        "Book a free 15-minute discovery call and we'll create a fixed-price quote.",
+        "Get in touch via our contact form and we'll create a fixed-price quote.",
         22,
         yPos + 34,
       );
@@ -948,7 +948,7 @@ export default function SpeedScanner() {
       doc.setFontSize(10);
       doc.setFont("helvetica", "bold");
 
-      const text = "BOOK CALL";
+      const text = "GET IN TOUCH";
       const textWidth = doc.getTextWidth(text);
       doc.text(text, btnX + btnW / 2 - textWidth / 2, btnY + 7.5);
 

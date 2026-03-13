@@ -3,9 +3,6 @@ import StaticPageLayout from "../../layouts/StaticPageLayout.astro";
 
 export const prerender = true;
 
-const calendlyUrl =
-  "https://calendly.com/sean-kaizenweb/30-minute-meeting-clone";
-
 const expertiseCards = [
   {
     title: "Headless Ecommerce",
@@ -88,24 +85,13 @@ const faqSchema = JSON.stringify({
             for Liverpool and Wirral businesses on the right stack for your
             growth stage.
           </p>
-          <div class="flex flex-col gap-4 sm:flex-row">
-            <a
-              href="/contact"
-              class="inline-flex items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-kaizen-cyan to-kaizen-lime px-6 py-3 font-heading font-bold text-slate-900 transition hover:shadow-lg hover:shadow-kaizen-cyan/50"
-            >
-              Get in Touch
-              <span aria-hidden="true">-&gt;</span>
-            </a>
-            <a
-              href={calendlyUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              class="inline-flex items-center justify-center gap-2 rounded-lg border border-slate-400/50 px-6 py-3 font-heading font-bold text-slate-300 transition hover:border-kaizen-cyan hover:text-kaizen-cyan"
-            >
-              Book a 15 Minute Call
-              <span aria-hidden="true">-&gt;</span>
-            </a>
-          </div>
+          <a
+            href="/contact"
+            class="inline-flex items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-kaizen-cyan to-kaizen-lime px-6 py-3 font-heading font-bold text-slate-900 transition hover:shadow-lg hover:shadow-kaizen-cyan/50"
+          >
+            Get in Touch
+            <span aria-hidden="true">-&gt;</span>
+          </a>
         </div>
         <div class="hidden md:block">
           <img
@@ -320,24 +306,13 @@ const faqSchema = JSON.stringify({
       <p class="mx-auto mb-12 max-w-2xl text-xl leading-relaxed text-kaizen-text-light/80">
         Lets pick the right ecommerce platform for your business.
       </p>
-      <div class="flex flex-col justify-center gap-6 sm:flex-row">
-        <a
-          href="/contact"
-          class="inline-flex items-center justify-center gap-2 rounded-full bg-gradient-to-r from-kaizen-cyan to-kaizen-lime px-8 py-3 font-heading font-bold text-kaizen-dark transition hover:opacity-90"
-        >
-          Get in Touch
-          <span aria-hidden="true">-&gt;</span>
-        </a>
-        <a
-          href={calendlyUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          class="inline-flex items-center justify-center gap-2 rounded-full border-2 border-kaizen-text-light/30 px-8 py-3 font-heading font-bold text-kaizen-text-light transition hover:border-kaizen-cyan"
-        >
-          Book a 15 Minute Call
-          <span aria-hidden="true">-&gt;</span>
-        </a>
-      </div>
+      <a
+        href="/contact"
+        class="inline-flex items-center justify-center gap-2 rounded-full bg-gradient-to-r from-kaizen-cyan to-kaizen-lime px-8 py-3 font-heading font-bold text-kaizen-dark transition hover:opacity-90"
+      >
+        Get in Touch
+        <span aria-hidden="true">-&gt;</span>
+      </a>
     </div>
   </section>
 </StaticPageLayout>
