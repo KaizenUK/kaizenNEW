@@ -1,6 +1,7 @@
-import { FormEvent, useState } from "react";
+import { useState } from "react";
 import { motion } from "framer-motion";
 import { Mail, Check, AlertCircle } from "lucide-react";
+import { BUSINESS_PHONE, BUSINESS_PHONE_HREF } from "@/lib/seo";
 
 type SubmitStatus = "idle" | "submitting" | "success" | "error";
 type FormStep = 1 | 2 | 3 | 4 | 5;
@@ -235,6 +236,15 @@ export const ContactFormBox = () => {
         <Mail size={24} className="text-cyan-500" />
         <h3 className="text-xl font-bold text-white">Send us a message</h3>
       </div>
+      <p className="-mt-2 mb-6 text-sm leading-relaxed text-white/60">
+        Prefer to talk it through? Call us on{" "}
+        <a
+          href={BUSINESS_PHONE_HREF}
+          className="font-semibold text-cyan-400 transition hover:text-cyan-300"
+        >
+          {BUSINESS_PHONE}
+        </a>.
+      </p>
 
       {status === "success" ? (
         <motion.div

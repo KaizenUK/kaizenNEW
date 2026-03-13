@@ -1,5 +1,6 @@
 ---
 import SpeedScanner from "../../../client/components/SpeedScanner";
+import { BUSINESS_PHONE, BUSINESS_PHONE_HREF } from "../../../client/lib/seo";
 
 interface Feature {
   title: string;
@@ -120,6 +121,10 @@ const faqSchema = JSON.stringify({
           Book a Call
         </a>
       </div>
+      <p class="mt-5 text-sm leading-relaxed text-slate-400 sm:text-base">
+        Prefer to talk it through? Call us on
+        <a href={BUSINESS_PHONE_HREF} class="font-semibold text-white transition hover:text-red-300">{BUSINESS_PHONE}</a>.
+      </p>
     </div>
 
     <div class="mt-20 grid max-w-xl grid-cols-3 gap-8">

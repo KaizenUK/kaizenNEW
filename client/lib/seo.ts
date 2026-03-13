@@ -8,7 +8,8 @@ export interface PageMeta {
 
 export const SITE_NAME = "Kaizen Web";
 export const SITE_URL = "https://kaizenweb.co.uk";
-export const BUSINESS_PHONE = "+44 151 808 1100";
+export const BUSINESS_PHONE = "+44 151 453 0008";
+export const BUSINESS_PHONE_HREF = `tel:${BUSINESS_PHONE.replace(/\s+/g, "")}`;
 export const BUSINESS_EMAIL = "hello@kaizenweb.co.uk";
 export const BUSINESS_ADDRESS = {
   street: "103 Old Hall Street",

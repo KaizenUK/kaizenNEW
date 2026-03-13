@@ -2,7 +2,7 @@
 > Liverpool & Wirral web design agency specialising in high-performance React websites, software project rescue, and Agile product ownership.
 
 **URL:** https://kaizenweb.co.uk
-**Contact:** hello@kaizenweb.co.uk | +44 151 808 1100
+**Contact:** hello@kaizenweb.co.uk | +44 151 453 0008
 **Location:** 103 Old Hall Street, Liverpool L3 9BP
 **Service Areas:** Liverpool, Wirral, Chester, Warrington, Merseyside, Remote UK
 **Last Updated:** 2026-02-08
@@ -148,7 +148,7 @@ We do not use page builders or bloated themes. We engineer assets.
 **Companies House:** [17007703](https://find-and-update.company-information.service.gov.uk/company/17007703)
 **Founded:** 2026
 **Founder:** Sean McDonnell
-**Phone:** +44 151 808 1100
+**Phone:** +44 151 453 0008
 **Email:** hello@kaizenweb.co.uk
 **Address:** 103 Old Hall Street, Liverpool, Merseyside L3 9BP, United Kingdom
 **Opening Hours:** Monday-Friday, 9:00-18:00

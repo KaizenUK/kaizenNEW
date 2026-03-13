@@ -14,6 +14,7 @@ import {
   BUSINESS_ADDRESS,
   BUSINESS_EMAIL,
   BUSINESS_PHONE,
+  BUSINESS_PHONE_HREF,
 } from "@/lib/seo";
 import {
   COMPANY_NUMBER,
@@ -192,6 +193,15 @@ export default function SiteFooter({ buildLabel }: FooterProps) {
             <p className="mt-6 max-w-[38rem] text-base leading-7 text-white/40 sm:text-lg font-body">
               We design, build and improve websites that actually work for your business. No fluff. No runaround. Just results.
             </p>
+            <p className="mt-4 max-w-[34rem] text-sm leading-6 text-white/55 font-body sm:text-base">
+              Prefer to talk it through? Call us on{" "}
+              <a
+                href={BUSINESS_PHONE_HREF}
+                className="font-semibold text-white transition-colors hover:text-cyan-300"
+              >
+                {BUSINESS_PHONE}
+              </a>.
+            </p>
 
             <div className="mt-10 flex flex-col gap-4 sm:flex-row">
               <AppLink
@@ -227,7 +237,7 @@ export default function SiteFooter({ buildLabel }: FooterProps) {
             </a>
 
             <a
-              href={`tel:${BUSINESS_PHONE.replace(/\s+/g, "")}`}
+              href={BUSINESS_PHONE_HREF}
               className="group no-underline"
             >
               <Phone className="h-5 w-5 text-white/20 transition-colors group-hover:text-white/50" />
