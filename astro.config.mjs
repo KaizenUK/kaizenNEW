@@ -2,6 +2,56 @@ import { defineConfig } from "astro/config";
 import react from "@astrojs/react";
 import path from "node:path";
 
+function sanitizeBrokenTransformHooks() {
+  const seen = new Set();
+
+  const sanitizePluginList = (plugins, label) => {
+    if (!Array.isArray(plugins)) {
+      return;
+    }
+
+    for (const plugin of plugins) {
+      if (!plugin || !plugin.transform || typeof plugin.transform !== "object") {
+        continue;
+      }
+
+      if (typeof plugin.transform.handler === "function") {
+        continue;
+      }
+
+      const key = `${label}:${plugin.name}`;
+      if (!seen.has(key)) {
+        seen.add(key);
+        console.warn(
+          `[vite] Removed invalid transform hook from plugin "${plugin.name}" in ${label}.`,
+        );
+      }
+
+      delete plugin.transform;
+    }
+  };
+
+  return {
+    name: "sanitize-broken-transform-hooks",
+    configResolved(config) {
+      sanitizePluginList(config.plugins, "root plugins");
+
+      if (!config.environments || typeof config.environments !== "object") {
+        return;
+      }
+
+      for (const [environmentName, environmentConfig] of Object.entries(
+        config.environments,
+      )) {
+        sanitizePluginList(
+          environmentConfig?.plugins,
+          `environment "${environmentName}"`,
+        );
+      }
+    },
+  };
+}
+
 export default defineConfig({
   site: "https://kaizenweb.co.uk",
   output: "static",
@@ -22,6 +72,8 @@ export default defineConfig({
   integrations: [react()],
 
   vite: {
+    plugins: [sanitizeBrokenTransformHooks()],
+
     envPrefix: ["VITE_", "PUBLIC_", "NEXT_PUBLIC_"],
 
     build: {
