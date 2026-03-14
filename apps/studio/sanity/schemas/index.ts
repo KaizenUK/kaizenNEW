@@ -31,7 +31,7 @@ export { socialLink } from "./objects/socialLink";
 export { spacer } from "./objects/spacer";
 export { statItem } from "./objects/statItem";
 export { statsSection } from "./objects/statsSection";
-export { table } from "./objects/table";
+export { table, tableCell, tableRow } from "./objects/table";
 export { teamGrid, teamGridMember } from "./objects/teamGrid";
 export { testimonialItem } from "./objects/testimonialItem";
 export { testimonials } from "./objects/testimonials";
@@ -67,7 +67,7 @@ import { socialLink } from "./objects/socialLink";
 import { spacer } from "./objects/spacer";
 import { statItem } from "./objects/statItem";
 import { statsSection } from "./objects/statsSection";
-import { table } from "./objects/table";
+import { table, tableCell, tableRow } from "./objects/table";
 import { teamGrid, teamGridMember } from "./objects/teamGrid";
 import { testimonialItem } from "./objects/testimonialItem";
 import { testimonials } from "./objects/testimonials";
@@ -108,6 +108,8 @@ export const schemaTypes = [
   statItem,
   statsSection,
   table,
+  tableCell,
+  tableRow,
   teamGrid,
   teamGridMember,
   testimonialItem,

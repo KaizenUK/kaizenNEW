@@ -1,6 +1,6 @@
 import { defineArrayMember, defineField, defineType } from "sanity";
 
-const tableCell = defineType({
+export const tableCell = defineType({
   name: "tableCell",
   title: "Table Cell",
   type: "object",
@@ -23,7 +23,7 @@ const tableCell = defineType({
   },
 });
 
-const tableRow = defineType({
+export const tableRow = defineType({
   name: "tableRow",
   title: "Table Row",
   type: "object",
