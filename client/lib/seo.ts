@@ -190,6 +190,20 @@ const pageMeta: Record<string, Partial<PageMeta>> = {
     description:
       "How we rebuilt Midland Oil Group - from a sluggish, confusing WordPress to high-end tech platform that transformed the business.",
   },
+  "/products/consign-comply": {
+    title:
+      "Consign Comply | Digital Hazardous Waste Consignment Notes",
+    description:
+      "Replace paper consignment notes with a legally compliant digital system. Built around the official HWCN01v112 form. Offline driver portal, digital signatures, automatic PDF generation.",
+    noIndex: true,
+    keywords: [
+      "hazardous waste consignment notes",
+      "digital consignment notes",
+      "HWCN01v112",
+      "waste carrier compliance",
+      "consign comply",
+    ],
+  },
   "/performance-scanner": {
     title: "Free Website Speed Test | Check Your Google PageSpeed Score",
     description:

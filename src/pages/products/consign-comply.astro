@@ -1,0 +1,622 @@
+---
+import StaticPageLayout from "../../layouts/StaticPageLayout.astro";
+import ContactCTAButton from "../../../client/components/ContactCTAButton";
+import { FaqSection } from "../../../client/components/FaqSection";
+
+export const prerender = true;
+
+/* ── Pricing tiers ────────────────────────────────────── */
+const tiers = [
+  {
+    name: "Free",
+    price: "£0",
+    period: "/month",
+    description: "For small operators getting started.",
+    features: [
+      "Customer request form (embed on your site)",
+      "Email notifications on new requests",
+      "Manual PDF download of consignment notes",
+      "Up to 10 consignments per month",
+    ],
+    cta: "Start free",
+    highlight: false,
+  },
+  {
+    name: "Pro",
+    price: "£49",
+    period: "/month",
+    description: "For active waste carriers.",
+    features: [
+      "Everything in Free",
+      "Admin dashboard with kanban board",
+      "Driver portal with offline support",
+      "Digital signature capture",
+      "Automatic PDF generation and email distribution",
+      "Unlimited consignments",
+      "Up to 5 driver accounts",
+      "Search and archive",
+      "3-year document retention",
+    ],
+    cta: "Start free trial",
+    highlight: true,
+  },
+  {
+    name: "Enterprise",
+    price: "£149",
+    period: "/month",
+    description: "For multi-depot operations.",
+    features: [
+      "Everything in Pro",
+      "Unlimited driver accounts",
+      "Custom branding on forms and emails",
+      "API access for integration",
+      "Priority support",
+      "Multi-site management",
+      "Dedicated onboarding",
+    ],
+    cta: "Get in touch",
+    highlight: false,
+  },
+];
+
+/* ── FAQ items ────────────────────────────────────────── */
+const faqItems = [
+  {
+    question: "Is this legally compliant?",
+    answer:
+      "Yes. The generated PDF is a faithful reproduction of the official HWCN01v112 consignment note as specified by the Environment Agency under the Hazardous Waste Regulations 2005. All five parts (A–E) are included with the correct fields, structure, and certification statements.",
+  },
+  {
+    question: "Does it work offline?",
+    answer:
+      "Yes. The driver portal is a Progressive Web App with offline-first architecture. Jobs, signatures, and completions are stored locally when there's no signal and sync automatically when connectivity returns.",
+  },
+  {
+    question: "What about the Environment Agency's digital waste tracking programme?",
+    answer:
+      "The EA's digital tracking mandate under the Environment Act 2021 is in phased rollout. Consign Comply is built to adapt — when the EA publishes their API requirements, we'll integrate. In the meantime, you're already digital and compliant.",
+  },
+];
+
+const faqItemsCol2 = [
+  {
+    question: "Do I need to change my website?",
+    answer:
+      "No. The customer request form embeds on any site — WordPress, Squarespace, static HTML, anything. Your existing site stays exactly as it is.",
+  },
+  {
+    question: "How long are records kept?",
+    answer:
+      "All consignment notes are retained for the full 3-year statutory period. Enterprise plans include extended retention options.",
+  },
+  {
+    question: "Can I import existing consignment data?",
+    answer:
+      "Enterprise plans include assisted data migration. Get in touch for details.",
+  },
+];
+
+/* ── Problem bullets ─────────────────────────────────── */
+const problems = [
+  "Multi-part carbon copy forms that get lost, damaged, or filled in wrong.",
+  "The same data re-entered three, four, five times across the chain.",
+  "Drivers collecting signatures in the rain on a clipboard.",
+  "Filing cabinets full of paperwork that nobody can search.",
+  "Scrambling to find records when the Environment Agency comes knocking.",
+];
+
+/* ── Key features ─────────────────────────────────────── */
+const features = [
+  {
+    num: "01",
+    title: "Digital HWCN01v112 generation",
+    copy: "Pixel-accurate reproduction of the official Environment Agency form. Parts A–E fully populated. Signatures embedded. Generated server-side as a PDF and distributed automatically.",
+  },
+  {
+    num: "02",
+    title: "Offline-first driver portal",
+    copy: "Built as a Progressive Web App. Drivers can view jobs, capture signatures, and complete consignments with zero connectivity. Data queues locally and syncs when signal returns. Works on any device.",
+  },
+  {
+    num: "03",
+    title: "Canvas signature capture",
+    copy: "Customers sign directly on the driver's device. Touch-optimised, works on any screen size. The signature is embedded into the official consignment note PDF.",
+  },
+  {
+    num: "04",
+    title: "Real-time admin dashboard",
+    copy: "Kanban board with drag-and-drop. Filter by status. Search by customer name, reference number, postcode, waste type, driver — anything. Archive completed jobs to keep the board clean.",
+  },
+  {
+    num: "05",
+    title: "Driver management",
+    copy: "Create driver accounts, assign jobs, track who's carrying what. Drivers receive email notifications when new jobs are assigned.",
+  },
+  {
+    num: "06",
+    title: "Customer request form",
+    copy: "Embeddable form for your website. Customers submit collection requests directly. Requests land in your dashboard as draft consignments ready for review.",
+  },
+  {
+    num: "07",
+    title: "Automatic email notifications",
+    copy: "Customers, drivers, and your ops team are notified at each stage. Completed consignment note PDFs are emailed automatically to all relevant parties.",
+  },
+  {
+    num: "08",
+    title: "3-year digital archive",
+    copy: "Every consignment note stored and searchable. Meets the statutory 3-year retention requirement under Regulation 49 of the Hazardous Waste Regulations 2005. No filing cabinets. Instant retrieval for EA inspections.",
+  },
+];
+
+/* ── Compliance points ────────────────────────────────── */
+const penalties = [
+  "Unlimited fines (Magistrates' or Crown Court)",
+  "Up to 2 years' imprisonment on indictment",
+  "Revocation of your waste carrier registration",
+  "Enforcement notices and civil sanctions from the Environment Agency",
+];
+---
+
+<StaticPageLayout
+  path="/products/consign-comply"
+  title="Consign Comply | Digital Hazardous Waste Consignment Notes"
+  description="Replace paper consignment notes with a legally compliant digital system. Built around the official HWCN01v112 form. Offline driver portal, digital signatures, automatic PDF generation."
+  robots="noindex, nofollow"
+>
+  <!-- ═══ HERO ═══ -->
+  <section class="relative bg-[#f5f5f3] pt-36 pb-28 md:pt-44 md:pb-36 overflow-hidden">
+    <div
+      class="pointer-events-none absolute -top-1/3 -right-1/4 w-[700px] h-[700px] rounded-full bg-emerald-500/[0.04] blur-3xl"
+      aria-hidden="true"
+    ></div>
+
+    <div class="mx-auto max-w-[1440px] px-6 lg:px-12 relative z-10">
+      <div class="max-w-3xl">
+        <p
+          class="text-xs font-medium font-body uppercase tracking-[0.25em] text-gray-400 mb-6"
+        >
+          Consign Comply
+        </p>
+        <h1
+          class="text-4xl md:text-5xl lg:text-6xl font-heading font-bold text-gray-950 leading-tight mb-8"
+        >
+          Hazardous waste consignment notes.<br />
+          <span class="text-gray-400">Digital. Compliant. Done.</span>
+        </h1>
+        <p class="text-lg md:text-xl text-gray-500 font-body leading-relaxed mb-10 max-w-2xl">
+          Replace paper forms with a legally compliant digital system that your
+          drivers, customers, and ops team will actually use. Built around the
+          official HWCN01v112 form — not a loose interpretation of it.
+        </p>
+
+        <div class="flex flex-col sm:flex-row items-start gap-4">
+          <a
+            href="#pricing"
+            class="inline-flex items-center gap-3 px-10 py-5 rounded-lg bg-gray-950 text-white font-heading font-bold text-xl transition-all duration-200 hover:scale-[1.03] hover:bg-gray-800 active:scale-[0.97]"
+          >
+            Start free
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M5 12h14"></path>
+              <path d="m12 5 7 7-7 7"></path>
+            </svg>
+          </a>
+          <a
+            href="#pricing"
+            class="inline-flex items-center gap-3 px-10 py-5 rounded-lg border border-gray-300 text-gray-950 font-heading font-bold text-xl transition-all duration-200 hover:scale-[1.03] hover:border-gray-500 active:scale-[0.97]"
+          >
+            See pricing
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ THE PROBLEM ═══ -->
+  <section class="py-28 md:py-36 bg-white">
+    <div class="mx-auto max-w-[1440px] px-6 lg:px-12">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24">
+        <div>
+          <p
+            class="text-xs font-medium font-body uppercase tracking-[0.25em] text-gray-400 mb-6"
+          >
+            The problem
+          </p>
+          <h2
+            class="text-4xl md:text-5xl font-heading font-bold text-gray-950 leading-tight mb-8"
+          >
+            Every hazardous waste movement requires a consignment note.<br />
+            <span class="text-gray-400">It's the law.</span>
+          </h2>
+          <p class="text-lg md:text-xl text-gray-500 font-body leading-relaxed">
+            Under the Hazardous Waste (England and Wales) Regulations 2005,
+            every producer, carrier, and consignee must complete, sign, and
+            retain consignment notes for a minimum of 3 years. Non-compliance
+            is a criminal offence carrying unlimited fines and up to 2 years'
+            imprisonment.
+          </p>
+        </div>
+
+        <div class="lg:pt-16">
+          <p class="text-lg md:text-xl text-gray-500 font-body leading-relaxed mb-8">
+            And yet, the vast majority of the industry is still doing this on paper.
+          </p>
+          <ul class="space-y-4">
+            {problems.map((item) => (
+              <li class="flex items-start gap-4">
+                <span class="mt-2 block h-2 w-2 rounded-full bg-red-400 shrink-0" aria-hidden="true"></span>
+                <span class="text-base md:text-lg text-gray-500 font-body leading-relaxed">{item}</span>
+              </li>
+            ))}
+          </ul>
+          <div class="mt-10 p-6 rounded-xl bg-amber-50 border border-amber-200">
+            <p class="text-base md:text-lg text-amber-900 font-body leading-relaxed">
+              The Environment Act 2021 has already mandated a shift to digital
+              waste tracking. The question isn't <em>if</em> you'll go digital — it's
+              whether you do it now on your terms, or later on theirs.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ WHAT IT DOES — 3 AUDIENCES ═══ -->
+  <section class="py-28 md:py-36 bg-gray-950 text-white relative overflow-hidden">
+    <div
+      class="pointer-events-none absolute -top-1/2 -right-1/4 w-[800px] h-[800px] rounded-full bg-emerald-500/[0.04] blur-3xl"
+      aria-hidden="true"
+    ></div>
+
+    <div class="mx-auto max-w-[1440px] px-6 lg:px-12 relative z-10">
+      <div class="max-w-3xl mb-20 md:mb-28">
+        <p
+          class="text-xs font-medium font-body uppercase tracking-[0.25em] text-white/40 mb-6"
+        >
+          What Consign Comply does
+        </p>
+        <h2
+          class="text-4xl md:text-5xl lg:text-6xl font-heading font-bold text-white leading-tight"
+        >
+          A complete digital replacement for the paper consignment note process.
+        </h2>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-12">
+        <!-- Customers -->
+        <div class="rounded-2xl border border-white/10 p-8 lg:p-10">
+          <div class="mb-6">
+            <span class="inline-flex items-center justify-center h-12 w-12 rounded-xl bg-emerald-500/10">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="rgb(16,185,129)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+                <circle cx="9" cy="7" r="4"></circle>
+                <path d="M22 21v-2a4 4 0 0 0-3-3.87"></path>
+                <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+              </svg>
+            </span>
+          </div>
+          <h3 class="text-2xl font-heading font-bold text-white mb-4">
+            For your customers
+          </h3>
+          <p class="text-base md:text-lg font-body text-white/50 leading-relaxed">
+            A simple online form to request a hazardous waste collection. No
+            account needed. They fill in their details, describe the waste,
+            and submit. You get notified instantly. They get a reference number.
+          </p>
+        </div>
+
+        <!-- Ops -->
+        <div class="rounded-2xl border border-white/10 p-8 lg:p-10">
+          <div class="mb-6">
+            <span class="inline-flex items-center justify-center h-12 w-12 rounded-xl bg-emerald-500/10">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="rgb(16,185,129)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <rect width="18" height="18" x="3" y="3" rx="2"></rect>
+                <path d="M3 9h18"></path>
+                <path d="M9 21V9"></path>
+              </svg>
+            </span>
+          </div>
+          <h3 class="text-2xl font-heading font-bold text-white mb-4">
+            For your ops team
+          </h3>
+          <p class="text-base md:text-lg font-body text-white/50 leading-relaxed">
+            A kanban-style dashboard to manage every consignment from request
+            through to completion. Drag jobs through stages — Draft, Confirmed,
+            Assigned, Completed. Assign drivers with one click. Search across
+            all jobs instantly, including archives.
+          </p>
+        </div>
+
+        <!-- Drivers -->
+        <div class="rounded-2xl border border-white/10 p-8 lg:p-10">
+          <div class="mb-6">
+            <span class="inline-flex items-center justify-center h-12 w-12 rounded-xl bg-emerald-500/10">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="rgb(16,185,129)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"></path>
+                <path d="M15 18H9"></path>
+                <path d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.624l-3.48-4.35A1 1 0 0 0 17.52 8H14"></path>
+                <circle cx="7" cy="18" r="2"></circle>
+                <circle cx="21" cy="18" r="2" style="display:none"></circle>
+                <circle cx="19" cy="18" r="2"></circle>
+              </svg>
+            </span>
+          </div>
+          <h3 class="text-2xl font-heading font-bold text-white mb-4">
+            For your drivers
+          </h3>
+          <p class="text-base md:text-lg font-body text-white/50 leading-relaxed">
+            A mobile-first portal that works offline. Drivers see their assigned
+            jobs, collect a signature on screen from the customer, and complete
+            the job — even with no signal. Everything syncs automatically when
+            they're back online.
+          </p>
+        </div>
+      </div>
+
+      <!-- The note itself -->
+      <div class="mt-12 lg:mt-16 rounded-2xl border border-white/10 p-8 lg:p-12">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12">
+          <div class="lg:col-span-4">
+            <h3 class="text-2xl md:text-3xl font-heading font-bold text-white mb-4">
+              The consignment note itself
+            </h3>
+          </div>
+          <div class="lg:col-span-8">
+            <p class="text-base md:text-lg font-body text-white/50 leading-relaxed">
+              An exact digital replica of the official Environment Agency
+              HWCN01v112 form, generated as a PDF and emailed to all parties
+              automatically on completion. Every field from Part A through
+              Part E — notification details, waste description, carrier's
+              certificate, consignor's certificate, consignee's certificate.
+              Populated from the data already in the system. No re-keying. No errors.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ KEY FEATURES ═══ -->
+  <section class="py-28 md:py-36 bg-[#f5f5f3]">
+    <div class="mx-auto max-w-[1440px] px-6 lg:px-12">
+      <div class="max-w-3xl mb-20 md:mb-28">
+        <p
+          class="text-xs font-medium font-body uppercase tracking-[0.25em] text-gray-400 mb-6"
+        >
+          Key features
+        </p>
+        <h2
+          class="text-4xl md:text-5xl lg:text-6xl font-heading font-bold text-gray-950 leading-tight"
+        >
+          Everything you need.<br />
+          <span class="text-gray-400">Nothing you don't.</span>
+        </h2>
+      </div>
+
+      <div class="space-y-0">
+        {features.map((item, i) => (
+          <div
+            class:list={[
+              "grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-12 py-16 md:py-20",
+              i < features.length - 1 && "border-b border-gray-300",
+            ]}
+          >
+            <div class="md:col-span-4 lg:col-span-3">
+              <span class="text-sm font-body text-emerald-600 tracking-wide block mb-2">
+                {item.num}
+              </span>
+              <h3 class="text-2xl md:text-3xl font-heading font-bold text-gray-950">
+                {item.title}
+              </h3>
+            </div>
+            <div class="md:col-span-8 lg:col-span-9">
+              <p class="text-base md:text-lg font-body text-gray-500 leading-relaxed max-w-2xl">
+                {item.copy}
+              </p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ COMPLIANCE ═══ -->
+  <section class="py-28 md:py-36 bg-gray-950 text-white relative overflow-hidden">
+    <div
+      class="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_70%_50%,rgba(16,185,129,0.06),transparent_60%)]"
+    ></div>
+
+    <div class="mx-auto max-w-[1440px] px-6 lg:px-12 relative z-10">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24">
+        <div>
+          <p
+            class="text-xs font-medium font-body uppercase tracking-[0.25em] text-white/40 mb-6"
+          >
+            Why this isn't optional
+          </p>
+          <h2
+            class="text-4xl md:text-5xl font-heading font-bold text-white leading-tight mb-8"
+          >
+            The regulations exist.<br />
+            <span class="text-white/40">The penalties are real.</span>
+          </h2>
+          <div class="space-y-4 text-base md:text-lg font-body text-white/50 leading-relaxed">
+            <p>
+              The Hazardous Waste (England and Wales) Regulations 2005 require a
+              consignment note for every movement of hazardous waste. The
+              Environmental Protection Act 1990 establishes the duty of care
+              framework. The Waste (England and Wales) Regulations 2011
+              reinforces the waste hierarchy obligation.
+            </p>
+          </div>
+        </div>
+
+        <div class="lg:pt-8">
+          <p class="text-lg font-body text-white/60 font-medium mb-6">
+            Failure to comply means:
+          </p>
+          <ul class="space-y-4 mb-10">
+            {penalties.map((item) => (
+              <li class="flex items-start gap-4">
+                <span class="mt-2 block h-2 w-2 rounded-full bg-red-400 shrink-0" aria-hidden="true"></span>
+                <span class="text-base md:text-lg text-white/50 font-body leading-relaxed">{item}</span>
+              </li>
+            ))}
+          </ul>
+
+          <div class="p-6 rounded-xl bg-white/5 border border-white/10">
+            <p class="text-base md:text-lg text-white/60 font-body leading-relaxed">
+              Section 55 of the Environment Act 2021 gives the government power
+              to mandate digital waste tracking nationwide. The infrastructure is
+              coming. Early adopters will transition smoothly. Everyone else will
+              be scrambling.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ PRICING ═══ -->
+  <section id="pricing" class="py-28 md:py-36 bg-white scroll-mt-24">
+    <div class="mx-auto max-w-[1440px] px-6 lg:px-12">
+      <div class="max-w-3xl mb-20 md:mb-28">
+        <p
+          class="text-xs font-medium font-body uppercase tracking-[0.25em] text-gray-400 mb-6"
+        >
+          Pricing
+        </p>
+        <h2
+          class="text-4xl md:text-5xl lg:text-6xl font-heading font-bold text-gray-950 leading-tight"
+        >
+          Simple plans.<br />
+          <span class="text-gray-400">No per-note fees.</span>
+        </h2>
+        <p class="text-lg md:text-xl text-gray-500 font-body leading-relaxed mt-6">
+          All plans include official HWCN01v112 form generation. No hidden costs.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-10">
+        {tiers.map((tier) => (
+          <div
+            class:list={[
+              "relative rounded-2xl p-8 lg:p-10 flex flex-col",
+              tier.highlight
+                ? "bg-gray-950 text-white ring-2 ring-emerald-500 shadow-xl"
+                : "bg-[#f5f5f3] text-gray-950",
+            ]}
+          >
+            {tier.highlight && (
+              <span class="absolute -top-4 left-8 inline-block rounded-full bg-emerald-500 px-4 py-1.5 text-sm font-heading font-bold text-white">
+                Most popular
+              </span>
+            )}
+
+            <div class="mb-8">
+              <h3 class="text-2xl font-heading font-bold mb-2">{tier.name}</h3>
+              <p class:list={["text-base font-body leading-relaxed", tier.highlight ? "text-white/50" : "text-gray-500"]}>
+                {tier.description}
+              </p>
+            </div>
+
+            <div class="mb-8">
+              <span class="text-5xl md:text-6xl font-heading font-bold">{tier.price}</span>
+              <span class:list={["text-lg font-body", tier.highlight ? "text-white/40" : "text-gray-400"]}>
+                {tier.period}
+              </span>
+            </div>
+
+            <ul class="space-y-3 mb-10 flex-1">
+              {tier.features.map((feature) => (
+                <li class="flex items-start gap-3">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke={tier.highlight ? "rgb(16,185,129)" : "rgb(16,185,129)"}
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    class="mt-0.5 shrink-0"
+                    aria-hidden="true"
+                  >
+                    <path d="M20 6 9 17l-5-5"></path>
+                  </svg>
+                  <span class:list={["text-base font-body", tier.highlight ? "text-white/70" : "text-gray-500"]}>
+                    {feature}
+                  </span>
+                </li>
+              ))}
+            </ul>
+
+            <a
+              href="#pricing"
+              class:list={[
+                "inline-flex items-center justify-center gap-3 px-8 py-4 rounded-lg font-heading font-bold text-lg transition-all duration-200 hover:scale-[1.03] active:scale-[0.97] text-center",
+                tier.highlight
+                  ? "bg-emerald-500 text-white hover:bg-emerald-400"
+                  : "bg-gray-950 text-white hover:bg-gray-800",
+              ]}
+            >
+              {tier.cta}
+            </a>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ FAQ ═══ -->
+  <FaqSection
+    heading="Common questions."
+    eyebrow="FAQ"
+    items={faqItems}
+    secondColumn={faqItemsCol2}
+    className="bg-[#f5f5f3]"
+    client:load
+  />
+
+  <!-- ═══ CLOSING CTA ═══ -->
+  <section class="py-28 md:py-36 bg-gray-950 text-white relative overflow-hidden">
+    <div
+      class="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_30%_50%,rgba(16,185,129,0.08),transparent_60%)]"
+    ></div>
+
+    <div class="mx-auto max-w-[1440px] px-6 lg:px-12 relative z-10">
+      <div class="max-w-3xl">
+        <p
+          class="text-xs font-medium font-body uppercase tracking-[0.25em] text-white/40 mb-8"
+        >
+          Get started
+        </p>
+        <h2
+          class="text-4xl md:text-5xl lg:text-6xl font-heading font-bold text-white leading-tight mb-8"
+        >
+          50,000+ waste carriers in England and Wales.<br />
+          <span class="text-gray-500">Paper forms for a digital world.</span>
+        </h2>
+        <p class="text-lg md:text-xl text-white/50 font-body leading-relaxed mb-14 max-w-2xl">
+          Be the ones who moved first. Start with the free plan — no card
+          required, no commitment. See how it fits your operation.
+        </p>
+
+        <div class="flex flex-col sm:flex-row items-start gap-6">
+          <a
+            href="#pricing"
+            class="inline-flex items-center gap-3 px-10 py-5 rounded-lg bg-emerald-500 text-white font-heading font-bold text-xl transition-all duration-200 hover:scale-[1.03] hover:bg-emerald-400 active:scale-[0.97]"
+          >
+            Start free — no card required
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M5 12h14"></path>
+              <path d="m12 5 7 7-7 7"></path>
+            </svg>
+          </a>
+          <ContactCTAButton label="Ask a question" client:load />
+        </div>
+      </div>
+    </div>
+  </section>
+</StaticPageLayout>
