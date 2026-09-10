@@ -1,0 +1,236 @@
+.kb-page {
+  min-height: 100vh;
+  font-size: 18px;
+  line-height: 1.55;
+  overflow-wrap: anywhere;
+  -webkit-font-smoothing: antialiased;
+}
+.kb-page * {
+  box-sizing: border-box;
+}
+.kb-page p,
+.kb-page figure {
+  margin: 0;
+}
+.kb-page img {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-width: 100%;
+  border-radius: inherit;
+}
+.kb-page a {
+  color: inherit;
+}
+.kb-page .kb-block {
+  --v-padding: var(--d-padding, 0px);
+  --v-gap: var(--d-gap, 20px);
+  --v-columns: var(--d-columns, 1);
+  --v-fontSize: var(--d-fontSize, inherit);
+  --v-maxWidth: var(--d-maxWidth, 100%);
+  --v-minHeight: var(--d-minHeight, 0px);
+  --v-radius: var(--d-radius, 0px);
+  --v-borderWidth: var(--d-borderWidth, 0px);
+  --v-margin: var(--d-margin, 0px);
+  --v-background: var(--d-background, transparent);
+  --v-color: var(--d-color, inherit);
+  --v-borderColor: var(--d-borderColor, transparent);
+  --v-align: var(--d-align, left);
+  --v-shadow: var(--d-shadow, none);
+  --v-hidden: var(--d-hidden, grid);
+  --v-fontFamily: var(--d-fontFamily, inherit);
+  --v-backgroundImage: var(--d-backgroundImage, none);
+  display: var(--v-hidden);
+  grid-template-columns: repeat(var(--v-columns), minmax(0, 1fr));
+  gap: var(--v-gap);
+  padding: var(--v-padding);
+  margin: var(--v-margin) auto;
+  width: 100%;
+  max-width: var(--v-maxWidth);
+  min-height: var(--v-minHeight);
+  border-radius: var(--v-radius);
+  border: var(--v-borderWidth) solid var(--v-borderColor);
+  background-color: var(--v-background);
+  background-image: var(--v-backgroundImage);
+  background-size: cover;
+  background-position: center;
+  color: var(--v-color);
+  font-size: var(--v-fontSize);
+  font-family: var(--v-fontFamily);
+  text-align: var(--v-align);
+  box-shadow: var(--v-shadow);
+  align-content: center;
+  min-width: 0;
+  position: relative;
+}
+.kb-text {
+  white-space: pre-wrap;
+  letter-spacing: -0.025em;
+  line-height: 1.2;
+}
+.kb-text p {
+  margin: 0;
+}
+.kb-image img {
+  height: 100%;
+  max-height: 800px;
+  object-fit: cover;
+  border-radius: var(--kb-radius);
+}
+.kb-icon img {
+  max-width: 80px;
+}
+.kb-button a {
+  display: inline-block;
+  width: fit-content;
+  max-width: 100%;
+  justify-self: start;
+  border-radius: var(--kb-radius);
+  background: var(--kb-accent);
+  color: #182421;
+  font-size: 15px;
+  line-height: 1.3;
+  font-weight: 650;
+  text-decoration: none;
+  padding: 15px 24px;
+}
+.kb-button {
+  text-align: inherit;
+}
+.kb-navigation,
+.kb-footer {
+  align-items: center;
+}
+.kb-placeholder {
+  padding: 50px 24px;
+  background: #e9eddf;
+  color: #53624c;
+  text-align: center;
+  border: 1px dashed #9aa991;
+}
+.kb-page [contenteditable="true"]:focus {
+  outline: 2px solid #5a7f26;
+  outline-offset: 4px;
+}
+@media (max-width: 1023px) {
+  .kb-page .kb-block {
+    --v-padding: var(--t-padding, var(--d-padding, 0px));
+    --v-gap: var(--t-gap, var(--d-gap, 20px));
+    --v-columns: var(--t-columns, var(--d-columns, 1));
+    --v-fontSize: var(--t-fontSize, var(--d-fontSize, inherit));
+    --v-maxWidth: var(--t-maxWidth, var(--d-maxWidth, 100%));
+    --v-minHeight: var(--t-minHeight, var(--d-minHeight, 0px));
+    --v-radius: var(--t-radius, var(--d-radius, 0px));
+    --v-borderWidth: var(--t-borderWidth, var(--d-borderWidth, 0px));
+    --v-margin: var(--t-margin, var(--d-margin, 0px));
+    --v-background: var(--t-background, var(--d-background, transparent));
+    --v-color: var(--t-color, var(--d-color, inherit));
+    --v-borderColor: var(--t-borderColor, var(--d-borderColor, transparent));
+    --v-align: var(--t-align, var(--d-align, left));
+    --v-shadow: var(--t-shadow, var(--d-shadow, none));
+    --v-hidden: var(--t-hidden, var(--d-hidden, grid));
+    --v-fontFamily: var(--t-fontFamily, var(--d-fontFamily, inherit));
+    --v-backgroundImage: var(
+      --t-backgroundImage,
+      var(--d-backgroundImage, none)
+    );
+  }
+}
+@media (max-width: 639px) {
+  .kb-page .kb-block {
+    --v-padding: var(--m-padding, var(--t-padding, var(--d-padding, 0px)));
+    --v-gap: var(--m-gap, var(--t-gap, var(--d-gap, 20px)));
+    --v-columns: var(--m-columns, var(--t-columns, var(--d-columns, 1)));
+    --v-fontSize: var(
+      --m-fontSize,
+      var(--t-fontSize, var(--d-fontSize, inherit))
+    );
+    --v-maxWidth: var(--m-maxWidth, var(--t-maxWidth, var(--d-maxWidth, 100%)));
+    --v-minHeight: var(
+      --m-minHeight,
+      var(--t-minHeight, var(--d-minHeight, 0px))
+    );
+    --v-radius: var(--m-radius, var(--t-radius, var(--d-radius, 0px)));
+    --v-borderWidth: var(
+      --m-borderWidth,
+      var(--t-borderWidth, var(--d-borderWidth, 0px))
+    );
+    --v-margin: var(--m-margin, var(--t-margin, var(--d-margin, 0px)));
+    --v-background: var(
+      --m-background,
+      var(--t-background, var(--d-background, transparent))
+    );
+    --v-color: var(--m-color, var(--t-color, var(--d-color, inherit)));
+    --v-borderColor: var(
+      --m-borderColor,
+      var(--t-borderColor, var(--d-borderColor, transparent))
+    );
+    --v-align: var(--m-align, var(--t-align, var(--d-align, left)));
+    --v-shadow: var(--m-shadow, var(--t-shadow, var(--d-shadow, none)));
+    --v-hidden: var(--m-hidden, var(--t-hidden, var(--d-hidden, grid)));
+    --v-fontFamily: var(
+      --m-fontFamily,
+      var(--t-fontFamily, var(--d-fontFamily, inherit))
+    );
+    --v-backgroundImage: var(
+      --m-backgroundImage,
+      var(--t-backgroundImage, var(--d-backgroundImage, none))
+    );
+  }
+}
+.kb-page .kb-block {
+  --d-padding: initial;
+  --d-gap: initial;
+  --d-columns: initial;
+  --d-fontSize: initial;
+  --d-maxWidth: initial;
+  --d-minHeight: initial;
+  --d-radius: initial;
+  --d-borderWidth: initial;
+  --d-margin: initial;
+  --d-background: initial;
+  --d-color: initial;
+  --d-borderColor: initial;
+  --d-align: initial;
+  --d-shadow: initial;
+  --d-hidden: initial;
+  --d-fontFamily: initial;
+  --d-backgroundImage: initial;
+  --t-padding: initial;
+  --t-gap: initial;
+  --t-columns: initial;
+  --t-fontSize: initial;
+  --t-maxWidth: initial;
+  --t-minHeight: initial;
+  --t-radius: initial;
+  --t-borderWidth: initial;
+  --t-margin: initial;
+  --t-background: initial;
+  --t-color: initial;
+  --t-borderColor: initial;
+  --t-align: initial;
+  --t-shadow: initial;
+  --t-hidden: initial;
+  --t-fontFamily: initial;
+  --t-backgroundImage: initial;
+  --m-padding: initial;
+  --m-gap: initial;
+  --m-columns: initial;
+  --m-fontSize: initial;
+  --m-maxWidth: initial;
+  --m-minHeight: initial;
+  --m-radius: initial;
+  --m-borderWidth: initial;
+  --m-margin: initial;
+  --m-background: initial;
+  --m-color: initial;
+  --m-borderColor: initial;
+  --m-align: initial;
+  --m-shadow: initial;
+  --m-hidden: initial;
+  --m-fontFamily: initial;
+  --m-backgroundImage: initial;
+}
+.kb-page .kb-button a {
+  justify-self: var(--v-align);
+}

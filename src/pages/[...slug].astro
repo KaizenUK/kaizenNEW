@@ -3,35 +3,44 @@ import StaticPageLayout from "../layouts/StaticPageLayout.astro";
 import ManagedPageRenderer from "../../client/components/sanity/ManagedPageRenderer";
 import { getManagedRoutePaths, getPageByPath } from "../lib/sanity/client";
 import { RETIRED_PUBLIC_PATHS } from "../../shared/publicRoutePolicy.js";
+import { getBuilderPublishedPages } from "../lib/builderPublished";
+import PublishedPage from "../../client/visual-builder/Renderer";
+import type { PageDocument } from "../../shared/visualBuilder";
+interface Props { builderPage?: PageDocument }
 
 export const prerender = true;
 
 export async function getStaticPaths() {
   const paths = await getManagedRoutePaths();
-  return paths
+  const builderPages = await getBuilderPublishedPages();
+  for (const page of builderPages) {
+    if (paths.some(path => path.replace(/^\/+|\/+$/g, "") === page.slug)) throw new Error(`Builder URL conflicts with Sanity: ${page.slug}`);
+  }
+  return [...builderPages.map(page => ({ params: { slug: page.slug }, props: { builderPage: page } })), ...paths
     .filter((pathname) => pathname !== "/")
     .filter((pathname) => !RETIRED_PUBLIC_PATHS.includes(`${pathname.replace(/\/+$/, "")}/`))
     .map((pathname) => ({
       params: { slug: pathname.replace(/^\/+/, "") },
-    }));
+    }))];
 }
 
 const slugParam = Astro.params.slug;
 const slug = Array.isArray(slugParam) ? slugParam.join("/") : slugParam || "";
 const pathname = `/${slug}`.replace(/\/+$/, "") || "/";
-const page = await getPageByPath(pathname, false);
+const builderPage = Astro.props.builderPage;
+const page = builderPage ? null : await getPageByPath(pathname, false);
 
-if (!page || !page.replaceRouteContent) {
+if (!builderPage && (!page || !page.replaceRouteContent)) {
   throw new Error(`No managed page found for path: ${pathname}`);
 }
 
-const title = page.seo?.metaTitle || page.title || undefined;
-const description = page.seo?.metaDescription || undefined;
-const robots = page.seo?.noIndex ? "noindex, nofollow" : undefined;
-const canonical = page.seo?.canonicalUrl || undefined;
+const title = builderPage?.title || page?.seo?.metaTitle || page?.title || undefined;
+const description = builderPage?.description || page?.seo?.metaDescription || undefined;
+const robots = (builderPage?.noIndex || page?.seo?.noIndex) ? "noindex, nofollow" : undefined;
+const canonical = page?.seo?.canonicalUrl || undefined;
 ---
 
-<StaticPageLayout
+{builderPage ? <html lang="en"><head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" /><title>{title}</title><meta name="description" content={description} /><meta name="robots" content={robots || "index, follow"} /><link rel="canonical" href={`https://kaizenweb.co.uk/${builderPage.slug}/`} /></head><body style="margin:0"><PublishedPage document={builderPage} /></body></html> : <StaticPageLayout
   path={pathname}
   title={title}
   description={description}
@@ -39,4 +48,4 @@ const canonical = page.seo?.canonicalUrl || undefined;
   canonical={canonical}
 >
   <ManagedPageRenderer page={page} client:load />
-</StaticPageLayout>
+</StaticPageLayout>}

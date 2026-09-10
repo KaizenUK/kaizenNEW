@@ -38,3 +38,6 @@ kaizen-perf/
 terms.txt
 terms.docx
 *.zip
+!public/builder-samples/sample-pack.zip
+/.kaizen-builder/
+/test-results/

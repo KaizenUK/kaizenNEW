@@ -422,3 +422,10 @@ enabled = true
 verify_jwt = false
 import_map = "./functions/deploy/deno.json"
 entrypoint = "./functions/deploy/index.ts"
+
+[functions.builder-publish]
+enabled = true
+# The handler verifies the user's JWT with auth.getUser and checks builder_editors.
+verify_jwt = false
+import_map = "./functions/builder-publish/deno.json"
+entrypoint = "./functions/builder-publish/index.ts"

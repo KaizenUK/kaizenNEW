@@ -9,6 +9,8 @@ export default defineConfig({
     },
   },
   test: {
+    // The developer export bundles real CSS text; do not replace it with Vitest's CSS stub.
+    css: { include: [/visual-builder[\\/]page\.css/] },
     environment: "node",
     globals: true,
     include: ["client/**/*.spec.{ts,tsx}"],

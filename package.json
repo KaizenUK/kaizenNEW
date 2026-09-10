@@ -26,6 +26,7 @@
     "@builder.io/react": "^9.1.2",
     "@portabletext/react": "^6.0.3",
     "@portabletext/types": "^4.0.2",
+    "@puckeditor/core": "0.23.0",
     "@sanity/assist": "^5.0.4",
     "@sanity/client": "^7.16.0",
     "@sanity/color-input": "^6.0.4",
@@ -36,7 +37,9 @@
     "@supabase/supabase-js": "^2.98.0",
     "@tsparticles/engine": "^3.9.1",
     "clean": "^4.0.2",
+    "dompurify": "^3.4.15",
     "dotenv": "^17.3.1",
+    "fflate": "^0.8.3",
     "googleapis": "^171.4.0",
     "gsap": "^3.14.2",
     "jspdf": "^4.2.0",
@@ -127,6 +130,11 @@
     "vite-plugin-node-polyfills": "^0.25.0",
     "vitest": "^4.0.18",
     "xml2js": "^0.6.2"
+  },
+  "pnpm": {
+    "patchedDependencies": {
+      "@puckeditor/core@0.23.0": "patches/@puckeditor__core@0.23.0.patch"
+    }
   },
   "packageManager": "pnpm@10.32.1+sha512.a706938f0e89ac1456b6563eab4edf1d1faf3368d1191fc5c59790e96dc918e4456ab2e67d613de1043d2e8c81f87303e6b40d4ffeca9df15ef1ad567348f2be"
 }

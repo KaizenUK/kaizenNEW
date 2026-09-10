@@ -15,6 +15,7 @@ import {
   resolveCanonicalUrl,
 } from "../lib/site";
 import { RETIRED_PUBLIC_PATHS } from "../../shared/publicRoutePolicy.js";
+import { getBuilderPublishedPages } from "../lib/builderPublished";
 
 export const prerender = true;
 
@@ -22,6 +23,7 @@ export const prerender = true;
 // import.meta.url can't be trusted — Astro bundles this file to a temp location at build time.
 const PAGES_DIR = path.join(process.cwd(), "src", "pages");
 const EXCLUDED_SITEMAP_ROUTES = new Set([
+  "/builder/",
   "/studio/",
   "/thank-you/",
   "/blogdetail/",
@@ -120,6 +122,9 @@ export const GET: APIRoute = async () => {
 
   for (const route of staticRoutes) {
     upsertEntry(route, buildTimestamp);
+  }
+  for (const page of await getBuilderPublishedPages()) {
+    if (!page.noIndex) upsertEntry(`/${page.slug}/`, buildTimestamp);
   }
 
   const [managedRoutes, blogPageSeo, blogManagedPage, posts] = await Promise.all([

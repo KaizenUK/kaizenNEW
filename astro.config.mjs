@@ -2,6 +2,7 @@ import { defineConfig } from "astro/config";
 import react from "@astrojs/react";
 import path from "node:path";
 import { PUBLIC_ROUTE_REDIRECTS } from "./shared/publicRoutePolicy.js";
+import { builderLocalPlugin, builderLocalAssets } from "./scripts/builder-local.ts";
 
 function sanitizeBrokenTransformHooks() {
   const seen = new Set();
@@ -65,10 +66,10 @@ export default defineConfig({
 
   redirects: PUBLIC_ROUTE_REDIRECTS,
 
-  integrations: [react()],
+  integrations: [react(), builderLocalAssets()],
 
   vite: {
-    plugins: [sanitizeBrokenTransformHooks()],
+    plugins: [sanitizeBrokenTransformHooks(), builderLocalPlugin()],
 
     envPrefix: ["VITE_", "PUBLIC_", "NEXT_PUBLIC_"],
 

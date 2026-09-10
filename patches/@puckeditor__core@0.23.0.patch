@@ -1,0 +1,315 @@
+diff --git a/dist/chunk-55V3NZVF.mjs b/dist/chunk-55V3NZVF.mjs
+index 01fc32e03adc11d014291a99cc8dbee1806880f8..9e578e42aa931a78b8ee2717c03876951221059f 100644
+--- a/dist/chunk-55V3NZVF.mjs
++++ b/dist/chunk-55V3NZVF.mjs
+@@ -1517,7 +1517,7 @@ init_react_import();
+ var styles_module_default5 = { "Modal": "_Modal_g5xob_1", "Modal--isOpen": "_Modal--isOpen_g5xob_15", "Modal-inner": "_Modal-inner_g5xob_19" };
+ 
+ // components/Modal/index.tsx
+-import { createPortal } from "react-dom";
++import { createPortal, flushSync as flushNestedTarget } from "react-dom";
+ import { jsx as jsx10 } from "react/jsx-runtime";
+ var getClassName6 = get_class_name_factory_default("Modal", styles_module_default5);
+ var Modal = ({
+@@ -3700,10 +3700,9 @@ var createNestedDroppablePlugin = ({ onChange }, id) => class NestedDroppablePlu
+           onChange(findDeepestCandidate(position, manager), manager);
+         }
+       };
+-      const handleMoveThrottled = throttle(handleMove, 50);
+-      const handlePointerMove = (event) => {
+-        handleMoveThrottled(event);
+-      };
++      // Resolve the current nested target before pointerup can commit a drop.
++      // A delayed callback can otherwise commit the preceding ancestor zone.
++      const handlePointerMove = handleMove;
+       document.body.addEventListener("pointermove", handlePointerMove, {
+         capture: true
+         // dndkit's PointerSensor prevents propagation during drag
+@@ -4281,14 +4280,13 @@ var DragDropContextClient = ({
+     (params, manager) => {
+       const { zoneChanged, areaChanged } = getChanged(params);
+       if (!zoneChanged && !areaChanged) return;
+-      zoneStore.setState({
++      // Enable the destination's droppables before resolving this pointer event.
++      flushNestedTarget(() => zoneStore.setState({
+         zoneDepthIndex: params.zone ? { [params.zone]: true } : {},
+         areaDepthIndex: params.area ? { [params.area]: true } : {}
+-      });
++      }));
+       tempDisableFallback(manager);
+-      setTimeout(() => {
+-        manager.collisionObserver.forceUpdate(true);
+-      }, 50);
++      manager.collisionObserver.forceUpdate(true);
+       debouncedParamsRef.current = null;
+     },
+     [zoneStore]
+@@ -4339,18 +4337,8 @@ var DragDropContextClient = ({
+             return;
+           }
+           if (areaChanged) {
+-            if (isDragging) {
+-              const debouncedParams = debouncedParamsRef.current;
+-              const isSameParams = debouncedParams && debouncedParams.area === params.area && debouncedParams.zone === params.zone;
+-              if (!isSameParams) {
+-                cancelDb();
+-                setDeepestDb(params, manager);
+-                debouncedParamsRef.current = params;
+-              }
+-            } else {
+-              cancelDb();
+-              setDeepestAndCollide(params, manager);
+-            }
++            cancelDb();
++            setDeepestAndCollide(params, manager);
+             return;
+           }
+           if (zoneChanged) {
+@@ -4398,7 +4386,8 @@ var DragDropContextClient = ({
+             stopLinePlaceholderScrollTracking();
+             const entryEl = (_a = getFrame()) == null ? void 0 : _a.querySelector("[data-puck-entry]");
+             entryEl == null ? void 0 : entryEl.removeAttribute("data-puck-dragging");
+-            const { source, target } = event.operation;
++            const { source } = event.operation;
++            let { target } = event.operation;
+             if (!source) {
+               setLinePlaceholderActive(false);
+               zoneStore.setState({ draggedItem: null });
+@@ -4406,9 +4395,32 @@ var DragDropContextClient = ({
+             }
+             const { zone, index } = source.data;
+             const { previewIndex = {} } = zoneStore.getState() || {};
+-            const thisPreview = (_b = Object.values(previewIndex).find(
++            let thisPreview = (_b = Object.values(previewIndex).find(
+               (preview) => (preview == null ? void 0 : preview.props.id) === source.id && !preview.ghost
+             )) != null ? _b : null;
++            // A release can precede the asynchronous drag-over preview update.
++            // Commit using the actual final pointer, with the same nesting/allow checks.
++            const finalFrame = document.querySelector("iframe#preview-frame");
++            const finalPointer = manager.dragOperation.position.current;
++            if (finalFrame && finalPointer) {
++              const bounds = finalFrame.getBoundingClientRect();
++              const insideCanvas = finalPointer.x >= bounds.left && finalPointer.x <= bounds.right && finalPointer.y >= bounds.top && finalPointer.y <= bounds.bottom;
++              if (!insideCanvas) {
++                // Custom editor sidebars are outside the canvas, never a root drop.
++                target = { type: "void" };
++              } else if (thisPreview && !event.canceled) {
++                const finalLocation = findDeepestCandidate(new GlobalPosition(document.body, finalPointer), manager);
++                const finalZone = finalLocation.zone;
++                const zoneElement = finalZone && finalZone !== "void" ? getFrame()?.querySelector(getZoneSelector(finalZone)) : null;
++                if (zoneElement) {
++                  const finalIndex = getNearestGapIndex(zoneElement, getFramePointer(zoneElement, finalPointer), getZoneContentIds(appStore.getState().state, finalZone));
++                  if (finalIndex !== null) {
++                    thisPreview = { ...thisPreview, zone: finalZone, index: finalIndex, linePlaceholder: true };
++                    target = manager.registry.droppables.get(finalZone) || target;
++                  }
++                }
++              }
++            }
+             const playCommitFlip = !event.canceled && (target == null ? void 0 : target.type) !== "void" && (thisPreview == null ? void 0 : thisPreview.linePlaceholder) ? prepareCommitFlip({
+               zones: initialSelector.current ? [initialSelector.current.zone, thisPreview.zone] : [thisPreview.zone],
+               itemId: thisPreview.type === "move" ? thisPreview.props.id : void 0,
+diff --git a/dist/index.js b/dist/index.js
+index aebc9c0e4d4eed1a407ea72d0d1469d16544d834..d4b5701cd830b17b571e8f03e68f94ff73378e00 100644
+--- a/dist/index.js
++++ b/dist/index.js
+@@ -11383,10 +11383,9 @@ var createNestedDroppablePlugin = ({ onChange }, id) => class NestedDroppablePlu
+           onChange(findDeepestCandidate(position, manager), manager);
+         }
+       };
+-      const handleMoveThrottled = throttle(handleMove, 50);
+-      const handlePointerMove = (event) => {
+-        handleMoveThrottled(event);
+-      };
++      // Resolve the current nested target before pointerup can commit a drop.
++      // A delayed callback can otherwise commit the preceding ancestor zone.
++      const handlePointerMove = handleMove;
+       document.body.addEventListener("pointermove", handlePointerMove, {
+         capture: true
+         // dndkit's PointerSensor prevents propagation during drag
+@@ -11851,14 +11850,13 @@ var DragDropContextClient = ({
+     (params, manager) => {
+       const { zoneChanged, areaChanged } = getChanged2(params);
+       if (!zoneChanged && !areaChanged) return;
+-      zoneStore.setState({
++      // Enable the destination's droppables before resolving this pointer event.
++      import_react_dom.flushSync(() => zoneStore.setState({
+         zoneDepthIndex: params.zone ? { [params.zone]: true } : {},
+         areaDepthIndex: params.area ? { [params.area]: true } : {}
+-      });
++      }));
+       tempDisableFallback(manager);
+-      setTimeout(() => {
+-        manager.collisionObserver.forceUpdate(true);
+-      }, 50);
++      manager.collisionObserver.forceUpdate(true);
+       debouncedParamsRef.current = null;
+     },
+     [zoneStore]
+@@ -11909,18 +11907,8 @@ var DragDropContextClient = ({
+             return;
+           }
+           if (areaChanged) {
+-            if (isDragging) {
+-              const debouncedParams = debouncedParamsRef.current;
+-              const isSameParams = debouncedParams && debouncedParams.area === params.area && debouncedParams.zone === params.zone;
+-              if (!isSameParams) {
+-                cancelDb();
+-                setDeepestDb(params, manager);
+-                debouncedParamsRef.current = params;
+-              }
+-            } else {
+-              cancelDb();
+-              setDeepestAndCollide(params, manager);
+-            }
++            cancelDb();
++            setDeepestAndCollide(params, manager);
+             return;
+           }
+           if (zoneChanged) {
+@@ -11968,7 +11956,8 @@ var DragDropContextClient = ({
+             stopLinePlaceholderScrollTracking();
+             const entryEl = (_a = getFrame()) == null ? void 0 : _a.querySelector("[data-puck-entry]");
+             entryEl == null ? void 0 : entryEl.removeAttribute("data-puck-dragging");
+-            const { source, target } = event.operation;
++            const { source } = event.operation;
++            let { target } = event.operation;
+             if (!source) {
+               setLinePlaceholderActive(false);
+               zoneStore.setState({ draggedItem: null });
+@@ -11976,9 +11965,32 @@ var DragDropContextClient = ({
+             }
+             const { zone, index } = source.data;
+             const { previewIndex = {} } = zoneStore.getState() || {};
+-            const thisPreview = (_b = Object.values(previewIndex).find(
++            let thisPreview = (_b = Object.values(previewIndex).find(
+               (preview) => (preview == null ? void 0 : preview.props.id) === source.id && !preview.ghost
+             )) != null ? _b : null;
++            // A release can precede the asynchronous drag-over preview update.
++            // Commit using the actual final pointer, with the same nesting/allow checks.
++            const finalFrame = document.querySelector("iframe#preview-frame");
++            const finalPointer = manager.dragOperation.position.current;
++            if (finalFrame && finalPointer) {
++              const bounds = finalFrame.getBoundingClientRect();
++              const insideCanvas = finalPointer.x >= bounds.left && finalPointer.x <= bounds.right && finalPointer.y >= bounds.top && finalPointer.y <= bounds.bottom;
++              if (!insideCanvas) {
++                // Custom editor sidebars are outside the canvas, never a root drop.
++                target = { type: "void" };
++              } else if (thisPreview && !event.canceled) {
++                const finalLocation = findDeepestCandidate(new GlobalPosition(document.body, finalPointer), manager);
++                const finalZone = finalLocation.zone;
++                const zoneElement = finalZone && finalZone !== "void" ? getFrame()?.querySelector(getZoneSelector(finalZone)) : null;
++                if (zoneElement) {
++                  const finalIndex = getNearestGapIndex(zoneElement, getFramePointer(zoneElement, finalPointer), getZoneContentIds(appStore.getState().state, finalZone));
++                  if (finalIndex !== null) {
++                    thisPreview = { ...thisPreview, zone: finalZone, index: finalIndex, linePlaceholder: true };
++                    target = manager.registry.droppables.get(finalZone) || target;
++                  }
++                }
++              }
++            }
+             const playCommitFlip = !event.canceled && (target == null ? void 0 : target.type) !== "void" && (thisPreview == null ? void 0 : thisPreview.linePlaceholder) ? prepareCommitFlip({
+               zones: initialSelector.current ? [initialSelector.current.zone, thisPreview.zone] : [thisPreview.zone],
+               itemId: thisPreview.type === "move" ? thisPreview.props.id : void 0,
+diff --git a/dist/no-external.js b/dist/no-external.js
+index af3fa6755f42679605e6805aa46fdeb90df48281..2d80e10f965674d380c4375fd38782df238f2fb4 100644
+--- a/dist/no-external.js
++++ b/dist/no-external.js
+@@ -11383,10 +11383,9 @@ var createNestedDroppablePlugin = ({ onChange }, id) => class NestedDroppablePlu
+           onChange(findDeepestCandidate(position, manager), manager);
+         }
+       };
+-      const handleMoveThrottled = throttle(handleMove, 50);
+-      const handlePointerMove = (event) => {
+-        handleMoveThrottled(event);
+-      };
++      // Resolve the current nested target before pointerup can commit a drop.
++      // A delayed callback can otherwise commit the preceding ancestor zone.
++      const handlePointerMove = handleMove;
+       document.body.addEventListener("pointermove", handlePointerMove, {
+         capture: true
+         // dndkit's PointerSensor prevents propagation during drag
+@@ -11851,14 +11850,13 @@ var DragDropContextClient = ({
+     (params, manager) => {
+       const { zoneChanged, areaChanged } = getChanged2(params);
+       if (!zoneChanged && !areaChanged) return;
+-      zoneStore.setState({
++      // Enable the destination's droppables before resolving this pointer event.
++      import_react_dom.flushSync(() => zoneStore.setState({
+         zoneDepthIndex: params.zone ? { [params.zone]: true } : {},
+         areaDepthIndex: params.area ? { [params.area]: true } : {}
+-      });
++      }));
+       tempDisableFallback(manager);
+-      setTimeout(() => {
+-        manager.collisionObserver.forceUpdate(true);
+-      }, 50);
++      manager.collisionObserver.forceUpdate(true);
+       debouncedParamsRef.current = null;
+     },
+     [zoneStore]
+@@ -11909,18 +11907,8 @@ var DragDropContextClient = ({
+             return;
+           }
+           if (areaChanged) {
+-            if (isDragging) {
+-              const debouncedParams = debouncedParamsRef.current;
+-              const isSameParams = debouncedParams && debouncedParams.area === params.area && debouncedParams.zone === params.zone;
+-              if (!isSameParams) {
+-                cancelDb();
+-                setDeepestDb(params, manager);
+-                debouncedParamsRef.current = params;
+-              }
+-            } else {
+-              cancelDb();
+-              setDeepestAndCollide(params, manager);
+-            }
++            cancelDb();
++            setDeepestAndCollide(params, manager);
+             return;
+           }
+           if (zoneChanged) {
+@@ -11968,7 +11956,8 @@ var DragDropContextClient = ({
+             stopLinePlaceholderScrollTracking();
+             const entryEl = (_a = getFrame()) == null ? void 0 : _a.querySelector("[data-puck-entry]");
+             entryEl == null ? void 0 : entryEl.removeAttribute("data-puck-dragging");
+-            const { source, target } = event.operation;
++            const { source } = event.operation;
++            let { target } = event.operation;
+             if (!source) {
+               setLinePlaceholderActive(false);
+               zoneStore.setState({ draggedItem: null });
+@@ -11976,9 +11965,32 @@ var DragDropContextClient = ({
+             }
+             const { zone, index } = source.data;
+             const { previewIndex = {} } = zoneStore.getState() || {};
+-            const thisPreview = (_b = Object.values(previewIndex).find(
++            let thisPreview = (_b = Object.values(previewIndex).find(
+               (preview) => (preview == null ? void 0 : preview.props.id) === source.id && !preview.ghost
+             )) != null ? _b : null;
++            // A release can precede the asynchronous drag-over preview update.
++            // Commit using the actual final pointer, with the same nesting/allow checks.
++            const finalFrame = document.querySelector("iframe#preview-frame");
++            const finalPointer = manager.dragOperation.position.current;
++            if (finalFrame && finalPointer) {
++              const bounds = finalFrame.getBoundingClientRect();
++              const insideCanvas = finalPointer.x >= bounds.left && finalPointer.x <= bounds.right && finalPointer.y >= bounds.top && finalPointer.y <= bounds.bottom;
++              if (!insideCanvas) {
++                // Custom editor sidebars are outside the canvas, never a root drop.
++                target = { type: "void" };
++              } else if (thisPreview && !event.canceled) {
++                const finalLocation = findDeepestCandidate(new GlobalPosition(document.body, finalPointer), manager);
++                const finalZone = finalLocation.zone;
++                const zoneElement = finalZone && finalZone !== "void" ? getFrame()?.querySelector(getZoneSelector(finalZone)) : null;
++                if (zoneElement) {
++                  const finalIndex = getNearestGapIndex(zoneElement, getFramePointer(zoneElement, finalPointer), getZoneContentIds(appStore.getState().state, finalZone));
++                  if (finalIndex !== null) {
++                    thisPreview = { ...thisPreview, zone: finalZone, index: finalIndex, linePlaceholder: true };
++                    target = manager.registry.droppables.get(finalZone) || target;
++                  }
++                }
++              }
++            }
+             const playCommitFlip = !event.canceled && (target == null ? void 0 : target.type) !== "void" && (thisPreview == null ? void 0 : thisPreview.linePlaceholder) ? prepareCommitFlip({
+               zones: initialSelector.current ? [initialSelector.current.zone, thisPreview.zone] : [thisPreview.zone],
+               itemId: thisPreview.type === "move" ? thisPreview.props.id : void 0,
