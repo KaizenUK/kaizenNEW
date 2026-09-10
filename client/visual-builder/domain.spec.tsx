@@ -7,12 +7,131 @@ import {
   safeUrl,
   savePage,
   validateDocument,
+  resolveResponsiveStyle,
+  needsBuilderRuntime,
 } from "../../shared/visualBuilder";
 import { newDocument, starterBlocks } from "./starters";
-import PublishedPage from "./Renderer";
+import PublishedPage, { styleVars } from "./Renderer";
 import { insertBlocks } from "./config";
+import RichText from "./RichText";
 
 describe("versioned builder pages", () => {
+  it("keeps interactive markup safe and static fallbacks usable", () => {
+    const doc = newDocument("Interactions", "interactions", false);
+    const menu = starterBlocks.Menu();
+    menu.props.links = [
+      { label: "<img onerror=evil()>", href: "javascript:evil()" },
+    ];
+    const tabs = starterBlocks.Tabs();
+    doc.data.content = [
+      menu,
+      tabs,
+      starterBlocks.Accordion(),
+      starterBlocks.Video(),
+    ];
+    expect(validateDocument(doc)).toBe(doc);
+    const html = renderToStaticMarkup(<PublishedPage document={doc} />);
+    expect(html).toContain("&lt;img onerror=evil()&gt;");
+    expect(html).not.toContain("javascript:");
+    expect(html).not.toContain("<script");
+    expect(html).toContain("data-kb-panel");
+    expect(html).toContain("Launch with confidence");
+    expect(html).toContain("<summary>");
+    expect(needsBuilderRuntime(doc.data.content)).toBe(true);
+    expect(
+      needsBuilderRuntime([starterBlocks.Accordion(), starterBlocks.Video()]),
+    ).toBe(false);
+    tabs.props.items = [{ title: "Broken", content: {} }];
+    expect(() => validateDocument(doc)).toThrow("Invalid items");
+  });
+  it("renders rich formatting as safe React elements and removes executable or unsafe content", () => {
+    const html = renderToStaticMarkup(
+      <RichText
+        html={
+          '<h2>A &amp; B</h2><p><strong>Bold</strong> and <em>italic</em> <a href="/work/" target="_blank" onclick="evil()">Work</a></p><a href="java&#x73;cript:evil()">bad link</a><script>evil()</script><img src=x onerror=evil()><svg><script>evil()</script></svg><p style="text-align:center;background:url(evil)">Centred</p><ul><li>First</li></ul>'
+        }
+      />,
+    );
+    expect(html).toContain("<strong>Bold</strong>");
+    expect(html).toContain("<em>italic</em>");
+    expect(html).toContain(
+      'href="/work/" target="_blank" rel="noopener noreferrer"',
+    );
+    expect(html).toContain("A &amp; B");
+    expect(html).toContain('style="text-align:center"');
+    expect(html).toContain("<ul><li>First</li></ul>");
+    expect(html).not.toMatch(/evil|onclick|javascript|<script|<svg|<img/);
+    expect(html).toContain("bad link");
+  });
+  it("resolves smaller-screen shorthands before side overrides without mutating the saved document", () => {
+    const styles = {
+      desktop: {
+        padding: 64,
+        paddingLeft: 100,
+        gap: 24,
+        columnGap: 40,
+        columns: 2,
+        columnWidths: "2 1",
+      },
+      tablet: { padding: 32, gap: 16 },
+      mobile: { padding: 20, paddingBottom: 48, columns: 1 },
+    };
+    const original = clone(styles);
+    expect(resolveResponsiveStyle(styles, "desktop").paddingLeft).toBe(100);
+    expect(resolveResponsiveStyle(styles, "tablet")).toMatchObject({
+      paddingLeft: 32,
+      rowGap: 16,
+      columnGap: 16,
+      columnWidths: "2 1",
+    });
+    expect(resolveResponsiveStyle(styles, "mobile")).toMatchObject({
+      paddingLeft: 20,
+      paddingBottom: 48,
+      columns: 1,
+    });
+    expect(
+      resolveResponsiveStyle(styles, "mobile").columnWidths,
+    ).toBeUndefined();
+    expect(styles).toEqual(original);
+  });
+  it("keeps explicit zero, visibility and responsive ordering overrides", () => {
+    expect(
+      resolveResponsiveStyle(
+        {
+          desktop: { hidden: true, order: 2, margin: 30 },
+          mobile: { hidden: false, order: 0, marginTop: 0 },
+        },
+        "mobile",
+      ),
+    ).toMatchObject({ hidden: false, order: 0, marginTop: 0, marginLeft: 30 });
+  });
+  it("constrains visual layout data before creating CSS", () => {
+    const css = styleVars({
+      desktop: {
+        columnWidths: "2 1",
+        focalX: 200,
+        overlayOpacity: 150,
+        paddingTop: -40,
+      },
+      mobile: { columns: 1, order: -1, objectFit: "contain" },
+    });
+    expect(css["--d-columnWidths"]).toBe("minmax(0, 2fr) minmax(0, 1fr)");
+    expect(css["--m-columnWidths"]).toBe(
+      "repeat(var(--v-columns), minmax(0, 1fr))",
+    );
+    expect(css["--d-focalX"]).toBe("100%");
+    expect(css["--d-paddingTop"]).toBe("0px");
+    expect(css["--m-objectFit"]).toBe("contain");
+    const unsafe = styleVars({
+      desktop: {
+        columnWidths: "1; background: url(evil)",
+        objectFit: "url(evil)",
+        overlayColor: "red;position:fixed",
+      },
+    });
+    expect(JSON.stringify(unsafe)).not.toContain("evil");
+    expect(unsafe["--d-overlayColor"]).toBe("transparent");
+  });
   it("keeps drafts and restored revisions independent from the published snapshot", () => {
     const doc = newDocument("First", "test-page");
     const original = savePage([], doc, "page", 0);

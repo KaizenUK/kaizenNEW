@@ -696,11 +696,13 @@ export async function getPageByPath(
   return normalizeManagedPage(page, pathname);
 }
 
-export async function getManagedRoutePaths(): Promise<string[]> {
+export async function getManagedRoutePaths(options: { signal?: AbortSignal } = {}): Promise<string[]> {
   if (!sanityClient) return [];
 
   const pages = await sanityClient.fetch<Array<{ slug?: string }>>(
     MANAGED_PAGE_ROUTES_QUERY,
+    {},
+    options,
   );
 
   return Array.from(

@@ -28,6 +28,120 @@ const image = () =>
     alt: "Abstract green hills and a yellow sun",
   });
 export const starterBlocks: Record<BlockType, () => Block> = {
+  Registered: () => block("Registered", { registrationId:"example-card-v1", text:"Review this code before integration.",style:{desktop:{padding:24,radius:16,background:"#ffffff",borderWidth:1,borderColor:"#d8e0d1"}} }),
+  ContentList: () =>
+    block("ContentList", {
+      text: "Ideas worth sharing",
+      categoryId: "",
+      sort: "newest",
+      limit: 6,
+      variant: "cards",
+      showImages: "yes",
+      showExcerpts: "yes",
+      showAuthors: "no",
+      showDates: "yes",
+      linkLabel: "Read article",
+      emptyText: "No published posts in this category yet.",
+      style: {
+        desktop: { padding: 48, columns: 3, gap: 24, maxWidth: 1280 },
+        tablet: { columns: 2 },
+        mobile: { columns: 1, padding: 20 },
+      },
+    }),
+  ContactForm: () =>
+    block("ContactForm", {
+      text: "Let’s make something great.",
+      description: "Tell us about your project. We’ll get back to you soon.",
+      label: "Contact us",
+      submitLabel: "Send message",
+      successMessage: "Thank you. Your message has been received.",
+      privacyText:
+        "I understand my details will be used to respond to this enquiry.",
+      privacyUrl: "/privacy-policy/",
+      showPhone: "yes",
+      showSurname: "yes",
+      showWebsite: "no",
+      showMarketing: "no",
+      marketingText: "I would also like to receive news and updates.",
+      style: {
+        desktop: {
+          padding: 48,
+          maxWidth: 800,
+          background: "#ffffff",
+          borderRadius: 20,
+        },
+        mobile: { padding: 20 },
+      },
+    }),
+  Shared: () => block("Shared", { componentId: "unselected", overrides: {} }),
+  Menu: () =>
+    block("Menu", {
+      text: "KAIZEN®",
+      href: "/",
+      label: "Main navigation",
+      links: [
+        { label: "Our work", href: "/case-studies/" },
+        { label: "About us", href: "/about/" },
+        { label: "Get in touch", href: "/contact/" },
+      ],
+      style: {
+        desktop: { padding: 24, background: "#ffffff" },
+        mobile: { padding: 20 },
+      },
+    }),
+  Accordion: () =>
+    block("Accordion", {
+      items: [
+        {
+          title: "How do we get started?",
+          content:
+            "Tell us about your idea. We’ll help you take the first step.",
+        },
+        {
+          title: "Can the website grow with us?",
+          content:
+            "Absolutely. Start with what you need and add more as your business grows.",
+        },
+      ],
+      style: {
+        desktop: { padding: 32, maxWidth: 960 },
+        mobile: { padding: 20 },
+      },
+    }),
+  Tabs: () =>
+    block("Tabs", {
+      label: "Our approach",
+      items: [
+        {
+          title: "Discover",
+          content:
+            "We start by listening. Together, we find what matters most to your audience.",
+        },
+        {
+          title: "Design",
+          content:
+            "Thoughtful layouts, clear words and a distinctive look bring your ideas to life.",
+        },
+        {
+          title: "Deliver",
+          content: "Launch with confidence, then keep improving.",
+        },
+      ],
+      style: {
+        desktop: { padding: 32, maxWidth: 1120 },
+        mobile: { padding: 20 },
+      },
+    }),
+  Video: () =>
+    block("Video", {
+      src: "/builder-samples/story.webm",
+      poster: "/builder-samples/landscape.svg",
+      captions: "/builder-samples/story.vtt",
+      captionLanguage: "en",
+      label: "Our story",
+      text: "A little motion. A new beginning. Replace this sample with your own story.",
+      style: { desktop: { padding: 24, maxWidth: 1120 } },
+    }),
   Section: () =>
     block("Section", {
       children: [],
@@ -56,6 +170,11 @@ export const starterBlocks: Record<BlockType, () => Block> = {
       },
     }),
   Text: () => text("A little change. A big difference.", 32),
+  RichText: () =>
+    block("RichText", {
+      html: "<p>Tell your story with <strong>beautifully formatted text</strong> and <a href='/contact/'>helpful links</a>.</p>",
+      style: { desktop: { fontSize: 20, lineHeight: 1.55 } },
+    }),
   Image: image,
   Icon: () =>
     block("Icon", {

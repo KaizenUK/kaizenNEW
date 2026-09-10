@@ -1,0 +1,27 @@
+# Reviewed React component integration
+
+Builder → Assets → inspect a source or design file → React block conversion.
+Save the intended layout, editable content, mobile behaviour and interactions. The original file and its pack's licence documents are attached automatically; add visual references with the file search. Requests retain a version, notes and the last 30 status changes. Save and export brief produces a Markdown handoff with asset IDs, preserved paths, SHA-256 hashes and the exact review contract. Original files remain downloadable.
+
+Requested, In progress, Ready for review, Needs information and Cancelled are tracking states. They do not compile source or authorise a block. “Reviewed block available” requires a matching entry in the deployed code registry, the exact saved requirements and file hashes, and the Ready for review state. Changing requirements or attachments invalidates that match. Already inserted blocks retain their immutable implementation version and are unaffected by later changes to a request.
+
+## Developer workflow
+
+1. Download the saved brief, source files, references and supplied licences. Inspect them as untrusted data. Do not run uploaded package installers, scripts, macros or source code. Check rights for the intended use; retaining a licence does not establish that it permits that use. A real Figma design needs design inspection and a manual React implementation; a placeholder or screenshot alone does not supply an editable layout.
+2. Agree the editable fields and responsive behaviour. Implement the component in `client/visual-builder/RegisteredBlocks.tsx` using reviewed local imports. Use React escaping for text and the shared URL/image safeguards for links or media. Never use runtime imports from asset URLs, eval, automatic compilers or unsanitised HTML.
+3. Register a new immutable ID in `shared/builderRegistry.ts`. Include a readable name, defaults, editable fields, reviewer, date, evidence reference, review notes and the exact brief's requirements/source-role/hash contract. Changes to released behaviour require a new ID; keep old implementations available for saved pages, revisions and backups.
+4. The Registered block type and Reviewed\_ aliases provide insertion and the normal responsive style controls. Currently registration supports string text, description, link, image and alt fields. More complex layouts, slots, CMS bindings or interactions require deliberate editor/schema/runtime integration and tests. This mechanism does not make arbitrary React components compatible automatically.
+5. Test text escaping and input validation, the actual browser editor, mobile layouts, static rendering, standalone export build and editable backup restoration. Every registry entry must have a compiled renderer. New interactive components must explicitly extend the lightweight published runtime or use a reviewed island; merely adding a React event handler will not make a static export interactive.
+6. Deploy the registry and renderer together, including shared modules used by publication functions. Requests become available when their exact matching code is installed. Save conversion status as Ready for review and check the evidence shown in the library. Missing registrations cause validation to fail; restore or publish using the original implementation instead of silently substituting a different block.
+
+Local request saves use the existing atomic workspace store. Cloud request saves require migration `202609100007_builder_conversions.sql`; install all migrations 001–007. If migration 005 was applied from an earlier checkout, reapply its updated backup function as well. No new API endpoint or conversion service is required. Saves enforce editor access, full-asset concurrency checks and current reference hashes. Cloud behaviour is covered by PostgreSQL tests; hosted authentication and deployment still need live verification.
+
+Editable backups retain briefs and remap attached asset IDs on restoration. Restoring request metadata never publishes a page or adds executable code. The destination builder must already contain the required reviewed implementation. React exports include the compiled renderer and registry, retain briefs in `asset-manifest.json` and source/licence files under `reference-packs/`, outside the compiled source tree.
+
+## example-card-v1
+
+This bundled demonstration was reviewed on 10 September 2026 by Codex. It adapts `components/ExampleCard.tsx`, whose entire supplied component is a static article containing “Review this code before integration.” The registered implementation exposes that text as an editable string, keeps semantic article markup and uses React escaping. There are no effects, network requests, executable imports, raw HTML or required client runtime. The enclosing builder block supplies responsive layout and style controls.
+
+The registry records the exact bundled source plus both supplied licence-file hashes. The general sample licence and Inter font licence are retained as references; this is not a claim that they grant rights to a third-party UI8 design. The .fig file in the sample pack is a placeholder and has not been converted. The sample helper only fills the reviewed requirements for the exact known source checksum. Other requirements, files or designs need their own reviewed registration.
+
+This demonstrates the integration mechanism. Representative commercial UI8 packs and real design conversions remain compatibility work, not tested support.

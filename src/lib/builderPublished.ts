@@ -1,10 +1,32 @@
 import { createClient } from "@supabase/supabase-js";
 import { readLocalWorkspace } from "../../scripts/builder-local";
+import { getServerContentCatalogue } from "../../scripts/builder-content";
+import {
+  hasContentBindings,
+  resolveContentDocument,
+} from "../../shared/builderContent";
 import {
   validateDocument,
   type PageDocument,
 } from "../../shared/visualBuilder";
+import { readFile } from "node:fs/promises";
+import { validateReleaseSnapshot } from "../../shared/builderReleases";
 export async function getBuilderPublishedPages(): Promise<PageDocument[]> {
+  async function resolveContent(pages: PageDocument[], local = false) {
+    if (!pages.some((page) => hasContentBindings(page.data.content)))
+      return pages;
+    const catalogue = await getServerContentCatalogue(local);
+    return pages.map((page) => resolveContentDocument(page, catalogue));
+  }
+  // Set only by the trusted VPS worker. Never fall back to mutable publications if this input fails.
+  if (process.env.BUILDER_RELEASE_SNAPSHOT_FILE) {
+    const snapshot = validateReleaseSnapshot(
+      JSON.parse(
+        await readFile(process.env.BUILDER_RELEASE_SNAPSHOT_FILE, "utf8"),
+      ),
+    );
+    return resolveContent(snapshot.pages.map((page) => page.document));
+  }
   const url =
     import.meta.env.VITE_SUPABASE_URL || process.env.VITE_SUPABASE_URL;
   const key =
@@ -32,12 +54,15 @@ export async function getBuilderPublishedPages(): Promise<PageDocument[]> {
           `Builder publications could not be loaded: ${error.message}`,
         );
       pages.push(...(data || []).map((p) => validateDocument(p.document)));
-      if ((data || []).length < 500) return pages;
+      if ((data || []).length < 500) return resolveContent(pages);
     }
   }
   if (import.meta.env.DEV || process.env.BUILDER_LOCAL_BUILD === "1")
-    return (await readLocalWorkspace()).pages
-      .filter((p) => p.published)
-      .map((p) => validateDocument(p.published));
+    return resolveContent(
+      (await readLocalWorkspace()).pages
+        .filter((p) => p.published)
+        .map((p) => validateDocument(p.published)),
+      true,
+    );
   return [];
 }

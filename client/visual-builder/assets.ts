@@ -1,5 +1,6 @@
 import { unzip } from "fflate";
 import DOMPurify from "dompurify";
+import { retainSvgPresentation } from "./svgPresentation";
 import { newId, type Asset, type AssetKind } from "../../shared/visualBuilder";
 export const MAX_FILE = 50 * 1024 * 1024;
 export const MAX_PACK = 500 * 1024 * 1024;
@@ -56,6 +57,14 @@ export function normalizeAssetPath(raw: string) {
     throw new Error(`Unsafe filename: ${raw}`);
   return value;
 }
+const isMacMetadata = (path: string) =>
+  path
+    .replace(/\\/g, "/")
+    .split("/")
+    .some(
+      (part) =>
+        part === "__MACOSX" || part === ".DS_Store" || part.startsWith("._"),
+    );
 export async function expandFiles(
   files: ImportFile[],
   report: (message: string) => void,
@@ -63,6 +72,8 @@ export async function expandFiles(
   const output: ImportFile[] = [];
   let total = 0;
   for (const entry of files) {
+    normalizeAssetPath(entry.path);
+    if (isMacMetadata(entry.path)) continue;
     if (/\.zip$/i.test(entry.path)) {
       if (entry.file.size > 250 * 1024 * 1024)
         throw new Error(
@@ -78,11 +89,7 @@ export async function expandFiles(
             bytes,
             {
               filter: (info) => {
-                if (
-                  info.name.endsWith("/") ||
-                  info.name.startsWith("__MACOSX/") ||
-                  info.name.endsWith(".DS_Store")
-                )
+                if (info.name.endsWith("/") || isMacMetadata(info.name))
                   return false;
                 try {
                   normalizeAssetPath(info.name);
@@ -148,19 +155,27 @@ export async function prepareAsset(
       doc.documentElement.localName !== "svg"
     )
       throw new Error("This SVG is not a valid image.");
-    const clean = DOMPurify.sanitize(original, {
-      USE_PROFILES: { svg: true, svgFilters: true },
-      FORBID_TAGS: [
-        "style",
-        "foreignObject",
-        "a",
-        "image",
-        "use",
-        "animate",
-        "set",
-      ],
-      FORBID_ATTR: ["style", "href", "xlink:href"],
-    });
+    retainSvgPresentation(doc);
+    const clean = DOMPurify.sanitize(
+      new XMLSerializer().serializeToString(doc.documentElement),
+      {
+        USE_PROFILES: { svg: true, svgFilters: true },
+        FORBID_TAGS: [
+          "style",
+          "foreignObject",
+          "a",
+          "image",
+          "use",
+          "animate",
+          "animateColor",
+          "animateMotion",
+          "animateTransform",
+          "mpath",
+          "set",
+        ],
+        FORBID_ATTR: ["style", "href", "xlink:href"],
+      },
+    );
     blob = new Blob([clean], { type: mime });
   } else if (kind === "image") {
     const bitmap = await createImageBitmap(blob).catch(() => {

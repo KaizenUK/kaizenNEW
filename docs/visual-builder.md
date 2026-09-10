@@ -1,86 +1,154 @@
 # Kaizen visual builder
 
-The editor lives at `/builder/`. It has `noindex, nofollow`, is excluded from `sitemap.xml`, and does not load the public site's tracking, navigation or editor-session cookie. Published pages are generated separately from explicit published snapshots.
+The builder lives at `/builder/`. It edits new React pages; existing Astro layouts and Sanity content keep their current ownership. Uploads are confirmed working by the user and representative UI8 packs have now been exercised locally. Hosted authentication, storage, deployment and rollback remain unverified; deployment/CI repair and hosted acceptance are deferred at the user's request. See [your acceptance checklist](builder-acceptance-checklist.md).
+
+This guide describes current behaviour. Earlier incremental results are retained in [verification history](builder-verification-history.md); historical statements there are not the current feature status. Deployment setup and recovery are documented in [website releases](website-releases.md).
 
 ## Local workspace
 
-Run `pnpm dev`, then visit `http://localhost:4321/builder/` (use the port printed by Astro). The local API only accepts loopback hosts/connections and same-origin requests. It is a development-only Vite plugin, never an Astro production endpoint. Drafts, revisions, reusable content and uploaded files persist in `.kaizen-builder/`, which is gitignored. Back up that directory if the local work matters.
+Run `pnpm dev` and open the builder on the port printed by Astro, normally `http://localhost:4321/builder/`.
 
-1. Use the starter template or create a blank page.
-2. Open Assets, name a pack, then upload files, a folder or ZIP. “Try the sample asset pack” exercises PNG, SVG, a real Inter TTF, licences, TSX and a labelled Figma placeholder.
-3. Search by name/path/pack/tag, filter by type or pack, and favourite assets. Drag media thumbnails into the canvas, or use **Use** to insert at the selected component. A selected container receives nested content; selecting a leaf inserts after it. Use a font to apply it to the page.
-4. Select a component to edit its text and appearance. Text supports direct inline editing and semantic heading roles. Set Desktop styles as the base; Tablet and Mobile fields are explicit overrides. Empty values inherit. The preview sizes are 1280, 768 and 390 pixels; CSS breakpoints are 1023 and 639 pixels.
-5. Save/autosave, return to Pages and reopen. Publish creates a separate snapshot. Open Page → Open published page. Local publishing does not change kaizenweb.co.uk.
-6. Revisions → Restore as draft recovers one of the last 50 saves without replacing the published snapshot. Publish explicitly to promote the restored version.
+1. Create a blank page or use the starter template.
+2. Open Assets, name a pack and import files, a folder or a ZIP. The sample pack contains images, SVGs, an Inter font, licences, source references and a labelled design placeholder.
+3. Search the library, then drag a supported asset into the canvas or select Use. Containers receive nested content; selecting a leaf inserts after it. Fonts can be applied to a page or shared site design.
+4. Select content to edit text, layout and appearance. Desktop values form the base; tablet and mobile values can override them. Inherited values are labelled and individual overrides can be reset.
+5. Save or wait for autosave, return to Pages and reopen. Preview uses the published renderer without publishing anything. Publish explicitly creates a separate local publication.
+6. Restore a saved revision as a draft, then publish separately if that version should become live.
 
-For a static local publishing check, set `BUILDER_LOCAL_BUILD=1` for `pnpm build:site`. This includes local published snapshots and only their referenced local media in `dist/`. Never set this flag in a production build. Without the flag or the shared-workspace configuration, local drafts and published demo pages are excluded from normal builds.
+Local files live in the gitignored `.kaizen-builder/` directory. Back it up when the work matters. The local API restricts writes to loopback connections and same-origin builder requests. Vite's filesystem deny list protects the private workspace; approved media is served through its media handler. Test runs use a separate `test-results/` workspace and never replace personal pages or assets.
 
-## Export for Claude, Codex or a developer
+For a static local publication check, set `BUILDER_LOCAL_BUILD=1` for a build. Never set it for a production deployment. Normal builds exclude local pages and local files. Local publishing does not change kaizenweb.co.uk.
 
-**Export ZIP** includes all page drafts (with the currently open page first), a standalone React/TypeScript project, responsive CSS, locally bundled media/fonts, SEO/page data, a static HTML build script, and `HANDOFF.md` with a ready-to-use implementation prompt. It also includes licence, code and design references from the library, outside the executable source directory. Source references are never imported or executed. The export has no Puck, Sanity, Supabase, authentication tokens or server credentials.
+## Editing and whole-site design
 
-The recipient runs `npm install`, `npm run dev`, and `npm run build`. The build produces an HTML file at every page URL, with the first page also at `/`. Media URLs become `/assets/...`. Links to existing site routes outside the export need review. External media that cannot be downloaded are listed in the handoff; missing uploaded/local media aborts the export rather than creating a silently broken archive. Exported source is a developer handoff, not a bidirectional source-code synchronisation system.
+The editor supports nested placement/reordering, a layer tree, parent selection, inline text and rich-text links, undo/redo, duplication and copy/paste. Layout controls include spacing on individual sides, columns and proportions, grid gaps/spans, alignment, sizing, backgrounds/overlays, borders/shadows, typography, image fit/focal points, hover/focus states and responsive visibility/order. Preview widths are 1280, 768 and 390 pixels; CSS breakpoints are 1023 and 639 pixels.
 
-## Shared production workspace
+**Site design** manages shared colours, typography and spacing tokens, linked components, headers and footers. Assign shared content to pages explicitly. Instance overrides remain intact when the shared definition changes, and an instance can be detached. Shared changes remain drafts; publication review lists affected page drafts, including any other pending edits on those pages.
 
-The project already uses Supabase for browser data writes and Supabase Functions for deployment. The builder uses those services, with actual Supabase Auth JWT verification and an explicit editor allowlist. It deliberately does not treat the Studio's browser-set `kaizen_studio_auth=1` flag as permission to write or publish.
+Saved sections and page templates are reusable copies. Linked components in Site design remain connected. The desktop workspace is the supported editing interface; mobile preview is for checking the resulting site.
 
-1. Apply `supabase/migrations/202609100001_visual_builder.sql` to the existing Supabase project. It creates editor membership, protected drafts/assets/reusable data, public published snapshots, and media/source storage buckets. Use `pnpm exec supabase db push` with an authenticated, linked CLI, or apply the reviewed migration through the Supabase SQL editor.
-2. Create/invite the intended editor in Supabase Auth, then add their existing Auth UUID to `public.builder_editors`. The app does not allow self-registration or self-granting editor access. For example, an administrator can run `insert into public.builder_editors(user_id) values ('EDITOR_AUTH_UUID');`.
-3. Allow `https://kaizenweb.co.uk/builder/` as a Supabase Auth redirect URL. Enable the email sign-in provider and configure delivery.
-4. Set `VITE_BUILDER_CLOUD=1`, `VITE_SUPABASE_URL`, and `VITE_SUPABASE_ANON_KEY` in the site build environment. These are public configuration; never place a service-role key or GitHub token in a `VITE_` variable.
-5. Deploy `builder-publish` with the Supabase CLI. Its handler independently calls `auth.getUser(jwt)` and checks `builder_editors`. Set `ALLOWED_STUDIO_ORIGINS` to include the public site and authorised local/staging origins. Supply the existing `GITHUB_DEPLOY_TOKEN`, `GITHUB_DEPLOY_REPO`, `GITHUB_DEPLOY_EVENT_TYPE=sanity-update`, and `GITHUB_DEPLOY_TARGET=main` function secrets. The GitHub token needs permission to send a repository dispatch.
-6. Deploy the site using the existing GitHub/VPS workflow. Both the VPS build environment and any CI build that must include builder publications need the public builder configuration. A build fails if the enabled publication store cannot be read, so a transient backend failure cannot silently remove the pages.
-7. Sign in at `/builder/`, run the sample workflow and verify a deployed page anonymously. Also verify that an unauthenticated user and an authenticated non-editor cannot read drafts, upload files, or invoke publishing. Production auth, RLS, storage and deployment require a real configured environment to verify.
+**Blocks → Browse section designs** adds eight editable variations: studio navigation, editorial hero, services overview, project gallery, customer stories, simple pricing, contact banner and studio footer. Preview each in wide or mobile view before insertion. They use ordinary builder blocks, so nesting, undo/redo, responsive controls, backups and React export keep working. Replace sample copy, quotes, prices, images and links before publication.
 
-Publishing saves the snapshot and queues the existing static-site deployment. The UI says “deployment queued”; it does not claim the public site changed immediately. If repository dispatch fails, the committed snapshot/version is returned and the user is told to retry. A failed build leaves the currently deployed site in place. URL changes remove the old generated page on the next `rsync --delete` deploy; redirects for old URLs must be managed separately.
+**Existing site pages** opens a searchable list of the original layouts, CMS routes and site redirects. It is compiled from the project's page files, fixed redirects and available published Sanity routes. It contains public path metadata, not source code. Static layouts require developer changes; use the CMS for article and managed content. Individual blog articles are managed in the CMS rather than enumerated in this list. The list updates with the builder's next build and clearly reports an unavailable CMS inventory. Its optional CMS lookup is bounded to five seconds.
+
+Existing routes are reserved against builder pages. To recreate an existing design, build it at a new URL and review any later route-ownership change separately. Neither an existing page nor imported source automatically becomes editable in the canvas.
 
 ## Asset support and boundaries
 
-| Type | Behaviour |
+| Asset | Current behaviour |
 | --- | --- |
-| PNG, JPEG, WebP, GIF, AVIF | Validated using the browser's image decoder; usable as image/background |
-| SVG | Sanitised, rendered as image resources; scripts, embedded HTML, external image/use references, event handlers and animation are removed |
-| WOFF, WOFF2, TTF, OTF | Validated with the browser font loader; usable as a global page font |
-| TXT/MD/PDF licence, README, EULA | Retained with pack and downloadable |
-| JSX/TSX/JS/TS/CSS/HTML etc. | Stored as source references; developer review required |
-| Figma/Sketch/XD/PSD/AI/EPS | Stored as design references; conversion required |
-| Other files | Downloadable references; no automatic execution or editable-layout claim |
+| PNG, JPEG, WebP, GIF, AVIF | Validated with the browser image decoder; usable as images/backgrounds |
+| SVG | Sanitised image/icon resources; scripts, embedded HTML, external references, event handlers and animation removed |
+| WOFF, WOFF2, TTF, OTF | Validated with the browser font loader; usable typography |
+| TXT, MD, PDF licences/readmes | Preserved with their packs and downloadable |
+| React, JavaScript, TypeScript, CSS, HTML source | Downloadable references; reviewed integration required |
+| Figma, Sketch, XD, PSD, AI, EPS | Design references; conversion required |
+| Other files | Downloadable references; never executed automatically |
 
-The included `.fig` is explicitly a classification placeholder, not a valid design. Real UI8 packs have not been supplied. Compatibility with a particular UI8 pack, complex SVG artwork and all font/image variants requires testing with those files. Import limits: 50 MB per file, 250 MB compressed ZIP, 500 MB expanded batch, 2,000 files. Encrypted/nested archives are not recursively unpacked. Duplicate detection compares content hashes within the same pack/path; corrected files with different bytes can be retained as separate assets. Supplied folder paths and filenames remain in metadata even though storage uses safe UUID filenames. Interrupted batches can be retried; completed duplicates are skipped. Uploads are not resumable across network disconnects.
+Names, original folder paths, packs, licences, tags and favourites remain searchable. Library browsing uses 48-item pages, deferred search, filters and sorting. Bulk metadata changes support up to 2,000 selected assets. Usage views identify references in pages and reusable content. Replacing an asset changes selected draft references while keeping old published/history files available.
 
-The Inter sample is from the [Google Fonts Inter directory](https://github.com/google/fonts/tree/main/ofl/inter), distributed with its SIL Open Font License. The SVG samples are original demonstration graphics. The PNG is the existing site logo. `node scripts/create-builder-sample.mjs` rebuilds the sample ZIP from checked-in source assets.
+Import limits are 50 MB per file, 250 MB compressed ZIP, 500 MB expanded batch and 2,000 files. Encrypted or nested archives are not recursively unpacked. Duplicate detection uses content hashes with pack/path identity. Corrected bytes can be retained as separate assets. These are enforced limits, not performance claims at the maximum sizes.
 
-## Architecture and verification
+Optimisation retains originals and can generate smaller WebP variants for responsive image/background use. It avoids upscaling. SVG stays vector; GIF, animated PNG/WebP, AVIF and images above 40 megapixels retain their originals. Optimisation depends on browser decoding and WebP encoding.
 
-- `shared/visualBuilder.ts`: versioned data contract and validation; optimistic save versions; draft/publication separation.
-- `client/visual-builder/config.tsx`: Puck component registry and fields. Temporary asset drawer aliases are canonicalised to Image/Icon before storage/export.
-- `client/visual-builder/Renderer.tsx` and `page.css`: React rendering shared by editing, preview, static Astro output and developer exports. Published routes have no Puck import or React hydration directive.
-- `scripts/builder-local.ts`: loopback-only local persistence and dev media delivery; atomic file replacement and serialised writes.
-- `src/lib/builderPublished.ts` and `src/pages/[...slug].astro`: build-time public snapshots. Existing Astro/public URLs are reserved; conflicting Sanity routes fail the build.
-- `supabase/migrations/...` and `supabase/functions/builder-publish`: shared persistence, access control and deployment dispatch.
+The bundled `.fig` is an explicit placeholder, not a valid editable design. The sample Inter font includes its SIL Open Font License; source/design references remain outside executable code.
 
-Run `pnpm test`, `pnpm typecheck`, and `pnpm build:site`. The tests cover URL reservations, lost-update rejection, live/draft URL collisions, revision isolation, nested IDs, asset classifications, ZIP paths, static HTML escaping, and project export contents. Set `BUILDER_EXPORT_FIXTURE=1` while running tests to write the generated standalone project to `test-results/export-project/`; install its dependencies and run its build/typecheck separately. Browser checks remain necessary for dragging, inline editing, preview scaling, actual font/image decoding, and published output.
+### Representative UI8 packs tested locally
 
-Remaining product boundaries: the editor is designed for a desktop workspace; phone-sized screens preview the published page rather than offering a full phone editing UI. Saved sections/templates are reusable copies, not linked instances. Site deployment completion is not live-polled. Uploaded component/design conversion is developer assisted. No automatic deployment of newly uploaded source code occurs.
+- **Hero Gradients v2 / Cubic Glass Gradient:** the complete 35.5 MB ZIP imported 20 JPGs, preserving names and folder paths while ignoring Mac archive metadata. Reimport skipped all 20 duplicates. The extracted folder also imported 20 images with no metadata-file errors. Search, insertion, save/reopen, image optimisation and local publication at 390 px were checked.
+- **20 Logistics Animated Icons:** the complete 40.7 MB ZIP imported 361 files: 40 GIF images, 40 SVG icons, 200 source references and 81 download-only video files. Search and pagination were checked. Uploaded source is served as an attachment, never executed. Lottie JSON, HTML animation bundles, MP4 and MOV do not become editable blocks automatically.
+- The real SVGs exposed lost colours/outlines caused by removing Illustrator styles. The importer now copies safe static presentation declarations from simple class, ID and element rules and inline styles into SVG attributes before sanitisation. It retains safe local paint references, and removes external references and executable styles. Complex CSS selectors, conditional styles and SVG animation are not supported. Previously imported icons need reimporting and draft replacement to receive this fix; existing published assets are preserved.
+- Other available packs exceed the current limits: the larger gradient archives need extracting and importing in smaller batches; individual files above 50 MB need smaller exports. The approximately 62.6 MB LOGIX Figma file and 900.8 MB ultimate gradient Figma file were identified as oversized, not claimed as successfully imported or converted.
 
-### Verified locally on 10 September 2026
+Licensed pack files stay outside the repository. To repeat the opt-in Chromium compatibility check, set `BUILDER_UI8_DOWNLOADS` to the folder holding these two ZIPs and the extracted gradient folder, and run `pnpm exec playwright test --config playwright.builder.config.ts tests/builder/real-packs.spec.ts`. The test uses the isolated test workspace and restores its previous metadata afterwards. It makes no hosted uploads.
 
-- Imported the eight-file sample ZIP, repeated it to verify duplicate detection, and imported a real font/licence folder through the folder picker. Filenames and subfolders survived.
-- Searched for and inserted media, applied the uploaded Inter font, edited the headline inline, and set a 40px mobile override. Saved, reloaded and reopened the page successfully.
-- Dragged assets directly into nested canvas content and moved an icon between the hero and a feature card. Also verified layer-tree nesting, undo/redo, nested copy/paste, duplication and saving a page template.
-- Restored an older revision as a draft while the published page remained unchanged, then republished the edited draft. The local route refreshed without restarting the server.
-- Checked desktop published output and the 390px preview in the browser. Preview and published images loaded; the mobile layout had no horizontal overflow.
-- All 20 Vitest tests and the project typecheck passed. The static local-publication build passed; its published page contained zero scripts, all referenced media existed, and `/builder/` was absent from the sitemap with `noindex, nofollow` in its HTML.
-- A second, normal production build passed and excluded the local demo page and its uploaded media.
-- Generated a standalone export fixture, installed its dependencies, passed its build and TypeScript check, and loaded it in the browser with bundled media. The browser's **Export ZIP** action also completed successfully.
-- After the drag patch, verified rapid desktop and mobile nested drops, same-container reordering, moving between containers, empty-slot insertion, layer-tree dragging, cancellation outside the canvas, and undo/redo. Frozen-lockfile installation, all 20 tests, typechecking and the production build passed again.
-- Exported both saved pages through the browser. The expanded two-page export fixture built successfully, including a nested URL with escaped SEO title and `noindex`; shared media was bundled only once.
+## Recoverable and resumable imports
 
-Production Supabase access policies, email sign-in, cloud uploads and the GitHub/VPS publishing chain have not been exercised without the deployment configuration. Real UI8 packs and their format variations remain to be tested.
+The importer stores a pending batch and file blobs in IndexedDB, scoped to the workspace/account. Reloading can resume the pending job. A browser lock prevents two tabs owning the same import; only one pending job per workspace is supported. Completed blobs are removed, and a successful import clears its recovery records.
 
-### Puck drag-target patch
+Files of 6 MiB or more use TUS uploads in 6 MiB chunks. Resume checks the server's committed offset, refreshes credentials and replaces missing/expired upload sessions. Smaller files retry as whole files; registration also recovers a lost acknowledgement without duplicating the stored asset. Server files are immutable.
 
-Puck is pinned to 0.23.0 with a pnpm patch in `patches/@puckeditor__core@0.23.0.patch`. Its original nested-area handler throttles pointer inspection by 50ms, debounces area changes by 100ms, and delays collision refresh by another 50ms. A quick release inside a nested slot could therefore commit to its previous ancestor. The patch inspects each pointer move, activates the destination synchronously with React `flushSync`, and refreshes collision detection immediately when the destination changes. At release it resolves the final pointer location using Puck's existing nesting/allowed-component checks and gap-index calculation, so an asynchronous preview cannot commit an older destination. Releases outside the canvas cancel the canvas operation. The outline uses its separate drag provider. Both ESM and CommonJS distributions are covered. Published pages and exported projects do not depend on this patch or Puck.
+Browser storage limits and eviction still apply. Clearing site data removes recovery copies; oversized packs may need splitting or reselection. Hosted uploads use Supabase's resumable storage endpoint and editor storage policies. Hosted connection-loss, expiry and permission checks remain unverified.
 
-Use pnpm and the committed lockfile to retain the patch. Before upgrading Puck, repeat the browser checks for fast library-to-nested-slot drops, movement between nested containers, empty slots, scaled mobile previews, undo/redo and layer dragging; remove the patch only after upstream behavior passes those checks. The synchronous update runs when the target changes, not on every move within the same target. Very large pages still need performance testing with representative content.
+## Developer conversion requests and reviewed React blocks
+
+Code and design assets can carry a saved conversion brief: source/reference assets and hashes, requirements, status history and downloadable developer handoff. Filter the library by conversion status. A usable block requires a matching reviewed React implementation in the component registry; changing a status never compiles uploaded source.
+
+The bundled ExampleCard demonstrates this contract. See [component integration](builder-component-integration.md) for review and registration. Editable backups and exports retain conversion references; arbitrary developer-modified React source is not automatically reimportable.
+
+## Contact forms
+
+The Contact form block provides editable copy, privacy wording/link, optional fields and responsive styling. First name, email, message and privacy acknowledgement are required; marketing is opt-in. Preview never submits an enquiry. Local publication writes to the local workspace's `contact-submissions.json` without sending email. Failed requests retain entered details; unchanged retries use the same request ID.
+
+For hosted delivery, migration `202609100003_builder_contact.sql` expects the existing `contact_form_submissions` table. Deploy `builder-contact` with the checked-in public visitor configuration and configure `BUILDER_CONTACT_ORIGINS`. Keep the existing `contact-alert` delivery workflow connected. The default public endpoint derives from `VITE_SUPABASE_URL`; `VITE_BUILDER_FORM_ENDPOINT` can select another compatible receiver.
+
+The receiver validates input, origin, consent, a honeypot and body size, then uses a private retry/rate ledger and database transaction. Browser success means storage accepted the enquiry; downstream email/CRM delivery is separate. Hosted storage and real delivery have not been verified. Exports deliberately require their own configured receiver; see the exported `CONTACT-FORMS.md`.
+
+## Sanity content in the visual builder
+
+Post listings support categories, ordering, 1–24 posts, Cards/Minimal/Editorial variants and image, summary, author and date controls. Text, Image and Button blocks can connect to supported published post fields; disconnecting restores the prior manual content. Bindings work in shared definitions and survive save/reopen and undo.
+
+The adapter targets existing post/category/author schemas and a fixed published-only projection. Configure the existing Sanity project/dataset and private token on the server; deploy `builder-content` for the hosted editor. That function checks the authenticated user and editor membership. No private token, arbitrary query or CMS draft is sent to the browser.
+
+Published layouts resolve current CMS data during the site build and emit static markup. A failed connection or missing linked record fails that publication; exact rollback uses the retained artifact rather than refetching CMS data. Listings add no visitor-side CMS fetch. The catalogue is limited to 1,000 posts/categories; larger collections require pagination work. Arbitrary document types and article-body layout editing are outside this integration.
+
+React exports capture current resolved content and bundle referenced images. Linked article-detail routes still belong to the original site and are not generated automatically in the export.
+
+## Editable project backups
+
+**Project backups** downloads a versioned ZIP with editable pages, assets, saved content, shared definitions/styles, redirect data and bounded history. Restore previews its changes, validates paths/checksums, remaps uploaded asset references and commits drafts/metadata atomically with optimistic version checks.
+
+Restore retains current live publications and unrelated pages. Imported published snapshots become revision data, not live pages. A pre-restore draft remains in history. Redirect restore changes the draft only. Existing external media, CMS data and receiving services remain external dependencies. Credentials, enquiries, preview records and deployed artifacts are not part of the backup.
+
+Limits: 500 pages, 20,000 assets, 2,000 saved sections/templates, 100 shared components, 50 MB per file, 500 MB archive/expanded files and 50 million characters of workspace JSON. Page history retains 50 revisions; shared design and redirect history retain 30 each. Completed file uploads can remain after a rejected final transaction and are reused on retry. Unsupported versions, missing or altered files and unsafe paths are rejected.
+
+## Export for Claude, Codex or a developer
+
+**Export ZIP** includes all page drafts, resolved shared content/CMS data, React/TypeScript components, responsive CSS, bundled media/fonts, SEO/page data, a static build and developer instructions. Source/design/licence references remain outside executable source. There is no Puck, Supabase/Sanity connection or credential requirement in the generated project.
+
+Use Node 22 or later, then `npm install`, `npm run typecheck`, `npm run dev` and `npm run build`. Each page receives static HTML at its URL; the first page also appears at `/`. Interactive blocks use a small runtime while non-interactive pages do not load it. Review external routes and unavailable remote media reported in `HANDOFF.md`. Missing registered/local media aborts the export.
+
+Configure the form receiver in `src/formConfig.ts` before using exported forms. `redirects.json`, `hosting/nginx-redirects.conf` and `REDIRECTS.md` describe host-level redirects; Vite preview does not activate HTTP redirect rules. An export is a developer handoff, separate from an editable project backup.
+
+## Saved private preview links
+
+From Preview, save a link for 1 hour, 24 hours or 7 days. Shared definitions, image metadata and loaded CMS content are resolved into an immutable preview snapshot, separate from later drafts and publications.
+
+Hosted links under `/builder/?preview=<id>` require an existing authorised editor account on every read. The ID is not an anonymous access token. Other workspace editors may view/revoke it; external reviewers without editor access cannot. The viewer rechecks access every ten seconds and on focus, and clears expired/revoked previews. Previously viewed copies cannot be recalled. Public image/font URLs retain their existing storage policies.
+
+There are at most 50 active previews per workspace with a two-million-character document limit. Revocation clears the document and reserves its ID; preview creation cleans expired documents. Local previews remain available only while the local server/workspace is accessible. Forms are inert in previews. Builder/preview noindex and referrer protection remain enabled, with no sitemap entries.
+
+Migration `202609100009_builder_previews.sql` enables hosted previews. Supabase's approved sign-in return URLs and email templates must preserve the preview query. Actual hosted sign-in return and access verification remain outstanding.
+
+## Editing URL redirects
+
+**URL redirects** provides a saved draft, review of added/changed/removed rules, explicit publication and history restoration. Directory URLs cover both slash forms and builder redirect responses preserve query parameters. Temporary 302 is the default; browsers can retain a permanent 301 after it changes.
+
+Rules use internal paths with letters, digits, slashes, dots, hyphens and underscores, up to 200 characters and 200 rules. External URLs, query-specific matches and regular expressions are unsupported. Current pages, existing site sections and editor/service paths cannot be claimed as sources. Publish a destination first. Update/remove affected redirects before changing their destination page's live URL; local page and shared-site publication now validate the entire candidate before writing it.
+
+Cloud publication freezes the rules in the release. The production build checks source ownership, cycles across builder/Sanity/site redirects and destinations against emitted files. A failed check retains the prior live release. Nginx verification checks actual status, Location and query preservation; rollback restores retained rules while preserving newer drafts. See [website releases](website-releases.md#builder-url-redirects).
+
+## Shared production workspace
+
+Complete [the deployment setup](website-releases.md) before using the changed production workflow:
+
+1. Apply builder migrations in filename order from `202609100001_visual_builder.sql` through `202609100010_builder_routes.sql`. Follow their prerequisites; migration 003 uses the existing contact table and migration 010 requires no pending release. Do not reapply older backup definitions over migration 010's wrappers.
+2. Use existing Supabase Auth editor accounts and add their UUIDs to `builder_editors`. The browser cannot self-register or grant editor membership. Authorise the intended builder sign-in return URLs and configure email delivery.
+3. Set `VITE_BUILDER_CLOUD=1`, `VITE_SUPABASE_URL` and the public anon key in the site build. Keep service keys, GitHub tokens and Sanity private tokens out of `VITE_` values.
+4. Deploy `builder-publish`, `builder-contact` and `builder-content` with their documented origins/credentials. Deploy the accompanying `contact-alert` change where that existing workflow is used.
+5. Initialise separate retained release stores and Nginx includes for staging/production. Configure the VPS release worker and its private service credential, then enable `BUILDER_RELEASE_COORDINATOR=1` in the publish function. Use separate Supabase builder workspaces for independently deployed sites.
+6. Verify editor sign-in, anonymous/non-editor denial, cloud save/reopen/upload, private previews, a hosted test form submission, live publication, failure preservation and rollback.
+
+GitHub dispatch acceptance does not mean a page is live. **Releases** shows queued/building/activating/verifying/live or actionable failure. The worker promotes public database snapshots only after artifact and live-response checks. Ambiguous commit acknowledgement retains the verified artifact and pending ownership for operator reconciliation; it never blindly rolls back a possibly committed database. Recovery instructions are in the deployment guide.
+
+## Verification and remaining work
+
+Run `pnpm test`, `pnpm typecheck`, `pnpm test:builder:browser` and `pnpm build`. The browser suite uses an isolated workspace and covers imports, nested editing, history, responsiveness, shared content, CMS/forms, backups, previews, redirects and existing-route ownership.
+
+Builder CI also generates an independent export, installs/builds/typechecks it, configures a local test form receiver and checks it in Chromium. A real isolated Nginx smoke test verifies release activation, redirects, retained assets, failure recovery and exact rollback. Linux CI and actual VPS execution have not yet been verified here.
+
+The previous release checks included an independently built four-page export and a 265-file retained artifact with eight marker/page/redirect responses. The current increment adds the reproduced redirect-dependency fix, existing-page inventory, section design library and real-pack SVG/folder compatibility fixes. Verification passed 106 unit tests across 21 files and all 22 browser scenarios, including the real packs. The folder-picker extension then passed against the actual extracted pack; the final SVG animation filter passed all seven importer regressions. Astro/TypeScript checked 256 files with zero errors, zero warnings and 155 existing hints.
+
+The current full site/Studio production build passed. Its compiled builder contains public inventory metadata rather than page source, retains noindex and stays out of the sitemap. The 281-file application artifact passed eight marker/page/redirect checks through real isolated Nginx, including browser checks of the compiled builder entry and static mobile output. Activation, retained assets, failure recovery and exact rollback passed. Build warnings about large editor/Studio chunks remain; hosted sign-in is not inferred from the compiled shell check.
+
+Changes remain local, uncommitted and undeployed. Actual hosted authentication/storage, migrations, publication/rollback and enquiry delivery remain unverified. The user will perform real-world acceptance after deployment/CI repair; those external checks are not blocking local implementation.

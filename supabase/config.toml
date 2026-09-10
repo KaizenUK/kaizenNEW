@@ -429,3 +429,11 @@ enabled = true
 verify_jwt = false
 import_map = "./functions/builder-publish/deno.json"
 entrypoint = "./functions/builder-publish/index.ts"
+
+# Public contact receiver: server validation, origin checks and rate limits replace JWT login.
+[functions.builder-contact]
+verify_jwt = false
+
+[functions.builder-content]
+# The handler verifies the JWT with auth.getUser and checks builder_editors.
+verify_jwt = false

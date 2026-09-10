@@ -22,6 +22,35 @@
 .kb-page a {
   color: inherit;
 }
+.kb-page button, .kb-page summary { font: inherit; color: inherit; cursor: pointer; }
+.kb-page [hidden] { display: none !important; }
+.kb-page :is(button, summary, video):focus-visible { outline: 3px solid var(--v-focusColor, #275f4f); outline-offset: 4px; }
+.kb-menu-inner { display: flex; justify-content: space-between; align-items: center; gap: 24px; flex-wrap: wrap; grid-column: 1 / -1; }
+.kb-menu-brand { font-weight: 750; font-size: 24px; text-decoration: none; }
+.kb-menu-inner ul { list-style: none; padding: 0; margin: 0; display: flex; gap: 24px; flex-wrap: wrap; }
+.kb-menu-inner li a { display: block; padding: 8px 0; text-underline-offset: 4px; }
+.kb-menu-mobile { display: none; }
+.kb-menu-mobile summary { font-weight: 650; }
+.kb-menu-mobile summary span { margin-left: 8px; }
+.kb-accordion-inner, [data-kb-tabs], .kb-video-inner { grid-column: 1 / -1; min-width: 0; }
+.kb-accordion-inner details { border-bottom: 1px solid #18242130; padding: 20px 0; }
+.kb-accordion-inner summary { font-weight: 650; }
+.kb-accordion-inner details[open] summary { margin-bottom: 16px; }
+.kb-item-copy { white-space: pre-wrap; line-height: 1.65; }
+.kb-tab-buttons { display: flex; flex-wrap: wrap; gap: 8px; border-bottom: 1px solid #18242130; padding-bottom: 12px; }
+.kb-tab-buttons button { border: 1px solid currentColor; border-radius: 8px; background: transparent; padding: 10px 20px; }
+.kb-tab-buttons [aria-selected=true] { background: var(--kb-accent); color: #182421; border-color: transparent; }
+.kb-tab-panel { padding: 24px 0; }
+.kb-tab-heading { margin: 0 0 12px; }
+[data-kb-ready] > .kb-tab-panel > .kb-tab-heading { display: none; }
+.kb-video-inner video { display: block; width: 100%; max-height: 80vh; border-radius: var(--kb-radius); background: #182421; }
+.kb-video-inner figcaption { font-size: 14px; margin-top: 12px; white-space: pre-wrap; }
+@media (max-width: 639px) {
+  .kb-menu-desktop { display: none; }
+  .kb-menu-mobile { display: block; }
+  .kb-menu-mobile[open] { flex-basis: 100%; }
+  .kb-menu-mobile ul { flex-direction: column; gap: 4px; padding-top: 16px; }
+}
 .kb-page .kb-block {
   --v-padding: var(--d-padding, 0px);
   --v-gap: var(--d-gap, 20px);
@@ -71,6 +100,23 @@
 .kb-text p {
   margin: 0;
 }
+.kb-richtext { font-weight: var(--v-fontWeight); line-height: var(--v-lineHeight); letter-spacing: var(--v-letterSpacing); }
+.kb-rich-content > * { margin: 0; }
+.kb-rich-content > * + * { margin-top: 0.85em; }
+.kb-rich-content :is(strong, b) { font-weight: 700; }
+.kb-rich-content :is(em, i) { font-style: italic; }
+.kb-rich-content a { text-decoration: underline; text-underline-offset: 0.15em; }
+.kb-rich-content a:focus-visible { outline: 2px solid var(--v-focusColor); outline-offset: 3px; }
+.kb-rich-content h1 { font-size: 2em; }
+.kb-rich-content h2 { font-size: 1.6em; }
+.kb-rich-content h3 { font-size: 1.3em; }
+.kb-rich-content :is(h1, h2, h3, h4, h5, h6) { font-weight: 700; line-height: 1.2; }
+.kb-rich-content ul { list-style: disc; padding-left: 1.5em; }
+.kb-rich-content ol { list-style: decimal; padding-left: 1.5em; }
+.kb-rich-content li + li { margin-top: 0.3em; }
+.kb-rich-content blockquote { border-left: 3px solid var(--kb-accent); padding-left: 1em; }
+.kb-rich-content pre { white-space: pre-wrap; padding: 1em; background: #1824210c; }
+.kb-rich-content hr { border: 0; border-top: 1px solid currentColor; opacity: 0.3; }
 .kb-image img {
   height: 100%;
   max-height: 800px;
@@ -234,3 +280,316 @@
 .kb-page .kb-button a {
   justify-self: var(--v-align);
 }
+
+/* Generated responsive controls: scripts/generate-builder-style-css.mjs */
+.kb-page .kb-block {
+  --v-paddingTop: var(--d-paddingTop, var(--v-padding));
+  --v-paddingRight: var(--d-paddingRight, var(--v-padding));
+  --v-paddingBottom: var(--d-paddingBottom, var(--v-padding));
+  --v-paddingLeft: var(--d-paddingLeft, var(--v-padding));
+  --v-marginTop: var(--d-marginTop, var(--v-margin));
+  --v-marginRight: var(--d-marginRight, auto);
+  --v-marginBottom: var(--d-marginBottom, var(--v-margin));
+  --v-marginLeft: var(--d-marginLeft, auto);
+  --v-rowGap: var(--d-rowGap, var(--v-gap));
+  --v-columnGap: var(--d-columnGap, var(--v-gap));
+  --v-columnWidths: var(--d-columnWidths, repeat(var(--v-columns), minmax(0, 1fr)));
+  --v-columnSpan: var(--d-columnSpan, 1);
+  --v-order: var(--d-order, 0);
+  --v-alignItems: var(--d-alignItems, stretch);
+  --v-justifyItems: var(--d-justifyItems, stretch);
+  --v-width: var(--d-width, auto);
+  --v-height: var(--d-height, auto);
+  --v-fontWeight: var(--d-fontWeight, inherit);
+  --v-lineHeight: var(--d-lineHeight, 1.2);
+  --v-letterSpacing: var(--d-letterSpacing, -0.025em);
+  --v-objectFit: var(--d-objectFit, cover);
+  --v-focalX: var(--d-focalX, 50%);
+  --v-focalY: var(--d-focalY, 50%);
+  --v-aspectRatio: var(--d-aspectRatio, auto);
+  --v-overlayColor: var(--d-overlayColor, black);
+  --v-overlayOpacity: var(--d-overlayOpacity, 0%);
+  --v-hoverBackground: var(--d-hoverBackground, var(--v-background));
+  --v-hoverColor: var(--d-hoverColor, var(--v-color));
+  --v-focusColor: var(--d-focusColor, #5a7f26);
+}
+@media (max-width: 1023px) {
+.kb-page .kb-block {
+  --v-paddingTop: var(--t-paddingTop, var(--d-paddingTop, var(--v-padding)));
+  --v-paddingRight: var(--t-paddingRight, var(--d-paddingRight, var(--v-padding)));
+  --v-paddingBottom: var(--t-paddingBottom, var(--d-paddingBottom, var(--v-padding)));
+  --v-paddingLeft: var(--t-paddingLeft, var(--d-paddingLeft, var(--v-padding)));
+  --v-marginTop: var(--t-marginTop, var(--d-marginTop, var(--v-margin)));
+  --v-marginRight: var(--t-marginRight, var(--d-marginRight, auto));
+  --v-marginBottom: var(--t-marginBottom, var(--d-marginBottom, var(--v-margin)));
+  --v-marginLeft: var(--t-marginLeft, var(--d-marginLeft, auto));
+  --v-rowGap: var(--t-rowGap, var(--d-rowGap, var(--v-gap)));
+  --v-columnGap: var(--t-columnGap, var(--d-columnGap, var(--v-gap)));
+  --v-columnWidths: var(--t-columnWidths, var(--d-columnWidths, repeat(var(--v-columns), minmax(0, 1fr))));
+  --v-columnSpan: var(--t-columnSpan, var(--d-columnSpan, 1));
+  --v-order: var(--t-order, var(--d-order, 0));
+  --v-alignItems: var(--t-alignItems, var(--d-alignItems, stretch));
+  --v-justifyItems: var(--t-justifyItems, var(--d-justifyItems, stretch));
+  --v-width: var(--t-width, var(--d-width, auto));
+  --v-height: var(--t-height, var(--d-height, auto));
+  --v-fontWeight: var(--t-fontWeight, var(--d-fontWeight, inherit));
+  --v-lineHeight: var(--t-lineHeight, var(--d-lineHeight, 1.2));
+  --v-letterSpacing: var(--t-letterSpacing, var(--d-letterSpacing, -0.025em));
+  --v-objectFit: var(--t-objectFit, var(--d-objectFit, cover));
+  --v-focalX: var(--t-focalX, var(--d-focalX, 50%));
+  --v-focalY: var(--t-focalY, var(--d-focalY, 50%));
+  --v-aspectRatio: var(--t-aspectRatio, var(--d-aspectRatio, auto));
+  --v-overlayColor: var(--t-overlayColor, var(--d-overlayColor, black));
+  --v-overlayOpacity: var(--t-overlayOpacity, var(--d-overlayOpacity, 0%));
+  --v-hoverBackground: var(--t-hoverBackground, var(--d-hoverBackground, var(--v-background)));
+  --v-hoverColor: var(--t-hoverColor, var(--d-hoverColor, var(--v-color)));
+  --v-focusColor: var(--t-focusColor, var(--d-focusColor, #5a7f26));
+}
+}
+@media (max-width: 639px) {
+.kb-page .kb-block {
+  --v-paddingTop: var(--m-paddingTop, var(--t-paddingTop, var(--d-paddingTop, var(--v-padding))));
+  --v-paddingRight: var(--m-paddingRight, var(--t-paddingRight, var(--d-paddingRight, var(--v-padding))));
+  --v-paddingBottom: var(--m-paddingBottom, var(--t-paddingBottom, var(--d-paddingBottom, var(--v-padding))));
+  --v-paddingLeft: var(--m-paddingLeft, var(--t-paddingLeft, var(--d-paddingLeft, var(--v-padding))));
+  --v-marginTop: var(--m-marginTop, var(--t-marginTop, var(--d-marginTop, var(--v-margin))));
+  --v-marginRight: var(--m-marginRight, var(--t-marginRight, var(--d-marginRight, auto)));
+  --v-marginBottom: var(--m-marginBottom, var(--t-marginBottom, var(--d-marginBottom, var(--v-margin))));
+  --v-marginLeft: var(--m-marginLeft, var(--t-marginLeft, var(--d-marginLeft, auto)));
+  --v-rowGap: var(--m-rowGap, var(--t-rowGap, var(--d-rowGap, var(--v-gap))));
+  --v-columnGap: var(--m-columnGap, var(--t-columnGap, var(--d-columnGap, var(--v-gap))));
+  --v-columnWidths: var(--m-columnWidths, var(--t-columnWidths, var(--d-columnWidths, repeat(var(--v-columns), minmax(0, 1fr)))));
+  --v-columnSpan: var(--m-columnSpan, var(--t-columnSpan, var(--d-columnSpan, 1)));
+  --v-order: var(--m-order, var(--t-order, var(--d-order, 0)));
+  --v-alignItems: var(--m-alignItems, var(--t-alignItems, var(--d-alignItems, stretch)));
+  --v-justifyItems: var(--m-justifyItems, var(--t-justifyItems, var(--d-justifyItems, stretch)));
+  --v-width: var(--m-width, var(--t-width, var(--d-width, auto)));
+  --v-height: var(--m-height, var(--t-height, var(--d-height, auto)));
+  --v-fontWeight: var(--m-fontWeight, var(--t-fontWeight, var(--d-fontWeight, inherit)));
+  --v-lineHeight: var(--m-lineHeight, var(--t-lineHeight, var(--d-lineHeight, 1.2)));
+  --v-letterSpacing: var(--m-letterSpacing, var(--t-letterSpacing, var(--d-letterSpacing, -0.025em)));
+  --v-objectFit: var(--m-objectFit, var(--t-objectFit, var(--d-objectFit, cover)));
+  --v-focalX: var(--m-focalX, var(--t-focalX, var(--d-focalX, 50%)));
+  --v-focalY: var(--m-focalY, var(--t-focalY, var(--d-focalY, 50%)));
+  --v-aspectRatio: var(--m-aspectRatio, var(--t-aspectRatio, var(--d-aspectRatio, auto)));
+  --v-overlayColor: var(--m-overlayColor, var(--t-overlayColor, var(--d-overlayColor, black)));
+  --v-overlayOpacity: var(--m-overlayOpacity, var(--t-overlayOpacity, var(--d-overlayOpacity, 0%)));
+  --v-hoverBackground: var(--m-hoverBackground, var(--t-hoverBackground, var(--d-hoverBackground, var(--v-background))));
+  --v-hoverColor: var(--m-hoverColor, var(--t-hoverColor, var(--d-hoverColor, var(--v-color))));
+  --v-focusColor: var(--m-focusColor, var(--t-focusColor, var(--d-focusColor, #5a7f26)));
+}
+}
+.kb-page .kb-block {
+  --d-paddingTop: initial;
+  --d-paddingRight: initial;
+  --d-paddingBottom: initial;
+  --d-paddingLeft: initial;
+  --d-marginTop: initial;
+  --d-marginRight: initial;
+  --d-marginBottom: initial;
+  --d-marginLeft: initial;
+  --d-rowGap: initial;
+  --d-columnGap: initial;
+  --d-columnWidths: initial;
+  --d-columnSpan: initial;
+  --d-order: initial;
+  --d-alignItems: initial;
+  --d-justifyItems: initial;
+  --d-width: initial;
+  --d-height: initial;
+  --d-fontWeight: initial;
+  --d-lineHeight: initial;
+  --d-letterSpacing: initial;
+  --d-objectFit: initial;
+  --d-focalX: initial;
+  --d-focalY: initial;
+  --d-aspectRatio: initial;
+  --d-overlayColor: initial;
+  --d-overlayOpacity: initial;
+  --d-hoverBackground: initial;
+  --d-hoverColor: initial;
+  --d-focusColor: initial;
+  --t-paddingTop: initial;
+  --t-paddingRight: initial;
+  --t-paddingBottom: initial;
+  --t-paddingLeft: initial;
+  --t-marginTop: initial;
+  --t-marginRight: initial;
+  --t-marginBottom: initial;
+  --t-marginLeft: initial;
+  --t-rowGap: initial;
+  --t-columnGap: initial;
+  --t-columnWidths: initial;
+  --t-columnSpan: initial;
+  --t-order: initial;
+  --t-alignItems: initial;
+  --t-justifyItems: initial;
+  --t-width: initial;
+  --t-height: initial;
+  --t-fontWeight: initial;
+  --t-lineHeight: initial;
+  --t-letterSpacing: initial;
+  --t-objectFit: initial;
+  --t-focalX: initial;
+  --t-focalY: initial;
+  --t-aspectRatio: initial;
+  --t-overlayColor: initial;
+  --t-overlayOpacity: initial;
+  --t-hoverBackground: initial;
+  --t-hoverColor: initial;
+  --t-focusColor: initial;
+  --m-paddingTop: initial;
+  --m-paddingRight: initial;
+  --m-paddingBottom: initial;
+  --m-paddingLeft: initial;
+  --m-marginTop: initial;
+  --m-marginRight: initial;
+  --m-marginBottom: initial;
+  --m-marginLeft: initial;
+  --m-rowGap: initial;
+  --m-columnGap: initial;
+  --m-columnWidths: initial;
+  --m-columnSpan: initial;
+  --m-order: initial;
+  --m-alignItems: initial;
+  --m-justifyItems: initial;
+  --m-width: initial;
+  --m-height: initial;
+  --m-fontWeight: initial;
+  --m-lineHeight: initial;
+  --m-letterSpacing: initial;
+  --m-objectFit: initial;
+  --m-focalX: initial;
+  --m-focalY: initial;
+  --m-aspectRatio: initial;
+  --m-overlayColor: initial;
+  --m-overlayOpacity: initial;
+  --m-hoverBackground: initial;
+  --m-hoverColor: initial;
+  --m-focusColor: initial;
+
+  padding: var(--v-paddingTop) var(--v-paddingRight) var(--v-paddingBottom) var(--v-paddingLeft);
+  margin: var(--v-marginTop) var(--v-marginRight) var(--v-marginBottom) var(--v-marginLeft);
+  width: var(--v-width);
+  height: var(--v-height);
+  grid-template-columns: var(--v-columnWidths);
+  grid-column: span var(--v-columnSpan);
+  order: var(--v-order);
+  row-gap: var(--v-rowGap);
+  column-gap: var(--v-columnGap);
+  align-items: var(--v-alignItems);
+  justify-items: var(--v-justifyItems);
+  background-position: var(--v-focalX) var(--v-focalY);
+  isolation: isolate;
+}
+.kb-page .kb-block::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  background: var(--v-overlayColor);
+  opacity: var(--v-overlayOpacity);
+  pointer-events: none;
+}
+.kb-page .kb-text {
+  font-weight: var(--v-fontWeight);
+  line-height: var(--v-lineHeight, 1.2);
+  letter-spacing: var(--v-letterSpacing, -0.025em);
+}
+.kb-page .kb-image img, .kb-page .kb-icon img {
+  object-fit: var(--v-objectFit);
+  object-position: var(--v-focalX) var(--v-focalY);
+  aspect-ratio: var(--v-aspectRatio);
+  height: var(--v-height);
+}
+.kb-page .kb-block:hover {
+  background-color: var(--v-hoverBackground);
+  color: var(--v-hoverColor);
+}
+.kb-page .kb-button:focus-within {
+  outline: 2px solid var(--v-focusColor);
+  outline-offset: 3px;
+}
+.kb-page .kb-button a:hover, .kb-page .kb-button a:focus-visible {
+  background-color: var(--v-buttonHoverBackground);
+  color: var(--v-buttonHoverColor);
+}
+.kb-page .kb-button a {
+  background-color: var(--v-buttonBackground);
+  color: var(--v-buttonColor);
+  border-radius: var(--v-buttonRadius);
+}
+
+.kb-page .kb-button {
+  --v-buttonBackground: var(--d-background, var(--kb-accent));
+  --v-buttonColor: var(--d-color, #182421);
+  --v-buttonRadius: var(--d-radius, var(--kb-radius));
+  --v-buttonHoverBackground: var(--d-hoverBackground, var(--v-buttonBackground));
+  --v-buttonHoverColor: var(--d-hoverColor, var(--v-buttonColor));
+}
+
+@media (max-width: 1023px) {
+.kb-page .kb-button {
+  --v-buttonBackground: var(--t-background, var(--d-background, var(--kb-accent)));
+  --v-buttonColor: var(--t-color, var(--d-color, #182421));
+  --v-buttonRadius: var(--t-radius, var(--d-radius, var(--kb-radius)));
+  --v-buttonHoverBackground: var(--t-hoverBackground, var(--d-hoverBackground, var(--v-buttonBackground)));
+  --v-buttonHoverColor: var(--t-hoverColor, var(--d-hoverColor, var(--v-buttonColor)));
+}
+}
+@media (max-width: 639px) {
+.kb-page .kb-button {
+  --v-buttonBackground: var(--m-background, var(--t-background, var(--d-background, var(--kb-accent))));
+  --v-buttonColor: var(--m-color, var(--t-color, var(--d-color, #182421)));
+  --v-buttonRadius: var(--m-radius, var(--t-radius, var(--d-radius, var(--kb-radius))));
+  --v-buttonHoverBackground: var(--m-hoverBackground, var(--t-hoverBackground, var(--d-hoverBackground, var(--v-buttonBackground))));
+  --v-buttonHoverColor: var(--m-hoverColor, var(--t-hoverColor, var(--d-hoverColor, var(--v-buttonColor))));
+}
+}
+
+/* Contact forms retain native semantics and require only the shared interaction runtime. */
+.kb-contact-inner { width: 100%; }
+.kb-contact-inner h2 { font-size: clamp(28px, 4vw, 42px); line-height: 1.15; margin: 0 0 16px; }
+.kb-contact-inner > p { margin: 0 0 28px; opacity: .8; }
+.kb-contact-inner fieldset { border: 0; margin: 0; padding: 0; min-width: 0; }
+.kb-contact-fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
+.kb-contact-field { display: grid; gap: 8px; font-size: 15px; min-width: 0; }
+.kb-contact-message { grid-column: 1 / -1; }
+.kb-contact-field input, .kb-contact-field textarea { box-sizing: border-box; width: 100%; min-width: 0; padding: 12px 14px; border: 1px solid #9aa6a1; border-radius: 8px; background: #ffffff; color: #182421; font: inherit; }
+.kb-contact-field textarea { resize: vertical; }
+.kb-contact-inner input:focus-visible, .kb-contact-inner textarea:focus-visible, .kb-contact-inner button:focus-visible, .kb-contact-inner a:focus-visible { outline: 3px solid var(--kb-accent); outline-offset: 3px; }
+.kb-contact-check { display: flex; align-items: flex-start; gap: 10px; margin: 20px 0; font-size: 14px; line-height: 1.5; }
+.kb-contact-check input { flex: none; width: 18px; height: 18px; margin: 2px 0 0; accent-color: var(--kb-accent); }
+.kb-contact-check a { color: inherit; text-decoration: underline; }
+.kb-contact-submit { padding: 14px 24px; border: 0; border-radius: var(--kb-radius); color: #182421; background: var(--kb-accent); font: inherit; font-weight: 700; cursor: pointer; }
+.kb-contact-submit:disabled { opacity: .6; cursor: not-allowed; }
+.kb-contact-inner [data-kb-form-status] { margin: 16px 0 0; line-height: 1.5; }
+.kb-contact-inner [data-kb-form-status]:empty { display: none; }
+.kb-contact-inner [data-state="error"] { color: #b42318; }
+.kb-contact-inner [data-state="success"] { padding: 20px; border: 1px solid currentColor; border-radius: 12px; }
+.kb-contact-trap, .kb-sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0; }
+@media (max-width: 639px) { .kb-contact-fields { grid-template-columns: minmax(0, 1fr); } .kb-contact-submit { width: 100%; } }
+
+/* CMS listings are static cards; all responsive values use the normal block controls. */
+.kb-content-inner { width: 100%; grid-column: 1 / -1; min-width: 0; }
+.kb-content-inner > h2 { margin: 0 0 28px; font-size: clamp(28px, 4vw, 42px); line-height: 1.2; }
+.kb-content-grid { display: grid; grid-template-columns: var(--v-columnWidths); gap: var(--v-rowGap) var(--v-columnGap); }
+.kb-content-card { min-width: 0; border: 1px solid #18242125; border-radius: var(--kb-radius); overflow: hidden; background: #fff; color: #182421; }
+.kb-content-image { display: block; }
+.kb-content-image img { width: 100%; aspect-ratio: 16 / 10; object-fit: cover; border-radius: 0; }
+.kb-content-copy { padding: 24px; }
+.kb-content-meta { display: flex; flex-wrap: wrap; gap: 8px 16px; font-size: 13px; opacity: .75; margin-bottom: 12px; }
+.kb-content-copy h3 { font-size: 24px; line-height: 1.25; margin: 0 0 12px; }
+.kb-content-copy h3 a { text-decoration: none; }
+.kb-content-copy p { font-size: 16px; line-height: 1.6; margin-bottom: 20px; }
+.kb-content-more { font-size: 14px; font-weight: 700; text-underline-offset: 4px; }
+.kb-content-card a:focus-visible { outline: 3px solid #275f4f; outline-offset: 3px; }
+.kb-content-minimal .kb-content-card { border: 0; background: transparent; color: inherit; }
+.kb-content-minimal .kb-content-copy { padding: 20px 0; }
+.kb-content-list .kb-content-grid { grid-template-columns: minmax(0, 1fr); }
+.kb-content-list .kb-content-card { display: flex; }
+.kb-content-list .kb-content-image { width: 35%; flex: none; }
+.kb-content-list .kb-content-image img { height: 100%; }
+.kb-content-empty { padding: 24px 0; }
+@media (max-width: 639px) { .kb-content-list .kb-content-card { display: block; } .kb-content-list .kb-content-image { width: 100%; } }

@@ -1,6 +1,8 @@
 import { sendResendEmail } from "../_shared/resend.ts";
 const hubspotToken = Deno.env.get("HUBSPOT_ACCESS_TOKEN");
 
+const escapeHtml = (value: unknown) => String(value ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", "\"": "&quot;", "'": "&#39;" })[c]!);
+
 const logoUrl = "https://kaizenweb.co.uk/kaizenweb-logo-light-mode-260x50.png";
 
 Deno.serve(async (req) => {
@@ -74,24 +76,24 @@ Deno.serve(async (req) => {
         </div>
         <div class="content">
           <div class="h1">📩 New Enquiry</div>
-          <p><strong>${displayName}</strong> has sent a message via the website.</p>
+          <p><strong>${escapeHtml(displayName)}</strong> has sent a message via the website.</p>
           
           <div class="data-box">
             <div class="data-row">
               <span class="label">Name</span>
-              <span class="value">${displayName}</span>
+              <span class="value">${escapeHtml(displayName)}</span>
             </div>
             <div class="data-row">
               <span class="label">Email</span>
-              <span class="value"><a href="mailto:${record.email}" style="color: #2563eb;">${record.email}</a></span>
+              <span class="value"><a href="mailto:${escapeHtml(record.email)}" style="color: #2563eb;">${escapeHtml(record.email)}</a></span>
             </div>
             <div class="data-row">
               <span class="label">Phone</span>
-              <span class="value">${record.phone || "Not provided"}</span>
+              <span class="value">${escapeHtml(record.phone || "Not provided")}</span>
             </div>
             <div class="data-row">
               <span class="label">Website</span>
-              <span class="value">${record.website || "Not provided"}</span>
+              <span class="value">${escapeHtml(record.website || "Not provided")}</span>
             </div>
             <div class="data-row">
               <span class="label">Marketing</span>
@@ -100,11 +102,11 @@ Deno.serve(async (req) => {
           </div>
 
           <div class="message-box">
-            "${record.message}"
+            "${escapeHtml(record.message)}"
           </div>
 
           <center>
-            <a href="mailto:${record.email}" class="btn">Reply to Lead</a>
+            <a href="mailto:${escapeHtml(record.email)}" class="btn">Reply to Lead</a>
           </center>
         </div>
         <div class="footer">

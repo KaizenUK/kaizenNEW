@@ -2,7 +2,11 @@ import { defineConfig } from "astro/config";
 import react from "@astrojs/react";
 import path from "node:path";
 import { PUBLIC_ROUTE_REDIRECTS } from "./shared/publicRoutePolicy.js";
-import { builderLocalPlugin, builderLocalAssets } from "./scripts/builder-local.ts";
+import {
+  builderLocalPlugin,
+  builderLocalRedirectsPlugin,
+  builderLocalAssets,
+} from "./scripts/builder-local.ts";
 
 function sanitizeBrokenTransformHooks() {
   const seen = new Set();
@@ -13,7 +17,11 @@ function sanitizeBrokenTransformHooks() {
     }
 
     for (const plugin of plugins) {
-      if (!plugin || !plugin.transform || typeof plugin.transform !== "object") {
+      if (
+        !plugin ||
+        !plugin.transform ||
+        typeof plugin.transform !== "object"
+      ) {
         continue;
       }
 
@@ -55,6 +63,10 @@ function sanitizeBrokenTransformHooks() {
 }
 
 export default defineConfig({
+  devToolbar: { enabled: !process.env.BUILDER_TEST_CACHE_DIR },
+  ...(process.env.BUILDER_TEST_CACHE_DIR
+    ? { cacheDir: `${process.env.BUILDER_TEST_CACHE_DIR}/astro` }
+    : {}),
   site: "https://kaizenweb.co.uk",
   output: "static",
   trailingSlash: "always",
@@ -69,9 +81,33 @@ export default defineConfig({
   integrations: [react(), builderLocalAssets()],
 
   vite: {
-    plugins: [sanitizeBrokenTransformHooks(), builderLocalPlugin()],
+    ...(process.env.BUILDER_TEST_CACHE_DIR
+      ? { cacheDir: process.env.BUILDER_TEST_CACHE_DIR }
+      : {}),
+    plugins: [
+      sanitizeBrokenTransformHooks(),
+      builderLocalPlugin(),
+      builderLocalRedirectsPlugin(),
+    ],
 
     envPrefix: ["VITE_", "PUBLIC_", "NEXT_PUBLIC_"],
+    // Preserve Vite's built-in denials and prevent direct/@fs reads of private builder storage.
+    // Approved media continues through the builder middleware, not Vite's filesystem server.
+    server: {
+      fs: {
+        deny: [
+          ".env",
+          ".env.*",
+          "*.{crt,pem}",
+          "**/.git/**",
+          "**/.kaizen-builder/**",
+          path
+            .resolve(process.env.BUILDER_LOCAL_DIRECTORY || ".kaizen-builder")
+            .replaceAll("\\", "/")
+            .replace(/([*?{}()[\]!+@])/g, "\\$1") + "/**",
+        ],
+      },
+    },
 
     build: {
       chunkSizeWarningLimit: 1000,

@@ -1,0 +1,87 @@
+name: Builder regression checks
+
+on:
+  pull_request:
+    paths:
+      - "client/visual-builder/**"
+      - "shared/visualBuilder.ts"
+      - "shared/builderSite.ts"
+      - "shared/builderContact.ts"
+      - "shared/builderContent.ts"
+      - "shared/builderLibrary.ts"
+      - "shared/builderBackup.ts"
+      - "shared/builderImages.ts"
+      - "shared/builderRegistry.ts"
+      - "shared/builderConversions.ts"
+      - "shared/builderReleases.ts"
+      - "shared/builderPreviews.ts"
+      - "shared/builderRoutes.ts"
+      - "shared/builderPageInventory.ts"
+      - "shared/builderRouteTypes.ts"
+      - "shared/builderRedirects.js"
+      - "shared/publicRoutePolicy.js"
+      - "shared/nginxRedirects.js"
+      - "supabase/migrations/*builder*"
+      - "supabase/functions/builder-publish/**"
+      - "supabase/functions/builder-contact/**"
+      - "supabase/functions/builder-content/**"
+      - "public/builder-samples/**"
+      - "scripts/builder-local.ts"
+      - "scripts/builder-uploads.ts"
+      - "scripts/builder-content.ts"
+      - "scripts/kaizen-releases.mjs"
+      - "scripts/builder-release-worker.mjs"
+      - "scripts/builder-previews.ts"
+      - "scripts/deploy-public-release.sh"
+      - "scripts/generate-nginx-redirects.mjs"
+      - "scripts/generate-builder-style-css.mjs"
+      - "src/pages/**"
+      - "src/lib/builderPublished.ts"
+      - "src/lib/builderPageInventory.ts"
+      - "patches/**"
+      - "tests/builder/**"
+      - "playwright.builder.config.ts"
+      - "astro.config.mjs"
+      - "package.json"
+      - "pnpm-lock.yaml"
+      - ".github/workflows/builder-checks.yml"
+      - ".github/workflows/deploy.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  builder:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: corepack enable
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm exec playwright install --with-deps chromium
+      - run: pnpm test
+        env:
+          BUILDER_EXPORT_FIXTURE: "1"
+      - name: Build the independent React export
+        run: |
+          npm --prefix test-results/export-project install --ignore-scripts
+          npm --prefix test-results/export-project run typecheck
+          node -e "require('node:fs').writeFileSync('test-results/export-project/src/formConfig.ts', 'export const builderFormEndpoint: string = \"/export-contact-test\";')"
+          npm --prefix test-results/export-project run build
+          node tests/builder/verify-export.mjs
+      - name: Verify release activation and rollback with Nginx
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y nginx
+          node tests/builder/verify-releases.mjs
+      - run: pnpm test:builder:browser
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: builder-browser-failure
+          path: test-results/builder-browser-results
+          retention-days: 7

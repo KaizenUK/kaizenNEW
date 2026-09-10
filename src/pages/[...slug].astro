@@ -5,7 +5,8 @@ import { getManagedRoutePaths, getPageByPath } from "../lib/sanity/client";
 import { RETIRED_PUBLIC_PATHS } from "../../shared/publicRoutePolicy.js";
 import { getBuilderPublishedPages } from "../lib/builderPublished";
 import PublishedPage from "../../client/visual-builder/Renderer";
-import type { PageDocument } from "../../shared/visualBuilder";
+import { needsBuilderRuntime, type PageDocument } from "../../shared/visualBuilder";
+import builderRuntimeUrl from "../../client/visual-builder/runtime.js?url&no-inline";
 interface Props { builderPage?: PageDocument }
 
 export const prerender = true;
@@ -40,7 +41,7 @@ const robots = (builderPage?.noIndex || page?.seo?.noIndex) ? "noindex, nofollow
 const canonical = page?.seo?.canonicalUrl || undefined;
 ---
 
-{builderPage ? <html lang="en"><head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" /><title>{title}</title><meta name="description" content={description} /><meta name="robots" content={robots || "index, follow"} /><link rel="canonical" href={`https://kaizenweb.co.uk/${builderPage.slug}/`} /></head><body style="margin:0"><PublishedPage document={builderPage} /></body></html> : <StaticPageLayout
+{builderPage ? <html lang="en" data-kaizen-builder-page><head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" /><title>{title}</title><meta name="description" content={description} /><meta name="robots" content={robots || "index, follow"} /><link rel="canonical" href={`https://kaizenweb.co.uk/${builderPage.slug}/`} /></head><body style="margin:0"><PublishedPage document={builderPage} />{needsBuilderRuntime(builderPage.data.content) && <script is:inline src={builderRuntimeUrl} defer />}</body></html> : <StaticPageLayout
   path={pathname}
   title={title}
   description={description}

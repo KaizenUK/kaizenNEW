@@ -109,11 +109,185 @@ index 01fc32e03adc11d014291a99cc8dbee1806880f8..9e578e42aa931a78b8ee2717c0387695
              const playCommitFlip = !event.canceled && (target == null ? void 0 : target.type) !== "void" && (thisPreview == null ? void 0 : thisPreview.linePlaceholder) ? prepareCommitFlip({
                zones: initialSelector.current ? [initialSelector.current.zone, thisPreview.zone] : [thisPreview.zone],
                itemId: thisPreview.type === "move" ? thisPreview.props.id : void 0,
+diff --git a/dist/chunk-K2LNXU54.mjs b/dist/chunk-K2LNXU54.mjs
+index 81075c39650a79a9eccf7cefffdc7a65cbd00c97..c87639f345eba8ca5b33c580daffa3e9c5f5ef7f 100644
+--- a/dist/chunk-K2LNXU54.mjs
++++ b/dist/chunk-K2LNXU54.mjs
+@@ -800,13 +800,22 @@ var useHotkey = (combo, cb) => {
+ // store/slices/history.ts
+ var EMPTY_HISTORY_INDEX = 0;
+ function debounce(func, timeout = 300) {
+-  let timer;
+-  return (...args) => {
++  let timer, pending;
++  const flush = () => {
+     clearTimeout(timer);
+-    timer = setTimeout(() => {
+-      func(...args);
+-    }, timeout);
++    if (!pending) return;
++    const args = pending;
++    pending = undefined;
++    func(...args);
+   };
++  const deferred = (...args) => {
++    clearTimeout(timer);
++    pending = args;
++    timer = setTimeout(flush, timeout);
++  };
++  deferred.flush = flush;
++  deferred.cancel = () => { clearTimeout(timer); pending = undefined; };
++  return deferred;
+ }
+ var tidyState = (state) => {
+   return __spreadProps(__spreadValues({}, state), {
+@@ -818,7 +827,7 @@ var tidyState = (state) => {
+   });
+ };
+ var createHistorySlice = (set, get) => {
+-  const record = debounce((state) => {
++  const commit = (state) => {
+     const { histories, index } = get().history;
+     const history = {
+       state,
+@@ -831,7 +840,13 @@ var createHistorySlice = (set, get) => {
+         index: newHistories.length - 1
+       })
+     });
+-  }, 250);
++  };
++  const deferredRecord = debounce(commit, 250);
++  const record = (state) => {
++    if (state.ui.field.focus?.startsWith("builder-style:")) {
++      queueMicrotask(() => { deferredRecord.flush(); commit(state); });
++    } else deferredRecord(state);
++  };
+   return {
+     initialAppState: {},
+     index: EMPTY_HISTORY_INDEX,
+@@ -848,6 +863,7 @@ var createHistorySlice = (set, get) => {
+     },
+     currentHistory: () => get().history.histories[get().history.index],
+     back: () => {
++      deferredRecord.flush();
+       var _a;
+       const { history, dispatch } = get();
+       if (history.hasPast()) {
+@@ -862,6 +878,7 @@ var createHistorySlice = (set, get) => {
+       }
+     },
+     forward: () => {
++      deferredRecord.flush();
+       var _a;
+       const { history, dispatch } = get();
+       if (history.hasFuture()) {
+@@ -871,6 +888,7 @@ var createHistorySlice = (set, get) => {
+       }
+     },
+     setHistories: (histories) => {
++      deferredRecord.cancel();
+       var _a;
+       const { dispatch, history } = get();
+       dispatch({
+@@ -880,6 +898,7 @@ var createHistorySlice = (set, get) => {
+       set({ history: __spreadProps(__spreadValues({}, history), { histories, index: histories.length - 1 }) });
+     },
+     setHistoryIndex: (index) => {
++      deferredRecord.cancel();
+       var _a;
+       const { dispatch, history } = get();
+       dispatch({
 diff --git a/dist/index.js b/dist/index.js
-index aebc9c0e4d4eed1a407ea72d0d1469d16544d834..d4b5701cd830b17b571e8f03e68f94ff73378e00 100644
+index aebc9c0e4d4eed1a407ea72d0d1469d16544d834..d5a0b7fa3ca818d88b895aab554d416c7c5931a9 100644
 --- a/dist/index.js
 +++ b/dist/index.js
-@@ -11383,10 +11383,9 @@ var createNestedDroppablePlugin = ({ onChange }, id) => class NestedDroppablePlu
+@@ -2785,14 +2785,23 @@ var init_use_hotkey = __esm({
+ });
+ 
+ // store/slices/history.ts
+-function debounce(func, timeout3 = 300) {
+-  let timer;
+-  return (...args) => {
++function debounce(func, timeout = 300) {
++  let timer, pending;
++  const flush = () => {
+     clearTimeout(timer);
+-    timer = setTimeout(() => {
+-      func(...args);
+-    }, timeout3);
++    if (!pending) return;
++    const args = pending;
++    pending = undefined;
++    func(...args);
++  };
++  const deferred = (...args) => {
++    clearTimeout(timer);
++    pending = args;
++    timer = setTimeout(flush, timeout);
+   };
++  deferred.flush = flush;
++  deferred.cancel = () => { clearTimeout(timer); pending = undefined; };
++  return deferred;
+ }
+ function useRegisterHistorySlice(appStore, {
+   histories,
+@@ -2841,7 +2850,7 @@ var init_history = __esm({
+       });
+     };
+     createHistorySlice = (set, get) => {
+-      const record = debounce((state) => {
++      const commit = (state) => {
+         const { histories, index } = get().history;
+         const history = {
+           state,
+@@ -2854,7 +2863,13 @@ var init_history = __esm({
+             index: newHistories.length - 1
+           })
+         });
+-      }, 250);
++      };
++      const deferredRecord = debounce(commit, 250);
++      const record = (state) => {
++        if (state.ui.field.focus?.startsWith("builder-style:")) {
++          queueMicrotask(() => { deferredRecord.flush(); commit(state); });
++        } else deferredRecord(state);
++      };
+       return {
+         initialAppState: {},
+         index: EMPTY_HISTORY_INDEX,
+@@ -2871,6 +2886,7 @@ var init_history = __esm({
+         },
+         currentHistory: () => get().history.histories[get().history.index],
+         back: () => {
++          deferredRecord.flush();
+           var _a;
+           const { history, dispatch } = get();
+           if (history.hasPast()) {
+@@ -2885,6 +2901,7 @@ var init_history = __esm({
+           }
+         },
+         forward: () => {
++          deferredRecord.flush();
+           var _a;
+           const { history, dispatch } = get();
+           if (history.hasFuture()) {
+@@ -2894,6 +2911,7 @@ var init_history = __esm({
+           }
+         },
+         setHistories: (histories) => {
++          deferredRecord.cancel();
+           var _a;
+           const { dispatch, history } = get();
+           dispatch({
+@@ -2903,6 +2921,7 @@ var init_history = __esm({
+           set({ history: __spreadProps(__spreadValues({}, history), { histories, index: histories.length - 1 }) });
+         },
+         setHistoryIndex: (index) => {
++          deferredRecord.cancel();
+           var _a;
+           const { dispatch, history } = get();
+           dispatch({
+@@ -11383,10 +11402,9 @@ var createNestedDroppablePlugin = ({ onChange }, id) => class NestedDroppablePlu
            onChange(findDeepestCandidate(position, manager), manager);
          }
        };
@@ -127,7 +301,7 @@ index aebc9c0e4d4eed1a407ea72d0d1469d16544d834..d4b5701cd830b17b571e8f03e68f94ff
        document.body.addEventListener("pointermove", handlePointerMove, {
          capture: true
          // dndkit's PointerSensor prevents propagation during drag
-@@ -11851,14 +11850,13 @@ var DragDropContextClient = ({
+@@ -11851,14 +11869,13 @@ var DragDropContextClient = ({
      (params, manager) => {
        const { zoneChanged, areaChanged } = getChanged2(params);
        if (!zoneChanged && !areaChanged) return;
@@ -146,7 +320,7 @@ index aebc9c0e4d4eed1a407ea72d0d1469d16544d834..d4b5701cd830b17b571e8f03e68f94ff
        debouncedParamsRef.current = null;
      },
      [zoneStore]
-@@ -11909,18 +11907,8 @@ var DragDropContextClient = ({
+@@ -11909,18 +11926,8 @@ var DragDropContextClient = ({
              return;
            }
            if (areaChanged) {
@@ -167,7 +341,7 @@ index aebc9c0e4d4eed1a407ea72d0d1469d16544d834..d4b5701cd830b17b571e8f03e68f94ff
              return;
            }
            if (zoneChanged) {
-@@ -11968,7 +11956,8 @@ var DragDropContextClient = ({
+@@ -11968,7 +11975,8 @@ var DragDropContextClient = ({
              stopLinePlaceholderScrollTracking();
              const entryEl = (_a = getFrame()) == null ? void 0 : _a.querySelector("[data-puck-entry]");
              entryEl == null ? void 0 : entryEl.removeAttribute("data-puck-dragging");
@@ -177,7 +351,7 @@ index aebc9c0e4d4eed1a407ea72d0d1469d16544d834..d4b5701cd830b17b571e8f03e68f94ff
              if (!source) {
                setLinePlaceholderActive(false);
                zoneStore.setState({ draggedItem: null });
-@@ -11976,9 +11965,32 @@ var DragDropContextClient = ({
+@@ -11976,9 +11984,32 @@ var DragDropContextClient = ({
              }
              const { zone, index } = source.data;
              const { previewIndex = {} } = zoneStore.getState() || {};
@@ -212,10 +386,96 @@ index aebc9c0e4d4eed1a407ea72d0d1469d16544d834..d4b5701cd830b17b571e8f03e68f94ff
                zones: initialSelector.current ? [initialSelector.current.zone, thisPreview.zone] : [thisPreview.zone],
                itemId: thisPreview.type === "move" ? thisPreview.props.id : void 0,
 diff --git a/dist/no-external.js b/dist/no-external.js
-index af3fa6755f42679605e6805aa46fdeb90df48281..2d80e10f965674d380c4375fd38782df238f2fb4 100644
+index af3fa6755f42679605e6805aa46fdeb90df48281..4a1592d5cbd9e6418fea985c132cf093a4b92432 100644
 --- a/dist/no-external.js
 +++ b/dist/no-external.js
-@@ -11383,10 +11383,9 @@ var createNestedDroppablePlugin = ({ onChange }, id) => class NestedDroppablePlu
+@@ -2785,14 +2785,23 @@ var init_use_hotkey = __esm({
+ });
+ 
+ // store/slices/history.ts
+-function debounce(func, timeout3 = 300) {
+-  let timer;
+-  return (...args) => {
++function debounce(func, timeout = 300) {
++  let timer, pending;
++  const flush = () => {
+     clearTimeout(timer);
+-    timer = setTimeout(() => {
+-      func(...args);
+-    }, timeout3);
++    if (!pending) return;
++    const args = pending;
++    pending = undefined;
++    func(...args);
++  };
++  const deferred = (...args) => {
++    clearTimeout(timer);
++    pending = args;
++    timer = setTimeout(flush, timeout);
+   };
++  deferred.flush = flush;
++  deferred.cancel = () => { clearTimeout(timer); pending = undefined; };
++  return deferred;
+ }
+ function useRegisterHistorySlice(appStore, {
+   histories,
+@@ -2841,7 +2850,7 @@ var init_history = __esm({
+       });
+     };
+     createHistorySlice = (set, get) => {
+-      const record = debounce((state) => {
++      const commit = (state) => {
+         const { histories, index } = get().history;
+         const history = {
+           state,
+@@ -2854,7 +2863,13 @@ var init_history = __esm({
+             index: newHistories.length - 1
+           })
+         });
+-      }, 250);
++      };
++      const deferredRecord = debounce(commit, 250);
++      const record = (state) => {
++        if (state.ui.field.focus?.startsWith("builder-style:")) {
++          queueMicrotask(() => { deferredRecord.flush(); commit(state); });
++        } else deferredRecord(state);
++      };
+       return {
+         initialAppState: {},
+         index: EMPTY_HISTORY_INDEX,
+@@ -2871,6 +2886,7 @@ var init_history = __esm({
+         },
+         currentHistory: () => get().history.histories[get().history.index],
+         back: () => {
++          deferredRecord.flush();
+           var _a;
+           const { history, dispatch } = get();
+           if (history.hasPast()) {
+@@ -2885,6 +2901,7 @@ var init_history = __esm({
+           }
+         },
+         forward: () => {
++          deferredRecord.flush();
+           var _a;
+           const { history, dispatch } = get();
+           if (history.hasFuture()) {
+@@ -2894,6 +2911,7 @@ var init_history = __esm({
+           }
+         },
+         setHistories: (histories) => {
++          deferredRecord.cancel();
+           var _a;
+           const { dispatch, history } = get();
+           dispatch({
+@@ -2903,6 +2921,7 @@ var init_history = __esm({
+           set({ history: __spreadProps(__spreadValues({}, history), { histories, index: histories.length - 1 }) });
+         },
+         setHistoryIndex: (index) => {
++          deferredRecord.cancel();
+           var _a;
+           const { dispatch, history } = get();
+           dispatch({
+@@ -11383,10 +11402,9 @@ var createNestedDroppablePlugin = ({ onChange }, id) => class NestedDroppablePlu
            onChange(findDeepestCandidate(position, manager), manager);
          }
        };
@@ -229,7 +489,7 @@ index af3fa6755f42679605e6805aa46fdeb90df48281..2d80e10f965674d380c4375fd38782df
        document.body.addEventListener("pointermove", handlePointerMove, {
          capture: true
          // dndkit's PointerSensor prevents propagation during drag
-@@ -11851,14 +11850,13 @@ var DragDropContextClient = ({
+@@ -11851,14 +11869,13 @@ var DragDropContextClient = ({
      (params, manager) => {
        const { zoneChanged, areaChanged } = getChanged2(params);
        if (!zoneChanged && !areaChanged) return;
@@ -248,7 +508,7 @@ index af3fa6755f42679605e6805aa46fdeb90df48281..2d80e10f965674d380c4375fd38782df
        debouncedParamsRef.current = null;
      },
      [zoneStore]
-@@ -11909,18 +11907,8 @@ var DragDropContextClient = ({
+@@ -11909,18 +11926,8 @@ var DragDropContextClient = ({
              return;
            }
            if (areaChanged) {
@@ -269,7 +529,7 @@ index af3fa6755f42679605e6805aa46fdeb90df48281..2d80e10f965674d380c4375fd38782df
              return;
            }
            if (zoneChanged) {
-@@ -11968,7 +11956,8 @@ var DragDropContextClient = ({
+@@ -11968,7 +11975,8 @@ var DragDropContextClient = ({
              stopLinePlaceholderScrollTracking();
              const entryEl = (_a = getFrame()) == null ? void 0 : _a.querySelector("[data-puck-entry]");
              entryEl == null ? void 0 : entryEl.removeAttribute("data-puck-dragging");
@@ -279,7 +539,7 @@ index af3fa6755f42679605e6805aa46fdeb90df48281..2d80e10f965674d380c4375fd38782df
              if (!source) {
                setLinePlaceholderActive(false);
                zoneStore.setState({ draggedItem: null });
-@@ -11976,9 +11965,32 @@ var DragDropContextClient = ({
+@@ -11976,9 +11984,32 @@ var DragDropContextClient = ({
              }
              const { zone, index } = source.data;
              const { previewIndex = {} } = zoneStore.getState() || {};

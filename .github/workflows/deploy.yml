@@ -11,7 +11,7 @@ on:
   workflow_dispatch:
 
 concurrency:
-  group: deploy-${{ github.ref }}
+  group: kaizen-deploy
   cancel-in-progress: false
 
 jobs:
@@ -21,198 +21,158 @@ jobs:
     env:
       NODE_OPTIONS: --max-old-space-size=6144
     steps:
-      - name: Checkout
+      - name: Resolve deployment target
+        id: target
+        shell: bash
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          EVENT_TARGET: ${{ github.event.client_payload.target }}
+          REF_NAME: ${{ github.ref_name }}
+        run: |
+          set -euo pipefail
+          if [ "$EVENT_NAME" = repository_dispatch ]; then
+            case "$EVENT_TARGET" in
+              main|prod|production|'') branch=main ;;
+              stage|staging) branch=stage ;;
+              *) echo "Unsupported deployment target" >&2; exit 1 ;;
+            esac
+          else
+            case "$REF_NAME" in
+              main|stage) branch="$REF_NAME" ;;
+              *) echo "Deploy only from main or stage" >&2; exit 1 ;;
+            esac
+          fi
+          echo "branch=$branch" >> "$GITHUB_OUTPUT"
+
+      - name: Checkout selected branch
         uses: actions/checkout@v4
+        with:
+          ref: ${{ steps.target.outputs.branch }}
 
       - name: Set build metadata
+        id: metadata
+        shell: bash
         run: |
-          echo "VITE_BUILD_NUMBER=${GITHUB_RUN_NUMBER}" >> "$GITHUB_ENV"
-          echo "VITE_BUILD_SHA=${GITHUB_SHA}" >> "$GITHUB_ENV"
+          echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+          echo "VITE_BUILD_NUMBER=$GITHUB_RUN_NUMBER" >> "$GITHUB_ENV"
+          echo "VITE_BUILD_SHA=$(git rev-parse HEAD)" >> "$GITHUB_ENV"
 
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: pnpm
-          cache-dependency-path: pnpm-lock.yaml
 
-      - name: Enable Corepack
-        run: corepack enable
-
-      - name: Install and Build (CI Check)
-        run: |
-          pnpm install --frozen-lockfile
-          pnpm run build
-          pnpm --dir apps/studio install --frozen-lockfile
-          pnpm --dir apps/studio run build
-
-      - name: Deploy Production Public Static on VPS
-        if: github.ref == 'refs/heads/main' || (github.event_name == 'repository_dispatch' && (github.event.client_payload.target == 'main' || github.event.client_payload.target == 'prod' || github.event.client_payload.target == 'production' || github.event.client_payload.target == ''))
+      - name: Activate production public release
+        if: steps.target.outputs.branch == 'main'
         uses: appleboy/ssh-action@v1.2.0
+        env:
+          KAIZEN_APP_DIR: ${{ secrets.VPS_APP_DIR_PROD }}
+          KAIZEN_RELEASE_STORE: ${{ secrets.VPS_RELEASES_DIR_PROD }}
+          KAIZEN_PUBLIC_DOMAIN: ${{ secrets.VPS_PUBLIC_DOMAIN_PROD || 'kaizenweb.co.uk' }}
+          KAIZEN_BUILDER_REQUEST_ID: ${{ github.event.client_payload.releaseId }}
+          KAIZEN_DEPLOY_BRANCH: main
+          KAIZEN_DEPLOY_SHA: ${{ steps.metadata.outputs.sha }}
+          KAIZEN_RELEASE_ID: gh-${{ github.run_id }}-${{ github.run_attempt }}
         with:
           host: ${{ secrets.VPS_HOST }}
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_SSH_KEY }}
           port: ${{ secrets.VPS_PORT || '22' }}
-          script_stop: true
+          command_timeout: 30m
+          envs: KAIZEN_APP_DIR,KAIZEN_RELEASE_STORE,KAIZEN_PUBLIC_DOMAIN,KAIZEN_DEPLOY_BRANCH,KAIZEN_DEPLOY_SHA,KAIZEN_RELEASE_ID,KAIZEN_BUILDER_REQUEST_ID
           script: |
             set -euo pipefail
-
-            APP_DIR="${{ secrets.VPS_APP_DIR_PROD }}"
-            PUBLIC_WEB_ROOT="${{ secrets.VPS_WEB_ROOT_PROD }}"
-            REDIRECTS_INCLUDE_PATH="${{ secrets.VPS_NGINX_REDIRECTS_INCLUDE_PROD || '' }}"
-            PUBLIC_DOMAIN="${{ secrets.VPS_PUBLIC_DOMAIN_PROD || 'kaizenweb.co.uk' }}"
-
-            cd "$APP_DIR"
-            git config --global --add safe.directory "$APP_DIR"
+            test -n "$KAIZEN_RELEASE_STORE" && test -f "$KAIZEN_RELEASE_STORE/active.conf" || { echo "Set up the release store before deploying; see docs/website-releases.md" >&2; exit 1; }
+            cd "$KAIZEN_APP_DIR"
             git fetch origin main
-            git reset --hard origin/main
+            git show "$KAIZEN_DEPLOY_SHA:scripts/deploy-public-release.sh" > "$KAIZEN_RELEASE_STORE/deploy-$KAIZEN_RELEASE_ID.sh"
+            bash "$KAIZEN_RELEASE_STORE/deploy-$KAIZEN_RELEASE_ID.sh"
 
-            corepack enable
-            corepack pnpm install --frozen-lockfile
-            rm -rf dist .astro
-            corepack pnpm run build
-
-            mkdir -p "$PUBLIC_WEB_ROOT"
-            rsync -a --delete dist/ "$PUBLIC_WEB_ROOT/"
-
-            if [ -n "$REDIRECTS_INCLUDE_PATH" ]; then
-              if command -v sudo >/dev/null 2>&1; then
-                SUDO="sudo"
-              else
-                SUDO=""
-              fi
-
-              $SUDO install -m 0644 dist/redirects.generated.conf "$REDIRECTS_INCLUDE_PATH"
-              $SUDO nginx -t
-              if command -v systemctl >/dev/null 2>&1; then
-                $SUDO systemctl reload nginx
-              else
-                $SUDO service nginx reload
-              fi
-            fi
-
-            curl -fsS -H "Host: $PUBLIC_DOMAIN" http://127.0.0.1/ >/dev/null
-
-      - name: Deploy Staging Public Static on VPS
-        if: github.ref == 'refs/heads/stage' || (github.event_name == 'repository_dispatch' && (github.event.client_payload.target == 'stage' || github.event.client_payload.target == 'staging'))
+      - name: Activate staging public release
+        if: steps.target.outputs.branch == 'stage'
         uses: appleboy/ssh-action@v1.2.0
+        env:
+          KAIZEN_APP_DIR: ${{ secrets.VPS_APP_DIR_STAGE }}
+          KAIZEN_RELEASE_STORE: ${{ secrets.VPS_RELEASES_DIR_STAGE }}
+          KAIZEN_PUBLIC_DOMAIN: ${{ secrets.VPS_PUBLIC_DOMAIN_STAGE || 'stage.kaizenweb.co.uk' }}
+          KAIZEN_BUILDER_REQUEST_ID: ${{ github.event.client_payload.releaseId }}
+          KAIZEN_DEPLOY_BRANCH: stage
+          KAIZEN_DEPLOY_SHA: ${{ steps.metadata.outputs.sha }}
+          KAIZEN_RELEASE_ID: gh-${{ github.run_id }}-${{ github.run_attempt }}
         with:
           host: ${{ secrets.VPS_HOST }}
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_SSH_KEY }}
           port: ${{ secrets.VPS_PORT || '22' }}
-          script_stop: true
+          command_timeout: 30m
+          envs: KAIZEN_APP_DIR,KAIZEN_RELEASE_STORE,KAIZEN_PUBLIC_DOMAIN,KAIZEN_DEPLOY_BRANCH,KAIZEN_DEPLOY_SHA,KAIZEN_RELEASE_ID,KAIZEN_BUILDER_REQUEST_ID
           script: |
             set -euo pipefail
-
-            APP_DIR="${{ secrets.VPS_APP_DIR_STAGE }}"
-            PUBLIC_WEB_ROOT="${{ secrets.VPS_WEB_ROOT_STAGE }}"
-            REDIRECTS_INCLUDE_PATH="${{ secrets.VPS_NGINX_REDIRECTS_INCLUDE_STAGE || '' }}"
-            PUBLIC_DOMAIN="${{ secrets.VPS_PUBLIC_DOMAIN_STAGE || 'stage.kaizenweb.co.uk' }}"
-
-            cd "$APP_DIR"
-            git config --global --add safe.directory "$APP_DIR"
+            test -n "$KAIZEN_RELEASE_STORE" && test -f "$KAIZEN_RELEASE_STORE/active.conf" || { echo "Set up the release store before deploying; see docs/website-releases.md" >&2; exit 1; }
+            cd "$KAIZEN_APP_DIR"
             git fetch origin stage
-            git reset --hard origin/stage
+            git show "$KAIZEN_DEPLOY_SHA:scripts/deploy-public-release.sh" > "$KAIZEN_RELEASE_STORE/deploy-$KAIZEN_RELEASE_ID.sh"
+            bash "$KAIZEN_RELEASE_STORE/deploy-$KAIZEN_RELEASE_ID.sh"
 
-            corepack enable
-            corepack pnpm install --frozen-lockfile
-            rm -rf dist .astro
-            corepack pnpm run build
-
-            mkdir -p "$PUBLIC_WEB_ROOT"
-            rsync -a --delete dist/ "$PUBLIC_WEB_ROOT/"
-
-            if [ -n "$REDIRECTS_INCLUDE_PATH" ]; then
-              if command -v sudo >/dev/null 2>&1; then
-                SUDO="sudo"
-              else
-                SUDO=""
-              fi
-
-              $SUDO install -m 0644 dist/redirects.generated.conf "$REDIRECTS_INCLUDE_PATH"
-              $SUDO nginx -t
-              if command -v systemctl >/dev/null 2>&1; then
-                $SUDO systemctl reload nginx
-              else
-                $SUDO service nginx reload
-              fi
-            fi
-
-            curl -fsS -H "Host: $PUBLIC_DOMAIN" http://127.0.0.1/ >/dev/null
-
-      - name: Deploy Production Studio Static on VPS
-        if: github.ref == 'refs/heads/main' || (github.event_name == 'repository_dispatch' && (github.event.client_payload.target == 'main' || github.event.client_payload.target == 'prod' || github.event.client_payload.target == 'production' || github.event.client_payload.target == ''))
+      - name: Copy retained main Studio build to its separate host
+        if: steps.target.outputs.branch == 'main' && github.event.client_payload.action != 'rollback'
         uses: appleboy/ssh-action@v1.2.0
+        env:
+          KAIZEN_RELEASE_STORE: ${{ secrets.VPS_RELEASES_DIR_PROD }}
+          KAIZEN_STUDIO_ROOT: ${{ secrets.VPS_STUDIO_WEB_ROOT_PROD }}
+          KAIZEN_STUDIO_DOMAIN: ${{ secrets.VPS_STUDIO_DOMAIN_PROD || 'studio.kaizenweb.co.uk' }}
+          KAIZEN_RELEASE_ID: gh-${{ github.run_id }}-${{ github.run_attempt }}
         with:
           host: ${{ secrets.VPS_HOST }}
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_SSH_KEY }}
           port: ${{ secrets.VPS_PORT || '22' }}
-          script_stop: true
+          envs: KAIZEN_RELEASE_STORE,KAIZEN_STUDIO_ROOT,KAIZEN_STUDIO_DOMAIN,KAIZEN_RELEASE_ID
           script: |
             set -euo pipefail
-
-            APP_DIR="${{ secrets.VPS_APP_DIR_PROD }}"
-            STUDIO_WEB_ROOT="${{ secrets.VPS_STUDIO_WEB_ROOT_PROD }}"
-            STUDIO_DOMAIN="${{ secrets.VPS_STUDIO_DOMAIN_PROD || 'studio.kaizenweb.co.uk' }}"
-
-            if [ -z "$STUDIO_WEB_ROOT" ]; then
-              echo "VPS_STUDIO_WEB_ROOT_PROD is empty. Skipping studio deploy."
+            if [ -z "$KAIZEN_STUDIO_ROOT" ]; then
+              echo "Separate Studio hosting is not configured; the public release includes /studio/."
               exit 0
             fi
+            [[ "$KAIZEN_STUDIO_ROOT" == /* ]] || { echo "Studio root must be absolute" >&2; exit 1; }
+            studio_root="$(realpath -m "$KAIZEN_STUDIO_ROOT")"
+            studio_target="$(realpath -m "$KAIZEN_STUDIO_ROOT/studio")"
+            test "$studio_root" != /
+            case "$studio_target" in "$studio_root/"*) ;; *) echo "Studio target escapes its configured root" >&2; exit 1 ;; esac
+            test -f "$KAIZEN_RELEASE_STORE/releases/$KAIZEN_RELEASE_ID/site/studio/index.html"
+            mkdir -p "$studio_target"
+            rsync -a --delete "$KAIZEN_RELEASE_STORE/releases/$KAIZEN_RELEASE_ID/site/studio/" "$studio_target/"
+            curl -fsS -H "Host: $KAIZEN_STUDIO_DOMAIN" http://127.0.0.1/studio/ >/dev/null
 
-            cd "$APP_DIR"
-            git config --global --add safe.directory "$APP_DIR"
-            git fetch origin main
-            git reset --hard origin/main
-
-            corepack enable
-            corepack pnpm --dir apps/studio install --frozen-lockfile
-            rm -rf apps/studio/dist
-            corepack pnpm --dir apps/studio run build
-
-            mkdir -p "$STUDIO_WEB_ROOT/studio"
-            rsync -a --delete apps/studio/dist/ "$STUDIO_WEB_ROOT/studio/"
-
-            curl -fsS -H "Host: $STUDIO_DOMAIN" http://127.0.0.1/studio/ >/dev/null
-
-      - name: Deploy Staging Studio Static on VPS
-        if: github.ref == 'refs/heads/stage' || (github.event_name == 'repository_dispatch' && (github.event.client_payload.target == 'stage' || github.event.client_payload.target == 'staging'))
+      - name: Copy retained stage Studio build to its separate host
+        if: steps.target.outputs.branch == 'stage' && github.event.client_payload.action != 'rollback'
         uses: appleboy/ssh-action@v1.2.0
+        env:
+          KAIZEN_RELEASE_STORE: ${{ secrets.VPS_RELEASES_DIR_STAGE }}
+          KAIZEN_STUDIO_ROOT: ${{ secrets.VPS_STUDIO_WEB_ROOT_STAGE }}
+          KAIZEN_STUDIO_DOMAIN: ${{ secrets.VPS_STUDIO_DOMAIN_STAGE || 'studio-stage.kaizenweb.co.uk' }}
+          KAIZEN_RELEASE_ID: gh-${{ github.run_id }}-${{ github.run_attempt }}
         with:
           host: ${{ secrets.VPS_HOST }}
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_SSH_KEY }}
           port: ${{ secrets.VPS_PORT || '22' }}
-          script_stop: true
+          envs: KAIZEN_RELEASE_STORE,KAIZEN_STUDIO_ROOT,KAIZEN_STUDIO_DOMAIN,KAIZEN_RELEASE_ID
           script: |
             set -euo pipefail
-
-            APP_DIR="${{ secrets.VPS_APP_DIR_STAGE }}"
-            STUDIO_WEB_ROOT="${{ secrets.VPS_STUDIO_WEB_ROOT_STAGE }}"
-            STUDIO_DOMAIN="${{ secrets.VPS_STUDIO_DOMAIN_STAGE || 'studio-stage.kaizenweb.co.uk' }}"
-
-            if [ -z "$STUDIO_WEB_ROOT" ]; then
-              echo "VPS_STUDIO_WEB_ROOT_STAGE is empty. Skipping studio deploy."
+            if [ -z "$KAIZEN_STUDIO_ROOT" ]; then
+              echo "Separate Studio hosting is not configured; the public release includes /studio/."
               exit 0
             fi
-
-            cd "$APP_DIR"
-            git config --global --add safe.directory "$APP_DIR"
-            git fetch origin stage
-            git reset --hard origin/stage
-
-            corepack enable
-            corepack pnpm --dir apps/studio install --frozen-lockfile
-            rm -rf apps/studio/dist
-            corepack pnpm --dir apps/studio run build
-
-            mkdir -p "$STUDIO_WEB_ROOT/studio"
-            rsync -a --delete apps/studio/dist/ "$STUDIO_WEB_ROOT/studio/"
-
-            curl -fsS -H "Host: $STUDIO_DOMAIN" http://127.0.0.1/studio/ >/dev/null
+            [[ "$KAIZEN_STUDIO_ROOT" == /* ]] || { echo "Studio root must be absolute" >&2; exit 1; }
+            studio_root="$(realpath -m "$KAIZEN_STUDIO_ROOT")"
+            studio_target="$(realpath -m "$KAIZEN_STUDIO_ROOT/studio")"
+            test "$studio_root" != /
+            case "$studio_target" in "$studio_root/"*) ;; *) echo "Studio target escapes its configured root" >&2; exit 1 ;; esac
+            test -f "$KAIZEN_RELEASE_STORE/releases/$KAIZEN_RELEASE_ID/site/studio/index.html"
+            mkdir -p "$studio_target"
+            rsync -a --delete "$KAIZEN_RELEASE_STORE/releases/$KAIZEN_RELEASE_ID/site/studio/" "$studio_target/"
+            curl -fsS -H "Host: $KAIZEN_STUDIO_DOMAIN" http://127.0.0.1/studio/ >/dev/null
 
       - name: Discord Notification
         if: always()
