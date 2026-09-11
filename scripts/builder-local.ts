@@ -692,10 +692,9 @@ export function builderLocalPlugin(): Plugin {
                 input.version,
                 input.label,
               );
-              workspace.pages = [
-                ...workspace.pages.filter((p) => p.id !== page.id),
-                page,
-              ];
+              workspace.pages = workspace.pages.some((p) => p.id === page.id)
+                ? workspace.pages.map((p) => p.id === page.id ? page : p)
+                : [...workspace.pages, page];
               await writeWorkspace(workspace);
               return page;
             }

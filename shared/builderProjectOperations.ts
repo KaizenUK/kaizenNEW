@@ -43,10 +43,10 @@ export function applyProjectDraftAction(
         input.version,
         input.label,
       );
-      workspace.pages = [
-        ...workspace.pages.filter((p) => p.id !== result.id),
-        result,
-      ];
+      // Publication serves the first page at /. Editing must not change it.
+      workspace.pages = workspace.pages.some((page) => page.id === result.id)
+        ? workspace.pages.map((page) => page.id === result.id ? result : page)
+        : [...workspace.pages, result];
       break;
     }
     case "site":
