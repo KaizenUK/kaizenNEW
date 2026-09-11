@@ -36,7 +36,7 @@ test("edits a native Astro and React site, then builds and previews its original
 import Counter from '../components/Counter';
 ---
 <!doctype html><html lang="en"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width"/><title>Native client</title><link rel="icon" href="data:,"/></head><body><main>
-<section id="intro"><h1>Original native page</h1><p>Existing design stays editable.</p><img src="/original.svg" alt="Original picture"/><a href="/contact/">Contact</a></section>
+<section id="intro"><h1>Original native page</h1><p>Existing design stays editable.</p><p>Repeated copy</p><p>Repeated copy</p><img src="/original.svg" alt="Original picture"/><a href="/contact/">Contact</a></section>
 <section id="interaction"><h2>Interactive section</h2><Counter client:load /></section>
 </main><style>body{margin:0;background:#10252a;color:#fff;font:18px system-ui}main{max-width:960px;margin:auto;padding:24px}section{padding:30px 0}h1{color:#4fe3bd}img{width:160px;display:block}a{color:#4fe3bd}button{padding:12px}@media(max-width:600px){main{padding:16px}h1{font-size:30px}}</style></body></html>`;
   const counter =
@@ -135,7 +135,9 @@ import Counter from '../components/Counter';
       fullPage: true,
     });
   }
-  await expect(editor.getByRole("status")).toContainText("Editing draft saved");
+  await expect(
+    editor.getByRole("status", { name: "Source editing draft" }),
+  ).toContainText("Editing draft saved");
   await editor.getByRole("button", { name: "Close source editor" }).click();
   await page.reload();
   await page
@@ -244,6 +246,80 @@ import Counter from '../components/Counter';
     preview.getByRole("heading", { name: "Contact page" }),
   ).toBeVisible();
   await preview.close();
+  await route.getByRole("button", { name: "Edit existing content" }).click();
+  const selecting = context.waitForEvent("page");
+  await editor
+    .getByRole("button", { name: "Select content in built page" })
+    .click();
+  const selectedPreview = await selecting;
+  selectedPreview.on("pageerror", (e) => errors.push(e.message));
+  await expect(
+    editor.getByRole("status", { name: "Rendered source selection" }),
+  ).toContainText("ready");
+  for (const width of [1440, 390]) {
+    await selectedPreview.setViewportSize({ width, height: 1000 });
+    await selectedPreview
+      .getByRole("heading", { name: "Edited original design 🌱" })
+      .click();
+    await expect(editor.getByRole("textbox")).toHaveCount(1);
+    await expect(editor.getByRole("textbox")).toHaveValue(
+      "Edited original design 🌱",
+    );
+    if (width === 1440) {
+      await editor
+        .getByRole("textbox")
+        .fill("A change selected from the rendered page");
+      await expect(
+        editor.getByRole("status", { name: "Source editing draft" }),
+      ).toContainText("Editing draft saved");
+      expect(
+        await readFile(path.join(root, "src/pages/index.astro"), "utf8"),
+      ).toBe(result);
+      await editor.getByRole("textbox").fill("Edited original design 🌱");
+      await expect(
+        editor.getByRole("status", { name: "Source editing draft" }),
+      ).toContainText("No unapplied edits");
+    }
+    await selectedPreview
+      .getByRole("img", { name: "Original picture" })
+      .click();
+    await expect(editor.getByRole("textbox")).toHaveCount(2);
+    await selectedPreview
+      .getByText("Repeated copy", { exact: true })
+      .first()
+      .click();
+    await expect(editor.getByRole("textbox")).toHaveCount(2);
+    await expect(editor.getByRole("textbox").first()).toHaveValue(
+      "Repeated copy",
+    );
+    await expect(editor.getByRole("textbox").nth(1)).toHaveValue(
+      "Repeated copy",
+    );
+    await expect(
+      editor.getByRole("status", { name: "Rendered source selection" }),
+    ).toContainText("Choose the intended field");
+    expect(
+      await selectedPreview.evaluate(
+        () => document.documentElement.scrollWidth <= innerWidth,
+      ),
+    ).toBe(true);
+    await selectedPreview.screenshot({
+      path: `test-results/native-source-selection-${width}.png`,
+      fullPage: true,
+    });
+  }
+  await selectedPreview
+    .getByRole("button", { name: "Selection on", exact: true })
+    .click();
+  await selectedPreview
+    .getByRole("button", { name: "Edited counter: 0" })
+    .click();
+  await expect(
+    selectedPreview.getByRole("button", { name: "Edited counter: 1" }),
+  ).toBeVisible();
+  await selectedPreview.close();
+  await editor.getByRole("button", { name: "Show all source fields" }).click();
+  await editor.getByRole("button", { name: "Close source editor" }).click();
   await page
     .getByRole("button", { name: "Stop local preview", exact: true })
     .click();
@@ -253,16 +329,18 @@ import Counter from '../components/Counter';
     "Edited original design 🌱",
   );
   await editor.getByRole("textbox").fill("Recover this unsaved source change");
-  await expect(editor.getByRole("status")).toContainText("Editing draft saved");
+  await expect(
+    editor.getByRole("status", { name: "Source editing draft" }),
+  ).toContainText("Editing draft saved");
   await editor.getByRole("button", { name: "Close source editor" }).click();
   await writeFile(
     path.join(root, "src/pages/index.astro"),
     result + "\n<!-- external edit -->",
   );
   await route.getByRole("button", { name: "Edit existing content" }).click();
-  await expect(editor.getByRole("status")).toContainText(
-    "Repository source changed",
-  );
+  await expect(
+    editor.getByRole("status", { name: "Source editing draft" }),
+  ).toContainText("Repository source changed");
   await editor.getByText("Recover saved changes", { exact: true }).click();
   await expect(
     editor.getByText("Recover this unsaved source change", { exact: true }),
@@ -273,9 +351,9 @@ import Counter from '../components/Counter';
   await editor
     .getByRole("button", { name: "Discard saved editing draft" })
     .click();
-  await expect(editor.getByRole("status")).toContainText(
-    "Saved editing draft discarded",
-  );
+  await expect(
+    editor.getByRole("status", { name: "Source editing draft" }),
+  ).toContainText("Saved editing draft discarded");
   expect(await readFile(path.join(root, "src/pages/index.astro"), "utf8")).toBe(
     result + "\n<!-- external edit -->",
   );
@@ -300,7 +378,9 @@ import Counter from '../components/Counter';
   await expect(otherEditor.getByRole("textbox")).toBeEnabled();
   await editor.getByRole("searchbox").fill("Edited original design");
   await editor.getByRole("textbox").fill("First window owns this saved edit");
-  await expect(editor.getByRole("status")).toContainText("Editing draft saved");
+  await expect(
+    editor.getByRole("status", { name: "Source editing draft" }),
+  ).toContainText("Editing draft saved");
   await otherEditor
     .getByRole("textbox")
     .fill("Second window must not overwrite it");

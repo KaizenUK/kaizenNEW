@@ -3,6 +3,7 @@ import { storage } from "./storage";
 import type { SourceInspection } from "../../shared/builderSourceEditing";
 import type { RepositoryPlan } from "../../scripts/builder-repository";
 import { useSourceEditingDraft } from "./useSourceEditingDraft";
+import { useSourceSelection } from "./useSourceSelection";
 
 export default function SourcePageEditor({
   root,
@@ -20,6 +21,7 @@ export default function SourcePageEditor({
   const [inspection, setInspection] = useState<SourceInspection>();
   const mounted = useRef(false);
   const draft = useSourceEditingDraft(inspection);
+  const selection = useSourceSelection(inspection);
   const { values, setValues, orders, setOrders } = draft;
   const [query, setQuery] = useState("");
   const [busy, setBusy] = useState(true),
@@ -76,7 +78,11 @@ export default function SourcePageEditor({
         styling and interactive code stay in the repository. Review the proposed
         files, apply them, then build and preview before publishing.
       </p>
-      {draft.status && <p role="status">{draft.status}</p>}
+      {draft.status && (
+        <p role="status" aria-label="Source editing draft">
+          {draft.status}
+        </p>
+      )}
       {draft.error && (
         <div role="alert">
           <p>{draft.error}</p>
@@ -138,12 +144,38 @@ export default function SourcePageEditor({
               <p key={i}>{message}</p>
             ))}
           </details>
+          <button
+            disabled={busy || !draft.ready || Boolean(draft.stale)}
+            onClick={() => {
+              setQuery("");
+              void selection.open();
+            }}
+          >
+            Select content in built page
+          </button>
+          <p>
+            Build this repository first using Build &amp; local preview below.
+            The selector shows the last built source; apply edits and rebuild to
+            update it.
+          </p>
+          {selection.status && (
+            <p role="status" aria-label="Rendered source selection">
+              {selection.status}
+            </p>
+          )}
+          {selection.error && <p role="alert">{selection.error}</p>}
+          {selection.ids !== undefined && (
+            <button onClick={selection.clear}>Show all source fields</button>
+          )}
           <label>
             Find page content
             <input
               type="search"
               value={query}
-              onChange={(e) => setQuery(e.target.value)}
+              onChange={(e) => {
+                if (selection.ids !== undefined) selection.clear();
+                setQuery(e.target.value);
+              }}
               placeholder="Search text, links or component names"
             />
           </label>
@@ -152,13 +184,22 @@ export default function SourcePageEditor({
               const fields = inspection.fields.filter(
                 (field) =>
                   field.file === file &&
+                  (selection.ids === undefined ||
+                    selection.ids.includes(field.id)) &&
                   `${field.value} ${field.label} ${field.file}`
                     .toLowerCase()
                     .includes(query.toLowerCase()),
               );
               if (!fields.length) return null;
               return (
-                <details key={file} open={Boolean(query) || file === route}>
+                <details
+                  key={file}
+                  open={
+                    selection.ids !== undefined ||
+                    Boolean(query) ||
+                    file === route
+                  }
+                >
                   <summary>
                     {file.split("/").pop()} · {fields.length} fields
                   </summary>

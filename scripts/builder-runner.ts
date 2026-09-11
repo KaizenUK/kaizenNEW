@@ -5,6 +5,11 @@ import { createServer, type Server } from "node:http";
 import { lstat, readFile, readdir, mkdir, rename } from "node:fs/promises";
 import path from "node:path";
 import { inspectRepository } from "./builder-repository";
+import type { SourceInspection } from "../shared/builderSourceEditing";
+import {
+  sourcePreviewPath,
+  sourceSelectionScript,
+} from "./builder-source-preview";
 
 export type BuildPlan = {
   id: string;
@@ -32,6 +37,9 @@ export type BuildJob = {
 type Command = { cli: string; manager: "pnpm" | "npm" };
 type Running = {
   value: BuildJob;
+  fingerprint?: string;
+  files?: Map<string, Buffer>;
+  selection?: { nonce: string; path: string; script: string };
   child?: ChildProcess;
   server?: Server;
   done?: Promise<void>;
@@ -345,6 +353,50 @@ export class RepositoryRunner {
   status(id: string, projectId: string) {
     return structuredClone(this.require(id, projectId).value);
   }
+  async sourcePreview(
+    id: string,
+    projectId: string,
+    inspection: SourceInspection,
+    parentOrigin: string,
+  ) {
+    const running = this.require(id, projectId);
+    const origin = new URL(parentOrigin);
+    if (
+      !["http:", "https:"].includes(origin.protocol) ||
+      !["localhost", "127.0.0.1", "[::1]"].includes(origin.hostname) ||
+      origin.origin !== parentOrigin
+    )
+      throw new Error("Source selection must be opened from the local editor.");
+    if (
+      running.value.root !== inspection.root ||
+      !running.server ||
+      !running.value.previewUrl ||
+      running.value.status !== "succeeded"
+    )
+      throw new Error(
+        "Build this repository before opening rendered selection.",
+      );
+    if ((await sourceFingerprint(inspection.root)) !== running.fingerprint)
+      throw new Error(
+        "Repository source changed after this build. Build again before selecting rendered content.",
+      );
+    const page = sourcePreviewPath(inspection.route);
+    if (!running.files?.has(`${page}index.html`))
+      throw new Error(
+        "This static route is absent from the built preview. Check its base path or output configuration.",
+      );
+    const nonce = randomBytes(32).toString("hex");
+    running.selection = {
+      nonce,
+      path: page,
+      script: sourceSelectionScript(inspection.fields, nonce, parentOrigin),
+    };
+    return {
+      url: `${new URL(running.value.previewUrl).origin}/__kaizen-source/${nonce}/`,
+      nonce,
+      files: inspection.files,
+    };
+  }
   async cancel(id: string, projectId: string) {
     const running = this.require(id, projectId);
     if (running.value.status === "building") {
@@ -360,6 +412,8 @@ export class RepositoryRunner {
     running.server?.close();
     running.server?.closeAllConnections();
     running.server = undefined;
+    delete running.files;
+    delete running.selection;
     delete running.value.previewUrl;
     delete running.value.previewExpiresAt;
   }
@@ -432,6 +486,8 @@ export class RepositoryRunner {
       const previews = [...this.jobs.values()].filter((value) => value.server);
       if (previews.length >= 2) this.closePreview(previews[0]);
       const files = await snapshot(builtOutput);
+      running.files = files;
+      running.fingerprint = fingerprint;
       if (running.cancel || this.closed)
         throw new Error(running.cancel || "Companion stopped.");
       const token = randomBytes(32).toString("hex"),
@@ -454,12 +510,19 @@ export class RepositoryRunner {
           return;
         }
         const url = new URL(req.url || "/", `http://127.0.0.1:${port}`);
-        if (url.pathname === `/__kaizen-preview/${token}/`) {
+        const selection = running.selection;
+        const selecting =
+          selection && url.pathname === `/__kaizen-source/${selection.nonce}/`;
+        if (url.pathname === `/__kaizen-preview/${token}/` || selecting) {
           res.setHeader(
             "Set-Cookie",
             `${cookie}=${token}; HttpOnly; SameSite=Lax; Path=/; Max-Age=${Math.floor(this.previewMs / 1000)}`,
           );
-          res.writeHead(303, { Location: "/" });
+          res.writeHead(303, {
+            Location: selecting
+              ? `${selection.path}?__kaizen_select=${selection.nonce}`
+              : "/",
+          });
           res.end();
           return;
         }
@@ -470,6 +533,16 @@ export class RepositoryRunner {
         ) {
           res.writeHead(403);
           res.end("Open the preview from the builder.");
+          return;
+        }
+        if (
+          selection &&
+          url.pathname === `/__kaizen-source-script/${selection.nonce}.js`
+        ) {
+          res.writeHead(200, {
+            "Content-Type": "text/javascript; charset=utf-8",
+          });
+          res.end(req.method === "HEAD" ? undefined : selection.script);
           return;
         }
         let file: string;
@@ -491,11 +564,24 @@ export class RepositoryRunner {
           res.end();
           return;
         }
-        const bytes = files.get(file);
+        let bytes = files.get(file);
         if (!bytes) {
           res.writeHead(404);
           res.end("Static page not found.");
           return;
+        }
+        if (
+          selection &&
+          file === `${selection.path}index.html` &&
+          url.searchParams.get("__kaizen_select") === selection.nonce
+        ) {
+          const script = `<script src="/__kaizen-source-script/${selection.nonce}.js" defer></script>`;
+          const html = bytes.toString("utf8");
+          bytes = Buffer.from(
+            /<\/body\s*>/i.test(html)
+              ? html.replace(/<\/body\s*>/i, script + "</body>")
+              : html + script,
+          );
         }
         res.writeHead(200, {
           "Content-Type":

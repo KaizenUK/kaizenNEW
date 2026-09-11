@@ -3,6 +3,8 @@ import { mkdtemp, mkdir, readFile, writeFile, symlink } from "node:fs/promises";
 import path from "node:path";
 import { tmpdir } from "node:os";
 import { RepositoryRunner, type BuildJob } from "../../scripts/builder-runner";
+import { RepositoryCompanion } from "../../scripts/builder-repository";
+import { sourcePreviewPath } from "../../scripts/builder-source-preview";
 
 const runners: RepositoryRunner[] = [];
 function runner(timeout?: number) {
@@ -43,6 +45,80 @@ async function finished(value: RepositoryRunner, job: BuildJob) {
 const output = `await mkdir('dist/contact',{recursive:true}); await writeFile('dist/index.html','<h1>First client</h1><a href="/contact/">Contact</a>'); await writeFile('dist/contact/index.html','<h1>Contact</h1>');`;
 
 describe("reviewed local repository builds", () => {
+  it("binds rendered selection to the project, current source and private built snapshot", async () => {
+    const root = await fixture(output);
+    await writeFile(
+      path.join(root, "src/pages/index.astro"),
+      "<h1>First client</h1>",
+    );
+    const inspection = await new RepositoryCompanion().inspectSourcePage(
+      root,
+      "src/pages/index.astro",
+    );
+    const value = runner();
+    const job = await finished(
+      value,
+      await value.start((await value.prepare(root, "client-a")).id, "client-a"),
+    );
+    await expect(
+      value.sourcePreview(
+        job.id,
+        "client-b",
+        inspection,
+        "http://localhost:4321",
+      ),
+    ).rejects.toThrow("not found");
+    await expect(
+      value.sourcePreview(
+        job.id,
+        "client-a",
+        inspection,
+        "https://example.com",
+      ),
+    ).rejects.toThrow("local editor");
+    const selected = await value.sourcePreview(
+      job.id,
+      "client-a",
+      inspection,
+      "http://localhost:4321",
+    );
+    const entry = await fetch(selected.url, { redirect: "manual" });
+    expect(entry.status).toBe(303);
+    const cookie = entry.headers.get("set-cookie")!.split(";")[0];
+    const origin = new URL(selected.url).origin;
+    const bridge = `${origin}/__kaizen-source-script/${selected.nonce}.js`;
+    expect((await fetch(bridge)).status).toBe(403);
+    const html = await (
+      await fetch(new URL(entry.headers.get("location")!, origin), {
+        headers: { Cookie: cookie },
+      })
+    ).text();
+    expect(html).toContain(`/__kaizen-source-script/${selected.nonce}.js`);
+    expect(
+      await (await fetch(origin, { headers: { Cookie: cookie } })).text(),
+    ).not.toContain("__kaizen-source-script");
+    const script = await (
+      await fetch(bridge, { headers: { Cookie: cookie } })
+    ).text();
+    expect(script).toContain("First client");
+    expect(script).toContain("http://localhost:4321");
+    await writeFile(
+      path.join(root, "src/pages/index.astro"),
+      "<h1>New source</h1>",
+    );
+    await expect(
+      value.sourcePreview(
+        job.id,
+        "client-a",
+        inspection,
+        "http://localhost:4321",
+      ),
+    ).rejects.toThrow("changed after this build");
+    expect(sourcePreviewPath("src/pages/blog/index.astro")).toBe("/blog/");
+    expect(() => sourcePreviewPath("src/pages/[slug].astro")).toThrow(
+      "static Astro",
+    );
+  });
   it("rejects output built while source changed and preserves the developer edit", async () => {
     const root = await fixture(
       `${output} await writeFile('src/pages/changed.astro','<p>New developer content</p>');`,

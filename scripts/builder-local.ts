@@ -543,6 +543,8 @@ export function builderLocalPlugin(): Plugin {
               return inspectRepository(server.config.root);
             if (input.action === "repository-source-inspect")
               return repositories.inspectSourcePage(input.root, input.route);
+            if (input.action === "repository-source-preview")
+              return runner.sourcePreview(input.jobId, projectId, await repositories.inspectSourcePage(input.root, input.route), req.headers.origin || "");
             if (input.action === "repository-source-draft-read")
               return new SourceDrafts(directory).read(input.root, input.route);
             if (input.action === "repository-source-draft-save")
