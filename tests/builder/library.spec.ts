@@ -109,6 +109,7 @@ test("import, bulk organise and replace an asset across drafts while the public 
     .fill(`Asset demonstration ${suffix}`);
   await page.getByRole("textbox", { name: "Page URL", exact: true }).fill(slug);
   await page.getByRole("button", { name: "Publish", exact: true }).click();
+  await page.getByRole("button", { name: "Publish now", exact: true }).click();
   await expect(page.locator(".builder-toast")).toContainText(/publish/i);
   const second = newDocument(
     `Second use ${suffix}`,
@@ -205,6 +206,7 @@ test("import, bulk organise and replace an asset across drafts while the public 
     page.frameLocator("#preview-frame").locator(".kb-page img"),
   ).toHaveAttribute("src", replacement.url);
   await page.getByRole("button", { name: "Publish", exact: true }).click();
+  await page.getByRole("button", { name: "Publish now", exact: true }).click();
   await expect(page.locator(".builder-toast")).toContainText(/publish/i);
   await live.reload();
   await expect(live.locator(".kb-page img")).toHaveAttribute(

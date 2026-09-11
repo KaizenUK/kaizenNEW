@@ -19,6 +19,16 @@ Local files live in the gitignored `.kaizen-builder/` directory. Back it up when
 
 For a static local publication check, set `BUILDER_LOCAL_BUILD=1` for a build. Never set it for a production deployment. Normal builds exclude local pages and local files. Local publishing does not change kaizenweb.co.uk.
 
+## Workspace layout
+
+The builder chrome follows the Unity Dashboard Kit (Poppins headings, Inter body, purple `#6C5DD3` primary, 24px cards). The tokens live at the top of `client/visual-builder/builder.css`; the shell components are in `client/visual-builder/shell.tsx`.
+
+- A permanent left sidebar reaches Pages, Site design, Asset library, Releases (shared workspace only, with a badge counting pages that have unpublished changes), URL redirects, Private previews, Project backups and Existing site pages. The footer toggles dark mode (remembered per browser) and links back to the live site.
+- **Pages** lists every page with a live thumbnail, a status pill (Draft, Published, or Changes to publish, judged from edit times after the last publication), filter tabs, search and sorting. The purple banner creates a blank page or the starter template.
+- **Asset library** opens the same library that the editor shows in its Assets panel, so packs can be managed without opening a page.
+- The editor keeps undo/redo, device preview, the page URL, save status, Save, Preview, Export ZIP and Publish in one top bar. The left panel offers Blocks (searchable, ready-made sections first), Assets and Layers; the right panel offers Design, Page, Styles and Revisions. Selected blocks can be copied, pasted, duplicated or deleted from the inspector header.
+- **Publish** opens a check first: a search-result preview and a short list covering title, URL, shared header/footer, search description and indexing. Publishing proceeds from that dialog; nothing goes live from the top bar directly.
+
 ## Editing and whole-site design
 
 The editor supports nested placement/reordering, a layer tree, parent selection, inline text and rich-text links, undo/redo, duplication and copy/paste. Layout controls include spacing on individual sides, columns and proportions, grid gaps/spans, alignment, sizing, backgrounds/overlays, borders/shadows, typography, image fit/focal points, hover/focus states and responsive visibility/order. Preview widths are 1280, 768 and 390 pixels; CSS breakpoints are 1023 and 639 pixels.

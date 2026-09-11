@@ -61,6 +61,7 @@ test("interactive blocks work in preview and publication, including keyboard nav
     .getByRole("button", { name: "Return to editor", exact: true })
     .click();
   await page.getByRole("button", { name: "Publish", exact: true }).click();
+  await page.getByRole("button", { name: "Publish now", exact: true }).click();
   await expect(page.locator(".builder-toast")).toContainText(/publish/i);
   const live = await context.newPage();
   await live.setViewportSize({ width: 390, height: 844 });
@@ -218,6 +219,7 @@ test("responsive styles survive autosave, reopening, preview and local publicati
     .getByRole("button", { name: "Return to editor", exact: true })
     .click();
   await page.getByRole("button", { name: "Publish", exact: true }).click();
+  await page.getByRole("button", { name: "Publish now", exact: true }).click();
   await expect(page.locator(".builder-toast")).toContainText(/publish/i);
   const live = await context.newPage();
   await live.setViewportSize({ width: 390, height: 844 });
@@ -325,6 +327,8 @@ test("sample ZIP assets drag into nested content and support copy, paste and und
   const source = page.locator(
     '.builder-assets [data-testid^="drawer-item:AssetIcon_"]',
   );
+  // The search filter is applied in a deferred render; wait for it to settle on one icon.
+  await expect(source).toHaveCount(1);
   await source.scrollIntoViewIfNeeded();
   const heading = frame.getByRole("heading", {
     name: "Make room for something better.",
@@ -383,6 +387,7 @@ test("rich text supports inline formatting and links in preview", async ({
     name: "Make room for something better.",
     exact: true,
   });
+  await source.scrollIntoViewIfNeeded();
   const from = await source.boundingBox();
   const to = await heading.boundingBox();
   await page.mouse.move(from!.x + 10, from!.y + 10);

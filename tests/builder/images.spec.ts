@@ -154,6 +154,7 @@ test("optimised images retain originals and smaller mobile files through editing
       `url("http://127.0.0.1:4322${asset.image!.variants[1].url}")`,
     );
     await page.getByRole("button", { name: "Publish", exact: true }).click();
+    await page.getByRole("button", { name: "Publish now", exact: true }).click();
     await expect(page.locator(".builder-toast")).toContainText(/publish/i);
     const mobile = await context.newPage();
     await mobile.setViewportSize({ width: 390, height: 844 });

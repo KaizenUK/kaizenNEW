@@ -123,6 +123,7 @@ test("real UI8 gradient and animated-icon archives import, classify, deduplicate
       .getByRole("textbox", { name: "Page URL", exact: true })
       .fill(slug);
     await page.getByRole("button", { name: "Publish", exact: true }).click();
+    await page.getByRole("button", { name: "Publish now", exact: true }).click();
     await expect(page.locator(".builder-toast")).toContainText(/publish/i);
     await page.reload();
     await page

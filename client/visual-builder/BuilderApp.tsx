@@ -11,22 +11,41 @@ import { renderToStaticMarkup } from "react-dom/server";
 import {
   ArrowLeft,
   ArrowUpRight,
+  Blocks,
   Check,
+  ChevronRight,
+  ClipboardPaste,
   Copy,
+  CopyPlus,
+  Download,
   Eye,
   Globe,
+  Image as ImageIcon,
   Layers,
-  LayoutTemplate,
   Monitor,
+  Moon,
   Plus,
   Redo2,
   Save,
   Smartphone,
+  Sun,
   Tablet,
+  Trash2,
   Undo2,
-  Download,
-  Image as ImageIcon,
 } from "lucide-react";
+import {
+  Brand,
+  IconButton,
+  Segmented,
+  Shell,
+  Sidebar,
+  useBuilderTheme,
+  type BuilderTheme,
+  type BuilderView,
+} from "./shell";
+import PagesView, { pageStatus } from "./PagesView";
+import PublishDialog from "./PublishDialog";
+import BlockPalette from "./BlockPalette";
 import {
   clone,
   freshBlocks,
@@ -41,13 +60,13 @@ import {
   type Workspace,
 } from "../../shared/visualBuilder";
 import {
+  builderConfig,
   canonicalBlocks,
   configWithAssets,
   insertBlocks,
   LibraryContext,
 } from "./config";
 import { block, newDocument } from "./starters";
-import SectionLibrary from "./SectionLibrary";
 import { cloud, localMode, storage } from "./storage";
 import AssetLibrary, { downloadText } from "./AssetLibrary";
 import { previewHtml as renderPreviewHtml } from "./previewHtml";
@@ -81,14 +100,6 @@ import {
   sharedInstance,
 } from "../../shared/builderSite";
 
-function Brand() {
-  return (
-    <span className="builder-brand">
-      <span>改</span> kaizen
-      <span className="builder-brand-light"> / builder</span>
-    </span>
-  );
-}
 const errorMessage = (error: unknown) =>
   error instanceof Error
     ? error.message
@@ -101,14 +112,12 @@ export default function BuilderApp({
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
   const [email, setEmail] = useState("");
+  const [sessionEmail, setSessionEmail] = useState("");
   const [signedIn, setSignedIn] = useState(localMode);
   const [notice, setNotice] = useState("");
   const [creating, setCreating] = useState(false);
-  const [siteOpen, setSiteOpen] = useState(false);
-  const [backupsOpen, setBackupsOpen] = useState(false);
-  const [releasesOpen, setReleasesOpen] = useState(false);
-  const [previewsOpen, setPreviewsOpen] = useState(false);
-  const [redirectsOpen, setRedirectsOpen] = useState(false);
+  const [view, setView] = useState<BuilderView>("pages");
+  const [theme, toggleTheme] = useBuilderTheme();
   const [previewId] = useState(() =>
     typeof window === "undefined"
       ? null
@@ -125,7 +134,7 @@ export default function BuilderApp({
     replaceWorkspace(next);
     setActive(undefined);
     setEditingComponent(undefined);
-    setSiteOpen(false);
+    setView("pages");
     setNotice(
       "Asset replaced in drafts and reusable content. Published pages are unchanged.",
     );
@@ -156,11 +165,13 @@ export default function BuilderApp({
     }
     cloud.auth.getSession().then(({ data }) => {
       setSignedIn(Boolean(data.session));
+      setSessionEmail(data.session?.user?.email || "");
       if (data.session && !previewId) void reload();
       else setLoading(false);
     });
     const { data } = cloud.auth.onAuthStateChange((_event, session) => {
       setSignedIn(Boolean(session));
+      setSessionEmail(session?.user?.email || "");
       if (session && !previewId) setTimeout(() => void reload(), 0);
       else setWorkspace(undefined);
     });
@@ -205,39 +216,6 @@ export default function BuilderApp({
     }
   }
   if (previewId && signedIn) return <PrivatePreviewViewer id={previewId} />;
-  if (redirectsOpen && workspace)
-    return (
-      <div className="builder-app builder-dashboard">
-        <header>
-          <Brand />
-        </header>
-        <main>
-          <RedirectsPanel
-            workspace={workspace}
-            onWorkspace={replaceWorkspace}
-            onClose={() => {
-              setRedirectsOpen(false);
-              void reload();
-            }}
-            onReleases={() => {
-              setRedirectsOpen(false);
-              setReleasesOpen(true);
-            }}
-          />
-        </main>
-      </div>
-    );
-  if (previewsOpen && workspace)
-    return (
-      <div className="builder-app builder-dashboard">
-        <header>
-          <Brand />
-        </header>
-        <main>
-          <PrivatePreviewList onClose={() => setPreviewsOpen(false)} />
-        </main>
-      </div>
-    );
   if (editingComponent && workspace?.site) {
     const definition = workspace.site.draft.components.find(
       (item) => item.id === editingComponent,
@@ -267,6 +245,8 @@ export default function BuilderApp({
             onLibraryReplaced={libraryReplaced}
             onSaved={onSaved}
             isComponent
+            theme={theme}
+            onToggleTheme={toggleTheme}
             saveOverride={async (id, version, document) => {
               const current = workspaceRef.current;
               const design = {
@@ -291,66 +271,13 @@ export default function BuilderApp({
             }}
             onBack={() => {
               setEditingComponent(undefined);
-              setSiteOpen(true);
+              setView("site");
             }}
           />
         </LibraryContext.Provider>
       );
     }
   }
-  if (releasesOpen && workspace && !localMode)
-    return (
-      <div className="builder-app builder-dashboard">
-        <header>
-          <Brand />
-        </header>
-        <main>
-          <ReleasesPanel
-            workspace={workspace}
-            onClose={() => {
-              setReleasesOpen(false);
-              void reload();
-            }}
-          />
-        </main>
-      </div>
-    );
-  if (backupsOpen && workspace)
-    return (
-      <div className="builder-app builder-dashboard">
-        <header>
-          <Brand />
-        </header>
-        <main>
-          <ProjectBackups
-            onWorkspace={replaceWorkspace}
-            onClose={() => {
-              setBackupsOpen(false);
-              void reload();
-            }}
-          />
-        </main>
-      </div>
-    );
-  if (siteOpen && workspace)
-    return (
-      <div className="builder-app builder-dashboard">
-        <header>
-          <Brand />
-        </header>
-        <main>
-          <SitePanel
-            workspace={workspace}
-            onWorkspace={replaceWorkspace}
-            onEdit={setEditingComponent}
-            onBack={() => {
-              setSiteOpen(false);
-              void reload();
-            }}
-          />
-        </main>
-      </div>
-    );
   if (active && workspace)
     return (
       <LibraryContext.Provider value={workspace.assets}>
@@ -363,6 +290,8 @@ export default function BuilderApp({
           onAssets={onAssets}
           onLibraryReplaced={libraryReplaced}
           onSaved={onSaved}
+          theme={theme}
+          onToggleTheme={toggleTheme}
           onBack={() => {
             setActive(undefined);
             void reload();
@@ -370,214 +299,195 @@ export default function BuilderApp({
         />
       </LibraryContext.Provider>
     );
+  const navigate = (next: BuilderView) => {
+    if (next === view) return;
+    setNotice("");
+    if (next === "redirects") {
+      void storage
+        .load()
+        .then((fresh) => {
+          replaceWorkspace(fresh);
+          setView("redirects");
+        })
+        .catch((error) => setError(errorMessage(error)));
+      return;
+    }
+    setView(next);
+    if (next === "pages") void reload();
+  };
+  const current: BuilderView = workspace ? view : "pages";
+  const pendingCount = workspace
+    ? workspace.pages.filter((page) => pageStatus(page).filter === "changed")
+        .length
+    : 0;
+  const panel = (content: React.ReactNode) => (
+    <div className="builder-panel-body">{content}</div>
+  );
   return (
-    <div className="builder-app builder-dashboard">
-      <header>
-        <Brand />
-        <div className="builder-row">
-          <span className="builder-pill">
-            {localMode ? "Local workspace" : "Shared workspace"}
-          </span>
-          {signedIn && !localMode && (
-            <button onClick={() => cloud.auth.signOut()}>Sign out</button>
-          )}
-          <a href="/">
-            Back to Kaizen <ArrowUpRight size={14} />
-          </a>
-        </div>
-      </header>
-      <main>
-        <div className="builder-dashboard-intro">
-          <div>
-            <span className="builder-eyebrow">
-              YOUR IDEAS, READY FOR THE WEB
-            </span>
-            <h1>
-              A little inspiration.
-              <br />
-              An entirely new page.
-            </h1>
-            <p>Bring your assets. Find your flow. Make something yours.</p>
-          </div>
-          <span className="builder-intro-mark" aria-hidden="true">
-            ↗
-          </span>
-        </div>
-        {localMode && (
-          <p className="builder-local-note">
-            Local workspace · Files and pages are saved on this computer.
-            Publishing here updates your local site; production publishing uses
-            the shared workspace.
-          </p>
+    <Shell
+      theme={theme}
+      sidebar={
+        <Sidebar
+          view={current}
+          onNavigate={navigate}
+          localMode={localMode}
+          email={signedIn && !localMode ? sessionEmail : undefined}
+          onSignOut={
+            signedIn && !localMode && cloud
+              ? () => void cloud.auth.signOut()
+              : undefined
+          }
+          theme={theme}
+          onToggleTheme={toggleTheme}
+          hasInventory={Boolean(inventory)}
+          pendingCount={pendingCount}
+        />
+      }
+    >
+      {current === "pages" && (
+        <PagesView
+          workspace={workspace}
+          localMode={localMode}
+          email={signedIn && !localMode ? sessionEmail : undefined}
+          loading={loading}
+          error={error}
+          creating={creating}
+          onCreate={(template) => void create(template)}
+          onOpen={setActive}
+          onRetry={() => void reload()}
+          login={
+            !signedIn && !localMode && cloud ? (
+              <form
+                className="builder-login"
+                onSubmit={async (e) => {
+                  e.preventDefault();
+                  setError("");
+                  const { error } = await cloud.auth.signInWithOtp({
+                    email,
+                    options: {
+                      shouldCreateUser: false,
+                      emailRedirectTo: isPreviewId(previewId)
+                        ? previewLink(location.origin, previewId)
+                        : `${location.origin}/builder/`,
+                    },
+                  });
+                  if (error) setError(error.message);
+                  else setNotice("Check your email for a sign-in link.");
+                }}
+              >
+                <h2>Welcome back</h2>
+                <p>Sign in with your authorised editor account.</p>
+                {previewId && (
+                  <p>
+                    Sign in to open this saved private preview. The link does
+                    not grant access by itself.
+                  </p>
+                )}
+                <label>
+                  Email address
+                  <input
+                    type="email"
+                    required
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                  />
+                </label>
+                <button className="builder-primary">Send sign-in link</button>
+                {notice && <p role="status">{notice}</p>}
+              </form>
+            ) : undefined
+          }
+        />
+      )}
+      {current === "existing" &&
+        inventory &&
+        panel(<ExistingPages inventory={inventory} open />)}
+      {current === "site" &&
+        workspace &&
+        panel(
+          <SitePanel
+            workspace={workspace}
+            onWorkspace={replaceWorkspace}
+            onEdit={setEditingComponent}
+            onBack={() => navigate("pages")}
+          />,
         )}
-        {loading && <p role="status">Opening your workspace…</p>}
-        {error && (
-          <div role="alert" className="builder-error">
-            {error}
-            <button onClick={reload}>Try again</button>
-          </div>
-        )}
-        {!signedIn && !localMode && cloud && (
-          <form
-            className="builder-login"
-            onSubmit={async (e) => {
-              e.preventDefault();
-              setError("");
-              const { error } = await cloud.auth.signInWithOtp({
-                email,
-                options: {
-                  shouldCreateUser: false,
-                  emailRedirectTo: isPreviewId(previewId)
-                    ? previewLink(location.origin, previewId)
-                    : `${location.origin}/builder/`,
-                },
-              });
-              if (error) setError(error.message);
-              else setNotice("Check your email for a sign-in link.");
-            }}
-          >
-            <h2>Welcome back</h2>
-            <p>Sign in with your authorised editor account.</p>
-            {previewId && (
-              <p>
-                Sign in to open this saved private preview. The link does not
-                grant access by itself.
-              </p>
-            )}
-            <label>
-              Email address
-              <input
-                type="email"
-                required
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
-            </label>
-            <button className="builder-primary">Send sign-in link</button>
-            {notice && <p role="status">{notice}</p>}
-          </form>
-        )}
-        {workspace && (
+      {current === "assets" &&
+        workspace &&
+        panel(
           <>
             <div className="builder-section-heading">
-              <h2>
-                Your pages <span>{workspace.pages.length}</span>
-              </h2>
-              <div className="builder-row">
-                <button onClick={() => setSiteOpen(true)}>Site design</button>
-                {inventory && (
-                  <button
-                    onClick={() => {
-                      const panel = window.document.getElementById(
-                        "builder-existing-pages",
-                      ) as HTMLDetailsElement;
-                      panel.open = true;
-                      panel.scrollIntoView({ block: "start" });
-                    }}
-                  >
-                    Existing site pages
-                  </button>
-                )}
-                <button
-                  onClick={() => {
-                    void storage
-                      .load()
-                      .then((next) => {
-                        replaceWorkspace(next);
-                        setRedirectsOpen(true);
-                      })
-                      .catch((error) => setError(errorMessage(error)));
-                  }}
-                >
-                  URL redirects
-                </button>
-                <button onClick={() => setPreviewsOpen(true)}>
-                  Private previews
-                </button>
-                {!localMode && (
-                  <button onClick={() => setReleasesOpen(true)}>
-                    Releases
-                  </button>
-                )}
-                <button onClick={() => setBackupsOpen(true)}>
-                  Project backups
-                </button>
-                <button disabled={creating} onClick={() => create(false)}>
-                  <Plus size={16} /> Blank page
-                </button>
-                <button
-                  disabled={creating}
-                  className="builder-primary"
-                  onClick={() => create(true)}
-                >
-                  <LayoutTemplate size={16} /> Use starter template
-                </button>
+              <div>
+                <h1>Assets</h1>
+                <p>
+                  Images, icons, fonts and code packs, shared by every page.
+                </p>
               </div>
             </div>
-            <div className="builder-page-list">
-              {workspace.pages.map((page) => (
-                <button
-                  className="builder-page-card"
-                  key={page.id}
-                  onClick={() => setActive(page)}
-                >
-                  <div className="builder-page-thumbnail">
-                    <div />
-                    <div />
-                    <div />
-                    <ArrowUpRight size={30} />
-                  </div>
-                  <span className="builder-page-card-title">
-                    {page.draft.title}
-                  </span>
-                  <small>/{page.draft.slug}/</small>
-                  <div className="builder-row">
-                    <span className="builder-pill">
-                      {page.published ? "Published snapshot" : "Draft"}
-                    </span>
-                    <small>
-                      {new Date(page.updatedAt).toLocaleDateString()}
-                    </small>
-                  </div>
-                </button>
-              ))}
-              {!workspace.pages.length && (
-                <button
-                  className="builder-new-page"
-                  disabled={creating}
-                  onClick={() => create(true)}
-                >
-                  <Plus size={28} />
-                  <strong>Your first page starts here</strong>
-                  <span>Start with an editable, responsive template</span>
-                </button>
-              )}
+            <div className="builder-card builder-assets-card">
+              <Puck
+                config={builderConfig}
+                data={{ content: [], root: {} }}
+                onChange={() => {}}
+              >
+                <AssetLibrary
+                  workspace={workspace}
+                  prepareWorkspace={() => storage.load()}
+                  onReplacementComplete={libraryReplaced}
+                  assets={workspace.assets}
+                  onAsset={onAsset}
+                  onAssets={onAssets}
+                  onUse={() =>
+                    setNotice("Open a page to place this asset on it.")
+                  }
+                  onUseBlock={() =>
+                    setNotice("Open a page to add this block to it.")
+                  }
+                  notify={setNotice}
+                />
+              </Puck>
             </div>
-            {inventory && <ExistingPages inventory={inventory} />}
-            <div className="builder-workflow">
-              {[
-                "01 / Import your pack",
-                "02 / Make it your own",
-                "03 / Share it with the world",
-              ].map((title, i) => (
-                <div key={title}>
-                  <h3>{title}</h3>
-                  <p>
-                    {
-                      [
-                        "Images, icons and fonts, all in one searchable library.",
-                        "Drag real components onto a page. Fine-tune every screen size.",
-                        "Save your draft, preview it, then publish when you’re ready.",
-                      ][i]
-                    }
-                  </p>
-                </div>
-              ))}
-            </div>
-          </>
+          </>,
         )}
-      </main>
-    </div>
+      {current === "releases" &&
+        workspace &&
+        !localMode &&
+        panel(
+          <ReleasesPanel
+            workspace={workspace}
+            onClose={() => navigate("pages")}
+          />,
+        )}
+      {current === "redirects" &&
+        workspace &&
+        panel(
+          <RedirectsPanel
+            workspace={workspace}
+            onWorkspace={replaceWorkspace}
+            onClose={() => navigate("pages")}
+            onReleases={() => navigate("releases")}
+          />,
+        )}
+      {current === "previews" &&
+        workspace &&
+        panel(<PrivatePreviewList onClose={() => navigate("pages")} />)}
+      {current === "backups" &&
+        workspace &&
+        panel(
+          <ProjectBackups
+            onWorkspace={replaceWorkspace}
+            onClose={() => navigate("pages")}
+          />,
+        )}
+      {notice && workspace && (
+        <div role="status" className="builder-toast">
+          <span>{notice}</span>
+          <button aria-label="Dismiss message" onClick={() => setNotice("")}>
+            ×
+          </button>
+        </div>
+      )}
+    </Shell>
   );
 }
 
@@ -605,6 +515,8 @@ function EditorInner({
   onBack,
   saveOverride = undefined,
   isComponent = false,
+  theme = "light" as BuilderTheme,
+  onToggleTheme = () => {},
 }) {
   const [document, setDocument] = useState<PageDocument>(clone(page.draft));
   const content = useContext(ContentContext);
@@ -752,7 +664,7 @@ function EditorInner({
       }
     >
       <SiteContext.Provider value={workspace.site?.draft || null}>
-        <div className="builder-app builder-editor">
+        <div className="builder-app builder-editor" data-theme={theme}>
           <Puck
             key={generation}
             config={editorConfig}
@@ -777,6 +689,8 @@ function EditorInner({
           >
             <EditorShell
               isComponent={isComponent}
+              theme={theme}
+              onToggleTheme={onToggleTheme}
               document={document}
               change={change}
               workspace={workspace}
@@ -812,8 +726,12 @@ function EditorInner({
   );
 }
 
+type RightTab = "design" | "page" | "styles" | "revisions";
+type LeftTab = "blocks" | "assets" | "layers";
 function EditorShell({
   isComponent,
+  theme,
+  onToggleTheme,
   document,
   change,
   workspace,
@@ -852,12 +770,13 @@ function EditorShell({
     appState.data.content as Block[],
     selectedItem?.props.id,
   );
-  const [tab, setTab] = useState("blocks");
-  const [rightTab, setRightTab] = useState("design");
+  const [tab, setTab] = useState<LeftTab>("blocks");
+  const [rightTab, setRightTab] = useState<RightTab>("design");
   const [preview, setPreview] = useState(false);
   const [exporting, setExporting] = useState(false);
   const [clipboard, setClipboard] = useState<Block[]>();
   const [savedName, setSavedName] = useState("");
+  const [publishOpen, setPublishOpen] = useState(false);
   const add = (blocks: Block[]) =>
     dispatch({
       type: "set",
@@ -918,6 +837,28 @@ function EditorShell({
     } catch {
       setNotice("Could not read copied components.");
     }
+  };
+  const duplicate = () => {
+    if (!selectedItem) return;
+    const selector = getSelectorForId(selectedItem.props.id);
+    if (selector)
+      dispatch({
+        type: "duplicate",
+        sourceIndex: selector.index,
+        sourceZone: selector.zone,
+        recordHistory: true,
+      });
+  };
+  const remove = () => {
+    if (!selectedItem) return;
+    const selector = getSelectorForId(selectedItem.props.id);
+    if (selector)
+      dispatch({
+        type: "remove",
+        index: selector.index,
+        zone: selector.zone,
+        recordHistory: true,
+      });
   };
   const width = appState.ui.viewports.current.width;
   const surface = useRef<HTMLDivElement>(null);
@@ -1045,29 +986,99 @@ function EditorShell({
   return (
     <>
       <header className="builder-editor-header">
-        <div className="builder-row">
-          <button aria-label="Back to pages" onClick={onBack}>
-            <ArrowLeft size={17} />
-          </button>
-          <Brand />
-          <span className="builder-header-page">
-            {isComponent ? "Shared component · " : ""}
-            {document.title}
-          </span>
-        </div>
-        <div className="builder-row">
+        <div className="builder-editor-left">
+          <IconButton
+            label="Back to pages"
+            icon={<ArrowLeft size={18} />}
+            onClick={onBack}
+          />
+          <Brand compact />
+          <span className="builder-editor-divider" aria-hidden="true" />
+          <div className="builder-editor-crumbs">
+            <span>{isComponent ? "Site design" : "Pages"}</span>
+            <ChevronRight size={14} aria-hidden="true" />
+            <button
+              type="button"
+              className="builder-header-page"
+              title={isComponent ? "Shared component" : "Page settings"}
+              onClick={() => setRightTab(isComponent ? "design" : "page")}
+            >
+              {isComponent
+                ? `Shared component · ${document.title}`
+                : document.title || "Untitled page"}
+            </button>
+          </div>
           <span className="builder-save-status" role="status">
             <Check size={13} />
             {status}
           </span>
-          <button onClick={() => save().catch(() => {})}>
-            <Save size={15} /> Save
+        </div>
+        <div className="builder-editor-center builder-canvas-toolbar">
+          <Segmented
+            className="builder-segmented-icons"
+            ariaLabel="Preview width"
+            value={String(width)}
+            onChange={(size) =>
+              dispatch({
+                type: "setUi",
+                ui: {
+                  viewports: {
+                    ...appState.ui.viewports,
+                    current: { width: Number(size), height: "auto" },
+                  },
+                },
+              })
+            }
+            items={[
+              {
+                id: "1280",
+                icon: <Monitor size={16} />,
+                ariaLabel: "Desktop preview",
+              },
+              {
+                id: "768",
+                icon: <Tablet size={16} />,
+                ariaLabel: "Tablet preview",
+              },
+              {
+                id: "390",
+                icon: <Smartphone size={16} />,
+                ariaLabel: "Mobile preview",
+              },
+            ]}
+          />
+          <span className="builder-canvas-width">{width}px</span>
+          <span className="builder-hint">/{document.slug}/</span>
+        </div>
+        <div className="builder-editor-right">
+          <IconButton
+            label="Undo"
+            icon={<Undo2 size={18} />}
+            disabled={!history.hasPast}
+            onClick={history.back}
+          />
+          <IconButton
+            label="Redo"
+            icon={<Redo2 size={18} />}
+            disabled={!history.hasFuture}
+            onClick={history.forward}
+          />
+          <span className="builder-editor-divider" aria-hidden="true" />
+          <button
+            className="builder-secondary"
+            onClick={() => save().catch(() => {})}
+          >
+            <Save size={16} /> Save
           </button>
-          <button onClick={() => setPreview(true)}>
-            <Eye size={15} /> Preview
+          <button
+            className="builder-secondary"
+            onClick={() => setPreview(true)}
+          >
+            <Eye size={16} /> Preview
           </button>
           {!isComponent && (
             <button
+              className="builder-secondary"
               disabled={exporting}
               onClick={async () => {
                 setExporting(true);
@@ -1099,12 +1110,13 @@ function EditorShell({
                 }
               }}
             >
-              <Download size={15} />
+              <Download size={16} />
               {exporting ? "Exporting…" : "Export ZIP"}
             </button>
           )}
           {isComponent && (
             <button
+              className="builder-secondary"
               onClick={() =>
                 downloadText(
                   `shared-${page.id}-draft.json`,
@@ -1119,40 +1131,37 @@ function EditorShell({
             <button
               disabled={busy}
               className="builder-primary"
-              onClick={publish}
+              onClick={() => setPublishOpen(true)}
             >
-              <Globe size={15} />
+              <Globe size={16} />
               {busy ? "Publishing…" : "Publish"}
             </button>
           )}
+          <IconButton
+            label={
+              theme === "dark" ? "Switch to light mode" : "Switch to dark mode"
+            }
+            icon={theme === "dark" ? <Sun size={18} /> : <Moon size={18} />}
+            onClick={onToggleTheme}
+          />
         </div>
       </header>
       <div className="builder-editor-body">
         <aside className="builder-sidebar builder-left">
-          <div className="builder-tabs">
-            {[
-              ["blocks", "Blocks", LayoutTemplate],
-              ["assets", "Assets", ImageIcon],
-              ["layers", "Layers", Layers],
-            ].map(([id, title, Icon]: any) => (
-              <button
-                key={id}
-                aria-pressed={tab === id}
-                onClick={() => setTab(id)}
-              >
-                <Icon size={16} />
-                {title}
-              </button>
-            ))}
-          </div>
+          <Segmented
+            ariaLabel="Editor panels"
+            value={tab}
+            onChange={(id) => setTab(id as LeftTab)}
+            items={[
+              { id: "blocks", label: "Blocks", icon: <Blocks size={16} /> },
+              { id: "assets", label: "Assets", icon: <ImageIcon size={16} /> },
+              { id: "layers", label: "Layers", icon: <Layers size={16} /> },
+            ]}
+          />
           <div className="builder-sidebar-content">
             {tab === "blocks" && (
               <>
-                <div className="builder-panel-heading">
-                  <h2>Make it yours</h2>
-                  <p>Drag a block onto your page.</p>
-                </div>
-                <SectionLibrary
+                <BlockPalette
                   theme={document.theme}
                   onInsert={(item) => {
                     const data = {
@@ -1171,7 +1180,6 @@ function EditorShell({
                     change({ ...document, data });
                   }}
                 />
-                <Puck.Components />
                 <details className="builder-reusable" open>
                   <summary>Saved sections & templates</summary>
                   {workspace.saved.map((item) => (
@@ -1275,52 +1283,6 @@ function EditorShell({
           </div>
         </aside>
         <main className="builder-canvas">
-          <div className="builder-canvas-toolbar">
-            <div className="builder-row">
-              <button
-                aria-label="Undo"
-                disabled={!history.hasPast}
-                onClick={history.back}
-              >
-                <Undo2 size={17} />
-              </button>
-              <button
-                aria-label="Redo"
-                disabled={!history.hasFuture}
-                onClick={history.forward}
-              >
-                <Redo2 size={17} />
-              </button>
-              <span className="builder-hint">/{document.slug}/</span>
-            </div>
-            <div className="builder-row">
-              {[
-                [1280, "Desktop", Monitor],
-                [768, "Tablet", Tablet],
-                [390, "Mobile", Smartphone],
-              ].map(([size, label, Icon]: any) => (
-                <button
-                  aria-label={`${label} preview`}
-                  key={size}
-                  aria-pressed={width === size}
-                  onClick={() =>
-                    dispatch({
-                      type: "setUi",
-                      ui: {
-                        viewports: {
-                          ...appState.ui.viewports,
-                          current: { width: size, height: "auto" },
-                        },
-                      },
-                    })
-                  }
-                >
-                  <Icon size={16} />
-                </button>
-              ))}
-            </div>
-            <span className="builder-canvas-width">{width}px</span>
-          </div>
           <div className="builder-preview-surface" ref={surface}>
             <div
               className="builder-frame"
@@ -1336,46 +1298,73 @@ function EditorShell({
             </div>
           </div>
           <div className="builder-canvas-footnote">
-            {localMode ? "LOCAL WORKSPACE" : "SHARED WORKSPACE"}{" "}
+            <Globe size={13} aria-hidden="true" />
+            <strong>
+              {localMode ? "Local workspace" : "Shared workspace"}
+            </strong>
             <span>Draft · changes go live only when you publish</span>
           </div>
         </main>
         <aside className="builder-sidebar builder-right">
-          <div className="builder-tabs">
-            {(isComponent
+          <Segmented
+            ariaLabel="Inspector"
+            value={rightTab}
+            onChange={(id) => setRightTab(id as RightTab)}
+            items={(isComponent
               ? ["design"]
               : ["design", "page", "styles", "revisions"]
-            ).map((id) => (
-              <button
-                key={id}
-                aria-pressed={rightTab === id}
-                onClick={() => setRightTab(id)}
-              >
-                {id[0].toUpperCase() + id.slice(1)}
-              </button>
-            ))}
-          </div>
+            ).map((id) => ({
+              id: id as RightTab,
+              label: id[0].toUpperCase() + id.slice(1),
+            }))}
+          />
           <div className="builder-sidebar-content">
             {rightTab === "design" && (
               <>
-                <div className="builder-panel-heading">
-                  <h2>
-                    {selectedItem
-                      ? config.components[selectedItem.type]?.label ||
-                        selectedItem.type
-                      : "Select a component"}
-                  </h2>
-                  <p>
-                    {selectedItem
-                      ? "Shape the details. Make it feel right."
-                      : "Click the canvas or choose a layer to edit it."}
-                  </p>
-                </div>
-                <div className="builder-selection-actions">
-                  <button disabled={!selectedItem} onClick={copy}>
-                    <Copy size={13} /> Copy
-                  </button>
-                  <button onClick={paste}>Paste</button>
+                <div className="builder-inspector-head">
+                  <div className="builder-panel-heading">
+                    <h2>
+                      {selectedItem
+                        ? config.components[selectedItem.type]?.label ||
+                          selectedItem.type
+                        : "Select a component"}
+                    </h2>
+                    <p>
+                      {selectedItem
+                        ? "Shape the details. Make it feel right."
+                        : "Click the canvas or choose a layer to edit it."}
+                    </p>
+                  </div>
+                  <div className="builder-inspector-actions">
+                    <IconButton
+                      className="builder-icon-button-square"
+                      label="Copy"
+                      icon={<Copy size={15} />}
+                      disabled={!selectedItem}
+                      onClick={copy}
+                    />
+                    <IconButton
+                      className="builder-icon-button-square"
+                      label="Paste"
+                      icon={<ClipboardPaste size={15} />}
+                      onClick={paste}
+                    />
+                    <IconButton
+                      className="builder-icon-button-square"
+                      label="Duplicate"
+                      icon={<CopyPlus size={15} />}
+                      disabled={!selectedItem}
+                      onClick={duplicate}
+                    />
+                    <IconButton
+                      className="builder-icon-button-square"
+                      tone="danger"
+                      label="Delete"
+                      icon={<Trash2 size={15} />}
+                      disabled={!selectedItem}
+                      onClick={remove}
+                    />
+                  </div>
                 </div>
                 {ancestors.length > 0 && (
                   <nav
@@ -1701,6 +1690,23 @@ function EditorShell({
           </div>
         </aside>
       </div>
+      {publishOpen && (
+        <PublishDialog
+          document={document}
+          page={page}
+          workspace={workspace}
+          busy={busy}
+          onCancel={() => setPublishOpen(false)}
+          onPublish={() => {
+            setPublishOpen(false);
+            void publish();
+          }}
+          onPreview={() => {
+            setPublishOpen(false);
+            setPreview(true);
+          }}
+        />
+      )}
       {notice && (
         <div role="status" className="builder-toast">
           <span>{notice}</span>

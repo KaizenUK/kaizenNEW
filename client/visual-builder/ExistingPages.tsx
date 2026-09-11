@@ -3,8 +3,10 @@ import type { PageInventory } from "../../shared/builderPageInventory";
 
 export default function ExistingPages({
   inventory,
+  open = false,
 }: {
   inventory: PageInventory;
+  open?: boolean;
 }) {
   const [search, setSearch] = useState(""),
     [showRedirects, setShowRedirects] = useState(false),
@@ -21,7 +23,11 @@ export default function ExistingPages({
     [inventory, search, showRedirects],
   );
   return (
-    <details id="builder-existing-pages" className="builder-existing-pages">
+    <details
+      id="builder-existing-pages"
+      className="builder-existing-pages"
+      open={open}
+    >
       <summary>Existing site pages · managed outside this builder</summary>
       <p>
         The pages above are editable here. Existing site layouts use their

@@ -1,0 +1,37 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "unity-kit",
+      "runtimeExecutable": "node",
+      "runtimeArgs": [
+        "C:/Users/seanm/AppData/Local/Temp/claude/C--Users-seanm-Documents-GitHub-kaizenNEW/772be868-c250-4e6c-8e95-8c557bdf96d8/scratchpad/serve.mjs",
+        "C:/Users/seanm/AppData/Local/Temp/claude/C--Users-seanm-Documents-GitHub-kaizenNEW/772be868-c250-4e6c-8e95-8c557bdf96d8/scratchpad/unity/htmlcss/html+css/build",
+        "5055"
+      ],
+      "port": 5055
+    },
+    {
+      "name": "kaizen-dev",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": [
+        "exec",
+        "astro",
+        "dev",
+        "--port",
+        "4321"
+      ],
+      "port": 4321
+    },
+    {
+      "name": "scratch",
+      "runtimeExecutable": "node",
+      "runtimeArgs": [
+        "C:/Users/seanm/AppData/Local/Temp/claude/C--Users-seanm-Documents-GitHub-kaizenNEW/772be868-c250-4e6c-8e95-8c557bdf96d8/scratchpad/serve.mjs",
+        "C:/Users/seanm/AppData/Local/Temp/claude/C--Users-seanm-Documents-GitHub-kaizenNEW/772be868-c250-4e6c-8e95-8c557bdf96d8/scratchpad",
+        "5056"
+      ],
+      "port": 5056
+    }
+  ]
+}
