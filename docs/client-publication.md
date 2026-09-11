@@ -1,6 +1,6 @@
 # Client publication on a managed Nginx host
 
-Unity's local companion can publish a frozen saved client project to a dedicated Nginx destination. The server release engine and CLI also accept independently built static artifacts. The hosted API/queue/worker and operator recovery are described in [hosted client publication](hosted-client-publication.md); they remain undeployed and need hosted end-to-end verification. This guide does not establish that a production host has been configured or deployed.
+Unity's local companion can publish a frozen saved client project to a dedicated Nginx destination. The server release engine and CLI also accept independently built static artifacts. The hosted API/queue/worker and operator recovery are described in [hosted client publication](hosted-client-publication.md). The hosted APIs and production worker are installed; an explicitly provisioned client destination and its complete publication acceptance are still outstanding. Kaizen's original production site uses its separate verified CI release path.
 
 The CLI does not build source, install dependencies, commit or push. Build through the local companion or the destination repository's normal build command first. Keep the editable `.kaizen/project.zip` and repository source outside public output. A client release contains only the reviewed static files. Use this path on the host that owns the release store; SSH and server administration credentials belong to the operator, never to browser settings.
 

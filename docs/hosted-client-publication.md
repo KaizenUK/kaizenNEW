@@ -1,5 +1,7 @@
 # Hosted client publication
 
+Production installation (11 September 2026): `/opt/kaizen-builder`, system user `kaizen-builder`, private environment `/etc/kaizen/client-worker.env`, registry `/etc/kaizen/client-destinations.json`, and private work directory `/var/lib/kaizen-client-worker`. The systemd service has completed successfully and its timer is enabled. The registry is intentionally empty pending an actual client origin; it cannot overwrite Kaizen's CI release store. This proves supervised queue access, not an end-to-end client publication.
+
 The hosted project API now creates frozen, project-scoped publication reviews and queues. A trusted Node worker on the destination host compiles the snapshot, downloads that project's private media, activates its bound Nginx store, verifies served bytes and commits only the live baseline. Saving newer drafts does not change the queued snapshot and publication never writes over the workspace.
 
 This path has local PostgreSQL/worker protocol coverage, a standalone renderer-loader check and real process-crash recovery against isolated Nginx. The migrations and functions are now installed on the selected Supabase project, and real unrelated-account API/database/private-storage isolation checks pass. A provisioned production client destination and supervised worker publication still require acceptance. Recovery is an explicit operator action on the original host; the browser cannot reclaim worker ownership.

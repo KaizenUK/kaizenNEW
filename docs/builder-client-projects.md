@@ -1,6 +1,8 @@
 # Local client projects and repository handoff
 
-Run `pnpm dev` and open `/builder/`. The local workflow, including project-specific publication to configured Nginx destinations, is implemented and locally verified. Hosted project permissions, storage and publication workers are implemented, but their deployment and live acceptance remain unverified; see [progress and verification](builder-project-progress.md).
+The hosted builder is live at https://kaizenweb.co.uk/builder/. Invited users choose a password using their invitation link, then sign in with email and password. Open registration is disabled. Sean's account has owner/publish access to the original Kaizen workspace. The live invitation/password/project-reopen flow and hosted access isolation have passed acceptance; see [progress and verification](builder-project-progress.md).
+
+For local filesystem/repository integration, run `pnpm dev` and open `/builder/` on your workstation. Hosted browser access does not provide access to local repositories. The client publication worker is installed and supervised on production, with no client destinations provisioned yet; each client needs an explicit destination before publishing.
 
 ## First client project
 
