@@ -9,6 +9,11 @@ on:
     types:
       - sanity-update
   workflow_dispatch:
+    inputs:
+      preflight_only:
+        description: Validate server access and configuration without deploying
+        type: boolean
+        default: false
 
 concurrency:
   group: kaizen-deploy
@@ -20,6 +25,13 @@ jobs:
     runs-on: ubuntu-latest
     env:
       NODE_OPTIONS: --max-old-space-size=6144
+      KAIZEN_NODE_BIN: ${{ secrets.VPS_NODE_BIN }}
+      PUBLIC_SANITY_PROJECT_ID: ${{ secrets.PUBLIC_SANITY_PROJECT_ID }}
+      PUBLIC_SANITY_DATASET: ${{ secrets.PUBLIC_SANITY_DATASET }}
+      SANITY_STUDIO_DATASET: ${{ secrets.PUBLIC_SANITY_DATASET }}
+      SANITY_API_TOKEN: ${{ secrets.SANITY_API_TOKEN }}
+      VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+      VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
     steps:
       - name: Resolve deployment target
         id: target
@@ -47,7 +59,7 @@ jobs:
       - name: Checkout selected branch
         uses: actions/checkout@v4
         with:
-          ref: ${{ steps.target.outputs.branch }}
+          ref: ${{ github.event_name == 'push' && github.sha || steps.target.outputs.branch }}
 
       - name: Set build metadata
         id: metadata
@@ -56,6 +68,9 @@ jobs:
           echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
           echo "VITE_BUILD_NUMBER=$GITHUB_RUN_NUMBER" >> "$GITHUB_ENV"
           echo "VITE_BUILD_SHA=$(git rev-parse HEAD)" >> "$GITHUB_ENV"
+
+      - name: Test deployment preflight
+        run: bash tests/deploy/preflight.sh
 
       - name: Setup Node
         uses: actions/setup-node@v4
@@ -66,6 +81,7 @@ jobs:
         if: steps.target.outputs.branch == 'main'
         uses: appleboy/ssh-action@v1.2.0
         env:
+          KAIZEN_PREFLIGHT_ONLY: ${{ inputs.preflight_only || false }}
           KAIZEN_APP_DIR: ${{ secrets.VPS_APP_DIR_PROD }}
           KAIZEN_RELEASE_STORE: ${{ secrets.VPS_RELEASES_DIR_PROD }}
           KAIZEN_PUBLIC_DOMAIN: ${{ secrets.VPS_PUBLIC_DOMAIN_PROD || 'kaizenweb.co.uk' }}
@@ -78,13 +94,18 @@ jobs:
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_SSH_KEY }}
           port: ${{ secrets.VPS_PORT || '22' }}
+          fingerprint: ${{ secrets.VPS_HOST_FINGERPRINT }}
           command_timeout: 30m
-          envs: KAIZEN_APP_DIR,KAIZEN_RELEASE_STORE,KAIZEN_PUBLIC_DOMAIN,KAIZEN_DEPLOY_BRANCH,KAIZEN_DEPLOY_SHA,KAIZEN_RELEASE_ID,KAIZEN_BUILDER_REQUEST_ID
+          envs: KAIZEN_APP_DIR,KAIZEN_RELEASE_STORE,KAIZEN_PUBLIC_DOMAIN,KAIZEN_DEPLOY_BRANCH,KAIZEN_DEPLOY_SHA,KAIZEN_RELEASE_ID,KAIZEN_BUILDER_REQUEST_ID,KAIZEN_NODE_BIN,KAIZEN_PREFLIGHT_ONLY,NODE_OPTIONS,PUBLIC_SANITY_PROJECT_ID,PUBLIC_SANITY_DATASET,SANITY_STUDIO_DATASET,SANITY_API_TOKEN,VITE_SUPABASE_URL,VITE_SUPABASE_ANON_KEY,VITE_BUILD_NUMBER,VITE_BUILD_SHA
           script: |
             set -euo pipefail
-            test -n "$KAIZEN_RELEASE_STORE" && test -f "$KAIZEN_RELEASE_STORE/active.conf" || { echo "Set up the release store before deploying; see docs/website-releases.md" >&2; exit 1; }
+            test -n "$KAIZEN_APP_DIR" || { echo "Missing VPS_APP_DIR for the selected target" >&2; exit 1; }
+            test -n "$KAIZEN_RELEASE_STORE" || { echo "Missing VPS_RELEASES_DIR for the selected target" >&2; exit 1; }
+            export PATH="${KAIZEN_NODE_BIN:+$KAIZEN_NODE_BIN:}$PATH"
             cd "$KAIZEN_APP_DIR"
             git fetch origin main
+            git show "$KAIZEN_DEPLOY_SHA:scripts/preflight-public-deploy.sh" | bash
+            if [ "$KAIZEN_PREFLIGHT_ONLY" = true ]; then exit 0; fi
             git show "$KAIZEN_DEPLOY_SHA:scripts/deploy-public-release.sh" > "$KAIZEN_RELEASE_STORE/deploy-$KAIZEN_RELEASE_ID.sh"
             bash "$KAIZEN_RELEASE_STORE/deploy-$KAIZEN_RELEASE_ID.sh"
 
@@ -92,6 +113,7 @@ jobs:
         if: steps.target.outputs.branch == 'stage'
         uses: appleboy/ssh-action@v1.2.0
         env:
+          KAIZEN_PREFLIGHT_ONLY: ${{ inputs.preflight_only || false }}
           KAIZEN_APP_DIR: ${{ secrets.VPS_APP_DIR_STAGE }}
           KAIZEN_RELEASE_STORE: ${{ secrets.VPS_RELEASES_DIR_STAGE }}
           KAIZEN_PUBLIC_DOMAIN: ${{ secrets.VPS_PUBLIC_DOMAIN_STAGE || 'stage.kaizenweb.co.uk' }}
@@ -104,18 +126,23 @@ jobs:
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_SSH_KEY }}
           port: ${{ secrets.VPS_PORT || '22' }}
+          fingerprint: ${{ secrets.VPS_HOST_FINGERPRINT }}
           command_timeout: 30m
-          envs: KAIZEN_APP_DIR,KAIZEN_RELEASE_STORE,KAIZEN_PUBLIC_DOMAIN,KAIZEN_DEPLOY_BRANCH,KAIZEN_DEPLOY_SHA,KAIZEN_RELEASE_ID,KAIZEN_BUILDER_REQUEST_ID
+          envs: KAIZEN_APP_DIR,KAIZEN_RELEASE_STORE,KAIZEN_PUBLIC_DOMAIN,KAIZEN_DEPLOY_BRANCH,KAIZEN_DEPLOY_SHA,KAIZEN_RELEASE_ID,KAIZEN_BUILDER_REQUEST_ID,KAIZEN_NODE_BIN,KAIZEN_PREFLIGHT_ONLY,NODE_OPTIONS,PUBLIC_SANITY_PROJECT_ID,PUBLIC_SANITY_DATASET,SANITY_STUDIO_DATASET,SANITY_API_TOKEN,VITE_SUPABASE_URL,VITE_SUPABASE_ANON_KEY,VITE_BUILD_NUMBER,VITE_BUILD_SHA
           script: |
             set -euo pipefail
-            test -n "$KAIZEN_RELEASE_STORE" && test -f "$KAIZEN_RELEASE_STORE/active.conf" || { echo "Set up the release store before deploying; see docs/website-releases.md" >&2; exit 1; }
+            test -n "$KAIZEN_APP_DIR" || { echo "Missing VPS_APP_DIR for the selected target" >&2; exit 1; }
+            test -n "$KAIZEN_RELEASE_STORE" || { echo "Missing VPS_RELEASES_DIR for the selected target" >&2; exit 1; }
+            export PATH="${KAIZEN_NODE_BIN:+$KAIZEN_NODE_BIN:}$PATH"
             cd "$KAIZEN_APP_DIR"
             git fetch origin stage
+            git show "$KAIZEN_DEPLOY_SHA:scripts/preflight-public-deploy.sh" | bash
+            if [ "$KAIZEN_PREFLIGHT_ONLY" = true ]; then exit 0; fi
             git show "$KAIZEN_DEPLOY_SHA:scripts/deploy-public-release.sh" > "$KAIZEN_RELEASE_STORE/deploy-$KAIZEN_RELEASE_ID.sh"
             bash "$KAIZEN_RELEASE_STORE/deploy-$KAIZEN_RELEASE_ID.sh"
 
       - name: Copy retained main Studio build to its separate host
-        if: steps.target.outputs.branch == 'main' && github.event.client_payload.action != 'rollback'
+        if: steps.target.outputs.branch == 'main' && github.event.client_payload.action != 'rollback' && inputs.preflight_only != true
         uses: appleboy/ssh-action@v1.2.0
         env:
           KAIZEN_RELEASE_STORE: ${{ secrets.VPS_RELEASES_DIR_PROD }}
@@ -127,6 +154,7 @@ jobs:
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_SSH_KEY }}
           port: ${{ secrets.VPS_PORT || '22' }}
+          fingerprint: ${{ secrets.VPS_HOST_FINGERPRINT }}
           envs: KAIZEN_RELEASE_STORE,KAIZEN_STUDIO_ROOT,KAIZEN_STUDIO_DOMAIN,KAIZEN_RELEASE_ID
           script: |
             set -euo pipefail
@@ -145,7 +173,7 @@ jobs:
             curl -fsS -H "Host: $KAIZEN_STUDIO_DOMAIN" http://127.0.0.1/studio/ >/dev/null
 
       - name: Copy retained stage Studio build to its separate host
-        if: steps.target.outputs.branch == 'stage' && github.event.client_payload.action != 'rollback'
+        if: steps.target.outputs.branch == 'stage' && github.event.client_payload.action != 'rollback' && inputs.preflight_only != true
         uses: appleboy/ssh-action@v1.2.0
         env:
           KAIZEN_RELEASE_STORE: ${{ secrets.VPS_RELEASES_DIR_STAGE }}
@@ -157,6 +185,7 @@ jobs:
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_SSH_KEY }}
           port: ${{ secrets.VPS_PORT || '22' }}
+          fingerprint: ${{ secrets.VPS_HOST_FINGERPRINT }}
           envs: KAIZEN_RELEASE_STORE,KAIZEN_STUDIO_ROOT,KAIZEN_STUDIO_DOMAIN,KAIZEN_RELEASE_ID
           script: |
             set -euo pipefail

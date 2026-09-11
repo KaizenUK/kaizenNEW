@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+[[ -n "${KAIZEN_NODE_BIN:-}" ]] && export PATH="$KAIZEN_NODE_BIN:$PATH"
+
 # Called by the existing GitHub deployment job. All inputs are explicit environment values.
 : "${KAIZEN_APP_DIR:?Set the dedicated VPS application directory}"
 : "${KAIZEN_RELEASE_STORE:?Set VPS_RELEASES_DIR_PROD or VPS_RELEASES_DIR_STAGE after the Nginx release-store setup}"
@@ -30,7 +32,7 @@ git fetch origin "$KAIZEN_DEPLOY_BRANCH"
 git cat-file -e "$KAIZEN_DEPLOY_SHA^{commit}"
 git merge-base --is-ancestor "$KAIZEN_DEPLOY_SHA" "origin/$KAIZEN_DEPLOY_BRANCH" || { echo "The requested commit is not on the selected deployment branch" >&2; exit 1; }
 git reset --hard "$KAIZEN_DEPLOY_SHA"
-corepack enable
+# Runtime shims are installed by the server operator, not by the unprivileged deploy user.
 corepack pnpm install --frozen-lockfile
 corepack pnpm --dir apps/studio install --frozen-lockfile
 # A cloud builder deployment freezes its input and promotes database publications only after HTTP verification.

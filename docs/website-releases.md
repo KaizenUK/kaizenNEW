@@ -6,7 +6,7 @@ The public deployment workflow now stages a complete build outside the live web 
 
 ## Required one-time VPS setup
 
-**Complete this before deploying the updated workflow.** This checkout has no configured VPS or Supabase deployment credentials, and no server configuration has been changed. The workflow fails before changing the live files if its release store is absent.
+**Complete this before deploying the updated workflow.** The workflow fails before changing the live files if its release store is absent. The current production host configuration is recorded below; new hosts still need the setup in this section.
 
 1. Choose a dedicated directory outside all public web roots and outside the Git checkout. Use different directories for production and staging, for example `/var/lib/kaizen/production` and `/var/lib/kaizen/staging`. The deployment user must own the directory; Nginx workers need read/traverse access. Do not expose the store itself through a server root or alias. Only the selected `site/` and shared `_astro/` assets are public.
 2. From a reviewed checkout containing these scripts, capture the **currently served** static directory as the baseline. It must contain `index.html` and `builder/index.html`. Ensure its `redirects.generated.conf` matches the current generated redirect include; if the live include is stored elsewhere, copy that file into a separate baseline copy first. Leave the existing live directory intact.
@@ -35,6 +35,20 @@ The public deployment workflow now stages a complete build outside the live web 
 Repeat the baseline setup for staging before enabling staging deployment. Existing separate Studio hosting remains optional. It receives the exact Studio files from the retained public release; that separate copy still uses its existing rsync mechanism. The public release, including `/builder/` and its bundled `/studio/`, uses the new activation mechanism.
 
 ## Deployment and verification
+
+### Current DirectAdmin production host
+
+Production uses `144.91.72.17` with the dedicated `kaizen-deploy` SSH user. The application checkout is `/srv/kaizen/production` and the retained store is `/var/lib/kaizen/production`. GitHub Actions holds a separate deployment key, the verified SSH host fingerprint, and these paths. `VPS_NODE_BIN=/opt/kaizen-runtime/node/bin` selects the dedicated Node 22 runtime without changing the host's system Node installation. Runtime shims are installed by the operator; deployment runs without permission to modify that runtime.
+
+Apache/DirectAdmin continues to own ports 80/443, TLS, the `/editor-api/` proxy and `/cms/` routing. Only the main Kaizen website is proxied to the `kaizen-nginx` systemd service on `127.0.0.1:8091`. The domain's custom HTTPD template retains this route across DirectAdmin regeneration. The Nginx binary was extracted from Ubuntu's signed package repository into `/opt/kaizen-runtime/nginx`; the operator must update that isolated package when Ubuntu publishes security updates. The deployment user can validate and gracefully reload this Nginx service through two specific sudo commands.
+
+The original Apache web root remains intact. Configuration backups and the original homepage comparison are in `/etc/kaizen-backups/20260911-deployment`. `legacy-baseline-20260911` retains the old static site, with an explicit temporary builder placeholder because the legacy site had no builder entry. It provides the initial verified rollback artifact.
+
+Cloudflare injects a changing browser-check script into HTML. Consequently the VPS resolves `kaizenweb.co.uk` to its own address in `/etc/hosts`: the release engine validates full response hashes over the HTTPS **origin**. This does not verify CDN-transformed HTML. Verify the public Cloudflare release marker and browser routes independently after deployment; do not disable Cloudflare protection or treat origin verification alone as CDN verification.
+
+The workflow forwards the existing Sanity and public Supabase build settings to the server, including the Studio dataset. Server-only cloud publication credentials remain a separate operator setup. A normal code deployment does not enable the cloud builder coordinator automatically.
+
+Manual workflow runs support `preflight_only` to validate access, the release store, Node and Nginx without a build or activation. `tests/deploy/preflight.sh` exercises missing configuration, unsupported Node, rejected Nginx configuration, and a valid destination. Staging hosting remains separate and is not configured or deployed by this production repair.
 
 The workflow resolves main/stage once, checks out that branch, records its exact commit and uses the same commit on the VPS. A repository dispatch targeting staging cannot also deploy production because the workflow happens to run on the default branch. Root and Studio dependencies are installed before the complete build. A process-held `flock` serialises use of the VPS checkout through staging and activation.
 
