@@ -52,6 +52,7 @@ on:
       - "scripts/builder-source-editing.ts"
       - "scripts/builder-source-drafts.ts"
       - "scripts/builder-source-preview.ts"
+      - "scripts/builder-native-backup.ts"
       - "shared/builderSourceEditing.ts"
       - "scripts/builder-runner.ts"
       - "scripts/deploy-public-release.sh"

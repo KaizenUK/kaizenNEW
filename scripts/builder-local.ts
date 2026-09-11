@@ -12,6 +12,7 @@ import path from "node:path";
 import { LocalProjects } from "./builder-projects";
 import { RepositoryRunner } from "./builder-runner";
 import { SourceDrafts } from "./builder-source-drafts";
+import { NativeRepositoryBackups } from "./builder-native-backup";
 import { ClientPublisher } from "./builder-client-publisher";
 import { execFile } from "node:child_process";
 import { promisify } from "node:util";
@@ -154,6 +155,7 @@ export function builderLocalPlugin(): Plugin {
   let queue: Promise<unknown> = Promise.resolve();
   const projects = new LocalProjects(directory);
   const repositories = new RepositoryCompanion();
+  const nativeBackups = new NativeRepositoryBackups();
   const sourceDraftPlans = new Map<string, {root: string; route: string; version: number}>();
   const runner = new RepositoryRunner();
   let compilerServer: any;
@@ -539,6 +541,18 @@ export function builderLocalPlugin(): Plugin {
             }
             if (input.action === "repository-inspect")
               return inspectRepository(input.root);
+            if (input.action === "repository-native-backup-review")
+              return nativeBackups.capture(input.root, projectId, directory);
+            if (input.action === "repository-native-backup-download")
+              return {archive: nativeBackups.download(input.reviewId, projectId)};
+            if (input.action === "repository-native-restore-review")
+              return nativeBackups.reviewRestore(input.root, projectId, Buffer.from(input.archive, 'base64'));
+            if (input.action === "repository-native-restore-apply")
+              return nativeBackups.restore(input.reviewId, projectId, directory);
+            if (input.action === "repository-native-review-discard") {
+              nativeBackups.discard(input.reviewId, projectId);
+              return {discarded:true};
+            }
             if (input.action === "repository-inspect-current")
               return inspectRepository(server.config.root);
             if (input.action === "repository-source-inspect")

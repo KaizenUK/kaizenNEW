@@ -4,6 +4,7 @@ import {
   mkdir,
   lstat,
   readFile,
+  readdir,
   rename,
   unlink,
   writeFile,
@@ -13,6 +14,47 @@ import type { SourceDraft, SourceEdits } from "../shared/builderSourceEditing";
 /** Private companion data, scoped by project directory and canonical repository/route. */
 export class SourceDrafts {
   constructor(private directory: string) {}
+  async list(root: string): Promise<SourceDraft[]> {
+    const directory = path.join(this.directory, "source-drafts");
+    const stat = await lstat(directory).catch((e) => {
+      if (e.code !== "ENOENT") throw e;
+    });
+    if (!stat) return [];
+    if (!stat.isDirectory() || stat.isSymbolicLink())
+      throw new Error("Editing drafts cannot use a linked directory.");
+    const names = await readdir(directory);
+    if (names.length > 10000)
+      throw new Error("Too many saved source editing drafts.");
+    const normal = (value: string) =>
+      process.platform === "win32"
+        ? path.resolve(value).toLowerCase()
+        : path.resolve(value);
+    const drafts: SourceDraft[] = [];
+    for (const name of names) {
+      if (!/^[a-f0-9]{64}\.json$/.test(name)) continue;
+      const file = path.join(directory, name),
+        stat = await lstat(file);
+      if (
+        !stat.isFile() ||
+        stat.isSymbolicLink() ||
+        stat.size > 4 * 1024 * 1024
+      )
+        throw new Error(
+          "Invalid saved editing draft. Preserve it for recovery.",
+        );
+      const value = JSON.parse(await readFile(file, "utf8"));
+      if (typeof value.root !== "string" || !path.isAbsolute(value.root))
+        throw new Error("Invalid saved editing draft repository.");
+      if (normal(value.root) !== normal(root)) continue;
+      if (path.basename(this.identity(root, value.route).file) !== name)
+        throw new Error(
+          "Saved editing draft identity does not match its file. Preserve it for recovery.",
+        );
+      const saved = await this.read(root, value.route);
+      if (saved.edits) drafts.push(saved);
+    }
+    return drafts;
+  }
   private identity(root: string, route: string) {
     if (
       typeof root !== "string" ||
@@ -75,7 +117,7 @@ export class SourceDrafts {
     this.validate(saved.edits, identity.root, route);
     return saved;
   }
-  private validate(edits: SourceEdits | null, root: string, route: string) {
+  validate(edits: SourceEdits | null, root: string, route: string) {
     if (edits === null) return;
     if (
       !edits ||
@@ -85,12 +127,54 @@ export class SourceDrafts {
       !Array.isArray(edits.inspection.files) ||
       !Array.isArray(edits.inspection.fields) ||
       !Array.isArray(edits.inspection.groups) ||
+      !Array.isArray(edits.inspection.boundaries) ||
       !edits.values ||
+      typeof edits.values !== "object" ||
       Array.isArray(edits.values) ||
       !edits.orders ||
+      typeof edits.orders !== "object" ||
       Array.isArray(edits.orders)
     )
       throw new Error("Invalid saved source edits.");
+    const sourcePath = (file: unknown) =>
+      typeof file === "string" &&
+      /^(src|client)\//.test(file) &&
+      !file.includes("\\") &&
+      !file.includes(":") &&
+      !file.split("/").some((part) => !part || part === "." || part === "..");
+    if (
+      edits.inspection.files.some(
+        (file) =>
+          !file || !sourcePath(file.file) || !/^[a-f0-9]{64}$/.test(file.hash),
+      ) ||
+      edits.inspection.fields.some(
+        (field) =>
+          !field ||
+          typeof field.id !== "string" ||
+          !sourcePath(field.file) ||
+          typeof field.value !== "string" ||
+          typeof field.label !== "string" ||
+          !Number.isSafeInteger(field.line) ||
+          field.line < 1 ||
+          !["text", "link", "image"].includes(field.kind),
+      ) ||
+      edits.inspection.groups.some(
+        (group) =>
+          !group ||
+          typeof group.id !== "string" ||
+          !sourcePath(group.file) ||
+          typeof group.label !== "string" ||
+          !Array.isArray(group.items) ||
+          group.items.some(
+            (item) =>
+              !item ||
+              typeof item.id !== "string" ||
+              typeof item.label !== "string",
+          ),
+      ) ||
+      edits.inspection.boundaries.some((value) => typeof value !== "string")
+    )
+      throw new Error("Invalid saved source inspection.");
     for (const [id, value] of Object.entries(edits.values))
       if (
         typeof value !== "string" ||

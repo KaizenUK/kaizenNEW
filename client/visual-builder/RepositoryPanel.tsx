@@ -7,6 +7,8 @@ import { storage } from "./storage";
 import { exportProject, downloadProject } from "./exportProject";
 import RepositoryBuild from "./RepositoryBuild";
 import SourcePageEditor from "./SourcePageEditor";
+import NativeRepositoryBackup from "./NativeRepositoryBackup";
+import { activeProjectId } from "./projectStorage";
 
 async function base64(blob: Blob): Promise<string> {
   return new Promise((resolve, reject) => {
@@ -28,6 +30,25 @@ export default function RepositoryPanel({
   const [busy, setBusy] = useState(false);
   const [status, setStatus] = useState("");
   const [error, setError] = useState("");
+  const repositoryKey = `kaizen-native-repository:${activeProjectId}`;
+  useEffect(() => {
+    if (!existingPath) {
+      try {
+        setRoot(localStorage.getItem(repositoryKey) || "");
+      } catch {
+        /* Browser preferences may be unavailable. */
+      }
+    }
+  }, [existingPath, repositoryKey]);
+  useEffect(() => {
+    if (inspection) {
+      try {
+        localStorage.setItem(repositoryKey, inspection.root);
+      } catch {
+        /* Source and drafts are stored by the companion. */
+      }
+    }
+  }, [inspection, repositoryKey]);
   useEffect(() => {
     if (!existingPath) return;
     let current = true;
@@ -242,6 +263,22 @@ export default function RepositoryPanel({
           onClose={() => setSourceRoute(undefined)}
         />
       )}
+      <NativeRepositoryBackup
+        root={
+          inspection?.framework === "astro-react" ? inspection.root : undefined
+        }
+        onRestored={(restored) => {
+          setRoot(restored);
+          setInspection(undefined);
+          setPlan(undefined);
+          setSourceRoute(undefined);
+          try {
+            localStorage.setItem(repositoryKey, restored);
+          } catch {
+            /* Keep the restored path visible. */
+          }
+        }}
+      />
       {inspection &&
         ["astro-react", "kaizen-export"].includes(inspection.framework) && (
           <RepositoryBuild key={inspection.root} root={inspection.root} />
