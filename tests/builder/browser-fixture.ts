@@ -36,3 +36,4 @@ export const test =
       })
     : base;
 export { expect } from "@playwright/test";
+export type { Page } from "@playwright/test";

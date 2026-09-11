@@ -7,7 +7,7 @@ API endpoints should only be created when strictly necessary, for example to enc
 ## Tech Stack
 
 - **PNPM**: Prefer pnpm
-- **Framework**: Astro 6 static output
+- **Framework**: Astro 7 static output
 - **Frontend**: React 19 + TypeScript + TailwindCSS 4
 - **CMS**: Sanity Studio (separate app under `apps/studio`)
 - **Testing**: Vitest

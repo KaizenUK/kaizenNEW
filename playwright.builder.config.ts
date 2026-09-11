@@ -21,7 +21,7 @@ export default defineConfig({
     headless: true,
   },
   webServer: {
-    command: "pnpm exec astro dev --host 127.0.0.1 --port 4322",
+    command: "node tests/builder/dev-server.mjs",
     url: "http://127.0.0.1:4322/builder/",
     reuseExistingServer: false,
     timeout: 120_000,

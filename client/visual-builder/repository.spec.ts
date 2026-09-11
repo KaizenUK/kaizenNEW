@@ -33,8 +33,8 @@ async function fixture(astro = true) {
             preview: "astro preview --host 127.0.0.1",
           },
           dependencies: {
-            astro: "6.4.8",
-            "@astrojs/react": "5.0.0",
+            astro: "7.3.2",
+            "@astrojs/react": "6.0.5",
             react: "19.2.4",
             "react-dom": "19.2.4",
             htmlparser2: "12.0.0",

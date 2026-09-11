@@ -1,4 +1,4 @@
-import { expect, test } from "@playwright/test";
+import { expect, test } from "./browser-fixture";
 
 test("redirect drafts survive reopening, publish both aliases, preserve queries and restore history", async ({
   page,

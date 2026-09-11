@@ -1,4 +1,4 @@
-import { test, expect } from "@playwright/test";
+import { test, expect } from "./browser-fixture";
 import { mkdir, mkdtemp, readFile, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import path from "node:path";
@@ -15,8 +15,8 @@ test("Unity repository handoff reviews changes and reopens for another visual ed
   const packageSource = JSON.stringify({
     type: "module",
     dependencies: {
-      astro: "6.0.4",
-      "@astrojs/react": "5.0.0",
+      astro: "7.3.2",
+      "@astrojs/react": "6.0.5",
       react: "19.2.4",
       "react-dom": "19.2.4",
       htmlparser2: "12.0.0",

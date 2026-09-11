@@ -1,4 +1,4 @@
-import { test, expect } from "@playwright/test";
+import { test, expect } from "./browser-fixture";
 
 test("hosted media presentation renews in a real browser without resetting open controls", async ({
   page,

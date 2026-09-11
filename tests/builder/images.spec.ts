@@ -1,4 +1,4 @@
-import { expect, test } from "@playwright/test";
+import { expect, test } from "./browser-fixture";
 import { readFile, writeFile } from "node:fs/promises";
 import { createHash } from "node:crypto";
 import { starterBlocks } from "../../client/visual-builder/starters";

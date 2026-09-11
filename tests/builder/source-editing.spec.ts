@@ -33,8 +33,8 @@ test("edits a native Astro and React site, then builds and previews its original
       type: "module",
       scripts: { build: "astro build" },
       dependencies: {
-        astro: "6.4.8",
-        "@astrojs/react": "5.0.0",
+        astro: "7.3.2",
+        "@astrojs/react": "6.0.5",
         react: "19.2.4",
         "react-dom": "19.2.4",
       },

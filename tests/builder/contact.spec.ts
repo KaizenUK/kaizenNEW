@@ -1,4 +1,4 @@
-import { expect, test } from "@playwright/test";
+import { expect, test } from "./browser-fixture";
 import { readFile } from "node:fs/promises";
 
 test("a visually built contact form validates, survives a lost acknowledgement and saves once", async ({

@@ -1,4 +1,4 @@
-import { expect, test } from "@playwright/test";
+import { expect, test } from "./browser-fixture";
 import { readFile, writeFile } from "node:fs/promises";
 import { unzipSync, strFromU8 } from "fflate";
 import {

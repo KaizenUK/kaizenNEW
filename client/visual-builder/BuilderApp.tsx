@@ -953,11 +953,19 @@ function EditorShell({
   const [availableWidth, setAvailableWidth] = useState(700);
   useEffect(() => {
     if (!surface.current) return;
-    const observer = new ResizeObserver((entries) =>
-      setAvailableWidth(entries[0].contentRect.width),
-    );
+    let frame: number;
+    const observer = new ResizeObserver((entries) => {
+      const nextWidth = entries[0].contentRect.width;
+      // Updating the scaled canvas inside delivery can trigger another resize
+      // in the same observer cycle. Commit layout changes in the next frame.
+      cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(() => setAvailableWidth(nextWidth));
+    });
     observer.observe(surface.current);
-    return () => observer.disconnect();
+    return () => {
+      observer.disconnect();
+      cancelAnimationFrame(frame);
+    };
   }, []);
   const canvasWidth = typeof width === "number" ? width : availableWidth;
   const zoom = Math.min(1, availableWidth / canvasWidth);

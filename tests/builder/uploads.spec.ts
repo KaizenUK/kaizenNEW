@@ -1,4 +1,4 @@
-import { expect, test } from "@playwright/test";
+import { expect, test } from "./browser-fixture";
 import { zipSync, strToU8 } from "fflate";
 import { createHash } from "node:crypto";
 import type { Asset, Workspace } from "../../shared/visualBuilder";

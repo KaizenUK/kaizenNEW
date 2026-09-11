@@ -1,4 +1,4 @@
-import { expect, test, type Page } from "@playwright/test";
+import { expect, test, type Page } from "./browser-fixture";
 import { readdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import type { Asset, Workspace } from "../../shared/visualBuilder";

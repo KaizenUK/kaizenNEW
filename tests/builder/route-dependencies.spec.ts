@@ -1,4 +1,4 @@
-import { expect, test } from "@playwright/test";
+import { expect, test } from "./browser-fixture";
 import { newDocument } from "../../client/visual-builder/starters";
 
 test("publishing a renamed redirect destination preserves the live page until its redirects are updated", async ({

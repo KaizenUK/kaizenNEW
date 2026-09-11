@@ -1,4 +1,4 @@
-import { test, expect } from "@playwright/test";
+import { test, expect } from "./browser-fixture";
 import { mkdtemp, mkdir, readFile, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import path from "node:path";
@@ -13,7 +13,7 @@ test("Unity reviews a local build, reopens its status and previews the result", 
     path.join(root, "package.json"),
     JSON.stringify({
       type: "module",
-      dependencies: { astro: "6.0.4", "@astrojs/react": "5.0.0" },
+      dependencies: { astro: "7.3.2", "@astrojs/react": "6.0.5" },
       scripts: { build: "node build.mjs" },
     }),
   );

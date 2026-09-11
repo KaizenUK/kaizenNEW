@@ -408,7 +408,7 @@ export async function exportProject(
           htmlparser2: "12.0.0",
         },
         devDependencies: {
-          vite: "7.3.6",
+          vite: "8.3.0",
           tsx: "4.21.0",
           typescript: "5.9.3",
           "@types/react": "19.2.14",

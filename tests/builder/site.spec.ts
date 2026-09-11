@@ -1,4 +1,4 @@
-import { expect, test, type Page } from "@playwright/test";
+import { expect, test, type Page } from "./browser-fixture";
 
 test("three pages share styles and components while overrides, detach and live isolation remain reliable", async ({
   page,

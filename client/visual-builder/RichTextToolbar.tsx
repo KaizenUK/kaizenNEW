@@ -90,10 +90,10 @@ export default function RichTextToolbar({ children, editor, readOnly }: Props) {
         </RichTextMenu.Group>
       </RichTextMenu>
       {open && (
-        <form
+        <div
+          role="group"
           className="builder-rich-link"
           aria-label="Edit text link"
-          onSubmit={applyLink}
         >
           <label>
             Link address
@@ -102,6 +102,9 @@ export default function RichTextToolbar({ children, editor, readOnly }: Props) {
               autoFocus
               value={url}
               onChange={(e) => setUrl(e.target.value)}
+              onKeyDown={(event) => {
+                if (event.key === "Enter") applyLink(event);
+              }}
               placeholder="https://… or /contact/"
             />
           </label>
@@ -136,7 +139,7 @@ export default function RichTextToolbar({ children, editor, readOnly }: Props) {
               Cancel
             </button>
           </div>
-        </form>
+        </div>
       )}
     </div>
   );

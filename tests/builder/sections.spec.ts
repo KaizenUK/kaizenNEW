@@ -1,4 +1,4 @@
-import { expect, test } from "@playwright/test";
+import { expect, test } from "./browser-fixture";
 import { sectionPresets } from "../../client/visual-builder/sectionPresets";
 
 test("section designs preview on mobile, insert as editable content and survive undo, redo and reopen", async ({

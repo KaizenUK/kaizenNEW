@@ -1,5 +1,6 @@
 import { defineConfig } from "astro/config";
 import react from "@astrojs/react";
+import tailwindcss from "@tailwindcss/vite";
 import path from "node:path";
 import { PUBLIC_ROUTE_REDIRECTS } from "./shared/publicRoutePolicy.js";
 import {
@@ -69,6 +70,8 @@ export default defineConfig({
     : {}),
   site: "https://kaizenweb.co.uk",
   output: "static",
+  // Keep the existing HTML whitespace semantics when building with Astro 7.
+  compressHTML: true,
   trailingSlash: "always",
 
   // Memory Management: Essential for small VPS stability
@@ -85,6 +88,7 @@ export default defineConfig({
       ? { cacheDir: process.env.BUILDER_TEST_CACHE_DIR }
       : {}),
     plugins: [
+      tailwindcss(),
       sanitizeBrokenTransformHooks(),
       builderLocalPlugin(),
       builderLocalRedirectsPlugin(),

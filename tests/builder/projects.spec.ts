@@ -1,4 +1,4 @@
-import { test, expect } from "@playwright/test";
+import { test, expect } from "./browser-fixture";
 import { createHash } from "node:crypto";
 import { newDocument } from "../../client/visual-builder/starters";
 

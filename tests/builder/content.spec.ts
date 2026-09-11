@@ -1,4 +1,4 @@
-import { expect, test, type Page } from "@playwright/test";
+import { expect, test, type Page } from "./browser-fixture";
 import { readFile, writeFile } from "node:fs/promises";
 import { contentFixture } from "./content-fixture";
 import {

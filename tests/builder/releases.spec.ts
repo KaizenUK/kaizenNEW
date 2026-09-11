@@ -1,4 +1,4 @@
-import { expect, test } from "@playwright/test";
+import { expect, test } from "./browser-fixture";
 import { newDocument } from "../../client/visual-builder/starters";
 
 test("release controls show observed states and require an explicit rollback/unpublish review", async ({

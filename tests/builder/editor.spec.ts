@@ -1,4 +1,4 @@
-import { expect, test, type Page } from "@playwright/test";
+import { expect, test, type Page } from "./browser-fixture";
 import {
   newDocument,
   starterBlocks,
@@ -381,6 +381,11 @@ test("sample ZIP assets drag into nested content and support copy, paste and und
 test("rich text supports inline formatting and links in preview", async ({
   page,
 }) => {
+  const markupErrors: string[] = [];
+  page.on("console", (message) => {
+    if (message.type() === "error" && /nested <form>|descendant of <form>/.test(message.text()))
+      markupErrors.push(message.text());
+  });
   const frame = await createPage(page);
   const source = page.getByRole("button", { name: "Rich text", exact: true });
   const heading = frame.getByRole("heading", {
@@ -421,7 +426,7 @@ test("rich text supports inline formatting and links in preview", async ({
   await page
     .getByRole("textbox", { name: "Link address", exact: true })
     .fill("/contact/");
-  await page.getByRole("button", { name: "Apply link", exact: true }).click();
+  await page.getByRole("textbox", { name: "Link address", exact: true }).press("Enter");
   await expect(frame.locator(".kb-richtext a")).toHaveAttribute(
     "href",
     "/contact/",
@@ -448,4 +453,5 @@ test("rich text supports inline formatting and links in preview", async ({
       .frameLocator('iframe[title="Published page preview"]')
       .locator(".kb-richtext a"),
   ).toHaveAttribute("href", "/contact/");
+  expect(markupErrors).toEqual([]);
 });
