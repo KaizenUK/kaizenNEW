@@ -58,7 +58,7 @@ export function createReleaseClient({ url, key, fetcher = fetch }) {
               payload.code === "P0001" &&
               typeof payload.message === "string"
               ? payload.message.slice(0, 2000)
-              : `Release service returned HTTP ${response.status}. Check the worker configuration and service logs.`,
+              : `Release service returned HTTP ${response.status}${/^[A-Z0-9]{5,10}$/.test(payload.code || "") ? ` (${payload.code})` : ""}. Check the worker configuration and service logs.`,
           );
           error.definitive = response.status >= 400 && response.status < 500;
           throw error;
