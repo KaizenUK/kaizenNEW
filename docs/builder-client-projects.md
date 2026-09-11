@@ -20,7 +20,7 @@ The original workspace is registered as **Kaizen workspace** in its existing dir
 ### Connect the hosted editor to this computer
 
 1. Run `pnpm dev` in the updated Kaizen checkout. In the hosted builder, open a client project and **Export & repositories**.
-2. Enter the local address printed by the development server (normally `http://localhost:4321` or `http://127.0.0.1:4321`) and choose **Connect local checkout**. Allow the new companion window if the browser blocks it.
+2. Enter the local address printed by the development server (normally `http://127.0.0.1:4321`) and choose **Connect local checkout**. Allow the new companion window if the browser blocks it. Keep the terminal running; Ctrl+C stops the server. The command binds explicitly to IPv4 loopback and refuses an occupied port instead of silently choosing a different one. For another port, run `pnpm dev --port 4325` and enter that address in the hosted builder.
 3. In that local window, check the requesting origin, account and project, choose the absolute repository folder and **Connect selected folder**. Keep the window and local development server running. Editing controls remain in the hosted tab.
 4. Inspect, edit, save a source draft, review/apply files, then review/run the build. **Select content in built page** opens the actual local built page and sends selections back to the hosted editor. File changes remain uncommitted for GitHub Desktop.
 

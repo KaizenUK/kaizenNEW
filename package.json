@@ -3,8 +3,8 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "pnpm run clean:caches && astro dev --force",
-    "dev:clean": "pnpm run clean:caches && astro dev --force",
+    "dev": "pnpm run clean:caches && node scripts/dev.mjs",
+    "dev:clean": "pnpm run dev",
     "build": "pnpm run build:site && pnpm run build:studio && pnpm run build:stage:studio",
     "build:site": "rimraf dist .astro && cross-env NODE_OPTIONS='--max-old-space-size=6144' astro build && node scripts/generate-nginx-redirects.mjs",
     "build:studio": "pnpm --dir apps/studio build",

@@ -21,7 +21,7 @@ export default defineConfig({
     headless: true,
   },
   webServer: {
-    command: "node tests/builder/dev-server.mjs",
+    command: "node scripts/dev.mjs --port 4322",
     url: "http://127.0.0.1:4322/builder/",
     reuseExistingServer: false,
     timeout: 120_000,
