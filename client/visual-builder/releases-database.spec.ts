@@ -30,6 +30,7 @@ describe("frozen builder release PostgreSQL transactions", () => {
       "202609100001_visual_builder.sql",
       "202609100002_builder_site_design.sql",
       "202609100008_builder_releases.sql",
+      "202609110005_builder_release_safeupdate.sql",
     ])
       await db.exec(await readFile(`supabase/migrations/${file}`, "utf8"));
     await db.exec(`grant usage on schema public to anon,authenticated,service_role;
