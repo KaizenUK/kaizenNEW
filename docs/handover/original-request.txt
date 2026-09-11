@@ -1,0 +1,127 @@
+Set a goal: Turn the existing Kaizen visual builder into a dependable multi-project website builder that I can use to create, edit, export, integrate and deploy websites for clients.
+
+Inspect the current codebase and Claude’s completed Unity UI changes first. Implement the working product, not just a plan or recommendations. Preserve existing work and follow the project’s architecture and conventions.
+
+The intended workflow is:
+
+Create or open a client project → import assets → build pages visually → preview and test → export or save into a local repository → integrate required services → deploy to the correct client site → maintain it without losing editability.
+
+Prioritise completing this workflow reliably over adding unrelated widgets.
+
+1. Separate client projects
+
+Implement a proper project dashboard with create, rename, duplicate, archive and open actions.
+
+Each project must own its pages, assets, global styles, reusable components, templates, settings, history and deployment configuration. Prevent accidental mixing of client content.
+
+Provide a migration path for the existing Kaizen workspace that preserves all drafts, publications, assets and history.
+
+Export and backup must operate on the selected project. Make the active project and publication destination clear throughout the interface.
+
+For hosted use, enforce project membership and permissions on the server/database and storage boundaries, not just through UI filtering. Support owner and editor access, with an explicit permission to publish. Verify that an unrelated account cannot access another project.
+
+2. Complete the visual editing experience
+
+Finish integrating Unity’s design language across the existing workflows, including loading, empty, error and recovery states. Use the supplied font requirements and existing accessible components.
+
+Retain and verify drag-and-drop, nesting, inline editing, layers, undo/redo, duplication, copy/paste, autosave, revision restoration, shared content and responsive overrides.
+
+Make inherited responsive settings obvious. Keep the editor’s appearance separate from the website’s own theme.
+
+Ensure page management, assets, global styles, templates, previews, exports, backups and publishing are easy to find and understand.
+
+3. Reliable project export and handoff
+
+Export only the selected project as a complete, independently buildable website, with pages, routes, assets, fonts, styles and required interactive components.
+
+Include an integration guide that identifies:
+- Build and preview commands.
+- Required environment variable names, without secret values.
+- Forms, CMS connections and other external dependencies.
+- Missing routes, links or media requiring attention.
+- Hosting and redirect requirements.
+- Which files may be edited directly and which are generated.
+
+Include a separate editable project backup. Clearly explain the difference between the website export and editable backup.
+
+Verify the export outside the Kaizen repository. It must not accidentally depend on Kaizen services or private configuration.
+
+4. Local repository integration
+
+Implement a local project workflow for repositories already cloned using GitHub Desktop. No GitHub API connection is required.
+
+Support Astro + React first and the builder’s own exported projects. Detect unsupported frameworks and explain the boundary accurately.
+
+Use a local runner or companion where filesystem access and build commands are necessary. Do not imply that the hosted browser can freely operate local repositories.
+
+Inspect routes and components before integration. Distinguish:
+- Builder-editable pages.
+- Pages requiring developer integration.
+- Code-managed pages.
+
+Preserve existing files, uncommitted changes, routing and application logic. Show the proposed file changes before applying an integration to an existing project.
+
+Implement a component registration contract so a developer or coding agent can expose supported properties and nested content to the editor.
+
+5. Preserve editability after handoff
+
+Define and implement a stable source of truth for builder-owned page data, assets and component definitions.
+
+Save editable data alongside integrated project code where appropriate. Allow a compatible integrated project to be reopened and edited without losing its structure.
+
+Detect external changes and version incompatibilities. Provide useful conflict information instead of silently overwriting either side.
+
+Support round-trip editing for the builder’s documented project format. Do not pretend arbitrary React or Astro source can automatically round-trip through a visual editor.
+
+Keep GitHub Desktop usable for reviewing, committing and pushing changes. Direct push/pull controls are secondary to reliable local integration and must not perform destructive Git operations.
+
+6. Complete publishing and deployment
+
+Repair the existing CI/deployment path and connect publishing to the selected project and destination.
+
+Keep saving, exporting, committing and publishing distinct. A new client project must never default to publishing over Kaizen’s live site.
+
+Preserve draft/live separation, release status, failure recovery, unpublishing and revision/rollback behaviour. Report success only after checking the served output.
+
+Provide staging support and document the required production configuration.
+
+Complete deployment work using configuration and authorisation already available. Do not expose secrets. If credentials or production approval are genuinely missing, finish all independent implementation and local/staging verification, then identify the exact remaining dependency.
+
+7. Client-site essentials
+
+Verify multi-page navigation, shared headers and footers, editable URLs, SEO metadata, sitemap behaviour, redirects, accessible mobile navigation and responsive images.
+
+Make forms configurable for the destination project. Clearly distinguish a stored submission from successfully delivered notifications.
+
+Make CMS connections explicit per project. Exports must identify whether content is a snapshot or requires a live integration.
+
+Do not add commerce, booking systems or a general application backend unless required to demonstrate the agreed brochure-site workflow.
+
+8. Verification and completion
+
+Use isolated test workspaces and representative sample assets. Do not overwrite personal builder data or client repositories during tests.
+
+Demonstrate:
+- Two projects with independent pages, assets and styles.
+- Access isolation between unrelated hosted users.
+- Asset import, search, reuse and duplicate handling.
+- A responsive multi-page site built through the editor.
+- Save, close and reopen without losing changes.
+- Undo/redo and revision restoration.
+- Backup restoration.
+- An independently built project export.
+- Integration into a separate Astro + React fixture repository.
+- Reopening that integrated project for another visual edit.
+- Preservation of unrelated code and existing changes.
+- Publication to an isolated destination.
+- Failed-release recovery and rollback without losing newer drafts.
+
+Run appropriate unit, integration, browser, type and production-build checks. Test the completed Unity interface, not only the older implementation.
+
+Inspect the editor and generated websites in the browser at desktop and mobile widths. Check broken links, missing assets, keyboard usability and console errors.
+
+Continue autonomously through reasonable implementation decisions. Maintain a concise progress record and distinguish implemented, locally verified, hosted verified and blocked work.
+
+Do not mark the goal complete merely because the UI is finished or tests pass against mocked services. Where an external dependency prevents final verification, state precisely what remains unverified.
+
+Finish with a concise explanation of what works, where to access it, how to create and deliver the first client project, verification results and any remaining limitations.

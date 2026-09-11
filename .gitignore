@@ -41,3 +41,4 @@ terms.docx
 !public/builder-samples/sample-pack.zip
 /.kaizen-builder/
 /test-results/
+/KAIZEN-PRIVATE-MIGRATION*
