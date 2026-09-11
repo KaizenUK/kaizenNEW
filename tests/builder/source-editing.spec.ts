@@ -81,10 +81,29 @@ import Counter from '../components/Counter';
   const route = page
     .locator(".builder-repository li")
     .filter({ hasText: "src/pages/index.astro" });
+  let failDraftRead = true;
+  await page.route("**/__builder-local**", async (request) => {
+    if (
+      failDraftRead &&
+      request.request().postDataJSON()?.action ===
+        "repository-source-draft-read"
+    ) {
+      failDraftRead = false;
+      await request.fulfill({
+        status: 503,
+        contentType: "application/json",
+        body: JSON.stringify({ error: "Temporary draft read failure" }),
+      });
+    } else await request.continue();
+  });
   await route.getByRole("button", { name: "Edit existing content" }).click();
   const editor = page.getByRole("region", {
     name: "Existing page content editor",
   });
+  await expect(editor.getByRole("alert")).toContainText(
+    "Temporary draft read failure",
+  );
+  await editor.getByRole("button", { name: "Retry loading edits" }).click();
   await editor
     .getByRole("searchbox", { name: "Find page content" })
     .fill("Original native page");
@@ -116,6 +135,34 @@ import Counter from '../components/Counter';
       fullPage: true,
     });
   }
+  await expect(editor.getByRole("status")).toContainText("Editing draft saved");
+  await editor.getByRole("button", { name: "Close source editor" }).click();
+  await page.reload();
+  await page
+    .getByRole("button", { name: "Export & repositories", exact: true })
+    .click();
+  await page.getByLabel("Absolute repository folder").fill(root);
+  await page
+    .getByRole("button", { name: "Inspect repository", exact: true })
+    .click();
+  await route.getByRole("button", { name: "Edit existing content" }).click();
+  await editor.getByRole("searchbox").fill("Original native page");
+  await expect(editor.getByRole("textbox")).toHaveValue(
+    "Edited original design 🌱",
+  );
+  const recovered = await page.request.post(
+    `/__builder-local?project=${project.id}`,
+    {
+      headers: { "X-Kaizen-Builder": "1" },
+      data: {
+        action: "repository-source-draft-read",
+        root,
+        route: "src/pages/index.astro",
+      },
+    },
+  );
+  expect(recovered.ok()).toBe(true);
+  expect(Object.keys((await recovered.json()).edits.orders)).toHaveLength(1);
   await editor
     .getByRole("button", { name: "Review existing-page changes" })
     .click();
@@ -131,6 +178,18 @@ import Counter from '../components/Counter';
   await expect(
     page.locator(".builder-repository > [role=status]"),
   ).toContainText("Files applied");
+  const cleared = await page.request.post(
+    `/__builder-local?project=${project.id}`,
+    {
+      headers: { "X-Kaizen-Builder": "1" },
+      data: {
+        action: "repository-source-draft-read",
+        root,
+        route: "src/pages/index.astro",
+      },
+    },
+  );
+  expect((await cleared.json()).edits).toBeNull();
   const result = await readFile(
     path.join(root, "src/pages/index.astro"),
     "utf8",
@@ -193,5 +252,75 @@ import Counter from '../components/Counter';
   await expect(editor.getByRole("textbox")).toHaveValue(
     "Edited original design 🌱",
   );
+  await editor.getByRole("textbox").fill("Recover this unsaved source change");
+  await expect(editor.getByRole("status")).toContainText("Editing draft saved");
+  await editor.getByRole("button", { name: "Close source editor" }).click();
+  await writeFile(
+    path.join(root, "src/pages/index.astro"),
+    result + "\n<!-- external edit -->",
+  );
+  await route.getByRole("button", { name: "Edit existing content" }).click();
+  await expect(editor.getByRole("status")).toContainText(
+    "Repository source changed",
+  );
+  await editor.getByText("Recover saved changes", { exact: true }).click();
+  await expect(
+    editor.getByText("Recover this unsaved source change", { exact: true }),
+  ).toBeVisible();
+  await expect(
+    editor.getByRole("button", { name: "Review existing-page changes" }),
+  ).toBeDisabled();
+  await editor
+    .getByRole("button", { name: "Discard saved editing draft" })
+    .click();
+  await expect(editor.getByRole("status")).toContainText(
+    "Saved editing draft discarded",
+  );
+  expect(await readFile(path.join(root, "src/pages/index.astro"), "utf8")).toBe(
+    result + "\n<!-- external edit -->",
+  );
+  const other = await context.newPage();
+  await other.goto(`/builder/?project=${project.id}`);
+  await other
+    .getByRole("button", { name: "Export & repositories", exact: true })
+    .click();
+  await other.getByLabel("Absolute repository folder").fill(root);
+  await other
+    .getByRole("button", { name: "Inspect repository", exact: true })
+    .click();
+  await other
+    .locator(".builder-repository li")
+    .filter({ hasText: "src/pages/index.astro" })
+    .getByRole("button", { name: "Edit existing content" })
+    .click();
+  const otherEditor = other.getByRole("region", {
+    name: "Existing page content editor",
+  });
+  await otherEditor.getByRole("searchbox").fill("Edited original design");
+  await expect(otherEditor.getByRole("textbox")).toBeEnabled();
+  await editor.getByRole("searchbox").fill("Edited original design");
+  await editor.getByRole("textbox").fill("First window owns this saved edit");
+  await expect(editor.getByRole("status")).toContainText("Editing draft saved");
+  await otherEditor
+    .getByRole("textbox")
+    .fill("Second window must not overwrite it");
+  await expect(otherEditor.getByRole("alert")).toContainText(
+    "changed in another window",
+  );
+  const protectedDraft = await page.request.post(
+    `/__builder-local?project=${project.id}`,
+    {
+      headers: { "X-Kaizen-Builder": "1" },
+      data: {
+        action: "repository-source-draft-read",
+        root,
+        route: "src/pages/index.astro",
+      },
+    },
+  );
+  expect(Object.values((await protectedDraft.json()).edits.values)).toContain(
+    "First window owns this saved edit",
+  );
+  await other.close();
   expect(errors).toEqual([]);
 });

@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { storage } from "./storage";
 import type { SourceInspection } from "../../shared/builderSourceEditing";
 import type { RepositoryPlan } from "../../scripts/builder-repository";
+import { useSourceEditingDraft } from "./useSourceEditingDraft";
 
 export default function SourcePageEditor({
   root,
@@ -18,8 +19,8 @@ export default function SourcePageEditor({
 }) {
   const [inspection, setInspection] = useState<SourceInspection>();
   const mounted = useRef(false);
-  const [values, setValues] = useState<Record<string, string>>({});
-  const [orders, setOrders] = useState<Record<string, string[]>>({});
+  const draft = useSourceEditingDraft(inspection);
+  const { values, setValues, orders, setOrders } = draft;
   const [query, setQuery] = useState("");
   const [busy, setBusy] = useState(true),
     [error, setError] = useState("");
@@ -27,8 +28,6 @@ export default function SourcePageEditor({
     let current = true;
     mounted.current = true;
     setInspection(undefined);
-    setValues({});
-    setOrders({});
     setBusy(true);
     setError("");
     storage
@@ -55,7 +54,19 @@ export default function SourcePageEditor({
     >
       <div className="builder-row">
         <h2>Edit existing page</h2>
-        <button type="button" onClick={onClose}>
+        <button
+          type="button"
+          onClick={() => {
+            if (!inspection || draft.stale || (!draft.ready && !changed)) {
+              onClose();
+              return;
+            }
+            void draft
+              .flush()
+              .then(onClose)
+              .catch((e) => setError(e.message));
+          }}
+        >
           Close source editor
         </button>
       </div>
@@ -65,6 +76,56 @@ export default function SourcePageEditor({
         styling and interactive code stay in the repository. Review the proposed
         files, apply them, then build and preview before publishing.
       </p>
+      {draft.status && <p role="status">{draft.status}</p>}
+      {draft.error && (
+        <div role="alert">
+          <p>{draft.error}</p>
+          <button onClick={() => void draft.retry().catch(() => {})}>
+            {draft.ready ? "Retry saving edits" : "Retry loading edits"}
+          </button>
+          <button onClick={draft.reload}>
+            Discard this window's changes and reload
+          </button>
+        </div>
+      )}
+      {(changed > 0 || draft.stale) && (
+        <button onClick={draft.download}>
+          Download unapplied source edits
+        </button>
+      )}
+      {draft.stale && (
+        <div role="alert">
+          <p>
+            These edits were saved against older source files. Recover the
+            values below or download them before discarding this editing draft.
+            A new file proposal requires the current source.
+          </p>
+          <details>
+            <summary>Recover saved changes</summary>
+            {Object.entries(draft.stale.values).map(([id, value]) => {
+              const field = draft.stale!.inspection.fields.find(
+                (f) => f.id === id,
+              );
+              return (
+                <div key={id}>
+                  <p>
+                    {field?.file} · {field?.label}
+                  </p>
+                  <pre>{value}</pre>
+                </div>
+              );
+            })}
+            <pre>{JSON.stringify(draft.stale.orders, null, 2)}</pre>
+          </details>
+          <button
+            onClick={() =>
+              void draft.discardStale().catch((e) => setError(e.message))
+            }
+          >
+            Discard saved editing draft
+          </button>
+        </div>
+      )}
       {inspection && (
         <>
           <p>
@@ -112,7 +173,7 @@ export default function SourcePageEditor({
                       {field.label} · line {field.line}
                       <textarea
                         rows={field.kind === "text" ? 2 : 1}
-                        disabled={busy}
+                        disabled={busy || !draft.ready || Boolean(draft.stale)}
                         aria-label={`${file} ${field.label} line ${field.line}`}
                         value={values[field.id] ?? field.value}
                         maxLength={20000}
@@ -167,7 +228,12 @@ export default function SourcePageEditor({
                         <span>{item.label}</span>
                         <button
                           type="button"
-                          disabled={!index || busy}
+                          disabled={
+                            !index ||
+                            busy ||
+                            !draft.ready ||
+                            Boolean(draft.stale)
+                          }
                           aria-label={`Move ${item.label} up`}
                           onClick={() => move(-1)}
                         >
@@ -175,7 +241,12 @@ export default function SourcePageEditor({
                         </button>
                         <button
                           type="button"
-                          disabled={index === array.length - 1 || busy}
+                          disabled={
+                            index === array.length - 1 ||
+                            busy ||
+                            !draft.ready ||
+                            Boolean(draft.stale)
+                          }
                           aria-label={`Move ${item.label} down`}
                           onClick={() => move(1)}
                         >
@@ -191,15 +262,19 @@ export default function SourcePageEditor({
           <button
             type="button"
             className="builder-primary"
-            disabled={busy || !changed}
+            disabled={busy || !changed || !draft.ready || Boolean(draft.stale)}
             onClick={() => {
               setBusy(true);
               setError("");
-              storage
-                .repository({
-                  action: "repository-source-prepare",
-                  edits: { inspection, values, orders },
-                })
+              draft
+                .flush()
+                .then(() =>
+                  storage.repository({
+                    action: "repository-source-prepare",
+                    edits: { inspection, values, orders },
+                    draftVersion: draft.version.current,
+                  }),
+                )
                 .then((plan) => {
                   if (mounted.current) onPlan(plan);
                 })
@@ -215,7 +290,13 @@ export default function SourcePageEditor({
           </button>
         </>
       )}
-      {busy && <p role="status">Reading original source…</p>}
+      {busy && (
+        <p role="status">
+          {inspection
+            ? "Preparing source changes…"
+            : "Reading original source…"}
+        </p>
+      )}
       {error && <p role="alert">{error}</p>}
     </section>
   );

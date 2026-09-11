@@ -11,6 +11,7 @@ import { setTimeout as delay } from "node:timers/promises";
 import path from "node:path";
 import { LocalProjects } from "./builder-projects";
 import { RepositoryRunner } from "./builder-runner";
+import { SourceDrafts } from "./builder-source-drafts";
 import { ClientPublisher } from "./builder-client-publisher";
 import { execFile } from "node:child_process";
 import { promisify } from "node:util";
@@ -153,6 +154,7 @@ export function builderLocalPlugin(): Plugin {
   let queue: Promise<unknown> = Promise.resolve();
   const projects = new LocalProjects(directory);
   const repositories = new RepositoryCompanion();
+  const sourceDraftPlans = new Map<string, {root: string; route: string; version: number}>();
   const runner = new RepositoryRunner();
   let compilerServer: any;
   const publisher = new ClientPublisher({
@@ -541,8 +543,22 @@ export function builderLocalPlugin(): Plugin {
               return inspectRepository(server.config.root);
             if (input.action === "repository-source-inspect")
               return repositories.inspectSourcePage(input.root, input.route);
-            if (input.action === "repository-source-prepare")
-              return repositories.prepareSource(projectId, input.edits);
+            if (input.action === "repository-source-draft-read")
+              return new SourceDrafts(directory).read(input.root, input.route);
+            if (input.action === "repository-source-draft-save")
+              return new SourceDrafts(directory).save(input.root, input.route, input.version, input.edits);
+            if (input.action === "repository-source-prepare") {
+              let draft;
+              if (input.draftVersion !== undefined) {
+                draft = await new SourceDrafts(directory).read(input.edits.inspection.root, input.edits.inspection.route);
+                if (draft.version !== input.draftVersion || JSON.stringify(draft.edits) !== JSON.stringify(input.edits))
+                  throw new Error("Save the latest editing draft before reviewing it.");
+              }
+              const plan = await repositories.prepareSource(projectId, input.edits);
+              if (draft) sourceDraftPlans.set(plan.id, {root: draft.root, route: draft.route, version: draft.version});
+              if (sourceDraftPlans.size > 100) sourceDraftPlans.delete(sourceDraftPlans.keys().next().value!);
+              return plan;
+            }
             if (input.action === "client-release-list")
               return {
                 destinations: await publisher.destinations(projectId),
@@ -576,8 +592,16 @@ export function builderLocalPlugin(): Plugin {
                 projectId,
                 Buffer.from(input.archive, "base64"),
               );
-            if (input.action === "repository-apply")
-              return repositories.apply(input.planId, projectId);
+            if (input.action === "repository-apply") {
+              const result = await repositories.apply(input.planId, projectId);
+              const draft = sourceDraftPlans.get(input.planId);
+              sourceDraftPlans.delete(input.planId);
+              if (draft) {
+                try { await new SourceDrafts(directory).save(draft.root, draft.route, draft.version, null); }
+                catch { result.message += " The saved editing draft was retained; reopen it to review or discard it."; }
+              }
+              return result;
+            }
             if (input.action === "repository-open") {
               const archive = readEditableArchive(
                 await repositories.editableArchive(input.root),

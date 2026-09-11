@@ -26,3 +26,10 @@ export type SourceEdits = {
   values: Record<string, string>;
   orders: Record<string, string[]>;
 };
+export type SourceDraft = {
+  schemaVersion: 1;
+  version: number;
+  root: string;
+  route: string;
+  edits: SourceEdits | null;
+};

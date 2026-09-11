@@ -50,6 +50,7 @@ on:
       - "scripts/builder-projects.ts"
       - "scripts/builder-repository.ts"
       - "scripts/builder-source-editing.ts"
+      - "scripts/builder-source-drafts.ts"
       - "shared/builderSourceEditing.ts"
       - "scripts/builder-runner.ts"
       - "scripts/deploy-public-release.sh"
