@@ -4,9 +4,11 @@ import type { PageInventory } from "../../shared/builderPageInventory";
 export default function ExistingPages({
   inventory,
   open = false,
+  onEdit,
 }: {
   inventory: PageInventory;
   open?: boolean;
+  onEdit?: (path: string) => void;
 }) {
   const [search, setSearch] = useState(""),
     [showRedirects, setShowRedirects] = useState(false),
@@ -28,16 +30,18 @@ export default function ExistingPages({
       className="builder-existing-pages"
       open={open}
     >
-      <summary>Existing site pages · managed outside this builder</summary>
+      <summary>Existing site pages</summary>
       <p>
-        The pages above are editable here. Existing site layouts use their
-        original templates. Creating a builder page does not replace them or
-        make their source code editable.
+        These pages use the site's original templates and components. The local
+        companion can edit their source content and arrange Astro sections while
+        preserving their styling and interactive code.
       </p>
       <p>
-        Use the site CMS for blog articles and CMS-managed content. Changes to
-        existing page layouts need developer integration. To rebuild a page
-        visually, create it at a new URL and review the route change separately.
+        Use the site CMS for blog articles and CMS-managed content. Computed
+        values still use their original data source.
+        {onEdit
+          ? " Choose Edit existing content to open a page from this local repository."
+          : " To edit original source, run pnpm dev in your local checkout and open its /builder/ page. Hosted source editing is not connected yet."}
       </p>
       <div className="builder-row">
         <a href={inventory.studioUrl} target="_blank" rel="noreferrer">
@@ -110,6 +114,15 @@ export default function ExistingPages({
             >
               Open page ↗
             </a>
+            {onEdit && page.kind === "site" && (
+              <button
+                type="button"
+                onClick={() => onEdit(page.path)}
+                aria-label={`Edit existing ${page.path}`}
+              >
+                Edit existing content
+              </button>
+            )}
           </li>
         ))}
       </ul>

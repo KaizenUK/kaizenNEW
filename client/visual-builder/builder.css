@@ -2929,3 +2929,44 @@
     padding: 24px;
   }
 }
+
+.builder-source-fields {
+  max-height: 560px;
+  overflow: auto;
+  padding-right: 8px;
+}
+.builder-source-fields details {
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border);
+}
+.builder-source-fields label {
+  display: grid;
+  gap: 6px;
+  margin: 14px 0;
+}
+.builder-source-fields textarea {
+  width: 100%;
+  resize: vertical;
+}
+.builder-source-editor > label {
+  display: grid;
+  gap: 6px;
+}
+.builder-source-editor summary {
+  cursor: pointer;
+  padding: 8px 0;
+}
+.builder-source-section {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin: 8px 0;
+}
+.builder-source-section span {
+  flex: 1;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.builder-source-section button {
+  flex: 0 0 auto;
+}

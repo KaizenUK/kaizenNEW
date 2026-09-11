@@ -1,4 +1,4 @@
-import { expect, test } from "@playwright/test";
+import { expect, test } from "./browser-fixture";
 
 test("the dashboard distinguishes existing site layouts, CMS content and redirects from editable builder pages", async ({
   page,
@@ -8,9 +8,7 @@ test("the dashboard distinguishes existing site layouts, CMS content and redirec
     .getByRole("button", { name: "Existing site pages", exact: true })
     .click();
   const inventory = page.locator(".builder-existing-pages");
-  await expect(inventory).toContainText(
-    "Creating a builder page does not replace them",
-  );
+  await expect(inventory).toContainText("original templates and components");
   await inventory
     .getByRole("searchbox", { name: "Find an existing page" })
     .fill("/about/");
@@ -19,7 +17,12 @@ test("the dashboard distinguishes existing site layouts, CMS content and redirec
   await expect(
     inventory.getByRole("link", { name: "Open existing /about/", exact: true }),
   ).toHaveAttribute("href", "/about/");
-  await expect(inventory.getByRole("button", { name: /edit/i })).toHaveCount(0);
+  await expect(
+    inventory.getByRole("button", {
+      name: "Edit existing /about/",
+      exact: true,
+    }),
+  ).toHaveCount(1);
   await inventory
     .getByRole("searchbox", { name: "Find an existing page" })
     .fill("/blog/");
@@ -45,4 +48,24 @@ test("the dashboard distinguishes existing site layouts, CMS content and redirec
   await inventory.screenshot({
     path: "test-results/builder-existing-pages.png",
   });
+  await inventory
+    .getByRole("searchbox", { name: "Find an existing page" })
+    .fill("/about/");
+  await inventory
+    .getByRole("button", { name: "Edit existing /about/", exact: true })
+    .click();
+  const editor = page.getByRole("region", {
+    name: "Existing page content editor",
+  });
+  await expect(editor).toContainText("src/pages/about.astro");
+  await editor
+    .getByRole("searchbox", { name: "Find page content" })
+    .fill("One person. The whole way.");
+  await expect(editor.getByRole("textbox")).toHaveValue(
+    "One person. The whole way.",
+  );
+  // Inspection only: the test must never apply a proposal to Kaizen's own source.
+  await expect(
+    editor.getByRole("button", { name: "Review existing-page changes" }),
+  ).toBeDisabled();
 });

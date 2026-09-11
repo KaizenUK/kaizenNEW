@@ -1,0 +1,197 @@
+import { test, expect } from "./browser-fixture";
+import { mkdir, mkdtemp, readFile, writeFile } from "node:fs/promises";
+import { execFile } from "node:child_process";
+import { promisify } from "node:util";
+import { tmpdir } from "node:os";
+import path from "node:path";
+
+test("edits a native Astro and React site, then builds and previews its original interactions", async ({
+  page,
+  context,
+}) => {
+  test.setTimeout(240_000);
+  const root = await mkdtemp(path.join(tmpdir(), "kaizen-native-browser-"));
+  await mkdir(path.join(root, "src/pages"), { recursive: true });
+  await mkdir(path.join(root, "src/components"));
+  await mkdir(path.join(root, "public"));
+  await writeFile(
+    path.join(root, "package.json"),
+    JSON.stringify({
+      type: "module",
+      scripts: { build: "astro build" },
+      dependencies: {
+        astro: "6.4.8",
+        "@astrojs/react": "5.0.0",
+        react: "19.2.4",
+        "react-dom": "19.2.4",
+      },
+      pnpm: { overrides: { sharp: "0.35.4" } },
+    }),
+  );
+  await writeFile(
+    path.join(root, "astro.config.mjs"),
+    "import {defineConfig} from 'astro/config';import react from '@astrojs/react';export default defineConfig({output:'static', integrations:[react()], trailingSlash:'always'});",
+  );
+  const original = `---
+import Counter from '../components/Counter';
+---
+<!doctype html><html lang="en"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width"/><title>Native client</title><link rel="icon" href="data:,"/></head><body><main>
+<section id="intro"><h1>Original native page</h1><p>Existing design stays editable.</p><img src="/original.svg" alt="Original picture"/><a href="/contact/">Contact</a></section>
+<section id="interaction"><h2>Interactive section</h2><Counter client:load /></section>
+</main><style>body{margin:0;background:#10252a;color:#fff;font:18px system-ui}main{max-width:960px;margin:auto;padding:24px}section{padding:30px 0}h1{color:#4fe3bd}img{width:160px;display:block}a{color:#4fe3bd}button{padding:12px}@media(max-width:600px){main{padding:16px}h1{font-size:30px}}</style></body></html>`;
+  const counter =
+    "import {useState} from 'react';export default function Counter(){const [count,setCount]=useState(0);return <button onClick={()=>setCount(count+1)}>Native count: {count}</button>}";
+  await writeFile(path.join(root, "src/pages/index.astro"), original);
+  await writeFile(
+    path.join(root, "src/pages/contact.astro"),
+    '<h1>Contact page</h1><a href="/">Home</a>',
+  );
+  await writeFile(path.join(root, "src/components/Counter.tsx"), counter);
+  await writeFile(
+    path.join(root, "public/original.svg"),
+    '<svg xmlns="http://www.w3.org/2000/svg" width="160" height="90"><rect width="160" height="90" fill="#4fe3bd"/></svg>',
+  );
+  await writeFile(path.join(root, "README.md"), "Existing uncommitted work\n");
+  await promisify(execFile)(
+    "pnpm",
+    ["install", "--ignore-scripts", "--prefer-offline"],
+    {
+      cwd: root,
+      shell: process.platform === "win32",
+      timeout: 120_000,
+      maxBuffer: 2 * 1024 * 1024,
+    },
+  );
+  const errors: string[] = [];
+  page.on("pageerror", (e) => errors.push(e.message));
+  const created = await page.request.post("/__builder-projects", {
+    headers: { "X-Kaizen-Builder": "1" },
+    data: { action: "create", name: "Native source fixture" },
+  });
+  expect(created.ok()).toBe(true);
+  const project = await created.json();
+  await page.goto(`/builder/?project=${project.id}`);
+  await page
+    .getByRole("button", { name: "Export & repositories", exact: true })
+    .click();
+  await page.getByLabel("Absolute repository folder").fill(root);
+  await page
+    .getByRole("button", { name: "Inspect repository", exact: true })
+    .click();
+  const route = page
+    .locator(".builder-repository li")
+    .filter({ hasText: "src/pages/index.astro" });
+  await route.getByRole("button", { name: "Edit existing content" }).click();
+  const editor = page.getByRole("region", {
+    name: "Existing page content editor",
+  });
+  await editor
+    .getByRole("searchbox", { name: "Find page content" })
+    .fill("Original native page");
+  const heading = editor.getByRole("textbox");
+  await expect(heading).toHaveValue("Original native page");
+  await heading.fill("Edited original design 🌱");
+  await editor.getByRole("searchbox").fill("Native count:");
+  await editor.getByRole("textbox").fill("Edited counter:");
+  await editor.getByRole("searchbox").fill("");
+  await editor.getByText("Arrange original sections", { exact: true }).click();
+  await editor
+    .getByText("index.astro · main sections", { exact: true })
+    .click();
+  await editor
+    .getByRole("button", {
+      name: "Move Original native page down",
+      exact: true,
+    })
+    .click();
+  for (const width of [1440, 390]) {
+    await page.setViewportSize({ width, height: 1000 });
+    expect(
+      await page.evaluate(
+        () => document.documentElement.scrollWidth <= innerWidth,
+      ),
+    ).toBe(true);
+    await page.screenshot({
+      path: `test-results/native-source-editor-${width}.png`,
+      fullPage: true,
+    });
+  }
+  await editor
+    .getByRole("button", { name: "Review existing-page changes" })
+    .click();
+  await expect(
+    page.getByRole("heading", { name: "Proposed repository changes" }),
+  ).toBeVisible();
+  expect(await readFile(path.join(root, "src/pages/index.astro"), "utf8")).toBe(
+    original,
+  );
+  await page
+    .getByRole("button", { name: "Apply reviewed file changes" })
+    .click();
+  await expect(
+    page.locator(".builder-repository > [role=status]"),
+  ).toContainText("Files applied");
+  const result = await readFile(
+    path.join(root, "src/pages/index.astro"),
+    "utf8",
+  );
+  expect(result).toContain("<Counter client:load />");
+  expect(result).toContain(original.slice(original.indexOf("<style>")));
+  expect(result.indexOf('id="interaction"')).toBeLessThan(
+    result.indexOf('id="intro"'),
+  );
+  expect(
+    await readFile(path.join(root, "src/components/Counter.tsx"), "utf8"),
+  ).toBe(counter.replace("Native count:", "Edited counter:"));
+  expect(await readFile(path.join(root, "README.md"), "utf8")).toBe(
+    "Existing uncommitted work\n",
+  );
+  await page
+    .getByRole("button", { name: "Review build command", exact: true })
+    .click();
+  await page
+    .getByRole("button", { name: "Run reviewed build", exact: true })
+    .click();
+  await expect(
+    page.locator(".builder-repository-build [role=status]"),
+  ).toContainText("Build succeeded", { timeout: 90_000 });
+  const popup = context.waitForEvent("page");
+  await page.getByRole("link", { name: "Open local website preview" }).click();
+  const preview = await popup;
+  preview.on("pageerror", (e) => errors.push(e.message));
+  for (const width of [1440, 390]) {
+    await preview.setViewportSize({ width, height: 1000 });
+    await expect(
+      preview.getByRole("heading", { name: "Edited original design 🌱" }),
+    ).toBeVisible();
+    await expect(preview.locator("h1")).toHaveCSS("color", "rgb(79, 227, 189)");
+    await expect(preview.locator("img")).toHaveJSProperty("naturalWidth", 160);
+    expect(
+      await preview.evaluate(
+        () => document.documentElement.scrollWidth <= innerWidth,
+      ),
+    ).toBe(true);
+    await preview.screenshot({
+      path: `test-results/native-source-preview-${width}.png`,
+      fullPage: true,
+    });
+  }
+  await preview.getByRole("button", { name: "Edited counter: 0" }).click();
+  await expect(
+    preview.getByRole("button", { name: "Edited counter: 1" }),
+  ).toBeVisible();
+  await preview.getByRole("link", { name: "Contact", exact: true }).click();
+  await expect(
+    preview.getByRole("heading", { name: "Contact page" }),
+  ).toBeVisible();
+  await preview.close();
+  await page
+    .getByRole("button", { name: "Stop local preview", exact: true })
+    .click();
+  await route.getByRole("button", { name: "Edit existing content" }).click();
+  await editor.getByRole("searchbox").fill("Edited original design");
+  await expect(editor.getByRole("textbox")).toHaveValue(
+    "Edited original design 🌱",
+  );
+  expect(errors).toEqual([]);
+});

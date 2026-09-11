@@ -28,6 +28,16 @@ GitHub Desktop can keep managing the repository. No GitHub API connection is nee
 
 Browser integration currently accepts exports up to 35 MB (base64 is carried in the local API request); the underlying ZIP reader limits compressed archives to 50 MB and expanded data to 500 MB. Download larger exports for a developer handoff. File previews are bounded to 100 KB per text file. Proposals expire after 15 minutes.
 
+## Edit pages created outside the builder
+
+In the local editor, **Existing site pages → Edit existing content** opens the source for a page in the running checkout. For another Astro + React repository, use **Export & repositories → Inspect repository**, then **Edit existing content** beside its route.
+
+The content editor reads original `.astro`, `.tsx` and `.jsx` files and follows relative component imports and the `@/` client alias. It exposes literal text, quoted links/images and supported literal content properties. Astro sections can be moved within their existing container. Imports, CSS, scripts, event handlers, hydration directives and computed expressions remain in the original files. Shared component changes affect every page using that component; CMS/computed data still needs its existing data source. This is source-preserving content editing, not conversion of arbitrary code into Puck blocks or support for arbitrary layout changes.
+
+Choose **Review existing-page changes**, inspect the proposed source, then **Apply reviewed file changes**. Changing content after review discards the displayed proposal. Applying checks the original source and imported files again, retains originals in `.kaizen/recovery/<proposal-id>/`, and leaves changes uncommitted for GitHub Desktop. Then use **Review build command → Run reviewed build → Open local website preview**. Reopen the source editor for subsequent edits. Native source remains the source of truth; these changes are not included in a builder project's editable ZIP, and unapplied form edits are not yet saved across closing the editor.
+
+This workflow currently runs only through the local companion. It does not yet provide direct click-to-edit on a rendered page or hosted source editing. The isolated browser scenario uses a separately installed native Astro/React fixture and checks source preservation, section order, build, desktop/mobile rendering, image loading, navigation and a hydrated counter after editing.
+
 ## Local builds and previews
 
 Build commands execute with your local user's permissions and terminal environment, like running the command yourself. Review unfamiliar repository code first. The runner invokes the companion's available pnpm/npm CLI with `run build`; dependencies must already be installed. It does not install packages, run Git commands or publish. The reviewed build may run lifecycle hooks and imported code. This is not a sandbox for untrusted scripts; builds that launch detached services require developer supervision.

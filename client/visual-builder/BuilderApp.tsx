@@ -130,6 +130,7 @@ function BuilderWorkspace({ inventory }: { inventory?: PageInventory } = {}) {
   const [sessionEmail, setSessionEmail] = useState("");
   const [signedIn, setSignedIn] = useState(localMode);
   const [notice, setNotice] = useState("");
+  const [existingPath, setExistingPath] = useState<string>();
   const [creating, setCreating] = useState(false);
   const [view, setView] = useState<BuilderView>(() =>
     !localMode &&
@@ -392,7 +393,9 @@ function BuilderWorkspace({ inventory }: { inventory?: PageInventory } = {}) {
       }
     >
       {current === "projects" && signedIn && <ProjectsView />}
-      {current === "repository" && localMode && <RepositoryPanel />}
+      {current === "repository" && localMode && (
+        <RepositoryPanel existingPath={existingPath} />
+      )}
       {current === "settings" && workspace && activeProjectId !== "kaizen" && (
         <ClientSettings workspace={workspace} onChange={replaceWorkspace} />
       )}
@@ -457,7 +460,20 @@ function BuilderWorkspace({ inventory }: { inventory?: PageInventory } = {}) {
       )}
       {current === "existing" &&
         inventory &&
-        panel(<ExistingPages inventory={inventory} open />)}
+        panel(
+          <ExistingPages
+            inventory={inventory}
+            open
+            onEdit={
+              localMode
+                ? (path) => {
+                    setExistingPath(path);
+                    navigate("repository");
+                  }
+                : undefined
+            }
+          />,
+        )}
       {current === "site" &&
         workspace &&
         panel(

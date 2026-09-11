@@ -537,6 +537,12 @@ export function builderLocalPlugin(): Plugin {
             }
             if (input.action === "repository-inspect")
               return inspectRepository(input.root);
+            if (input.action === "repository-inspect-current")
+              return inspectRepository(server.config.root);
+            if (input.action === "repository-source-inspect")
+              return repositories.inspectSourcePage(input.root, input.route);
+            if (input.action === "repository-source-prepare")
+              return repositories.prepareSource(projectId, input.edits);
             if (input.action === "client-release-list")
               return {
                 destinations: await publisher.destinations(projectId),

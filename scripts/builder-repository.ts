@@ -17,6 +17,15 @@ import {
   supportedBackupVersion,
   validateBackupWorkspace,
 } from "../shared/builderBackup";
+import {
+  inspectSource,
+  editSource,
+  sourceImport,
+} from "./builder-source-editing";
+import type {
+  SourceInspection,
+  SourceEdits,
+} from "../shared/builderSourceEditing";
 const hash = (bytes: Uint8Array) =>
   createHash("sha256").update(bytes).digest("hex");
 const OWNERSHIP = ".kaizen/ownership.json";
@@ -254,6 +263,192 @@ export class RepositoryCompanion {
       applying: boolean;
     }
   >();
+  async inspectSourcePage(
+    root: string,
+    route: string,
+  ): Promise<SourceInspection> {
+    const inspection = await inspectRepository(root);
+    const selected = inspection.routes.find((item) => item.file === route);
+    if (
+      inspection.framework !== "astro-react" ||
+      !selected ||
+      selected.ownership === "builder-editable" ||
+      !/\.(astro|tsx|jsx)$/.test(route)
+    )
+      throw new Error(
+        "Choose an existing Astro/React source page. Builder-owned pages use the visual page editor.",
+      );
+    const models: Awaited<ReturnType<typeof inspectSource>>[] = [];
+    const visited = new Set<string>();
+    async function visit(file: string) {
+      if (visited.has(file)) return;
+      if (visited.size >= 100)
+        throw new Error(
+          "This page imports more than 100 source components. Integrate a smaller component first.",
+        );
+      visited.add(file);
+      const content = await bytes(inspection.root, file);
+      if (!content) return;
+      if (content.length > 1024 * 1024)
+        throw new Error(`Source component is too large: ${file}`);
+      const model = await inspectSource(file, content.toString());
+      models.push(model);
+      for (const specifier of model.imports) {
+        const target = sourceImport(file, specifier);
+        if (!target) continue;
+        const candidates = /\.(astro|tsx|jsx)$/.test(target)
+          ? [target]
+          : path.extname(target)
+            ? []
+            : [
+                target + ".tsx",
+                target + ".jsx",
+                target + "/index.tsx",
+                target + "/index.jsx",
+              ];
+        for (const candidate of candidates)
+          if (await bytes(inspection.root, candidate)) {
+            await visit(candidate);
+            break;
+          }
+      }
+    }
+    await visit(route);
+    return {
+      root: inspection.root,
+      route,
+      files: models.map(({ file, hash }) => ({ file, hash })),
+      fields: models.flatMap((model) =>
+        model.fields.map(({ start, end, encoding, ...field }) => field),
+      ),
+      groups: models.flatMap((model) =>
+        model.groups.map((group) => ({
+          ...group,
+          items: group.items.map(({ start, end, ...item }) => ({
+            ...item,
+            label:
+              model.fields
+                .find(
+                  (f) => f.start >= start && f.end <= end && f.kind === "text",
+                )
+                ?.value.slice(0, 70) || item.label,
+          })),
+        })),
+      ),
+      boundaries: [
+        "A shared component edit affects every page that uses that component.",
+        "CMS values and computed expressions retain their original data source.",
+        ...models.flatMap((model) => model.boundaries),
+      ],
+    };
+  }
+  async prepareSource(
+    projectId: string,
+    edits: SourceEdits,
+  ): Promise<RepositoryPlan> {
+    if (
+      !edits?.inspection ||
+      !edits.values ||
+      !edits.orders ||
+      Array.isArray(edits.values) ||
+      Array.isArray(edits.orders)
+    )
+      throw new Error("Inspect the source page before proposing changes.");
+    const current = await this.inspectSourcePage(
+      edits.inspection.root,
+      edits.inspection.route,
+    );
+    if (
+      JSON.stringify(current.files) !== JSON.stringify(edits.inspection.files)
+    )
+      throw new Error(
+        "Source changed since you opened it. Reopen the page before editing; no files were changed.",
+      );
+    if (
+      Object.keys(edits.values).some(
+        (id) => !current.fields.some((f) => f.id === id),
+      ) ||
+      Object.keys(edits.orders).some(
+        (id) => !current.groups.some((g) => g.id === id),
+      )
+    )
+      throw new Error("The source selection changed. Inspect the page again.");
+    const files: Record<string, Uint8Array> = {},
+      changes: FileChange[] = [];
+    const metadata = new Map<string, string | null>();
+    for (const file of ["package.json", OWNERSHIP, ".kaizen/format.json"]) {
+      const content = await bytes(current.root, file);
+      metadata.set(file, content ? hash(content) : null);
+    }
+    const owned = await ownership(current.root);
+    for (const item of current.files) {
+      const before = await bytes(current.root, item.file);
+      if (!before || hash(before) !== item.hash)
+        throw new Error("Source changed during review. Inspect again.");
+      const values = Object.fromEntries(
+        Object.entries(edits.values).filter(([id]) =>
+          current.fields.some((f) => f.file === item.file && f.id === id),
+        ),
+      );
+      const orders = Object.fromEntries(
+        Object.entries(edits.orders).filter(([id]) =>
+          current.groups.some((g) => g.file === item.file && g.id === id),
+        ),
+      );
+      const result = await editSource(
+        item.file,
+        before.toString(),
+        values,
+        orders,
+      );
+      const after = hash(Buffer.from(result));
+      if (after !== item.hash && owned?.files[item.file])
+        throw new Error(
+          `Use the visual page editor for builder-owned source: ${item.file}`,
+        );
+      files[item.file] = Buffer.from(result);
+      changes.push({
+        file: item.file,
+        action: after === item.hash ? "unchanged" : "update",
+        before: item.hash,
+        after,
+        ...(after !== item.hash ? { preview: result } : {}),
+      });
+    }
+    // Ownership or framework changes must also invalidate a reviewed native edit,
+    // even when the page bytes themselves are unchanged.
+    for (const [file, expected] of metadata) {
+      const content = await bytes(current.root, file);
+      const digest = content ? hash(content) : null;
+      if (digest !== expected)
+        throw new Error(
+          "Repository metadata changed during review. Inspect again.",
+        );
+      changes.push({
+        file,
+        action: "unchanged",
+        before: digest,
+        after: digest,
+      });
+    }
+    for (const [id, entry] of this.plans)
+      if (entry.plan.expiresAt < Date.now()) this.plans.delete(id);
+    if (this.plans.size >= 5)
+      throw new Error(
+        "Five proposals are pending. Apply one or wait for it to expire.",
+      );
+    const plan: RepositoryPlan = {
+      id: randomUUID(),
+      root: current.root,
+      projectId,
+      framework: "astro-react",
+      changes,
+      conflicts: [],
+      expiresAt: Date.now() + 15 * 60_000,
+    };
+    this.plans.set(plan.id, { plan, files, applying: false });
+    return plan;
+  }
   async prepare(
     root: string,
     projectId: string,

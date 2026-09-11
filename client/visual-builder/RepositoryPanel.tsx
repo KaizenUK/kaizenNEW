@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import type {
   RepositoryInspection,
   RepositoryPlan,
@@ -6,6 +6,7 @@ import type {
 import { storage } from "./storage";
 import { exportProject, downloadProject } from "./exportProject";
 import RepositoryBuild from "./RepositoryBuild";
+import SourcePageEditor from "./SourcePageEditor";
 
 async function base64(blob: Blob): Promise<string> {
   return new Promise((resolve, reject) => {
@@ -15,13 +16,51 @@ async function base64(blob: Blob): Promise<string> {
     reader.readAsDataURL(blob);
   });
 }
-export default function RepositoryPanel() {
+export default function RepositoryPanel({
+  existingPath,
+}: {
+  existingPath?: string;
+}) {
   const [root, setRoot] = useState("");
   const [inspection, setInspection] = useState<RepositoryInspection>();
   const [plan, setPlan] = useState<RepositoryPlan>();
+  const [sourceRoute, setSourceRoute] = useState<string>();
   const [busy, setBusy] = useState(false);
   const [status, setStatus] = useState("");
   const [error, setError] = useState("");
+  useEffect(() => {
+    if (!existingPath) return;
+    let current = true;
+    setBusy(true);
+    storage
+      .repository({ action: "repository-inspect-current" })
+      .then((model: RepositoryInspection) => {
+        if (!current) return;
+        setRoot(model.root);
+        setInspection(model);
+        const file = model.routes.find(({ file }) => {
+          const route = file
+            .replace(/^src\/pages\//, "")
+            .replace(/\.(astro|tsx|jsx)$/, "")
+            .replace(/(?:^|\/)index$/, "");
+          return (route ? `/${route}/` : "/") === existingPath;
+        });
+        if (!file)
+          throw new Error(
+            "This route uses dynamic data or has moved. Inspect its repository source or open the CMS.",
+          );
+        setSourceRoute(file.file);
+      })
+      .catch((error) => {
+        if (current) setError(error.message);
+      })
+      .finally(() => {
+        if (current) setBusy(false);
+      });
+    return () => {
+      current = false;
+    };
+  }, [existingPath]);
   async function run(action: () => Promise<void>) {
     setBusy(true);
     setError("");
@@ -87,13 +126,16 @@ export default function RepositoryPanel() {
           This runs through your local Astro development server and can inspect
           folders on this computer. Hosted browsers cannot freely open local
           repositories. Supported: Astro + React, Kaizen exports and empty
-          repositories. Arbitrary source pages remain code-managed.
+          repositories. Existing Astro and React pages can expose their original
+          text, links, images and Astro section order below. Dynamic data keeps
+          its existing CMS or code connection.
         </p>
         <form
           onSubmit={(event) => {
             event.preventDefault();
             void run(async () => {
               setPlan(undefined);
+              setSourceRoute(undefined);
               setInspection(
                 await storage.repository({
                   action: "repository-inspect",
@@ -113,6 +155,7 @@ export default function RepositoryPanel() {
                 setRoot(event.target.value);
                 setInspection(undefined);
                 setPlan(undefined);
+                setSourceRoute(undefined);
               }}
             />
           </label>
@@ -128,6 +171,19 @@ export default function RepositoryPanel() {
               {inspection.routes.map((route) => (
                 <li key={route.file}>
                   <code>{route.file}</code> — {route.ownership}
+                  {route.ownership !== "builder-editable" &&
+                    /\.(astro|tsx|jsx)$/.test(route.file) && (
+                      <button
+                        type="button"
+                        disabled={busy}
+                        onClick={() => {
+                          setSourceRoute(route.file);
+                          setPlan(undefined);
+                        }}
+                      >
+                        Edit existing content
+                      </button>
+                    )}
                 </li>
               ))}
             </ul>
@@ -176,6 +232,16 @@ export default function RepositoryPanel() {
           </>
         )}
       </div>
+      {inspection && sourceRoute && (
+        <SourcePageEditor
+          key={`${inspection.root}:${sourceRoute}`}
+          root={inspection.root}
+          route={sourceRoute}
+          onPlan={setPlan}
+          onDirty={() => setPlan(undefined)}
+          onClose={() => setSourceRoute(undefined)}
+        />
+      )}
       {inspection &&
         ["astro-react", "kaizen-export"].includes(inspection.framework) && (
           <RepositoryBuild key={inspection.root} root={inspection.root} />
@@ -211,6 +277,7 @@ export default function RepositoryPanel() {
                   planId: plan.id,
                 });
                 setPlan(undefined);
+                setSourceRoute(undefined);
                 setStatus(result.message);
               })
             }
