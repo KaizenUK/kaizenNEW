@@ -40,8 +40,8 @@ export default function ExistingPages({
         Use the site CMS for blog articles and CMS-managed content. Computed
         values still use their original data source.
         {onEdit
-          ? " Choose Edit existing content to open a page from this local repository."
-          : " To edit original source, run pnpm dev in your local checkout and open its /builder/ page. Hosted source editing is not connected yet."}
+          ? " Choose Edit existing content to open the page through your local companion."
+          : " To edit original source, connect your local checkout under Export & repositories."}
       </p>
       <div className="builder-row">
         <a href={inventory.studioUrl} target="_blank" rel="noreferrer">

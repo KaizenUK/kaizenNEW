@@ -19,7 +19,11 @@ import {
 import type { Workspace } from "../shared/visualBuilder";
 import { disconnectedSettings } from "../shared/builderSettings";
 
-type Catalogue = { formatVersion: number; projects: BuilderProject[] };
+type Catalogue = {
+  formatVersion: number;
+  projects: BuilderProject[];
+  companionLinks?: Record<string, string>;
+};
 export class LocalProjects {
   private queue: Promise<unknown> = Promise.resolve();
   constructor(readonly root: string) {
@@ -118,6 +122,48 @@ export class LocalProjects {
   }
   list() {
     return this.transact(async () => (await this.read()).projects);
+  }
+  /** Private local draft identity. A hosted UUID must never alias a local project. */
+  linkCompanion(key: string, name: string): Promise<BuilderProject> {
+    return this.transact(async () => {
+      const catalogue = await this.read();
+      const existingId = catalogue.companionLinks?.[key];
+      if (existingId) {
+        const existing = catalogue.projects.find(
+          (project) => project.id === existingId,
+        );
+        if (!existing || existing.archived)
+          throw new Error(
+            "Restore this companion's local project in the local dashboard before reconnecting.",
+          );
+        await this.assertDirectory(this.directory(existing.id));
+        return existing;
+      }
+      const now = new Date().toISOString();
+      const project: BuilderProject = {
+        id: randomUUID(),
+        name: projectName(`Local: ${name}`.slice(0, 100)),
+        createdAt: now,
+        updatedAt: now,
+        archived: false,
+        version: 1,
+        destination: {
+          kind: "unconfigured",
+          label: "Local companion — no deployment destination",
+        },
+      };
+      await this.atomic(
+        path.join(this.directory(project.id), "workspace.json"),
+        { pages: [], assets: [], saved: [] },
+      );
+      catalogue.projects.push(project);
+      catalogue.companionLinks = {
+        ...catalogue.companionLinks,
+        [key]: project.id,
+      };
+      await this.atomic(path.join(this.root, "projects.json"), catalogue);
+      return project;
+    });
   }
   importWorkspace(
     name: string,

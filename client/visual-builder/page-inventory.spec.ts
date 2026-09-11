@@ -12,6 +12,7 @@ describe("existing page ownership", () => {
         "../pages/blog/[slug].astro": "---\n---",
         "../pages/[...slug].astro": "---\n---",
         "../pages/builder.astro": "---\n---",
+        "../pages/builder/companion.astro": "---\n---",
         "../pages/insights.astro":
           "---\nreturn Astro.redirect('/blog',301);\n---",
       },
@@ -20,6 +21,7 @@ describe("existing page ownership", () => {
         "/about/",
         "/api/private",
         "/builder/",
+        "/builder/companion/",
         "//bad/path//",
         "/evil?query=x",
       ],
@@ -40,7 +42,7 @@ describe("existing page ownership", () => {
       inventory.some(
         (page) =>
           page.path.includes("[") ||
-          page.path === "/builder/" ||
+          page.path.startsWith("/builder/") ||
           page.path.startsWith("/api/"),
       ),
     ).toBe(false);

@@ -10,6 +10,7 @@ import {
 import { setTimeout as delay } from "node:timers/promises";
 import path from "node:path";
 import { LocalProjects } from "./builder-projects";
+import { CompanionSessions } from "./builder-companion";
 import { RepositoryRunner } from "./builder-runner";
 import { SourceDrafts } from "./builder-source-drafts";
 import { NativeRepositoryBackups } from "./builder-native-backup";
@@ -154,9 +155,13 @@ export function builderLocalRedirectsPlugin(): Plugin {
 export function builderLocalPlugin(): Plugin {
   let queue: Promise<unknown> = Promise.resolve();
   const projects = new LocalProjects(directory);
+  const companion = new CompanionSessions(projects);
   const repositories = new RepositoryCompanion();
   const nativeBackups = new NativeRepositoryBackups();
-  const sourceDraftPlans = new Map<string, {root: string; route: string; version: number}>();
+  const sourceDraftPlans = new Map<
+    string,
+    { root: string; route: string; version: number }
+  >();
   const runner = new RepositoryRunner();
   let compilerServer: any;
   const publisher = new ClientPublisher({
@@ -215,6 +220,7 @@ export function builderLocalPlugin(): Plugin {
             "/__builder-contact",
             "/__builder-content",
             "/__builder-projects",
+            "/__builder-companion",
           ].includes(url.pathname)
         ) {
           return next();
@@ -283,6 +289,39 @@ export function builderLocalPlugin(): Plugin {
             });
           if (req.headers["sec-fetch-site"] === "cross-site")
             return json(403, { error: "Cross-site requests are not allowed." });
+          if (url.pathname === "/__builder-companion") {
+            if (req.method === "GET")
+              return json(200, {
+                root: server.config.root,
+                origins: companion.origins(),
+              });
+            if (
+              req.method !== "POST" ||
+              req.headers["x-kaizen-builder"] !== "1"
+            )
+              return json(405, { error: "Unsupported request" });
+            let body = "";
+            for await (const chunk of req) {
+              body += chunk.toString();
+              if (body.length > 16384)
+                return json(413, { error: "Connection request is too large." });
+            }
+            const input = JSON.parse(body);
+            if (input.action === "disconnect") {
+              companion.revoke(input.token);
+              return json(200, { disconnected: true });
+            }
+            if (input.action !== "connect")
+              return json(400, { error: "Unknown connection operation." });
+            return json(
+              200,
+              await companion.connect(
+                input.identity,
+                input.root,
+                input.newFolder === true,
+              ),
+            );
+          }
           if (url.pathname === "/__builder-projects") {
             if (req.method === "GET")
               return json(
@@ -452,6 +491,7 @@ export function builderLocalPlugin(): Plugin {
             chunks.push(chunk);
           }
           const body = Buffer.concat(chunks);
+          let paired: ReturnType<CompanionSessions["authorize"]> | undefined;
           const operation = async () => {
             await projects.require(projectId, true);
             const workspace = await readWorkspace();
@@ -517,7 +557,15 @@ export function builderLocalPlugin(): Plugin {
               await writeWorkspace(workspace);
               return asset;
             }
-            const input = JSON.parse(body.toString("utf8"));
+            let input = JSON.parse(body.toString("utf8"));
+            if (input.connection !== undefined) {
+              paired = companion.authorize(
+                input.connection,
+                projectId,
+                input.request,
+              );
+              input = paired.input;
+            }
             if (
               input.action === "restore-backup" &&
               input.plan?.settings &&
@@ -544,35 +592,73 @@ export function builderLocalPlugin(): Plugin {
             if (input.action === "repository-native-backup-review")
               return nativeBackups.capture(input.root, projectId, directory);
             if (input.action === "repository-native-backup-download")
-              return {archive: nativeBackups.download(input.reviewId, projectId)};
+              return {
+                archive: nativeBackups.download(input.reviewId, projectId),
+              };
             if (input.action === "repository-native-restore-review")
-              return nativeBackups.reviewRestore(input.root, projectId, Buffer.from(input.archive, 'base64'));
+              return nativeBackups.reviewRestore(
+                input.root,
+                projectId,
+                Buffer.from(input.archive, "base64"),
+              );
             if (input.action === "repository-native-restore-apply")
-              return nativeBackups.restore(input.reviewId, projectId, directory);
+              return nativeBackups.restore(
+                input.reviewId,
+                projectId,
+                directory,
+              );
             if (input.action === "repository-native-review-discard") {
               nativeBackups.discard(input.reviewId, projectId);
-              return {discarded:true};
+              return { discarded: true };
             }
             if (input.action === "repository-inspect-current")
               return inspectRepository(server.config.root);
             if (input.action === "repository-source-inspect")
               return repositories.inspectSourcePage(input.root, input.route);
             if (input.action === "repository-source-preview")
-              return runner.sourcePreview(input.jobId, projectId, await repositories.inspectSourcePage(input.root, input.route), req.headers.origin || "");
+              return runner.sourcePreview(
+                input.jobId,
+                projectId,
+                await repositories.inspectSourcePage(input.root, input.route),
+                paired?.session.identity.origin || req.headers.origin || "",
+                Boolean(paired),
+              );
             if (input.action === "repository-source-draft-read")
               return new SourceDrafts(directory).read(input.root, input.route);
             if (input.action === "repository-source-draft-save")
-              return new SourceDrafts(directory).save(input.root, input.route, input.version, input.edits);
+              return new SourceDrafts(directory).save(
+                input.root,
+                input.route,
+                input.version,
+                input.edits,
+              );
             if (input.action === "repository-source-prepare") {
               let draft;
               if (input.draftVersion !== undefined) {
-                draft = await new SourceDrafts(directory).read(input.edits.inspection.root, input.edits.inspection.route);
-                if (draft.version !== input.draftVersion || JSON.stringify(draft.edits) !== JSON.stringify(input.edits))
-                  throw new Error("Save the latest editing draft before reviewing it.");
+                draft = await new SourceDrafts(directory).read(
+                  input.edits.inspection.root,
+                  input.edits.inspection.route,
+                );
+                if (
+                  draft.version !== input.draftVersion ||
+                  JSON.stringify(draft.edits) !== JSON.stringify(input.edits)
+                )
+                  throw new Error(
+                    "Save the latest editing draft before reviewing it.",
+                  );
               }
-              const plan = await repositories.prepareSource(projectId, input.edits);
-              if (draft) sourceDraftPlans.set(plan.id, {root: draft.root, route: draft.route, version: draft.version});
-              if (sourceDraftPlans.size > 100) sourceDraftPlans.delete(sourceDraftPlans.keys().next().value!);
+              const plan = await repositories.prepareSource(
+                projectId,
+                input.edits,
+              );
+              if (draft)
+                sourceDraftPlans.set(plan.id, {
+                  root: draft.root,
+                  route: draft.route,
+                  version: draft.version,
+                });
+              if (sourceDraftPlans.size > 100)
+                sourceDraftPlans.delete(sourceDraftPlans.keys().next().value!);
               return plan;
             }
             if (input.action === "client-release-list")
@@ -613,8 +699,17 @@ export function builderLocalPlugin(): Plugin {
               const draft = sourceDraftPlans.get(input.planId);
               sourceDraftPlans.delete(input.planId);
               if (draft) {
-                try { await new SourceDrafts(directory).save(draft.root, draft.route, draft.version, null); }
-                catch { result.message += " The saved editing draft was retained; reopen it to review or discard it."; }
+                try {
+                  await new SourceDrafts(directory).save(
+                    draft.root,
+                    draft.route,
+                    draft.version,
+                    null,
+                  );
+                } catch {
+                  result.message +=
+                    " The saved editing draft was retained; reopen it to review or discard it.";
+                }
               }
               return result;
             }
@@ -733,7 +828,7 @@ export function builderLocalPlugin(): Plugin {
                 input.label,
               );
               workspace.pages = workspace.pages.some((p) => p.id === page.id)
-                ? workspace.pages.map((p) => p.id === page.id ? page : p)
+                ? workspace.pages.map((p) => (p.id === page.id ? page : p))
                 : [...workspace.pages, page];
               await writeWorkspace(workspace);
               return page;
@@ -803,7 +898,12 @@ export function builderLocalPlugin(): Plugin {
             }
             throw new Error("Unknown builder operation");
           };
-          const pending = queue.then(operation);
+          const pending = queue.then(async () => {
+            const result = await operation();
+            if (paired)
+              companion.record(paired.session, paired.input.action, result);
+            return result;
+          });
           queue = pending.catch(() => undefined);
           json(200, await pending);
         } catch (error) {

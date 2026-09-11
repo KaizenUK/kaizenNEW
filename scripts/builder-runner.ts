@@ -358,12 +358,14 @@ export class RepositoryRunner {
     projectId: string,
     inspection: SourceInspection,
     parentOrigin: string,
+    paired = false,
   ) {
     const running = this.require(id, projectId);
     const origin = new URL(parentOrigin);
     if (
       !["http:", "https:"].includes(origin.protocol) ||
-      !["localhost", "127.0.0.1", "[::1]"].includes(origin.hostname) ||
+      (!paired &&
+        !["localhost", "127.0.0.1", "[::1]"].includes(origin.hostname)) ||
       origin.origin !== parentOrigin
     )
       throw new Error("Source selection must be opened from the local editor.");

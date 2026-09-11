@@ -1,17 +1,22 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { storage } from "./storage";
 import type { NativeBackupReview } from "../../scripts/builder-native-backup";
 
 export default function NativeRepositoryBackup({
   root,
+  approvedRoot,
   onRestored,
 }: {
   root?: string;
+  approvedRoot?: string;
   onRestored: (root: string) => void;
 }) {
   const [review, setReview] = useState<NativeBackupReview>();
   const [restoring, setRestoring] = useState(false);
   const [target, setTarget] = useState("");
+  useEffect(() => {
+    if (approvedRoot) setTarget(approvedRoot);
+  }, [approvedRoot]);
   const [archive, setArchive] = useState<File>();
   const [busy, setBusy] = useState(false),
     [error, setError] = useState(""),
@@ -84,6 +89,7 @@ export default function NativeRepositoryBackup({
           New restore folder
           <input
             value={target}
+            readOnly={Boolean(approvedRoot)}
             disabled={busy || Boolean(review)}
             onChange={(event) => setTarget(event.target.value)}
             placeholder="Absolute path to a folder that does not exist"
@@ -94,6 +100,13 @@ export default function NativeRepositoryBackup({
           replaced. Environment configuration and dependencies must be restored
           separately; no install, build or Git command runs automatically.
         </p>
+        {approvedRoot && (
+          <p>
+            Restoration uses the folder approved in the companion window. To
+            restore elsewhere, open a separate hosted builder tab and connect it
+            to a new restore folder.
+          </p>
+        )}
         <button
           disabled={busy || !archive || !target || Boolean(review)}
           onClick={() =>

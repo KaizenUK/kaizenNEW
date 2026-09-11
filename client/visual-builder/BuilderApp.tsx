@@ -47,6 +47,8 @@ import PagesView, { pageStatus } from "./PagesView";
 import ProjectsView, { ProjectIdentity } from "./ProjectsView";
 import BuilderAuth from "./BuilderAuth";
 import RepositoryPanel from "./RepositoryPanel";
+import HostedRepository from "./HostedRepository";
+import { companionConnection } from "./companionConnection";
 import ClientSettings from "./ClientSettings";
 import ClientPublications from "./ClientPublications";
 import { activeProjectId } from "./projectStorage";
@@ -133,11 +135,14 @@ function BuilderWorkspace({ inventory }: { inventory?: PageInventory } = {}) {
   const [existingPath, setExistingPath] = useState<string>();
   const [creating, setCreating] = useState(false);
   const [view, setView] = useState<BuilderView>(() =>
-    !localMode &&
     typeof location !== "undefined" &&
-    !new URLSearchParams(location.search).has("project")
-      ? "projects"
-      : "pages",
+    new URLSearchParams(location.search).get("view") === "repository"
+      ? "repository"
+      : !localMode &&
+          typeof location !== "undefined" &&
+          !new URLSearchParams(location.search).has("project")
+        ? "projects"
+        : "pages",
   );
   const [theme, toggleTheme] = useBuilderTheme();
   const [previewId] = useState(() =>
@@ -200,6 +205,7 @@ function BuilderWorkspace({ inventory }: { inventory?: PageInventory } = {}) {
     });
     const { data } = cloud.auth.onAuthStateChange((_event, session) => {
       if (authAccount.current !== session?.user.id) {
+        companionConnection.disconnect();
         authAccount.current = session?.user.id;
         loadSequence.current++;
         setActive(undefined);
@@ -393,9 +399,13 @@ function BuilderWorkspace({ inventory }: { inventory?: PageInventory } = {}) {
       }
     >
       {current === "projects" && signedIn && <ProjectsView />}
-      {current === "repository" && localMode && (
-        <RepositoryPanel existingPath={existingPath} />
-      )}
+      {current === "repository" &&
+        signedIn &&
+        (localMode ? (
+          <RepositoryPanel existingPath={existingPath} />
+        ) : (
+          <HostedRepository existingPath={existingPath} />
+        ))}
       {current === "settings" && workspace && activeProjectId !== "kaizen" && (
         <ClientSettings workspace={workspace} onChange={replaceWorkspace} />
       )}
@@ -464,14 +474,10 @@ function BuilderWorkspace({ inventory }: { inventory?: PageInventory } = {}) {
           <ExistingPages
             inventory={inventory}
             open
-            onEdit={
-              localMode
-                ? (path) => {
-                    setExistingPath(path);
-                    navigate("repository");
-                  }
-                : undefined
-            }
+            onEdit={(path) => {
+              setExistingPath(path);
+              navigate("repository");
+            }}
           />,
         )}
       {current === "site" &&

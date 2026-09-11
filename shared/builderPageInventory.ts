@@ -42,7 +42,7 @@ export function existingPageInventory(
   const pages = new Map<string, ExistingPage>();
   for (const [file, source] of Object.entries(sources)) {
     const route = file.match(/\/pages\/(.+)\.astro$/)?.[1];
-    if (!route || route.includes("[") || route === "builder") continue;
+    if (!route || route.includes("[") || /^builder(?:\/|$)/.test(route)) continue;
     const path = pagePath(route.replace(/(?:^|\/)index$/, ""));
     if (!path) continue;
     const frontmatter = source.match(/^---\r?\n([\s\S]*?)\r?\n---/)?.[1] || "";
@@ -61,8 +61,7 @@ export function existingPageInventory(
     const path = pagePath(value);
     if (
       !path ||
-      path === "/builder/" ||
-      /^\/(?:studio|api|editor-api|_astro)(?:\/|$)/.test(path)
+      /^\/(?:builder|studio|api|editor-api|_astro)(?:\/|$)/.test(path)
     )
       continue;
     // A static route's code owns its layout even when its metadata also exists in Sanity.

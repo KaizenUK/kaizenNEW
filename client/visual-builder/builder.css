@@ -2897,6 +2897,16 @@
   place-items: center;
   padding: 24px;
 }
+.builder-companion-card {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.builder-companion-card button {
+  white-space: normal;
+  height: auto;
+  min-height: 40px;
+  padding: 8px 16px;
+}
 .builder-auth-card {
   width: min(100%, 460px);
   padding: 32px;

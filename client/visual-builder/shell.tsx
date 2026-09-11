@@ -128,7 +128,6 @@ export function Sidebar({
       id: "repository",
       label: "Export & repositories",
       icon: <Network size={22} />,
-      hidden: !localMode,
     },
     {
       id: "projects",

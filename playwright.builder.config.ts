@@ -27,6 +27,7 @@ export default defineConfig({
     timeout: 120_000,
     env: {
       VITE_BUILDER_CLOUD: "0",
+      BUILDER_COMPANION_TEST_ORIGIN: "http://127.0.0.1:4323",
       BUILDER_CLIENT_DESTINATIONS_FILE: path.resolve(
         "test-results/builder-client-destinations.json",
       ),

@@ -2,7 +2,7 @@
 
 The hosted builder is live at https://kaizenweb.co.uk/builder/. Invited users choose a password using their invitation link, then sign in with email and password. Open registration is disabled. Sean's account has owner/publish access to the original Kaizen workspace. The live invitation/password/project-reopen flow and hosted access isolation have passed acceptance; see [progress and verification](builder-project-progress.md).
 
-For local filesystem/repository integration, run `pnpm dev` and open `/builder/` on your workstation. Hosted browser access does not provide access to local repositories. The client publication worker is installed and supervised on production. **Client demo acceptance** publishes to https://client-demo.kaizenweb.co.uk on the approved VPS; Sean is its sole owner/publisher. Each additional client needs its own explicit destination before publishing.
+For filesystem/repository integration, run `pnpm dev` on your workstation. You can use the local `/builder/` directly or connect the hosted editor to its companion window as described below. The client publication worker is installed and supervised on production. **Client demo acceptance** publishes to https://client-demo.kaizenweb.co.uk on the approved VPS; Sean is its sole owner/publisher. Each additional client needs its own explicit destination before publishing.
 
 ## First client project
 
@@ -16,6 +16,23 @@ Creating or duplicating a project leaves its deployment destination unconfigured
 The original workspace is registered as **Kaizen workspace** in its existing directory. Registration does not move or rewrite its drafts, publications, assets, uploads, previews, submissions or history. `projects.json` is the catalogue; new project stores are under `.kaizen-builder/projects/<id>/`. Duplicates copy registered assets and all workspace history, remapping local asset references. They reset the site URL, form receiver and CMS connection, and do not copy submission records, private preview links or destination configuration. Choose the new client's services explicitly. Archive is reversible and prevents writes.
 
 ## Integrating a cloned repository
+
+### Connect the hosted editor to this computer
+
+1. Run `pnpm dev` in the updated Kaizen checkout. In the hosted builder, open a client project and **Export & repositories**.
+2. Enter the local address printed by the development server (normally `http://localhost:4321` or `http://127.0.0.1:4321`) and choose **Connect local checkout**. Allow the new companion window if the browser blocks it.
+3. In that local window, check the requesting origin, account and project, choose the absolute repository folder and **Connect selected folder**. Keep the window and local development server running. Editing controls remain in the hosted tab.
+4. Inspect, edit, save a source draft, review/apply files, then review/run the build. **Select content in built page** opens the actual local built page and sends selections back to the hosted editor. File changes remain uncommitted for GitHub Desktop.
+
+The companion grants one tab access to one approved folder for two hours. Only `https://kaizenweb.co.uk` is approved in normal operation. Exact window/origin/channel checks protect browser messages; local HTTP retains its same-origin, loopback and Host checks. The opaque server capability remains in the local window, and the cloud token stays in the hosted window. Review and build IDs belong to the connection that created them. Cloud membership continues to protect cloud workspaces; access to this computer is granted by the local approval window.
+
+Use **Disconnect local access** or close the companion to end the connection. Closing the hosted tab sends a best-effort revocation; a heartbeat detects a stopped/closed tab, and the server enforces the two-hour expiry independently. Already accepted operations can finish. After interruption or a timeout, inspect their result before retrying writes. Reconnect to the same folder to keep the source editor's open state; review again because old review/build IDs are not transferred to the new connection. To choose a different folder, open a separate hosted builder tab.
+
+Local source drafts are stored under a dedicated local project for the hosted origin/account/project, then separated by repository and route. This mapping survives server restarts and cannot alias the original Kaizen workspace or another hosted account. Cloud builder pages and assets remain in their cloud workspace; this connection does not automatically synchronize whole cloud/local workspaces. **Open in local builder** reopens a compatible repository's builder backup as a separate local project.
+
+For native restoration from the hosted editor, open a separate hosted tab, connect to the intended **new** folder and check **New folder for restoring a native backup** in the companion window. Its parent must exist and the target must not. The restore panel uses exactly this approved folder. Then upload the native ZIP and review/apply restoration. Keep environment credentials separately.
+
+### Inspect and integrate
 
 GitHub Desktop can keep managing the repository. No GitHub API connection is needed.
 
@@ -44,7 +61,7 @@ After building, choose **Select content in built page**. A separate private prev
 
 Selection requires an unchanged build of the same repository and project, and currently supports static Astro routes rendered to `dist/<route>/index.html`. Dynamic routes, transformed asset URLs, computed/CMS values and pages blocking the selection script may require the source field list or developer integration. The ordinary preview stays an unchanged snapshot; source selection uses a separate opt-in view. The local preview still blocks forms, API requests and embedding. Closing the editor closes its selector window; stopping or expiring the preview removes the server snapshot.
 
-This workflow currently runs only through the local companion; hosted source editing remains unfinished. The isolated browser scenario uses a separately installed native Astro/React fixture and checks source preservation, section order, build, desktop/mobile rendering, image loading, navigation and a hydrated counter after editing.
+Filesystem operations run through the local companion, either from the local editor or the paired hosted editor. The isolated native-site scenario checks source preservation, section order, build, desktop/mobile rendering, image loading, navigation and a hydrated counter after editing. A separate cross-origin scenario exercises the actual hosted repository UI, consent popup, real local APIs, saved-draft recovery, reviewed file application, builds, rendered selection, disconnect/reconnect and native backup restoration. Only its cloud identity/catalogue is simulated; production acceptance is recorded separately in the progress document.
 
 ## Native repository backup and reopening
 

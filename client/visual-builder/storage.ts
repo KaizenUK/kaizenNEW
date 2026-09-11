@@ -6,6 +6,7 @@ import {
   projectMediaUrl,
 } from "./cloudProjects";
 import { activeProjectId, projectUrl } from "./projectStorage";
+import { companionConnection } from "./companionConnection";
 import {
   validateClientSettings,
   type ClientSettings,
@@ -107,10 +108,11 @@ export const storage = {
     return hostedProject ? projectMediaUrl(url) : url;
   },
   async repository(input: Record<string, unknown>): Promise<any> {
-    if (!localMode)
-      throw new Error(
-        "Local repository access requires the builder running on this computer. A hosted browser cannot access your folders.",
-      );
+    if (!localMode) {
+      const session = await cloud?.auth.getSession();
+      companionConnection.requireAccount(session?.data.session?.user.id);
+      return companionConnection.request(input);
+    }
     return local(input);
   },
   async clientPublication(input: Record<string, unknown>): Promise<any> {
