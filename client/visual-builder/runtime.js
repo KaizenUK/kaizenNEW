@@ -149,12 +149,18 @@
           }
         });
         menu.addEventListener("click", (event) => {
-          if (event.target.closest("a")) menu.open = false;
+          // Let the anchor's native activation complete before hiding it.
+          if (event.target.closest("a"))
+            setTimeout(() => {
+              menu.open = false;
+            }, 0);
         });
         menu.addEventListener("focusout", () => {
-          queueMicrotask(() => {
+          // Focusout may run before the pointer's new focus target is installed.
+          // A microtask can hide the link between pointerdown and click.
+          setTimeout(() => {
             if (!menu.contains(document.activeElement)) menu.open = false;
-          });
+          }, 0);
         });
       });
   }

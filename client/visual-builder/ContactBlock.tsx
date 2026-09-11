@@ -1,11 +1,15 @@
-import React from "react";
+import React, { useContext } from "react";
 import { safeUrl, type Block } from "../../shared/visualBuilder";
 import { builderFormEndpoint } from "./formConfig";
+import { FormEndpointContext } from "./FormEndpointContext";
 
 export default function ContactBlock({ block }: { block: Block }) {
   const p = block.props,
     id = `kb-contact-${p.id}`;
-  const endpoint = safeUrl(builderFormEndpoint);
+  const configured = useContext(FormEndpointContext);
+  const endpoint = safeUrl(
+    configured === undefined ? builderFormEndpoint : configured,
+  );
   const field = (
     name: string,
     label: string,

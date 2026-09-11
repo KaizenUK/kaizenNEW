@@ -51,7 +51,7 @@ export default function ProjectBackups({
       </div>
       <p>
         Keep an editable copy of your pages, shared design, revisions, saved
-        sections and asset library.
+        sections, client settings and asset library.
       </p>
       <p>
         External media, Sanity content and form services retain their
@@ -165,6 +165,16 @@ export default function ProjectBackups({
               </li>
             ))}
           </ul>
+          {review.plan.settings && (
+            <p>
+              Restore client settings: website{" "}
+              {review.plan.settings.value.siteUrl || "not configured"}; form
+              receiver {review.plan.settings.value.formEndpoint || "disabled"};
+              CMS {review.plan.settings.value.cms.kind}. These settings apply to
+              the next export or integration. Check that they belong to this
+              client.
+            </p>
+          )}
           {review.plan.site && (
             <p>
               Restore shared styles and{" "}

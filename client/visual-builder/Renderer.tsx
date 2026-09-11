@@ -1,4 +1,5 @@
 import React, { useContext, type CSSProperties, type ReactNode } from "react";
+import { MediaContext } from "./MediaContext";
 import {
   safeUrl,
   resolveResponsiveStyle,
@@ -159,7 +160,8 @@ export function PageFrame({
   theme: Theme;
   children: ReactNode;
 }) {
-  const fontUrl = safeUrl(theme.fontUrl, true);
+  const media = useContext(MediaContext);
+  const fontUrl = safeUrl(media(theme.fontUrl), true);
   const tokens: Record<string, string> = {};
   for (const [group, values] of Object.entries(theme.tokens || {}))
     for (const [name, value] of Object.entries(values)) {
@@ -206,6 +208,7 @@ export function VisualBlock({
   inline?: ReactNode;
 }) {
   const content = useContext(ContentContext);
+  const media = useContext(MediaContext);
   const images = useContext(ImageContext);
   let contentError = "";
   if (block.props.contentBinding) {
@@ -220,12 +223,14 @@ export function VisualBlock({
       contentError = (error as Error).message;
     }
   }
+  const image = media(imageForBlock(block, images));
+  const styles = media(imageStyle(block, images));
+  block = media(block);
   const { type, props } = block;
-  const image = imageForBlock(block, images);
   const site = useContext(SiteContext);
   const common = {
     className: `kb-block kb-${type.toLowerCase()}`,
-    style: styleVars(imageStyle(block, images)),
+    style: styleVars(styles),
     "data-block-id": props.id,
   };
   if (contentError)
@@ -240,7 +245,14 @@ export function VisualBlock({
         <ContentListBlock block={block} />
       </div>
     );
-  if (type === "Registered") return <div {...common}><RegisteredBlock block={block} /></div>;
+  if (type === "Registered")
+    return (
+      <div {...common}>
+        <RegisteredBlock block={block}>
+          {children ?? <Blocks blocks={props.children || []} />}
+        </RegisteredBlock>
+      </div>
+    );
   if (type === "Shared") {
     try {
       if (!site) throw new Error("Choose a shared component from Site design.");

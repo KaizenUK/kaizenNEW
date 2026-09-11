@@ -1,0 +1,11 @@
+[Unit]
+Description=Check the Kaizen client publication queue
+
+[Timer]
+OnBootSec=30s
+OnUnitInactiveSec=30s
+AccuracySec=1s
+Unit=kaizen-client-worker.service
+
+[Install]
+WantedBy=timers.target

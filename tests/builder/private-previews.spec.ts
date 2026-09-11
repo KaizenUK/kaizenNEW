@@ -48,6 +48,8 @@ test("saved private previews reopen immutably, use mobile layout, suppress form 
   for (const filename of [`previews/${previewId}.json`, "workspace.json"])
     for (const requestPath of [
       `/test-results/builder-browser-workspace/${filename}`,
+      `/test-results/builder-browser-workspace/${filename}?raw`,
+      `/test-results/builder-browser-workspace/${filename}::$DATA?raw`,
       `/@fs/${path.resolve("test-results/builder-browser-workspace", filename).replaceAll("\\", "/")}?raw`,
     ]) {
       const raw = await page.request.get(requestPath);

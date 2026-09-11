@@ -170,7 +170,7 @@ test("a lost small-file acknowledgement can be retried without duplication and d
 }) => {
   const pack = `Retry ${crypto.randomUUID().slice(0, 8)}`;
   let failScope = true;
-  await context.route("**/__builder-local?scope=1", async (route) => {
+  await context.route((url) => url.pathname === "/__builder-local" && url.searchParams.get("scope") === "1", async (route) => {
     if (failScope) {
       failScope = false;
       await route.fulfill({
@@ -181,7 +181,7 @@ test("a lost small-file acknowledgement can be retried without duplication and d
     } else await route.continue();
   });
   let dropAcknowledgement = true;
-  await context.route("**/__builder-local?action=upload", async (route) => {
+  await context.route((url) => url.pathname === "/__builder-local" && url.searchParams.get("action") === "upload", async (route) => {
     const response = await route.fetch();
     if (dropAcknowledgement) {
       dropAcknowledgement = false;

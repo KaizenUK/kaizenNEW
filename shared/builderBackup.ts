@@ -16,13 +16,20 @@ import { validAssetImage } from "./builderImages.ts";
 import { validateConversion } from "./builderConversions.ts";
 import { validateRouteState, saveRoutes } from "./builderRoutes.ts";
 import { validateBuilderRedirects } from "./builderRedirects.js";
+import {
+  validateSettingsState,
+  saveClientSettings,
+} from "./builderSettings.ts";
 
 export const BACKUP_FORMAT = "kaizen-builder-project";
-export const BACKUP_VERSION = 1;
+export const BACKUP_VERSION = 2;
+export function supportedBackupVersion(version: unknown): version is 1 | 2 {
+  return version === 1 || version === 2;
+}
 const uuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 export type BackupManifest = {
   format: typeof BACKUP_FORMAT;
-  version: 1;
+  version: 1 | 2;
   createdAt: string;
   workspace: Workspace;
   files: { assetId: string; path: string; sha256: string; size: number }[];
@@ -31,6 +38,7 @@ export type RestoreExpected = {
   pageVersions: Record<string, number>;
   siteVersion: number;
   routeVersion?: number;
+  settingsVersion?: number;
   saved: Workspace["saved"];
 };
 export type RestoredAsset = {
@@ -42,6 +50,7 @@ export type RestorePlan = {
   saved: Workspace["saved"];
   site?: Workspace["site"];
   routes?: Workspace["routes"];
+  settings?: Workspace["settings"];
   expected: RestoreExpected;
   assetUpdates?: RestoredAsset[];
 };
@@ -69,6 +78,7 @@ export function validateBackupWorkspace(value: Workspace): Workspace {
   uniqueIds(value.assets, "asset");
   uniqueIds(value.saved, "saved section");
   if (value.routes) validateRouteState(value.routes);
+  if (value.settings) validateSettingsState(value.settings);
   for (const page of value.pages) {
     validateDocument(page.draft);
     if (page.published) validateDocument(page.published);
@@ -179,6 +189,7 @@ export function restoreExpected(workspace: Workspace): RestoreExpected {
     ),
     siteVersion: workspace.site?.version || 0,
     routeVersion: workspace.routes?.version || 0,
+    settingsVersion: workspace.settings?.version || 0,
     saved: workspace.saved,
   });
 }
@@ -192,7 +203,10 @@ function mergeDesign(
   incoming.components.forEach((item) => components.set(item.id, item));
   const tokens = clone(current.theme.tokens || {});
   for (const [group, values] of Object.entries(incoming.theme.tokens || {}))
-    tokens[group] = { ...tokens[group], ...values };
+    tokens[group as keyof typeof tokens] = {
+      ...tokens[group as keyof typeof tokens],
+      ...values,
+    };
   return validateSiteDesign({
     ...clone(incoming),
     components: [...components.values()],
@@ -217,6 +231,8 @@ export function makeRestorePlan(
     };
   const documents = new Map(current.pages.map((page) => [page.id, page.draft]));
   if (incoming.routes) plan.routes = validateRouteState(incoming.routes);
+  if (incoming.settings)
+    plan.settings = validateSettingsState(incoming.settings);
   plan.pages.forEach((page) => documents.set(page.id, page.draft));
   validateBuilderRedirects(
     current.routes?.published || [],
@@ -245,6 +261,8 @@ export function applyRestorePlan(
   const expected = restoreExpected(workspace);
   if (
     !plan.expected ||
+    (plan.settings &&
+      expected.settingsVersion !== (plan.expected.settingsVersion || 0)) ||
     expected.siteVersion !== plan.expected.siteVersion ||
     (plan.routes &&
       expected.routeVersion !== (plan.expected.routeVersion || 0)) ||
@@ -267,10 +285,17 @@ export function applyRestorePlan(
       saved: plan.saved,
       site: plan.site,
       routes: plan.routes,
+      settings: plan.settings,
     },
     plan.expected,
   );
   const next = clone(workspace);
+  if (plan.settings)
+    next.settings = saveClientSettings(
+      workspace.settings,
+      workspace.settings?.version || 0,
+      plan.settings.value,
+    );
   const assetIndexes = new Map(
     next.assets.map((asset, index) => [asset.id, index]),
   );
@@ -290,7 +315,8 @@ export function applyRestorePlan(
             "generatedFrom",
             "conversion",
           ].includes(key) &&
-          JSON.stringify(item.asset[key]) !== JSON.stringify(old[key]),
+          JSON.stringify(item.asset[key as keyof typeof item.asset]) !==
+            JSON.stringify(old[key as keyof typeof old]),
       )
     )
       throw new Error("Restoring metadata cannot overwrite an asset file.");

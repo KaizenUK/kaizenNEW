@@ -41,6 +41,8 @@ import {
   type ImportFile,
 } from "./assets";
 import { storage } from "./storage";
+import { MediaContext } from "./MediaContext";
+import { useContext } from "react";
 import { importQueue, withImportLock, type ImportJob } from "./importQueue";
 export function downloadText(name: string, value: string) {
   const url = URL.createObjectURL(new Blob([value], { type: "text/plain" }));
@@ -71,6 +73,7 @@ export default function AssetLibrary({
   onUseBlock: (block: Block) => void;
   notify: (message: string) => void;
 }) {
+  const media = useContext(MediaContext);
   const [query, setQuery] = useState("");
   const [kind, setKind] = useState("");
   const [packFilter, setPackFilter] = useState("");
@@ -796,7 +799,7 @@ export default function AssetLibrary({
                       title={`Drag ${asset.name} onto the page`}
                     >
                       <img
-                        src={asset.image?.variants[0]?.url || asset.url}
+                        src={media(asset.image?.variants[0]?.url || asset.url)}
                         alt={asset.name}
                         loading="lazy"
                       />
@@ -810,7 +813,11 @@ export default function AssetLibrary({
                   aria-label={`Inspect ${asset.name}`}
                 >
                   {["image", "icon"].includes(asset.kind) ? (
-                    <img src={asset.url} alt={asset.name} loading="lazy" />
+                    <img
+                      src={media(asset.url)}
+                      alt={asset.name}
+                      loading="lazy"
+                    />
                   ) : asset.kind === "font" ? (
                     <Type size={34} />
                   ) : asset.kind === "code" ? (

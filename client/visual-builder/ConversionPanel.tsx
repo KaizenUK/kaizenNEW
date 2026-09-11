@@ -112,7 +112,7 @@ export default function ConversionPanel({
         </label>
       ))}
       {asset.hash ===
-        blockRegistry[0].review.contract.sources.find(
+        blockRegistry.find((entry) => entry.id === "example-card-v1")?.review.contract.sources.find(
           (source) => source.role === "source",
         )?.hash && (
         <button

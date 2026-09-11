@@ -7,8 +7,35 @@ import { newDocument, starterBlocks } from "./starters";
 import { initialSiteDesign, sharedInstance } from "../../shared/builderSite";
 import { normalizeCatalogue } from "../../shared/builderContent";
 import { contentFixture } from "../../tests/builder/content-fixture";
+import { registeredDefaults } from "../../shared/builderRegistry";
 
 describe("portable developer project", () => {
+  it("gives changed media new public URLs while keeping identical bytes stable", async () => {
+    const document = newDocument("Immutable media", "media", false);
+    document.data.content = [starterBlocks.Hero()];
+    async function media(colour: string) {
+      const result = await exportProject(
+        [document],
+        [],
+        () => {},
+        async () =>
+          strToU8(
+            `<svg xmlns="http://www.w3.org/2000/svg"><rect fill="${colour}"/></svg>`,
+          ),
+      );
+      const files = unzipSync(new Uint8Array(await result.blob.arrayBuffer()));
+      const name = Object.keys(files).find((name) =>
+        name.startsWith("public/assets/"),
+      )!;
+      expect(strFromU8(files["src/pages.json"])).toContain(
+        name.replace("public/", "/"),
+      );
+      return name;
+    }
+    const first = await media("red");
+    expect(await media("red")).toBe(first);
+    expect(await media("blue")).not.toBe(first);
+  });
   it("exports executable React source, static rendering, page data and localised media", async () => {
     const document = newDocument("Export demonstration", "export-demo", false);
     document.data.content = [starterBlocks.Hero()];
@@ -20,6 +47,14 @@ describe("portable developer project", () => {
       },
     });
     document.data.content[0].props.style.mobile.backgroundImage = "none";
+    const panel = starterBlocks.Registered();
+    panel.props = {
+      ...panel.props,
+      ...registeredDefaults("content-panel-v1"),
+      children: [starterBlocks.Text()],
+    };
+    panel.props.children[0].props.text = "Nested registered export content";
+    document.data.content.push(panel);
     document.data.content[0].props.style.desktop.columnWidths = "2 1";
     const second = newDocument(
       "Second & private",
@@ -143,10 +178,12 @@ describe("portable developer project", () => {
     expect(files["public/builder-runtime.js"]).toBeDefined();
     expect(strFromU8(files["src/page.css"])).toContain("--m-fontSize");
     expect(files["src/page.css"].length).toBeGreaterThan(1000);
-    expect(result.warnings).toHaveLength(2);
-    expect(result.warnings[0]).toContain("Sanity content was captured");
-    expect(result.warnings[1]).toContain(
-      "Contact forms need a receiving service",
+    expect(result.warnings).toEqual(
+      expect.arrayContaining([
+        expect.stringContaining("Sanity content was captured"),
+        expect.stringContaining("Contact forms need a receiving service"),
+        expect.stringMatching(/^Link .* has no page or redirect/),
+      ]),
     );
     expect(strFromU8(files["src/formConfig.ts"])).toContain(
       'builderFormEndpoint: string = ""',
@@ -157,7 +194,10 @@ describe("portable developer project", () => {
     expect(files["src/ContactBlock.tsx"]).toBeDefined();
     // Optional integration fixture: build the actual emitted project independently after this test.
     if (process.env.BUILDER_EXPORT_FIXTURE === "1") {
-      const root = path.resolve("test-results/export-project");
+      const root = path.resolve(
+        process.env.BUILDER_EXPORT_FIXTURE_DIRECTORY ||
+          "test-results/export-project",
+      );
       for (const [name, bytes] of Object.entries(files)) {
         const file = path.resolve(root, name);
         if (!file.startsWith(root + path.sep))

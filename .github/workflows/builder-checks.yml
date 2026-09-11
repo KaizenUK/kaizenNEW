@@ -19,19 +19,37 @@ on:
       - "shared/builderPageInventory.ts"
       - "shared/builderRouteTypes.ts"
       - "shared/builderRedirects.js"
+      - "shared/builderProjects.ts"
+      - "shared/builderSettings.ts"
+      - "shared/builderClientPublication.ts"
+      - "shared/builderSiteMetadata.ts"
+      - "shared/builderProjectOperations.ts"
       - "shared/publicRoutePolicy.js"
       - "shared/nginxRedirects.js"
       - "supabase/migrations/*builder*"
       - "supabase/functions/builder-publish/**"
       - "supabase/functions/builder-contact/**"
       - "supabase/functions/builder-content/**"
+      - "supabase/functions/builder-projects/**"
+      - "supabase/functions/_shared/clientPublication.ts"
       - "public/builder-samples/**"
       - "scripts/builder-local.ts"
+      - "scripts/builder-client-publisher.ts"
+      - "scripts/builder-client-worker.ts"
+      - "deploy/systemd/**"
+      - "scripts/builder-publication-media.ts"
+      - "scripts/builder-publication-state.ts"
       - "scripts/builder-uploads.ts"
       - "scripts/builder-content.ts"
       - "scripts/kaizen-releases.mjs"
+      - "scripts/release-recovery.mjs"
+      - "scripts/client-publication.mjs"
+      - "docs/client-destinations.example.json"
       - "scripts/builder-release-worker.mjs"
       - "scripts/builder-previews.ts"
+      - "scripts/builder-projects.ts"
+      - "scripts/builder-repository.ts"
+      - "scripts/builder-runner.ts"
       - "scripts/deploy-public-release.sh"
       - "scripts/generate-nginx-redirects.mjs"
       - "scripts/generate-builder-style-css.mjs"
@@ -41,6 +59,7 @@ on:
       - "patches/**"
       - "tests/builder/**"
       - "playwright.builder.config.ts"
+      - "vitest.config.ts"
       - "astro.config.mjs"
       - "package.json"
       - "pnpm-lock.yaml"
@@ -62,10 +81,16 @@ jobs:
           node-version: 22
       - run: corepack enable
       - run: pnpm install --frozen-lockfile
+      - uses: denoland/setup-deno@v2
+        with:
+          deno-version: v2.x
+      - run: deno check --config supabase/functions/builder-projects/deno.json supabase/functions/builder-projects/index.ts supabase/functions/builder-publish/index.ts
+      - run: pnpm typecheck
       - run: pnpm exec playwright install --with-deps chromium
       - run: pnpm test
         env:
           BUILDER_EXPORT_FIXTURE: "1"
+      - run: pnpm exec tsx tests/builder/verify-client-worker-compiler.ts
       - name: Build the independent React export
         run: |
           npm --prefix test-results/export-project install --ignore-scripts
@@ -73,11 +98,24 @@ jobs:
           node -e "require('node:fs').writeFileSync('test-results/export-project/src/formConfig.ts', 'export const builderFormEndpoint: string = \"/export-contact-test\";')"
           npm --prefix test-results/export-project run build
           node tests/builder/verify-export.mjs
+      - name: Build and browse independent client repositories
+        run: |
+          astro_fixture="$(cat test-results/astro-integration-fixture-path.txt)"
+          export_fixture="$(cat test-results/standalone-project-fixture-path.txt)"
+          npm --prefix "$astro_fixture" install --ignore-scripts
+          npm --prefix "$astro_fixture" run build
+          npm --prefix "$export_fixture" install --ignore-scripts
+          npm --prefix "$export_fixture" run typecheck
+          npm --prefix "$export_fixture" run build
+          node tests/builder/verify-client-repositories.mjs "$astro_fixture" "$export_fixture"
+          pnpm exec tsx tests/builder/verify-local-runner.ts "$astro_fixture" "$export_fixture"
       - name: Verify release activation and rollback with Nginx
         run: |
           sudo apt-get update
           sudo apt-get install -y nginx
+          KAIZEN_NGINX_BINARY=nginx pnpm test client/visual-builder/client-publication-database.spec.ts
           node tests/builder/verify-releases.mjs
+          node tests/builder/verify-client-releases.mjs "$(cat test-results/astro-integration-fixture-path.txt)" test-results/export-project
       - run: pnpm test:builder:browser
       - uses: actions/upload-artifact@v4
         if: failure()

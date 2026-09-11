@@ -1,0 +1,29 @@
+import React from 'react';
+import { renderToStaticMarkup } from 'react-dom/server';
+import { readFile, writeFile, mkdir, rm } from 'node:fs/promises';
+import PublishedPage from '../src/Renderer';
+import pages from '../src/pages.json';
+import config from '../src/siteConfig.json';
+import { pageMetadataHead, siteSitemap } from '../src/builderSiteMetadata';
+import { needsBuilderRuntime, validateDocument, type PageDocument } from '../src/schema';
+
+const template = (await readFile('dist/index.html', 'utf8'))
+  .replace(/<script[^>]*type="module"[^>]*>[\s\S]*?<\/script>/g, '')
+  .replace('<link rel="icon" href="data:,">', '');
+for (const [index, value] of pages.entries()) {
+  const page = validateDocument(value as PageDocument);
+  const html = template.replace('<title>Kaizen exported site</title>', pageMetadataHead(page, config))
+    .replace('<!--app-->', renderToStaticMarkup(<PublishedPage document={page}/>))
+    .replace('</body>', (needsBuilderRuntime(page.data.content) ? '<script src="/builder-runtime.js" defer></script>' : '') + '</body>');
+  await mkdir('dist/' + page.slug, { recursive: true });
+  await writeFile('dist/' + page.slug + '/index.html', html);
+  if (index === 0) await writeFile('dist/index.html', html);
+}
+if (config.siteUrl) {
+  await writeFile('dist/sitemap.xml', siteSitemap(pages, config));
+  await writeFile('dist/robots.txt', `User-agent: *\nAllow: /\nSitemap: ${config.siteUrl}/sitemap.xml\n`);
+} else {
+  await rm('dist/sitemap.xml', { force: true });
+  await rm('dist/robots.txt', { force: true });
+}
+console.log('Exported ' + pages.length + ' static pages.');

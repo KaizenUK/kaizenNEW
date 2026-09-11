@@ -1,6 +1,6 @@
 # Kaizen visual builder
 
-The builder lives at `/builder/`. It edits new React pages; existing Astro layouts and Sanity content keep their current ownership. Uploads are confirmed working by the user and representative UI8 packs have now been exercised locally. Hosted authentication, storage, deployment and rollback remain unverified; deployment/CI repair and hosted acceptance are deferred at the user's request. See [your acceptance checklist](builder-acceptance-checklist.md).
+The builder lives at `/builder/`. It edits new React pages; existing Astro layouts and Sanity content keep their current ownership. Local client projects, independent exports with editable source, and reviewed Astro repository integration are described in [client projects and handoff](builder-client-projects.md). Hosted authentication, project isolation, deployment and rollback remain unverified. The current request resumes that work; see [progress and verification](builder-project-progress.md) and [the acceptance checklist](builder-acceptance-checklist.md).
 
 This guide describes current behaviour. Earlier incremental results are retained in [verification history](builder-verification-history.md); historical statements there are not the current feature status. Deployment setup and recovery are documented in [website releases](website-releases.md).
 

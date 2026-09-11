@@ -437,3 +437,8 @@ verify_jwt = false
 [functions.builder-content]
 # The handler verifies the JWT with auth.getUser and checks builder_editors.
 verify_jwt = false
+
+[functions.builder-projects]
+# The handler verifies the JWT with auth.getUser, then uses RLS-backed membership.
+verify_jwt = false
+entrypoint = "./functions/builder-projects/index.ts"

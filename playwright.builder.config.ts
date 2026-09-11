@@ -27,7 +27,16 @@ export default defineConfig({
     timeout: 120_000,
     env: {
       VITE_BUILDER_CLOUD: "0",
-      BUILDER_CONTENT_FIXTURE: path.resolve("test-results/builder-cms-source.json"),
+      BUILDER_CLIENT_DESTINATIONS_FILE: path.resolve(
+        "test-results/builder-client-destinations.json",
+      ),
+      BUILDER_CLIENT_NGINX_PREFIX: path.resolve(
+        "test-results/builder-client-nginx",
+      ),
+      BUILDER_CLIENT_NGINX_BINARY: process.env.KAIZEN_NGINX_BINARY || "nginx",
+      BUILDER_CONTENT_FIXTURE: path.resolve(
+        "test-results/builder-cms-source.json",
+      ),
       BUILDER_TEST_CACHE_DIR: path.resolve("test-results/builder-vite-cache"),
       BUILDER_LOCAL_DIRECTORY: path.resolve(
         "test-results/builder-browser-workspace",

@@ -21,6 +21,8 @@ export type BlockRegistration = {
   name: string;
   description: string;
   fields: RegisteredField[];
+  /** One ordered nested-content slot. Persisted as normal Block[] in props.children. */
+  slot?: { label: string };
   review: {
     reviewer: string;
     date: string;
@@ -36,6 +38,39 @@ export const exampleCardRequirements: ConversionRequirements = {
   behaviour: "Static semantic article. No scripts or external services.",
 };
 export const blockRegistry: readonly BlockRegistration[] = [
+  {
+    id: "content-panel-v1",
+    name: "Content panel",
+    description:
+      "A semantic section with an editable heading and a nested content area.",
+    fields: [
+      {
+        key: "text",
+        label: "Panel heading",
+        type: "text",
+        default: "Our approach",
+      },
+    ],
+    slot: { label: "Panel content" },
+    review: {
+      reviewer: "Codex",
+      date: "2026-09-11",
+      reference: "docs/builder-component-integration.md#content-panel-v1",
+      notes:
+        "Local semantic React section, escaped heading and builder-rendered children. No external services or browser scripts.",
+      contract: {
+        requirements: {
+          summary:
+            "Provide a registered component with nested editable content.",
+          fields: "Panel heading and nested blocks.",
+          mobile:
+            "Normal responsive block controls and full-width nested content.",
+          behaviour: "Static section with an h2 heading.",
+        },
+        sources: [],
+      },
+    },
+  },
   {
     id: "example-card-v1",
     name: "Reviewed example card",
@@ -86,7 +121,7 @@ export function reviewContractKey(contract: ReviewContract): string {
     contract.sources.map((source) => `${source.role}:${source.hash}`).sort(),
   ]);
 }
-export function registeredDefaults(id: string): Record<string, string> {
+export function registeredDefaults(id: string): Record<string, any> {
   const registration = registrationFor(id);
   if (!registration)
     throw new Error(
@@ -94,6 +129,7 @@ export function registeredDefaults(id: string): Record<string, string> {
     );
   return {
     registrationId: id,
+    ...(registration.slot ? { children: [] } : {}),
     ...Object.fromEntries(
       registration.fields.map((field) => [field.key, field.default]),
     ),
@@ -104,6 +140,13 @@ export function validateRegisteredProps(props: Record<string, unknown>) {
   if (!registration)
     throw new Error(
       "This page needs a reviewed React component that is not installed. Ask a developer to deploy its original registration before restoring or publishing it.",
+    );
+  if (
+    props.children !== undefined &&
+    (!Array.isArray(props.children) || (!registration.slot && props.children.length > 0))
+  )
+    throw new Error(
+      "This reviewed component does not support the supplied nested content.",
     );
   for (const field of registration.fields)
     if (

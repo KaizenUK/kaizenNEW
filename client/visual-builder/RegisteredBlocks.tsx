@@ -15,8 +15,20 @@ function ExampleCard({ text }: { text: string }) {
 }
 export const registeredRenderers: Record<string, React.ComponentType<any>> = {
   "example-card-v1": ExampleCard,
+  "content-panel-v1": ({ text, children }) => (
+    <section className="kb-content-panel">
+      <h2>{text}</h2>
+      {children}
+    </section>
+  ),
 };
-export default function RegisteredBlock({ block }: { block: Block }) {
+export default function RegisteredBlock({
+  block,
+  children,
+}: {
+  block: Block;
+  children?: React.ReactNode;
+}) {
   const registration = registrationFor(block.props.registrationId);
   validateRegisteredProps(block.props);
   const Component = registration && registeredRenderers[registration.id];
@@ -24,5 +36,9 @@ export default function RegisteredBlock({ block }: { block: Block }) {
     throw new Error(
       "The reviewed component implementation is missing from this deployment.",
     );
-  return <Component {...block.props} />;
+  return (
+    <Component {...block.props}>
+      {registration?.slot ? children : undefined}
+    </Component>
+  );
 }

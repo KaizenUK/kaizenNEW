@@ -87,6 +87,20 @@ export function createReleaseClient({ url, key, fetcher = fetch }) {
         throw new Error("Release request was not found.");
       return rows[0];
     },
+    async getClient(id) {
+      if (!uuid(id)) throw new Error("Invalid client release request ID");
+      const rows = await request(`builder_client_jobs?id=eq.${id}&select=*`);
+      if (!Array.isArray(rows) || rows.length !== 1)
+        throw new Error("Client release request was not found.");
+      return rows[0];
+    },
+    async queuedClients(worker) {
+      if (!/^[a-zA-Z0-9_-]{1,100}$/.test(worker))
+        throw new Error("Invalid client worker identifier");
+      return request(
+        `builder_client_jobs?worker_id=eq.${worker}&phase=eq.queued&select=id&order=created_at.asc&limit=20`,
+      );
+    },
   };
 }
 export function releaseEvidence(manifest) {
@@ -252,6 +266,20 @@ export async function runBuilderRelease(options, adapters = {}) {
 }
 
 async function cli() {
+  if (process.env.BUILDER_RELEASE_ENV_FILE) {
+    if (!path.isAbsolute(process.env.BUILDER_RELEASE_ENV_FILE))
+      throw new Error(
+        "The private release environment file must use an absolute path.",
+      );
+    const loaded = loadEnv({
+      path: process.env.BUILDER_RELEASE_ENV_FILE,
+      quiet: true,
+    });
+    if (loaded.error)
+      throw new Error(
+        "The private release environment file could not be loaded.",
+      );
+  }
   loadEnv({ path: path.resolve(".env"), quiet: true });
   const env = process.env;
   const store = env.KAIZEN_RELEASE_STORE,

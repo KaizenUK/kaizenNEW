@@ -293,6 +293,14 @@ export const builderConfig: Config = {
                       : { type: field.type, label: field.label },
                   ]),
                 ),
+                ...(registration?.slot
+                  ? {
+                      children: {
+                        type: "slot",
+                        label: registration.slot.label,
+                      },
+                    }
+                  : {}),
                 style: fields.style,
               };
             }
@@ -537,7 +545,9 @@ export const builderConfig: Config = {
                   alt: { type: "text", label: "Image description (alt text)" },
                 }
               : {}),
-            ...(isContainer ? { children: { type: "slot" } } : {}),
+            // Puck needs slots in the structural field map before resolveFields runs.
+            // The selected registration controls whether this slot is exposed.
+            ...(isContainer || type === "Registered" ? { children: { type: "slot" } } : {}),
             style: {
               type: "custom",
               label: "Layout & appearance",
@@ -570,7 +580,7 @@ export const builderConfig: Config = {
                     : undefined
               }
             >
-              {isContainer && Children && (
+              {(isContainer || type === "Registered") && Children && (
                 <Children
                   style={{
                     display: "grid",

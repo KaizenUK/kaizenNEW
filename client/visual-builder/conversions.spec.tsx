@@ -11,6 +11,7 @@ import {
 import {
   blockRegistry,
   exampleCardRequirements,
+  registeredDefaults,
   validateRegisteredProps,
 } from "../../shared/builderRegistry";
 import {
@@ -19,6 +20,7 @@ import {
   validateDocument,
 } from "../../shared/visualBuilder";
 import RegisteredBlock, { registeredRenderers } from "./RegisteredBlocks";
+import { Blocks } from "./Renderer";
 import { newDocument, starterBlocks } from "./starters";
 import {
   validateBackupWorkspace,
@@ -27,20 +29,22 @@ import {
 } from "../../shared/builderBackup";
 
 export function conversionFixture(): Asset[] {
-  return blockRegistry[0].review.contract.sources.map((source, i) => ({
-    id: crypto.randomUUID(),
-    name: i ? `LICENCE-${i}.txt` : "ExampleCard.tsx",
-    path: i ? `LICENCE-${i}.txt` : "components/ExampleCard.tsx",
-    hash: source.hash,
-    kind: i ? "licence" : "code",
-    mime: "text/plain",
-    size: 90,
-    url: `private:sample/${i}`,
-    pack: "Sample",
-    tags: [],
-    favourite: false,
-    createdAt: new Date().toISOString(),
-  }));
+  return blockRegistry
+    .find((entry) => entry.id === "example-card-v1")!
+    .review.contract.sources.map((source, i) => ({
+      id: crypto.randomUUID(),
+      name: i ? `LICENCE-${i}.txt` : "ExampleCard.tsx",
+      path: i ? `LICENCE-${i}.txt` : "components/ExampleCard.tsx",
+      hash: source.hash,
+      kind: i ? "licence" : "code",
+      mime: "text/plain",
+      size: 90,
+      url: `private:sample/${i}`,
+      pack: "Sample",
+      tags: [],
+      favourite: false,
+      createdAt: new Date().toISOString(),
+    }));
 }
 describe("developer assisted conversion", () => {
   it("requires an exact reviewed contract, current source hashes and the reviewed implementation", () => {
@@ -164,5 +168,58 @@ describe("developer assisted conversion", () => {
         text: { html: "anything" },
       }),
     ).toThrow();
+  });
+  it("retains registered nested content through validation, rendering and editable restoration", () => {
+    const panel = starterBlocks.Registered();
+    panel.props = {
+      ...panel.props,
+      ...registeredDefaults("content-panel-v1"),
+      text: "Our <approach>",
+      children: [starterBlocks.Text()],
+    };
+    panel.props.children[0].props.text = "Nested editable copy";
+    const document = newDocument(
+      "Nested registration",
+      "nested-registration",
+      false,
+    );
+    document.data.content = [panel];
+    validateDocument(document);
+    const html = renderToStaticMarkup(
+      <Blocks blocks={document.data.content} />,
+    );
+    expect(html).toContain("Our &lt;approach&gt;");
+    expect(html).toContain("Nested editable copy");
+    const workspace = {
+      pages: [
+        {
+          id: crypto.randomUUID(),
+          version: 1,
+          draft: document,
+          published: null,
+          revisions: [],
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+        },
+      ],
+      assets: [],
+      saved: [],
+    };
+    const restored = applyRestorePlan(
+      { pages: [], assets: [], saved: [] },
+      makeRestorePlan({ pages: [], assets: [], saved: [] }, workspace),
+    );
+    expect(
+      restored.pages[0].draft.data.content[0].props.children[0].props.text,
+    ).toBe("Nested editable copy");
+    panel.props.children[0].props.id = panel.props.id;
+    expect(() => validateDocument(document)).toThrow(/duplicate/);
+    expect(() =>
+      validateRegisteredProps({
+        registrationId: "example-card-v1",
+        text: "Example",
+        children: [starterBlocks.Text()],
+      }),
+    ).toThrow(/nested content/);
   });
 });

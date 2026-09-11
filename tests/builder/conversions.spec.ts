@@ -52,7 +52,8 @@ test("save a developer brief, reuse a reviewed component and publish its respons
     const saveGate = new Promise<void>((resolve) => {
       releaseSave = resolve;
     });
-    await page.route("**/__builder-local", async (route) => {
+    const localApi = (url: URL) => url.pathname === "/__builder-local";
+    await page.route(localApi, async (route) => {
       if (
         !delayed &&
         route.request().method() === "POST" &&
@@ -85,7 +86,7 @@ test("save a developer brief, reuse a reviewed component and publish its respons
       .getByRole("button", { name: "Save conversion request", exact: true })
       .click();
     await expect(panel).toContainText("Saved version 2");
-    await page.unroute("**/__builder-local");
+    await page.unroute(localApi);
     const original = (await api()).assets.find(
       (asset) => asset.name === "ExampleCard.tsx",
     )!;

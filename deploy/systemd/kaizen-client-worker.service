@@ -1,0 +1,23 @@
+[Unit]
+Description=Kaizen client publication queue
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=oneshot
+User=kaizen-builder
+Group=kaizen-builder
+WorkingDirectory=/opt/kaizen-builder
+Environment=NODE_ENV=production
+EnvironmentFile=/etc/kaizen/client-worker.env
+ExecStart=/usr/bin/node /opt/kaizen-builder/node_modules/tsx/dist/cli.mjs /opt/kaizen-builder/scripts/builder-client-worker.ts --once
+TimeoutStartSec=15min
+TimeoutStopSec=30s
+KillMode=control-group
+UMask=0022
+PrivateTmp=true
+ProtectHome=true
+ProtectSystem=full
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=kaizen-client-worker

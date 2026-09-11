@@ -2,6 +2,7 @@ import { strFromU8, strToU8, unzip, zip } from "fflate";
 import {
   BACKUP_FORMAT,
   BACKUP_VERSION,
+  supportedBackupVersion,
   validateBackupWorkspace,
   type BackupManifest,
   type RestoredAsset,
@@ -37,7 +38,7 @@ export async function createProjectBackup(
   validateBackupWorkspace(workspace);
   const manifest: BackupManifest = {
     format: BACKUP_FORMAT,
-    version: BACKUP_VERSION,
+    version: workspace.settings ? BACKUP_VERSION : 1,
     createdAt: new Date().toISOString(),
     workspace: clone(workspace),
     files: [],
@@ -139,7 +140,7 @@ export async function openProjectBackup(
   if (
     !manifest ||
     manifest.format !== BACKUP_FORMAT ||
-    manifest.version !== BACKUP_VERSION
+    !supportedBackupVersion(manifest.version)
   )
     throw new Error(
       "Unsupported backup version. Update the builder before restoring this archive.",

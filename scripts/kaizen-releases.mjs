@@ -20,13 +20,135 @@ import { createHash, randomUUID } from "node:crypto";
 import { execFile } from "node:child_process";
 import { promisify } from "node:util";
 import { pathToFileURL } from "node:url";
+import { withRecoveryLock } from "./release-recovery.mjs";
 import {
   canonicalRedirectPath,
   technicalRoute,
+  builderNginxRules,
+  builderRedirectChecks,
+  validateBuilderRedirects,
 } from "../shared/builderRedirects.js";
 
 const run = promisify(execFile);
+const pathKey = (value) =>
+  process.platform === "win32" ? value.toLowerCase() : value;
 const MARKER = ".well-known/kaizen-release.json";
+const CLIENT_BINDING = "client-destination.json";
+const uuidPattern =
+  /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/;
+export function validateClientDestination(value) {
+  if (
+    !value ||
+    Object.keys(value).sort().join(",") !==
+      "destinationId,environment,origin,projectId" ||
+    !uuidPattern.test(value.projectId) ||
+    !uuidPattern.test(value.destinationId) ||
+    !["staging", "production"].includes(value.environment)
+  )
+    throw new Error(
+      "A client release needs an explicit project, destination and environment.",
+    );
+  const origin = new URL(value.origin);
+  if (
+    origin.username ||
+    origin.password ||
+    origin.search ||
+    origin.hash ||
+    origin.pathname !== "/" ||
+    value.origin !== origin.origin ||
+    !(
+      origin.protocol === "https:" ||
+      (origin.protocol === "http:" &&
+        ["127.0.0.1", "localhost", "[::1]"].includes(origin.hostname))
+    )
+  )
+    throw new Error(
+      "Use a canonical HTTPS destination origin, or loopback HTTP for an isolated local destination.",
+    );
+  return {
+    projectId: value.projectId,
+    destinationId: value.destinationId,
+    environment: value.environment,
+    origin: origin.origin,
+  };
+}
+async function clientBinding(root) {
+  const file = path.join(root, CLIENT_BINDING);
+  const stat = await lstat(file).catch((error) => {
+    if (error.code === "ENOENT") return null;
+    throw error;
+  });
+  if (!stat) return null;
+  if (!stat.isFile() || stat.isSymbolicLink())
+    throw new Error("The client destination binding must be a regular file.");
+  return validateClientDestination(JSON.parse(await readFile(file, "utf8")));
+}
+const sameClient = (a, b) =>
+  JSON.stringify(a && validateClientDestination(a)) ===
+  JSON.stringify(b && validateClientDestination(b));
+/** One-time server setup. A client can never claim an existing legacy or other client's store. */
+export async function bindClientStore({ store, client }) {
+  const value = validateClientDestination(client);
+  if (!path.isAbsolute(store))
+    throw new Error(
+      "Use an absolute path for the dedicated client release store.",
+    );
+  const root = await storeRoot(store);
+  if (pathKey(root) !== pathKey(path.resolve(store)))
+    throw new Error("Client release stores must not use symbolic links.");
+  return withLock(root, async () => {
+    const existing = await clientBinding(root);
+    if (existing) {
+      if (!sameClient(existing, value))
+        throw new Error(
+          "This release store belongs to a different client destination.",
+        );
+      return existing;
+    }
+    if (
+      (await readdir(root)).some(
+        (name) =>
+          ![
+            "releases",
+            "transactions",
+            "immutable",
+            ".activation-lock",
+          ].includes(name),
+      ) ||
+      (await readdir(path.join(root, "releases"))).length ||
+      (await readdir(path.join(root, "transactions"))).length ||
+      (await readdir(path.join(root, "immutable"))).length
+    )
+      throw new Error(
+        "Bind a new empty store. Existing Kaizen or client releases cannot be reassigned.",
+      );
+    await writeFile(
+      path.join(root, CLIENT_BINDING),
+      JSON.stringify(value, null, 2),
+      { flag: "wx", mode: 0o600 },
+    );
+    return value;
+  });
+}
+async function assertClientStore(root, client) {
+  if (!sameClient(await clientBinding(root), client || null))
+    throw new Error(
+      "Release identity does not match this store's client destination.",
+    );
+}
+function clientFileChecks(files) {
+  return files
+    .filter((file) => file.path !== MARKER)
+    .map((file) => ({
+      path:
+        file.path === "index.html" || file.path.endsWith("/index.html")
+          ? file.path === "index.html"
+            ? "/"
+            : `/${file.path.slice(0, -10).split("/").map(encodeURIComponent).join("/")}`
+          : `/${file.path.split("/").map(encodeURIComponent).join("/")}`,
+      sha256: file.sha256,
+    }));
+}
 const idPattern = /^[a-zA-Z0-9][a-zA-Z0-9_-]{0,95}$/;
 const digest = (bytes) => createHash("sha256").update(bytes).digest("hex");
 const inside = (root, file) => file.startsWith(root + path.sep);
@@ -101,7 +223,7 @@ async function storeRoot(value) {
   if (
     !value ||
     requested === path.parse(requested).root ||
-    requested === os.homedir()
+    pathKey(requested) === pathKey(os.homedir())
   )
     throw new Error(
       "Choose a dedicated release store, outside the public web root.",
@@ -176,10 +298,10 @@ function nginxPath(value) {
     );
   return value.replaceAll("\\", "/");
 }
-export function nginxConfig(root, id) {
+export function nginxConfig(root, id, client = false) {
   releaseId(id);
   const location = nginxPath(path.join(root, "releases", id));
-  return `# Kaizen managed release: ${id}\nroot "${location}/site";\ninclude "${location}/redirects.conf";\n# Keep immutable build assets available to visitors with an older page open.\nlocation ^~ /_astro/ { alias "${nginxPath(path.join(root, "immutable", "_astro"))}/"; }\nlocation = /.well-known/kaizen-release.json { add_header Cache-Control "no-store" always; try_files $uri =404; }\n`;
+  return `# Kaizen managed release: ${id}\nroot "${location}/site";\ninclude "${location}/redirects.conf";\n# Keep immutable build assets available to visitors with an older page open.\nlocation ^~ /_astro/ { alias "${nginxPath(path.join(root, "immutable", "_astro"))}/"; }\n${client ? `location ^~ /assets/ { alias "${nginxPath(path.join(root, "immutable", "assets"))}/"; }\n` : ""}location = /.well-known/kaizen-release.json { add_header Cache-Control "no-store" always; try_files $uri =404; }\n`;
 }
 async function currentConfig(root) {
   const file = path.join(root, "active.conf");
@@ -192,7 +314,7 @@ async function currentConfig(root) {
     throw new Error("The active release include must be a regular file.");
   const text = await readFile(file, "utf8"),
     id = text.match(/^# Kaizen managed release: ([\w-]+)\n/)?.[1];
-  if (!id || text !== nginxConfig(root, id))
+  if (!id || text !== nginxConfig(root, id, Boolean(await clientBinding(root))))
     throw new Error(
       "The active release include was edited outside Kaizen. Inspect it before deploying.",
     );
@@ -203,6 +325,8 @@ export async function stageRelease({
   store,
   id,
   commit = "",
+  client = null,
+  redirectRules = null,
   report = (_event) => {},
 }) {
   releaseId(id);
@@ -210,14 +334,30 @@ export async function stageRelease({
     throw new Error("Invalid source commit.");
   const root = await storeRoot(store),
     input = await realpath(path.resolve(source));
+  if (client) client = validateClientDestination(client);
+  await assertClientStore(root, client);
   if (root === input || inside(input, root) || inside(root, input))
     throw new Error(
       "Build output and release store must be separate directories.",
     );
   const names = await filesIn(input);
-  if (!names.includes("index.html") || !names.includes("builder/index.html"))
+  if (redirectRules !== null)
+    redirectRules = validateBuilderRedirects(
+      redirectRules,
+      names
+        .filter((name) => name === "index.html" || name.endsWith("/index.html"))
+        .map((name) =>
+          name === "index.html" ? "/" : `/${name.slice(0, -10)}`,
+        ),
+    );
+  if (
+    !names.includes("index.html") ||
+    (!client && !names.includes("builder/index.html"))
+  )
     throw new Error(
-      "The public build must contain the home page and builder entry page.",
+      client
+        ? "A client build must contain index.html."
+        : "The public build must contain the home page and builder entry page.",
     );
   if (
     names.some((name) =>
@@ -227,6 +367,33 @@ export async function stageRelease({
     )
   )
     throw new Error("The build contains local workspace or server-only files.");
+  if (client) {
+    if (
+      names.length > 10000 ||
+      names.some(
+        (name) =>
+          /(^|\/)(\.kaizen|reference-packs|src|scripts|package\.json|package-lock\.json|pnpm-lock\.yaml)(\/|$)/.test(
+            name,
+          ) ||
+          name.endsWith(".map") ||
+          name
+            .split("/")
+            .some((part) => part.startsWith(".") && part !== ".well-known"),
+      )
+    )
+      throw new Error(
+        "Client publication contains private source/backup files or exceeds 10,000 files.",
+      );
+    let bytes = 0;
+    for (const name of names) {
+      const stat = await lstat(path.join(input, name));
+      bytes += stat.size;
+      if (stat.size > 32 * 1024 * 1024 || bytes > 200 * 1024 * 1024)
+        throw new Error(
+          "Client releases support 32 MB per file and 200 MB total.",
+        );
+    }
+  }
   const final = path.join(root, "releases", id),
     temporary = path.join(root, `.staging-${id}-${randomUUID()}`);
   if (await lstat(final).catch(() => null))
@@ -263,12 +430,21 @@ export async function stageRelease({
     const createdAt = new Date().toISOString();
     await writeFile(
       path.join(temporary, "site", MARKER),
-      JSON.stringify({ schemaVersion: 1, releaseId: id, createdAt, commit }),
+      JSON.stringify({
+        schemaVersion: client ? 2 : 1,
+        releaseId: id,
+        createdAt,
+        commit,
+        ...(client ? { client } : {}),
+      }),
       { flag: "wx", mode: 0o644 },
     );
-    const redirects = names.includes("redirects.generated.conf")
-      ? await readFile(path.join(input, "redirects.generated.conf"))
-      : Buffer.from("# No redirects in this release.\n");
+    const redirects =
+      redirectRules !== null
+        ? Buffer.from(builderNginxRules(redirectRules).join("\n") + "\n")
+        : names.includes("redirects.generated.conf")
+          ? await readFile(path.join(input, "redirects.generated.conf"))
+          : Buffer.from("# No redirects in this release.\n");
     await writeFile(path.join(temporary, "redirects.conf"), redirects, {
       flag: "wx",
       mode: 0o644,
@@ -292,20 +468,27 @@ export async function stageRelease({
           });
       }
     }
-    const redirectMetadata = names.includes("redirects.generated.json")
-      ? JSON.parse(
-          await readFile(path.join(input, "redirects.generated.json"), "utf8"),
-        )
-      : { schemaVersion: 1, checks: [] };
+    const redirectMetadata =
+      redirectRules !== null
+        ? { schemaVersion: 1, checks: builderRedirectChecks(redirectRules) }
+        : names.includes("redirects.generated.json")
+          ? JSON.parse(
+              await readFile(
+                path.join(input, "redirects.generated.json"),
+                "utf8",
+              ),
+            )
+          : { schemaVersion: 1, checks: [] };
     if (redirectMetadata.schemaVersion !== 1)
       throw new Error("Invalid redirect metadata version.");
     const manifest = {
-      schemaVersion: 1,
+      schemaVersion: client ? 2 : 1,
+      ...(client ? { client } : {}),
       id,
       createdAt,
       commit,
       files,
-      checks,
+      checks: client ? clientFileChecks(files) : checks,
       redirectHash: digest(redirects),
       redirectChecks: validateRedirectChecks(redirectMetadata.checks),
     };
@@ -314,6 +497,7 @@ export async function stageRelease({
       JSON.stringify(manifest, null, 2),
       { flag: "wx", mode: 0o644 },
     );
+    await assertClientStore(root, client);
     await renameComplete(temporary, final);
     report({
       status: "staged",
@@ -340,12 +524,16 @@ export async function verifyRelease(store, id) {
     await readFile(path.join(directory, "release.json"), "utf8"),
   );
   if (
-    manifest.schemaVersion !== 1 ||
+    ![1, 2].includes(manifest.schemaVersion) ||
     manifest.id !== id ||
     !Array.isArray(manifest.files) ||
     !Array.isArray(manifest.checks)
   )
     throw new Error("Invalid release manifest.");
+  if (manifest.schemaVersion === 2) validateClientDestination(manifest.client);
+  else if (manifest.client)
+    throw new Error("Legacy manifests cannot claim a client destination.");
+  await assertClientStore(root, manifest.client);
   validateRedirectChecks(manifest.redirectChecks);
   const actual = await filesIn(path.join(directory, "site"));
   if (
@@ -367,8 +555,23 @@ export async function verifyRelease(store, id) {
   const marker = JSON.parse(
     await readFile(path.join(directory, "site", MARKER), "utf8"),
   );
-  if (marker.releaseId !== id)
+  if (
+    marker.releaseId !== id ||
+    (manifest.client &&
+      (!sameClient(marker.client, manifest.client) ||
+        marker.schemaVersion !== 2))
+  )
     throw new Error("The retained release marker does not match.");
+  if (manifest.client) {
+    if (
+      JSON.stringify(manifest.checks) !==
+      JSON.stringify(clientFileChecks(manifest.files))
+    )
+      throw new Error("Client releases must verify every served file.");
+    if (!manifest.checks.some((check) => check.path === "/"))
+      throw new Error("Client release has no homepage check.");
+    return manifest;
+  }
   for (const check of manifest.checks) {
     if (
       typeof check.path !== "string" ||
@@ -389,8 +592,10 @@ export async function verifyRelease(store, id) {
   return manifest;
 }
 async function installImmutableAssets(root, manifest) {
-  for (const file of manifest.files.filter((file) =>
-    file.path.startsWith("_astro/"),
+  for (const file of manifest.files.filter(
+    (file) =>
+      file.path.startsWith("_astro/") ||
+      (manifest.client && file.path.startsWith("assets/")),
   )) {
     const target = path.join(root, "immutable", file.path);
     await safeDirectory(root, `immutable/${path.posix.dirname(file.path)}`);
@@ -459,7 +664,10 @@ export async function initialiseStore({ store, id }) {
       throw new Error("This release store is already initialised.");
     const manifest = await verifyRelease(root, id);
     await installImmutableAssets(root, manifest);
-    await atomicWrite(path.join(root, "active.conf"), nginxConfig(root, id));
+    await atomicWrite(
+      path.join(root, "active.conf"),
+      nginxConfig(root, id, Boolean(manifest.client)),
+    );
     return {
       status: "setup_required",
       releaseId: id,
@@ -475,6 +683,13 @@ export async function checkLive(
   { fetcher = fetch, timeout = 15_000 } = {},
 ) {
   const base = new URL(origin);
+  if (
+    manifest.client &&
+    validateClientDestination(manifest.client).origin !== base.origin
+  )
+    throw new Error(
+      "The requested origin is not this client release's configured destination.",
+    );
   if (
     base.username ||
     base.password ||
@@ -505,8 +720,20 @@ export async function checkLive(
       );
     return new Uint8Array(await response.arrayBuffer());
   }
-  const marker = JSON.parse(new TextDecoder().decode(await get(`/${MARKER}`)));
-  if (marker.releaseId !== manifest.id)
+  const markerBytes = await get(`/${MARKER}`);
+  const marker = JSON.parse(new TextDecoder().decode(markerBytes));
+  if (
+    manifest.client &&
+    digest(markerBytes) !==
+      manifest.files.find((file) => file.path === MARKER)?.sha256
+  )
+    throw new Error(
+      "The served client release marker does not match the retained artifact.",
+    );
+  if (
+    marker.releaseId !== manifest.id ||
+    (manifest.client && !sameClient(marker.client, manifest.client))
+  )
     throw new Error(
       "The public site is still serving a different release. Check Nginx routing and cache configuration.",
     );
@@ -589,9 +816,13 @@ export async function activateRelease(
       );
     const manifest = await verifyRelease(root, id),
       old = await verifyRelease(root, previous.id);
+    if (!sameClient(manifest.client || null, old.client || null))
+      throw new Error(
+        "Cannot activate a release from another client destination.",
+      );
     await health(origin, old); // Do not replace an unverified baseline.
     await installImmutableAssets(root, manifest);
-    const next = nginxConfig(root, id),
+    const next = nginxConfig(root, id, Boolean(manifest.client)),
       file = path.join(root, "active.conf"),
       transaction = {
         schemaVersion: 1,
@@ -666,6 +897,91 @@ export async function activateRelease(
       );
     }
   });
+}
+/** Finish a stopped activation's selected configuration, then reconcile its owner. */
+export async function reconcileRelease(
+  { store, id, origin, restoreId },
+  adapters = {},
+) {
+  const root = await storeRoot(store);
+  return withRecoveryLock(
+    path.join(root, ".activation-lock"),
+    async (owner) => {
+      const selected = await currentConfig(root);
+      if (!selected || selected.id !== id)
+        throw new Error(
+          "Selected configuration changed before recovery. Inspect the destination again.",
+        );
+      // Verify the artifact to be served against the store's fixed identity.
+      // A corrupt candidate must not prevent restoring an intact previous site.
+      const manifest = await verifyRelease(root, restoreId || id);
+      if (
+        restoreId &&
+        selected.text !== nginxConfig(root, id, Boolean(manifest.client))
+      )
+        throw new Error(
+          "The active include was edited externally; recovery has preserved it.",
+        );
+      const recoveredConfig = restoreId
+        ? nginxConfig(root, restoreId, Boolean(manifest.client))
+        : selected.text;
+      const journal = path.join(root, "transactions", `${randomUUID()}.json`);
+      const transaction = {
+        schemaVersion: 1,
+        id: path.basename(journal, ".json"),
+        releaseId: manifest.id,
+        ...(restoreId ? { previousSelectedReleaseId: id } : {}),
+        startedAt: new Date().toISOString(),
+        recoveredOwner: owner,
+        status: "reconciling",
+      };
+      const save = async (status, error) => {
+        Object.assign(transaction, {
+          status,
+          updatedAt: new Date().toISOString(),
+          ...(error ? { error: error.message } : {}),
+        });
+        await atomicWrite(journal, JSON.stringify(transaction, null, 2));
+      };
+      const nginx = (args) =>
+        run(
+          process.getuid?.() === 0 ? "nginx" : "sudo",
+          process.getuid?.() === 0 ? args : ["-n", "nginx", ...args],
+          { timeout: 30000, maxBuffer: 1024 * 1024 },
+        );
+      await save("reconciling");
+      try {
+        await adapters.beforeReconcile?.(manifest);
+        if ((await currentConfig(root))?.text !== selected.text)
+          throw new Error("Selected configuration changed during recovery.");
+        if (restoreId)
+          await atomicWrite(path.join(root, "active.conf"), recoveredConfig);
+        await (adapters.validateConfig || (() => nginx(["-t"])))();
+        await (adapters.reload || (() => nginx(["-s", "reload"])))();
+        for (let attempt = 0; ; attempt++) {
+          try {
+            await (adapters.checkLive || checkLive)(origin, manifest);
+            break;
+          } catch (error) {
+            if (attempt >= 4) throw error;
+            await new Promise((resolve) =>
+              setTimeout(resolve, 250 * (attempt + 1)),
+            );
+          }
+        }
+        if ((await currentConfig(root))?.text !== recoveredConfig)
+          throw new Error(
+            "Selected configuration changed while verifying recovery.",
+          );
+        await adapters.finalize?.(manifest);
+        await save("reconciled");
+        return transaction;
+      } catch (error) {
+        await save("recovery_required", error);
+        throw error;
+      }
+    },
+  );
 }
 export async function listReleases(store) {
   const root = await storeRoot(store),

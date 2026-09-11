@@ -311,6 +311,7 @@ export type SavedBlock = {
   theme?: Theme;
 };
 export type Workspace = {
+  settings?: import("./builderSettings.ts").SettingsState;
   pages: BuilderPage[];
   assets: Asset[];
   saved: SavedBlock[];
@@ -353,7 +354,7 @@ export function safeUrl(value: unknown, media = false): string {
     return "";
   }
 }
-export function normalizeSlug(value: string): string {
+export function normalizeSlug(value: string, reserveExisting = true): string {
   const slug = value
     .trim()
     .replace(/^\/+|\/+$/g, "")
@@ -369,7 +370,10 @@ export function normalizeSlug(value: string): string {
   // Builder pages own new URLs; existing public routes and their descendants stay with Astro/Sanity.
   const reserved =
     /^(builder|studio|api|editor-api|_astro|blog|blogdetail|insights|services|products|case-studies|about|contact|thank-you|index|home|review|pledge|contract-product-owner|performance-scanner|get-started|privacy-policy|cookie-policy|gdpr-policy|terms-and-conditions|web-design[^/]*|digital-transformation|agile-coaching|project-rescue|product-owner)(\/|$)/;
-  if (reserved.test(slug))
+  if (
+    (reserveExisting && reserved.test(slug)) ||
+    /^(builder|studio|api|editor-api|_astro)(\/|$)/.test(slug)
+  )
     throw new Error(
       "This URL belongs to the existing site. Choose a new page URL.",
     );
@@ -379,7 +383,7 @@ export function validateDocument(value: PageDocument): PageDocument {
   if (!value || value.schemaVersion !== BUILDER_VERSION)
     throw new Error("Unsupported page version. Please update the builder.");
   if (typeof value.slug !== "string") throw new Error("Add a valid page URL.");
-  normalizeSlug(value.slug);
+  normalizeSlug(value.slug, false);
   if (
     typeof value.title !== "string" ||
     !value.title.trim() ||

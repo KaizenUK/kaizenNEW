@@ -24,12 +24,22 @@ Deno.serve(async (request) => {
   if (authError || !auth.user)
     return json(401, { error: "Your session expired. Please sign in again." });
   const { data: membership, error: membershipError } = await service
-    .from("builder_editors")
-    .select("user_id")
+    .from("builder_project_members")
+    .select("user_id,can_publish")
+    .eq("project_id", "kaizen")
     .eq("user_id", auth.user.id)
     .maybeSingle();
-  if (membershipError || !membership)
-    return json(403, { error: "Builder editor access required" });
+  if (membershipError || !membership?.can_publish)
+    return json(403, { error: "Kaizen project publish permission required" });
+  const { data: project, error: projectError } = await service
+    .from("builder_projects")
+    .select("archived")
+    .eq("id", "kaizen")
+    .single();
+  if (projectError || project.archived)
+    return json(403, {
+      error: "Restore the Kaizen project before publishing.",
+    });
   const githubToken = Deno.env.get("GITHUB_DEPLOY_TOKEN");
   const repo = Deno.env.get("GITHUB_DEPLOY_REPO");
   if (!githubToken || !/^[\w.-]+\/[\w.-]+$/.test(repo || ""))

@@ -1,4 +1,6 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import { activeProjectId } from "./projectStorage";
+import React, { useContext, useEffect, useMemo, useRef, useState } from "react";
+import { MediaContext } from "./MediaContext";
 import { storage, localMode } from "./storage";
 import {
   previewLink,
@@ -27,7 +29,9 @@ export function PrivatePreviewControls({
   useEffect(() => {
     request.current = undefined;
   }, [inputKey]);
-  const url = created ? previewLink(location.origin, created.id) : "";
+  const url = created
+    ? previewLink(location.origin, created.id, activeProjectId)
+    : "";
   return (
     <div className="builder-private-preview-controls">
       <p>
@@ -129,6 +133,7 @@ export function PrivatePreviewControls({
 }
 
 export function PrivatePreviewViewer({ id }: { id: string }) {
+  const media = useContext(MediaContext);
   const [record, setRecord] = useState<PrivatePreview>(),
     [error, setError] = useState("");
   const [width, setWidth] = useState(1280),
@@ -184,8 +189,8 @@ export function PrivatePreviewViewer({ id }: { id: string }) {
     return () => clearTimeout(timer);
   }, [record]);
   const html = useMemo(
-    () => (record ? previewHtml(record.document) : ""),
-    [record],
+    () => (record ? previewHtml(media(record.document)) : ""),
+    [record, media],
   );
   return (
     <div className="builder-app builder-private-preview">
@@ -289,7 +294,7 @@ export function PrivatePreviewList({ onClose }: { onClose: () => void }) {
             <p>Expires {new Date(row.expiresAt).toLocaleString()}</p>
             <div className="builder-row">
               <a
-                href={previewLink(location.origin, row.id)}
+                href={previewLink(location.origin, row.id, activeProjectId)}
                 target="_blank"
                 rel="noreferrer"
               >

@@ -1,4 +1,6 @@
 import React, { useEffect, useState, type ReactNode } from "react";
+import { ProjectIdentity } from "./ProjectsView";
+import { activeProjectId } from "./projectStorage";
 import {
   Archive,
   ArrowUpRight,
@@ -11,12 +13,16 @@ import {
   Network,
   Paintbrush,
   Rocket,
+  Settings,
   Sun,
 } from "lucide-react";
 
 /* Unity-styled shell for every workspace screen: sidebar, page head and small primitives. */
 
 export type BuilderView =
+  | "settings"
+  | "projects"
+  | "repository"
   | "pages"
   | "site"
   | "assets"
@@ -118,14 +124,31 @@ export function Sidebar({
     hidden?: boolean;
     count?: number;
   }[] = [
+    {
+      id: "repository",
+      label: "Export & repositories",
+      icon: <Network size={22} />,
+      hidden: !localMode,
+    },
+    {
+      id: "projects",
+      label: "Client projects",
+      icon: <Archive size={22} />,
+    },
     { id: "pages", label: "Pages", icon: <FileText size={22} /> },
     { id: "site", label: "Site design", icon: <Paintbrush size={22} /> },
+    {
+      id: "settings",
+      label: "Client settings",
+      icon: <Settings size={22} />,
+      hidden: activeProjectId === "kaizen",
+    },
     { id: "assets", label: "Asset library", icon: <ImageIcon size={22} /> },
     {
       id: "releases",
       label: "Releases",
       icon: <Rocket size={22} />,
-      hidden: localMode,
+      hidden: localMode && activeProjectId === "kaizen",
       count: pendingCount,
     },
     { id: "redirects", label: "URL redirects", icon: <Link2 size={22} /> },
@@ -139,6 +162,7 @@ export function Sidebar({
         <Brand />
       </div>
       <div className="builder-sidebar-scroll">
+        {(localMode || email) && <ProjectIdentity />}
         <p className="builder-nav-title">Workspace</p>
         <nav className="builder-nav">
           {items
@@ -176,10 +200,12 @@ export function Sidebar({
               <span>Existing site pages</span>
             </button>
           )}
-          <a href="/" target="_blank" rel="noreferrer">
-            <ArrowUpRight size={22} />
-            <span>Open the live site</span>
-          </a>
+          {activeProjectId === "kaizen" && (
+            <a href="/" target="_blank" rel="noreferrer">
+              <ArrowUpRight size={22} />
+              <span>Open the live site</span>
+            </a>
+          )}
         </nav>
         <div className="builder-profile">
           <span className="builder-avatar" aria-hidden="true">

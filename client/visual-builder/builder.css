@@ -1545,6 +1545,28 @@
   font-size: 20px;
   height: auto;
 }
+.builder-media-toast {
+  box-sizing: border-box;
+  width: min(700px, calc(100vw - 32px));
+  gap: 16px;
+  background: var(--text, #1b1d21);
+  color: var(--body, #fff);
+  font-family: Inter, "Segoe UI", system-ui, sans-serif;
+  box-shadow: 0 10px 36px rgba(27, 29, 33, 0.2);
+}
+.builder-media-toast button {
+  flex: none;
+  white-space: nowrap;
+  min-height: 36px;
+  padding: 8px 12px;
+  border: 1px solid currentColor;
+  border-radius: 8px;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
 .builder-preview-modal {
   position: fixed;
   inset: 0;
@@ -2726,5 +2748,184 @@
   }
   .builder-page-row > .builder-pill {
     display: none;
+  }
+}
+
+/* Project management uses the same Unity shell and remains separate from page themes. */
+.builder-project-identity {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 12px;
+  overflow-wrap: anywhere;
+}
+.builder-project-identity small {
+  font-size: 11px;
+  opacity: 0.75;
+}
+.builder-editor-left .builder-project-identity {
+  max-width: 210px;
+  font-size: 12px;
+}
+.builder-project-create {
+  display: flex;
+  align-items: end;
+  gap: 16px;
+  padding: 24px;
+  margin-bottom: 20px;
+}
+.builder-project-create label,
+.builder-project-card label {
+  display: grid;
+  gap: 8px;
+  flex: 1;
+}
+.builder-project-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 310px), 1fr));
+  gap: 24px;
+  margin: 20px 0;
+}
+.builder-project-card {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 24px;
+}
+.builder-project-card h2,
+.builder-project-card p {
+  margin: 0;
+}
+.builder-project-card form,
+.builder-project-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: end;
+}
+.builder-project-filter {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.builder-project-actions a {
+  text-decoration: none;
+}
+@media (max-width: 639px) {
+  .builder-project-create {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
+
+.builder-app .builder-project-filter {
+  flex-direction: row;
+  justify-content: flex-start;
+  color: var(--builder-text);
+  font-size: 14px;
+}
+.builder-app .builder-project-filter input {
+  width: 18px;
+  height: 18px;
+  margin: 0;
+}
+.builder-app .builder-project-actions a.builder-primary {
+  display: inline-flex;
+  align-items: center;
+  padding: 12px 18px;
+  border-radius: 12px;
+  background: #6c5dd3;
+  color: white;
+  font-weight: 600;
+  font-size: 14px;
+}
+.builder-project-actions a:focus-visible {
+  outline: 3px solid #6c5dd3;
+  outline-offset: 3px;
+}
+
+.builder-repository > .builder-card {
+  margin-bottom: 24px;
+}
+.builder-repository {
+  overflow-wrap: anywhere;
+}
+.builder-client-publications {
+  overflow-wrap: anywhere;
+}
+.builder-client-publications .builder-card {
+  margin: 24px 0;
+}
+.builder-client-publications select {
+  width: 100%;
+  min-width: 0;
+}
+.builder-client-publications pre {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  max-height: 360px;
+  overflow: auto;
+}
+.builder-repository-build dd {
+  margin-left: 0;
+}
+.builder-repository pre {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  max-height: 400px;
+  overflow: auto;
+  padding: 16px;
+  background: #f4f4f4;
+  color: #111827;
+}
+.builder-repository summary {
+  cursor: pointer;
+  padding: 12px 0;
+  overflow-wrap: anywhere;
+}
+
+.builder-member-row {
+  display: grid;
+  gap: 8px;
+  padding: 12px 0;
+  overflow-wrap: anywhere;
+}
+
+.builder-auth {
+  display: grid;
+  min-height: 100vh;
+  place-items: center;
+  padding: 24px;
+}
+.builder-auth-card {
+  width: min(100%, 460px);
+  padding: 32px;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  background: var(--panel);
+}
+.builder-auth .builder-login {
+  width: 100%;
+  max-width: none;
+  margin: 28px 0 0;
+  padding: 0;
+  box-shadow: none;
+}
+.builder-auth h1 {
+  font-size: 26px;
+  line-height: 1.25;
+}
+.builder-auth input {
+  width: 100%;
+}
+.builder-auth [role="alert"] {
+  color: #b42318;
+}
+@media (max-width: 480px) {
+  .builder-auth {
+    padding: 16px;
+  }
+  .builder-auth-card {
+    padding: 24px;
   }
 }

@@ -1,3 +1,4 @@
+import { saveClientSettings } from "../shared/builderSettings";
 import {
   mkdir,
   readFile,
@@ -8,6 +9,17 @@ import {
 } from "node:fs/promises";
 import { setTimeout as delay } from "node:timers/promises";
 import path from "node:path";
+import { LocalProjects } from "./builder-projects";
+import { RepositoryRunner } from "./builder-runner";
+import { ClientPublisher } from "./builder-client-publisher";
+import { execFile } from "node:child_process";
+import { promisify } from "node:util";
+import {
+  RepositoryCompanion,
+  inspectRepository,
+  readEditableArchive,
+} from "./builder-repository";
+import { LEGACY_PROJECT_ID } from "../shared/builderProjects";
 import { randomUUID, createHash } from "node:crypto";
 import { localUploadServer } from "./builder-uploads";
 import { localPreviewAction } from "./builder-previews";
@@ -29,6 +41,7 @@ import {
   updateAssetMetadata,
 } from "../shared/builderLibrary";
 import { getServerContentCatalogue } from "./builder-content";
+import { fetchContentCatalogue } from "../shared/builderContent";
 import { ContactError, handleContactRequest } from "../shared/builderContact";
 import {
   assertPageSitePublished,
@@ -37,6 +50,7 @@ import {
 } from "../shared/builderSite";
 import {
   clone,
+  normalizeSlug,
   savePage,
   type Workspace,
   type Asset,
@@ -45,16 +59,20 @@ import {
 const directory = path.resolve(
   process.env.BUILDER_LOCAL_DIRECTORY || ".kaizen-builder",
 );
-const database = path.join(directory, "workspace.json");
-export async function readLocalWorkspace(): Promise<Workspace> {
+export async function readLocalWorkspace(
+  folder = directory,
+): Promise<Workspace> {
   try {
-    return JSON.parse(await readFile(database, "utf8"));
+    return JSON.parse(
+      await readFile(path.join(folder, "workspace.json"), "utf8"),
+    );
   } catch (error) {
     if (error.code === "ENOENT") return { pages: [], assets: [], saved: [] };
     throw error;
   }
 }
-async function writeWorkspace(workspace: Workspace) {
+async function writeLocalWorkspace(workspace: Workspace, directory: string) {
+  const database = path.join(directory, "workspace.json");
   await mkdir(directory, { recursive: true });
   const temporary = `${database}.${randomUUID()}.tmp`;
   await writeFile(temporary, JSON.stringify(workspace));
@@ -133,11 +151,50 @@ export function builderLocalRedirectsPlugin(): Plugin {
 }
 export function builderLocalPlugin(): Plugin {
   let queue: Promise<unknown> = Promise.resolve();
+  const projects = new LocalProjects(directory);
+  const repositories = new RepositoryCompanion();
+  const runner = new RepositoryRunner();
+  let compilerServer: any;
+  const publisher = new ClientPublisher({
+    directory: (id) => projects.directory(id),
+    require: (id) => projects.require(id, true),
+    workspace: (id) => readLocalWorkspace(projects.directory(id)),
+    registry: () => process.env.BUILDER_CLIENT_DESTINATIONS_FILE,
+    samplesRoot: path.resolve("public/builder-samples"),
+    compile: async (snapshot, load, progress) => {
+      const module = await compilerServer.ssrLoadModule(
+        "/client/visual-builder/compileClientPublication.tsx",
+      );
+      return module.compileClientPublication(snapshot, load, progress);
+    },
+    adapters: () => {
+      const prefix = process.env.BUILDER_CLIENT_NGINX_PREFIX;
+      if (!prefix) return {};
+      if (!path.isAbsolute(prefix))
+        throw new Error("The configured Nginx prefix must be absolute.");
+      const run = promisify(execFile);
+      const nginx = (args: string[]) =>
+        run(
+          process.env.BUILDER_CLIENT_NGINX_BINARY || "nginx",
+          ["-p", prefix.replace(/\\/g, "/") + "/", "-c", "nginx.conf", ...args],
+          { windowsHide: true, timeout: 30000, maxBuffer: 1024 * 1024 },
+        );
+      return {
+        validateConfig: () => nginx(["-t"]),
+        reload: () => nginx(["-s", "reload"]),
+      };
+    },
+  });
+  const uploadServers = new Map<string, ReturnType<typeof localUploadServer>>();
   return {
     name: "kaizen-builder-local",
     apply: "serve",
     configureServer(server) {
-      const uploads = localUploadServer(directory);
+      compilerServer = server;
+      server.httpServer?.once("close", () => {
+        void runner.close();
+        void publisher.close();
+      });
       server.middlewares.use(async (req, res, next) => {
         const url = new URL(req.url || "/", "http://localhost");
         const resumable =
@@ -153,6 +210,7 @@ export function builderLocalPlugin(): Plugin {
             "/__builder-local",
             "/__builder-contact",
             "/__builder-content",
+            "/__builder-projects",
           ].includes(url.pathname)
         ) {
           return next();
@@ -164,8 +222,32 @@ export function builderLocalPlugin(): Plugin {
           res.end(JSON.stringify(value));
         };
         try {
+          const projectId = String(
+            req.headers["x-kaizen-project"] ||
+              url.searchParams.get("project") ||
+              LEGACY_PROJECT_ID,
+          );
+          // Request-local scope; no process-global active project or cookie. Multiple tabs stay isolated.
+          const project = await projects.require(
+            projectId,
+            url.pathname !== "/__builder-projects" &&
+              !["GET", "HEAD"].includes(req.method || "GET"),
+          );
+          const directory = projects.directory(project.id);
+          const readWorkspace = () => readLocalWorkspace(directory);
+          const writeWorkspace = (workspace: Workspace) => {
+            if (projectId === LEGACY_PROJECT_ID)
+              for (const page of workspace.pages) {
+                normalizeSlug(page.draft.slug);
+                if (page.published) normalizeSlug(page.published.slug);
+              }
+            return writeLocalWorkspace(workspace, directory);
+          };
+          if (!uploadServers.has(projectId))
+            uploadServers.set(projectId, localUploadServer(directory));
+          const uploads = uploadServers.get(projectId)!;
           if (media) {
-            const workspace = await readLocalWorkspace();
+            const workspace = await readWorkspace();
             const asset = workspace.assets.find((a) => a.id === media[1]);
             if (!asset) return json(404, { error: "Asset not found" });
             res.setHeader("Content-Type", asset.mime);
@@ -197,6 +279,29 @@ export function builderLocalPlugin(): Plugin {
             });
           if (req.headers["sec-fetch-site"] === "cross-site")
             return json(403, { error: "Cross-site requests are not allowed." });
+          if (url.pathname === "/__builder-projects") {
+            if (req.method === "GET")
+              return json(
+                200,
+                await publisher.catalogue(await projects.list()),
+              );
+            if (
+              req.method !== "POST" ||
+              req.headers["x-kaizen-builder"] !== "1"
+            )
+              return json(405, { error: "Unsupported request" });
+            let body = "";
+            for await (const chunk of req) {
+              body += chunk.toString();
+              if (body.length > 8192)
+                return json(413, { error: "Project request is too large." });
+            }
+            const input = JSON.parse(body);
+            // Serialize duplication with writes so pages and asset files are one consistent snapshot.
+            const pending = queue.then(() => projects.mutate(input));
+            queue = pending.catch(() => undefined);
+            return json(200, await pending);
+          }
           if (resumable) {
             if (req.headers["x-kaizen-builder"] !== "1")
               return json(403, { error: "Builder upload header required." });
@@ -207,6 +312,20 @@ export function builderLocalPlugin(): Plugin {
             if (req.method !== "GET")
               return json(405, { error: "Unsupported request" });
             try {
+              if (projectId !== LEGACY_PROJECT_ID) {
+                const cms = (await readWorkspace()).settings?.value.cms;
+                if (cms?.kind !== "sanity-public")
+                  throw new Error(
+                    "Configure this project's public Sanity connection in Client settings first.",
+                  );
+                return json(
+                  200,
+                  await fetchContentCatalogue({
+                    projectId: cms.projectId,
+                    dataset: cms.dataset,
+                  }),
+                );
+              }
               return json(200, await getServerContentCatalogue(true));
             } catch (error) {
               return json(503, {
@@ -305,12 +424,19 @@ export function builderLocalPlugin(): Plugin {
           if (req.method === "GET" && url.searchParams.has("asset"))
             return json(
               200,
-              (await readLocalWorkspace()).assets.find(
+              (await readWorkspace()).assets.find(
                 (asset) => asset.id === url.searchParams.get("asset"),
               ) || null,
             );
-          if (req.method === "GET")
-            return json(200, await readLocalWorkspace());
+          if (req.method === "GET") {
+            const workspace = await readWorkspace();
+            return json(
+              200,
+              projectId === LEGACY_PROJECT_ID
+                ? workspace
+                : await publisher.workspace(projectId, workspace),
+            );
+          }
           if (req.method !== "POST" || req.headers["x-kaizen-builder"] !== "1")
             return json(405, { error: "Unsupported request" });
           const chunks: Buffer[] = [];
@@ -323,7 +449,8 @@ export function builderLocalPlugin(): Plugin {
           }
           const body = Buffer.concat(chunks);
           const operation = async () => {
-            const workspace = await readLocalWorkspace();
+            await projects.require(projectId, true);
+            const workspace = await readWorkspace();
             if (url.searchParams.get("action") === "finish-upload") {
               const input = JSON.parse(body.toString()),
                 metadata = input.asset as Asset;
@@ -340,6 +467,8 @@ export function builderLocalPlugin(): Plugin {
                 return existing;
               }
               const asset = await uploads.finish(input.uploadUrl, metadata);
+              if (projectId !== LEGACY_PROJECT_ID)
+                asset.url += `?project=${projectId}`;
               workspace.assets.push(asset);
               await writeWorkspace(workspace);
               await uploads.release(input.uploadUrl).catch(() => {});
@@ -375,7 +504,7 @@ export function builderLocalPlugin(): Plugin {
                   .replace(/[^a-z0-9]/g, "") || "bin";
               const asset = {
                 ...metadata,
-                url: `/builder-media/${metadata.id}.${extension}`,
+                url: `/builder-media/${metadata.id}.${extension}${projectId === LEGACY_PROJECT_ID ? "" : `?project=${projectId}`}`,
                 size: body.length,
               };
               await mkdir(path.join(directory, "assets"), { recursive: true });
@@ -385,6 +514,83 @@ export function builderLocalPlugin(): Plugin {
               return asset;
             }
             const input = JSON.parse(body.toString("utf8"));
+            if (
+              input.action === "restore-backup" &&
+              input.plan?.settings &&
+              projectId === LEGACY_PROJECT_ID
+            )
+              throw new Error(
+                "Restore client settings into a client project. The original site's services remain deployment-managed.",
+              );
+            if (input.action === "settings") {
+              if (projectId === LEGACY_PROJECT_ID)
+                throw new Error(
+                  "The original Kaizen site's services remain configured in its deployment environment. Use a client project for these settings.",
+                );
+              workspace.settings = saveClientSettings(
+                workspace.settings,
+                input.version,
+                input.settings,
+              );
+              await writeWorkspace(workspace);
+              return workspace.settings;
+            }
+            if (input.action === "repository-inspect")
+              return inspectRepository(input.root);
+            if (input.action === "client-release-list")
+              return {
+                destinations: await publisher.destinations(projectId),
+                ...clientHistoryPage(
+                  await publisher.jobs(projectId),
+                  input.before,
+                ),
+              };
+            if (input.action === "client-release-review")
+              return publisher.review(
+                projectId,
+                input.destinationId,
+                input.releaseAction,
+                input.rollbackOf,
+              );
+            if (input.action === "client-release-start")
+              return publisher.start(projectId, input.reviewId);
+            if (input.action === "client-release-recover")
+              return publisher.recover(projectId, input.jobId);
+            if (input.action === "repository-build-review")
+              return runner.prepare(input.root, projectId);
+            if (input.action === "repository-build-start")
+              return runner.start(input.planId, projectId);
+            if (input.action === "repository-build-status")
+              return runner.status(input.jobId, projectId);
+            if (input.action === "repository-build-stop")
+              return runner.cancel(input.jobId, projectId);
+            if (input.action === "repository-prepare")
+              return repositories.prepare(
+                input.root,
+                projectId,
+                Buffer.from(input.archive, "base64"),
+              );
+            if (input.action === "repository-apply")
+              return repositories.apply(input.planId, projectId);
+            if (input.action === "repository-open") {
+              const archive = readEditableArchive(
+                await repositories.editableArchive(input.root),
+              );
+              return projects.importWorkspace(
+                input.name || path.basename(input.root),
+                archive.workspace,
+                archive.files,
+              );
+            }
+            if (
+              projectId !== LEGACY_PROJECT_ID &&
+              ["publish", "publish-site", "publish-routes"].includes(
+                input.action,
+              )
+            )
+              throw new Error(
+                "This client project has no publication destination. Export it for an isolated host; the Kaizen local site is reserved for the original workspace.",
+              );
             if (input.action === "routes") {
               workspace.routes = saveRoutes(
                 workspace.routes,
@@ -462,6 +668,8 @@ export function builderLocalPlugin(): Plugin {
               return next;
             }
             if (input.action === "save") {
+              if (projectId === LEGACY_PROJECT_ID)
+                normalizeSlug(input.document?.slug);
               if (
                 workspace.routes?.published.some(
                   (rule) =>
@@ -590,3 +798,4 @@ export function builderLocalAssets() {
     },
   };
 }
+import { clientHistoryPage } from "../shared/builderClientPublication";

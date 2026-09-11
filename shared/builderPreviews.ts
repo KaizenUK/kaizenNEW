@@ -65,9 +65,14 @@ export function previewSummary({
 }: PrivatePreview): PreviewSummary {
   return summary;
 }
-export function previewLink(origin: string, id: string): string {
+export function previewLink(
+  origin: string,
+  id: string,
+  projectId?: string,
+): string {
   if (!isPreviewId(id)) throw new Error("Invalid preview ID.");
   const url = new URL("/builder/", origin);
   url.searchParams.set("preview", id);
+  if (projectId) url.searchParams.set("project", projectId);
   return url.href;
 }

@@ -44,6 +44,12 @@ import {
   type BuilderView,
 } from "./shell";
 import PagesView, { pageStatus } from "./PagesView";
+import ProjectsView, { ProjectIdentity } from "./ProjectsView";
+import BuilderAuth from "./BuilderAuth";
+import RepositoryPanel from "./RepositoryPanel";
+import ClientSettings from "./ClientSettings";
+import ClientPublications from "./ClientPublications";
+import { activeProjectId } from "./projectStorage";
 import PublishDialog from "./PublishDialog";
 import BlockPalette from "./BlockPalette";
 import {
@@ -70,6 +76,8 @@ import { block, newDocument } from "./starters";
 import { cloud, localMode, storage } from "./storage";
 import AssetLibrary, { downloadText } from "./AssetLibrary";
 import { previewHtml as renderPreviewHtml } from "./previewHtml";
+import { HostedMediaProvider } from "./HostedMediaProvider";
+import { MediaContext } from "./MediaContext";
 import { isPreviewId, previewLink } from "../../shared/builderPreviews";
 import {
   PrivatePreviewControls,
@@ -104,9 +112,16 @@ const errorMessage = (error: unknown) =>
   error instanceof Error
     ? error.message
     : "Something went wrong. Please try again.";
-export default function BuilderApp({
-  inventory,
-}: { inventory?: PageInventory } = {}) {
+export default function BuilderApp(props: { inventory?: PageInventory } = {}) {
+  return (
+    <BuilderAuth>
+      <HostedMediaProvider>
+        <BuilderWorkspace {...props} />
+      </HostedMediaProvider>
+    </BuilderAuth>
+  );
+}
+function BuilderWorkspace({ inventory }: { inventory?: PageInventory } = {}) {
   const [workspace, setWorkspace] = useState<Workspace>();
   const [active, setActive] = useState<BuilderPage>();
   const [error, setError] = useState("");
@@ -116,7 +131,13 @@ export default function BuilderApp({
   const [signedIn, setSignedIn] = useState(localMode);
   const [notice, setNotice] = useState("");
   const [creating, setCreating] = useState(false);
-  const [view, setView] = useState<BuilderView>("pages");
+  const [view, setView] = useState<BuilderView>(() =>
+    !localMode &&
+    typeof location !== "undefined" &&
+    !new URLSearchParams(location.search).has("project")
+      ? "projects"
+      : "pages",
+  );
   const [theme, toggleTheme] = useBuilderTheme();
   const [previewId] = useState(() =>
     typeof window === "undefined"
@@ -125,6 +146,8 @@ export default function BuilderApp({
   );
   const [editingComponent, setEditingComponent] = useState<string>();
   const workspaceRef = useRef<Workspace>(undefined);
+  const loadSequence = useRef(0);
+  const authAccount = useRef<string | undefined>(undefined);
   workspaceRef.current = workspace;
   const replaceWorkspace = (next: Workspace) => {
     workspaceRef.current = next;
@@ -140,14 +163,19 @@ export default function BuilderApp({
     );
   };
   const reload = useCallback(async () => {
+    const sequence = ++loadSequence.current;
     setLoading(true);
     setError("");
     try {
-      setWorkspace(await storage.load());
+      const next = await storage.load();
+      if (sequence === loadSequence.current) setWorkspace(next);
     } catch (e) {
-      setError(errorMessage(e));
+      if (sequence === loadSequence.current) {
+        setWorkspace(undefined);
+        setError(errorMessage(e));
+      }
     } finally {
-      setLoading(false);
+      if (sequence === loadSequence.current) setLoading(false);
     }
   }, []);
   useEffect(() => {
@@ -170,10 +198,18 @@ export default function BuilderApp({
       else setLoading(false);
     });
     const { data } = cloud.auth.onAuthStateChange((_event, session) => {
+      if (authAccount.current !== session?.user.id) {
+        authAccount.current = session?.user.id;
+        loadSequence.current++;
+        setActive(undefined);
+        setEditingComponent(undefined);
+        setWorkspace(undefined);
+      }
       setSignedIn(Boolean(session));
       setSessionEmail(session?.user?.email || "");
-      if (session && !previewId) setTimeout(() => void reload(), 0);
-      else setWorkspace(undefined);
+      if (session && !previewId && _event !== "TOKEN_REFRESHED")
+        setTimeout(() => void reload(), 0);
+      else if (!session) setWorkspace(undefined);
     });
     return () => data.subscription.unsubscribe();
   }, [reload, previewId]);
@@ -283,6 +319,11 @@ export default function BuilderApp({
       <LibraryContext.Provider value={workspace.assets}>
         <Editor
           key={active.id}
+          onClientReleases={() => {
+            setActive(undefined);
+            setView("releases");
+            void reload();
+          }}
           page={active}
           workspace={workspace}
           onPage={onPage}
@@ -315,7 +356,13 @@ export default function BuilderApp({
     setView(next);
     if (next === "pages") void reload();
   };
-  const current: BuilderView = workspace ? view : "pages";
+  const current: BuilderView = !signedIn
+    ? "pages"
+    : view === "projects"
+      ? view
+      : workspace
+        ? view
+        : "pages";
   const pendingCount = workspace
     ? workspace.pages.filter((page) => pageStatus(page).filter === "changed")
         .length
@@ -339,11 +386,16 @@ export default function BuilderApp({
           }
           theme={theme}
           onToggleTheme={toggleTheme}
-          hasInventory={Boolean(inventory)}
+          hasInventory={Boolean(inventory) && activeProjectId === "kaizen"}
           pendingCount={pendingCount}
         />
       }
     >
+      {current === "projects" && signedIn && <ProjectsView />}
+      {current === "repository" && localMode && <RepositoryPanel />}
+      {current === "settings" && workspace && activeProjectId !== "kaizen" && (
+        <ClientSettings workspace={workspace} onChange={replaceWorkspace} />
+      )}
       {current === "pages" && (
         <PagesView
           workspace={workspace}
@@ -367,8 +419,12 @@ export default function BuilderApp({
                     options: {
                       shouldCreateUser: false,
                       emailRedirectTo: isPreviewId(previewId)
-                        ? previewLink(location.origin, previewId)
-                        : `${location.origin}/builder/`,
+                        ? previewLink(
+                            location.origin,
+                            previewId,
+                            activeProjectId,
+                          )
+                        : `${location.origin}/builder/?project=${encodeURIComponent(activeProjectId)}`,
                     },
                   });
                   if (error) setError(error.message);
@@ -451,6 +507,11 @@ export default function BuilderApp({
         )}
       {current === "releases" &&
         workspace &&
+        activeProjectId !== "kaizen" &&
+        panel(<ClientPublications onChanged={() => void reload()} />)}
+      {current === "releases" &&
+        workspace &&
+        activeProjectId === "kaizen" &&
         !localMode &&
         panel(
           <ReleasesPanel
@@ -513,6 +574,7 @@ function EditorInner({
   onLibraryReplaced,
   onSaved,
   onBack,
+  onClientReleases = () => {},
   saveOverride = undefined,
   isComponent = false,
   theme = "light" as BuilderTheme,
@@ -623,6 +685,10 @@ function EditorInner({
     setBusy(true);
     try {
       const current = await save("Saved before publishing");
+      if (activeProjectId !== "kaizen") {
+        onClientReleases();
+        return;
+      }
       const result = await storage.publish(current);
       pageRef.current = result.page;
       onPage(result.page);
@@ -749,6 +815,7 @@ function EditorShell({
   onBack,
   restore,
 }) {
+  const media = useContext(MediaContext);
   const content = useContext(ContentContext);
   const {
     appState,
@@ -822,7 +889,10 @@ function EditorShell({
     if (!selectedItem) return;
     const copied = clone([selectedItem]) as Block[];
     setClipboard(copied);
-    sessionStorage.setItem("kaizen-builder-clipboard", JSON.stringify(copied));
+    sessionStorage.setItem(
+      `kaizen-builder-clipboard:${activeProjectId}`,
+      JSON.stringify(copied),
+    );
     setNotice("Component copied. Paste it on this page or another page.");
   };
   const paste = () => {
@@ -830,7 +900,9 @@ function EditorShell({
       const items =
         clipboard ||
         JSON.parse(
-          sessionStorage.getItem("kaizen-builder-clipboard") || "null",
+          sessionStorage.getItem(
+            `kaizen-builder-clipboard:${activeProjectId}`,
+          ) || "null",
         );
       if (items) add(items);
       else setNotice("Select and copy a component first.");
@@ -975,7 +1047,7 @@ function EditorShell({
             resolveContentDocument(shared, content.catalogue),
             workspace.assets,
           );
-          const html = renderPreviewHtml(resolved);
+          const html = renderPreviewHtml(media(resolved));
           resolvedPreview = resolved;
           return html;
         } catch (error) {
@@ -993,6 +1065,7 @@ function EditorShell({
             onClick={onBack}
           />
           <Brand compact />
+          <ProjectIdentity />
           <span className="builder-editor-divider" aria-hidden="true" />
           <div className="builder-editor-crumbs">
             <span>{isComponent ? "Site design" : "Pages"}</span>
@@ -1084,20 +1157,20 @@ function EditorShell({
                 setExporting(true);
                 try {
                   await save();
+                  const fresh = await storage.loadBackupWorkspace();
                   const drafts = [
-                    document,
-                    ...workspace.pages
-                      .filter((p) => p.id !== page.id)
-                      .map((p) => p.draft),
-                  ];
+                    ...fresh.pages.filter((p) => p.id === page.id),
+                    ...fresh.pages.filter((p) => p.id !== page.id),
+                  ].map((p) => p.draft);
                   const result = await exportProject(
                     drafts,
-                    workspace.assets,
+                    fresh.assets,
                     setNotice,
                     undefined,
-                    workspace.site?.draft,
+                    fresh.site?.draft,
                     undefined,
-                    workspace.routes?.draft,
+                    fresh.routes?.draft,
+                    fresh,
                   );
                   downloadProject(result.blob);
                   setNotice(
@@ -1131,7 +1204,11 @@ function EditorShell({
             <button
               disabled={busy}
               className="builder-primary"
-              onClick={() => setPublishOpen(true)}
+              onClick={() =>
+                activeProjectId === "kaizen"
+                  ? setPublishOpen(true)
+                  : void publish()
+              }
             >
               <Globe size={16} />
               {busy ? "Publishing…" : "Publish"}
@@ -1518,7 +1595,13 @@ function EditorShell({
                     onChange={(e) => changeField("slug", e.target.value)}
                     onBlur={(e) => {
                       try {
-                        changeField("slug", normalizeSlug(e.target.value));
+                        changeField(
+                          "slug",
+                          normalizeSlug(
+                            e.target.value,
+                            activeProjectId === "kaizen",
+                          ),
+                        );
                       } catch (error) {
                         setNotice(errorMessage(error));
                       }

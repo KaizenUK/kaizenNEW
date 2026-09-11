@@ -6,9 +6,9 @@ import { chromium, expect } from "@playwright/test";
 
 const staticBuild = process.argv.includes("--static");
 const root = path.resolve(
-  staticBuild
+  process.env.BUILDER_EXPORT_ROOT || (staticBuild
     ? "test-results/builder-static-site"
-    : "test-results/export-project/dist",
+    : "test-results/export-project/dist"),
 );
 let plainSlug = "export-demo";
 let interactiveSlug = "campaigns/second-page";
@@ -119,10 +119,12 @@ try {
   page.on("pageerror", (error) => errors.push(error.message));
   await page.goto(`${origin}/${plainSlug}/`);
   await expect(page.locator("script")).toHaveCount(0);
-  if (!staticBuild)
+  if (!staticBuild) {
     await expect(page.locator(".kb-reviewed-card")).toHaveText(
       "Reviewed export <script>example</script>",
     );
+    await expect(page.locator(".kb-content-panel")).toContainText("Nested registered export content");
+  }
   await expect(page.locator(".kb-hero img")).toBeVisible();
   expect(
     await page.locator(".kb-hero img").evaluate((image) => image.naturalWidth),
