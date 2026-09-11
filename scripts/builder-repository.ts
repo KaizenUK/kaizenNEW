@@ -296,16 +296,24 @@ export class RepositoryCompanion {
       for (const specifier of model.imports) {
         const target = sourceImport(file, specifier);
         if (!target) continue;
-        const candidates = /\.(astro|tsx|jsx)$/.test(target)
-          ? [target]
-          : path.extname(target)
-            ? []
-            : [
-                target + ".tsx",
-                target + ".jsx",
-                target + "/index.tsx",
-                target + "/index.jsx",
-              ];
+        const candidates = /\.js$/.test(target)
+          ? [target, target.slice(0, -3) + ".ts", target.slice(0, -3) + ".tsx"]
+          : /\.(astro|tsx|jsx|ts|mjs|json)$/.test(target)
+            ? [target]
+            : path.extname(target)
+              ? []
+              : [
+                  target + ".tsx",
+                  target + ".jsx",
+                  target + ".ts",
+                  target + ".js",
+                  target + ".mjs",
+                  target + ".json",
+                  target + "/index.tsx",
+                  target + "/index.jsx",
+                  target + "/index.ts",
+                  target + "/index.js",
+                ];
         for (const candidate of candidates)
           if (await bytes(inspection.root, candidate)) {
             await visit(candidate);
@@ -336,7 +344,7 @@ export class RepositoryCompanion {
         })),
       ),
       boundaries: [
-        "A shared component edit affects every page that uses that component.",
+        "A shared component or data-file edit affects every page that imports it. Imported files may contain fields unused by this particular page.",
         "CMS values and computed expressions retain their original data source.",
         ...models.flatMap((model) => model.boundaries),
       ],

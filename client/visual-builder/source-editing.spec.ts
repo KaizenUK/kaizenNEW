@@ -10,6 +10,75 @@ import {
 import { RepositoryCompanion } from "../../scripts/builder-repository";
 
 describe("original source editing", () => {
+  it("edits imported data literals, follows barrel exports and detects external data changes", async () => {
+    const root = await mkdtemp(path.join(tmpdir(), "kaizen-source-data-"));
+    await mkdir(path.join(root, "src/pages"), { recursive: true });
+    await mkdir(path.join(root, "src/content"));
+    await writeFile(
+      path.join(root, "package.json"),
+      JSON.stringify({
+        dependencies: {
+          astro: "6.4.8",
+          "@astrojs/react": "5.0.0",
+          react: "19.2.4",
+        },
+      }),
+    );
+    await writeFile(
+      path.join(root, "src/pages/index.astro"),
+      "---\nimport {headline, content} from '../content';\n---\n<h1>{headline}</h1><p>{content.copy}</p>",
+    );
+    await writeFile(
+      path.join(root, "src/content/index.ts"),
+      "export {headline} from './text.js'; export {default as content} from './copy.json';",
+    );
+    const code =
+      "export const headline = 'Original headline'; export const computed = () => headline.toUpperCase();";
+    const json = '{"copy":"Original 🌱 copy","privateToken":"unchanged"}';
+    await writeFile(path.join(root, "src/content/text.ts"), code);
+    await writeFile(path.join(root, "src/content/copy.json"), json);
+    const companion = new RepositoryCompanion();
+    const inspection = await companion.inspectSourcePage(
+      root,
+      "src/pages/index.astro",
+    );
+    expect(inspection.files).toHaveLength(4);
+    expect(inspection.fields.map((field) => field.value)).toEqual([
+      "Original headline",
+      "Original 🌱 copy",
+    ]);
+    const edits = {
+      inspection,
+      values: Object.fromEntries(
+        inspection.fields.map((field) => [
+          field.id,
+          'Revised "content" ${literal}',
+        ]),
+      ),
+      orders: {},
+    };
+    const plan = await companion.prepareSource("alpha", edits);
+    expect((await companion.apply(plan.id, "alpha")).changed).toBe(2);
+    expect(
+      JSON.parse(
+        await readFile(path.join(root, "src/content/copy.json"), "utf8"),
+      ),
+    ).toEqual({
+      copy: 'Revised "content" ${literal}',
+      privateToken: "unchanged",
+    });
+    expect(
+      await readFile(path.join(root, "src/content/text.ts"), "utf8"),
+    ).toContain("export const computed = () => headline.toUpperCase();");
+    const reopened = await companion.inspectSourcePage(root, inspection.route);
+    await writeFile(path.join(root, "src/content/copy.json"), json);
+    await expect(
+      companion.prepareSource("alpha", { ...edits, inspection: reopened }),
+    ).rejects.toThrow("Source changed");
+    await expect(
+      inspectSource("src/content/copy.json", '{"copy":"bad",}'),
+    ).rejects.toThrow("JSON syntax");
+  });
   it("edits Unicode Astro text, attributes and data without changing styles, scripts or hydration", async () => {
     const source = `---\r\nimport Counter from '../components/Counter';\r\nconst cards = [{title: 'Original title', copy: 'Original copy'}];\r\n---\r\n<main><h1>  Hello 🌱 &amp; welcome  </h1><img src='/before.png' alt='Use <tools>' /><Counter client:load /><p>{cards[0].copy}</p></main>\r\n<style>h1 { color: red }</style>\r\n<script>document.addEventListener('click', () => {});</script>`;
     const model = await inspectSource("src/pages/index.astro", source);

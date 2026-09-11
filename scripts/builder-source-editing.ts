@@ -22,6 +22,7 @@ const textAttributes = new Set([
   "placeholder",
   "aria-label",
   "heading",
+  "headline",
   "subtitle",
   "buttonText",
   "ctaText",
@@ -33,6 +34,7 @@ const textProperties = new Set([
   "text",
   "label",
   "heading",
+  "headline",
   "subtitle",
   "question",
   "answer",
@@ -100,13 +102,18 @@ export async function inspectSource(file: string, source: string) {
       line: bytes.subarray(0, start).toString().split("\n").length,
     });
   };
-  function javascript(code: string, byteOffset: number, jsx: boolean) {
+  function javascript(
+    code: string,
+    byteOffset: number,
+    jsx: boolean,
+    json = false,
+  ) {
     const ast = ts.createSourceFile(
       file,
       code,
       ts.ScriptTarget.Latest,
       true,
-      jsx ? ts.ScriptKind.TSX : ts.ScriptKind.TS,
+      json ? ts.ScriptKind.JSON : jsx ? ts.ScriptKind.TSX : ts.ScriptKind.TS,
     );
     if ((ast as any).parseDiagnostics.length) {
       throw new Error(
@@ -125,9 +132,34 @@ export async function inspectSource(file: string, source: string) {
         return;
       if (
         ts.isImportDeclaration(node) &&
+        !node.importClause?.isTypeOnly &&
         ts.isStringLiteral(node.moduleSpecifier)
       )
         imports.push(node.moduleSpecifier.text);
+      if (
+        ts.isExportDeclaration(node) &&
+        !node.isTypeOnly &&
+        node.moduleSpecifier &&
+        ts.isStringLiteral(node.moduleSpecifier)
+      )
+        imports.push(node.moduleSpecifier.text);
+      if (
+        ts.isVariableDeclaration(node) &&
+        ts.isIdentifier(node.name) &&
+        node.initializer &&
+        ts.isStringLiteralLike(node.initializer)
+      ) {
+        const name = node.name.text;
+        if (textProperties.has(name) || links.has(name) || images.has(name))
+          add(
+            offset(node.initializer.getStart(ast)),
+            offset(node.initializer.end),
+            name,
+            node.initializer.text,
+            "js",
+            kind(name),
+          );
+      }
       if (ts.isJsxText(node) && node.getText(ast).trim()) {
         const raw = node.getText(ast),
           left = raw.length - raw.trimStart().length,
@@ -179,7 +211,16 @@ export async function inspectSource(file: string, source: string) {
     walk(ast);
   }
   if (/\.(tsx|jsx)$/.test(file)) javascript(source, 0, true);
-  else if (file.endsWith(".astro")) {
+  else if (/\.(ts|js|mjs|json)$/.test(file)) {
+    if (file.endsWith(".json")) {
+      try {
+        JSON.parse(source);
+      } catch {
+        throw new Error(`Fix the JSON syntax in ${file} before editing.`);
+      }
+    }
+    javascript(source, 0, false, file.endsWith(".json"));
+  } else if (file.endsWith(".astro")) {
     const result = await parse(source, { position: true });
     if (result.diagnostics.some((d) => d.severity === 1))
       throw new Error(`Fix the Astro syntax in ${file} before editing.`);
@@ -307,7 +348,9 @@ export async function inspectSource(file: string, source: string) {
     }
     walk(result.ast);
   } else
-    throw new Error("Source editing supports Astro and React JSX/TSX files.");
+    throw new Error(
+      "Source editing supports Astro, React and imported JavaScript, TypeScript or JSON content files.",
+    );
   if (!fields.length)
     boundaries.push(
       `${file}: no literal content fields; dynamic values remain in their data source`,

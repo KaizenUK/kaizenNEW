@@ -13,6 +13,19 @@ test("edits a native Astro and React site, then builds and previews its original
   const root = await mkdtemp(path.join(tmpdir(), "kaizen-native-browser-"));
   await mkdir(path.join(root, "src/pages"), { recursive: true });
   await mkdir(path.join(root, "src/components"));
+  await mkdir(path.join(root, "src/content"));
+  await writeFile(
+    path.join(root, "src/content/index.ts"),
+    "export {content} from './text';",
+  );
+  await writeFile(
+    path.join(root, "src/content/text.ts"),
+    "import cards from './cards.json'; export const content = {copy:'Imported original copy', cards};",
+  );
+  await writeFile(
+    path.join(root, "src/content/cards.json"),
+    '[{"title":"Imported original title"}]',
+  );
   await mkdir(path.join(root, "public"));
   await writeFile(
     path.join(root, "package.json"),
@@ -34,10 +47,11 @@ test("edits a native Astro and React site, then builds and previews its original
   );
   const original = `---
 import Counter from '../components/Counter';
+import {content} from '../content';
 ---
 <!doctype html><html lang="en"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width"/><title>Native client</title><link rel="icon" href="data:,"/></head><body><main>
 <section id="intro"><h1>Original native page</h1><p>Existing design stays editable.</p><p>Repeated copy</p><p>Repeated copy</p><img src="/original.svg" alt="Original picture"/><a href="/contact/">Contact</a></section>
-<section id="interaction"><h2>Interactive section</h2><Counter client:load /></section>
+<section id="interaction"><h2>Interactive section</h2><Counter client:load /><p>{content.copy}</p><p>{content.cards[0].title}</p></section>
 </main><style>body{margin:0;background:#10252a;color:#fff;font:18px system-ui}main{max-width:960px;margin:auto;padding:24px}section{padding:30px 0}h1{color:#4fe3bd}img{width:160px;display:block}a{color:#4fe3bd}button{padding:12px}@media(max-width:600px){main{padding:16px}h1{font-size:30px}}</style></body></html>`;
   const counter =
     "import {useState} from 'react';export default function Counter(){const [count,setCount]=useState(0);return <button onClick={()=>setCount(count+1)}>Native count: {count}</button>}";
@@ -112,6 +126,10 @@ import Counter from '../components/Counter';
   await heading.fill("Edited original design 🌱");
   await editor.getByRole("searchbox").fill("Native count:");
   await editor.getByRole("textbox").fill("Edited counter:");
+  await editor.getByRole("searchbox").fill("Imported original copy");
+  await editor.getByRole("textbox").fill("Edited imported copy 🌿");
+  await editor.getByRole("searchbox").fill("Imported original title");
+  await editor.getByRole("textbox").fill("Edited JSON title 🌿");
   await editor.getByRole("searchbox").fill("");
   await editor.getByText("Arrange original sections", { exact: true }).click();
   await editor
@@ -227,6 +245,12 @@ import Counter from '../components/Counter';
     ).toBeVisible();
     await expect(preview.locator("h1")).toHaveCSS("color", "rgb(79, 227, 189)");
     await expect(preview.locator("img")).toHaveJSProperty("naturalWidth", 160);
+    await expect(
+      preview.getByText("Edited imported copy 🌿", { exact: true }),
+    ).toBeVisible();
+    await expect(
+      preview.getByText("Edited JSON title 🌿", { exact: true }),
+    ).toBeVisible();
     expect(
       await preview.evaluate(
         () => document.documentElement.scrollWidth <= innerWidth,
