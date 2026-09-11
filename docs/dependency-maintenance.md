@@ -25,6 +25,8 @@ Kaizen's website exports, editable imports and native backups use fflate and the
 
 ## Verification
 
+Production deployment: commit `117988601806c4b403ad9398157d4c7680e68fe8`, release `gh-34628265808-1`, [successful CI run](https://github.com/KaizenUK/kaizenNEW/actions/runs/34628265808), including the full site/Studio build, served-file checks and database finalization. The client worker's frozen install and actual compiler were also verified on the VPS before switching its release symlink; its scheduled service run then succeeded. Browser checks of the live sign-in gate and existing client demo passed without JavaScript errors.
+
 - Full unit suite: 199 passed, one optional Nginx case skipped.
 - `pnpm typecheck`: 302 files, zero errors/warnings; 171 hints. TypeScript passed again after the UI fixes.
 - Full site and Studio production build passed. Main homepage and About page passed actual built-output desktop/mobile heading, overflow and JavaScript checks; screenshots inspected.
