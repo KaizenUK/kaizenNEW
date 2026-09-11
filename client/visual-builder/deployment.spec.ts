@@ -33,7 +33,7 @@ afterEach(async () => {
     await rm(directory, { recursive: true, force: true });
   }
 });
-async function fixture() {
+async function fixture(edgeScripts = false) {
   await mkdir(temporaryRoot, { recursive: true });
   const root = await mkdtemp(path.join(temporaryRoot, "case-"));
   directories.push(root);
@@ -112,7 +112,16 @@ async function fixture() {
           : "text/html",
         "Cache-Control": "no-store",
       });
-      res.end(bytes);
+      res.end(
+        edgeScripts &&
+          name.endsWith("/") &&
+          req.headers["x-requested-with"] !== "XMLHttpRequest"
+          ? Buffer.concat([
+              bytes,
+              Buffer.from("<script>/* edge bot detection */</script>"),
+            ])
+          : bytes,
+      );
     } catch {
       res.writeHead(404);
       res.end();
@@ -147,6 +156,22 @@ async function fixture() {
   };
 }
 describe("retained website releases", () => {
+  it("requests unmodified HTML through an injecting edge while still rejecting wrong page bytes", async () => {
+    const f = await fixture(true);
+    expect(await (await fetch(`${f.origin}/builder/`)).text()).toContain(
+      "edge bot detection",
+    );
+    await checkLive(f.origin, await verifyRelease(f.store, "old-release"));
+    f.damagePage();
+    await expect(
+      activateRelease(
+        { store: f.store, id: "new-release", origin: f.origin },
+        f.adapters,
+      ),
+    ).rejects.toThrow("does not match");
+    expect(await f.readConfig()).toContain("old-release");
+    await checkLive(f.origin, await verifyRelease(f.store, "old-release"));
+  });
   for (const outcome of [
     "success",
     "rejected",

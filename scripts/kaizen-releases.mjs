@@ -711,7 +711,13 @@ export async function checkLive(
     const response = await fetcher(url, {
       redirect: "error",
       cache: "no-store",
-      headers: { "Cache-Control": "no-cache", Connection: "close" },
+      // Request unmodified HTML: Cloudflare excludes AJAX responses from its
+      // JavaScript Detections injection. Keep exact artifact checksums intact.
+      headers: {
+        "Cache-Control": "no-cache",
+        "X-Requested-With": "XMLHttpRequest",
+        Connection: "close",
+      },
       signal: AbortSignal.timeout(timeout),
     });
     if (!response.ok)
@@ -756,7 +762,11 @@ export async function checkLive(
         const response = await fetcher(url, {
           redirect: "manual",
           cache: "no-store",
-          headers: { "Cache-Control": "no-cache", Connection: "close" },
+          headers: {
+            "Cache-Control": "no-cache",
+            "X-Requested-With": "XMLHttpRequest",
+            Connection: "close",
+          },
           signal: AbortSignal.timeout(timeout),
         });
         const location = response.headers.get("location");

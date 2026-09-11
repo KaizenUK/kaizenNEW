@@ -49,6 +49,8 @@ on:
       - "scripts/builder-previews.ts"
       - "scripts/builder-projects.ts"
       - "scripts/builder-repository.ts"
+      - "scripts/builder-source-editing.ts"
+      - "shared/builderSourceEditing.ts"
       - "scripts/builder-runner.ts"
       - "scripts/deploy-public-release.sh"
       - "scripts/generate-nginx-redirects.mjs"
