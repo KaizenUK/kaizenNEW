@@ -48,6 +48,7 @@ export type ClientPublicationReview = {
   expiresAt: number;
   previousReleaseId: string | null;
   pages: { id: string; title: string; slug: string; version: number }[];
+  warnings?: string[];
   rollbackOf?: string;
 };
 export const CLIENT_HISTORY_SIZE = 50;

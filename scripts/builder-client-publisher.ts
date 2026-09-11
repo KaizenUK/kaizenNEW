@@ -1,4 +1,5 @@
 import { loadPublicationAsset } from "./builder-publication-media";
+import { projectDeliveryWarnings } from "../shared/builderDelivery";
 import {
   mkdir,
   readFile,
@@ -502,6 +503,13 @@ export class ClientPublisher {
       action,
       expiresAt: Date.now() + 15 * 60 * 1000,
       previousReleaseId: live.selectedReleaseId,
+      warnings: snapshot
+        ? projectDeliveryWarnings(
+            snapshot.workspace,
+            snapshot.catalogue,
+            destination.origin,
+          )
+        : [],
       pages:
         snapshot?.workspace.pages.map((page) => ({
           id: page.id,

@@ -230,6 +230,19 @@ export default function ClientPublications({
               ))}
             </ul>
           )}
+          {!!review.warnings?.length && (
+            <section aria-label="Publication checks">
+              <h3>Check before publishing</h3>
+              <p>
+                These destinations or services are not supplied by this release.
+              </p>
+              <ul>
+                {review.warnings.map((warning) => (
+                  <li key={warning}>{warning}</li>
+                ))}
+              </ul>
+            </section>
+          )}
           <div className="builder-project-actions">
             <button
               className="builder-primary"

@@ -9,6 +9,7 @@ import {
   hasContentBindings,
 } from "../../../shared/builderContent.ts";
 import type { Workspace } from "../../../shared/visualBuilder.ts";
+import { projectDeliveryWarnings } from "../../../shared/builderDelivery.ts";
 
 export const clientDestinationFields =
   "id,project_id,environment,origin,label,enabled,version,active_artifact_id,active_job_id";
@@ -160,6 +161,13 @@ export async function clientPublicationAction({
       action: review.action,
       expiresAt: new Date(review.expires_at).getTime(),
       previousReleaseId: review.previous_artifact_id,
+      warnings: review.snapshot
+        ? projectDeliveryWarnings(
+            review.snapshot.workspace,
+            review.snapshot.catalogue,
+            destination.origin,
+          )
+        : [],
       ...(review.rollback_of ? { rollbackOf: review.rollback_of } : {}),
       pages:
         review.snapshot?.workspace.pages.map((page: any) => ({

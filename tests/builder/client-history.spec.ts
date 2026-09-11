@@ -4,6 +4,10 @@ import { randomUUID } from "node:crypto";
 import path from "node:path";
 import { LocalProjects } from "../../scripts/builder-projects";
 import {
+  newDocument,
+  starterBlocks,
+} from "../../client/visual-builder/starters";
+import {
   bindClientStore,
   stageRelease,
   initialiseStore,
@@ -21,6 +25,16 @@ test("Unity browses retained release pages, keeps recovery visible and reviews a
   expect(response.ok()).toBe(true);
   const project = await response.json(),
     destinationId = randomUUID();
+  const document = newDocument("Home", "home", false);
+  document.data.content = [starterBlocks.Footer(), starterBlocks.ContactForm()];
+  expect(
+    (
+      await page.request.post(`/__builder-local?project=${project.id}`, {
+        headers: { "X-Kaizen-Builder": "1" },
+        data: { action: "save", id: randomUUID(), version: 0, document },
+      })
+    ).ok(),
+  ).toBe(true);
   const projects = new LocalProjects(
     path.resolve("test-results/builder-browser-workspace"),
   );
@@ -129,6 +143,16 @@ test("Unity browses retained release pages, keeps recovery visible and reviews a
     await expect(
       page.getByText("History page 1.", { exact: false }),
     ).toBeVisible();
+    await page
+      .getByRole("combobox", { name: "Choose destination" })
+      .selectOption(destinationId);
+    await page
+      .getByRole("button", { name: "Review saved project for publication" })
+      .click();
+    const checks = page.getByRole("region", { name: "Publication checks" });
+    await expect(checks).toContainText("Link /contact/ has no page");
+    await expect(checks).toContainText("no receiving service");
+    await page.getByRole("button", { name: "Cancel review" }).click();
     expect(errors).toEqual([]);
   } finally {
     await writeFile(registry, originalRegistry);

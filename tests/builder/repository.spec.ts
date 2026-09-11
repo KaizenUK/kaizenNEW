@@ -10,6 +10,25 @@ import {
 test("Unity repository handoff reviews changes and reopens for another visual edit", async ({
   page,
 }) => {
+  const browserErrors: string[] = [];
+  page.on("pageerror", (error) => browserErrors.push(error.message));
+  page.on("console", (message) => {
+    if (message.text().startsWith("REPOSITORY_WINDOW_ERROR "))
+      browserErrors.push(message.text());
+  });
+  await page.addInitScript(() => {
+    window.addEventListener("error", (event) => {
+      console.error(
+        "REPOSITORY_WINDOW_ERROR " +
+          JSON.stringify({
+            message: event.message,
+            url: location.href,
+            ready: document.readyState,
+            visibility: document.visibilityState,
+          }),
+      );
+    });
+  });
   const root = await mkdtemp(path.join(tmpdir(), "kaizen-browser-repository-"));
   await mkdir(path.join(root, "src/pages"), { recursive: true });
   const packageSource = JSON.stringify({
@@ -107,4 +126,20 @@ test("Unity repository handoff reviews changes and reopens for another visual ed
       .frameLocator("#preview-frame")
       .getByText("Visual edit after reopening the repository"),
   ).toBeVisible();
+  for (const width of [390, 1440, 768, 390, 1440]) {
+    await page.setViewportSize({ width, height: 1000 });
+    await page.evaluate(
+      () =>
+        new Promise<void>((resolve) => {
+          requestAnimationFrame(() => requestAnimationFrame(() => resolve()));
+        }),
+    );
+  }
+  await expect(
+    page
+      .frameLocator("#preview-frame")
+      .getByText("Visual edit after reopening the repository"),
+  ).toBeVisible();
+  await page.close();
+  expect(browserErrors).toEqual([]);
 });
