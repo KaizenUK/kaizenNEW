@@ -12,6 +12,8 @@ import {
   saveClientSettings,
 } from "../../shared/builderSettings";
 import { compileClientPublication } from "./compileClientPublication";
+import { libraryFixture } from "./library-fixture";
+import { createHash } from "node:crypto";
 function fixture(): Workspace {
   const doc = newDocument("Client about", "about", false);
   const text = starterBlocks.Text();
@@ -29,6 +31,20 @@ function fixture(): Workspace {
   };
 }
 describe("frozen client publication", () => {
+  it("retains an image's original extension after its display name is renamed", async () => {
+    const workspace = libraryFixture();
+    workspace.assets[0].name = "A friendly landscape name";
+    for (const asset of workspace.assets)
+      asset.hash = createHash("sha256").update(new Uint8Array(100)).digest("hex");
+    const output = await compileClientPublication(
+      captureClientPublication(crypto.randomUUID(), workspace),
+      async () => new Uint8Array(100),
+      () => {},
+    );
+    const image = Object.keys(output.files).find((name) => name.startsWith(`assets/${workspace.assets[0].id}-`))!;
+    expect(image).toMatch(/original-[a-f0-9]{16}\.png$/);
+    expect(strFromU8(output.files["index.html"])).toContain(`src="/${image}"`);
+  });
   it("fails publication when an external image cannot be bundled", async () => {
     const workspace = fixture();
     workspace.pages[0].draft.data.content = [starterBlocks.Image()];

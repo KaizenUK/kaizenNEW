@@ -212,7 +212,8 @@ export async function exportProject(
     if (!safeUrl(url, true))
       throw new Error("A page contains an invalid media URL.");
     const baseName = asset
-      ? `${asset.id}-${pathPart(asset.name)}`
+      // Keep the uploaded filename's extension when its display name changes.
+      ? `${asset.id}-${pathPart(asset.path.split("/").pop() || asset.name)}`
       : `external-${++i}-${pathPart(url.split("/").pop().split("?")[0])}`;
     progress(`Bundling ${asset?.name || baseName}…`);
     try {
