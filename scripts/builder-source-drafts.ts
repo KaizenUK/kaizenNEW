@@ -182,6 +182,26 @@ export class SourceDrafts {
         !edits.inspection.fields.some((f) => f.id === id)
       )
         throw new Error("Invalid editing draft field.");
+    if (
+      edits.assets &&
+      (!Array.isArray(edits.assets) ||
+        edits.assets.length > 100 ||
+        new Set(edits.assets.map((a) => a.fieldId)).size !==
+          edits.assets.length ||
+        edits.assets.some(
+          (a) =>
+            !a ||
+            typeof a.assetId !== "string" ||
+            a.assetId.length > 200 ||
+            !/^public\/(?:[a-zA-Z0-9_-]+\/)*[a-f0-9]{64}\.(png|jpe?g|webp|avif|gif|svg)$/.test(
+              a.path,
+            ) ||
+            !edits.inspection.fields.some(
+              (f) => f.id === a.fieldId && f.kind === "image",
+            ),
+        ))
+    )
+      throw new Error("Invalid image replacement draft.");
     for (const [id, order] of Object.entries(edits.orders)) {
       const group = edits.inspection.groups.find((g) => g.id === id);
       if (

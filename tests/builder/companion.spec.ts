@@ -11,6 +11,7 @@ import path from "node:path";
 import { execFile } from "node:child_process";
 import { promisify } from "node:util";
 
+test.use({ actionTimeout: 15000 });
 let hosted: ViteDevServer;
 test.beforeAll(async () => {
   hosted = await createServer({
@@ -51,7 +52,7 @@ test.beforeAll(async () => {
         },
         load(id) {
           if (id === "\0companion-test.jsx")
-            return `import React from 'react';import {createRoot} from 'react-dom/client';import HostedRepository from '/client/visual-builder/HostedRepository.tsx';import {companionConnection} from '/client/visual-builder/companionConnection.ts';import {storage} from '/client/visual-builder/storage.ts';import '/client/visual-builder/builder.css';window.testRepository=(input)=>storage.repository(input);window.testConnection=companionConnection;createRoot(document.getElementById('app')).render(React.createElement('div',{className:'builder-app','data-theme':'light'},React.createElement(HostedRepository)));`;
+            return `import React from 'react';import {createRoot} from 'react-dom/client';import HostedRepository from '/client/visual-builder/HostedRepository.tsx';import {companionConnection} from '/client/visual-builder/companionConnection.ts';import {storage} from '/client/visual-builder/storage.ts';import SitePageEditor from '/client/visual-builder/SitePageEditor.tsx';import '/client/visual-builder/builder.css';window.testRepository=(input)=>storage.repository(input);window.testConnection=companionConnection;function Harness(){const[site,setSite]=React.useState(false);return site?React.createElement(SitePageEditor,{page:{root:companionConnection.snapshot().root,route:'src/pages/index.astro',path:'/',title:'Paired page'},workspace:{pages:[],assets:[],saved:[]},onWorkspace:()=>{},onBack:()=>setSite(false),theme:'light',onToggleTheme:()=>{}}):React.createElement('div',{className:'builder-app','data-theme':'light'},React.createElement('button',{onClick:()=>setSite(true)},'Open website page editor'),React.createElement(HostedRepository));}createRoot(document.getElementById('app')).render(React.createElement(Harness));`;
         },
       },
     ],
@@ -73,7 +74,12 @@ test("hosted repository UI edits real local source across origins with consent, 
     if (route.request().url().includes("/functions/v1/builder-projects"))
       await route.fulfill({
         json: [
-          { id: "fixture-client", name: "Companion client", archived: false },
+          {
+            id: "fixture-client",
+            name: "Companion client",
+            archived: false,
+            destination: { kind: "unconfigured", label: "Not connected" },
+          },
         ],
       });
     else
@@ -289,6 +295,57 @@ test("hosted repository UI edits real local source across origins with consent, 
   await selection.close();
   await editor.getByRole("button", { name: "Close editor" }).click();
   await page.setViewportSize({ width: 1440, height: 1000 });
+  await page.getByRole("button", { name: "Open website page editor" }).click();
+  // Reuses the fresh build reviewed in RepositoryBuild earlier in this session.
+  const canvas = page.frameLocator('iframe[title="Website canvas"]');
+  await expect(canvas.getByRole("heading")).toHaveText(
+    "Saved through the hosted editor",
+  );
+  await canvas.getByRole("heading").dblclick();
+  await canvas.getByRole("heading").fill("Edited inside the hosted canvas");
+  await expect(page.getByLabel("Source editing draft")).toContainText(
+    "Edits saved on this computer",
+  );
+  await popup.getByRole("button", { name: "Stop sharing this folder" }).click();
+  await expect(page.getByRole("alert")).toContainText("Not connected");
+  await canvas.getByRole("heading").dblclick();
+  await canvas.getByRole("heading").fill("Text kept through reconnect");
+  await expect(
+    page
+      .locator(".builder-site-field")
+      .filter({ hasText: "Text kept through reconnect" }),
+  ).toBeVisible();
+  await popup.close();
+  const reconnectEvent = context.waitForEvent("page");
+  await page.getByRole("button", { name: "Reconnect", exact: true }).click();
+  popup = await reconnectEvent;
+  await expect(popup.getByLabel("Folder to share")).toHaveValue(root);
+  await popup.getByRole("button", { name: "Allow this folder" }).click();
+  await expect(page.getByLabel("Source editing draft")).toContainText(
+    "Edits saved on this computer",
+  );
+  const oldFrame = await page
+    .locator('iframe[title="Website canvas"]')
+    .getAttribute("src");
+  await page
+    .getByRole("button", { name: "Review my changes", exact: true })
+    .click();
+  await page
+    .getByRole("button", { name: "Apply changes to the folder", exact: true })
+    .click();
+  // Reconnection starts a new helper session: its build command must be reviewed again.
+  await page.getByRole("button", { name: "Build", exact: true }).click();
+  await expect(
+    page.locator('iframe[title="Website canvas"]'),
+  ).not.toHaveAttribute("src", oldFrame!);
+  await expect(canvas.getByRole("heading")).toHaveText(
+    "Text kept through reconnect",
+  );
+  expect(await readFile(file, "utf8")).toContain("Text kept through reconnect");
+  await page
+    .getByRole("button", { name: "Back to pages", exact: true })
+    .click();
+  await page.getByRole("button", { name: "Check folder", exact: true }).click();
   const backup = page.getByRole("region", { name: "Native repository backup" });
   await backup
     .getByRole("button", {

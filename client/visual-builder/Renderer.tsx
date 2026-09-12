@@ -247,7 +247,11 @@ export function VisualBlock({
     );
   if (type === "Registered")
     return (
-      <div {...common}>
+      <div
+        {...common}
+        data-kaizen-block={props.registrationId}
+        data-kaizen-block-id={props.id}
+      >
         <RegisteredBlock block={block}>
           {children ?? <Blocks blocks={props.children || []} />}
         </RegisteredBlock>

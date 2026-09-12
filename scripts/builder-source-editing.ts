@@ -4,9 +4,11 @@ import { createHash } from "node:crypto";
 import path from "node:path";
 import { parseDocument } from "htmlparser2";
 import type { SourceField, SourceGroup } from "../shared/builderSourceEditing";
+import { registrationFor } from "../shared/builderRegistry";
 
 type Range = { start: number; end: number };
-type Field = SourceField & Range & { encoding: "html" | "attribute" | "js" };
+type Field = SourceField &
+  Range & { encoding: "html" | "attribute" | "js" | "number" };
 type Group = Omit<SourceGroup, "items"> & {
   items: (SourceGroup["items"][number] & Range)[];
 };
@@ -14,6 +16,20 @@ export const sourceHash = (source: string | Uint8Array) =>
   createHash("sha256").update(source).digest("hex");
 const key = (file: string, type: string, offset: number) =>
   sourceHash(`${file}:${type}:${offset}`).slice(0, 24);
+const designNumbers: Record<string, [number, number, string]> = {
+  padding: [0, 240, "px"],
+  margin: [0, 200, "px"],
+  gap: [0, 160, "px"],
+  columns: [1, 6, ""],
+  fontSize: [8, 180, "px"],
+  maxWidth: [0, 2400, "px"],
+  minHeight: [0, 1800, "px"],
+  radius: [0, 200, "px"],
+  borderWidth: [0, 20, "px"],
+  lineHeight: [0.8, 3, ""],
+  fontWeight: [100, 900, ""],
+  letterSpacing: [-5, 20, "px"],
+};
 const textAttributes = new Set([
   "title",
   "description",
@@ -46,7 +62,7 @@ const textProperties = new Set([
   "ctaText",
 ]);
 const links = new Set(["href", "url", "to"]),
-  images = new Set(["src", "image", "imageUrl", "poster"]);
+  images = new Set(["src", "image", "imageUrl", "poster", "srcset", "srcSet"]);
 const htmlText = (value: string) => {
   const document = parseDocument(
     value.replace(/</g, "&lt;").replace(/>/g, "&gt;"),
@@ -81,6 +97,8 @@ export async function inspectSource(file: string, source: string) {
     value: string,
     encoding: Field["encoding"],
     fieldKind: SourceField["kind"] = "text",
+    elementId?: string,
+    attribute?: string,
   ) => {
     if (
       fields.some((f) => f.start === start && f.end === end) ||
@@ -90,17 +108,20 @@ export async function inspectSource(file: string, source: string) {
       fields.length >= 2000
     )
       return;
-    fields.push({
+    const field: Field = {
       id: key(file, "field", start),
       file,
       label,
       value,
       encoding,
       kind: fieldKind,
+      ...(elementId ? { elementId, attribute } : {}),
       start,
       end,
       line: bytes.subarray(0, start).toString().split("\n").length,
-    });
+    };
+    fields.push(field);
+    return field;
   };
   function javascript(
     code: string,
@@ -122,7 +143,83 @@ export async function inspectSource(file: string, source: string) {
     }
     const offset = (position: number) =>
       byteOffset + Buffer.byteLength(code.slice(0, position));
+    const propertyName = (node: ts.PropertyName) =>
+      ts.isIdentifier(node) || ts.isStringLiteral(node) ? node.text : "";
+    const property = (node: ts.ObjectLiteralExpression, name: string) =>
+      node.properties.find(
+        (p): p is ts.PropertyAssignment =>
+          ts.isPropertyAssignment(p) && propertyName(p.name) === name,
+      );
+    const registeredContext = (node: ts.Node) => {
+      for (let parent = node.parent; parent; parent = parent.parent)
+        if (ts.isObjectLiteralExpression(parent)) {
+          const id = property(parent, "registrationId")?.initializer,
+            blockId = property(parent, "id")?.initializer;
+          if (
+            id &&
+            blockId &&
+            ts.isStringLiteralLike(id) &&
+            ts.isStringLiteralLike(blockId) &&
+            registrationFor(id.text)
+          )
+            return {
+              object: parent,
+              registration: { id: id.text, blockId: blockId.text },
+            };
+        }
+    };
     function walk(node: ts.Node) {
+      if (ts.isPropertyAssignment(node)) {
+        const context = registeredContext(node),
+          name = propertyName(node.name),
+          deviceObject = node.parent;
+        if (
+          context &&
+          ts.isObjectLiteralExpression(deviceObject) &&
+          ts.isPropertyAssignment(deviceObject.parent)
+        ) {
+          const device = propertyName(deviceObject.parent.name),
+            styleObject = deviceObject.parent.parent;
+          if (
+            ["desktop", "tablet", "mobile"].includes(device) &&
+            ts.isObjectLiteralExpression(styleObject) &&
+            ts.isPropertyAssignment(styleObject.parent) &&
+            propertyName(styleObject.parent.name) === "style" &&
+            styleObject.parent.parent === context.object
+          ) {
+            const limits = designNumbers[name];
+            const numeric =
+              ts.isNumericLiteral(node.initializer) ||
+              (ts.isPrefixUnaryExpression(node.initializer) &&
+                node.initializer.operator === ts.SyntaxKind.MinusToken &&
+                ts.isNumericLiteral(node.initializer.operand));
+            const color =
+              ["color", "background", "borderColor"].includes(name) &&
+              ts.isStringLiteralLike(node.initializer);
+            if ((limits && numeric) || color) {
+              const value = color
+                ? (node.initializer as ts.StringLiteral).text
+                : node.initializer.getText(ast);
+              const field = add(
+                offset(node.initializer.getStart(ast)),
+                offset(node.initializer.end),
+                `${device} ${name}`,
+                value,
+                color ? "js" : "number",
+              );
+              if (field) {
+                field.registration = context.registration;
+                field.design = {
+                  property: name,
+                  device: device as "desktop" | "tablet" | "mobile",
+                  unit: limits?.[2] || "",
+                  ...(limits ? { min: limits[0], max: limits[1] } : {}),
+                };
+              }
+            }
+          }
+        }
+      }
       if (
         ts.isJsxElement(node) &&
         ["script", "style", "svg"].includes(
@@ -150,8 +247,8 @@ export async function inspectSource(file: string, source: string) {
         ts.isStringLiteralLike(node.initializer)
       ) {
         const name = node.name.text;
-        if (textProperties.has(name) || links.has(name) || images.has(name))
-          add(
+        if (textProperties.has(name) || links.has(name) || images.has(name)) {
+          const field = add(
             offset(node.initializer.getStart(ast)),
             offset(node.initializer.end),
             name,
@@ -159,6 +256,9 @@ export async function inspectSource(file: string, source: string) {
             "js",
             kind(name),
           );
+          const context = registeredContext(node);
+          if (field && context) field.registration = context.registration;
+        }
       }
       if (ts.isJsxText(node) && node.getText(ast).trim()) {
         const raw = node.getText(ast),
@@ -186,6 +286,8 @@ export async function inspectSource(file: string, source: string) {
             htmlText(node.initializer.text),
             "attribute",
             kind(name),
+            key(file, "element", offset(node.parent.getStart(ast))),
+            name,
           );
       }
       if (
@@ -196,8 +298,8 @@ export async function inspectSource(file: string, source: string) {
           ts.isIdentifier(node.name) || ts.isStringLiteral(node.name)
             ? node.name.text
             : "";
-        if (textProperties.has(name) || links.has(name) || images.has(name))
-          add(
+        if (textProperties.has(name) || links.has(name) || images.has(name)) {
+          const field = add(
             offset(node.initializer.getStart(ast)),
             offset(node.initializer.end),
             name,
@@ -205,6 +307,9 @@ export async function inspectSource(file: string, source: string) {
             "js",
             kind(name),
           );
+          const context = registeredContext(node);
+          if (field && context) field.registration = context.registration;
+        }
       }
       ts.forEachChild(node, walk);
     }
@@ -252,6 +357,10 @@ export async function inspectSource(file: string, source: string) {
         return;
       }
       if (["style", "script", "svg"].includes(node.name)) return;
+      if (node.type === "expression" && node.children?.length)
+        boundaries.push(
+          `${file}: computed content stays in its code or CMS source.`,
+        );
       if (
         node.type === "text" &&
         parent?.type !== "expression" &&
@@ -304,6 +413,8 @@ export async function inspectSource(file: string, source: string) {
           htmlText(attr.value),
           "attribute",
           kind(attr.name),
+          key(file, "element", node.position.start.offset),
+          attr.name,
         );
       }
       const children = node.children || [];
@@ -409,14 +520,31 @@ export async function editSource(
         "Use an HTTPS/HTTP URL, site path, anchor, email or phone link.",
       );
     if (value === field.value) continue;
+    if (field.design) {
+      if (field.encoding === "number") {
+        const number = Number(value);
+        if (
+          !/^-?\d+(?:\.\d+)?$/.test(value) ||
+          !Number.isFinite(number) ||
+          number < field.design.min! ||
+          number > field.design.max!
+        )
+          throw new Error(
+            `Use a ${field.design.property} between ${field.design.min} and ${field.design.max}.`,
+          );
+      } else if (!/^(#[a-f0-9]{3,8}|transparent|white|black)$/i.test(value))
+        throw new Error("Use a hex colour, transparent, white or black.");
+    }
     patches.push({
       ...field,
       value:
-        field.encoding === "js"
-          ? JSON.stringify(value)
-          : field.encoding === "attribute"
-            ? `"${encodeHtml(value).replace(/"/g, "&quot;")}"`
-            : encodeHtml(value),
+        field.encoding === "number"
+          ? String(Number(value))
+          : field.encoding === "js"
+            ? JSON.stringify(value)
+            : field.encoding === "attribute"
+              ? `"${encodeHtml(value).replace(/"/g, "&quot;")}"`
+              : encodeHtml(value),
     });
   }
   const moved: Range[] = [];

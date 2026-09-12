@@ -19,7 +19,9 @@ test("redirect drafts survive reopening, publish both aliases, preserve queries 
   await page
     .getByRole("button", { name: "Save redirect draft", exact: true })
     .click();
-  await expect(page.getByRole("status")).toContainText("draft saved");
+  await expect(
+    page.getByRole("status").filter({ hasText: "draft saved" }),
+  ).toBeVisible();
   expect((await page.request.get(source, { maxRedirects: 0 })).status()).toBe(
     404,
   );
@@ -36,9 +38,11 @@ test("redirect drafts survive reopening, publish both aliases, preserve queries 
   await page
     .getByRole("button", { name: "Publish redirects", exact: true })
     .click();
-  await expect(page.getByRole("status")).toContainText(
-    "published to your local site",
-  );
+  await expect(
+    page
+      .getByRole("status")
+      .filter({ hasText: "published to your local site" }),
+  ).toBeVisible();
   for (const alias of [source, source.slice(0, -1)]) {
     const response = await page.request.get(
       `${alias}?utm_source=ui8&tag=a%20b`,
@@ -55,7 +59,9 @@ test("redirect drafts survive reopening, publish both aliases, preserve queries 
   await page
     .getByRole("button", { name: "Save redirect draft", exact: true })
     .click();
-  await expect(page.getByRole("status")).toContainText("draft saved");
+  await expect(
+    page.getByRole("status").filter({ hasText: "draft saved" }),
+  ).toBeVisible();
   expect(
     (await page.request.get(source, { maxRedirects: 0 })).headers().location,
   ).toBe("/contact/");
@@ -70,7 +76,9 @@ test("redirect drafts survive reopening, publish both aliases, preserve queries 
   await page
     .getByRole("button", { name: "Save redirect draft", exact: true })
     .click();
-  await expect(page.getByRole("status")).toContainText("draft saved");
+  await expect(
+    page.getByRole("status").filter({ hasText: "draft saved" }),
+  ).toBeVisible();
   await page.screenshot({
     path: "test-results/builder-redirect-editor.png",
     fullPage: true,
@@ -82,16 +90,20 @@ test("redirect drafts survive reopening, publish both aliases, preserve queries 
   await page
     .getByRole("button", { name: "Save redirect draft", exact: true })
     .click();
-  await expect(page.getByRole("status")).toContainText("draft saved");
+  await expect(
+    page.getByRole("status").filter({ hasText: "draft saved" }),
+  ).toBeVisible();
   await page
     .getByRole("button", { name: "Review redirect publication", exact: true })
     .click();
   await page
     .getByRole("button", { name: "Publish redirects", exact: true })
     .click();
-  await expect(page.getByRole("status")).toContainText(
-    "published to your local site",
-  );
+  await expect(
+    page
+      .getByRole("status")
+      .filter({ hasText: "published to your local site" }),
+  ).toBeVisible();
   expect((await page.request.get(source, { maxRedirects: 0 })).status()).toBe(
     404,
   );

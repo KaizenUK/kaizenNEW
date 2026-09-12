@@ -25,6 +25,7 @@ const canonical = (value: string) =>
     : path.resolve(value);
 const rooted = new Set([
   "repository-inspect",
+  "repository-git-status",
   "repository-source-inspect",
   "repository-source-draft-read",
   "repository-source-draft-save",
@@ -161,7 +162,7 @@ export class CompanionSessions {
     } else if (rooted.has(input.action)) input.root = root(input.root);
     else if (input.action === "repository-source-prepare")
       root(input.edits?.inspection?.root);
-    else if (input.action === "repository-apply")
+    else if (["repository-apply", "repository-commit"].includes(input.action))
       known(session.filePlans, input.planId);
     else if (input.action === "repository-build-start")
       known(session.buildPlans, input.planId);
@@ -171,7 +172,11 @@ export class CompanionSessions {
       )
     )
       known(session.jobs, input.jobId);
-    else if (input.action === "repository-source-preview") {
+    else if (
+      ["repository-source-preview", "repository-source-frame"].includes(
+        input.action,
+      )
+    ) {
       root(input.root);
       known(session.jobs, input.jobId);
     } else if (input.action === "repository-native-backup-download")

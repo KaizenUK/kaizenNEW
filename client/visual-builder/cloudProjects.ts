@@ -3,8 +3,9 @@ import { activeProjectId } from "./projectStorage";
 import { resumableUpload, type UploadControl } from "./resumableUpload";
 import type { Asset } from "../../shared/visualBuilder";
 
+import { builderCloudEnabled } from "./builderMode";
 export const hostedProject =
-  import.meta.env.VITE_BUILDER_CLOUD === "1" && activeProjectId !== "kaizen";
+  builderCloudEnabled && activeProjectId !== "kaizen";
 const canonicalToSigned = new Map<string, string>();
 const signedToCanonical = new Map<string, string>();
 let mediaAccount: string | undefined;

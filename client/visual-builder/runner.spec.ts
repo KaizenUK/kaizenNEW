@@ -5,6 +5,55 @@ import { tmpdir } from "node:os";
 import { RepositoryRunner, type BuildJob } from "../../scripts/builder-runner";
 import { RepositoryCompanion } from "../../scripts/builder-repository";
 import { sourcePreviewPath } from "../../scripts/builder-source-preview";
+import {
+  frameHtml,
+  frameCss,
+  frameSrcset,
+} from "../../scripts/builder-source-frame";
+
+describe("M2-T1 cookie-free frame assets", () => {
+  const prefix = "/__kaizen-preview/token";
+  it("rewrites HTML URL attributes without changing scripts, text or external URLs", () => {
+    const html = `<link href='/style.css'><img src=/photo.png srcset="/small.png 1x, /large.png 2x" poster="/poster.png"><meta content="/share.png"><astro-island component-url="/island.js" renderer-url="/react.js"></astro-island><a href="https://example.com/">/text</a><script>const s='<img src="/literal.png">';</script>`;
+    const result = frameHtml(html, prefix);
+    for (const name of [
+      "style.css",
+      "photo.png",
+      "small.png",
+      "large.png",
+      "poster.png",
+      "share.png",
+      "island.js",
+      "react.js",
+    ])
+      expect(result).toContain(`${prefix}/${name}`);
+    expect(result).toContain(`href="https://example.com/"`);
+    expect(result).toContain(`const s='<img src="/literal.png">';`);
+    expect(frameHtml(result, prefix)).toBe(result);
+  });
+  it("keeps data, protocol-relative and external URLs and handles CSS imports and inline styles", () => {
+    expect(
+      frameSrcset(
+        "data:image/png;base64,AAAA 1x, /large.png 2x, https://example.com/img.png 3x",
+        prefix,
+      ),
+    ).toBe(
+      `data:image/png;base64,AAAA 1x, ${prefix}/large.png 2x, https://example.com/img.png 3x`,
+    );
+    const css = `@import '/theme.css'; a{background:url(/a.png);mask:url("//cdn.test/b.svg");content:"url(/text)"}/* url(/comment) */`;
+    expect(frameCss(css, prefix)).toBe(
+      `@import '${prefix}/theme.css'; a{background:url(${prefix}/a.png);mask:url("//cdn.test/b.svg");content:"url(/text)"}/* url(/comment) */`,
+    );
+    expect(
+      frameHtml(
+        '<style>a{background:url(/a.png)}</style><div style="background:url(/b.png)"></div>',
+        prefix,
+      ),
+    ).toBe(
+      `<style>a{background:url(${prefix}/a.png)}</style><div style="background:url(${prefix}/b.png)"></div>`,
+    );
+  });
+});
 
 const runners: RepositoryRunner[] = [];
 function runner(timeout?: number) {
@@ -82,6 +131,26 @@ describe("reviewed local repository builds", () => {
       inspection,
       "http://localhost:4321",
     );
+    const framed = await value.sourcePreview(
+      job.id,
+      "client-a",
+      inspection,
+      "https://builder.example",
+      true,
+      true,
+    );
+    const frameResponse = await fetch(framed.url);
+    expect(frameResponse.status).toBe(200);
+    expect(frameResponse.headers.get("set-cookie")).toBeNull();
+    expect(frameResponse.headers.get("content-security-policy")).toBe(
+      "connect-src 'none'; form-action 'none'; frame-ancestors 'self' https://builder.example",
+    );
+    expect(await frameResponse.text()).toContain(
+      `/__kaizen-preview/${framed.nonce}/__kaizen-canvas.js`,
+    );
+    expect(
+      (await fetch(framed.url.replace(framed.nonce, "0".repeat(64)))).status,
+    ).toBe(403);
     const entry = await fetch(selected.url, { redirect: "manual" });
     expect(entry.status).toBe(303);
     const cookie = entry.headers.get("set-cookie")!.split(";")[0];
@@ -199,6 +268,18 @@ describe("reviewed local repository builds", () => {
     expect(value.status(first.id, "client-a").previewUrl).toBeUndefined();
     await expect(fetch(origin)).rejects.toThrow();
   }, 30000);
+  it("ignores helper drafts when checking whether reviewed source has changed", async () => {
+    const root = await fixture(output),
+      value = runner();
+    const plan = await value.prepare(root, "client-a");
+    await mkdir(path.join(root, ".kaizen-builder"));
+    await writeFile(
+      path.join(root, ".kaizen-builder", "draft.json"),
+      "private draft",
+    );
+    const job = await finished(value, await value.start(plan.id, "client-a"));
+    expect(job.status, job.log).toBe("succeeded");
+  });
   it("rejects stale review and does not accept old dist after a failed or empty build", async () => {
     const root = await fixture(`${output} process.exitCode=2;`);
     await mkdir(path.join(root, "dist"));

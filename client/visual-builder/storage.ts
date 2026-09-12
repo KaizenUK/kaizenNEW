@@ -48,7 +48,8 @@ import {
   type AssetMetadataChange,
   type AssetReplacementReview,
 } from "../../shared/builderLibrary";
-export const cloudEnabled = import.meta.env.VITE_BUILDER_CLOUD === "1";
+export { builderCloudEnabled as cloudEnabled } from "./builderMode";
+import { builderCloudEnabled as cloudEnabled } from "./builderMode";
 export const localMode = import.meta.env.DEV && !cloudEnabled;
 export const cloud = cloudEnabled ? getSupabaseClient() : null;
 async function local(input?: unknown): Promise<any> {

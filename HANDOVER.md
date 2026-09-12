@@ -1,6 +1,6 @@
 # Kaizen builder — Windows to Linux handover
 
-Prepared 11 September 2026 at Sean's request. **Implementation is paused for the PC wipe. The original goal is not complete. Resume when Sean asks after moving to Linux.**
+Prepared 11 September 2026 at Sean's request; resumed on Linux on 12 September. **Read the Linux continuation below for current implementation and acceptance status.**
 
 This file is the starting point for Codex, Claude and Sean. It supersedes older “remaining work” statements in the chronological progress log. Read [the original request](docs/handover/original-request.txt), [Linux restoration](docs/handover/linux-restore.md), and [Claude's visual/UX brief](docs/handover/claude-ux-brief.md).
 
@@ -11,6 +11,14 @@ Sean successfully logged in and connected his local checkout. His hands-on feedb
 **He expects to edit existing websites visually, not just edit source-content fields.** Current native editing offers text/link/image fields, some Astro section reordering and a separate rendered selection window. It does not open an existing site in the full WYSIWYG canvas with layout/design editing. Do not call that requirement complete because source round-trip tests pass. This is the primary unfinished product work.
 
 Do not narrow the goal to building new sites or content-only editing. Preserve original code and interactions; make unsupported/dynamic elements explicit rather than pretending arbitrary React/Astro can round-trip automatically. Design the actual end-user workflow with Claude before investing further in scattered controls.
+
+## Linux continuation — 12 September 2026
+
+The pause has ended at Sean's request. The existing-site canvas implementation is now in this checkout: website routes open from Pages into the real built page, with direct text editing, link addresses, image replacement, section ordering, shared outline/undo history, draft recovery, review/apply and an explicit commit step. The old field editor and separate selector are no longer the primary journey. This addresses the **critical correction in code**; actual hosted acceptance is still required before the original goal can be declared complete.
+
+Original Astro/React source remains authoritative. Only safely located literal fields and complete section ranges are patched. Registered components expose supported content and existing literal design values; unregistered components do not gain arbitrary layout/style editing. Builder pages continue to use their full visual editor. A Git commit includes only the most recently applied plan's files and requires a message; existing staged files, an in-progress Git operation or missing identity prevent it. No push or publication is automatic.
+
+The framed preview uses per-canvas nonce paths and origin checks without third-party cookies, keeps network/form calls disabled, and preserves the previous snapshot until the next is verified. Isolated HTTPS framing passed Chromium 153 and Firefox 155 on Linux. Chrome requires its Local Network Access permission as well as helper folder approval. Real hosted acceptance and Safari on Sean's Mac remain open; see [the task map's acceptance log](docs/existing-site-visual-editing-plan.md#browser-support--implementation-log-12-september-2026). Local verification passed: Astro/TypeScript checks, 214 unit tests, 40 browser scenarios (one opt-in licensed-archive skip), and the complete site/Studio production build. The historical pause-state sections below describe 11 September, not current implementation or deployment status.
 
 ## State at the pause
 
@@ -153,7 +161,7 @@ Read [client-demo operations](docs/client-demo-operations.md), [hosted publicati
 ## Resume order
 
 1. Restore from the private bundle and fresh Git clone using the Linux guide. Verify actual repository/remote/deployment state; do not recreate hosted projects/users or rerun destructive acceptance helpers blindly.
-2. Read Sean's correction above and Claude's brief. Agree the real existing-site visual workflow and implement that gap; keep source preservation, project isolation and recovery as requirements.
+2. Read Sean's correction above and Claude's brief, then follow [the existing-site visual editing task map](docs/existing-site-visual-editing-plan.md) (added 12 September 2026 after the UX pass); keep source preservation, project isolation and recovery as requirements.
 3. Run focused tests while implementing, then demonstrate the actual hosted editor with Sean's Linux companion and a representative native site. Test normal startup, not only a special test server.
 4. Integrate the UX pass. Preserve working builder-owned editing, backups, releases, auth and asset flows while changing their presentation.
 5. Finish the unreleased delivery warnings and deliberately resolve the demo's broken link. Check the current project first so Sean's later edits are preserved.

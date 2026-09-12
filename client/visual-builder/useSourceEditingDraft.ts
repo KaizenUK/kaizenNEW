@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { storage } from "./storage";
+import { activeProjectId } from "./projectStorage";
+import { companionConnection } from "./companionConnection";
 import type {
   SourceDraft,
   SourceEdits,
@@ -9,6 +11,7 @@ import type {
 export function useSourceEditingDraft(inspection?: SourceInspection) {
   const [values, setValues] = useState<Record<string, string>>({});
   const [orders, setOrders] = useState<Record<string, string[]>>({});
+  const [assets, setAssets] = useState<NonNullable<SourceEdits["assets"]>>([]);
   const [ready, setReady] = useState(false);
   const [loadAttempt, setLoadAttempt] = useState(0);
   const [stale, setStale] = useState<SourceEdits>();
@@ -16,6 +19,9 @@ export function useSourceEditingDraft(inspection?: SourceInspection) {
   const [status, setStatus] = useState("");
   const version = useRef(0),
     persisted = useRef("null");
+  const recoveryKey = inspection
+    ? `kaizen-source-recovery:${JSON.stringify([companionConnection.recoveryIdentity(), activeProjectId, inspection.root, inspection.route])}`
+    : "";
   const pending = useRef<
     { edits: SourceEdits | null; text: string } | undefined
   >(undefined);
@@ -43,6 +49,35 @@ export function useSourceEditingDraft(inspection?: SourceInspection) {
         if (!current) return;
         version.current = draft.version;
         persisted.current = JSON.stringify(draft.edits);
+        blocked.current = false;
+        let recovery:
+          | { version: number; edits: SourceEdits | null }
+          | undefined;
+        try {
+          recovery =
+            JSON.parse(localStorage.getItem(recoveryKey) || "null") ||
+            undefined;
+        } catch {
+          /* Preserve helper draft if browser storage is unavailable. */
+        }
+        if (
+          recovery?.edits &&
+          recovery.edits.inspection.root === inspection.root &&
+          recovery.edits.inspection.route === inspection.route
+        ) {
+          if (
+            recovery.version !== draft.version &&
+            JSON.stringify(recovery.edits) !== JSON.stringify(draft.edits)
+          ) {
+            setStale(recovery.edits);
+            setReady(true);
+            setStatus(
+              "A newer helper draft exists. Your browser edits are kept for recovery.",
+            );
+            return;
+          }
+          draft = { ...draft, edits: recovery.edits };
+        }
         if (
           draft.edits &&
           JSON.stringify(draft.edits.inspection.files) !==
@@ -55,6 +90,8 @@ export function useSourceEditingDraft(inspection?: SourceInspection) {
         } else {
           setValues(draft.edits?.values || {});
           setOrders(draft.edits?.orders || {});
+          setAssets(draft.edits?.assets || []);
+          setStale(undefined);
           setStatus(
             draft.edits ? "Restored your saved edits." : "No changes yet.",
           );
@@ -79,7 +116,20 @@ export function useSourceEditingDraft(inspection?: SourceInspection) {
         const next = pending.current;
         if (next.text === persisted.current) {
           pending.current = undefined;
+          try {
+            localStorage.removeItem(recoveryKey);
+          } catch {
+            /* Already saved by the helper. */
+          }
           break;
+        }
+        try {
+          localStorage.setItem(
+            recoveryKey,
+            JSON.stringify({ version: version.current, edits: next.edits }),
+          );
+        } catch {
+          /* Report any helper save failure below. */
         }
         if (mounted.current) setStatus("Saving edits…");
         try {
@@ -93,6 +143,12 @@ export function useSourceEditingDraft(inspection?: SourceInspection) {
           version.current = saved.version;
           persisted.current = next.text;
           if (pending.current === next) pending.current = undefined;
+          if (!pending.current)
+            try {
+              localStorage.removeItem(recoveryKey);
+            } catch {
+              /* Helper has saved the draft. */
+            }
           if (mounted.current) {
             setStatus(
               saved.edits
@@ -126,15 +182,23 @@ export function useSourceEditingDraft(inspection?: SourceInspection) {
         new Error("Recover or discard the saved edits before continuing."),
       );
     const edits =
-      Object.keys(values).length || Object.keys(orders).length
-        ? { inspection, values, orders }
+      Object.keys(values).length || Object.keys(orders).length || assets.length
+        ? { inspection, values, orders, ...(assets.length ? { assets } : {}) }
         : null;
     pending.current = { edits, text: JSON.stringify(edits) };
+    try {
+      localStorage.setItem(
+        recoveryKey,
+        JSON.stringify({ version: version.current, edits }),
+      );
+    } catch {
+      /* Helper save remains authoritative; failures still keep this window open. */
+    }
     return drain();
   }
   useEffect(() => {
     if (ready && !stale) void flush().catch(() => {});
-  }, [ready, stale, values, orders]);
+  }, [ready, stale, values, orders, assets]);
   useEffect(() => {
     const warn = (event: BeforeUnloadEvent) => {
       if (pending.current || running.current) {
@@ -155,8 +219,16 @@ export function useSourceEditingDraft(inspection?: SourceInspection) {
     });
     version.current = saved.version;
     persisted.current = "null";
+    pending.current = undefined;
+    blocked.current = false;
+    try {
+      localStorage.removeItem(recoveryKey);
+    } catch {
+      /* Helper draft was discarded. */
+    }
     setValues({});
     setOrders({});
+    setAssets([]);
     setStale(undefined);
     setError("");
     setStatus("Saved edits discarded. The website's files are unchanged.");
@@ -164,7 +236,18 @@ export function useSourceEditingDraft(inspection?: SourceInspection) {
   function download() {
     const url = URL.createObjectURL(
       new Blob(
-        [JSON.stringify(stale || { inspection, values, orders }, null, 2)],
+        [
+          JSON.stringify(
+            stale || {
+              inspection,
+              values,
+              orders,
+              ...(assets.length ? { assets } : {}),
+            },
+            null,
+            2,
+          ),
+        ],
         { type: "application/json" },
       ),
     );
@@ -179,6 +262,8 @@ export function useSourceEditingDraft(inspection?: SourceInspection) {
     setValues,
     orders,
     setOrders,
+    assets,
+    setAssets,
     ready,
     stale,
     error,

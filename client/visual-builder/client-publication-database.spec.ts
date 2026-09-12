@@ -1265,7 +1265,21 @@ it.runIf(Boolean(process.env.KAIZEN_NGINX_BINARY))(
           ),
         ).toMatchObject({ phase: restore ? "rolled_back" : "live" });
         const expected = restore ? job.previous_artifact_id : job.id;
-        await checkLive(f.origin, await verifyRelease(worker.store, expected));
+        // Nginx acknowledges the reload signal before its new workers accept connections.
+        const manifest = await verifyRelease(worker.store, expected);
+        await expect
+          .poll(
+            async () => {
+              try {
+                await checkLive(f.origin, manifest);
+                return "verified";
+              } catch (error) {
+                return error.message;
+              }
+            },
+            { timeout: 5000 },
+          )
+          .toBe("verified");
         expect(
           (
             await db.query<any>(

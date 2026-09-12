@@ -2,7 +2,7 @@
 
 ## Paused builder work / Linux handover
 
-For continuation of the multi-project visual builder, read `HANDOVER.md` first. It records the 11 September 2026 user-requested pause for a Windows wipe, production state, private-data restoration, and Claude's visual/UX brief. The critical unfinished requirement is genuine WYSIWYG editing of existing sites; source-content fields and a separate selector are not completion. Resume implementation when Sean asks after migrating. `KAIZEN-PRIVATE-MIGRATION*` files are private and must never be committed or published.
+For continuation of the multi-project visual builder, read `HANDOVER.md` first. It records the 11 September 2026 user-requested pause for a Windows wipe, production state, private-data restoration, and Claude's visual/UX brief. The critical unfinished requirement is genuine WYSIWYG editing of existing sites; source-content fields and a separate selector are not completion. Resume implementation when Sean asks after migrating. The ordered task map for that work is `docs/existing-site-visual-editing-plan.md`. `KAIZEN-PRIVATE-MIGRATION*` files are private and must never be committed or published.
 
 A production-ready Astro static application with React islands, Sanity CMS, TypeScript, Vitest, and modern tooling.
 

@@ -3228,7 +3228,6 @@
   align-self: flex-start;
 }
 
-
 /* ---------- Unified screen layout (UX pass) ---------- */
 .builder-block {
   display: flex;
@@ -3653,4 +3652,383 @@
 }
 .builder-library-wide .builder-asset-detail {
   padding: 24px;
+}
+
+/* Existing-site editor shares the builder chrome; the original website owns the frame. */
+.builder-site-editor {
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: var(--surface);
+  color: var(--text);
+}
+.builder-site-editor .builder-editor-header {
+  flex-shrink: 0;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.builder-site-editor .builder-editor-left {
+  min-width: 0;
+  flex: 1;
+}
+.builder-site-editor .builder-header-page {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 220px;
+}
+.builder-site-editor .builder-save-status {
+  max-width: 210px;
+  line-height: 1.4;
+}
+.builder-site-notices {
+  padding: 0 12px;
+  max-height: 25vh;
+  overflow: auto;
+}
+.builder-site-layout {
+  display: grid;
+  grid-template-columns: 250px minmax(0, 1fr) 280px;
+  flex: 1;
+  min-height: 0;
+}
+.builder-site-outline,
+.builder-site-selected {
+  background: var(--panel);
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
+  border-inline-end: 1px solid var(--border);
+}
+.builder-site-selected {
+  border-inline-start: 1px solid var(--border);
+}
+.builder-site-tabs {
+  display: flex;
+  gap: 4px;
+  padding: 10px;
+  border-bottom: 1px solid var(--border);
+}
+.builder-site-tabs button {
+  flex: 1;
+  border: 0;
+  padding: 9px 6px;
+  background: transparent;
+  border-radius: 6px;
+}
+.builder-site-tabs button[aria-pressed="true"] {
+  background: #ece9ff;
+  color: #453591;
+}
+.builder-site-search {
+  padding: 12px;
+}
+.builder-site-search input {
+  width: 100%;
+}
+.builder-site-field-list {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+}
+.builder-site-field {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  width: 100%;
+  padding: 10px 14px;
+  border: 0;
+  border-bottom: 1px solid var(--border);
+  background: transparent;
+  gap: 5px;
+  min-height: 64px;
+}
+.builder-site-field[aria-pressed="true"] {
+  background: #ece9ff;
+  color: #342474;
+}
+.builder-site-field small {
+  opacity: 0.7;
+  font-size: 11px;
+}
+.builder-site-field span {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  width: 100%;
+}
+.builder-site-panel-content {
+  overflow: auto;
+  padding: 16px;
+  min-height: 0;
+}
+.builder-site-panel-content h3 {
+  font-size: 15px;
+  margin: 8px 0 14px;
+}
+.builder-site-panel-content h4 {
+  font-size: 12px;
+  margin-top: 18px;
+}
+.builder-site-panel-content p {
+  overflow-wrap: anywhere;
+}
+.builder-site-field-editor {
+  padding-bottom: 20px;
+  margin-bottom: 16px;
+  border-bottom: 1px solid var(--border);
+}
+.builder-site-field-editor label {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 12px;
+}
+.builder-site-field-editor textarea {
+  width: 100%;
+  resize: vertical;
+}
+.builder-site-field-editor details {
+  margin-top: 14px;
+}
+.builder-site-section {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+  margin: 8px 0;
+}
+.builder-site-section span {
+  flex: 1;
+  overflow-wrap: anywhere;
+}
+.builder-site-section button {
+  padding: 6px;
+}
+.builder-site-canvas {
+  min-width: 0;
+  min-height: 0;
+  overflow: auto;
+  padding: 24px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  background: #e7e8ed;
+}
+.builder-site-frame-wrap {
+  flex-shrink: 0;
+  overflow: hidden;
+  background: white;
+  box-shadow: 0 8px 25px #17203420;
+}
+.builder-site-frame-wrap iframe {
+  border: 0;
+  display: block;
+  background: white;
+}
+.builder-site-build {
+  width: min(520px, calc(100% - 32px));
+  padding: 24px;
+  border-radius: 12px;
+  background: var(--panel);
+  box-shadow: 0 4px 20px #17203410;
+}
+.builder-site-build h2 {
+  font-size: 20px;
+}
+.builder-site-build pre {
+  max-height: 180px;
+  overflow: auto;
+}
+.builder-site-build code {
+  overflow-wrap: anywhere;
+}
+.builder-site-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 16px;
+  font-size: 12px;
+  border-top: 1px solid var(--border);
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.builder-site-mobile-tabs {
+  display: none;
+}
+.builder-site-review {
+  position: fixed;
+  inset: 8vh max(16px, calc((100vw - 900px) / 2));
+  overflow: auto;
+  z-index: 1001;
+  padding: 28px;
+  background: var(--panel);
+  border-radius: 12px;
+}
+.builder-site-review pre {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  font-size: 12px;
+}
+.builder-site-review details {
+  margin: 14px 0;
+}
+.builder-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: #14172680;
+  z-index: 1000;
+}
+@media (max-width: 1100px) {
+  .builder-site-layout {
+    grid-template-columns: 210px minmax(0, 1fr) 240px;
+  }
+  .builder-site-editor .builder-save-status {
+    display: none;
+  }
+}
+@media (max-width: 760px) {
+  .builder-site-editor .builder-editor-left .builder-brand,
+  .builder-site-editor .builder-editor-left .builder-project-identity {
+    display: none;
+  }
+  .builder-site-editor .builder-editor-header {
+    padding: 10px;
+  }
+  .builder-site-editor .builder-header-page {
+    max-width: 180px;
+  }
+  .builder-site-editor .builder-editor-center {
+    order: 3;
+  }
+  .builder-site-editor .builder-editor-right {
+    flex-wrap: wrap;
+    gap: 5px;
+  }
+  .builder-site-layout {
+    display: flex;
+  }
+  .builder-site-outline,
+  .builder-site-selected,
+  .builder-site-canvas {
+    display: none;
+    width: 100%;
+  }
+  .builder-site-layout[data-panel="outline"] .builder-site-outline,
+  .builder-site-layout[data-panel="selected"] .builder-site-selected,
+  .builder-site-layout[data-panel="canvas"] .builder-site-canvas {
+    display: flex;
+  }
+  .builder-site-mobile-tabs {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    padding: 8px;
+  }
+  .builder-site-mobile-tabs button {
+    padding: 6px 18px;
+  }
+  .builder-site-mobile-tabs button[aria-pressed="true"] {
+    background: #ece9ff;
+    color: #453591;
+  }
+  .builder-site-footer {
+    font-size: 11px;
+  }
+  .builder-site-frame-wrap {
+    box-shadow: none;
+  }
+}
+.builder-site-editor .builder-editor-header {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+}
+.builder-site-editor .builder-editor-center {
+  position: static;
+  transform: none;
+}
+.builder-site-editor .builder-save-status {
+  flex: 0 1 180px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.builder-site-editor .builder-site-field {
+  border-radius: 0;
+  align-items: flex-start;
+  text-align: left;
+}
+.builder-site-editor .builder-site-canvas {
+  background: var(--canvas);
+}
+@media (max-width: 760px) {
+  .builder-site-editor .builder-editor-header {
+    display: flex;
+  }
+  .builder-site-editor .builder-editor-center {
+    order: 0;
+  }
+  .builder-site-editor .builder-editor-left {
+    flex: 1 0 100%;
+  }
+  .builder-site-editor .builder-editor-right {
+    margin-left: auto;
+  }
+}
+.builder-site-editor .builder-editor-header {
+  min-width: 0;
+}
+.builder-site-editor .builder-editor-header {
+  height: auto;
+  min-height: 72px;
+}
+.builder-site-editor .builder-site-mobile-tabs {
+  flex-shrink: 0;
+}
+
+@media (max-width: 1100px) {
+  .builder-site-editor .builder-save-status {
+    display: inline-block;
+    font-size: 11px;
+  }
+}
+
+.builder-site-live-status {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+@media (max-width: 760px) {
+  .builder-site-editor .builder-editor-left {
+    display: grid;
+    grid-template-columns: 32px minmax(0, 1fr) 130px;
+    gap: 8px;
+  }
+  .builder-site-editor .builder-editor-left > .builder-icon-button {
+    grid-column: 1;
+    grid-row: 1 / 3;
+  }
+  .builder-site-editor .builder-project-chip {
+    grid-column: 2 / 4;
+    max-width: 100%;
+    justify-self: start;
+  }
+  .builder-site-editor .builder-header-page {
+    grid-column: 2;
+    max-width: none;
+    font-size: 14px;
+  }
+  .builder-site-editor .builder-save-status {
+    grid-column: 3;
+    max-width: 130px;
+    white-space: normal;
+  }
 }

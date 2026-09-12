@@ -1,4 +1,17 @@
-import type { SourceField } from "../shared/builderSourceEditing";
+import type {
+  SourceField,
+  SourceInspection,
+} from "../shared/builderSourceEditing";
+import { canvasScript } from "./builder-source-canvas";
+
+/** The frame talks only to its editor. It has no helper capability or endpoint. */
+export function sourceEditingScript(
+  inspection: SourceInspection,
+  nonce: string,
+  parentOrigin: string,
+) {
+  return canvasScript(inspection, nonce, parentOrigin);
+}
 
 /** Only static file routes have a deterministic built URL. */
 export function sourcePreviewPath(route: string) {

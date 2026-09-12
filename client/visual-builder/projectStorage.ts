@@ -1,6 +1,7 @@
 import type { BuilderProject } from "../../shared/builderProjects";
 import { LEGACY_PROJECT_ID } from "../../shared/builderProjects";
 import { getSupabaseClient } from "../lib/supabase";
+import { builderCloudEnabled } from "./builderMode";
 
 // Fixed for this document's lifetime. Opening another project navigates, disposing
 // the editor and its pending import/autosave controllers before starting another.
@@ -12,7 +13,7 @@ export function projectUrl(url: string): string {
   return `${url}${url.includes("?") ? "&" : "?"}project=${encodeURIComponent(activeProjectId)}`;
 }
 export async function projectRequest(input?: unknown): Promise<any> {
-  if (import.meta.env.VITE_BUILDER_CLOUD === "1") {
+  if (builderCloudEnabled) {
     const client = getSupabaseClient();
     if (!client) throw new Error("The hosted builder is not configured.");
     const { data, error } = await client.functions.invoke("builder-projects", {

@@ -96,6 +96,8 @@ import ProjectBackups from "./ProjectBackups";
 import ReleasesPanel from "./ReleasesPanel";
 import RedirectsPanel from "./RedirectsPanel";
 import ExistingPages from "./ExistingPages";
+import SitePages, { siteRoutePath, type SitePage } from "./SitePages";
+import SitePageEditor from "./SitePageEditor";
 import type { PageInventory } from "../../shared/builderPageInventory";
 import { ImageContext } from "./ImageContext";
 import { imageIndex, materializeImages } from "../../shared/builderImages";
@@ -153,6 +155,7 @@ function BuilderWorkspace({ inventory }: { inventory?: PageInventory } = {}) {
       : new URLSearchParams(window.location.search).get("preview"),
   );
   const [editingComponent, setEditingComponent] = useState<string>();
+  const [sitePage, setSitePage] = useState<SitePage>();
   const workspaceRef = useRef<Workspace>(undefined);
   const loadSequence = useRef(0);
   const authAccount = useRef<string | undefined>(undefined);
@@ -376,6 +379,21 @@ function BuilderWorkspace({ inventory }: { inventory?: PageInventory } = {}) {
     ? workspace.pages.filter((page) => pageStatus(page).filter === "changed")
         .length
     : 0;
+  if (sitePage && workspace)
+    return (
+      <SitePageEditor
+        page={sitePage}
+        workspace={workspace}
+        onWorkspace={replaceWorkspace}
+        theme={theme}
+        onToggleTheme={toggleTheme}
+        inventory={inventory}
+        onBack={() => {
+          setSitePage(undefined);
+          navigate("pages");
+        }}
+      />
+    );
   const panel = (content: React.ReactNode) => (
     <div className="builder-panel-body">{content}</div>
   );
@@ -422,6 +440,26 @@ function BuilderWorkspace({ inventory }: { inventory?: PageInventory } = {}) {
           onCreate={(template) => void create(template)}
           onOpen={setActive}
           onRetry={() => void reload()}
+          sitePages={
+            workspace && (
+              <SitePages
+                inventory={activeProjectId === "kaizen" ? inventory : undefined}
+                onOpen={setSitePage}
+                onOpenBuilder={(path) => {
+                  const existing = workspace.pages.find(
+                    (p) =>
+                      (p.draft.slug
+                        ? `/${p.draft.slug.replace(/^\/+|\/+$/g, "")}/`
+                        : "/") === path,
+                  );
+                  if (!existing) return false;
+                  setActive(existing);
+                  return true;
+                }}
+                onConnect={() => navigate("repository")}
+              />
+            )
+          }
           login={
             !signedIn && !localMode && cloud ? (
               <form
@@ -477,8 +515,35 @@ function BuilderWorkspace({ inventory }: { inventory?: PageInventory } = {}) {
             inventory={inventory}
             open
             onEdit={(path) => {
-              setExistingPath(path);
-              navigate("repository");
+              if (
+                !localMode &&
+                companionConnection.snapshot().status !== "connected"
+              ) {
+                setExistingPath(path);
+                navigate("repository");
+                return;
+              }
+              void storage
+                .repository({ action: "repository-inspect-current" })
+                .then((model) => {
+                  const row = model.routes.find(
+                    (row) => siteRoutePath(row.file) === path,
+                  );
+                  if (!row)
+                    throw new Error(
+                      "This route has moved or comes from the CMS. Refresh the website pages.",
+                    );
+                  setSitePage({
+                    root: model.root,
+                    route: row.file,
+                    path,
+                    title:
+                      row.title ||
+                      inventory.pages.find((p) => p.path === path)?.title ||
+                      path,
+                  });
+                })
+                .catch((error) => setError(error.message));
             }}
           />,
         )}

@@ -111,6 +111,10 @@ describe("paired local repository capabilities", () => {
     );
     for (const request of [
       { action: "repository-inspect", root: directory },
+      { action: "repository-git-status", root: directory },
+      { action: "repository-source-frame", root: directory, jobId: "other" },
+      { action: "repository-source-frame", root, jobId: "other" },
+      { action: "repository-commit", planId: "other", message: "No" },
       {
         action: "repository-source-prepare",
         edits: { inspection: { root: directory } },
@@ -128,6 +132,7 @@ describe("paired local repository capabilities", () => {
     const authorized = auth({ action: "repository-inspect", root });
     for (const [review, apply, idKey] of [
       ["repository-source-prepare", "repository-apply", "planId"],
+      ["repository-source-prepare", "repository-commit", "planId"],
       ["repository-build-review", "repository-build-start", "planId"],
       ["repository-build-start", "repository-build-status", "jobId"],
       [

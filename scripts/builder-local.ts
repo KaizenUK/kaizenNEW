@@ -613,15 +613,28 @@ export function builderLocalPlugin(): Plugin {
             }
             if (input.action === "repository-inspect-current")
               return inspectRepository(server.config.root);
+            if (input.action === "repository-git-status")
+              return repositories.gitStatus(input.root);
+            if (input.action === "repository-commit")
+              return repositories.commit(
+                input.planId,
+                projectId,
+                input.message,
+              );
             if (input.action === "repository-source-inspect")
               return repositories.inspectSourcePage(input.root, input.route);
-            if (input.action === "repository-source-preview")
+            if (
+              ["repository-source-preview", "repository-source-frame"].includes(
+                input.action,
+              )
+            )
               return runner.sourcePreview(
                 input.jobId,
                 projectId,
                 await repositories.inspectSourcePage(input.root, input.route),
                 paired?.session.identity.origin || req.headers.origin || "",
                 Boolean(paired),
+                input.action === "repository-source-frame",
               );
             if (input.action === "repository-source-draft-read")
               return new SourceDrafts(directory).read(input.root, input.route);
@@ -650,6 +663,7 @@ export function builderLocalPlugin(): Plugin {
               const plan = await repositories.prepareSource(
                 projectId,
                 input.edits,
+                input.media,
               );
               if (draft)
                 sourceDraftPlans.set(plan.id, {

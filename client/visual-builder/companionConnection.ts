@@ -154,6 +154,14 @@ export class CompanionConnection {
   focus() {
     this.popup?.focus();
   }
+  reconnect() {
+    if (!this.identity || !this.state.origin)
+      throw new Error("Connect the helper from Pages first.");
+    this.connect(this.state.origin, this.identity);
+  }
+  recoveryIdentity() {
+    return this.identity?.accountId || "local";
+  }
   requireAccount(accountId?: string) {
     if (!accountId || this.identity?.accountId !== accountId) {
       this.disconnect(

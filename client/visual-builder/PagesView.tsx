@@ -43,6 +43,7 @@ export function pageStatus(page: BuilderPage): {
 }
 
 export default function PagesView({
+  sitePages,
   workspace,
   localMode,
   email,
@@ -54,6 +55,7 @@ export default function PagesView({
   onRetry,
   login,
 }: {
+  sitePages?: React.ReactNode;
   workspace?: Workspace;
   localMode: boolean;
   email?: string;
@@ -288,6 +290,7 @@ export default function PagesView({
             </section>
           </>
         )}
+        {sitePages}
       </div>
     </>
   );

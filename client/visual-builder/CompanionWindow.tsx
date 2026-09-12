@@ -3,7 +3,8 @@ import {
   companionIdentity,
   type CompanionIdentity,
 } from "../../shared/builderCompanion";
-import { localMode } from "./storage";
+// The helper page only needs the local API that every dev server exposes, whatever mode the builder UI is in.
+const helperAvailable = import.meta.env.DEV;
 import { Brand } from "./shell";
 import "./builder.css";
 
@@ -74,7 +75,7 @@ export default function CompanionWindow() {
     }
   }
   useEffect(() => {
-    if (!localMode) return;
+    if (!helperAvailable) return;
     live.current = true;
     const startingGeneration = generation.current;
     const params = new URLSearchParams(location.hash.slice(1));
@@ -208,10 +209,12 @@ export default function CompanionWindow() {
       <main className="builder-auth-card builder-companion-card">
         <Brand />
         <h1>Allow access to a folder?</h1>
-        {!localMode ? (
+        {!helperAvailable ? (
           <p>
-            Run <code>pnpm dev</code> in your Kaizen folder, then choose Connect
-            helper in the builder.
+            This page only works on the helper running on your own computer. It
+            was opened on <code>{location.host}</code> instead. Run{" "}
+            <code>pnpm dev</code> in your Kaizen folder, then choose Connect
+            helper in the builder and enter the address it prints.
           </p>
         ) : (
           <>

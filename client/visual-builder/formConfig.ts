@@ -1,3 +1,4 @@
+import { builderCloudEnabled } from "./builderMode";
 // Public routing configuration only. No API key is shipped in published forms.
 import { activeProjectId } from "./projectStorage";
 const configured = import.meta.env.VITE_BUILDER_FORM_ENDPOINT;
@@ -6,7 +7,7 @@ export const builderFormEndpoint =
   activeProjectId !== "kaizen"
     ? ""
     : configured ||
-      (import.meta.env.DEV && import.meta.env.VITE_BUILDER_CLOUD !== "1"
+      (import.meta.env.DEV && !builderCloudEnabled
         ? "/__builder-contact"
         : supabaseUrl
           ? `${supabaseUrl.replace(/\/$/, "")}/functions/v1/builder-contact`

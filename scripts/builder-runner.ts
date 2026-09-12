@@ -6,13 +6,16 @@ import { lstat, readFile, readdir, mkdir, rename } from "node:fs/promises";
 import path from "node:path";
 import { inspectRepository } from "./builder-repository";
 import type { SourceInspection } from "../shared/builderSourceEditing";
+import { frameCss, frameHtml } from "./builder-source-frame";
 import {
   sourcePreviewPath,
   sourceSelectionScript,
+  sourceEditingScript,
 } from "./builder-source-preview";
 
 export type BuildPlan = {
   id: string;
+  sessionId: string;
   projectId: string;
   root: string;
   command: string;
@@ -40,6 +43,7 @@ type Running = {
   fingerprint?: string;
   files?: Map<string, Buffer>;
   selection?: { nonce: string; path: string; script: string };
+  frames?: Map<string, { path: string; script: string; origin: string }>;
   child?: ChildProcess;
   server?: Server;
   done?: Promise<void>;
@@ -49,6 +53,8 @@ type Running = {
 const ignored = new Set([
   "node_modules",
   ".git",
+  ".kaizen-builder",
+  ".sanity",
   ".astro",
   ".vite",
   "dist",
@@ -236,6 +242,7 @@ async function stopChild(child: ChildProcess) {
 }
 
 export class RepositoryRunner {
+  private sessionId = randomUUID();
   private plans = new Map<string, { value: BuildPlan; command: Command }>();
   private jobs = new Map<string, Running>();
   private locks = new Set<string>();
@@ -267,6 +274,7 @@ export class RepositoryRunner {
       );
     const value: BuildPlan = {
       id: randomUUID(),
+      sessionId: this.sessionId,
       projectId,
       root,
       command: `${command.manager} run build`,
@@ -359,6 +367,7 @@ export class RepositoryRunner {
     inspection: SourceInspection,
     parentOrigin: string,
     paired = false,
+    framed = false,
   ) {
     const running = this.require(id, projectId);
     const origin = new URL(parentOrigin);
@@ -388,6 +397,21 @@ export class RepositoryRunner {
         "This static route is absent from the built preview. Check its base path or output configuration.",
       );
     const nonce = randomBytes(32).toString("hex");
+    if (framed) {
+      running.frames ??= new Map();
+      if (running.frames.size >= 8)
+        running.frames.delete(running.frames.keys().next().value!);
+      running.frames.set(nonce, {
+        path: page,
+        origin: parentOrigin,
+        script: sourceEditingScript(inspection, nonce, parentOrigin),
+      });
+      return {
+        url: `${new URL(running.value.previewUrl).origin}/__kaizen-preview/${nonce}${page}`,
+        nonce,
+        files: inspection.files,
+      };
+    }
     running.selection = {
       nonce,
       path: page,
@@ -416,6 +440,7 @@ export class RepositoryRunner {
     running.server = undefined;
     delete running.files;
     delete running.selection;
+    delete running.frames;
     delete running.value.previewUrl;
     delete running.value.previewExpiresAt;
   }
@@ -484,9 +509,6 @@ export class RepositoryRunner {
         throw new Error(
           "Build completed without dist/index.html. Only static sites using dist/ are supported.",
         );
-      // Keep at most two active snapshots; jobs/logs remain available independently.
-      const previews = [...this.jobs.values()].filter((value) => value.server);
-      if (previews.length >= 2) this.closePreview(previews[0]);
       const files = await snapshot(builtOutput);
       running.files = files;
       running.fingerprint = fingerprint;
@@ -512,6 +534,71 @@ export class RepositoryRunner {
           return;
         }
         const url = new URL(req.url || "/", `http://127.0.0.1:${port}`);
+        const frameMatch = /^\/__kaizen-preview\/([a-f0-9]{64})(\/.*)$/.exec(
+          url.pathname,
+        );
+        const frame = frameMatch && running.frames?.get(frameMatch[1]);
+        if (frame && frameMatch) {
+          const prefix = `/__kaizen-preview/${frameMatch[1]}`;
+          res.setHeader(
+            "Content-Security-Policy",
+            `connect-src 'none'; form-action 'none'; frame-ancestors 'self' ${frame.origin}`,
+          );
+          let file: string;
+          try {
+            file = decodeURIComponent(frameMatch[2]);
+          } catch {
+            res.writeHead(400);
+            res.end();
+            return;
+          }
+          if (
+            file.includes("\\") ||
+            file.includes(":") ||
+            file.split("/").includes("..")
+          ) {
+            res.writeHead(404);
+            res.end();
+            return;
+          }
+          if (file === "/__kaizen-canvas.js") {
+            res.writeHead(200, {
+              "Content-Type": "text/javascript; charset=utf-8",
+            });
+            res.end(req.method === "HEAD" ? undefined : frame.script);
+            return;
+          }
+          if (file.endsWith("/")) file += "index.html";
+          else if (!files.has(file) && files.has(`${file}/index.html`)) {
+            res.writeHead(301, { Location: `${url.pathname}/${url.search}` });
+            res.end();
+            return;
+          }
+          let bytes = files.get(file);
+          if (!bytes) {
+            res.writeHead(404);
+            res.end("Static page not found.");
+            return;
+          }
+          if (file.endsWith(".html")) {
+            let html = frameHtml(bytes.toString("utf8"), prefix);
+            if (file === `${frame.path}index.html`) {
+              const script = `<script src="${prefix}/__kaizen-canvas.js" defer></script>`;
+              html = /<\/body\s*>/i.test(html)
+                ? html.replace(/<\/body\s*>/i, script + "</body>")
+                : html + script;
+            }
+            bytes = Buffer.from(html);
+          } else if (file.endsWith(".css"))
+            bytes = Buffer.from(frameCss(bytes.toString("utf8"), prefix));
+          res.writeHead(200, {
+            "Content-Type":
+              mime[path.extname(file)] || "application/octet-stream",
+            "Content-Length": bytes.length,
+          });
+          res.end(req.method === "HEAD" ? undefined : bytes);
+          return;
+        }
         const selection = running.selection;
         const selecting =
           selection && url.pathname === `/__kaizen-source/${selection.nonce}/`;
@@ -616,6 +703,11 @@ export class RepositoryRunner {
       if (running.cancel || this.closed)
         throw new Error(running.cancel || "Companion stopped.");
       job.previewUrl = `http://127.0.0.1:${port}/__kaizen-preview/${token}/`;
+      // Retain earlier previews until the replacement's served bytes are verified.
+      const previews = [...this.jobs.values()].filter(
+        (value) => value !== running && value.server,
+      );
+      while (previews.length >= 2) this.closePreview(previews.shift()!);
       job.previewExpiresAt = Date.now() + this.previewMs;
       running.timer = setTimeout(
         () => this.closePreview(running),
