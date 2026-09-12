@@ -12,7 +12,7 @@ test("M2: an independently built Astro React island hydrates inside the editable
   test.setTimeout(180000);
   const fixture = await siteFixture(
       page,
-      `---\nimport Island from '../components/Island';\nimport card from '../content/card.json';\n---\n<html><head><title>Native garden</title><link rel="icon" href="data:,"/></head><body><h1>A native garden</h1><Island client:load/><section data-kaizen-block={card.registrationId} data-kaizen-block-id={card.id} style={\`--d-padding:\${card.style.desktop.padding}px;--t-padding:\${card.style.desktop.padding}px;--m-padding:\${card.style.mobile.padding}px;--d-background:\${card.style.desktop.background}\`}><h2>{card.text}</h2></section><style>body{font:20px system-ui;padding:24px;color:#123d32}h1{color:rgb(20,70,40)}[data-kaizen-block]{padding:var(--d-padding);background:var(--d-background)}</style></body></html>`,
+      `---\nimport Island from '../components/Island';\nimport card from '../content/card.json';\n---\n<html><head><title>Native garden</title><link rel="icon" href="data:,"/></head><body><main><section><h1>A native garden</h1><Island client:load/></section><section data-kaizen-block={card.registrationId} data-kaizen-block-id={card.id} style={\`--d-padding:\${card.style.desktop.padding}px;--t-padding:\${card.style.desktop.padding}px;--m-padding:\${card.style.mobile.padding}px;--d-background:\${card.style.desktop.background}\`}><h2>{card.text}</h2></section></main><style>body{font:20px system-ui;padding:24px;color:#123d32}h1{color:rgb(20,70,40)}[data-kaizen-block]{padding:var(--d-padding);background:var(--d-background)}</style></body></html>`,
     ),
     { root } = fixture;
   const errors: string[] = [];
@@ -84,6 +84,23 @@ test("M2: an independently built Astro React island hydrates inside the editable
           (image: HTMLImageElement) => image.complete && image.naturalWidth > 0,
         ),
     ).toBe(true);
+    // An unchanged section order must not disconnect hydrated islands on every draft update.
+    await frame.locator("main").evaluate((main) => {
+      main.setAttribute("data-section-moves", "0");
+      new MutationObserver((records) => {
+        const removed = records
+          .flatMap((record) => [...record.removedNodes])
+          .filter(
+            (node) => node instanceof Element && node.tagName === "SECTION",
+          );
+        main.setAttribute(
+          "data-section-moves",
+          String(
+            Number(main.getAttribute("data-section-moves")) + removed.length,
+          ),
+        );
+      }).observe(main, { childList: true });
+    });
     const title = frame.getByRole("heading", { name: "Our native studio" });
     await title.dblclick();
     await title.fill("Our edited React studio");
@@ -98,6 +115,10 @@ test("M2: an independently built Astro React island hydrates inside the editable
     await expect(frame.locator("[data-kaizen-block]")).toHaveCSS(
       "padding-top",
       "48px",
+    );
+    await expect(frame.locator("main")).toHaveAttribute(
+      "data-section-moves",
+      "0",
     );
     const previousFrame = await page
       .locator('iframe[title="Website canvas"]')

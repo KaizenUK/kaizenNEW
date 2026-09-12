@@ -176,6 +176,8 @@ export function canvasScript(
   }
   function reorder(id,order) {
     const model=groupBindings.get(id); if(!model || !Array.isArray(order) || order.length!==model.items.size || new Set(order).size!==order.length || order.some(item=>!model.items.has(item))) return;
+    // Moving an unchanged Astro island can trigger its connection/hydration lifecycle again.
+    if(order.every((item,index)=>item===model.order[index])) return;
     const marker=document.createComment('kaizen-order'); model.parent.insertBefore(marker,model.items.get(model.order[0]));
     for(const item of order) model.parent.insertBefore(model.items.get(item),marker);
     marker.remove();model.order=[...order];

@@ -40,5 +40,7 @@ terms.docx
 *.zip
 !public/builder-samples/sample-pack.zip
 /.kaizen-builder/
+/.kaizen/build-recovery/
+/.kaizen/recovery/
 /test-results/
 /KAIZEN-PRIVATE-MIGRATION*
