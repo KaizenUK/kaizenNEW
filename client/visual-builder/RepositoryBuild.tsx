@@ -10,7 +10,7 @@ export default function RepositoryBuild({ root }: { root: string }) {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const key = `kaizen-build:${activeProjectId}:${root}`;
-  const running = job?.status === "building";
+  const running = job?.status === "building" || job?.status === "queued";
   async function run(action: () => Promise<void>) {
     setBusy(true);
     setError("");
@@ -51,7 +51,12 @@ export default function RepositoryBuild({ root }: { root: string }) {
         if (live) {
           setJob(value);
           setError("");
-          timer = setTimeout(poll, value.status === "building" ? 1000 : 10000);
+          timer = setTimeout(
+            poll,
+            value.status === "building" || value.status === "queued"
+              ? 1000
+              : 10000,
+          );
         }
       } catch (error) {
         if (live) {
@@ -140,18 +145,26 @@ export default function RepositoryBuild({ root }: { root: string }) {
       {job && (
         <div className="builder-block-section">
           <p role="status">
-            {job.status === "building"
-              ? "Building…"
-              : job.status === "succeeded"
-                ? "Build finished. The preview is ready."
-                : job.status === "cancelled"
-                  ? "Build cancelled."
-                  : "Build failed."}
+            {job.cancelling
+              ? "Cancelling the build and restoring previous output…"
+              : job.status === "queued"
+                ? `Build queued. Position ${job.queuePosition || 1} for this website.`
+                : job.status === "building"
+                  ? "Building…"
+                  : job.status === "succeeded"
+                    ? job.previewUrl
+                      ? "Build finished. The preview is ready."
+                      : "Build finished."
+                    : job.status === "cancelled"
+                      ? "Build cancelled."
+                      : "Build failed."}
           </p>
           {job.error && <p role="alert">{job.error}</p>}
-          <p>
-            Previous build kept at <code>{job.recoveryDirectory}</code>
-          </p>
+          {job.recoveryDirectory && (
+            <p>
+              Previous build kept at <code>{job.recoveryDirectory}</code>
+            </p>
+          )}
           {job.previewUrl && (
             <p>
               <button
@@ -171,12 +184,13 @@ export default function RepositoryBuild({ root }: { root: string }) {
           )}
           {job.status === "succeeded" && !job.previewUrl && (
             <p>
-              The preview has closed or expired. Run the build again to see it.
+              No preview is available. Check the helper connection before
+              building again.
             </p>
           )}
           {(running || job.previewUrl) && (
             <button
-              disabled={busy}
+              disabled={busy || job.cancelling}
               onClick={() =>
                 void run(async () => {
                   setJob(
@@ -188,7 +202,7 @@ export default function RepositoryBuild({ root }: { root: string }) {
                 })
               }
             >
-              {running ? "Cancel build" : "Stop local preview"}
+              {running ? "Cancel build" : "Stop preview"}
             </button>
           )}
           <details>

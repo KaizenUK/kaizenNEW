@@ -192,7 +192,7 @@ test("Unity restores an independent native repository and its unapplied source d
   ).toBeVisible();
   await preview.close();
   await page
-    .getByRole("button", { name: "Stop local preview", exact: true })
+    .getByRole("button", { name: "Stop preview", exact: true })
     .click();
   expect(errors).toEqual([]);
 });

@@ -18,7 +18,8 @@ import {
   unlinkedPath,
 } from "./builder-hosted-folders";
 import { RepositoryCompanion, inspectRepository } from "./builder-repository";
-import { RepositoryRunner } from "./builder-runner";
+import { RepositoryRunner, type BuildPlan } from "./builder-runner";
+import { HostedBuildQueue } from "./builder-hosted-builds";
 import { SourceDrafts } from "./builder-source-drafts";
 import { NativeRepositoryBackups } from "./builder-native-backup";
 
@@ -37,14 +38,14 @@ const actions = new Set([
   "repository-prepare",
   "repository-apply",
   "repository-build-review",
+  "repository-build-start",
+  "repository-build-status",
+  "repository-build-stop",
   "repository-native-backup-review",
   "repository-native-backup-download",
   "repository-native-review-discard",
 ]);
 const comingNext = new Set([
-  "repository-build-start",
-  "repository-build-status",
-  "repository-build-stop",
   "repository-source-frame",
   "repository-source-preview",
   "repository-commit",
@@ -57,10 +58,11 @@ type IssuedPlan = {
   kind: "files" | "backup" | "build";
   expiresAt: number;
   draft?: { route: string; version: number };
+  build?: BuildPlan;
 };
 class ProjectOperations {
   repositories = new RepositoryCompanion();
-  runner = new RepositoryRunner();
+  constructor(readonly runner: RepositoryRunner) {}
   backups = new NativeRepositoryBackups();
   issued = new Map<string, IssuedPlan>();
   remember(id: string, entry: IssuedPlan) {
@@ -90,10 +92,20 @@ class ProjectOperations {
 export class HostedHelperService {
   private projects = new Map<string, ProjectOperations>();
   private closed = false;
+  private builds: HostedBuildQueue;
   constructor(
     readonly folders: HostedWebsiteFolders,
     readonly access: HostedRepositoryAccess,
-  ) {}
+  ) {
+    this.builds = new HostedBuildQueue({
+      folders,
+      authorize: async (token, projectId) => {
+        const actor = await access.verify(token);
+        await access.requireProject(token, actor, projectId);
+      },
+      runner: (projectId) => this.projects.get(projectId)!.runner,
+    });
+  }
   async request(token: string, readInput: () => Promise<unknown>) {
     if (this.closed)
       throw new HostedHelperError(
@@ -148,11 +160,23 @@ export class HostedHelperService {
       await this.folders.ensure(projectId);
       let operations = this.projects.get(projectId);
       if (!operations) {
-        operations = new ProjectOperations();
+        operations = new ProjectOperations(
+          new RepositoryRunner(undefined, undefined, {
+            environment: await this.folders.buildEnvironment(projectId),
+          }),
+        );
         this.projects.set(projectId, operations);
       }
       try {
-        return await this.perform(input, actor, root, operations);
+        if (
+          [
+            "repository-apply",
+            "repository-fetch",
+            "repository-native-backup-review",
+          ].includes(input.action)
+        )
+          await this.folders.assertNotBuilding(projectId);
+        return await this.perform(input, actor, root, operations, token);
       } catch (error) {
         if (error instanceof HostedHelperError) throw error;
         // Expected source conflicts keep the existing helper wording. Filesystem/Git/JSON internals do not.
@@ -175,6 +199,7 @@ export class HostedHelperService {
     actor: RepositoryActor,
     root: string,
     operations: ProjectOperations,
+    token: string,
   ) {
     const projectId = input.projectId;
     const drafts = () =>
@@ -285,9 +310,24 @@ export class HostedHelperService {
       }
       case "repository-build-review": {
         const plan = await operations.runner.prepare(root, projectId);
-        remember(plan, "build");
+        operations.remember(plan.id, {
+          actorId: actor.id,
+          kind: "build",
+          expiresAt: plan.expiresAt,
+          build: plan,
+        });
         return plan;
       }
+      case "repository-build-start": {
+        const entry = operations.require(input.planId, actor.id, "build");
+        const job = this.builds.enqueue(entry.build!, actor, token);
+        operations.issued.delete(input.planId);
+        return job;
+      }
+      case "repository-build-status":
+        return this.builds.status(projectId, actor.id, input.jobId);
+      case "repository-build-stop":
+        return this.builds.cancel(projectId, actor.id, input.jobId);
       case "repository-native-backup-review": {
         const review = await operations.backups.capture(
           root,
@@ -311,6 +351,7 @@ export class HostedHelperService {
   }
   async close() {
     this.closed = true;
+    await this.builds.close();
     await this.folders.idle();
     await Promise.all(
       [...this.projects.values()].map((project) => project.runner.close()),

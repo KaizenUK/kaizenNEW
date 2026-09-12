@@ -24,6 +24,7 @@ const exec = promisify(execFile);
 /** Real Git clone/fetch/upload-pack and real HTTP service; only SSH transport and Supabase are fixtures. */
 export async function hostedHelperFixture(
   projectIds = [helperProject, helperOtherProject],
+  buildScript?: string,
 ) {
   const directory = await mkdtemp(path.join(tmpdir(), "kaizen-hosted-helper-"));
   const seed = path.join(directory, "seed"),
@@ -49,10 +50,16 @@ export async function hostedHelperFixture(
     path.join(seed, "package.json"),
     JSON.stringify({
       type: "module",
-      scripts: { build: 'node -e "process.exit(0)"' },
+      scripts: {
+        build: buildScript
+          ? "node fixture-build.mjs"
+          : 'node -e "process.exit(0)"',
+      },
       dependencies: { astro: "7.3.2", "@astrojs/react": "6.0.5" },
     }),
   );
+  if (buildScript)
+    await writeFile(path.join(seed, "fixture-build.mjs"), buildScript);
   await writeFile(
     path.join(seed, "src/pages/index.astro"),
     "<main><h1>Hosted original</h1><p>Keep the original layout.</p></main>",

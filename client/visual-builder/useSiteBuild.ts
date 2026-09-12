@@ -18,8 +18,10 @@ export function useSiteBuild(inspection?: SourceInspection) {
   const [frame, setFrame] = useState<SourceFrame>();
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
+  const [cancelling, setCancelling] = useState(false);
   const [attempt, setAttempt] = useState(0);
   const generation = useRef(0);
+  const retryRequested = useRef(false);
   const key = `kaizen-build:${activeProjectId}:${inspection?.root}`;
   const consentKey = (value: BuildPlan) =>
     `kaizen-build-consent:${activeProjectId}:${value.root}:${value.sessionId}:${repositoryConnection.buildConsentScope()}`;
@@ -46,13 +48,18 @@ export function useSiteBuild(inspection?: SourceInspection) {
   async function follow(value: BuildJob, id: number) {
     while (fresh(id)) {
       setJob(value);
-      if (value.status !== "building") {
+      if (value.status !== "building" && value.status !== "queued") {
+        if (value.status === "cancelled") return;
         if (value.status === "failed")
           recordBuilderError("The website build failed.", "helper");
         if (value.status !== "succeeded")
           throw new Error(
             value.error ||
               "The preview build failed. Your edits are kept in the outline.",
+          );
+        if (!value.previewUrl)
+          throw new Error(
+            "The build finished, but its preview is unavailable. Check the helper connection before building again.",
           );
         await openFrame(value, id);
         return;
@@ -77,28 +84,44 @@ export function useSiteBuild(inspection?: SourceInspection) {
   useEffect(() => {
     const id = ++generation.current;
     if (!inspection) return;
+    const retry = retryRequested.current;
+    retryRequested.current = false;
     setBusy(true);
     setError("");
     setPlan(undefined);
+    setJob(undefined);
+    setCancelling(false);
     void (async () => {
       const previous = sessionStorage.getItem(key);
       if (previous) {
+        let value: BuildJob | undefined;
         try {
-          const value: BuildJob = await storage.repository({
+          value = await storage.repository({
             action: "repository-build-status",
             jobId: previous,
           });
-          if (value.status === "building") {
+        } catch {
+          /* An unknown job needs a new reviewed build. Never retry a known failed or cancelled job on reopen. */
+        }
+        if (!fresh(id)) return;
+        if (value) {
+          if (
+            value.status === "building" ||
+            value.status === "queued" ||
+            (!retry && ["failed", "cancelled"].includes(value.status))
+          ) {
             await follow(value, id);
             return;
           }
           if (value.previewUrl) {
-            await openFrame(value, id);
-            setJob(value);
-            return;
+            try {
+              await openFrame(value, id);
+              if (fresh(id)) setJob(value);
+              return;
+            } catch {
+              /* An expired snapshot or changed source needs a fresh command review. */
+            }
           }
-        } catch {
-          /* A stale or expired snapshot needs a new reviewed build. */
         }
       }
       if (!fresh(id)) return;
@@ -126,8 +149,34 @@ export function useSiteBuild(inspection?: SourceInspection) {
     job,
     frame,
     busy,
+    cancelling: cancelling || Boolean(job?.cancelling),
     error,
-    retry: () => setAttempt((n) => n + 1),
+    retry: () => {
+      retryRequested.current = true;
+      setAttempt((n) => n + 1);
+    },
+    cancel: async () => {
+      if (
+        !job ||
+        cancelling ||
+        job.cancelling ||
+        !["queued", "building"].includes(job.status)
+      )
+        return;
+      const id = generation.current;
+      setCancelling(true);
+      try {
+        // The existing poll remains authoritative until process shutdown and recovery finish.
+        await storage.repository({
+          action: "repository-build-stop",
+          jobId: job.id,
+        });
+      } catch (e) {
+        if (fresh(id)) setError(e.message);
+      } finally {
+        if (fresh(id)) setCancelling(false);
+      }
+    },
     build: async () => {
       if (!plan || busy) return;
       const id = generation.current;

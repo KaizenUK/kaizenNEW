@@ -28,8 +28,11 @@ export type BuildJob = {
   projectId: string;
   root: string;
   command: string;
-  status: "building" | "succeeded" | "failed" | "cancelled";
-  startedAt: string;
+  status: "queued" | "building" | "succeeded" | "failed" | "cancelled";
+  queuedAt?: string;
+  queuePosition?: number;
+  cancelling?: boolean;
+  startedAt?: string;
   finishedAt?: string;
   log: string;
   error?: string;
@@ -250,6 +253,7 @@ export class RepositoryRunner {
   constructor(
     private timeoutMs = 5 * 60 * 1000,
     private previewMs = 60 * 60 * 1000,
+    private options: { environment?: NodeJS.ProcessEnv } = {},
   ) {}
   async prepare(root: string, projectId: string): Promise<BuildPlan> {
     if (this.closed) throw new Error("The local companion is shutting down.");
@@ -360,6 +364,10 @@ export class RepositoryRunner {
   }
   status(id: string, projectId: string) {
     return structuredClone(this.require(id, projectId).value);
+  }
+  async wait(id: string, projectId: string) {
+    await this.require(id, projectId).done;
+    return this.status(id, projectId);
   }
   async sourcePreview(
     id: string,
@@ -474,7 +482,11 @@ export class RepositoryRunner {
           windowsHide: true,
           detached: process.platform !== "win32",
           stdio: ["ignore", "pipe", "pipe"],
-          env: { ...process.env, FORCE_COLOR: "0", CI: "1" },
+          env: {
+            ...(this.options.environment || process.env),
+            FORCE_COLOR: "0",
+            CI: "1",
+          },
         });
         running.child = child;
         const timeout = setTimeout(() => {

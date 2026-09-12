@@ -181,6 +181,65 @@ export class HostedWebsiteFolders {
     await privateDirectory(directory);
     return directory;
   }
+  async buildEnvironment(id: string): Promise<NodeJS.ProcessEnv> {
+    const directory = this.projectDirectory(id);
+    const home = path.join(directory, "build-home"),
+      temporary = path.join(directory, "build-temp");
+    await privateDirectory(home);
+    await privateDirectory(temporary);
+    // Only this subprocess receives a project-specific home. The service/user environment is unchanged.
+    return {
+      PATH: process.env.PATH,
+      HOME: home,
+      TMPDIR: temporary,
+      LANG: "C.UTF-8",
+      LC_ALL: "C.UTF-8",
+      GIT_CONFIG_NOSYSTEM: "1",
+      GIT_CONFIG_GLOBAL: "/dev/null",
+      GIT_TERMINAL_PROMPT: "0",
+      npm_config_userconfig: "/dev/null",
+      npm_config_globalconfig: "/dev/null",
+    };
+  }
+  async assertNotBuilding(id: string) {
+    this.projectDirectory(id);
+    if (
+      await lstat(path.join(this.directory, "locks", `${id}.build.lock`)).catch(
+        (error) => {
+          if (error.code !== "ENOENT") throw configurationError();
+          return null;
+        },
+      )
+    )
+      throw new HostedHelperError(
+        409,
+        "A build owns this website folder. Wait for it to finish or cancel it before changing files. Ask the operator to inspect a lock left by a stopped service.",
+      );
+  }
+  /** Called under the project lock; held until the process and output recovery have finished. */
+  async claimBuild(id: string, jobId: string) {
+    this.projectDirectory(id);
+    const file = path.join(this.directory, "locks", `${id}.build.lock`);
+    await this.assertNotBuilding(id);
+    const handle = await open(file, "wx", 0o600);
+    const identity = await handle.stat();
+    try {
+      await handle.writeFile(JSON.stringify({ pid: process.pid, jobId }));
+    } catch (error) {
+      await handle.close();
+      throw error;
+    }
+    return async () => {
+      await handle.close();
+      const current = await lstat(file).catch(() => null);
+      if (current?.ino !== identity.ino || current?.dev !== identity.dev)
+        throw new HostedHelperError(
+          409,
+          "The build lock changed. Ask the operator to inspect this website before changing files.",
+        );
+      await unlink(file);
+    };
+  }
   /** Queue within this process, exclusive file lock across processes. A crash never steals a lock. */
   async locked<T>(id: string, work: () => Promise<T>): Promise<T> {
     if (!validProjectId(id))

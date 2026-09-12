@@ -337,7 +337,7 @@ import {content} from '../content';
   await editor.getByRole("button", { name: "Show all fields" }).click();
   await editor.getByRole("button", { name: "Close editor" }).click();
   await page
-    .getByRole("button", { name: "Stop local preview", exact: true })
+    .getByRole("button", { name: "Stop preview", exact: true })
     .click();
   await route.getByRole("button", { name: "Edit text and links" }).click();
   await editor.getByRole("searchbox").fill("Edited original design");

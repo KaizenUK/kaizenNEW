@@ -83,7 +83,7 @@ test("Unity reviews a local build, reopens its status and previews the result", 
   ).toBeVisible();
   await preview.close();
   await page
-    .getByRole("button", { name: "Stop local preview", exact: true })
+    .getByRole("button", { name: "Stop preview", exact: true })
     .click();
   await expect(
     page.getByRole("button", { name: "Open website preview" }),

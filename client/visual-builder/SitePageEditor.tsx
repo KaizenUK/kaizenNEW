@@ -656,10 +656,16 @@ export default function SitePageEditor({
             <div className="builder-site-build">
               <h2>
                 {build.busy
-                  ? build.job?.status === "building"
-                    ? "Building the preview…"
-                    : "Checking the preview…"
-                  : "Build a preview to edit on the page"}
+                  ? build.cancelling
+                    ? "Cancelling the build…"
+                    : build.job?.status === "queued"
+                      ? "Waiting to build the preview…"
+                      : build.job?.status === "building"
+                        ? "Building the preview…"
+                        : "Checking the preview…"
+                  : build.job?.status === "cancelled"
+                    ? "Build cancelled. Your edits are kept."
+                    : "Build a preview to edit on the page"}
               </h2>
               {build.plan && (
                 <>
@@ -686,7 +692,13 @@ export default function SitePageEditor({
                   </button>
                 </>
               )}
-              {build.job?.status === "building" && (
+              {build.job?.status === "queued" && (
+                <p role="status">
+                  Position {build.job.queuePosition || 1} in this website’s
+                  build queue.
+                </p>
+              )}
+              {build.job?.status === "building" && build.job.startedAt && (
                 <p role="status">
                   {Math.max(
                     0,
@@ -694,6 +706,21 @@ export default function SitePageEditor({
                   )}{" "}
                   seconds
                 </p>
+              )}
+              {build.job &&
+                ["queued", "building"].includes(build.job.status) && (
+                  <button
+                    type="button"
+                    disabled={build.cancelling || disconnected}
+                    onClick={() => void build.cancel()}
+                  >
+                    Cancel build
+                  </button>
+                )}
+              {build.job?.status === "cancelled" && !build.busy && (
+                <button type="button" onClick={build.retry}>
+                  Build again
+                </button>
               )}
               {build.error && (
                 <>
@@ -711,7 +738,7 @@ export default function SitePageEditor({
               )}
             </div>
           )}
-          {build.job?.status === "succeeded" && !build.busy && (
+          {build.frame && build.job?.status === "succeeded" && !build.busy && (
             <span className="builder-site-live-status" role="status">
               Preview built.
             </span>
