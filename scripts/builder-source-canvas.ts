@@ -27,6 +27,7 @@ export function canvasScript(
   const bindings = new Map(), byElement = new Map(), applied = new Map(fields.map(f=>[f.id,f.value]));
   const fieldIds = new Set(fields.map(f=>f.id));
   const groupBindings = new Map(), modified = new Set();
+  const imageUrls = new Map();
   let active, selected, hovered, dragging, timer, locked = true;
   const outline = document.createElement('div');
   outline.setAttribute('data-kaizen-overlay','');
@@ -157,7 +158,15 @@ export function canvasScript(
       else if(binding.node) binding.node.textContent=value===applied.get(id)?binding.initialText:(binding.before||'')+value+(binding.after||'');
     }
   }
-  function flush() { clearTimeout(timer); if(active?.changed) {modified.add(active.id);send('edit',{id:active.id,value:active.element.textContent.slice(0,20000)});} }
+  function flush() {
+    clearTimeout(timer);
+    if(!active?.changed)return;
+    // A debounced edit has already been sent. Blur must not replay it after a
+    // parent Undo; only a subsequent input may make this field dirty again.
+    active.changed=false;
+    modified.add(active.id);
+    send('edit',{id:active.id,value:active.element.textContent.slice(0,20000)});
+  }
   function finish(revert=false) {
     if(!active) return;
     if(revert) { clearTimeout(timer); const value=applied.get(active.id); active.element.textContent=value; send('edit',{id:active.id,value}); }
@@ -217,10 +226,19 @@ export function canvasScript(
     else if(data.type==='kaizen-source-state') {
       locked=Boolean(data.locked);
       if(locked && active)finish();
+      const keepImages=new Set();
       for(const field of fields) {
-        const value=typeof data.values?.[field.id]==='string'?data.values[field.id]:field.value;
+        let value=typeof data.values?.[field.id]==='string'?data.values[field.id]:field.value;
+        const image=data.images?.[field.id];
+        // Blob URLs belong to their creator's storage partition. Receive bytes from the
+        // authenticated parent and create the URL here; never fetch through the helper.
+        if(field.kind==='image' && image && typeof image.key==='string' && image.key.length<=200 && image.blob instanceof Blob && image.blob.size<=32*1024*1024 && /^image\/(png|jpeg|webp|avif|gif|svg\+xml)$/i.test(image.blob.type)) {
+          if(!imageUrls.has(image.key))imageUrls.set(image.key,URL.createObjectURL(image.blob));
+          keepImages.add(image.key);value=imageUrls.get(image.key);
+        }
         if(active?.id!==field.id) changeValue(field.id,value);
       }
+      for(const [key,url] of imageUrls)if(!keepImages.has(key)){URL.revokeObjectURL(url);imageUrls.delete(key);}
       for(const group of groups) reorder(group.id,data.orders?.[group.id]||group.items.map(i=>i.id));
     } else if(data.type==='kaizen-source-focus' && fieldIds.has(data.id)) {
       const binding=bindings.get(data.id)?.[0]; if(binding) {binding.element.scrollIntoView({block:'center'}); selected=pick(binding.element);highlight(selected);}

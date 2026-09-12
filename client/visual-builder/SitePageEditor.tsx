@@ -32,7 +32,7 @@ import {
 import { ProjectIdentity } from "./ProjectsView";
 import { companionConnection } from "./companionConnection";
 import { useSourceEditingDraft } from "./useSourceEditingDraft";
-import { useSourceCanvas } from "./useSourceCanvas";
+import { useSourceCanvas, type SourceImagePreview } from "./useSourceCanvas";
 import { useSiteBuild } from "./useSiteBuild";
 import { useSourceSelection } from "./useSourceSelection";
 import type { SitePage } from "./SitePages";
@@ -72,9 +72,9 @@ export default function SitePageEditor({
   const [git, setGit] = useState<RepositoryGitStatus>(),
     [appliedPlan, setAppliedPlan] = useState<string>(),
     [commitMessage, setCommitMessage] = useState(`Update text on ${page.path}`);
-  const [imagePreviews, setImagePreviews] = useState<Record<string, string>>(
-    {},
-  );
+  const [imagePreviews, setImagePreviews] = useState<
+    Record<string, SourceImagePreview>
+  >({});
   const connection = useSyncExternalStore(
     companionConnection.subscribe,
     companionConnection.snapshot,
@@ -158,7 +158,6 @@ export default function SitePageEditor({
   }, [connection.status, connection.expiresAt]);
   useEffect(() => {
     let live = true;
-    const urls: string[] = [];
     void Promise.all(
       draft.assets.map(async (replacement) => {
         const asset = workspace.assets.find(
@@ -170,21 +169,30 @@ export default function SitePageEditor({
           );
         const response = await fetch(await storage.download(asset));
         if (!response.ok) throw new Error("The image could not be loaded.");
-        const url = URL.createObjectURL(await response.blob());
-        urls.push(url);
-        return [replacement.fieldId, url] as const;
+        const blob = await response.blob();
+        if (blob.size > 32 * 1024 * 1024)
+          throw new Error("Choose an image smaller than 32 MB.");
+        const mime = asset.mime || blob.type;
+        if (!/^image\/(png|jpeg|webp|avif|gif|svg\+xml)$/i.test(mime))
+          throw new Error("Choose a PNG, JPEG, WebP, AVIF, GIF or SVG image.");
+        return [
+          replacement.fieldId,
+          {
+            assetId: asset.id,
+            key: `${asset.id}:${asset.hash}`,
+            blob: blob.slice(0, blob.size, mime),
+          },
+        ] as const;
       }),
     )
       .then((entries) => {
         if (live) setImagePreviews(Object.fromEntries(entries));
-        else urls.forEach(URL.revokeObjectURL);
       })
       .catch((e) => {
         if (live) setError(e.message);
       });
     return () => {
       live = false;
-      urls.forEach(URL.revokeObjectURL);
     };
   }, [draft.assets, workspace.assets]);
   useEffect(() => {

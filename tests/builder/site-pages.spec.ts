@@ -48,7 +48,7 @@ test("M1: reviewed builds are reused; outline keyboard editing and saved drafts 
     await expect(
       page.getByRole("button", { name: "Build", exact: true }),
     ).toHaveCount(0);
-    // Same-window messages, wrong nonce, unknown IDs and a foreign frame must never edit a draft.
+    // A forged message sent by this parent window must never edit the draft.
     await page.evaluate(() =>
       window.postMessage(
         {

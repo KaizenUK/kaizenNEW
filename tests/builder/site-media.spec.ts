@@ -13,7 +13,7 @@ test("M3: replace a picture, explain managed content and reorder source sections
     { root, project } = fixture;
   try {
     const bytes = Buffer.from(
-      '<svg xmlns="http://www.w3.org/2000/svg" width="80" height="40"><rect width="80" height="40" fill="purple"/></svg>',
+      '<svg xmlns="http://www.w3.org/2000/svg" width="96" height="40"><rect width="96" height="40" fill="purple"/></svg>',
     );
     const asset = {
       id: randomUUID(),
@@ -54,10 +54,42 @@ test("M3: replace a picture, explain managed content and reorder source sections
       .getByRole("button", { name: "Use replacement.svg", exact: true })
       .click();
     await expect(frame.getByRole("img")).toHaveAttribute("src", /^blob:/);
+    await expect
+      .poll(() =>
+        frame
+          .getByRole("img")
+          .evaluate(
+            (image: HTMLImageElement) =>
+              image.complete && image.naturalWidth === 96,
+          ),
+      )
+      .toBe(true);
     await expect(frame.getByRole("img")).not.toHaveAttribute(
       "srcset",
       /original/,
     );
+    await page.getByRole("button", { name: "Undo", exact: true }).click();
+    await expect
+      .poll(() =>
+        frame
+          .getByRole("img")
+          .evaluate(
+            (image: HTMLImageElement) =>
+              image.complete && image.naturalWidth === 80,
+          ),
+      )
+      .toBe(true);
+    await page.getByRole("button", { name: "Redo", exact: true }).click();
+    await expect
+      .poll(() =>
+        frame
+          .getByRole("img")
+          .evaluate(
+            (image: HTMLImageElement) =>
+              image.complete && image.naturalWidth === 96,
+          ),
+      )
+      .toBe(true);
     await frame.getByText("CMS supplied quote").click();
     await expect(
       page.getByText(/Managed elsewhere: no safe literal match/),
@@ -97,6 +129,20 @@ test("M3: replace a picture, explain managed content and reorder source sections
         file.startsWith(asset.hash),
       ),
     ).toHaveLength(1);
+    await expect(frame.getByRole("img")).toHaveAttribute(
+      "src",
+      new RegExp(`/images/${asset.hash}\\.svg$`),
+    );
+    await expect
+      .poll(() =>
+        frame
+          .getByRole("img")
+          .evaluate(
+            (image: HTMLImageElement) =>
+              image.complete && image.naturalWidth === 96,
+          ),
+      )
+      .toBe(true);
   } finally {
     await rm(root, { recursive: true, force: true });
   }

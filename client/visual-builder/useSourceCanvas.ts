@@ -9,12 +9,17 @@ type State = {
   orders: Record<string, string[]>;
   assets: ReturnType<typeof useSourceEditingDraft>["assets"];
 };
+export type SourceImagePreview = {
+  assetId: string;
+  key: string;
+  blob: Blob;
+};
 export function useSourceCanvas(
   inspection: SourceInspection | undefined,
   frameRef: RefObject<HTMLIFrameElement | null>,
   draft: ReturnType<typeof useSourceEditingDraft>,
   frame?: SourceFrame,
-  previews: Record<string, string> = {},
+  previews: Record<string, SourceImagePreview> = {},
 ) {
   const [ids, setIds] = useState<string[]>([]),
     [reason, setReason] = useState("");
@@ -46,23 +51,26 @@ export function useSourceCanvas(
       );
   };
   const push = () => {
-    const previews = { ...current.current.previews };
+    const images: Record<string, SourceImagePreview> = {};
     for (const asset of state().assets) {
       const field = current.current.inspection?.fields.find(
         (f) => f.id === asset.fieldId,
       );
-      if (!field?.elementId || !previews[field.id]) continue;
+      const preview = current.current.previews[asset.fieldId];
+      if (!field || preview?.assetId !== asset.assetId) continue;
+      images[field.id] = preview;
+      if (!field.elementId) continue;
       for (const sibling of current.current.inspection!.fields)
         if (
           sibling.elementId === field.elementId &&
           /srcset/i.test(sibling.attribute || "")
         )
-          previews[sibling.id] = previews[field.id];
+          images[sibling.id] = preview;
     }
     send({
       type: "kaizen-source-state",
       ...state(),
-      values: { ...state().values, ...previews },
+      images,
       locked:
         !matchingFrame() ||
         !current.current.draft.ready ||
