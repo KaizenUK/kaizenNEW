@@ -172,3 +172,9 @@ The complete production site and Studio build passed after restoring Studio depe
 ## Scope update — 12 September 2026
 
 Sean has explicitly waived the Firefox and Safari checks. M0-T2 is no longer an acceptance gate; earlier notes that list those checks as blockers are superseded by this update. This waiver does not claim that those browsers were tested. The remaining acceptance item is the real hosted canvas and on-page editing journey; the last observed hosted frame was blank despite a successful build and connected helper.
+
+## User-confirmed hosted preview — 12 September 2026
+
+Sean confirmed the live builder was connected to his Linux checkout. After navigating to the page editor, he saw **Build**, ran it, waited for completion, and the project appeared. **Retry preview** is conditional on a failed frame connection, so it was not required in this successful journey. This clears the reported hosted-preview blocker. Sean explicitly accepts treating a future Retry problem as a bug fix; no further Retry exercise is required now. Firefox/Safari checks were already waived.
+
+Implementation and final-code verification remain as recorded above: 214 unit tests, 42 browser scenarios (one optional licensed-archive skip), Astro/TypeScript with zero errors/warnings, and the complete production build. The automated scenarios cover editing and file/Git boundaries; Sean's confirmation specifically proves the live build and rendered canvas, not a newly repeated manual test of every editing operation. Original source, CMS boundaries and the registered-component design contract remain unchanged. Historical statements that the hosted preview is still blocked are superseded by this confirmation.
