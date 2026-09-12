@@ -43,7 +43,7 @@ export function sourceSelectionScript(
     String.raw`
 (() => {
   const {fields, nonce, parentOrigin} = kaizenSelection;
-  const send = (type, ids = []) => window.opener?.postMessage({type, nonce, ids}, parentOrigin);
+  const send = (type, ids = []) => (window.opener || (window.parent !== window ? window.parent : null))?.postMessage({type, nonce, ids}, parentOrigin);
   const normalize = value => String(value || '').replace(/\s+/g, ' ').trim();
   const host = document.createElement('div');
   host.setAttribute('data-kaizen-source-toolbar', '');

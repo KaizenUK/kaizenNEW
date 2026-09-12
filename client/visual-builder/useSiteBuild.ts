@@ -3,7 +3,7 @@ import type { BuildJob, BuildPlan } from "../../scripts/builder-runner";
 import type { SourceInspection } from "../../shared/builderSourceEditing";
 import { activeProjectId } from "./projectStorage";
 import { storage } from "./storage";
-import { companionConnection } from "./companionConnection";
+import { repositoryConnection } from "./repositoryConnection";
 import { recordBuilderError } from "./diagnostics";
 
 export type SourceFrame = {
@@ -22,7 +22,7 @@ export function useSiteBuild(inspection?: SourceInspection) {
   const generation = useRef(0);
   const key = `kaizen-build:${activeProjectId}:${inspection?.root}`;
   const consentKey = (value: BuildPlan) =>
-    `kaizen-build-consent:${activeProjectId}:${value.root}:${value.sessionId}:${companionConnection.snapshot().expiresAt || "local"}`;
+    `kaizen-build-consent:${activeProjectId}:${value.root}:${value.sessionId}:${repositoryConnection.buildConsentScope()}`;
   const signature = (value: BuildPlan) =>
     JSON.stringify([value.command, value.scripts]);
   const fresh = (id: number) => generation.current === id;
@@ -37,13 +37,7 @@ export function useSiteBuild(inspection?: SourceInspection) {
       throw new Error(
         "The website files changed. Reopen this page to recover your edits.",
       );
-    const url = new URL(next.url);
-    if (
-      url.protocol !== "http:" ||
-      url.hostname !== "127.0.0.1" ||
-      !/^[a-f0-9]{64}$/.test(next.nonce)
-    )
-      throw new Error("The helper returned an invalid preview address.");
+    repositoryConnection.validateFrame(next.url, next.nonce);
     if (fresh(id)) {
       setFrame(next);
       setError("");

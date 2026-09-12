@@ -2,23 +2,25 @@ import { useEffect, useRef, useState } from "react";
 import type { SourceInspection } from "../../shared/builderSourceEditing";
 import { storage } from "./storage";
 import { activeProjectId } from "./projectStorage";
+import { repositoryConnection } from "./repositoryConnection";
 
 export function useSourceSelection(inspection?: SourceInspection) {
   const [ids, setIds] = useState<string[] | undefined>();
   const [status, setStatus] = useState("");
   const [error, setError] = useState("");
   const popup = useRef<Window | null>(null);
-  const session = useRef<{ nonce: string; origin: string } | undefined>(
-    undefined,
-  );
+  const session = useRef<
+    { nonce: string; origin: string; target: Window } | undefined
+  >(undefined);
   const timeout = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   const mounted = useRef(true);
+  const receiveRef = useRef<(event: MessageEvent) => void>(() => {});
   useEffect(() => {
     mounted.current = true;
     const receive = (event: MessageEvent) => {
       if (
         !session.current ||
-        event.source !== popup.current ||
+        event.source !== session.current.target ||
         event.origin !== session.current.origin ||
         event.data?.nonce !== session.current.nonce
       )
@@ -46,6 +48,7 @@ export function useSourceSelection(inspection?: SourceInspection) {
         );
       }
     };
+    receiveRef.current = receive;
     window.addEventListener("message", receive);
     return () => {
       mounted.current = false;
@@ -94,10 +97,15 @@ export function useSourceSelection(inspection?: SourceInspection) {
         throw new Error(
           "The website's files changed since you opened this. Close and reopen the editor, then build again.",
         );
-      const url = new URL(preview.url);
-      if (url.protocol !== "http:" || url.hostname !== "127.0.0.1")
-        throw new Error("The helper returned an invalid preview address.");
-      session.current = { nonce: preview.nonce, origin: url.origin };
+      const url = repositoryConnection.validateFrame(
+        preview.url,
+        preview.nonce,
+      );
+      session.current = {
+        nonce: preview.nonce,
+        origin: repositoryConnection.frameOrigin(url.href),
+        target: child,
+      };
       setStatus("Opening the preview…");
       timeout.current = setTimeout(
         () =>
@@ -106,7 +114,19 @@ export function useSourceSelection(inspection?: SourceInspection) {
           ),
         15000,
       );
-      child.location.replace(url.href);
+      if (repositoryConnection.frameSandbox === "allow-scripts") {
+        // Keep the popup's document trusted too; project scripts only run in its opaque frame.
+        child.document.body.textContent = "";
+        child.document.body.style.margin = "0";
+        const frame = child.document.createElement("iframe");
+        frame.title = "Website preview";
+        frame.setAttribute("sandbox", repositoryConnection.frameSandbox);
+        frame.style.cssText = "border:0;width:100vw;height:100vh;display:block";
+        frame.src = url.href;
+        child.document.body.append(frame);
+        session.current.target = frame.contentWindow!;
+        child.addEventListener("message", receiveRef.current);
+      } else child.location.replace(url.href);
     } catch (e) {
       child.close();
       if (mounted.current) setError(e.message);

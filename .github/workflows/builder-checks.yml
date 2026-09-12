@@ -128,6 +128,10 @@ jobs:
           node tests/builder/verify-releases.mjs
           node tests/builder/verify-client-releases.mjs "$(cat test-results/astro-integration-fixture-path.txt)" test-results/export-project
       - run: pnpm test:builder:browser
+      - name: Exercise the hosted repository transport
+        run: pnpm test:builder:browser tests/builder/hosted-repository.spec.ts tests/builder/site-*.spec.ts
+        env:
+          BUILDER_TEST_REPOSITORY_TRANSPORT: "hosted"
       - uses: actions/upload-artifact@v4
         if: failure()
         with:

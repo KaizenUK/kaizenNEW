@@ -1,8 +1,8 @@
 import React, { useEffect, useState, useSyncExternalStore } from "react";
 import type { RepositoryInspection } from "../../scripts/builder-repository";
 import type { PageInventory } from "../../shared/builderPageInventory";
-import { companionConnection } from "./companionConnection";
-import { storage, localMode } from "./storage";
+import { repositoryConnection } from "./repositoryConnection";
+import { storage } from "./storage";
 import { activeProjectId } from "./projectStorage";
 import { Card, Notice, Pill } from "./shell";
 
@@ -33,21 +33,27 @@ export default function SitePages({
   onConnect: () => void;
 }) {
   const connection = useSyncExternalStore(
-    companionConnection.subscribe,
-    companionConnection.snapshot,
-    companionConnection.snapshot,
+    repositoryConnection.subscribe,
+    repositoryConnection.snapshot,
+    repositoryConnection.snapshot,
   );
   const [model, setModel] = useState<RepositoryInspection>(),
     [error, setError] = useState(""),
     [query, setQuery] = useState(""),
     [attempt, setAttempt] = useState(0);
   useEffect(() => {
-    if (!localMode && connection.status !== "connected") return;
+    if (connection.status !== "connected") {
+      setModel(undefined);
+      return;
+    }
     let live = true;
-    const root =
-      connection.root ||
-      localStorage.getItem(`kaizen-native-repository:${activeProjectId}`);
-    const key = activeProjectId + ":" + (root || "current");
+    const root = repositoryConnection.preferredRoot();
+    const key =
+      repositoryConnection.recoveryIdentity() +
+      ":" +
+      activeProjectId +
+      ":" +
+      (root || "current");
     if (cache.has(key)) setModel(cache.get(key));
     setError("");
     void storage
@@ -88,9 +94,12 @@ export default function SitePages({
       ) || [];
   return (
     <Card title="Pages from the website's code" ariaLabel="Website pages">
-      {!localMode && connection.status !== "connected" && (
+      {connection.status !== "connected" && (
         <p>
-          Connect the helper to open pages from a website folder.{" "}
+          {connection.status === "connecting"
+            ? "Connecting to the website folder…"
+            : connection.error ||
+              "Connect the helper to open pages from a website folder."}{" "}
           <button type="button" onClick={onConnect}>
             Connect helper
           </button>
@@ -138,11 +147,8 @@ export default function SitePages({
                           action: "repository-open",
                           root: model.root,
                         });
-                        const url = `/builder/?local=1&project=${encodeURIComponent(project.id)}`;
                         location.assign(
-                          connection.origin
-                            ? new URL(url, connection.origin).href
-                            : url,
+                          repositoryConnection.projectLocation(project.id),
                         );
                       } catch (e) {
                         setError(e.message);

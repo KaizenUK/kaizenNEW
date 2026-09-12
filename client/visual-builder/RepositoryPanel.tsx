@@ -33,12 +33,14 @@ export default function RepositoryPanel({
   remoteRoot,
   remoteOrigin,
   repositoryEnabled = true,
+  hosted = false,
   intro,
 }: {
   existingPath?: string;
   remoteRoot?: string;
   remoteOrigin?: string;
   repositoryEnabled?: boolean;
+  hosted?: boolean;
   intro?: React.ReactNode;
 }) {
   const [root, setRoot] = useState("");
@@ -133,7 +135,11 @@ export default function RepositoryPanel({
       <Head
         info={<ProjectName />}
         title="Export & handoff"
-        description="Download the finished website to host anywhere, or work directly with the website's code folder on this computer."
+        description={
+          hosted
+            ? "Download the finished website or work with the website folder managed for this project."
+            : "Download the finished website to host anywhere, or work directly with the website's code folder on this computer."
+        }
       />
       <div className="builder-page-body builder-repository">
         <Card
@@ -164,7 +170,11 @@ export default function RepositoryPanel({
           <>
             <Card
               title="Edit the website's code folder"
-              description="For websites that live in a code folder (a Git repository, usually from GitHub Desktop). Point the builder at the folder to change page text and links, add builder pages, or build a preview. Nothing is installed, committed or published for you. Works with Astro + React sites, Kaizen exports and empty folders."
+              description={
+                hosted
+                  ? "Check this project's website folder to edit its text and links or build a preview. Review changes before applying them."
+                  : "For websites that live in a code folder (a Git repository, usually from GitHub Desktop). Point the builder at the folder to change page text and links, add builder pages, or build a preview. Nothing is installed, committed or published for you. Works with Astro + React sites, Kaizen exports and empty folders."
+              }
             >
               <form
                 className="builder-inline-form"
@@ -183,7 +193,9 @@ export default function RepositoryPanel({
                 }}
               >
                 <label>
-                  Website folder on this computer
+                  {hosted
+                    ? "Website folder for this project"
+                    : "Website folder on this computer"}
                   <input
                     required
                     value={root}
@@ -278,9 +290,11 @@ export default function RepositoryPanel({
                         })
                       }
                     >
-                      {remoteOrigin
-                        ? "Open in the local builder"
-                        : "Open folder as a new project"}
+                      {hosted
+                        ? "Open project pages"
+                        : remoteOrigin
+                          ? "Open in the local builder"
+                          : "Open folder as a new project"}
                     </button>
                   </div>
                   {remoteOrigin && (

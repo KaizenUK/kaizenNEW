@@ -51,7 +51,7 @@ import ProjectsView, { ProjectIdentity } from "./ProjectsView";
 import BuilderAuth from "./BuilderAuth";
 import RepositoryPanel from "./RepositoryPanel";
 import HostedRepository from "./HostedRepository";
-import { companionConnection } from "./companionConnection";
+import { repositoryConnection } from "./repositoryConnection";
 import ClientSettings from "./ClientSettings";
 import ProblemReport from "./ProblemReport";
 import { startErrorReporting } from "./errorReporting";
@@ -184,13 +184,16 @@ function BuilderWorkspace({ inventory }: { inventory?: PageInventory } = {}) {
   const authAccount = useRef<string | undefined>(undefined);
   useEffect(watchBrowserErrors, []);
   useEffect(() => {
+    repositoryConnection.start();
+  }, []);
+  useEffect(() => {
     if (localMode || !cloud || previewId) return;
     return startErrorReporting(cloud, {
       projectId: activeProjectId,
       userAgent: navigator.userAgent,
       helper: () => ({
         local: localMode,
-        status: companionConnection.snapshot().status,
+        status: repositoryConnection.snapshot().status,
       }),
     });
   }, [previewId]);
@@ -252,7 +255,6 @@ function BuilderWorkspace({ inventory }: { inventory?: PageInventory } = {}) {
     });
     const { data } = cloud.auth.onAuthStateChange((_event, session) => {
       if (authAccount.current !== session?.user.id) {
-        companionConnection.disconnect();
         clearProjectCache();
         clearDiagnostics();
         window.dispatchEvent(new Event("builder-projects-changed"));
@@ -579,10 +581,7 @@ function BuilderWorkspace({ inventory }: { inventory?: PageInventory } = {}) {
             inventory={inventory}
             open
             onEdit={(path) => {
-              if (
-                !localMode &&
-                companionConnection.snapshot().status !== "connected"
-              ) {
+              if (repositoryConnection.snapshot().status !== "connected") {
                 setExistingPath(path);
                 navigate("repository");
                 return;

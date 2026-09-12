@@ -1,18 +1,89 @@
 import React, { useEffect, useState, useSyncExternalStore } from "react";
 import { companionConnection } from "./companionConnection";
+import { repositoryConnection } from "./repositoryConnection";
 import { activeProjectId, listProjects } from "./projectStorage";
 import { cloud } from "./storage";
 import type { CompanionIdentity } from "../../shared/builderCompanion";
 import RepositoryPanel from "./RepositoryPanel";
 import { Card, Notice, Pill } from "./shell";
 
-/* Hosted builder → this computer: pair with the local companion before any repository work. */
-
 export default function HostedRepository({
   existingPath,
 }: {
   existingPath?: string;
 }) {
+  const connection = useSyncExternalStore(
+    repositoryConnection.subscribe,
+    repositoryConnection.snapshot,
+    repositoryConnection.snapshot,
+  );
+  const [error, setError] = useState("");
+  useEffect(() => {
+    repositoryConnection.start();
+  }, []);
+  if (repositoryConnection.mode === "companion")
+    return <LocalRepository existingPath={existingPath} />;
+  return (
+    <RepositoryPanel
+      hosted
+      existingPath={
+        connection.status === "connected" ? existingPath : undefined
+      }
+      remoteRoot={connection.root}
+      repositoryEnabled={connection.status === "connected"}
+      intro={
+        <Card
+          title={
+            <>
+              Hosted helper{" "}
+              <Pill tone={connection.status === "connected" ? "green" : "grey"}>
+                {connection.status === "connected"
+                  ? "Connected"
+                  : connection.status === "connecting"
+                    ? "Connecting"
+                    : "Not connected"}
+              </Pill>
+            </>
+          }
+          description="Open the website folder managed for this project. Your sign-in controls access; nothing needs to run on this computer."
+        >
+          {connection.root && (
+            <p className="builder-hint">Website folder: {connection.root}</p>
+          )}
+          <div className="builder-row builder-actions">
+            <button
+              type="button"
+              disabled={connection.status === "connecting"}
+              onClick={() => {
+                setError("");
+                void repositoryConnection
+                  .reconnect()
+                  .catch((error) => setError(error.message));
+              }}
+            >
+              {connection.status === "connected"
+                ? "Refresh connection"
+                : "Connect hosted helper"}
+            </button>
+            <a
+              href={`/builder/?project=${encodeURIComponent(activeProjectId)}&view=repository&helper=local`}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Use a helper on this computer
+            </a>
+          </div>
+          {(error || connection.error) && (
+            <Notice tone="error">{error || connection.error}</Notice>
+          )}
+        </Card>
+      }
+    />
+  );
+}
+
+/* Explicit developer path, in a separate project tab. */
+function LocalRepository({ existingPath }: { existingPath?: string }) {
   const connection = useSyncExternalStore(
     companionConnection.subscribe,
     companionConnection.snapshot,
@@ -82,6 +153,15 @@ export default function HostedRepository({
           }
           description="To work with a website folder, the builder needs the Kaizen helper running on this computer. It never opens your folders on its own."
         >
+          <p className="builder-hint">
+            <a
+              href={`/builder/?project=${encodeURIComponent(activeProjectId)}&view=repository`}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Use the hosted helper in another tab
+            </a>
+          </p>
           <ol className="builder-steps">
             <li>
               On this computer, open a terminal in your Kaizen folder and run{" "}
@@ -161,7 +241,7 @@ export default function HostedRepository({
               Reconnect to the same folder to pick up where you left off. To use
               a different folder,{" "}
               <a
-                href={`/builder/?project=${encodeURIComponent(activeProjectId)}&view=repository`}
+                href={`/builder/?project=${encodeURIComponent(activeProjectId)}&view=repository&helper=local`}
                 target="_blank"
                 rel="noopener noreferrer"
               >

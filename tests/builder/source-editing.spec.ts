@@ -227,7 +227,7 @@ import {content} from '../content';
     page.locator(".builder-repository-build [role=status]"),
   ).toContainText("Build finished", { timeout: 90_000 });
   const popup = context.waitForEvent("page");
-  await page.getByRole("link", { name: "Open local website preview" }).click();
+  await page.getByRole("button", { name: "Open website preview" }).click();
   const preview = await popup;
   preview.on("pageerror", (e) => errors.push(e.message));
   for (const width of [1440, 390]) {

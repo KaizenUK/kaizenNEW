@@ -82,6 +82,18 @@ Transactions under `transactions/` record checking, activating, verifying and li
 
 The generated redirect rules support exact internal paths with letters, numbers, slashes, dots, hyphens and underscores, with 301/302 responses. Invalid paths, configuration injection, duplicate sources and cycles fail the build. External redirects, query strings and regex patterns require deliberate additional support rather than raw Nginx interpolation.
 
+## Hosted repository transport
+
+The L1 client calls `POST /editor-api/builder-repository` on the builder's own origin. Each JSON request preserves its existing `repository-*` action fields and adds the selected `projectId`. The bearer token comes from the current Supabase session, is sent only to this fixed first-party endpoint, and is never forwarded across redirects. Neither the query string nor a local folder preference supplies an endpoint. Explicit developer tabs use `helper=local` and the existing approved companion window instead; transport selection is fixed for the document's lifetime.
+
+The initial `repository-connect` action must verify the session, current project membership and configured working copy before returning `{ projectId, root, expiresAt }`. `root` identifies that project's folder and must stay the same within the connection; `expiresAt` is an absolute Unix timestamp in milliseconds. The client bounds the lease by the JWT expiry and rejects a mismatched project, expired lease or changed folder. Other actions return the existing helper result shape, or a non-2xx JSON `{ error }`. Every call still needs a server-side membership/path/plan check; browser checks are not an authorization boundary.
+
+401/403, unavailable-service responses and connection loss end the client's connection while preserving recovery. Conflicts keep their original message. A timeout or account change can leave an already accepted write's outcome unknown; the client does not resend it automatically. Token refresh and return from the browser's page cache establish a fresh connection. Failed requests use the safe operator diagnostics path.
+
+The endpoint is the contract for L1-T2, not a deployed Supabase function. Add an exact proxy route to the new loopback hosted-helper service ahead of the existing `/editor-api/` Supabase proxy when rolling out L1. Do not deploy the new client default by itself. The real working-copy service, deployment/authentication checks and operational configuration remain L1-T2–T7.
+
+Hosted preview URLs must be on the builder's origin under `/editor-preview/<project>/…`. The client refuses another project, outside origin, credentials or escaped path separators and uses an opaque `allow-scripts` sandbox, including previews opened in a window. L1-T4 must make the authenticated HTML and module/asset delivery work in that sandbox while enforcing the editor cookie and membership on reads. The browser fixtures use an isolated HTTP adapter and CORS headers around real temporary-repository snapshots to exercise the client; they are not a production proxy or cookie policy.
+
 ## Builder error visibility
 
 The default error sink is `public.builder_client_errors` in the existing Supabase project. This follows L0-T4 without adding another service. A hosted error service is an optional later alternative if Sean wants its search/alerting features; keep the same safe fields and access/retention boundary if changing the sink. No third-party error service is configured.

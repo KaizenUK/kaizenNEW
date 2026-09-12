@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { buildProblemReport } from "../../shared/builderDiagnostics";
-import { companionConnection } from "./companionConnection";
+import { repositoryConnection } from "./repositoryConnection";
 import { diagnosticPage, lastDiagnosticError } from "./diagnostics";
 import { activeProjectId } from "./projectStorage";
 import { localMode } from "./storage";
@@ -21,7 +21,7 @@ export default function ProblemReport() {
           userAgent: navigator.userAgent,
           helper: {
             local: localMode,
-            status: companionConnection.snapshot().status,
+            status: repositoryConnection.snapshot().status,
           },
           lastError: lastDiagnosticError(),
         }),

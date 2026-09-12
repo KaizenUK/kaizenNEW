@@ -2,6 +2,7 @@ import { test, expect } from "./browser-fixture";
 import { mkdtemp, mkdir, writeFile, readFile, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import path from "node:path";
+import { openSiteProject } from "./hosted-repository-fixture";
 test.use({ actionTimeout: 10000 });
 
 test("M1/M2: website Pages → on-page editing → review → apply → rebuilt canvas", async ({
@@ -36,12 +37,7 @@ test("M1/M2: website Pages → on-page editing → review → apply → rebuilt 
     });
     expect(created.ok()).toBe(true);
     const project = await created.json();
-    await page.goto(`/builder/?project=${project.id}`);
-    await page.evaluate(
-      ({ id, root }) =>
-        localStorage.setItem(`kaizen-native-repository:${id}`, root),
-      { id: project.id, root },
-    );
+    await openSiteProject(page, project, root);
     await page.reload();
     await page
       .getByRole("button", { name: "Edit existing /", exact: true })
@@ -61,7 +57,7 @@ test("M1/M2: website Pages → on-page editing → review → apply → rebuilt 
     await expect(heading).toHaveAttribute("contenteditable", "plaintext-only");
     await heading.fill("A garden for everyone");
     await expect(page.getByLabel("Source editing draft")).toContainText(
-      "Edits saved on this computer",
+      "Edits saved",
     );
     await page.getByRole("button", { name: "Undo", exact: true }).click();
     await expect(frame.getByRole("heading", { level: 1 })).toHaveText(

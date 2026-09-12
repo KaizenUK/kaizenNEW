@@ -21,7 +21,7 @@ import { sourceAssetPath } from "../../shared/builderSourceEditing";
 import type { RepositoryPlan } from "../../scripts/builder-repository";
 import type { PageInventory } from "../../shared/builderPageInventory";
 import type { Workspace } from "../../shared/visualBuilder";
-import { storage, localMode } from "./storage";
+import { storage } from "./storage";
 import {
   Brand,
   IconButton,
@@ -30,7 +30,7 @@ import {
   type BuilderTheme,
 } from "./shell";
 import { ProjectIdentity } from "./ProjectsView";
-import { companionConnection } from "./companionConnection";
+import { repositoryConnection } from "./repositoryConnection";
 import { useSourceEditingDraft } from "./useSourceEditingDraft";
 import { useSourceCanvas, type SourceImagePreview } from "./useSourceCanvas";
 import { useSiteBuild } from "./useSiteBuild";
@@ -76,9 +76,9 @@ export default function SitePageEditor({
     Record<string, SourceImagePreview>
   >({});
   const connection = useSyncExternalStore(
-    companionConnection.subscribe,
-    companionConnection.snapshot,
-    companionConnection.snapshot,
+    repositoryConnection.subscribe,
+    repositoryConnection.snapshot,
+    repositoryConnection.snapshot,
   );
   const draft = useSourceEditingDraft(inspection);
   const build = useSiteBuild(inspection);
@@ -99,7 +99,7 @@ export default function SitePageEditor({
   const changed =
     Object.keys(draft.values).length + Object.keys(draft.orders).length;
   const locked = busy || !draft.ready || Boolean(draft.stale);
-  const disconnected = !localMode && connection.status !== "connected";
+  const disconnected = connection.status !== "connected";
   const expiring =
     connection.expiresAt && connection.expiresAt - tick < 10 * 60 * 1000;
   const filtered =
@@ -313,7 +313,7 @@ export default function SitePageEditor({
             aria-label="Source editing draft"
           >
             {draft.status.startsWith("Edits saved")
-              ? "Edits saved on this computer."
+              ? repositoryConnection.savedLabel
               : draft.status || "Reading the page…"}
           </span>
         </div>
@@ -378,7 +378,9 @@ export default function SitePageEditor({
                 type="button"
                 onClick={() => {
                   try {
-                    companionConnection.reconnect();
+                    void repositoryConnection
+                      .reconnect()
+                      .catch((e) => setError(e.message));
                   } catch (e) {
                     setError(e.message);
                   }
@@ -396,7 +398,11 @@ export default function SitePageEditor({
             action={
               <button
                 type="button"
-                onClick={() => companionConnection.reconnect()}
+                onClick={() =>
+                  void repositoryConnection
+                    .reconnect()
+                    .catch((e) => setError(e.message))
+                }
               >
                 Keep connected
               </button>
@@ -718,7 +724,7 @@ export default function SitePageEditor({
                 ref={frameRef}
                 title="Website canvas"
                 src={build.frame.url}
-                sandbox="allow-scripts allow-same-origin"
+                sandbox={repositoryConnection.frameSandbox}
                 allow="local-network-access; local-network; loopback-network"
                 referrerPolicy="no-referrer"
                 onLoad={canvas.hello}
@@ -740,9 +746,9 @@ export default function SitePageEditor({
               <button type="button" onClick={() => void popup.open()}>
                 Open the preview in a window
               </button>
-              {!localMode && connection.origin && (
+              {repositoryConnection.localBuilderOrigin() && (
                 <a
-                  href={`${connection.origin}/builder/?local=1&view=repository`}
+                  href={`${repositoryConnection.localBuilderOrigin()}/builder/?local=1&view=repository`}
                   target="_blank"
                   rel="noreferrer"
                 >

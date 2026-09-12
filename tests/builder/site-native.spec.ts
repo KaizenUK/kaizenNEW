@@ -105,7 +105,7 @@ test("M2: an independently built Astro React island hydrates inside the editable
     await title.dblclick();
     await title.fill("Our edited React studio");
     await expect(page.getByLabel("Source editing draft")).toContainText(
-      "Edits saved on this computer",
+      "Edits saved",
     );
     await frame.getByRole("heading", { name: "Registered panel" }).click();
     await expect(

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import type { BuildJob, BuildPlan } from "../../scripts/builder-runner";
+import { repositoryConnection } from "./repositoryConnection";
 import { storage } from "./storage";
 import { activeProjectId } from "./projectStorage";
 
@@ -70,16 +71,17 @@ export default function RepositoryBuild({ root }: { root: string }) {
       <div className="builder-block-head">
         <h2>Preview the website</h2>
         <p>
-          Builds the website from the folder and opens a private preview on this
-          computer for one hour. Nothing goes live, and forms and network calls
-          are switched off in the preview.
+          Builds the website from the folder and opens a private preview.
+          Nothing goes live, and forms and network calls are switched off in the
+          preview.
         </p>
       </div>
       <p className="builder-hint">
-        Install the folder's dependencies in your terminal first. The build runs
-        the folder's own scripts, so check unfamiliar code before running it.
-        The previous build is kept under .kaizen/build-recovery/ and put back if
-        a build fails.
+        {repositoryConnection.mode !== "hosted" &&
+          "Install the folder's dependencies in your terminal first. "}
+        The build runs the folder's own scripts, so check unfamiliar code before
+        running it. The previous build is kept under .kaizen/build-recovery/ and
+        put back if a build fails.
       </p>
       <button
         disabled={busy || running}
@@ -152,13 +154,18 @@ export default function RepositoryBuild({ root }: { root: string }) {
           </p>
           {job.previewUrl && (
             <p>
-              <a
-                href={job.previewUrl}
-                target="_blank"
-                rel="noopener noreferrer"
+              <button
+                type="button"
+                onClick={() => {
+                  try {
+                    repositoryConnection.openPreviewWindow(job.previewUrl!);
+                  } catch (error) {
+                    setError(error.message);
+                  }
+                }}
               >
-                Open local website preview
-              </a>{" "}
+                Open website preview
+              </button>{" "}
               · Expires {new Date(job.previewExpiresAt!).toLocaleTimeString()}
             </p>
           )}

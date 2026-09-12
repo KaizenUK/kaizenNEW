@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { storage } from "./storage";
 import { activeProjectId } from "./projectStorage";
-import { companionConnection } from "./companionConnection";
+import { repositoryConnection } from "./repositoryConnection";
 import type {
   SourceDraft,
   SourceEdits,
@@ -20,7 +20,7 @@ export function useSourceEditingDraft(inspection?: SourceInspection) {
   const version = useRef(0),
     persisted = useRef("null");
   const recoveryKey = inspection
-    ? `kaizen-source-recovery:${JSON.stringify([companionConnection.recoveryIdentity(), activeProjectId, inspection.root, inspection.route])}`
+    ? `kaizen-source-recovery:${JSON.stringify([repositoryConnection.recoveryIdentity(), activeProjectId, inspection.root, inspection.route])}`
     : "";
   const pending = useRef<
     { edits: SourceEdits | null; text: string } | undefined
@@ -152,7 +152,7 @@ export function useSourceEditingDraft(inspection?: SourceInspection) {
           if (mounted.current) {
             setStatus(
               saved.edits
-                ? "Edits saved on this computer. Not applied to the website yet."
+                ? `${repositoryConnection.savedLabel} Not applied to the website yet.`
                 : "No changes yet.",
             );
             setError("");

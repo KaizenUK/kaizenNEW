@@ -10,7 +10,7 @@ import {
   projectUrl,
   requireActiveProject,
 } from "./projectStorage";
-import { companionConnection } from "./companionConnection";
+import { repositoryConnection } from "./repositoryConnection";
 import { trackStorageErrors } from "./diagnostics";
 import {
   validateClientSettings,
@@ -114,12 +114,7 @@ export const storage = trackStorageErrors({
     return (await hostedProject()) ? projectMediaUrl(url) : url;
   },
   async repository(input: Record<string, unknown>): Promise<any> {
-    if (!localMode) {
-      const session = await cloud?.auth.getSession();
-      companionConnection.requireAccount(session?.data.session?.user.id);
-      return companionConnection.request(input);
-    }
-    return local(input);
+    return repositoryConnection.request(input, local);
   },
   async clientPublication(input: Record<string, unknown>): Promise<any> {
     if ((await requireActiveProject()).capabilities.publishPath !== "worker")

@@ -1,5 +1,6 @@
 import { test, expect } from "./browser-fixture";
 import { siteFixture } from "./site-fixture";
+import { repositoryApiPattern } from "./hosted-repository-fixture";
 import { readFile, writeFile, rm } from "node:fs/promises";
 import path from "node:path";
 test.use({ actionTimeout: 10000 });
@@ -34,7 +35,7 @@ test("M1: reviewed builds are reused; outline keyboard editing and saved drafts 
         .filter({ hasText: "A keyboard garden" }),
     ).toBeFocused();
     await expect(page.getByLabel("Source editing draft")).toContainText(
-      "Edits saved on this computer",
+      "Edits saved",
     );
     await page
       .getByRole("button", { name: "Back to pages", exact: true })
@@ -101,7 +102,7 @@ test("M1: a failed build leaves editable outline content and a useful build log"
       .locator(".builder-site-field-editor textarea")
       .fill("Saved without a build");
     await expect(page.getByLabel("Source editing draft")).toContainText(
-      "Edits saved on this computer",
+      "Edits saved",
     );
     await expect(
       page.getByRole("button", { name: "Try building again" }),
@@ -120,7 +121,7 @@ test("M1: unsent text recovers after reload and changed source stays downloadabl
     await expect(
       page.frameLocator("iframe").getByRole("heading", { level: 1 }),
     ).toBeVisible();
-    await page.route("**/__builder-local**", async (route) => {
+    const failDraft = async (route: import("@playwright/test").Route) => {
       if (
         route.request().postDataJSON()?.action ===
         "repository-source-draft-save"
@@ -129,16 +130,19 @@ test("M1: unsent text recovers after reload and changed source stays downloadabl
           status: 503,
           json: { error: "Helper connection interrupted" },
         });
-      else await route.continue();
-    });
+      else await route.fallback();
+    };
+    await page.route(repositoryApiPattern, failDraft);
     await page.getByRole("searchbox").fill("A resilient garden");
     await page
       .locator(".builder-site-field-editor textarea")
       .fill("Keep my unsent text");
-    await expect(page.getByRole("alert")).toContainText(
-      "Helper connection interrupted",
-    );
-    await page.unroute("**/__builder-local**");
+    await expect(
+      page
+        .getByRole("alert")
+        .filter({ hasText: "Helper connection interrupted" }),
+    ).toBeVisible();
+    await page.unroute(repositoryApiPattern, failDraft);
     await page.reload();
     await page
       .getByRole("button", { name: "Edit existing /", exact: true })
@@ -148,7 +152,7 @@ test("M1: unsent text recovers after reload and changed source stays downloadabl
       page.locator(".builder-site-field-editor textarea"),
     ).toHaveValue("Keep my unsent text");
     await expect(page.getByLabel("Source editing draft")).toContainText(
-      "Edits saved on this computer",
+      "Edits saved",
     );
     await writeFile(
       path.join(fixture.root, "src/pages/index.astro"),

@@ -153,7 +153,7 @@ test("hosted repository UI edits real local source across origins with consent, 
   page.on("pageerror", (e) => errors.push(e.message));
   const open = async () => {
     await page.goto(
-      `${COMPANION_TEST_ORIGIN}/companion-test?project=fixture-client`,
+      `${COMPANION_TEST_ORIGIN}/companion-test?project=fixture-client&helper=local`,
     );
     await page.getByLabel("Helper address").fill(BUILDER_TEST_ORIGIN);
   };
