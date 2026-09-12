@@ -54,6 +54,7 @@ import HostedRepository from "./HostedRepository";
 import { companionConnection } from "./companionConnection";
 import ClientSettings from "./ClientSettings";
 import ProblemReport from "./ProblemReport";
+import { startErrorReporting } from "./errorReporting";
 import {
   clearDiagnostics,
   setDiagnosticPage,
@@ -182,6 +183,17 @@ function BuilderWorkspace({ inventory }: { inventory?: PageInventory } = {}) {
   const loadSequence = useRef(0);
   const authAccount = useRef<string | undefined>(undefined);
   useEffect(watchBrowserErrors, []);
+  useEffect(() => {
+    if (localMode || !cloud || previewId) return;
+    return startErrorReporting(cloud, {
+      projectId: activeProjectId,
+      userAgent: navigator.userAgent,
+      helper: () => ({
+        local: localMode,
+        status: companionConnection.snapshot().status,
+      }),
+    });
+  }, [previewId]);
   useEffect(() => {
     setDiagnosticPage({
       screen: sitePage ? "website-editor" : active ? "page-editor" : view,

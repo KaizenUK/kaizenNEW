@@ -84,6 +84,14 @@ test("M1: a failed build leaves editable outline content and a useful build log"
     await expect(page.getByRole("alert")).toContainText(
       "Build exited with code 1",
     );
+    expect(
+      await page.evaluate(async () => {
+        const { lastDiagnosticError } = await import(
+          "/client/visual-builder/diagnostics.ts" as string
+        );
+        return lastDiagnosticError();
+      }),
+    ).toMatchObject({ source: "helper", category: "build" });
     await page.getByText("Build log", { exact: true }).click();
     await expect(page.locator(".builder-site-build pre")).toContainText(
       "Fixture build needs attention",

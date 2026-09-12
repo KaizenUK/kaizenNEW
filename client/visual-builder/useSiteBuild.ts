@@ -4,6 +4,7 @@ import type { SourceInspection } from "../../shared/builderSourceEditing";
 import { activeProjectId } from "./projectStorage";
 import { storage } from "./storage";
 import { companionConnection } from "./companionConnection";
+import { recordBuilderError } from "./diagnostics";
 
 export type SourceFrame = {
   url: string;
@@ -52,6 +53,8 @@ export function useSiteBuild(inspection?: SourceInspection) {
     while (fresh(id)) {
       setJob(value);
       if (value.status !== "building") {
+        if (value.status === "failed")
+          recordBuilderError("The website build failed.", "helper");
         if (value.status !== "succeeded")
           throw new Error(
             value.error ||

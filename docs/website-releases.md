@@ -82,6 +82,50 @@ Transactions under `transactions/` record checking, activating, verifying and li
 
 The generated redirect rules support exact internal paths with letters, numbers, slashes, dots, hyphens and underscores, with 301/302 responses. Invalid paths, configuration injection, duplicate sources and cycles fail the build. External redirects, query strings and regex patterns require deliberate additional support rather than raw Nginx interpolation.
 
+## Builder error visibility
+
+The default error sink is `public.builder_client_errors` in the existing Supabase project. This follows L0-T4 without adding another service. A hosted error service is an optional later alternative if Sean wants its search/alerting features; keep the same safe fields and access/retention boundary if changing the sink. No third-party error service is configured.
+
+Apply `202609120002_builder_client_errors.sql` and `202609120003_builder_error_retention.sql` after the project-capabilities migration, then deploy the updated `builder-projects` function and frontend together. Migration 003 requires `pg_cron` and fails if the hourly cleanup cannot be scheduled. Supabase provides the scheduler; self-hosted Postgres must install it first. The syntax follows [Supabase's Cron installation](https://supabase.com/docs/guides/cron/install) and [job quickstart](https://supabase.com/docs/guides/cron/quickstart). Neither migration contains credentials.
+
+The function accepts authenticated `record-error` actions, takes the account ID from the verified token and rechecks current membership and archived state in the recording transaction. A project lock serializes recording with membership changes. Each record contains project/user IDs, a server receipt time, fixed error category/source, known screen, optional page ID/route hash, browser family/major version/platform, and helper mode/state. No raw message, stack, URL, source path, build log, title or arbitrary JSON is stored. There is no diagnostic email or Slack integration.
+
+Only database operators (SQL editor or a server-side service-role client) can read these records. Builder owners and editors cannot select, insert, update or delete them, impersonate an actor through the RPC, or run retention cleanup. Service-role recording must use the guarded RPC; it has no direct table write grant. The client uses explicit event-time authentication and drops pending sends on account changes. No extra secret belongs in the frontend.
+
+Inspect the most recent records for one project using a bound project parameter in an operator SQL client:
+
+```sql
+select created_at, project_id, user_id, category, source, screen,
+       page_id, route_hash, browser_family, browser_version, platform,
+       helper_mode, helper_status
+from public.builder_client_errors
+where project_id = $1 and created_at >= now() - interval '14 days'
+order by created_at desc, id desc
+limit 100;
+```
+
+The route hash can be matched against a user's copied report. It does not recover the route or error text. Membership permits recording even without publish permission. Revoked members and archived projects are refused. Writes are capped at 20 per account/project per hour and 2,000 per project per day, checked against server receipt times under the project lock. Dropped duplicates/rate-limited events are not counted elsewhere. The browser also limits attempts, deduplicates a repeated category/source/page for one minute, bounds concurrent sends and abandons a slow request. This is troubleshooting evidence, not complete analytics or an availability monitor.
+
+`builder-client-error-retention` runs hourly and physically removes records older than 14 days, including projects with no recent activity. With the job operating, deletion occurs at its next hourly run (up to 14 days plus one hour after receipt). Removing an account or project also deletes its records through foreign keys. This policy covers the live error table; database backups follow the separate backup-retention policy.
+
+Before enabling beta recording, and after database maintenance, verify the job is active and inspect its latest execution in Supabase Cron. Check the actual deployment with:
+
+```sql
+select jobid, jobname, schedule, active, command
+from cron.job where jobname = 'builder-client-error-retention';
+
+select status, start_time, end_time, return_message
+from cron.job_run_details
+where jobid = (select jobid from cron.job where jobname = 'builder-client-error-retention')
+order by start_time desc limit 5;
+
+select count(*) as overdue
+from public.builder_client_errors
+where created_at < now() - interval '14 days 1 hour';
+```
+
+An inactive/failed job or overdue records require operator action. Correct the job or database issue, run `select public.builder_prune_client_errors();`, then verify the next scheduled run succeeds and `overdue` is zero. Do not claim retention is active based on applying the table migration alone. The database test executes the real schema, access rules, quotas and deletion function; PGlite substitutes only the unavailable `pg_cron` scheduler, so live scheduling still needs this deployment check.
+
 ## Rollback and operations
 
 Inspect retained versions, then reactivate the chosen artifact without a build or CMS fetch:

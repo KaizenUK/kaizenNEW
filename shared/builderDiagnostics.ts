@@ -97,6 +97,58 @@ export function safeDiagnosticError(value: unknown): DiagnosticError | null {
   };
 }
 
+/** The server rebuilds these fields from untrusted JSON. No free text is stored. */
+export function storedDiagnostic(value: unknown) {
+  const input = value as Record<string, any> | null;
+  if (
+    !input ||
+    input.schemaVersion !== 1 ||
+    !safeDiagnosticError(input.lastError)
+  )
+    throw new Error("A valid error report is required.");
+  const oneOf = (
+    value: unknown,
+    choices: readonly string[],
+    fallback: string,
+  ) =>
+    typeof value === "string" && choices.includes(value) ? value : fallback;
+  const identifier = (value: unknown) =>
+    typeof value === "string" && validProjectId(value) ? value : null;
+  return {
+    category: safeDiagnosticError(input.lastError)!.category,
+    source: safeDiagnosticError(input.lastError)!.source,
+    screen: oneOf(input.page?.screen, [...screens], "unknown"),
+    page_id: identifier(input.page?.id),
+    route_hash:
+      typeof input.page?.routeHash === "string" &&
+      /^[a-f0-9]{64}$/.test(input.page.routeHash)
+        ? input.page.routeHash
+        : null,
+    browser_family: oneOf(
+      input.browser?.family,
+      ["Edge", "Firefox", "Chrome", "Safari"],
+      "Other",
+    ),
+    browser_version:
+      Number.isInteger(input.browser?.majorVersion) &&
+      input.browser.majorVersion >= 0 &&
+      input.browser.majorVersion <= 9999
+        ? (input.browser.majorVersion as number)
+        : null,
+    platform: oneOf(
+      input.browser?.platform,
+      ["Android", "iOS", "Windows", "macOS", "Linux"],
+      "Other",
+    ),
+    helper_mode: oneOf(input.helper?.mode, ["local", "hosted"], "hosted"),
+    helper_status: oneOf(
+      input.helper?.status,
+      ["not-checked", "connected", "connecting", "disconnected"],
+      "disconnected",
+    ),
+  };
+}
+
 export async function buildProblemReport(
   input: {
     projectId?: unknown;

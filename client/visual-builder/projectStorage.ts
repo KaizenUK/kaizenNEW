@@ -5,6 +5,7 @@ import {
 } from "../../shared/builderProjects";
 import { getSupabaseClient } from "../lib/supabase";
 import { builderCloudEnabled } from "./builderMode";
+import { trackStorageErrors } from "./diagnostics";
 
 // Fixed for this document's lifetime. Opening another project navigates, disposing
 // the editor and its pending import/autosave controllers before starting another.
@@ -15,7 +16,7 @@ export const activeProjectId =
 export function projectUrl(url: string): string {
   return `${url}${url.includes("?") ? "&" : "?"}project=${encodeURIComponent(activeProjectId)}`;
 }
-export async function projectRequest(input?: unknown): Promise<any> {
+async function requestProject(input?: unknown): Promise<any> {
   if (builderCloudEnabled) {
     const client = getSupabaseClient();
     if (!client) throw new Error("The hosted builder is not configured.");
@@ -59,6 +60,9 @@ export async function projectRequest(input?: unknown): Promise<any> {
     window.dispatchEvent(new Event("builder-projects-changed"));
   return result;
 }
+export const { projectRequest } = trackStorageErrors({
+  projectRequest: requestProject,
+});
 let projectCache: Promise<BuilderProject[]> | undefined;
 export function clearProjectCache() {
   projectCache = undefined;

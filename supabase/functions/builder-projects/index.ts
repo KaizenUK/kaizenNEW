@@ -1,4 +1,5 @@
 import { createClient } from "npm:@supabase/supabase-js@2.98.0";
+import { recordClientDiagnostic } from "../_shared/clientDiagnostics.ts";
 import { getCorsHeaders, isOriginAllowed } from "../_shared/editorAuth.ts";
 import { disconnectedSettings } from "../../../shared/builderSettings.ts";
 import { fetchContentCatalogue } from "../../../shared/builderContent.ts";
@@ -146,6 +147,15 @@ Deno.serve(async (request) => {
     const target = input.projectId || input.id;
     if (typeof target !== "string" || !validProjectId(target))
       return json(400, { error: "Invalid project ID." });
+    if (action === "record-error") {
+      const result = await recordClientDiagnostic(
+        service,
+        target,
+        auth.user.id,
+        input.report,
+      );
+      return json(result.status, result.body);
+    }
     // Every operation, including reads/download registration/previews, starts with
     // an actual RLS-backed membership lookup using the verified user's JWT.
     const membership = check(
