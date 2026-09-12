@@ -1,12 +1,12 @@
 # Kaizen visual builder
 
-The builder lives at `/builder/`. It edits new React pages; existing Astro layouts and Sanity content keep their current ownership. Local client projects, independent exports with editable source, and reviewed Astro repository integration are described in [client projects and handoff](builder-client-projects.md). Hosted authentication, project isolation, deployment and rollback remain unverified. The current request resumes that work; see [progress and verification](builder-project-progress.md) and [the acceptance checklist](builder-acceptance-checklist.md).
+The builder lives at `/builder/`. It creates builder pages and edits safely matched content in existing Astro/React pages through the [existing-site canvas](#existing-site-canvas). Original source and CMS ownership are preserved. See [client projects and handoff](builder-client-projects.md) for repository integration, and [the current handover](../HANDOVER.md#linux-continuation--12-september-2026) for deployment and acceptance status.
 
 This guide describes current behaviour. Earlier incremental results are retained in [verification history](builder-verification-history.md); historical statements there are not the current feature status. Deployment setup and recovery are documented in [website releases](website-releases.md).
 
 ## Local workspace
 
-Run `pnpm dev` and open the builder on the port printed by Astro, normally `http://localhost:4321/builder/`.
+Run `pnpm dev` and open the local builder at the printed IPv4 address, normally `http://127.0.0.1:4321/builder/?local=1`. Keep the terminal running. The `local=1` query selects the local workspace even when hosted settings are configured.
 
 1. Create a blank page or use the starter template.
 2. Open Assets, name a pack and import files, a folder or a ZIP. The sample pack contains images, SVGs, an Inter font, licences, source references and a labelled design placeholder.
@@ -39,9 +39,9 @@ Saved sections and page templates are reusable copies. Linked components in Site
 
 **Blocks → Browse section designs** adds eight editable variations: studio navigation, editorial hero, services overview, project gallery, customer stories, simple pricing, contact banner and studio footer. Preview each in wide or mobile view before insertion. They use ordinary builder blocks, so nesting, undo/redo, responsive controls, backups and React export keep working. Replace sample copy, quotes, prices, images and links before publication.
 
-**Existing site pages** opens a searchable list of the original layouts, CMS routes and site redirects. It is compiled from the project's page files, fixed redirects and available published Sanity routes. It contains public path metadata, not source code. Static layouts require developer changes; use the CMS for article and managed content. Individual blog articles are managed in the CMS rather than enumerated in this list. The list updates with the builder's next build and clearly reports an unavailable CMS inventory. Its optional CMS lookup is bounded to five seconds.
+**Existing site pages** opens a searchable list of the original layouts, CMS routes and site redirects. It is compiled from the project's page files, fixed redirects and available published Sanity routes. It contains public path metadata, not source code. With a local checkout or connected helper, supported source routes open in the existing-site canvas. Use the CMS for article and managed content; arbitrary layout changes to unregistered components still require a developer. Individual blog articles are managed in the CMS rather than enumerated in this list. The list updates with the builder's next build and clearly reports an unavailable CMS inventory. Its optional CMS lookup is bounded to five seconds.
 
-Existing routes are reserved against builder pages. To recreate an existing design, build it at a new URL and review any later route-ownership change separately. Neither an existing page nor imported source automatically becomes editable in the canvas.
+Existing routes are reserved against builder pages. To recreate an existing design, build it at a new URL and review any later route-ownership change separately. Opening an existing source page exposes its safely matched content; it does not convert the page into builder blocks.
 
 ## Asset support and boundaries
 
@@ -153,17 +153,23 @@ GitHub dispatch acceptance does not mean a page is live. **Releases** shows queu
 
 ## Verification and remaining work
 
-Run `pnpm test`, `pnpm typecheck`, `pnpm test:builder:browser` and `pnpm build`. The browser suite uses an isolated workspace and covers imports, nested editing, history, responsiveness, shared content, CMS/forms, backups, previews, redirects and existing-route ownership.
+Run `pnpm test`, `pnpm typecheck`, `pnpm test:builder:browser` and `pnpm build`. The browser suite uses an isolated workspace and covers imports, nested editing, history, responsiveness, shared content, CMS/forms, backups, previews, redirects, source editing and commit isolation.
 
-Builder CI also generates an independent export, installs/builds/typechecks it, configures a local test form receiver and checks it in Chromium. A real isolated Nginx smoke test verifies release activation, redirects, retained assets, failure recovery and exact rollback. Linux CI and actual VPS execution have not yet been verified here.
+The final existing-site implementation at `d7d9359` passed 214 unit tests across 44 files, Astro/TypeScript checks with zero errors and zero warnings (172 existing hints), and 42 browser scenarios. One optional licensed-archive scenario was skipped because its external archives are unavailable. The Nginx recovery test ran and passed. Desktop and phone canvas screenshots were regenerated and visually checked. The complete site/Studio build also succeeded through the real hosted helper connection.
 
-The previous release checks included an independently built four-page export and a 265-file retained artifact with eight marker/page/redirect responses. The current increment adds the reproduced redirect-dependency fix, existing-page inventory, section design library and real-pack SVG/folder compatibility fixes. Verification passed 106 unit tests across 21 files and all 22 browser scenarios, including the real packs. The folder-picker extension then passed against the actual extracted pack; the final SVG animation filter passed all seven importer regressions. Astro/TypeScript checked 256 files with zero errors, zero warnings and 155 existing hints.
+The public frontend is release `gh-34712289074-1` from `9aca128`; `d7d9359` adds local helper server-stop detection. The checkout and deployment are recorded in [the acceptance log](existing-site-visual-editing-plan.md#helper-window-stability-follow-up--12-september-2026). Older incremental results belong to [verification history](builder-verification-history.md), not the current acceptance status.
 
-The current full site/Studio production build passed. Its compiled builder contains public inventory metadata rather than page source, retains noindex and stays out of the sitemap. The 281-file application artifact passed eight marker/page/redirect checks through real isolated Nginx, including browser checks of the compiled builder entry and static mobile output. Activation, retained assets, failure recovery and exact rollback passed. Build warnings about large editor/Studio chunks remain; hosted sign-in is not inferred from the compiled shell check.
-
-Changes remain local, uncommitted and undeployed. Actual hosted authentication/storage, migrations, publication/rollback and enquiry delivery remain unverified. The user will perform real-world acceptance after deployment/CI repair; those external checks are not blocking local implementation.
+**Still unverified:** the complete manual on-page journey through the real hosted builder, hosted Firefox, and Safari on Sean's Mac. The Codex browser pairs and builds successfully but leaves its hosted loopback frame blank. Its local fallback renders, but browser automation cannot deliver direct clicks into that frame. A reviewed local text apply/rebuild/restore succeeded; that is not a substitute for direct on-page acceptance. Keep these items open in [the task map](existing-site-visual-editing-plan.md). Existing ResizeObserver notifications and large editor/Studio chunk warnings remain recorded limitations.
 
 ## Existing-site canvas
+
+1. Open the project in the hosted builder, choose **Connect helper**, and approve its website folder with **Allow this folder** in the local window.
+2. Return to **Pages → Pages from the website's code → Edit**. Check the command and choose **Build** when first asked. Later builds reuse approval only within the same connection and for unchanged scripts.
+3. Double-click matched words to type, select a link to edit its text/address, use **Replace image** for project Assets, and move supported sections with their handles or drag. Outline and Selected show the same draft. Grey content explains why it is managed elsewhere.
+4. Choose **Review my changes**, then **Apply changes to the folder**. Only reviewed source changes and selected image files are written; the preview rebuilds afterward.
+5. Optionally choose **Commit these changes** and enter a message. Only files in the last applied proposal are committed. Existing staged files, changed applied files, missing Git identity or an in-progress Git operation prevent the commit. Nothing is pushed or published automatically; use GitHub Desktop and the site's existing deployment process.
+
+A disconnected or restarted helper shows **Reconnect** while retaining edits. **Keep connected** requests approval again before the two-hour session expires. If framing fails, use **Open the preview in a window** or **Open in the local builder**. Chromium may require Local Network Access permission in addition to folder approval. Actual hosted Firefox/Safari acceptance remains open as described above.
 
 Existing native pages now have a separate page editor inside the same builder chrome. It embeds a cookie-free, token-prefixed snapshot served by the helper. The bridge exchanges inspected field IDs and draft values with the parent using both origin and nonce checks; it has no helper capability. Snapshots retain `connect-src 'none'` and `form-action 'none'`, and permit framing only by the connected editor origin and themselves. Ordinary window previews keep their original cookie flow.
 
