@@ -144,7 +144,6 @@ export function Sidebar({
           id: "settings",
           label: "Settings",
           icon: <Settings size={22} />,
-          hidden: legacy,
         },
         { id: "backups", label: "Backups", icon: <Archive size={22} /> },
         {
@@ -247,6 +246,7 @@ export function Sidebar({
       </div>
       <div className="builder-sidebar-footer">
         <ThemeToggle theme={theme} onToggle={onToggleTheme} />
+        <Pill>Private beta</Pill>
         <a
           href="/"
           className="builder-sidebar-exit"

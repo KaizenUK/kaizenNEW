@@ -4,6 +4,12 @@ The builder lives at `/builder/`. It creates builder pages and edits safely matc
 
 This guide describes current behaviour. Earlier incremental results are retained in [verification history](builder-verification-history.md); historical statements there are not the current feature status. Deployment setup and recovery are documented in [website releases](website-releases.md).
 
+## Private beta and problem reports
+
+The sidebar footer identifies this release as **Private beta**. Open **Settings → Report a problem** to copy a technical report, then share it with Kaizen along with what you were trying to do. **Download report** saves the same JSON when clipboard access is unavailable, and **View report** shows exactly what will be shared. Settings remains available if the project cannot load. The original workspace's website connections continue to be managed by the owner.
+
+Reports contain the project ID, screen, builder page ID or a one-way SHA-256 reference for a source route, browser family/major version/platform, helper mode/state, and the latest error category and time. Raw errors and stacks, page content and titles, source paths, full browser strings, helper connection details and sign-in credentials are excluded. Error summaries come from fixed categories; a report does not copy arbitrary exception text. Caught storage/helper failures and browser errors update the in-memory record without suppressing errors or changing the original response. The failing page reference is retained when you leave the editor to open Settings. Local helper health is marked `not-checked`; the report does not infer that a server is still running. This record clears when the account changes and is not persisted to browser storage. Copying or downloading a report does not send a message to anyone.
+
 ## Local workspace
 
 Run `pnpm dev` and open the local builder at the printed IPv4 address, normally `http://127.0.0.1:4321/builder/?local=1`. Keep the terminal running. The `local=1` query selects the local workspace even when hosted settings are configured.

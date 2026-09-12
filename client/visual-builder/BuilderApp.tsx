@@ -40,6 +40,7 @@ import {
   Segmented,
   Shell,
   Sidebar,
+  Notice,
   useBuilderTheme,
   type BuilderTheme,
   type BuilderView,
@@ -52,6 +53,12 @@ import RepositoryPanel from "./RepositoryPanel";
 import HostedRepository from "./HostedRepository";
 import { companionConnection } from "./companionConnection";
 import ClientSettings from "./ClientSettings";
+import ProblemReport from "./ProblemReport";
+import {
+  clearDiagnostics,
+  setDiagnosticPage,
+  watchBrowserErrors,
+} from "./diagnostics";
 import ClientPublications from "./ClientPublications";
 import { activeProjectId, clearProjectCache } from "./projectStorage";
 import PublishDialog from "./PublishDialog";
@@ -174,6 +181,14 @@ function BuilderWorkspace({ inventory }: { inventory?: PageInventory } = {}) {
   const workspaceRef = useRef<Workspace>(undefined);
   const loadSequence = useRef(0);
   const authAccount = useRef<string | undefined>(undefined);
+  useEffect(watchBrowserErrors, []);
+  useEffect(() => {
+    setDiagnosticPage({
+      screen: sitePage ? "website-editor" : active ? "page-editor" : view,
+      id: active?.id,
+      route: sitePage?.path,
+    });
+  }, [active?.id, sitePage?.path, view]);
   workspaceRef.current = workspace;
   const replaceWorkspace = (next: Workspace) => {
     workspaceRef.current = next;
@@ -227,6 +242,7 @@ function BuilderWorkspace({ inventory }: { inventory?: PageInventory } = {}) {
       if (authAccount.current !== session?.user.id) {
         companionConnection.disconnect();
         clearProjectCache();
+        clearDiagnostics();
         window.dispatchEvent(new Event("builder-projects-changed"));
         authAccount.current = session?.user.id;
         loadSequence.current++;
@@ -387,7 +403,7 @@ function BuilderWorkspace({ inventory }: { inventory?: PageInventory } = {}) {
   };
   const current: BuilderView = !signedIn
     ? "pages"
-    : view === "projects"
+    : view === "projects" || view === "settings"
       ? view
       : workspace
         ? view
@@ -443,9 +459,28 @@ function BuilderWorkspace({ inventory }: { inventory?: PageInventory } = {}) {
         ) : (
           <HostedRepository existingPath={existingPath} />
         ))}
-      {current === "settings" && workspace && !capabilities.legacyWorkspace && (
-        <ClientSettings workspace={workspace} onChange={replaceWorkspace} />
-      )}
+      {current === "settings" &&
+        (workspace && !capabilities.legacyWorkspace ? (
+          <ClientSettings workspace={workspace} onChange={replaceWorkspace}>
+            <ProblemReport />
+          </ClientSettings>
+        ) : (
+          <>
+            <Head
+              info={<ProjectName />}
+              title="Settings"
+              description="Manage this website and get help."
+            />
+            <div className="builder-page-body">
+              <Notice>
+                {workspace
+                  ? "Website connections are managed by the site owner."
+                  : "Project details are unavailable. You can still report a problem."}
+              </Notice>
+              <ProblemReport />
+            </div>
+          </>
+        ))}
       {current === "pages" && (
         <PagesView
           workspace={workspace}

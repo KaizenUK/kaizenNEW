@@ -21,6 +21,7 @@ on:
       - "shared/builderRedirects.js"
       - "shared/builderProjects.ts"
       - "shared/builderOrigins.ts"
+      - "shared/builderDiagnostics.ts"
       - "shared/builderSettings.ts"
       - "shared/builderClientPublication.ts"
       - "shared/builderSiteMetadata.ts"

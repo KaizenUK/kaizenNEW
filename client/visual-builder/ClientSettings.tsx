@@ -13,9 +13,11 @@ import { ProjectName } from "./activeProject";
 export default function ClientSettings({
   workspace,
   onChange,
+  children,
 }: {
   workspace: Workspace;
   onChange: (value: Workspace) => void;
+  children?: React.ReactNode;
 }) {
   const [draft, setDraft] = useState<Settings>(
     () => workspace.settings?.value || defaultClientSettings(),
@@ -219,6 +221,7 @@ export default function ClientSettings({
         </fieldset>
         {message && <Notice tone="success">{message}</Notice>}
         {error && <Notice tone="error">{error}</Notice>}
+        {children}
       </form>
     </>
   );

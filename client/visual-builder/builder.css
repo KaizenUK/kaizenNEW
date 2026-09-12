@@ -610,12 +610,30 @@
   height: 36px;
 }
 .builder-sidebar-footer {
-  height: 72px;
+  min-height: 104px;
   flex: none;
-  display: flex;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 12px;
   align-items: center;
-  padding: 0 32px;
+  padding: 16px 32px;
   border-top: 1px solid var(--footer-border);
+}
+.builder-sidebar-footer > .builder-pill {
+  grid-column: 1 / -1;
+  grid-row: 1;
+  justify-self: start;
+}
+.builder-problem-report {
+  margin-top: 16px;
+}
+.builder-problem-report pre {
+  padding: 16px;
+  border-radius: 12px;
+  background: var(--toggle-track);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  font-size: 12px;
 }
 .builder-app .builder-sidebar-exit {
   margin-left: auto;

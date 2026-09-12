@@ -11,6 +11,7 @@ import {
   requireActiveProject,
 } from "./projectStorage";
 import { companionConnection } from "./companionConnection";
+import { trackStorageErrors } from "./diagnostics";
 import {
   validateClientSettings,
   type ClientSettings,
@@ -93,7 +94,7 @@ async function readAll(table: string) {
     if (page.length < 500) return rows;
   }
 }
-export const storage = {
+export const storage = trackStorageErrors({
   async saveSettings(
     version: number,
     settings: ClientSettings,
@@ -843,4 +844,4 @@ export const storage = {
         .createSignedUrl(asset.id, 60, { download: asset.name }),
     ).signedUrl;
   },
-};
+});
