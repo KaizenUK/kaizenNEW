@@ -4,6 +4,22 @@ The public deployment workflow now stages a complete build outside the live web 
 
 `scripts/kaizen-releases.mjs` provides `stage`, `init`, `activate`, `rollback`, `list` and `verify-live`. It uses Node 22 or later and ordinary filesystem operations. Activation runs `nginx -t` and `nginx -s reload`, using `sudo -n` when the deploy user is not root. [Nginx documents its configuration validation and graceful reload behaviour here](https://nginx.org/en/docs/control.html).
 
+## Builder browser origins
+
+Each service has one server-side allowlist. Supply the helper setting in the environment of the process running `pnpm dev`; set the two function settings through Supabase's function secrets. These are public origin names, not credentials, but they control server access and must not use a `VITE_` prefix.
+
+| Service | Setting | Default when absent |
+| --- | --- | --- |
+| Local helper | `BUILDER_COMPANION_ORIGINS` | `https://kaizenweb.co.uk` |
+| Editor/Studio functions | `ALLOWED_STUDIO_ORIGINS` | `https://kaizenweb.co.uk,http://localhost:3333` (the existing editor configuration example) |
+| Builder contact receiver | `BUILDER_CONTACT_ORIGINS` | `https://kaizenweb.co.uk,https://www.kaizenweb.co.uk` |
+
+A configured comma-separated list **replaces** the default; an explicitly empty list allows no browser origins. Use complete HTTPS origins, without a path, query, fragment, credentials or wildcard. Plain HTTP is accepted only for `localhost`, `127.0.0.1` or `[::1]`. Root trailing slashes, host casing and standard ports are normalised; duplicates are removed. Invalid entries reject configuration instead of falling back, and errors never echo the entered values.
+
+For example, `BUILDER_COMPANION_ORIGINS=https://builder.example pnpm dev` accepts pairing from that hosted origin after the normal explicit folder approval. It does not grant account access, approve a folder automatically or change loopback/Host checks. `BUILDER_COMPANION_TEST_ORIGIN` remains a test-only supplement that accepts only an exact HTTP loopback origin; a remote origin cannot enter through it.
+
+`PUBLIC_SITE_ORIGIN`, `VITE_PUBLIC_SITE_ORIGIN`, Studio URLs and redirect/cookie settings no longer add allowed origins implicitly. When deploying this change, explicitly include every authorised production, staging and Studio origin in `ALLOWED_STUDIO_ORIGINS`. Those URL settings still select their original redirect destinations; they simply do not grant browser access. Restart the helper or redeploy the affected functions after changing these values. Origin checks complement authentication and project membership; requests without an Origin retain the existing authenticated server-request behaviour.
+
 ## Required one-time VPS setup
 
 **Complete this before deploying the updated workflow.** The workflow fails before changing the live files if its release store is absent. The current production host configuration is recorded below; new hosts still need the setup in this section.

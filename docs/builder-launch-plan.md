@@ -144,3 +144,14 @@ The first full browser run exposed an obsolete hosted-media mock and two transie
 Desktop and phone project screens were inspected: [desktop](handover/builder-launch/l0-projects-desktop.png), [phone](handover/builder-launch/l0-projects-phone.png). The existing current-project pill can make long project names wrap awkwardly on desktop; retain this for Claude's stage polish.
 
 **Pending:** CI on the launch branch, production migration/function/frontend rollout, Claude's L0 review and Sean's gate acceptance. Nothing has been pushed or deployed by this task. Continue in order with L0-T2; this is implementation evidence, not private beta acceptance.
+
+
+### L0-T2 — Configured browser origins (12 September 2026)
+
+Added one explicit server-side allowlist per service: `BUILDER_COMPANION_ORIGINS`, `ALLOWED_STUDIO_ORIGINS` and `BUILDER_CONTACT_ORIGINS`. A shared parser preserves each documented default only when its setting is absent, replaces defaults when configured, normalises/deduplicates origins and rejects unsafe entries without reflecting their contents in errors. Explicitly empty lists permit no browser origins. The helper test override remains restricted to exact HTTP loopback origins; normal pairing still requires folder approval.
+
+The editor API no longer derives extra allowed origins from site/Studio URL variables. [The release guide](website-releases.md#builder-browser-origins) gives defaults, syntax, environment locations and the rollout requirement to list all authorised origins explicitly. The example environment lists the new settings. CI now watches the parser and affected server modules and checks the contact function alongside projects and publish.
+
+**Local proof:** all 255 unit/integration tests pass across 46 files with Nginx enabled; TypeScript/Astro reports zero errors/warnings and the same 172 hints; Deno checks pass for projects, publish and contact. Parser tests cover absent/empty/replaced configuration, canonicalisation, unsafe inputs, credential-safe errors, lookalike hosts and test-origin restrictions. A real temporary-repository helper test exercises a configured non-default HTTPS origin and retained folder checks. All three relevant browser journeys pass: companion reload, cross-origin pairing/editing/revocation and contact submission/idempotency. No screens changed; L0's desktop/phone evidence remains above, and the full browser suite will run again at the stage boundary.
+
+**Pending:** hosted configuration/function rollout, branch CI and the stage/gate reviews. No credentials, live allowlists or personal workspaces were changed. Continue with L0-T3.

@@ -20,6 +20,7 @@ on:
       - "shared/builderRouteTypes.ts"
       - "shared/builderRedirects.js"
       - "shared/builderProjects.ts"
+      - "shared/builderOrigins.ts"
       - "shared/builderSettings.ts"
       - "shared/builderClientPublication.ts"
       - "shared/builderSiteMetadata.ts"
@@ -33,6 +34,7 @@ on:
       - "supabase/functions/builder-projects/**"
       - "supabase/functions/_shared/clientPublication.ts"
       - "supabase/functions/_shared/githubPublication.ts"
+      - "supabase/functions/_shared/editorAuth.ts"
       - "public/builder-samples/**"
       - "scripts/builder-local.ts"
       - "scripts/builder-client-publisher.ts"
@@ -49,6 +51,7 @@ on:
       - "scripts/builder-release-worker.mjs"
       - "scripts/builder-previews.ts"
       - "scripts/builder-projects.ts"
+      - "scripts/builder-companion.ts"
       - "scripts/builder-repository.ts"
       - "scripts/builder-source-editing.ts"
       - "scripts/builder-source-drafts.ts"
@@ -90,7 +93,7 @@ jobs:
       - uses: denoland/setup-deno@v2
         with:
           deno-version: v2.x
-      - run: deno check --config supabase/functions/builder-projects/deno.json supabase/functions/builder-projects/index.ts supabase/functions/builder-publish/index.ts
+      - run: deno check --config supabase/functions/builder-projects/deno.json supabase/functions/builder-projects/index.ts supabase/functions/builder-publish/index.ts supabase/functions/builder-contact/index.ts
       - run: pnpm typecheck
       - run: pnpm exec playwright install --with-deps chromium
       - run: pnpm test
