@@ -1,4 +1,6 @@
 import React, { useEffect, useState, type ReactNode } from "react";
+import { Brand } from "./Brand";
+export { Brand } from "./Brand";
 import { ProjectIdentity } from "./activeProject";
 import { activeProjectId } from "./projectStorage";
 import {
@@ -54,16 +56,6 @@ export function useBuilderTheme(): [BuilderTheme, () => void] {
     }
   }, [theme]);
   return [theme, () => setTheme((t) => (t === "light" ? "dark" : "light"))];
-}
-
-/* The real Kaizen wordmark, drawn as a currentColor mask like the site header, so it follows the theme. */
-export function Brand({ compact = false }: { compact?: boolean }) {
-  return (
-    <span className={`builder-brand${compact ? " builder-brand-compact" : ""}`}>
-      <span role="img" aria-label="Kaizen" className="builder-brand-logo" />
-      {!compact && <small className="builder-brand-product">Builder</small>}
-    </span>
-  );
 }
 
 export function ThemeToggle({

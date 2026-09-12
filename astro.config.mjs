@@ -3,6 +3,7 @@ import react from "@astrojs/react";
 import tailwindcss from "@tailwindcss/vite";
 import path from "node:path";
 import { PUBLIC_ROUTE_REDIRECTS } from "./shared/publicRoutePolicy.js";
+import { builderCompanionUiPlugin } from "./scripts/builder-companion-ui.ts";
 import {
   builderLocalPlugin,
   builderLocalRedirectsPlugin,
@@ -90,6 +91,7 @@ export default defineConfig({
     plugins: [
       tailwindcss(),
       sanitizeBrokenTransformHooks(),
+      builderCompanionUiPlugin(),
       builderLocalPlugin(),
       builderLocalRedirectsPlugin(),
     ],
@@ -98,6 +100,14 @@ export default defineConfig({
     // Preserve Vite's built-in denials and prevent direct/@fs reads of private builder storage.
     // Approved media continues through the builder middleware, not Vite's filesystem server.
     server: {
+      watch: {
+        // Retained source/output copies are not development inputs. In
+        // particular, copied HTML must not reload the active helper window.
+        ignored: [
+          /[/\\]\.kaizen[/\\](?:build-recovery|recovery)(?:[/\\]|$)/,
+          /[/\\]apps[/\\]studio[/\\]dist(?:[/\\]|$)/,
+        ],
+      },
       fs: {
         deny: [
           ".env",

@@ -5,7 +5,7 @@ import {
 } from "../../shared/builderCompanion";
 // The helper page only needs the local API that every dev server exposes, whatever mode the builder UI is in.
 const helperAvailable = import.meta.env.DEV;
-import { Brand } from "./shell";
+import { Brand } from "./Brand";
 import "./builder.css";
 
 async function localRequest(url: string, input: unknown, keepalive = false) {

@@ -6,7 +6,7 @@
     "dev": "pnpm run clean:caches && node scripts/dev.mjs",
     "dev:clean": "pnpm run dev",
     "build": "pnpm run build:site && pnpm run build:studio && pnpm run build:stage:studio",
-    "build:site": "rimraf dist .astro && cross-env NODE_OPTIONS='--max-old-space-size=6144' astro build && node scripts/generate-nginx-redirects.mjs",
+    "build:site": "rimraf dist && cross-env NODE_OPTIONS='--max-old-space-size=6144' astro build && node scripts/generate-nginx-redirects.mjs",
     "build:studio": "pnpm --dir apps/studio build",
     "build:stage:studio": "node scripts/stage-studio-build.mjs",
     "build:snap:high-five": "astro build",

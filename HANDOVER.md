@@ -22,6 +22,8 @@ The framed preview uses per-canvas nonce paths and origin checks without third-p
 
 The 12 September image/Undo follow-up is deployed: selected image bytes now cross the authenticated frame message, and their blob URLs are created inside the preview's storage partition. Decoded-image checks cover replacement, Undo/Redo and rebuilt output. A separate correction prevents blur from replaying an already-sent text edit after Undo. The uninterrupted full browser run passed 41 scenarios (one optional licensed-archive skip), and all 214 unit tests passed. See the [image and Undo verification log](docs/existing-site-visual-editing-plan.md#image-and-undo-follow-up--12-september-2026) for release status. These fixes do not close the outstanding actual hosted-browser acceptance.
 
+A further local-helper correction serves the approval window without live reload and preserves `.astro/settings.json` during production builds. Removing that file had restarted Astro and invalidated active sessions while building this checkout. The real hosted site/Studio build now completes while the helper remains connected; the fresh framed route responds correctly, but the in-app browser still leaves it blank. See the [helper stability log](docs/existing-site-visual-editing-plan.md#helper-window-stability-follow-up--12-september-2026) for verification and the remaining browser boundary. The latest full run passed 214 unit tests and 42 browser scenarios (one optional licensed-archive skip), with no Astro/TypeScript errors or warnings.
+
 ## State at the pause
 
 | Area | Authoritative state |
