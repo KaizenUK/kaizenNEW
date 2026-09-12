@@ -8,12 +8,18 @@ const helperAvailable = import.meta.env.DEV;
 import { Brand } from "./Brand";
 import "./builder.css";
 
-async function localRequest(url: string, input: unknown, keepalive = false) {
+async function localRequest(
+  url: string,
+  input: unknown,
+  keepalive = false,
+  signal?: AbortSignal,
+) {
   const response = await fetch(url, {
     method: "POST",
     headers: { "Content-Type": "application/json", "X-Kaizen-Builder": "1" },
     body: JSON.stringify(input),
     keepalive,
+    signal,
   });
   const result = await response.json();
   if (!response.ok)
@@ -181,6 +187,32 @@ export default function CompanionWindow() {
       .catch((e) => {
         if (live.current) setError(e.message);
       });
+    let checkingServer = false;
+    async function checkServer() {
+      const current = session.current;
+      if (!current || checkingServer) return;
+      checkingServer = true;
+      try {
+        const result = await localRequest(
+          "/__builder-companion",
+          {
+            action: "status",
+            token: current.token,
+            projectId: current.projectId,
+          },
+          false,
+          AbortSignal.timeout(5000),
+        );
+        if (!result.connected) throw new Error("The local session ended.");
+      } catch {
+        if (session.current === current) {
+          disconnect("The helper stopped or restarted. Reconnect to continue.");
+          clearInterval(timer);
+        }
+      } finally {
+        checkingServer = false;
+      }
+    }
     const timer = setInterval(() => {
       if (!peer.current) return;
       if (
@@ -194,7 +226,10 @@ export default function CompanionWindow() {
         );
         ready = false;
         clearInterval(timer);
-      } else send({ type: "kaizen-companion-ping" });
+      } else {
+        send({ type: "kaizen-companion-ping" });
+        void checkServer();
+      }
     }, 10000);
     return () => {
       live.current = false;

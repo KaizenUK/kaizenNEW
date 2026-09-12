@@ -65,6 +65,11 @@ test("M1-T4: the approved helper window survives development reloads and still d
               );
             } else if (
               pathname === "/__builder-companion" &&
+              input.action === "status"
+            ) {
+              res.end(JSON.stringify({ connected }));
+            } else if (
+              pathname === "/__builder-companion" &&
               input.action === "disconnect"
             ) {
               connected = false;
@@ -107,6 +112,7 @@ test("M1-T4: the approved helper window survives development reloads and still d
           if(event.source!==helper||event.origin!==helperOrigin||event.data.channel!==channel)return;
           if(event.data.type==='kaizen-companion-ready')helper.postMessage({type:'kaizen-companion-init',channel,identity:{origin:location.origin,accountId:'fixture',projectId:'fixture',projectName:'Reload fixture'}},helperOrigin);
           if(event.data.type==='kaizen-companion-connected')document.querySelector('#status').textContent='Connected';
+          if(event.data.type==='kaizen-companion-disconnected')document.querySelector('#status').textContent=event.data.error;
           if(event.data.type==='kaizen-companion-result')document.querySelector('#status').textContent=event.data.result?.message||event.data.error;
           if(event.data.type==='kaizen-companion-ping')helper.postMessage({type:'kaizen-companion-pong',channel},helperOrigin);
         });
@@ -152,6 +158,24 @@ test("M1-T4: the approved helper window survives development reloads and still d
     expect(connected).toBe(false);
     await helper.close();
     await control.close();
+
+    // The consent window can outlive its server process. Its window heartbeat
+    // alone must not leave the parent claiming that the folder is connected.
+    const openedAgain = page.waitForEvent("popup");
+    await page.getByRole("button", { name: "Connect helper" }).click();
+    const orphan = await openedAgain;
+    await orphan.getByRole("button", { name: "Allow this folder" }).click();
+    await expect(page.locator("#status")).toHaveText("Connected");
+    await server.close();
+    await expect(page.locator("#status")).toHaveText(
+      "The helper stopped or restarted. Reconnect to continue.",
+      { timeout: 20000 },
+    );
+    expect(orphan.isClosed()).toBe(false);
+    await expect(
+      orphan.getByRole("button", { name: "Stop sharing this folder" }),
+    ).toHaveCount(0);
+    await orphan.close();
   } finally {
     await server.close();
     await rm(root, { recursive: true, force: true });

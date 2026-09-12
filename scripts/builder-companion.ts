@@ -126,6 +126,16 @@ export class CompanionSessions {
   revoke(token: string) {
     this.sessions.delete(token);
   }
+  status(token: string, projectId: string) {
+    const session = this.sessions.get(token);
+    return {
+      connected: Boolean(
+        session &&
+        session.expiresAt > this.now() &&
+        session.projectId === projectId,
+      ),
+    };
+  }
   authorize(token: string, projectId: string, request: Record<string, any>) {
     const session = this.sessions.get(token);
     if (

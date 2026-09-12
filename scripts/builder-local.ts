@@ -307,6 +307,8 @@ export function builderLocalPlugin(): Plugin {
                 return json(413, { error: "Connection request is too large." });
             }
             const input = JSON.parse(body);
+            if (input.action === "status")
+              return json(200, companion.status(input.token, input.projectId));
             if (input.action === "disconnect") {
               companion.revoke(input.token);
               return json(200, { disconnected: true });

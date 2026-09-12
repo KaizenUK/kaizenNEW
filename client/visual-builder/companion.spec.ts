@@ -101,6 +101,9 @@ describe("paired local repository capabilities", () => {
     const sessions = new CompanionSessions(projects, () => now);
     const one = await sessions.connect(identity, root);
     const two = await sessions.connect(identity, root);
+    expect(sessions.status(one.token, one.projectId).connected).toBe(true);
+    expect(sessions.status(one.token, "another-project").connected).toBe(false);
+    expect(sessions.status("unknown", one.projectId).connected).toBe(false);
     const auth = (
       request: Record<string, unknown>,
       token = one.token,
@@ -156,10 +159,12 @@ describe("paired local repository capabilities", () => {
       auth({ action: "repository-inspect", root }, one.token, "kaizen"),
     ).toThrow("expired");
     sessions.revoke(one.token);
+    expect(sessions.status(one.token, one.projectId).connected).toBe(false);
     expect(() => auth({ action: "repository-inspect", root })).toThrow(
       "disconnected",
     );
     now += 2 * 60 * 60 * 1000;
+    expect(sessions.status(two.token, two.projectId).connected).toBe(false);
     expect(() =>
       auth({ action: "repository-inspect", root }, two.token),
     ).toThrow("expired");
