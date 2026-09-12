@@ -7,7 +7,8 @@ import {
   Sparkles,
 } from "lucide-react";
 import type { BuilderPage, Workspace } from "../../shared/visualBuilder";
-import { Head, Pill, formatWhen } from "./shell";
+import { Head, Notice, Pill, formatWhen } from "./shell";
+import { ProjectName } from "./activeProject";
 import PageThumbnail from "./PageThumbnail";
 
 /* The workspace home: every page with its status, plus the two ways to start a new one. */
@@ -92,18 +93,39 @@ export default function PagesView({
           : Date.parse(b.updatedAt) - Date.parse(a.updatedAt),
       );
   }, [pages, filter, query, sort]);
-  const name = email ? email.split("@")[0] : "";
+  const signedIn = Boolean(workspace) || localMode;
   return (
     <>
       <Head
         info={
-          localMode
-            ? "Local workspace"
-            : name
-              ? `Welcome back, ${name}`
-              : "Welcome back"
+          signedIn ? (
+            <ProjectName
+              fallback={localMode ? "Kaizen workspace" : "Kaizen Builder"}
+            />
+          ) : (
+            "Kaizen Builder"
+          )
         }
-        title="Your pages"
+        title="Pages"
+        description={
+          workspace
+            ? "Every page in this project. Drafts stay private until you publish them."
+            : undefined
+        }
+        status={
+          workspace ? (
+            <Pill
+              tone={localMode ? "blue" : "primary"}
+              title={
+                localMode
+                  ? "Pages and files are saved in this computer's local workspace. Publishing here updates the local site only."
+                  : `Signed in as ${email || "an editor"}. Pages are saved to the hosted workspace.`
+              }
+            >
+              {localMode ? "Saved on this computer" : "Hosted workspace"}
+            </Pill>
+          ) : undefined
+        }
       >
         {workspace && (
           <label className="builder-search-field">
@@ -119,31 +141,32 @@ export default function PagesView({
         )}
       </Head>
       <div className="builder-page-body">
-        {localMode && (
-          <p className="builder-local-note">
-            Local workspace · Files and pages are saved on this computer.
-            Publishing here updates your local site; production publishing uses
-            the shared workspace.
+        {loading && (
+          <p role="status" className="builder-hint">
+            Opening your workspace…
           </p>
         )}
-        {loading && <p role="status">Opening your workspace…</p>}
         {error && (
-          <div role="alert" className="builder-error">
+          <Notice
+            tone="error"
+            action={
+              <button type="button" onClick={onRetry}>
+                Try again
+              </button>
+            }
+          >
             {error}
-            <button type="button" onClick={onRetry}>
-              Try again
-            </button>
-          </div>
+          </Notice>
         )}
         {login}
         {workspace && (
           <>
-            <section className="builder-banner" aria-label="Create a page">
+            <section className="builder-banner" aria-label="Add a page">
               <div className="builder-banner-text">
-                <h2>Start something new</h2>
+                <h2>Add a page</h2>
                 <p>
-                  A blank page, or the starter template with a hero, features
-                  and a call to action already in place.
+                  Start with a blank page, or with the starter template that
+                  already has a hero, features and a call to action in place.
                 </p>
                 <div className="builder-banner-actions">
                   <button
@@ -208,7 +231,7 @@ export default function PagesView({
                 <span>Page</span>
                 <span>Status</span>
                 <span>Last edited</span>
-                <span>Published</span>
+                <span className="builder-page-row-published">Published</span>
                 <span />
               </div>
               <div className="builder-page-list">
@@ -238,7 +261,7 @@ export default function PagesView({
                       <span className="builder-page-row-date">
                         {formatWhen(page.updatedAt)}
                       </span>
-                      <span className="builder-page-row-date">
+                      <span className="builder-page-row-date builder-page-row-published">
                         {page.published
                           ? formatWhen(page.publishedAt) === "—"
                             ? "Published"
@@ -253,14 +276,14 @@ export default function PagesView({
               {!pages.length && (
                 <div className="builder-empty-pages">
                   <LayoutTemplate size={28} aria-hidden="true" />
-                  <strong>Your first page starts here</strong>
+                  <strong>No pages yet</strong>
                   <span>
-                    Choose a blank page or the starter template above.
+                    Add a blank page or use the starter template above.
                   </span>
                 </div>
               )}
               {pages.length > 0 && !visible.length && (
-                <p className="builder-empty">No pages match.</p>
+                <p className="builder-empty">No pages match your search.</p>
               )}
             </section>
           </>

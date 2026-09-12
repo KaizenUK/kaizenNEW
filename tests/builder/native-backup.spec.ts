@@ -64,14 +64,12 @@ test("Unity restores an independent native repository and its unapplied source d
     beta = await create("Native restored");
   await page.goto(`/builder/?project=${alpha.id}`);
   await page
-    .getByRole("button", { name: "Export & repositories", exact: true })
+    .getByRole("button", { name: "Export & handoff", exact: true })
     .click();
-  await page.getByLabel("Absolute repository folder").fill(root);
+  await page.getByLabel("Website folder on this computer").fill(root);
+  await page.getByRole("button", { name: "Check folder", exact: true }).click();
   await page
-    .getByRole("button", { name: "Inspect repository", exact: true })
-    .click();
-  await page
-    .getByRole("button", { name: "Edit existing content", exact: true })
+    .getByRole("button", { name: "Edit text and links", exact: true })
     .click();
   const editor = page.getByRole("region", {
     name: "Existing page content editor",
@@ -80,16 +78,16 @@ test("Unity restores an independent native repository and its unapplied source d
   await editor.getByRole("textbox").fill("Recovered pending headline 🌿");
   await expect(
     editor.getByRole("status", { name: "Source editing draft" }),
-  ).toContainText("Editing draft saved");
-  await editor.getByRole("button", { name: "Close source editor" }).click();
+  ).toContainText("Edits saved on this computer");
+  await editor.getByRole("button", { name: "Close editor" }).click();
   const backup = page.getByRole("region", { name: "Native repository backup" });
   await backup
     .getByRole("button", {
-      name: "Review native repository backup",
+      name: "Prepare folder backup",
       exact: true,
     })
     .click();
-  await expect(backup).toContainText("1 saved editing drafts");
+  await expect(backup).toContainText("1 unapplied edits");
   for (const width of [1440, 390]) {
     await page.setViewportSize({ width, height: 1000 });
     expect(
@@ -102,49 +100,43 @@ test("Unity restores an independent native repository and its unapplied source d
     });
   }
   const download = page.waitForEvent("download");
-  await backup
-    .getByRole("button", { name: "Download reviewed native backup" })
-    .click();
+  await backup.getByRole("button", { name: "Download folder backup" }).click();
   const file = path.join(parent, "native-backup.zip");
   await (await download).saveAs(file);
   await page.reload();
   await page
-    .getByRole("button", { name: "Export & repositories", exact: true })
+    .getByRole("button", { name: "Export & handoff", exact: true })
     .click();
-  await expect(page.getByLabel("Absolute repository folder")).toHaveValue(root);
+  await expect(page.getByLabel("Website folder on this computer")).toHaveValue(
+    root,
+  );
   await page.goto(`/builder/?project=${beta.id}`);
   await page
-    .getByRole("button", { name: "Export & repositories", exact: true })
+    .getByRole("button", { name: "Export & handoff", exact: true })
     .click();
-  await expect(page.getByLabel("Absolute repository folder")).toHaveValue("");
-  await backup.getByLabel("Native repository backup ZIP").setInputFiles(file);
-  await backup.getByLabel("New restore folder").fill(target);
-  await backup
-    .getByRole("button", { name: "Review native repository restore" })
-    .click();
-  await expect(backup).toContainText("1 saved editing drafts");
-  await backup
-    .getByRole("button", { name: "Restore reviewed native repository" })
-    .click();
+  await expect(page.getByLabel("Website folder on this computer")).toHaveValue(
+    "",
+  );
+  await backup.getByLabel("Backup ZIP file").setInputFiles(file);
+  await backup.getByLabel("New folder to restore into").fill(target);
+  await backup.getByRole("button", { name: "Check backup file" }).click();
+  await expect(backup).toContainText("1 unapplied edits");
+  await backup.getByRole("button", { name: "Restore into new folder" }).click();
   await expect(backup.getByRole("status")).toContainText("Restored");
-  await expect(page.getByLabel("Absolute repository folder")).toHaveValue(
+  await expect(page.getByLabel("Website folder on this computer")).toHaveValue(
     target,
   );
+  await page.getByRole("button", { name: "Check folder", exact: true }).click();
   await page
-    .getByRole("button", { name: "Inspect repository", exact: true })
-    .click();
-  await page
-    .getByRole("button", { name: "Edit existing content", exact: true })
+    .getByRole("button", { name: "Edit text and links", exact: true })
     .click();
   await editor.getByRole("searchbox").fill("Native backup headline");
   await expect(editor.getByRole("textbox")).toHaveValue(
     "Recovered pending headline 🌿",
   );
-  await editor
-    .getByRole("button", { name: "Review existing-page changes" })
-    .click();
+  await editor.getByRole("button", { name: "Review my changes" }).click();
   await page
-    .getByRole("button", { name: "Apply reviewed file changes" })
+    .getByRole("button", { name: "Apply changes to the folder" })
     .click();
   await expect(
     page.locator(".builder-repository > [role=status]"),
@@ -166,14 +158,12 @@ test("Unity restores an independent native repository and its unapplied source d
     },
   );
   await page
-    .getByRole("button", { name: "Review build command", exact: true })
+    .getByRole("button", { name: "Check build command", exact: true })
     .click();
-  await page
-    .getByRole("button", { name: "Run reviewed build", exact: true })
-    .click();
+  await page.getByRole("button", { name: "Run build", exact: true }).click();
   await expect(
     page.locator(".builder-repository-build [role=status]"),
-  ).toContainText("Build succeeded", { timeout: 90000 });
+  ).toContainText("Build finished", { timeout: 90000 });
   const opened = context.waitForEvent("page");
   await page.getByRole("link", { name: "Open local website preview" }).click();
   const preview = await opened;

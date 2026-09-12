@@ -5,7 +5,9 @@ test("release controls show observed states and require an explicit rollback/unp
   page,
 }) => {
   await page.goto("/builder/");
-  await expect(page.getByRole("heading", { name: /Your pages/ })).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "Pages", exact: true }),
+  ).toBeVisible();
   const document = newDocument(
     "Published campaign",
     "published-campaign",

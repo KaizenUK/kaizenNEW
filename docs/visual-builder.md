@@ -23,9 +23,9 @@ For a static local publication check, set `BUILDER_LOCAL_BUILD=1` for a build. N
 
 The builder chrome follows the Unity Dashboard Kit (Poppins headings, Inter body, purple `#6C5DD3` primary, 24px cards). The tokens live at the top of `client/visual-builder/builder.css`; the shell components are in `client/visual-builder/shell.tsx`.
 
-- A permanent left sidebar reaches Pages, Site design, Asset library, Releases (shared workspace only, with a badge counting pages that have unpublished changes), URL redirects, Private previews, Project backups and Existing site pages. The footer toggles dark mode (remembered per browser) and links back to the live site.
+- A permanent left sidebar reaches Pages, Site design, Assets, Releases (shared workspace only, with a badge counting pages that have unpublished changes), URL redirects, Private previews, Project backups and Existing site pages. The footer toggles dark mode (remembered per browser) and links back to the live site.
 - **Pages** lists every page with a live thumbnail, a status pill (Draft, Published, or Changes to publish, judged from edit times after the last publication), filter tabs, search and sorting. The purple banner creates a blank page or the starter template.
-- **Asset library** opens the same library that the editor shows in its Assets panel, so packs can be managed without opening a page.
+- **Assets** opens the same library that the editor shows in its Assets panel, so packs can be managed without opening a page.
 - The editor keeps undo/redo, device preview, the page URL, save status, Save, Preview, Export ZIP and Publish in one top bar. The left panel offers Blocks (searchable, ready-made sections first), Assets and Layers; the right panel offers Design, Page, Styles and Revisions. Selected blocks can be copied, pasted, duplicated or deleted from the inspector header.
 - **Publish** opens a check first: a search-result preview and a short list covering title, URL, shared header/footer, search description and indexing. Publishing proceeds from that dialog; nothing goes live from the top bar directly.
 
@@ -106,7 +106,7 @@ React exports capture current resolved content and bundle referenced images. Lin
 
 ## Editable project backups
 
-**Project backups** downloads a versioned ZIP with editable pages, assets, saved content, shared definitions/styles, redirect data and bounded history. Restore previews its changes, validates paths/checksums, remaps uploaded asset references and commits drafts/metadata atomically with optimistic version checks.
+**Backups** downloads a versioned ZIP with editable pages, assets, saved content, shared definitions/styles, redirect data and bounded history. Restore previews its changes, validates paths/checksums, remaps uploaded asset references and commits drafts/metadata atomically with optimistic version checks.
 
 Restore retains current live publications and unrelated pages. Imported published snapshots become revision data, not live pages. A pre-restore draft remains in history. Redirect restore changes the draft only. Existing external media, CMS data and receiving services remain external dependencies. Credentials, enquiries, preview records and deployed artifacts are not part of the backup.
 
@@ -130,9 +130,9 @@ There are at most 50 active previews per workspace with a two-million-character 
 
 Migration `202609100009_builder_previews.sql` enables hosted previews. Supabase's approved sign-in return URLs and email templates must preserve the preview query. Actual hosted sign-in return and access verification remain outstanding.
 
-## Editing URL redirects
+## Editing redirects
 
-**URL redirects** provides a saved draft, review of added/changed/removed rules, explicit publication and history restoration. Directory URLs cover both slash forms and builder redirect responses preserve query parameters. Temporary 302 is the default; browsers can retain a permanent 301 after it changes.
+**Redirects** provides a saved draft, review of added/changed/removed rules, explicit publication and history restoration. Directory URLs cover both slash forms and builder redirect responses preserve query parameters. Temporary 302 is the default; browsers can retain a permanent 301 after it changes.
 
 Rules use internal paths with letters, digits, slashes, dots, hyphens and underscores, up to 200 characters and 200 rules. External URLs, query-specific matches and regular expressions are unsupported. Current pages, existing site sections and editor/service paths cannot be claimed as sources. Publish a destination first. Update/remove affected redirects before changing their destination page's live URL; local page and shared-site publication now validate the entire candidate before writing it.
 

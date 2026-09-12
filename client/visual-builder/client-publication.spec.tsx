@@ -35,13 +35,17 @@ describe("frozen client publication", () => {
     const workspace = libraryFixture();
     workspace.assets[0].name = "A friendly landscape name";
     for (const asset of workspace.assets)
-      asset.hash = createHash("sha256").update(new Uint8Array(100)).digest("hex");
+      asset.hash = createHash("sha256")
+        .update(new Uint8Array(100))
+        .digest("hex");
     const output = await compileClientPublication(
       captureClientPublication(crypto.randomUUID(), workspace),
       async () => new Uint8Array(100),
       () => {},
     );
-    const image = Object.keys(output.files).find((name) => name.startsWith(`assets/${workspace.assets[0].id}-`))!;
+    const image = Object.keys(output.files).find((name) =>
+      name.startsWith(`assets/${workspace.assets[0].id}-`),
+    )!;
     expect(image).toMatch(/original-[a-f0-9]{16}\.png$/);
     expect(strFromU8(output.files["index.html"])).toContain(`src="/${image}"`);
   });

@@ -33,12 +33,10 @@ beforeEach(() => {
   vi.stubEnv("VITE_BUILDER_CLOUD", "1");
   vi.useFakeTimers();
   (globalThis as any).IS_REACT_ACT_ENVIRONMENT = true;
-  mocks.sign
-    .mockReset()
-    .mockResolvedValue({
-      data: { signedUrl: "https://storage.test/old" },
-      error: null,
-    });
+  mocks.sign.mockReset().mockResolvedValue({
+    data: { signedUrl: "https://storage.test/old" },
+    error: null,
+  });
   element = document.createElement("div");
   document.body.append(element);
   root = createRoot(element);

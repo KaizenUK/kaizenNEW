@@ -66,22 +66,23 @@ test("Unity repository handoff reviews changes and reopens for another visual ed
   ).toBeTruthy();
   await page.goto(`/builder/?project=${project.id}`);
   await page
-    .getByRole("button", { name: "Export & repositories", exact: true })
+    .getByRole("button", { name: "Export & handoff", exact: true })
     .click();
   await page
-    .getByRole("textbox", { name: "Absolute repository folder" })
+    .getByRole("textbox", { name: "Website folder on this computer" })
     .fill(root);
-  await page
-    .getByRole("button", { name: "Inspect repository", exact: true })
-    .click();
+  await page.getByRole("button", { name: "Check folder", exact: true }).click();
   await expect(page.locator(".builder-repository")).toContainText(
     "code-managed",
   );
   await page
-    .getByRole("button", { name: "Prepare file proposal", exact: true })
+    .getByRole("button", {
+      name: "Add builder pages to this folder",
+      exact: true,
+    })
     .click();
   await expect(
-    page.getByRole("heading", { name: "Proposed repository changes" }),
+    page.getByRole("heading", { name: "Changes to apply" }),
   ).toBeVisible();
   await expect(
     readFile(path.join(root, "src/pages/about.astro")),
@@ -91,7 +92,7 @@ test("Unity repository handoff reviews changes and reopens for another visual ed
     fullPage: true,
   });
   await page
-    .getByRole("button", { name: "Apply reviewed file changes", exact: true })
+    .getByRole("button", { name: "Apply changes to the folder", exact: true })
     .click();
   await expect(page.getByRole("status")).toContainText("Files applied");
   expect(
@@ -102,7 +103,7 @@ test("Unity repository handoff reviews changes and reopens for another visual ed
   );
   await page
     .getByRole("button", {
-      name: "Reopen as a separate editable project",
+      name: "Open folder as a new project",
       exact: true,
     })
     .click();

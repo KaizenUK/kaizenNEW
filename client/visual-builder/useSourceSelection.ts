@@ -26,7 +26,9 @@ export function useSourceSelection(inspection?: SourceInspection) {
       if (event.data.type === "kaizen-source-ready") {
         clearTimeout(timeout.current);
         setError("");
-        setStatus("Rendered selection is ready in the preview window.");
+        setStatus(
+          "Preview ready. Click any text in it to find that text here.",
+        );
       } else if (
         event.data.type === "kaizen-source-select" &&
         Array.isArray(event.data.ids)
@@ -40,7 +42,7 @@ export function useSourceSelection(inspection?: SourceInspection) {
         setStatus(
           valid.length
             ? `${valid.length} matching source fields. Choose the intended field; shared or repeated content may have multiple matches.`
-            : "No editable literal matched this selection. Use the full field list or its original data source.",
+            : "That text can't be changed here. It may come from the CMS or from code. Use the full field list instead.",
         );
       }
     };
@@ -68,15 +70,15 @@ export function useSourceSelection(inspection?: SourceInspection) {
       return;
     }
     try {
-      child.document.title = "Opening source selection";
+      child.document.title = "Opening the preview";
       child.document.body.textContent =
-        "Checking the built page against the current source…";
+        "Checking the preview matches the current files…";
       const jobId = sessionStorage.getItem(
         `kaizen-build:${activeProjectId}:${inspection.root}`,
       );
       if (!jobId)
         throw new Error(
-          "Use Build & local preview to review and run this repository’s build first.",
+          "Build a preview first (see Preview the website below).",
         );
       const preview = await storage.repository({
         action: "repository-source-preview",
@@ -90,19 +92,17 @@ export function useSourceSelection(inspection?: SourceInspection) {
       }
       if (JSON.stringify(preview.files) !== JSON.stringify(inspection.files))
         throw new Error(
-          "Source changed since opening this editor. Reopen the source editor and rebuild.",
+          "The website's files changed since you opened this. Close and reopen the editor, then build again.",
         );
       const url = new URL(preview.url);
       if (url.protocol !== "http:" || url.hostname !== "127.0.0.1")
-        throw new Error(
-          "The companion returned an invalid local preview address.",
-        );
+        throw new Error("The helper returned an invalid preview address.");
       session.current = { nonce: preview.nonce, origin: url.origin };
-      setStatus("Opening rendered selection…");
+      setStatus("Opening the preview…");
       timeout.current = setTimeout(
         () =>
           setError(
-            "Selection did not connect. The page may block preview scripts, or the window was closed. Reopen the selector or use source fields.",
+            "The preview did not connect. The page may block scripts, or the window was closed. Try again or use the field list.",
           ),
         15000,
       );
@@ -119,7 +119,7 @@ export function useSourceSelection(inspection?: SourceInspection) {
     open,
     clear: () => {
       setIds(undefined);
-      setStatus("Showing all source fields.");
+      setStatus("Showing all fields.");
     },
   };
 }

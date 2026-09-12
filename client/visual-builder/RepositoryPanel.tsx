@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { Download, FolderSearch } from "lucide-react";
 import type {
   RepositoryInspection,
   RepositoryPlan,
@@ -9,6 +10,10 @@ import RepositoryBuild from "./RepositoryBuild";
 import SourcePageEditor from "./SourcePageEditor";
 import NativeRepositoryBackup from "./NativeRepositoryBackup";
 import { activeProjectId } from "./projectStorage";
+import { Card, Head, Notice, Pill } from "./shell";
+import { ProjectName } from "./activeProject";
+
+/* Getting the project out of the builder: a website ZIP for hosting, or reviewed changes to a developer's repository. */
 
 async function base64(blob: Blob): Promise<string> {
   return new Promise((resolve, reject) => {
@@ -18,16 +23,23 @@ async function base64(blob: Blob): Promise<string> {
     reader.readAsDataURL(blob);
   });
 }
+const ownershipLabels: Record<string, string> = {
+  "builder-editable": "Builder page",
+  "code-managed": "Managed in code",
+  "developer-integration": "Needs a developer",
+};
 export default function RepositoryPanel({
   existingPath,
   remoteRoot,
   remoteOrigin,
   repositoryEnabled = true,
+  intro,
 }: {
   existingPath?: string;
   remoteRoot?: string;
   remoteOrigin?: string;
   repositoryEnabled?: boolean;
+  intro?: React.ReactNode;
 }) {
   const [root, setRoot] = useState("");
   const [inspection, setInspection] = useState<RepositoryInspection>();
@@ -77,7 +89,7 @@ export default function RepositoryPanel({
         });
         if (!file)
           throw new Error(
-            "This route uses dynamic data or has moved. Inspect its repository source or open the CMS.",
+            "This page uses live data or has moved. Check the website folder or open the CMS.",
           );
         setSourceRoute(file.file);
       })
@@ -117,248 +129,266 @@ export default function RepositoryPanel({
     );
   }
   return (
-    <section className="builder-panel-body builder-repository">
-      <div className="builder-section-heading">
-        <div>
-          <h1>Export & local repositories</h1>
-          <p>
-            Deliver the selected project or integrate it into a repository
-            cloned with GitHub Desktop.
-          </p>
-        </div>
-      </div>
-      <div className="builder-card builder-project-card">
-        <h2>Website and editable source</h2>
-        <p>
-          The website ZIP contains independently buildable React source and
-          static pages. Its separate .kaizen/project.zip backup preserves visual
-          structure, original assets, shared content and history. Deploy only
-          dist/.
-        </p>
-        <button
-          disabled={busy}
-          onClick={() =>
-            void run(async () => {
-              const result = await exportSaved();
-              downloadProject(result.blob);
-              setStatus(
-                `Website and editable source exported. Read HANDOFF.md and EDITABILITY.md.${result.warnings.length ? " Review the missing links and integration warnings in HANDOFF.md." : ""}`,
-              );
-            })
-          }
+    <>
+      <Head
+        info={<ProjectName />}
+        title="Export & handoff"
+        description="Download the finished website to host anywhere, or work directly with the website's code folder on this computer."
+      />
+      <div className="builder-page-body builder-repository">
+        <Card
+          title="Download the website"
+          description="A ZIP with the finished website (upload the dist folder to any host) and its React source. It also includes an editable copy at .kaizen/project.zip so the project can be opened in the builder again later."
         >
-          Download website export
-        </button>
-      </div>
-      {repositoryEnabled && (
-        <>
-          <div className="builder-card builder-project-card">
-            <h2>Local companion</h2>
-            <p>
-              This runs through your local Astro development server and can
-              inspect folders on this computer. Hosted browsers cannot freely
-              open local repositories. Supported: Astro + React, Kaizen exports
-              and empty repositories. Existing Astro and React pages can expose
-              their original text, links, images and Astro section order below.
-              Dynamic data keeps its existing CMS or code connection.
-            </p>
-            <form
-              onSubmit={(event) => {
-                event.preventDefault();
+          <div className="builder-row builder-actions">
+            <button
+              type="button"
+              className="builder-primary"
+              disabled={busy}
+              onClick={() =>
                 void run(async () => {
-                  setPlan(undefined);
-                  setSourceRoute(undefined);
-                  setInspection(
-                    await storage.repository({
-                      action: "repository-inspect",
-                      root,
-                    }),
+                  const result = await exportSaved();
+                  downloadProject(result.blob);
+                  setStatus(
+                    `Website exported. Read HANDOFF.md and EDITABILITY.md inside the ZIP.${result.warnings.length ? " HANDOFF.md also lists missing links and integration warnings to review." : ""}`,
                   );
-                });
-              }}
+                })
+              }
             >
-              <label>
-                Absolute repository folder
-                <input
-                  required
-                  value={root}
-                  readOnly={Boolean(remoteRoot)}
-                  placeholder="C:\Users\you\Documents\GitHub\client-site"
-                  onChange={(event) => {
-                    setRoot(event.target.value);
-                    setInspection(undefined);
+              <Download size={16} /> Download website ZIP
+            </button>
+          </div>
+        </Card>
+        {intro}
+        {repositoryEnabled && (
+          <>
+            <Card
+              title="Edit the website's code folder"
+              description="For websites that live in a code folder (a Git repository, usually from GitHub Desktop). Point the builder at the folder to change page text and links, add builder pages, or build a preview. Nothing is installed, committed or published for you. Works with Astro + React sites, Kaizen exports and empty folders."
+            >
+              <form
+                className="builder-inline-form"
+                onSubmit={(event) => {
+                  event.preventDefault();
+                  void run(async () => {
                     setPlan(undefined);
                     setSourceRoute(undefined);
-                  }}
-                />
-              </label>
-              <button disabled={busy}>Inspect repository</button>
-            </form>
-            {inspection && (
-              <>
-                <p>
-                  <strong>{inspection.framework}</strong> · {inspection.root}
-                </p>
-                <p>{inspection.explanation}</p>
-                <ul>
-                  {inspection.routes.map((route) => (
-                    <li key={route.file}>
-                      <code>{route.file}</code> — {route.ownership}
-                      {route.ownership !== "builder-editable" &&
-                        /\.(astro|tsx|jsx)$/.test(route.file) && (
-                          <button
-                            type="button"
-                            disabled={busy}
-                            onClick={() => {
-                              setSourceRoute(route.file);
-                              setPlan(undefined);
-                            }}
-                          >
-                            Edit existing content
-                          </button>
-                        )}
-                    </li>
-                  ))}
-                </ul>
-                <div className="builder-project-actions">
-                  <button
-                    disabled={busy || inspection.framework === "unsupported"}
-                    onClick={() =>
-                      void run(async () => {
-                        const result = await exportSaved();
-                        if (result.blob.size > 35 * 1024 * 1024)
-                          throw new Error(
-                            "The local browser integration supports exports up to 35 MB. Download the website ZIP for a larger handoff.",
+                    setInspection(
+                      await storage.repository({
+                        action: "repository-inspect",
+                        root,
+                      }),
+                    );
+                  });
+                }}
+              >
+                <label>
+                  Website folder on this computer
+                  <input
+                    required
+                    value={root}
+                    readOnly={Boolean(remoteRoot)}
+                    placeholder="/home/you/Documents/GitHub/client-site"
+                    onChange={(event) => {
+                      setRoot(event.target.value);
+                      setInspection(undefined);
+                      setPlan(undefined);
+                      setSourceRoute(undefined);
+                    }}
+                  />
+                </label>
+                <button disabled={busy}>
+                  <FolderSearch size={16} /> Check folder
+                </button>
+              </form>
+              {inspection && (
+                <div className="builder-inspection">
+                  <p>
+                    <strong>{inspection.framework}</strong> · {inspection.root}
+                  </p>
+                  <p className="builder-hint">{inspection.explanation}</p>
+                  <ul className="builder-route-list">
+                    {inspection.routes.map((route) => (
+                      <li key={route.file}>
+                        <code>{route.file}</code>
+                        <Pill
+                          tone={
+                            route.ownership === "builder-editable"
+                              ? "green"
+                              : "grey"
+                          }
+                        >
+                          {ownershipLabels[route.ownership] || route.ownership}
+                        </Pill>
+                        {route.ownership !== "builder-editable" &&
+                          /\.(astro|tsx|jsx)$/.test(route.file) && (
+                            <button
+                              type="button"
+                              disabled={busy}
+                              onClick={() => {
+                                setSourceRoute(route.file);
+                                setPlan(undefined);
+                              }}
+                            >
+                              Edit text and links
+                            </button>
+                          )}
+                      </li>
+                    ))}
+                  </ul>
+                  <div className="builder-row builder-actions">
+                    <button
+                      type="button"
+                      disabled={busy || inspection.framework === "unsupported"}
+                      onClick={() =>
+                        void run(async () => {
+                          const result = await exportSaved();
+                          if (result.blob.size > 35 * 1024 * 1024)
+                            throw new Error(
+                              "Adding to a folder works for exports up to 35 MB. Download the website ZIP for anything larger.",
+                            );
+                          setPlan(
+                            await storage.repository({
+                              action: "repository-prepare",
+                              root: inspection.root,
+                              archive: await base64(result.blob),
+                            }),
                           );
-                        setPlan(
-                          await storage.repository({
-                            action: "repository-prepare",
+                          setStatus(
+                            "Check each change below, then apply. Nothing has been written to the folder yet.",
+                          );
+                        })
+                      }
+                    >
+                      Add builder pages to this folder
+                    </button>
+                    <button
+                      type="button"
+                      disabled={busy || inspection.framework === "unsupported"}
+                      onClick={() =>
+                        void run(async () => {
+                          const project = await storage.repository({
+                            action: "repository-open",
                             root: inspection.root,
-                            archive: await base64(result.blob),
-                          }),
-                        );
-                        setStatus(
-                          "Review every proposed change before applying. Nothing has been written to the repository.",
-                        );
-                      })
-                    }
-                  >
-                    Prepare file proposal
-                  </button>
+                          });
+                          const url = `/builder/?project=${encodeURIComponent(project.id)}`;
+                          if (remoteOrigin)
+                            location.assign(new URL(url, remoteOrigin).href);
+                          else location.assign(url);
+                        })
+                      }
+                    >
+                      {remoteOrigin
+                        ? "Open in the local builder"
+                        : "Open folder as a new project"}
+                    </button>
+                  </div>
+                  {remoteOrigin && (
+                    <p className="builder-hint">
+                      This opens the folder's saved builder copy as a separate
+                      project in the local builder.
+                    </p>
+                  )}
+                </div>
+              )}
+            </Card>
+            {inspection && sourceRoute && (
+              <SourcePageEditor
+                key={`${inspection.root}:${sourceRoute}`}
+                root={inspection.root}
+                route={sourceRoute}
+                onPlan={setPlan}
+                onDirty={() => setPlan(undefined)}
+                onClose={() => setSourceRoute(undefined)}
+              />
+            )}
+            {plan && (
+              <Card
+                className="builder-review"
+                ariaLabel="Changes to apply"
+                title="Changes to apply"
+                description={`${plan.root} · These files will change in the website folder. Check them, then apply. GitHub Desktop will show the changes; committing and publishing are separate steps.`}
+              >
+                <div className="builder-change-list">
+                  {plan.changes
+                    .filter((change) => change.action !== "unchanged")
+                    .map((change) => (
+                      <details key={change.file}>
+                        <summary>
+                          <strong>{change.action}</strong> · {change.file}
+                          {change.conflict ? " — conflict" : ""}
+                        </summary>
+                        {change.conflict && (
+                          <Notice tone="error">{change.conflict}</Notice>
+                        )}
+                        {change.preview && <pre>{change.preview}</pre>}
+                      </details>
+                    ))}
+                </div>
+                {plan.conflicts.length > 0 && (
+                  <Notice tone="error">
+                    {plan.conflicts.length} files already changed in the folder.
+                    Sort those out in your code editor, then try again. Nothing
+                    will be overwritten.
+                  </Notice>
+                )}
+                <div className="builder-row builder-actions">
                   <button
-                    disabled={busy || inspection.framework === "unsupported"}
+                    type="button"
+                    className="builder-primary"
+                    disabled={busy || plan.conflicts.length > 0}
                     onClick={() =>
                       void run(async () => {
-                        const project = await storage.repository({
-                          action: "repository-open",
-                          root: inspection.root,
+                        const result = await storage.repository({
+                          action: "repository-apply",
+                          planId: plan.id,
                         });
-                        const url = `/builder/?project=${encodeURIComponent(project.id)}`;
-                        if (remoteOrigin)
-                          location.assign(new URL(url, remoteOrigin).href);
-                        else location.assign(url);
+                        setPlan(undefined);
+                        setSourceRoute(undefined);
+                        setStatus(result.message);
                       })
                     }
                   >
-                    {remoteOrigin
-                      ? "Open in local builder"
-                      : "Reopen as a separate editable project"}
+                    Apply changes to the folder
                   </button>
                 </div>
-                {remoteOrigin && (
-                  <p>
-                    Opening in the local builder creates a separate editable
-                    project from the repository's builder backup.
-                  </p>
-                )}
-              </>
+              </Card>
             )}
-          </div>
-          {inspection && sourceRoute && (
-            <SourcePageEditor
-              key={`${inspection.root}:${sourceRoute}`}
-              root={inspection.root}
-              route={sourceRoute}
-              onPlan={setPlan}
-              onDirty={() => setPlan(undefined)}
-              onClose={() => setSourceRoute(undefined)}
-            />
-          )}
-          <NativeRepositoryBackup
-            approvedRoot={remoteRoot}
-            root={
-              inspection?.framework === "astro-react"
-                ? inspection.root
-                : undefined
-            }
-            onRestored={(restored) => {
-              setRoot(restored);
-              setInspection(undefined);
-              setPlan(undefined);
-              setSourceRoute(undefined);
-              try {
-                localStorage.setItem(repositoryKey, restored);
-              } catch {
-                /* Keep the restored path visible. */
-              }
-            }}
-          />
-          {inspection &&
-            ["astro-react", "kaizen-export"].includes(inspection.framework) && (
-              <RepositoryBuild key={inspection.root} root={inspection.root} />
-            )}
-          {plan && (
-            <div className="builder-card builder-project-card">
-              <h2>Proposed repository changes</h2>
-              <p>{plan.root}</p>
-              <p>
-                Review in this panel, then apply. GitHub Desktop will show the
-                resulting uncommitted changes. Saving, committing and deploying
-                are separate actions.
-              </p>
-              {plan.changes
-                .filter((change) => change.action !== "unchanged")
-                .map((change) => (
-                  <details key={change.file}>
-                    <summary>
-                      <strong>{change.action}</strong> · {change.file}
-                      {change.conflict ? " — conflict" : ""}
-                    </summary>
-                    {change.conflict && <p role="alert">{change.conflict}</p>}
-                    {change.preview && <pre>{change.preview}</pre>}
-                  </details>
-                ))}
-              <button
-                className="builder-primary"
-                disabled={busy || plan.conflicts.length > 0}
-                onClick={() =>
-                  void run(async () => {
-                    const result = await storage.repository({
-                      action: "repository-apply",
-                      planId: plan.id,
-                    });
-                    setPlan(undefined);
-                    setSourceRoute(undefined);
-                    setStatus(result.message);
-                  })
-                }
-              >
-                Apply reviewed file changes
-              </button>
-              {plan.conflicts.length > 0 && (
-                <p role="alert">
-                  Resolve {plan.conflicts.length} conflicts in your code editor
-                  and prepare a new proposal. Existing changes will not be
-                  overwritten.
-                </p>
+            {inspection &&
+              ["astro-react", "kaizen-export"].includes(
+                inspection.framework,
+              ) && (
+                <RepositoryBuild key={inspection.root} root={inspection.root} />
               )}
-            </div>
-          )}
-        </>
-      )}
-      {busy && <p role="status">{status || "Working…"}</p>}
-      {!busy && status && <p role="status">{status}</p>}
-      {error && <p role="alert">{error}</p>}
-    </section>
+            <NativeRepositoryBackup
+              approvedRoot={remoteRoot}
+              root={
+                inspection?.framework === "astro-react"
+                  ? inspection.root
+                  : undefined
+              }
+              onRestored={(restored) => {
+                setRoot(restored);
+                setInspection(undefined);
+                setPlan(undefined);
+                setSourceRoute(undefined);
+                try {
+                  localStorage.setItem(repositoryKey, restored);
+                } catch {
+                  /* Keep the restored path visible. */
+                }
+              }}
+            />
+          </>
+        )}
+        {busy && (
+          <p role="status" className="builder-hint">
+            {status || "Working…"}
+          </p>
+        )}
+        {!busy && status && <Notice tone="success">{status}</Notice>}
+        {error && <Notice tone="error">{error}</Notice>}
+      </div>
+    </>
   );
 }

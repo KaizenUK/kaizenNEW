@@ -547,7 +547,9 @@ export const builderConfig: Config = {
               : {}),
             // Puck needs slots in the structural field map before resolveFields runs.
             // The selected registration controls whether this slot is exposed.
-            ...(isContainer || type === "Registered" ? { children: { type: "slot" } } : {}),
+            ...(isContainer || type === "Registered"
+              ? { children: { type: "slot" } }
+              : {}),
             style: {
               type: "custom",
               label: "Layout & appearance",

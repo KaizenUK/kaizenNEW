@@ -116,13 +116,11 @@ describe("Sanity content bindings", () => {
     expect(() => validateDocument(document)).toThrow("listing settings");
   });
   it("uses a fixed published-only query and treats CMS failure as failure", async () => {
-    const fetcher = vi
-      .fn()
-      .mockResolvedValue(
-        new Response(JSON.stringify({ result: contentFixture }), {
-          status: 200,
-        }),
-      );
+    const fetcher = vi.fn().mockResolvedValue(
+      new Response(JSON.stringify({ result: contentFixture }), {
+        status: 200,
+      }),
+    );
     await fetchContentCatalogue(
       {
         projectId: "test-project",

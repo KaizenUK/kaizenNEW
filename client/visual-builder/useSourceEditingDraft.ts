@@ -50,15 +50,13 @@ export function useSourceEditingDraft(inspection?: SourceInspection) {
         ) {
           setStale(draft.edits);
           setStatus(
-            "Repository source changed. Your saved editing draft is retained below.",
+            "The website's files changed since you edited them. Your edits are kept below.",
           );
         } else {
           setValues(draft.edits?.values || {});
           setOrders(draft.edits?.orders || {});
           setStatus(
-            draft.edits
-              ? "Restored saved editing draft."
-              : "No unapplied edits.",
+            draft.edits ? "Restored your saved edits." : "No changes yet.",
           );
         }
         setReady(true);
@@ -74,7 +72,7 @@ export function useSourceEditingDraft(inspection?: SourceInspection) {
     if (running.current) return running.current;
     if (blocked.current)
       return Promise.reject(
-        new Error(error || "The editing draft could not be saved."),
+        new Error(error || "Your edits could not be saved."),
       );
     const work = async () => {
       while (pending.current) {
@@ -83,7 +81,7 @@ export function useSourceEditingDraft(inspection?: SourceInspection) {
           pending.current = undefined;
           break;
         }
-        if (mounted.current) setStatus("Saving editing draft…");
+        if (mounted.current) setStatus("Saving edits…");
         try {
           const saved: SourceDraft = await storage.repository({
             action: "repository-source-draft-save",
@@ -98,8 +96,8 @@ export function useSourceEditingDraft(inspection?: SourceInspection) {
           if (mounted.current) {
             setStatus(
               saved.edits
-                ? "Editing draft saved on this computer."
-                : "No unapplied edits.",
+                ? "Edits saved on this computer. Not applied to the website yet."
+                : "No changes yet.",
             );
             setError("");
           }
@@ -108,7 +106,7 @@ export function useSourceEditingDraft(inspection?: SourceInspection) {
           if (mounted.current) {
             setError(e.message);
             setStatus(
-              "Editing draft not saved. Keep this window open or download your edits.",
+              "Edits not saved. Keep this window open or download them.",
             );
           }
           throw e;
@@ -122,9 +120,7 @@ export function useSourceEditingDraft(inspection?: SourceInspection) {
   }
   function flush() {
     if (!inspection || !ready)
-      return Promise.reject(
-        new Error("Wait for the saved editing draft to load."),
-      );
+      return Promise.reject(new Error("Wait for your saved edits to load."));
     if (stale)
       return Promise.reject(
         new Error("Recover or discard the saved edits before continuing."),
@@ -163,7 +159,7 @@ export function useSourceEditingDraft(inspection?: SourceInspection) {
     setOrders({});
     setStale(undefined);
     setError("");
-    setStatus("Saved editing draft discarded; original source is unchanged.");
+    setStatus("Saved edits discarded. The website's files are unchanged.");
   }
   function download() {
     const url = URL.createObjectURL(

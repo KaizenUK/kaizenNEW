@@ -29,9 +29,7 @@ test("client settings persist independently and copied projects disconnect servi
     ).ok(),
   ).toBeTruthy();
   await page.goto(`/builder/?project=${alpha.id}`);
-  await page
-    .getByRole("button", { name: "Client settings", exact: true })
-    .click();
+  await page.getByRole("button", { name: "Settings", exact: true }).click();
   await page
     .getByLabel("Website URL", { exact: true })
     .fill("https://alpha.example");
@@ -39,9 +37,9 @@ test("client settings persist independently and copied projects disconnect servi
     .getByLabel("Public form receiver", { exact: true })
     .fill("https://forms.alpha.example/enquiries");
   await page
-    .getByRole("button", { name: "Save client settings", exact: true })
+    .getByRole("button", { name: "Save settings", exact: true })
     .click();
-  await expect(page.getByRole("status")).toContainText("Client settings saved");
+  await expect(page.getByRole("status")).toContainText("Settings saved");
   await page.screenshot({
     path: "test-results/client-settings-desktop.png",
     fullPage: true,
@@ -58,9 +56,7 @@ test("client settings persist independently and copied projects disconnect servi
   });
   await page.setViewportSize({ width: 1440, height: 1000 });
   await page.reload();
-  await page
-    .getByRole("button", { name: "Client settings", exact: true })
-    .click();
+  await page.getByRole("button", { name: "Settings", exact: true }).click();
   await expect(page.getByLabel("Website URL", { exact: true })).toHaveValue(
     "https://alpha.example",
   );

@@ -1,4 +1,5 @@
 import { test, expect } from "./browser-fixture";
+import { BUILDER_TEST_PORT } from "./ports";
 import { mkdtemp, mkdir, readFile, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import path from "node:path";
@@ -29,35 +30,35 @@ test("Unity reviews a local build, reopens its status and previews the result", 
   const project = await created.json();
   // pnpm dev commonly uses localhost; the preview binds 127.0.0.1. Verify the
   // initial cross-site navigation can establish its read-only preview cookie.
-  await page.goto(`http://localhost:4322/builder/?project=${project.id}`);
+  await page.goto(
+    `http://localhost:${BUILDER_TEST_PORT}/builder/?project=${project.id}`,
+  );
   async function inspect() {
     await page
-      .getByRole("button", { name: "Export & repositories", exact: true })
+      .getByRole("button", { name: "Export & handoff", exact: true })
       .click();
-    await page.getByLabel("Absolute repository folder").fill(root);
+    await page.getByLabel("Website folder on this computer").fill(root);
     await page
-      .getByRole("button", { name: "Inspect repository", exact: true })
+      .getByRole("button", { name: "Check folder", exact: true })
       .click();
   }
   await inspect();
   await page
-    .getByRole("button", { name: "Review build command", exact: true })
+    .getByRole("button", { name: "Check build command", exact: true })
     .click();
   await expect(
-    page.getByRole("heading", { name: "Reviewed build command" }),
+    page.getByRole("heading", { name: "Build command" }),
   ).toBeVisible();
   await expect(readFile(path.join(root, "dist/index.html"))).rejects.toThrow();
-  await page
-    .getByRole("button", { name: "Run reviewed build", exact: true })
-    .click();
+  await page.getByRole("button", { name: "Run build", exact: true }).click();
   await expect(
     page.locator(".builder-repository-build [role=status]"),
-  ).toContainText("Build succeeded");
+  ).toContainText("Build finished");
   await page.reload();
   await inspect();
   await expect(
     page.locator(".builder-repository-build [role=status]"),
-  ).toContainText("Build succeeded");
+  ).toContainText("Build finished");
   for (const width of [1440, 390]) {
     await page.setViewportSize({ width, height: 1000 });
     expect(

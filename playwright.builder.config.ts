@@ -1,5 +1,10 @@
 import path from "node:path";
 import { defineConfig } from "@playwright/test";
+import {
+  BUILDER_TEST_ORIGIN,
+  BUILDER_TEST_PORT,
+  COMPANION_TEST_ORIGIN,
+} from "./tests/builder/ports";
 
 // A dedicated local service and workspace: never exercise production or personal drafts.
 export default defineConfig({
@@ -14,20 +19,20 @@ export default defineConfig({
   retries: 0,
   reporter: "list",
   use: {
-    baseURL: "http://127.0.0.1:4322",
+    baseURL: BUILDER_TEST_ORIGIN,
     viewport: { width: 1440, height: 1000 },
     trace: "retain-on-failure",
     screenshot: "only-on-failure",
     headless: true,
   },
   webServer: {
-    command: "node scripts/dev.mjs --port 4322",
-    url: "http://127.0.0.1:4322/builder/",
+    command: `node scripts/dev.mjs --port ${BUILDER_TEST_PORT}`,
+    url: `${BUILDER_TEST_ORIGIN}/builder/`,
     reuseExistingServer: false,
     timeout: 120_000,
     env: {
       VITE_BUILDER_CLOUD: "0",
-      BUILDER_COMPANION_TEST_ORIGIN: "http://127.0.0.1:4323",
+      BUILDER_COMPANION_TEST_ORIGIN: COMPANION_TEST_ORIGIN,
       BUILDER_CLIENT_DESTINATIONS_FILE: path.resolve(
         "test-results/builder-client-destinations.json",
       ),

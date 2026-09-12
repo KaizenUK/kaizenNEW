@@ -35,6 +35,7 @@ import {
 } from "lucide-react";
 import {
   Brand,
+  Head,
   IconButton,
   Segmented,
   Shell,
@@ -43,6 +44,7 @@ import {
   type BuilderTheme,
   type BuilderView,
 } from "./shell";
+import { ProjectName } from "./activeProject";
 import PagesView, { pageStatus } from "./PagesView";
 import ProjectsView, { ProjectIdentity } from "./ProjectsView";
 import BuilderAuth from "./BuilderAuth";
@@ -444,8 +446,8 @@ function BuilderWorkspace({ inventory }: { inventory?: PageInventory } = {}) {
                   else setNotice("Check your email for a sign-in link.");
                 }}
               >
-                <h2>Welcome back</h2>
-                <p>Sign in with your authorised editor account.</p>
+                <h2>Sign in</h2>
+                <p>Use your authorised editor account.</p>
                 {previewId && (
                   <p>
                     Sign in to open this saved private preview. The link does
@@ -494,36 +496,36 @@ function BuilderWorkspace({ inventory }: { inventory?: PageInventory } = {}) {
         workspace &&
         panel(
           <>
-            <div className="builder-section-heading">
-              <div>
-                <h1>Assets</h1>
-                <p>
-                  Images, icons, fonts and code packs, shared by every page.
-                </p>
+            <Head
+              info={<ProjectName />}
+              title="Assets"
+              description="Images, icons, fonts and files shared by every page in this project. Import a pack once, then place it from the editor's Assets panel."
+            />
+            <div className="builder-page-body">
+              <div className="builder-card builder-assets-card">
+                <Puck
+                  config={builderConfig}
+                  data={{ content: [], root: {} }}
+                  onChange={() => {}}
+                >
+                  <AssetLibrary
+                    compact={false}
+                    workspace={workspace}
+                    prepareWorkspace={() => storage.load()}
+                    onReplacementComplete={libraryReplaced}
+                    assets={workspace.assets}
+                    onAsset={onAsset}
+                    onAssets={onAssets}
+                    onUse={() =>
+                      setNotice("Open a page to place this asset on it.")
+                    }
+                    onUseBlock={() =>
+                      setNotice("Open a page to add this block to it.")
+                    }
+                    notify={setNotice}
+                  />
+                </Puck>
               </div>
-            </div>
-            <div className="builder-card builder-assets-card">
-              <Puck
-                config={builderConfig}
-                data={{ content: [], root: {} }}
-                onChange={() => {}}
-              >
-                <AssetLibrary
-                  workspace={workspace}
-                  prepareWorkspace={() => storage.load()}
-                  onReplacementComplete={libraryReplaced}
-                  assets={workspace.assets}
-                  onAsset={onAsset}
-                  onAssets={onAssets}
-                  onUse={() =>
-                    setNotice("Open a page to place this asset on it.")
-                  }
-                  onUseBlock={() =>
-                    setNotice("Open a page to add this block to it.")
-                  }
-                  notify={setNotice}
-                />
-              </Puck>
             </div>
           </>,
         )}
@@ -885,7 +887,7 @@ function EditorShell({
     if (asset.kind === "font") {
       if (isComponent || document.site?.useTheme) {
         setNotice(
-          "Choose an uploaded site font in Pages → Site design. To use a different font on this page, turn off Use site styles first.",
+          "Choose an uploaded site font in Site design. To use a different font on this page only, turn off Use site styles first.",
         );
         return;
       }
@@ -1095,7 +1097,7 @@ function EditorShell({
             onClick={onBack}
           />
           <Brand compact />
-          <ProjectIdentity />
+          <ProjectIdentity variant="header" />
           <span className="builder-editor-divider" aria-hidden="true" />
           <div className="builder-editor-crumbs">
             <span>{isComponent ? "Site design" : "Pages"}</span>
@@ -1169,20 +1171,26 @@ function EditorShell({
           <span className="builder-editor-divider" aria-hidden="true" />
           <button
             className="builder-secondary"
+            title="Save (Ctrl+S)"
+            aria-label="Save"
             onClick={() => save().catch(() => {})}
           >
-            <Save size={16} /> Save
+            <Save size={16} /> <span>Save</span>
           </button>
           <button
             className="builder-secondary"
+            title="Preview the page"
+            aria-label="Preview"
             onClick={() => setPreview(true)}
           >
-            <Eye size={16} /> Preview
+            <Eye size={16} /> <span>Preview</span>
           </button>
           {!isComponent && (
             <button
               className="builder-secondary"
               disabled={exporting}
+              title="Export the whole project as a ZIP"
+              aria-label="Export ZIP"
               onClick={async () => {
                 setExporting(true);
                 try {
@@ -1214,7 +1222,7 @@ function EditorShell({
               }}
             >
               <Download size={16} />
-              {exporting ? "Exporting…" : "Export ZIP"}
+              <span>{exporting ? "Exporting…" : "Export ZIP"}</span>
             </button>
           )}
           {isComponent && (
@@ -1381,8 +1389,11 @@ function EditorShell({
             {tab === "layers" && (
               <>
                 <div className="builder-panel-heading">
-                  <h2>Page layers</h2>
-                  <p>Select, reorder and nest your components.</p>
+                  <h2>Layers</h2>
+                  <p>
+                    Everything on this page, in order. Select, reorder and nest
+                    blocks here.
+                  </p>
                 </div>
                 <Puck.Outline />
               </>
@@ -1434,12 +1445,12 @@ function EditorShell({
                       {selectedItem
                         ? config.components[selectedItem.type]?.label ||
                           selectedItem.type
-                        : "Select a component"}
+                        : "Nothing selected"}
                     </h2>
                     <p>
                       {selectedItem
-                        ? "Shape the details. Make it feel right."
-                        : "Click the canvas or choose a layer to edit it."}
+                        ? "Edit this block's content and appearance."
+                        : "Click something on the canvas, or pick it from Layers."}
                     </p>
                   </div>
                   <div className="builder-inspector-actions">
@@ -1606,9 +1617,9 @@ function EditorShell({
                   </label>
                 ))}
                 <p className="builder-hint">
-                  Manage shared definitions from Pages → Site design. Existing
-                  sections remain on this page; remove any header or footer you
-                  are replacing.
+                  Shared headers and footers are managed in Site design.
+                  Sections already on this page stay; remove any header or
+                  footer you are replacing.
                 </p>
                 <label>
                   Page title
@@ -1688,7 +1699,7 @@ function EditorShell({
             )}
             {rightTab === "styles" && (
               <div className="builder-field">
-                <h2>Global page styles</h2>
+                <h2>Page styles</h2>
                 {document.site?.useTheme && (
                   <p className="builder-local-note">
                     This page uses Site design styles. Turn off “Use site

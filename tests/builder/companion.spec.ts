@@ -1,4 +1,9 @@
 import { test, expect, type Page } from "./browser-fixture";
+import {
+  BUILDER_TEST_ORIGIN,
+  COMPANION_TEST_ORIGIN,
+  COMPANION_TEST_PORT,
+} from "./ports";
 import { createServer, type ViteDevServer } from "vite";
 import { mkdtemp, mkdir, writeFile, readFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
@@ -13,7 +18,11 @@ test.beforeAll(async () => {
     root: process.cwd(),
     envDir: false,
     cacheDir: path.resolve("test-results/companion-hosted-vite"),
-    server: { host: "127.0.0.1", port: 4323, strictPort: true },
+    server: {
+      host: "127.0.0.1",
+      port: COMPANION_TEST_PORT,
+      strictPort: true,
+    },
     resolve: {
       alias: { "@": path.resolve("client"), "@shared": path.resolve("shared") },
     },
@@ -73,8 +82,8 @@ test("hosted repository UI edits real local source across origins with consent, 
         json: { error: "Unexpected cloud request in companion test" },
       });
   });
-  await context.addInitScript(() => {
-    if (location.origin !== "http://127.0.0.1:4323") return;
+  await context.addInitScript((hostedOrigin: string) => {
+    if (location.origin !== hostedOrigin) return;
     localStorage.setItem(
       "sb-companion-cloud-auth-token",
       JSON.stringify({
@@ -95,7 +104,7 @@ test("hosted repository UI edits real local source across origins with consent, 
       "kaizen-native-repository:fixture-client",
       "C:/stale-browser-folder",
     );
-  });
+  }, COMPANION_TEST_ORIGIN);
   const root = await mkdtemp(path.join(tmpdir(), "kaizen-paired-browser-"));
   await mkdir(path.join(root, "src/pages"), { recursive: true });
   await writeFile(
@@ -133,31 +142,23 @@ test("hosted repository UI edits real local source across origins with consent, 
   page.on("pageerror", (e) => errors.push(e.message));
   const open = async () => {
     await page.goto(
-      "http://127.0.0.1:4323/companion-test?project=fixture-client",
+      `${COMPANION_TEST_ORIGIN}/companion-test?project=fixture-client`,
     );
-    await page
-      .getByLabel("Local companion address")
-      .fill("http://127.0.0.1:4322");
+    await page.getByLabel("Helper address").fill(BUILDER_TEST_ORIGIN);
   };
   const pair = async (reconnect = false) => {
     const popupEvent = context.waitForEvent("page");
     await page
-      .getByRole("button", { name: "Connect local checkout", exact: true })
+      .getByRole("button", { name: "Connect helper", exact: true })
       .click();
     const popup = await popupEvent;
     popup.on("pageerror", (e) => errors.push(e.message));
     await expect(
       popup.getByText("Companion client", { exact: true }),
     ).toBeVisible();
-    if (!reconnect)
-      await popup.getByLabel("Approved repository folder").fill(root);
-    else
-      await expect(popup.getByLabel("Approved repository folder")).toHaveValue(
-        root,
-      );
-    await popup
-      .getByRole("button", { name: "Connect selected folder" })
-      .click();
+    if (!reconnect) await popup.getByLabel("Folder to share").fill(root);
+    else await expect(popup.getByLabel("Folder to share")).toHaveValue(root);
+    await popup.getByRole("button", { name: "Allow this folder" }).click();
     await expect(
       page.getByRole("status").filter({ hasText: "Connected to" }),
     ).toContainText(root);
@@ -165,7 +166,9 @@ test("hosted repository UI edits real local source across origins with consent, 
   };
   await open();
   let popup = await pair();
-  await expect(page.getByLabel("Absolute repository folder")).toHaveValue(root);
+  await expect(page.getByLabel("Website folder on this computer")).toHaveValue(
+    root,
+  );
   const attempt = async (input: Record<string, unknown>) =>
     page.evaluate(async (value) => {
       try {
@@ -182,21 +185,21 @@ test("hosted repository UI edits real local source across origins with consent, 
     "not available",
   );
   const crossOrigin = await page.request.post(
-    "http://127.0.0.1:4322/__builder-companion",
+    `${BUILDER_TEST_ORIGIN}/__builder-companion`,
     {
-      headers: { Origin: "http://127.0.0.1:4323", "X-Kaizen-Builder": "1" },
+      headers: { Origin: COMPANION_TEST_ORIGIN, "X-Kaizen-Builder": "1" },
       data: { action: "connect" },
     },
   );
   expect(crossOrigin.status()).toBe(403);
   const edit = async () => {
     await page
-      .getByRole("button", { name: "Inspect repository", exact: true })
+      .getByRole("button", { name: "Check folder", exact: true })
       .click();
     await page
       .locator(".builder-repository li")
       .filter({ hasText: "src/pages/index.astro" })
-      .getByRole("button", { name: "Edit existing content" })
+      .getByRole("button", { name: "Edit text and links" })
       .click();
     const editor = page.getByRole("region", {
       name: "Existing page content editor",
@@ -208,13 +211,11 @@ test("hosted repository UI edits real local source across origins with consent, 
   await editor.getByRole("textbox").fill("Saved through the hosted editor");
   await expect(
     editor.getByRole("status", { name: "Source editing draft" }),
-  ).toContainText("Editing draft saved");
+  ).toContainText("Edits saved on this computer");
   expect(await readFile(file, "utf8")).toBe(original);
-  await popup.getByRole("button", { name: "Disconnect local access" }).click();
+  await popup.getByRole("button", { name: "Stop sharing this folder" }).click();
   await expect(
-    page
-      .getByRole("status")
-      .filter({ hasText: "Local companion disconnected." }),
+    page.getByRole("status").filter({ hasText: "Helper not connected." }),
   ).toBeVisible();
   await expect(editor.getByRole("textbox")).toHaveValue(
     "Saved through the hosted editor",
@@ -224,7 +225,7 @@ test("hosted repository UI edits real local source across origins with consent, 
   ).toContain("Connect the local companion");
   await popup.close();
   popup = await pair(true);
-  await editor.getByRole("button", { name: "Close source editor" }).click();
+  await editor.getByRole("button", { name: "Close editor" }).click();
   await popup.close();
   await open();
   popup = await pair();
@@ -232,15 +233,13 @@ test("hosted repository UI edits real local source across origins with consent, 
   await expect(editor.getByRole("textbox")).toHaveValue(
     "Saved through the hosted editor",
   );
-  await editor
-    .getByRole("button", { name: "Review existing-page changes" })
-    .click();
+  await editor.getByRole("button", { name: "Review my changes" }).click();
   await expect(
-    page.getByRole("heading", { name: "Proposed repository changes" }),
+    page.getByRole("heading", { name: "Changes to apply" }),
   ).toBeVisible();
   expect(await readFile(file, "utf8")).toBe(original);
   await page
-    .getByRole("button", { name: "Apply reviewed file changes" })
+    .getByRole("button", { name: "Apply changes to the folder" })
     .click();
   await expect(
     page.locator(".builder-repository > [role=status]"),
@@ -249,20 +248,18 @@ test("hosted repository UI edits real local source across origins with consent, 
     original.replace("Original paired page", "Saved through the hosted editor"),
   );
   await page
-    .getByRole("button", { name: "Review build command", exact: true })
+    .getByRole("button", { name: "Check build command", exact: true })
     .click();
-  await page
-    .getByRole("button", { name: "Run reviewed build", exact: true })
-    .click();
+  await page.getByRole("button", { name: "Run build", exact: true }).click();
   await expect(
     page.locator(".builder-repository-build [role=status]"),
-  ).toContainText("Build succeeded", { timeout: 90000 });
+  ).toContainText("Build finished", { timeout: 90000 });
   await page
-    .getByRole("button", { name: "Edit existing content", exact: true })
+    .getByRole("button", { name: "Edit text and links", exact: true })
     .click();
   const selectionEvent = context.waitForEvent("page");
   await editor
-    .getByRole("button", { name: "Select content in built page" })
+    .getByRole("button", { name: "Pick text from the preview" })
     .click();
   const selection = await selectionEvent;
   selection.on("pageerror", (e) => errors.push(e.message));
@@ -290,19 +287,17 @@ test("hosted repository UI edits real local source across origins with consent, 
     });
   }
   await selection.close();
-  await editor.getByRole("button", { name: "Close source editor" }).click();
+  await editor.getByRole("button", { name: "Close editor" }).click();
   await page.setViewportSize({ width: 1440, height: 1000 });
   const backup = page.getByRole("region", { name: "Native repository backup" });
   await backup
     .getByRole("button", {
-      name: "Review native repository backup",
+      name: "Prepare folder backup",
       exact: true,
     })
     .click();
   const downloadEvent = page.waitForEvent("download");
-  await backup
-    .getByRole("button", { name: "Download reviewed native backup" })
-    .click();
+  await backup.getByRole("button", { name: "Download folder backup" }).click();
   const archive = path.join(root, "native-test-backup.zip");
   await (await downloadEvent).saveAs(archive);
   await page.screenshot({
@@ -314,25 +309,23 @@ test("hosted repository UI edits real local source across origins with consent, 
   const target = path.join(root, "restored");
   const restorePopupEvent = context.waitForEvent("page");
   await page
-    .getByRole("button", { name: "Connect local checkout", exact: true })
+    .getByRole("button", { name: "Connect helper", exact: true })
     .click();
   popup = await restorePopupEvent;
-  await popup.getByLabel("Approved repository folder").fill(target);
-  await popup.getByLabel("New folder for restoring a native backup").check();
-  await popup.getByRole("button", { name: "Connect selected folder" }).click();
-  await expect(page.getByLabel("Absolute repository folder")).toHaveValue(
+  await popup.getByLabel("Folder to share").fill(target);
+  await popup
+    .getByLabel("This is a new, empty folder for restoring a backup")
+    .check();
+  await popup.getByRole("button", { name: "Allow this folder" }).click();
+  await expect(page.getByLabel("Website folder on this computer")).toHaveValue(
     target,
   );
-  await expect(backup.getByLabel("New restore folder")).toHaveValue(target);
-  await backup
-    .getByLabel("Native repository backup ZIP")
-    .setInputFiles(archive);
-  await backup
-    .getByRole("button", { name: "Review native repository restore" })
-    .click();
-  await backup
-    .getByRole("button", { name: "Restore reviewed native repository" })
-    .click();
+  await expect(backup.getByLabel("New folder to restore into")).toHaveValue(
+    target,
+  );
+  await backup.getByLabel("Backup ZIP file").setInputFiles(archive);
+  await backup.getByRole("button", { name: "Check backup file" }).click();
+  await backup.getByRole("button", { name: "Restore into new folder" }).click();
   await expect(backup.getByRole("status")).toContainText("Restored");
   expect(
     await readFile(path.join(target, "src/pages/index.astro"), "utf8"),

@@ -1,9 +1,19 @@
 import React, { useMemo, useState } from "react";
+import { ArrowUpRight } from "lucide-react";
 import type { PageInventory } from "../../shared/builderPageInventory";
+import { Card, Head, Pill } from "./shell";
+import { ProjectName } from "./activeProject";
+
+/* Pages that belong to the site's own code and CMS rather than to the builder. */
+
+const kindLabel = {
+  cms: "CMS content",
+  redirect: "Site redirect",
+  site: "Site page",
+} as const;
 
 export default function ExistingPages({
   inventory,
-  open = false,
   onEdit,
 }: {
   inventory: PageInventory;
@@ -25,113 +35,106 @@ export default function ExistingPages({
     [inventory, search, showRedirects],
   );
   return (
-    <details
-      id="builder-existing-pages"
-      className="builder-existing-pages"
-      open={open}
-    >
-      <summary>Existing site pages</summary>
-      <p>
-        These pages use the site's original templates and components. The local
-        companion can edit their source content and arrange Astro sections while
-        preserving their styling and interactive code.
-      </p>
-      <p>
-        Use the site CMS for blog articles and CMS-managed content. Computed
-        values still use their original data source.
-        {onEdit
-          ? " Choose Edit existing content to open the page through your local companion."
-          : " To edit original source, connect your local checkout under Export & repositories."}
-      </p>
-      <div className="builder-row">
-        <a href={inventory.studioUrl} target="_blank" rel="noreferrer">
+    <>
+      <Head
+        info={<ProjectName fallback="Kaizen workspace" />}
+        title="Existing site pages"
+        description="These pages are built from the website's own code, not the builder. You can change their text, links and images and reorder sections. Their design stays as it is."
+      >
+        <a
+          className="builder-secondary builder-button-link"
+          href={inventory.studioUrl}
+          target="_blank"
+          rel="noreferrer"
+        >
           Open site CMS ↗
         </a>
-        <span className="builder-hint">
-          Page list recorded{" "}
-          {new Date(inventory.generatedAt).toLocaleDateString()}; it updates
-          when this site is rebuilt.
-        </span>
+      </Head>
+      <div className="builder-page-body">
+        <Card
+          className="builder-existing-pages"
+          ariaLabel="Existing site pages list"
+        >
+          <div className="builder-existing-filters">
+            <label>
+              Find an existing page
+              <input
+                type="search"
+                value={search}
+                onChange={(event) => {
+                  setSearch(event.target.value);
+                  setLimit(25);
+                }}
+                placeholder="Search names or URLs"
+              />
+            </label>
+            <label className="builder-existing-checkbox">
+              <input
+                type="checkbox"
+                checked={showRedirects}
+                onChange={(event) => {
+                  setShowRedirects(event.target.checked);
+                  setLimit(25);
+                }}
+              />
+              Include site redirects
+            </label>
+          </div>
+          <p className="builder-hint">
+            {filtered.length} pages found. Blog articles are managed in the CMS.
+            Page list recorded{" "}
+            {new Date(inventory.generatedAt).toLocaleDateString()}; it updates
+            when the site is rebuilt.
+            {inventory.cmsStatus !== "available" &&
+              (inventory.cmsStatus === "not-configured"
+                ? " The CMS connection is not configured in this build, so only known site routes are listed."
+                : " CMS routes could not be listed when this site was built, so only known site routes are listed.")}
+          </p>
+          <ul className="builder-existing-list">
+            {filtered.slice(0, limit).map((page) => (
+              <li key={page.path}>
+                <div className="builder-existing-main">
+                  <strong>{page.title}</strong>
+                  <small>
+                    {page.path}
+                    {page.destination && ` → ${page.destination}`}
+                  </small>
+                </div>
+                <Pill tone={page.kind === "site" ? "primary" : "grey"}>
+                  {kindLabel[page.kind] || "Site page"}
+                </Pill>
+                <div className="builder-existing-actions">
+                  <a
+                    href={page.path}
+                    target="_blank"
+                    rel="noreferrer"
+                    aria-label={`Open existing ${page.path}`}
+                  >
+                    Open page <ArrowUpRight size={14} aria-hidden="true" />
+                  </a>
+                  {onEdit && page.kind === "site" && (
+                    <button
+                      type="button"
+                      onClick={() => onEdit(page.path)}
+                      aria-label={`Edit existing ${page.path}`}
+                    >
+                      Edit text and links
+                    </button>
+                  )}
+                </div>
+              </li>
+            ))}
+          </ul>
+          {!filtered.length && (
+            <p className="builder-empty">No pages match your search.</p>
+          )}
+          {limit < filtered.length && (
+            <button type="button" onClick={() => setLimit(limit + 25)}>
+              Show more pages
+            </button>
+          )}
+        </Card>
       </div>
-      {inventory.cmsStatus !== "available" && (
-        <p className="builder-hint">
-          {inventory.cmsStatus === "not-configured"
-            ? "The CMS connection is not configured in this build. This list contains the known site routes; additional CMS pages may exist."
-            : "CMS routes could not be listed when this site was built. The known site routes are shown; additional CMS pages may exist."}
-        </p>
-      )}
-      <div className="builder-existing-filters">
-        <label>
-          Find an existing page
-          <input
-            type="search"
-            value={search}
-            onChange={(event) => {
-              setSearch(event.target.value);
-              setLimit(25);
-            }}
-            placeholder="Search names or URLs"
-          />
-        </label>
-        <label className="builder-existing-checkbox">
-          <input
-            type="checkbox"
-            checked={showRedirects}
-            onChange={(event) => {
-              setShowRedirects(event.target.checked);
-              setLimit(25);
-            }}
-          />
-          Include site redirects
-        </label>
-      </div>
-      <p>
-        {filtered.length} matching routes. Individual blog articles are managed
-        in the CMS.
-      </p>
-      <ul className="builder-existing-list">
-        {filtered.slice(0, limit).map((page) => (
-          <li key={page.path}>
-            <div>
-              <strong>{page.title}</strong>
-              <small>
-                {page.path}
-                {page.destination && ` → ${page.destination}`}
-              </small>
-            </div>
-            <span className="builder-pill">
-              {page.kind === "cms"
-                ? "CMS content"
-                : page.kind === "redirect"
-                  ? "Site redirect"
-                  : "Existing site layout"}
-            </span>
-            <a
-              href={page.path}
-              target="_blank"
-              rel="noreferrer"
-              aria-label={`Open existing ${page.path}`}
-            >
-              Open page ↗
-            </a>
-            {onEdit && page.kind === "site" && (
-              <button
-                type="button"
-                onClick={() => onEdit(page.path)}
-                aria-label={`Edit existing ${page.path}`}
-              >
-                Edit existing content
-              </button>
-            )}
-          </li>
-        ))}
-      </ul>
-      {!filtered.length && <p>No matching routes in this build.</p>}
-      {limit < filtered.length && (
-        <button onClick={() => setLimit(limit + 25)}>
-          Show more existing pages
-        </button>
-      )}
-    </details>
+    </>
   );
 }

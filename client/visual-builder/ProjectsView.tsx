@@ -1,5 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { CopyPlus, FolderOpen, Archive, Plus } from "lucide-react";
+import {
+  Archive,
+  ArchiveRestore,
+  CopyPlus,
+  FolderOpen,
+  Plus,
+} from "lucide-react";
 import type { BuilderProject } from "../../shared/builderProjects";
 import ProjectMembers from "./ProjectMembers";
 import {
@@ -7,53 +13,11 @@ import {
   listProjects,
   projectRequest,
 } from "./projectStorage";
+import { Head, Notice, Pill } from "./shell";
 
-export function ProjectIdentity() {
-  const [project, setProject] = useState<BuilderProject>();
-  const [error, setError] = useState("");
-  useEffect(() => {
-    let mounted = true;
-    const refresh = () =>
-      void listProjects()
-        .then((items) => {
-          if (mounted) {
-            setProject(items.find((p) => p.id === activeProjectId));
-            setError("");
-          }
-        })
-        .catch((error) => {
-          if (mounted) {
-            setProject(undefined);
-            setError(error.message);
-          }
-        });
-    refresh();
-    window.addEventListener("builder-projects-changed", refresh);
-    return () => {
-      mounted = false;
-      window.removeEventListener("builder-projects-changed", refresh);
-    };
-  }, []);
-  return (
-    <div className="builder-project-identity">
-      <strong>
-        {project?.name || (error ? "Project unavailable" : "Loading project…")}
-      </strong>
-      <small>
-        {project?.destination.label || error || "Checking destination…"}
-      </small>
-      {project?.archived && (
-        <small>Archived — restore in Projects to edit</small>
-      )}
-      {project?.access && (
-        <small>
-          {project.access.role} ·{" "}
-          {project.access.canPublish ? "May publish" : "Cannot publish"}
-        </small>
-      )}
-    </div>
-  );
-}
+export { ProjectIdentity } from "./activeProject";
+
+/* The project dashboard: one card per client website. */
 
 export default function ProjectsView() {
   const [projects, setProjects] = useState<BuilderProject[]>([]);
@@ -88,58 +52,66 @@ export default function ProjectsView() {
       setBusy(false);
     }
   }
+  const visible = projects.filter((p) => archived || !p.archived);
   return (
-    <div className="builder-panel-body">
-      <div className="builder-section-heading">
-        <div>
-          <h1>Client projects</h1>
-          <p>
-            Each project owns its pages, assets, styles and history. Opening a
-            project starts a separate editing session.
-          </p>
+    <>
+      <Head
+        info="Kaizen Builder"
+        title="Projects"
+        description="Each project is one client website, with its own pages, assets, styles and history. Open a project to work on it."
+      />
+      <div className="builder-page-body">
+        <form
+          className="builder-card builder-project-create"
+          onSubmit={(event) => {
+            event.preventDefault();
+            void mutate({ action: "create", name });
+          }}
+        >
+          <label>
+            Project name
+            <input
+              required
+              maxLength={100}
+              value={name}
+              onChange={(event) => setName(event.target.value)}
+              placeholder="Client or website name"
+            />
+          </label>
+          <button className="builder-primary" disabled={busy || !name.trim()}>
+            <Plus size={18} />
+            Create project
+          </button>
+        </form>
+        <div className="builder-toolbar">
+          <label className="builder-project-filter">
+            <input
+              type="checkbox"
+              checked={archived}
+              onChange={(event) => setArchived(event.target.checked)}
+            />
+            Show archived projects
+          </label>
+          {busy && (
+            <span role="status" className="builder-hint">
+              {projects.length ? "Working…" : "Loading projects…"}
+            </span>
+          )}
         </div>
-      </div>
-      <form
-        className="builder-card builder-project-create"
-        onSubmit={(event) => {
-          event.preventDefault();
-          void mutate({ action: "create", name });
-        }}
-      >
-        <label>
-          Project name
-          <input
-            required
-            maxLength={100}
-            value={name}
-            onChange={(event) => setName(event.target.value)}
-            placeholder="Client or website name"
-          />
-        </label>
-        <button className="builder-primary" disabled={busy || !name.trim()}>
-          <Plus size={18} />
-          Create project
-        </button>
-      </form>
-      <label className="builder-project-filter">
-        <input
-          type="checkbox"
-          checked={archived}
-          onChange={(event) => setArchived(event.target.checked)}
-        />
-        Show archived projects
-      </label>
-      {error && (
-        <div role="alert">
-          <p>{error}</p>
-          <button onClick={() => void refresh()}>Retry</button>
-        </div>
-      )}
-      {busy && <p role="status">Loading projects…</p>}
-      <div className="builder-project-grid">
-        {projects
-          .filter((p) => archived || !p.archived)
-          .map((project) => (
+        {error && (
+          <Notice
+            tone="error"
+            action={
+              <button type="button" onClick={() => void refresh()}>
+                Try again
+              </button>
+            }
+          >
+            {error}
+          </Notice>
+        )}
+        <div className="builder-project-grid">
+          {visible.map((project) => (
             <ProjectCard
               key={`${project.id}-${project.version}`}
               project={project}
@@ -147,19 +119,21 @@ export default function ProjectsView() {
               mutate={mutate}
             />
           ))}
+        </div>
+        {!busy && !projects.length && !error && (
+          <Notice>Create your first project to start building.</Notice>
+        )}
+        <p className="builder-hint builder-hint-block">
+          The original Kaizen workspace stays registered in place and keeps its
+          files. A duplicate copies pages, publications, assets and history, and
+          starts with no service connections, publishing destination or private
+          preview links.
+        </p>
       </div>
-      {!busy && !projects.length && !error && (
-        <p>Create your first client project to start building.</p>
-      )}
-      <p>
-        The original Kaizen workspace is registered in place, preserving its
-        files. A duplicate keeps pages, publications, assets and history, and
-        starts without service connections, a deployment destination or private
-        preview links.
-      </p>
-    </div>
+    </>
   );
 }
+
 function ProjectCard({
   project,
   busy,
@@ -171,18 +145,76 @@ function ProjectCard({
 }) {
   const [name, setName] = useState(project.name);
   const owner = !project.access || project.access.role === "owner";
+  const current = project.id === activeProjectId;
   return (
     <article
       className="builder-card builder-project-card"
       aria-label={project.name}
     >
-      <FolderOpen size={28} />
-      <h2>{project.name}</h2>
-      <p>{project.destination.label}</p>
-      {project.id === activeProjectId && <strong>Active project</strong>}
-      {project.archived && <p>Archived</p>}
+      <div className="builder-project-card-head">
+        <span className="builder-project-icon" aria-hidden="true">
+          <FolderOpen size={22} />
+        </span>
+        <div className="builder-project-card-title">
+          <h2>{project.name}</h2>
+          <p>{project.destination.label}</p>
+        </div>
+        <div className="builder-project-card-pills">
+          {current && <Pill tone="primary">Current project</Pill>}
+          {project.archived && <Pill tone="orange">Archived</Pill>}
+        </div>
+      </div>
+      <div className="builder-project-actions">
+        {!project.archived && (
+          <a
+            className="builder-primary"
+            href={`/builder/?project=${encodeURIComponent(project.id)}`}
+          >
+            Open project
+          </a>
+        )}
+        <button
+          type="button"
+          disabled={busy}
+          onClick={() =>
+            void mutate({
+              action: "duplicate",
+              id: project.id,
+              name: `${project.name.slice(0, 94)} copy`,
+            })
+          }
+        >
+          <CopyPlus size={16} />
+          Duplicate
+        </button>
+        <button
+          type="button"
+          disabled={busy || !owner}
+          onClick={() =>
+            void mutate({
+              action: "archive",
+              id: project.id,
+              version: project.version,
+              archived: !project.archived,
+            })
+          }
+        >
+          {project.archived ? (
+            <>
+              <ArchiveRestore size={16} />
+              Restore project
+            </>
+          ) : (
+            <>
+              <Archive size={16} />
+              Archive
+            </>
+          )}
+        </button>
+      </div>
       {owner && (
         <form
+          className="builder-project-rename"
           onSubmit={(event) => {
             event.preventDefault();
             void mutate({
@@ -205,43 +237,6 @@ function ProjectCard({
           <button disabled={busy || name === project.name}>Rename</button>
         </form>
       )}
-      <div className="builder-project-actions">
-        {!project.archived && (
-          <a
-            className="builder-primary"
-            href={`/builder/?project=${encodeURIComponent(project.id)}`}
-          >
-            Open project
-          </a>
-        )}
-        <button
-          disabled={busy}
-          onClick={() =>
-            void mutate({
-              action: "duplicate",
-              id: project.id,
-              name: `${project.name.slice(0, 94)} copy`,
-            })
-          }
-        >
-          <CopyPlus size={16} />
-          Duplicate
-        </button>
-        <button
-          disabled={busy || !owner}
-          onClick={() =>
-            void mutate({
-              action: "archive",
-              id: project.id,
-              version: project.version,
-              archived: !project.archived,
-            })
-          }
-        >
-          <Archive size={16} />
-          {project.archived ? "Restore project" : "Archive"}
-        </button>
-      </div>
       {project.access?.role === "owner" && <ProjectMembers id={project.id} />}
     </article>
   );

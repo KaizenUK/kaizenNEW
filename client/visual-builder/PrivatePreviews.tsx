@@ -10,6 +10,8 @@ import {
 } from "../../shared/builderPreviews";
 import type { PageDocument } from "../../shared/visualBuilder";
 import { previewHtml } from "./previewHtml";
+import { Card, Head, Notice } from "./shell";
+import { ProjectName } from "./activeProject";
 
 const message = (error: unknown) =>
   error instanceof Error
@@ -35,10 +37,11 @@ export function PrivatePreviewControls({
   return (
     <div className="builder-private-preview-controls">
       <p>
+        Share a saved copy of this page with a private link.{" "}
         {localMode
-          ? "Saved previews work on this computer while the local builder is running."
-          : "Private preview links require an authorised builder editor account."}{" "}
-        Each link opens a saved copy. Later edits stay separate.
+          ? "Local links work on this computer while the builder is running."
+          : "Links only work for signed-in editors."}{" "}
+        Later edits do not change the saved copy.
       </p>
       <div className="builder-row">
         <label>
@@ -254,7 +257,7 @@ export function PrivatePreviewViewer({ id }: { id: string }) {
   );
 }
 
-export function PrivatePreviewList({ onClose }: { onClose: () => void }) {
+export function PrivatePreviewList({ onClose }: { onClose?: () => void }) {
   const [rows, setRows] = useState<PreviewSummary[]>([]),
     [error, setError] = useState(""),
     [busy, setBusy] = useState(false);
@@ -269,58 +272,66 @@ export function PrivatePreviewList({ onClose }: { onClose: () => void }) {
   useEffect(() => {
     void load();
   }, []);
+  void onClose;
   return (
-    <section>
-      <div className="builder-section-heading">
-        <h2>Private previews</h2>
-        <button onClick={onClose}>Back to pages</button>
+    <>
+      <Head
+        info={<ProjectName />}
+        title="Private previews"
+        description={`Private links show a saved copy of a page to someone before it goes live. Create one from a page's Preview screen. ${
+          localMode
+            ? "Local links only work on this computer."
+            : "Links only work for signed-in editors."
+        }`}
+      >
+        <button type="button" onClick={() => void load()} disabled={busy}>
+          Refresh previews
+        </button>
+      </Head>
+      <div className="builder-page-body">
+        {error && <Notice tone="error">{error}</Notice>}
+        <Card
+          title="Active preview links"
+          description="Revoking a link stops future visits; a copy someone already opened cannot be recalled."
+        >
+          <ul className="builder-release-list">
+            {rows.map((row) => (
+              <li key={row.id}>
+                <strong>{row.title}</strong>
+                <p>Expires {new Date(row.expiresAt).toLocaleString()}</p>
+                <div className="builder-row">
+                  <a
+                    href={previewLink(location.origin, row.id, activeProjectId)}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    Open saved preview
+                  </a>
+                  <button
+                    disabled={busy}
+                    onClick={async () => {
+                      setBusy(true);
+                      try {
+                        await storage.revokePreview(row.id);
+                        await load();
+                      } catch (error) {
+                        setError(message(error));
+                      } finally {
+                        setBusy(false);
+                      }
+                    }}
+                  >
+                    Revoke preview
+                  </button>
+                </div>
+              </li>
+            ))}
+          </ul>
+          {!rows.length && !error && (
+            <p className="builder-empty">No active preview links.</p>
+          )}
+        </Card>
       </div>
-      <p>
-        Save a private link from a page’s Preview window.{" "}
-        {localMode
-          ? "Local links work on this computer."
-          : "Links require an authorised editor account."}{" "}
-        Revoking a link removes future access; copies someone already viewed
-        cannot be recalled.
-      </p>
-      {error && <p role="alert">{error}</p>}
-      <button onClick={() => void load()} disabled={busy}>
-        Refresh previews
-      </button>
-      <ul className="builder-release-list">
-        {rows.map((row) => (
-          <li key={row.id}>
-            <strong>{row.title}</strong>
-            <p>Expires {new Date(row.expiresAt).toLocaleString()}</p>
-            <div className="builder-row">
-              <a
-                href={previewLink(location.origin, row.id, activeProjectId)}
-                target="_blank"
-                rel="noreferrer"
-              >
-                Open saved preview
-              </a>
-              <button
-                disabled={busy}
-                onClick={async () => {
-                  setBusy(true);
-                  try {
-                    await storage.revokePreview(row.id);
-                    await load();
-                  } catch (error) {
-                    setError(message(error));
-                  } finally {
-                    setBusy(false);
-                  }
-                }}
-              >
-                Revoke preview
-              </button>
-            </div>
-          </li>
-        ))}
-      </ul>
-      {!rows.length && !error && <p>No active saved previews.</p>}
-    </section>
+    </>
   );
 }

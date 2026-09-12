@@ -208,7 +208,7 @@ test("Unity publishes a frozen client project, preserves newer drafts, rolls bac
     await page.getByRole("button").filter({ hasText: "/about/" }).click();
     await page.getByRole("button", { name: "Publish", exact: true }).click();
     await expect(
-      page.getByRole("heading", { name: "Client releases", exact: true }),
+      page.getByRole("heading", { name: "Releases", exact: true }),
     ).toBeVisible();
     saved = (
       await (
@@ -497,7 +497,7 @@ test("Unity publishes a frozen client project, preserves newer drafts, rolls bac
     ).toBe("Newest draft survives rollback");
     await page
       .getByRole("button", {
-        name: "Review unpublishing this website",
+        name: "Take website offline…",
         exact: true,
       })
       .click();

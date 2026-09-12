@@ -1,5 +1,6 @@
 import { expect, test } from "./browser-fixture";
-import { readFile, writeFile } from "node:fs/promises";
+import { mkdir, readFile, writeFile } from "node:fs/promises";
+import path from "node:path";
 import { unzipSync, strFromU8 } from "fflate";
 import {
   newDocument,
@@ -34,6 +35,8 @@ test("download an editable project, restore into an empty workspace and edit its
     return response.json();
   };
   try {
+    // A fresh test-results folder has no workspace directory until the first save.
+    await mkdir(path.dirname(workspaceFile), { recursive: true });
     await writeFile(workspaceFile, empty);
     await page.goto("/builder/");
     await page.getByRole("button", { name: "Blank page", exact: true }).click();
@@ -132,12 +135,10 @@ test("download an editable project, restore into an empty workspace and edit its
       ),
     });
     await page.goto("/builder/");
-    await page
-      .getByRole("button", { name: "Project backups", exact: true })
-      .click();
+    await page.getByRole("button", { name: "Backups", exact: true }).click();
     const download = page.waitForEvent("download");
     await page
-      .getByRole("button", { name: "Download editable backup", exact: true })
+      .getByRole("button", { name: "Download backup", exact: true })
       .click();
     const archive = await download;
     const filename = "test-results/builder-editable-project.zip";
@@ -154,9 +155,7 @@ test("download an editable project, restore into an empty workspace and edit its
     // A fresh workspace has no registered files or publications. Restoration must re-upload bytes and remap references.
     await writeFile(workspaceFile, empty);
     await page.reload();
-    await page
-      .getByRole("button", { name: "Project backups", exact: true })
-      .click();
+    await page.getByRole("button", { name: "Backups", exact: true }).click();
     await page
       .getByLabel("Project backup file", { exact: true })
       .setInputFiles(filename);
@@ -217,9 +216,8 @@ test("download an editable project, restore into an empty workspace and edit its
     expect(restored.assets.some((asset) => asset.kind === "licence")).toBe(
       true,
     );
-    await page
-      .getByRole("button", { name: "Back to pages", exact: true })
-      .click();
+    // The Backups screen has no back button; the sidebar is the way between screens.
+    await page.getByRole("button", { name: "Pages", exact: true }).click();
     await page
       .getByRole("button")
       .filter({ hasText: "/backup-page-0/" })

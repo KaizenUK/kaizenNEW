@@ -88,7 +88,9 @@ describe("asset pack import boundaries", () => {
     );
     const svg = await result.blob.text();
     expect(svg).toContain("<path");
-    expect(svg).not.toMatch(/script|foreignObject|onload|https:\/\/example|animate/i);
+    expect(svg).not.toMatch(
+      /script|foreignObject|onload|https:\/\/example|animate/i,
+    );
     expect(result.asset.hash).toMatch(/^[a-f0-9]{64}$/);
   });
   it("retains Illustrator class-based colours and outline strokes without retaining executable styles", async () => {

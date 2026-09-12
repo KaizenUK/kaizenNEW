@@ -66,19 +66,20 @@ export default function RepositoryBuild({ root }: { root: string }) {
     };
   }, [job?.id, running, Boolean(job?.previewUrl)]);
   return (
-    <div className="builder-card builder-project-card builder-repository-build">
-      <h2>Build & local preview</h2>
-      <p>
-        Install this repository’s dependencies in your terminal first. Builds
-        run its package scripts with your local user’s permissions and terminal
-        environment. Inspect unfamiliar code before running it.
-      </p>
-      <p>
-        The companion uses a fresh dist/ folder and retains previous output
-        under .kaizen/build-recovery/. Failed builds restore the previous
-        output. A successful build opens a private static snapshot on this
-        computer for one hour. This does not deploy a site. Forms and network
-        API calls are disabled in the preview.
+    <div className="builder-card builder-block builder-repository-build">
+      <div className="builder-block-head">
+        <h2>Preview the website</h2>
+        <p>
+          Builds the website from the folder and opens a private preview on this
+          computer for one hour. Nothing goes live, and forms and network calls
+          are switched off in the preview.
+        </p>
+      </div>
+      <p className="builder-hint">
+        Install the folder's dependencies in your terminal first. The build runs
+        the folder's own scripts, so check unfamiliar code before running it.
+        The previous build is kept under .kaizen/build-recovery/ and put back if
+        a build fails.
       </p>
       <button
         disabled={busy || running}
@@ -93,18 +94,17 @@ export default function RepositoryBuild({ root }: { root: string }) {
           })
         }
       >
-        Review build command
+        Check build command
       </button>
       {plan && (
-        <div>
-          <h3>Reviewed build command</h3>
+        <div className="builder-block-section">
+          <h3>Build command</h3>
           <p>
             <code>{plan.command}</code> in <code>{plan.root}</code>
           </p>
-          <p>
-            Package lifecycle scripts and imported build code may also run. The
-            review expires after 15 minutes and must be repeated if source files
-            change.
+          <p className="builder-hint">
+            Other scripts in the folder may also run as part of the build. This
+            check expires after 15 minutes, or sooner if files change.
           </p>
           <dl>
             {plan.scripts.map((script) => (
@@ -131,24 +131,24 @@ export default function RepositoryBuild({ root }: { root: string }) {
               })
             }
           >
-            Run reviewed build
+            Run build
           </button>
         </div>
       )}
       {job && (
-        <div>
+        <div className="builder-block-section">
           <p role="status">
             {job.status === "building"
-              ? "Building repository…"
+              ? "Building…"
               : job.status === "succeeded"
-                ? "Build succeeded. Static output was verified over HTTP."
+                ? "Build finished. The preview is ready."
                 : job.status === "cancelled"
                   ? "Build cancelled."
                   : "Build failed."}
           </p>
           {job.error && <p role="alert">{job.error}</p>}
           <p>
-            Recovery folder: <code>{job.recoveryDirectory}</code>
+            Previous build kept at <code>{job.recoveryDirectory}</code>
           </p>
           {job.previewUrl && (
             <p>
@@ -164,7 +164,7 @@ export default function RepositoryBuild({ root }: { root: string }) {
           )}
           {job.status === "succeeded" && !job.previewUrl && (
             <p>
-              Preview stopped or expired. Run another build to preview again.
+              The preview has closed or expired. Run the build again to see it.
             </p>
           )}
           {(running || job.previewUrl) && (
@@ -185,7 +185,7 @@ export default function RepositoryBuild({ root }: { root: string }) {
             </button>
           )}
           <details>
-            <summary>Build log (last 100,000 characters)</summary>
+            <summary>Build log</summary>
             <pre>{job.log || "Waiting for build output…"}</pre>
           </details>
         </div>

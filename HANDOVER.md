@@ -68,11 +68,11 @@ Sean authorises direct production/main deployment, not a staging deployment; sta
 
 ### Hosted-to-local companion
 
-- Hosted **Export & repositories** opens a local consent window and connects only after approval of one folder for the shown hosted origin/account/project.
+- Hosted **Export & handoff** (labelled “Export & repositories” before the September 2026 UX pass) opens a local consent window and connects only after approval of one folder for the shown hosted origin/account/project.
 - Capabilities are local, expire, restrict roots and issued review/job IDs, and are revoked on disconnect/account change. Draft identities are separate from the original local Kaizen project.
 - `pnpm dev` now runs the foreground API launcher in `scripts/dev.mjs`, explicitly at `http://127.0.0.1:4321`, and rejects an occupied port. Keep the terminal and companion window open. A different port is supported with `pnpm dev --port 4325`.
 - Sean reported a genuine Windows failure: the old CLI listened on IPv6 `::1` while the form used IPv4. Earlier port-4322 acceptance did not test normal startup. This was reproduced, fixed, tested on actual port 4321 from the signed-in production page, and confirmed working by Sean.
-- Click **Connect local checkout** afresh after a restart. An old URL fragment is a pairing session, not a reusable bookmark.
+- Click **Connect helper** afresh after a restart. An old URL fragment is a pairing session, not a reusable bookmark.
 
 ### Publishing and services
 

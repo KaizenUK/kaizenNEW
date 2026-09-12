@@ -85,8 +85,8 @@ pnpm dev
 The terminal should say `http://127.0.0.1:4321/` and tell you to keep it running. The launcher intentionally stays in the foreground. Closing it stops the companion. It should fail clearly if that port is occupied. For another port use `pnpm dev --port 4325` and enter that address in the hosted builder.
 
 1. Sign in at <https://kaizenweb.co.uk/builder/> with Sean's account.
-2. Open the intended client project, then **Export & repositories**.
-3. Use the current local address and click **Connect local checkout**. Allow the companion window if the browser blocks popups.
+2. Open the intended client project, then **Export & handoff**.
+3. Use the current local address and click **Connect helper**. Allow the companion window if the browser blocks popups.
 4. Check the displayed hosted origin/account/project, enter the new **Linux absolute repository path**, and approve it. Keep both the terminal and companion window open.
 5. Inspect the repository and check that source fields load. This confirms today's implemented companion flow; it is **not** acceptance of the missing native WYSIWYG feature.
 

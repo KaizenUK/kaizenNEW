@@ -383,7 +383,10 @@ test("rich text supports inline formatting and links in preview", async ({
 }) => {
   const markupErrors: string[] = [];
   page.on("console", (message) => {
-    if (message.type() === "error" && /nested <form>|descendant of <form>/.test(message.text()))
+    if (
+      message.type() === "error" &&
+      /nested <form>|descendant of <form>/.test(message.text())
+    )
       markupErrors.push(message.text());
   });
   const frame = await createPage(page);
@@ -426,7 +429,9 @@ test("rich text supports inline formatting and links in preview", async ({
   await page
     .getByRole("textbox", { name: "Link address", exact: true })
     .fill("/contact/");
-  await page.getByRole("textbox", { name: "Link address", exact: true }).press("Enter");
+  await page
+    .getByRole("textbox", { name: "Link address", exact: true })
+    .press("Enter");
   await expect(frame.locator(".kb-richtext a")).toHaveAttribute(
     "href",
     "/contact/",

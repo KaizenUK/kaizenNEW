@@ -86,12 +86,10 @@ import {content} from '../content';
   const project = await created.json();
   await page.goto(`/builder/?project=${project.id}`);
   await page
-    .getByRole("button", { name: "Export & repositories", exact: true })
+    .getByRole("button", { name: "Export & handoff", exact: true })
     .click();
-  await page.getByLabel("Absolute repository folder").fill(root);
-  await page
-    .getByRole("button", { name: "Inspect repository", exact: true })
-    .click();
+  await page.getByLabel("Website folder on this computer").fill(root);
+  await page.getByRole("button", { name: "Check folder", exact: true }).click();
   const route = page
     .locator(".builder-repository li")
     .filter({ hasText: "src/pages/index.astro" });
@@ -110,7 +108,7 @@ import {content} from '../content';
       });
     } else await request.continue();
   });
-  await route.getByRole("button", { name: "Edit existing content" }).click();
+  await route.getByRole("button", { name: "Edit text and links" }).click();
   const editor = page.getByRole("region", {
     name: "Existing page content editor",
   });
@@ -131,7 +129,7 @@ import {content} from '../content';
   await editor.getByRole("searchbox").fill("Imported original title");
   await editor.getByRole("textbox").fill("Edited JSON title 🌿");
   await editor.getByRole("searchbox").fill("");
-  await editor.getByText("Arrange original sections", { exact: true }).click();
+  await editor.getByText("Reorder sections", { exact: true }).click();
   await editor
     .getByText("index.astro · main sections", { exact: true })
     .click();
@@ -155,17 +153,15 @@ import {content} from '../content';
   }
   await expect(
     editor.getByRole("status", { name: "Source editing draft" }),
-  ).toContainText("Editing draft saved");
-  await editor.getByRole("button", { name: "Close source editor" }).click();
+  ).toContainText("Edits saved on this computer");
+  await editor.getByRole("button", { name: "Close editor" }).click();
   await page.reload();
   await page
-    .getByRole("button", { name: "Export & repositories", exact: true })
+    .getByRole("button", { name: "Export & handoff", exact: true })
     .click();
-  await page.getByLabel("Absolute repository folder").fill(root);
-  await page
-    .getByRole("button", { name: "Inspect repository", exact: true })
-    .click();
-  await route.getByRole("button", { name: "Edit existing content" }).click();
+  await page.getByLabel("Website folder on this computer").fill(root);
+  await page.getByRole("button", { name: "Check folder", exact: true }).click();
+  await route.getByRole("button", { name: "Edit text and links" }).click();
   await editor.getByRole("searchbox").fill("Original native page");
   await expect(editor.getByRole("textbox")).toHaveValue(
     "Edited original design 🌱",
@@ -183,17 +179,15 @@ import {content} from '../content';
   );
   expect(recovered.ok()).toBe(true);
   expect(Object.keys((await recovered.json()).edits.orders)).toHaveLength(1);
-  await editor
-    .getByRole("button", { name: "Review existing-page changes" })
-    .click();
+  await editor.getByRole("button", { name: "Review my changes" }).click();
   await expect(
-    page.getByRole("heading", { name: "Proposed repository changes" }),
+    page.getByRole("heading", { name: "Changes to apply" }),
   ).toBeVisible();
   expect(await readFile(path.join(root, "src/pages/index.astro"), "utf8")).toBe(
     original,
   );
   await page
-    .getByRole("button", { name: "Apply reviewed file changes" })
+    .getByRole("button", { name: "Apply changes to the folder" })
     .click();
   await expect(
     page.locator(".builder-repository > [role=status]"),
@@ -226,14 +220,12 @@ import {content} from '../content';
     "Existing uncommitted work\n",
   );
   await page
-    .getByRole("button", { name: "Review build command", exact: true })
+    .getByRole("button", { name: "Check build command", exact: true })
     .click();
-  await page
-    .getByRole("button", { name: "Run reviewed build", exact: true })
-    .click();
+  await page.getByRole("button", { name: "Run build", exact: true }).click();
   await expect(
     page.locator(".builder-repository-build [role=status]"),
-  ).toContainText("Build succeeded", { timeout: 90_000 });
+  ).toContainText("Build finished", { timeout: 90_000 });
   const popup = context.waitForEvent("page");
   await page.getByRole("link", { name: "Open local website preview" }).click();
   const preview = await popup;
@@ -270,10 +262,10 @@ import {content} from '../content';
     preview.getByRole("heading", { name: "Contact page" }),
   ).toBeVisible();
   await preview.close();
-  await route.getByRole("button", { name: "Edit existing content" }).click();
+  await route.getByRole("button", { name: "Edit text and links" }).click();
   const selecting = context.waitForEvent("page");
   await editor
-    .getByRole("button", { name: "Select content in built page" })
+    .getByRole("button", { name: "Pick text from the preview" })
     .click();
   const selectedPreview = await selecting;
   selectedPreview.on("pageerror", (e) => errors.push(e.message));
@@ -295,14 +287,14 @@ import {content} from '../content';
         .fill("A change selected from the rendered page");
       await expect(
         editor.getByRole("status", { name: "Source editing draft" }),
-      ).toContainText("Editing draft saved");
+      ).toContainText("Edits saved on this computer");
       expect(
         await readFile(path.join(root, "src/pages/index.astro"), "utf8"),
       ).toBe(result);
       await editor.getByRole("textbox").fill("Edited original design 🌱");
       await expect(
         editor.getByRole("status", { name: "Source editing draft" }),
-      ).toContainText("No unapplied edits");
+      ).toContainText("No changes yet");
     }
     await selectedPreview
       .getByRole("img", { name: "Original picture" })
@@ -342,12 +334,12 @@ import {content} from '../content';
     selectedPreview.getByRole("button", { name: "Edited counter: 1" }),
   ).toBeVisible();
   await selectedPreview.close();
-  await editor.getByRole("button", { name: "Show all source fields" }).click();
-  await editor.getByRole("button", { name: "Close source editor" }).click();
+  await editor.getByRole("button", { name: "Show all fields" }).click();
+  await editor.getByRole("button", { name: "Close editor" }).click();
   await page
     .getByRole("button", { name: "Stop local preview", exact: true })
     .click();
-  await route.getByRole("button", { name: "Edit existing content" }).click();
+  await route.getByRole("button", { name: "Edit text and links" }).click();
   await editor.getByRole("searchbox").fill("Edited original design");
   await expect(editor.getByRole("textbox")).toHaveValue(
     "Edited original design 🌱",
@@ -355,45 +347,43 @@ import {content} from '../content';
   await editor.getByRole("textbox").fill("Recover this unsaved source change");
   await expect(
     editor.getByRole("status", { name: "Source editing draft" }),
-  ).toContainText("Editing draft saved");
-  await editor.getByRole("button", { name: "Close source editor" }).click();
+  ).toContainText("Edits saved on this computer");
+  await editor.getByRole("button", { name: "Close editor" }).click();
   await writeFile(
     path.join(root, "src/pages/index.astro"),
     result + "\n<!-- external edit -->",
   );
-  await route.getByRole("button", { name: "Edit existing content" }).click();
+  await route.getByRole("button", { name: "Edit text and links" }).click();
   await expect(
     editor.getByRole("status", { name: "Source editing draft" }),
-  ).toContainText("Repository source changed");
+  ).toContainText("The website's files changed");
   await editor.getByText("Recover saved changes", { exact: true }).click();
   await expect(
     editor.getByText("Recover this unsaved source change", { exact: true }),
   ).toBeVisible();
   await expect(
-    editor.getByRole("button", { name: "Review existing-page changes" }),
+    editor.getByRole("button", { name: "Review my changes" }),
   ).toBeDisabled();
-  await editor
-    .getByRole("button", { name: "Discard saved editing draft" })
-    .click();
+  await editor.getByRole("button", { name: "Discard saved edits" }).click();
   await expect(
     editor.getByRole("status", { name: "Source editing draft" }),
-  ).toContainText("Saved editing draft discarded");
+  ).toContainText("Saved edits discarded");
   expect(await readFile(path.join(root, "src/pages/index.astro"), "utf8")).toBe(
     result + "\n<!-- external edit -->",
   );
   const other = await context.newPage();
   await other.goto(`/builder/?project=${project.id}`);
   await other
-    .getByRole("button", { name: "Export & repositories", exact: true })
+    .getByRole("button", { name: "Export & handoff", exact: true })
     .click();
-  await other.getByLabel("Absolute repository folder").fill(root);
+  await other.getByLabel("Website folder on this computer").fill(root);
   await other
-    .getByRole("button", { name: "Inspect repository", exact: true })
+    .getByRole("button", { name: "Check folder", exact: true })
     .click();
   await other
     .locator(".builder-repository li")
     .filter({ hasText: "src/pages/index.astro" })
-    .getByRole("button", { name: "Edit existing content" })
+    .getByRole("button", { name: "Edit text and links" })
     .click();
   const otherEditor = other.getByRole("region", {
     name: "Existing page content editor",
@@ -404,7 +394,7 @@ import {content} from '../content';
   await editor.getByRole("textbox").fill("First window owns this saved edit");
   await expect(
     editor.getByRole("status", { name: "Source editing draft" }),
-  ).toContainText("Editing draft saved");
+  ).toContainText("Edits saved on this computer");
   await otherEditor
     .getByRole("textbox")
     .fill("Second window must not overwrite it");

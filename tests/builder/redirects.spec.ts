@@ -6,9 +6,7 @@ test("redirect drafts survive reopening, publish both aliases, preserve queries 
   const suffix = crypto.randomUUID().slice(0, 8),
     source = `/retired-${suffix}/`;
   await page.goto("/builder/");
-  await page
-    .getByRole("button", { name: "URL redirects", exact: true })
-    .click();
+  await page.getByRole("button", { name: "Redirects", exact: true }).click();
   await page.getByRole("button", { name: "Add redirect", exact: true }).click();
   const sources = page.getByRole("textbox", { name: /Old URL \d+/ }),
     index = await sources.count();
@@ -28,9 +26,7 @@ test("redirect drafts survive reopening, publish both aliases, preserve queries 
   await page
     .getByRole("button", { name: "Back to pages", exact: true })
     .click();
-  await page
-    .getByRole("button", { name: "URL redirects", exact: true })
-    .click();
+  await page.getByRole("button", { name: "Redirects", exact: true }).click();
   await expect(
     page.getByRole("textbox", { name: `Old URL ${index}`, exact: true }),
   ).toHaveValue(source);

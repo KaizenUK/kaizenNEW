@@ -11,9 +11,7 @@ test("Unity client dashboard keeps two open projects and their assets isolated",
   const errors: string[] = [];
   page.on("pageerror", (error) => errors.push(error.message));
   await page.goto("/builder/");
-  await page
-    .getByRole("button", { name: "Client projects", exact: true })
-    .click();
+  await page.getByRole("button", { name: "All projects", exact: true }).click();
   await page
     .getByRole("textbox", { name: "Project name", exact: true })
     .first()
@@ -177,9 +175,7 @@ test("Unity client dashboard keeps two open projects and their assets isolated",
   await page
     .getByRole("button", { name: "Back to pages", exact: true })
     .click();
-  await page
-    .getByRole("button", { name: "Client projects", exact: true })
-    .click();
+  await page.getByRole("button", { name: "All projects", exact: true }).click();
   await card.getByRole("button", { name: "Duplicate", exact: true }).click();
   const copyName = `${name} copy`,
     renamed = `Renamed copy ${suffix}`;

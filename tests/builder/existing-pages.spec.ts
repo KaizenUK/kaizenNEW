@@ -8,12 +8,12 @@ test("the dashboard distinguishes existing site layouts, CMS content and redirec
     .getByRole("button", { name: "Existing site pages", exact: true })
     .click();
   const inventory = page.locator(".builder-existing-pages");
-  await expect(inventory).toContainText("original templates and components");
+  await expect(page.getByText("website's own code")).toBeVisible();
   await inventory
     .getByRole("searchbox", { name: "Find an existing page" })
     .fill("/about/");
   await expect(inventory.locator("li")).toHaveCount(1);
-  await expect(inventory.locator("li")).toContainText("Existing site layout");
+  await expect(inventory.locator("li")).toContainText("Site page");
   await expect(
     inventory.getByRole("link", { name: "Open existing /about/", exact: true }),
   ).toHaveAttribute("href", "/about/");
@@ -29,12 +29,12 @@ test("the dashboard distinguishes existing site layouts, CMS content and redirec
   await expect(inventory.locator("li")).toHaveCount(1);
   await expect(inventory.locator("li")).toContainText("CMS content");
   await expect(
-    inventory.getByRole("link", { name: "Open site CMS ↗", exact: true }),
+    page.getByRole("link", { name: "Open site CMS ↗", exact: true }),
   ).toHaveAttribute("href", /^https:\/\/kaizenweb\.co\.uk\/studio/);
   await inventory
     .getByRole("searchbox", { name: "Find an existing page" })
     .fill("/insights/");
-  await expect(inventory).toContainText("No matching routes");
+  await expect(inventory).toContainText("No pages match");
   await inventory
     .getByRole("checkbox", { name: "Include site redirects" })
     .check();
@@ -66,6 +66,6 @@ test("the dashboard distinguishes existing site layouts, CMS content and redirec
   );
   // Inspection only: the test must never apply a proposal to Kaizen's own source.
   await expect(
-    editor.getByRole("button", { name: "Review existing-page changes" }),
+    editor.getByRole("button", { name: "Review my changes" }),
   ).toBeDisabled();
 });

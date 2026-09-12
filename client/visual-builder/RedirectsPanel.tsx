@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Plus, Trash2 } from "lucide-react";
 import { clone, newId, type Workspace } from "../../shared/visualBuilder";
 import {
   initialRoutes,
@@ -6,6 +7,10 @@ import {
 } from "../../shared/builderRoutes";
 import { localRedirectPaths } from "../../shared/builderRedirects.js";
 import { localMode, storage } from "./storage";
+import { Card, Head, Notice, Pill } from "./shell";
+import { ProjectName } from "./activeProject";
+
+/* Old URL → new URL rules. Drafted here, published like everything else. */
 
 export default function RedirectsPanel({
   workspace,
@@ -89,197 +94,234 @@ export default function RedirectsPanel({
     }
   }
   return (
-    <section className="builder-redirects">
-      <div className="builder-section-heading">
-        <h1>URL redirects</h1>
-        <button disabled={busy || dirty} onClick={onClose}>
+    <>
+      <Head
+        info={<ProjectName />}
+        title="Redirects"
+        description="Send visitors from an old URL to its replacement. Rules stay in draft until you publish them."
+        status={
+          <Pill tone={dirty ? "orange" : changed ? "blue" : "green"}>
+            {dirty
+              ? "Unsaved changes"
+              : changed
+                ? "Draft differs from published"
+                : "Published rules in use"}
+          </Pill>
+        }
+      >
+        <button
+          type="button"
+          disabled={busy || !dirty}
+          onClick={() => {
+            setRules(clone(state.draft));
+            setReview(false);
+            setError("");
+          }}
+        >
+          Discard unsaved changes
+        </button>
+        <button
+          type="button"
+          className="builder-primary"
+          disabled={busy || !dirty}
+          onClick={save}
+        >
+          Save redirect draft
+        </button>
+        <button
+          type="button"
+          disabled={busy || dirty || !changed}
+          onClick={() => setReview(true)}
+        >
+          Review redirect publication
+        </button>
+        {!localMode && (
+          <button type="button" disabled={busy || dirty} onClick={onReleases}>
+            View releases
+          </button>
+        )}
+        <button type="button" disabled={busy || dirty} onClick={onClose}>
           Back to pages
         </button>
-      </div>
-      <p>
-        Send visitors from an old URL to its replacement. Changes remain drafts
-        until you publish them.
-      </p>
-      <p>
-        Use paths such as /old-offer/ and /new-offer/. Existing site sections
-        and editor URLs are protected. Publish the destination page first.
-        Tracking query parameters are preserved.
-      </p>
-      {error && (
-        <p role="alert" className="builder-error">
-          {error}
-        </p>
-      )}
-      {notice && <p role="status">{notice}</p>}
-      <fieldset disabled={busy} style={{ border: 0, padding: 0 }}>
-        <div className="builder-row">
-          <button
-            disabled={rules.length >= 200}
-            onClick={() => {
-              setRules([
-                ...rules,
-                { id: newId(), source: "", destination: "", status: 302 },
-              ]);
-              setReview(false);
-            }}
-          >
-            Add redirect
-          </button>
-          <button className="builder-primary" disabled={!dirty} onClick={save}>
-            Save redirect draft
-          </button>
-          <button
-            disabled={!dirty}
-            onClick={() => {
-              setRules(clone(state.draft));
-              setReview(false);
-              setError("");
-            }}
-          >
-            Discard unsaved changes
-          </button>
-          <button disabled={dirty || !changed} onClick={() => setReview(true)}>
-            Review redirect publication
-          </button>
-          {!localMode && (
-            <button disabled={dirty} onClick={onReleases}>
-              View releases
-            </button>
-          )}
-        </div>
-        {dirty && <p>Unsaved changes. Save or discard them before leaving.</p>}
-        <p>
-          Temporary (302) is useful while testing. Browsers can remember
-          permanent (301) redirects even after you change them.
-        </p>
-        <datalist id="builder-redirect-destinations">
-          {[...new Set<string>(localRedirectPaths(workspace.pages))].map(
-            (value) => (
-              <option key={value} value={value} />
-            ),
-          )}
-        </datalist>
-        <div className="builder-redirect-rows">
-          {rules.map((rule, index) => (
-            <div className="builder-redirect-row" key={rule.id}>
-              <label>
-                Old URL {index + 1}
-                <input
-                  aria-label={`Old URL ${index + 1}`}
-                  value={rule.source}
-                  placeholder="/old-offer/"
-                  onChange={(event) =>
-                    update(rule.id, { source: event.target.value })
-                  }
-                />
-              </label>
-              <label>
-                Destination {index + 1}
-                <input
-                  aria-label={`Destination ${index + 1}`}
-                  list="builder-redirect-destinations"
-                  value={rule.destination}
-                  placeholder="/new-offer/"
-                  onChange={(event) =>
-                    update(rule.id, { destination: event.target.value })
-                  }
-                />
-              </label>
-              <label>
-                Type {index + 1}
-                <select
-                  aria-label={`Redirect type ${index + 1}`}
-                  value={rule.status}
-                  onChange={(event) =>
-                    update(rule.id, {
-                      status: Number(event.target.value) as 301 | 302,
-                    })
-                  }
-                >
-                  <option value={302}>Temporary (302)</option>
-                  <option value={301}>Permanent (301)</option>
-                </select>
-              </label>
-              <button
-                aria-label={`Remove redirect ${index + 1}`}
-                onClick={() => {
-                  setRules(rules.filter((item) => item.id !== rule.id));
-                  setReview(false);
-                }}
-              >
-                Remove
-              </button>
-            </div>
-          ))}
-        </div>
-        {!rules.length && (
-          <p>No draft redirects. Add one when you replace a page URL.</p>
+      </Head>
+      <div className="builder-page-body builder-redirects">
+        {error && <Notice tone="error">{error}</Notice>}
+        {notice && <Notice tone="success">{notice}</Notice>}
+        {dirty && (
+          <Notice>Unsaved changes. Save or discard them before leaving.</Notice>
         )}
-        {review && (
-          <section
-            className="builder-redirect-review"
-            aria-label="Review redirect publication"
+        <fieldset disabled={busy} className="builder-fieldset">
+          <Card
+            title="Draft rules"
+            description="Use paths such as /old-offer/ and /new-offer/. Publish the destination page first. Existing site sections and editor URLs are protected, and tracking parameters in the query string are kept."
           >
-            <h2>Review redirect publication</h2>
-            <p>
-              {localMode
-                ? "This changes only the local site."
-                : "This queues a website release. Rules become published after its live checks pass."}
-            </p>
-            <ul>
-              {differences.map((rule) => (
-                <li key={`${rule.action}-${rule.id}`}>
-                  {rule.action}: {rule.source} → {rule.destination} (
-                  {rule.status})
-                </li>
+            <datalist id="builder-redirect-destinations">
+              {[...new Set<string>(localRedirectPaths(workspace.pages))].map(
+                (value) => (
+                  <option key={value} value={value} />
+                ),
+              )}
+            </datalist>
+            <div className="builder-redirect-rows">
+              {rules.map((rule, index) => (
+                <div className="builder-redirect-row" key={rule.id}>
+                  <label>
+                    Old URL {index + 1}
+                    <input
+                      aria-label={`Old URL ${index + 1}`}
+                      value={rule.source}
+                      placeholder="/old-offer/"
+                      onChange={(event) =>
+                        update(rule.id, { source: event.target.value })
+                      }
+                    />
+                  </label>
+                  <label>
+                    Destination {index + 1}
+                    <input
+                      aria-label={`Destination ${index + 1}`}
+                      list="builder-redirect-destinations"
+                      value={rule.destination}
+                      placeholder="/new-offer/"
+                      onChange={(event) =>
+                        update(rule.id, { destination: event.target.value })
+                      }
+                    />
+                  </label>
+                  <label>
+                    Type {index + 1}
+                    <select
+                      aria-label={`Redirect type ${index + 1}`}
+                      value={rule.status}
+                      onChange={(event) =>
+                        update(rule.id, {
+                          status: Number(event.target.value) as 301 | 302,
+                        })
+                      }
+                    >
+                      <option value={302}>Temporary (302)</option>
+                      <option value={301}>Permanent (301)</option>
+                    </select>
+                  </label>
+                  <button
+                    type="button"
+                    className="builder-icon-button builder-icon-button-danger"
+                    aria-label={`Remove redirect ${index + 1}`}
+                    title="Remove"
+                    onClick={() => {
+                      setRules(rules.filter((item) => item.id !== rule.id));
+                      setReview(false);
+                    }}
+                  >
+                    <Trash2 size={16} />
+                  </button>
+                </div>
               ))}
-            </ul>
-            <div className="builder-row">
-              <button className="builder-primary" onClick={publish}>
-                Publish redirects
-              </button>
-              <button onClick={() => setReview(false)}>Cancel</button>
             </div>
-          </section>
-        )}
-        <details>
-          <summary>Published rules ({state.published.length})</summary>
-          <ul>
-            {state.published.map((rule) => (
-              <li key={rule.id}>
-                {rule.source} → {rule.destination} ({rule.status})
-              </li>
-            ))}
-          </ul>
-        </details>
-        <details>
-          <summary>Redirect history ({state.revisions.length})</summary>
-          <p>
-            Restore a saved version into the draft, then save and review before
-            publishing.
-          </p>
-          {[...state.revisions].reverse().map((revision) => (
-            <div className="builder-row" key={revision.id}>
-              <span>
-                {new Date(revision.createdAt).toLocaleString()} ·{" "}
-                {revision.rules.length} rules
-              </span>
+            {!rules.length && (
+              <p className="builder-empty">
+                No draft redirects yet. Add one when you change a page's URL.
+              </p>
+            )}
+            <div className="builder-row builder-actions">
               <button
-                disabled={dirty}
+                type="button"
+                disabled={rules.length >= 200}
                 onClick={() => {
-                  setRules(clone(revision.rules));
+                  setRules([
+                    ...rules,
+                    { id: newId(), source: "", destination: "", status: 302 },
+                  ]);
                   setReview(false);
-                  setNotice(
-                    "History restored into the editor. Save the draft to keep it.",
-                  );
                 }}
               >
-                Restore redirect draft
+                <Plus size={16} /> Add redirect
               </button>
             </div>
-          ))}
-        </details>
-      </fieldset>
-    </section>
+            <p className="builder-hint">
+              Temporary (302) is safer while testing. Browsers remember
+              permanent (301) redirects even after you change them.
+            </p>
+          </Card>
+          {review && (
+            <Card
+              className="builder-review"
+              ariaLabel="Review redirect publication"
+              title="Review redirect publication"
+              description={
+                localMode
+                  ? "This changes only the local site."
+                  : "This queues a website release. The rules become published once its live checks pass."
+              }
+            >
+              <ul className="builder-review-list">
+                {differences.map((rule) => (
+                  <li key={`${rule.action}-${rule.id}`}>
+                    {rule.action}: {rule.source} → {rule.destination} (
+                    {rule.status})
+                  </li>
+                ))}
+              </ul>
+              <div className="builder-row builder-actions">
+                <button
+                  type="button"
+                  className="builder-primary"
+                  onClick={publish}
+                >
+                  Publish redirects
+                </button>
+                <button type="button" onClick={() => setReview(false)}>
+                  Cancel
+                </button>
+              </div>
+            </Card>
+          )}
+          <Card title="Published rules and history">
+            <details>
+              <summary>Published rules ({state.published.length})</summary>
+              {state.published.length ? (
+                <ul className="builder-review-list">
+                  {state.published.map((rule) => (
+                    <li key={rule.id}>
+                      {rule.source} → {rule.destination} ({rule.status})
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p className="builder-hint">No published redirects.</p>
+              )}
+            </details>
+            <details>
+              <summary>Redirect history ({state.revisions.length})</summary>
+              <p className="builder-hint">
+                Restore a saved version into the draft, then save and review
+                before publishing.
+              </p>
+              {[...state.revisions].reverse().map((revision) => (
+                <div className="builder-revision" key={revision.id}>
+                  <span>
+                    {new Date(revision.createdAt).toLocaleString()} ·{" "}
+                    {revision.rules.length} rules
+                  </span>
+                  <button
+                    type="button"
+                    disabled={dirty}
+                    onClick={() => {
+                      setRules(clone(revision.rules));
+                      setReview(false);
+                      setNotice(
+                        "History restored into the editor. Save the draft to keep it.",
+                      );
+                    }}
+                  >
+                    Restore redirect draft
+                  </button>
+                </div>
+              ))}
+            </details>
+          </Card>
+        </fieldset>
+      </div>
+    </>
   );
 }

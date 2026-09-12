@@ -43,20 +43,22 @@ export default function NativeRepositoryBackup({
   }
   return (
     <section
-      className="builder-card builder-project-card"
+      className="builder-card builder-block"
       aria-label="Native repository backup"
     >
-      <h2>Back up or restore an existing repository</h2>
-      <p>
-        This separate backup preserves original source, public assets, package
-        configuration and this project's saved source-editing drafts. It does
-        not convert the site to builder blocks.
-      </p>
-      <p>
-        Save or close open source editors first. Dependency folders, build
-        output, Git history, private environment files and known credential
-        files are excluded. Review the file list and exclusions. Limits: 35 MB
-        ZIP, 200 MB source, 32 MB per file.
+      <div className="builder-block-head">
+        <h2>Back up this folder</h2>
+        <p>
+          A ZIP of the website's code, images and settings files, plus any
+          unapplied edits from this project. It is not a builder project; it
+          restores a folder as it was.
+        </p>
+      </div>
+      <p className="builder-hint">
+        Close any open page editors first. Installed packages, build output, Git
+        history, private settings and known password files are left out; check
+        the file list before downloading. Limits: 35 MB ZIP, 200 MB of files, 32
+        MB per file.
       </p>
       <button
         disabled={busy || !root}
@@ -73,11 +75,12 @@ export default function NativeRepositoryBackup({
           })
         }
       >
-        Review native repository backup
+        Prepare folder backup
       </button>
-      <div>
+      <div className="builder-form">
+        <h3>Restore a backup into a new folder</h3>
         <label>
-          Native repository backup ZIP
+          Backup ZIP file
           <input
             type="file"
             accept=".zip"
@@ -86,25 +89,25 @@ export default function NativeRepositoryBackup({
           />
         </label>
         <label>
-          New restore folder
+          New folder to restore into
           <input
             value={target}
             readOnly={Boolean(approvedRoot)}
             disabled={busy || Boolean(review)}
             onChange={(event) => setTarget(event.target.value)}
-            placeholder="Absolute path to a folder that does not exist"
+            placeholder="Full path to a folder that does not exist yet"
           />
         </label>
-        <p>
-          The parent folder must already exist. Existing repositories are never
-          replaced. Environment configuration and dependencies must be restored
-          separately; no install, build or Git command runs automatically.
+        <p className="builder-hint">
+          The folder above it must already exist, and existing folders are never
+          replaced. Private settings and installed packages are not included,
+          and nothing is installed, built or committed for you.
         </p>
         {approvedRoot && (
-          <p>
-            Restoration uses the folder approved in the companion window. To
-            restore elsewhere, open a separate hosted builder tab and connect it
-            to a new restore folder.
+          <p className="builder-hint">
+            The backup restores into the folder you shared in the helper window.
+            To restore somewhere else, open another builder tab and share a new
+            folder there.
           </p>
         )}
         <button
@@ -112,7 +115,7 @@ export default function NativeRepositoryBackup({
           onClick={() =>
             void run(async () => {
               if (archive!.size > 35 * 1024 * 1024)
-                throw new Error("Native backup ZIPs are limited to 35 MB.");
+                throw new Error("Backup ZIP files are limited to 35 MB.");
               const encoded = await new Promise<string>((resolve, reject) => {
                 const reader = new FileReader();
                 reader.onload = () =>
@@ -132,40 +135,36 @@ export default function NativeRepositoryBackup({
             })
           }
         >
-          Review native repository restore
+          Check backup file
         </button>
       </div>
       {review && (
-        <div>
-          <h3>
-            {restoring
-              ? "Restore to a new repository"
-              : "Captured repository backup"}
-          </h3>
+        <div className="builder-block-section">
+          <h3>{restoring ? "Ready to restore" : "Backup ready to download"}</h3>
           <p>{review.root}</p>
           <p>
-            {review.files.length} files · {review.draftCount} saved editing
-            drafts. Review expires in 15 minutes.
+            {review.files.length} files · {review.draftCount} unapplied edits.
+            This check expires in 15 minutes.
           </p>
           <details>
-            <summary>Saved editing drafts and environment setup</summary>
+            <summary>Unapplied edits and settings names</summary>
             <ul>
               {review.drafts.map((draft) => (
                 <li key={draft.route}>
                   {draft.route}
                   {!draft.sourcePresent &&
-                    " — original page is absent; draft retained for recovery in the backup manifest"}
+                    " — its page is missing; the edits are kept in the backup for recovery"}
                 </li>
               ))}
             </ul>
             <p>
-              Environment variable names only; values are excluded:{" "}
+              Names of private settings (values are never included):{" "}
               {review.environmentNames.join(", ") ||
-                "None discovered in local environment files. Check the repository’s integration documentation."}
+                "none found in the folder's settings files."}
             </p>
           </details>
           <details>
-            <summary>Included source and assets</summary>
+            <summary>Files included</summary>
             <ul>
               {review.files.map((file) => (
                 <li key={file.file}>
@@ -175,7 +174,7 @@ export default function NativeRepositoryBackup({
             </ul>
           </details>
           <details>
-            <summary>Excluded files and folders</summary>
+            <summary>Files left out</summary>
             {review.excluded.length ? (
               <ul>
                 {review.excluded.map((file) => (
@@ -185,57 +184,58 @@ export default function NativeRepositoryBackup({
                 ))}
               </ul>
             ) : (
-              <p>No matching private or generated files were present.</p>
+              <p>Nothing needed leaving out.</p>
             )}
           </details>
-          <button
-            disabled={busy}
-            onClick={() =>
-              void run(async () => {
-                if (restoring) {
-                  const result = await storage.repository({
-                    action: "repository-native-restore-apply",
-                    reviewId: review.id,
-                  });
-                  setReview(undefined);
-                  setStatus(
-                    `Restored ${result.files} source files and ${result.drafts} editing drafts into ${result.root}. Inspect this repository to resume editing.`,
-                  );
-                  onRestored(result.root);
-                } else {
-                  const result = await storage.repository({
-                    action: "repository-native-backup-download",
-                    reviewId: review.id,
-                  });
-                  const bytes = Uint8Array.from(atob(result.archive), (c) =>
-                    c.charCodeAt(0),
-                  );
-                  const url = URL.createObjectURL(
-                    new Blob([bytes], { type: "application/zip" }),
-                  );
-                  const link = document.createElement("a");
-                  link.href = url;
-                  link.download = "kaizen-native-repository.zip";
-                  link.click();
-                  setTimeout(() => URL.revokeObjectURL(url), 1000);
-                  setReview(undefined);
-                  setStatus(
-                    "Native repository backup downloaded. Keep environment credentials separately.",
-                  );
-                }
-              })
-            }
-          >
-            {restoring
-              ? "Restore reviewed native repository"
-              : "Download reviewed native backup"}
-          </button>
-          <button disabled={busy} onClick={() => void run(discard)}>
-            Discard native backup review
-          </button>
+          <div className="builder-row builder-actions">
+            <button
+              className="builder-primary"
+              disabled={busy}
+              onClick={() =>
+                void run(async () => {
+                  if (restoring) {
+                    const result = await storage.repository({
+                      action: "repository-native-restore-apply",
+                      reviewId: review.id,
+                    });
+                    setReview(undefined);
+                    setStatus(
+                      `Restored ${result.files} files and ${result.drafts} unapplied edits into ${result.root}. Check the folder to carry on editing.`,
+                    );
+                    onRestored(result.root);
+                  } else {
+                    const result = await storage.repository({
+                      action: "repository-native-backup-download",
+                      reviewId: review.id,
+                    });
+                    const bytes = Uint8Array.from(atob(result.archive), (c) =>
+                      c.charCodeAt(0),
+                    );
+                    const url = URL.createObjectURL(
+                      new Blob([bytes], { type: "application/zip" }),
+                    );
+                    const link = document.createElement("a");
+                    link.href = url;
+                    link.download = "kaizen-native-repository.zip";
+                    link.click();
+                    setTimeout(() => URL.revokeObjectURL(url), 1000);
+                    setReview(undefined);
+                    setStatus(
+                      "Folder backup downloaded. Keep any passwords and keys separately.",
+                    );
+                  }
+                })
+              }
+            >
+              {restoring ? "Restore into new folder" : "Download folder backup"}
+            </button>
+            <button disabled={busy} onClick={() => void run(discard)}>
+              Cancel
+            </button>
+          </div>
         </div>
       )}
-      {busy && <p role="status">Working on native repository backup…</p>}
+      {busy && <p role="status">Working on the folder backup…</p>}
       {status && <p role="status">{status}</p>}
       {error && <p role="alert">{error}</p>}
     </section>

@@ -170,24 +170,34 @@ test("a lost small-file acknowledgement can be retried without duplication and d
 }) => {
   const pack = `Retry ${crypto.randomUUID().slice(0, 8)}`;
   let failScope = true;
-  await context.route((url) => url.pathname === "/__builder-local" && url.searchParams.get("scope") === "1", async (route) => {
-    if (failScope) {
-      failScope = false;
-      await route.fulfill({
-        status: 503,
-        contentType: "application/json",
-        body: '{"error":"temporarily unavailable"}',
-      });
-    } else await route.continue();
-  });
+  await context.route(
+    (url) =>
+      url.pathname === "/__builder-local" &&
+      url.searchParams.get("scope") === "1",
+    async (route) => {
+      if (failScope) {
+        failScope = false;
+        await route.fulfill({
+          status: 503,
+          contentType: "application/json",
+          body: '{"error":"temporarily unavailable"}',
+        });
+      } else await route.continue();
+    },
+  );
   let dropAcknowledgement = true;
-  await context.route((url) => url.pathname === "/__builder-local" && url.searchParams.get("action") === "upload", async (route) => {
-    const response = await route.fetch();
-    if (dropAcknowledgement) {
-      dropAcknowledgement = false;
-      await route.abort("internetdisconnected");
-    } else await route.fulfill({ response });
-  });
+  await context.route(
+    (url) =>
+      url.pathname === "/__builder-local" &&
+      url.searchParams.get("action") === "upload",
+    async (route) => {
+      const response = await route.fetch();
+      if (dropAcknowledgement) {
+        dropAcknowledgement = false;
+        await route.abort("internetdisconnected");
+      } else await route.fulfill({ response });
+    },
+  );
   await page.goto("/builder/");
   await page.getByRole("button", { name: "Blank page", exact: true }).click();
   await page.getByRole("button", { name: "Assets", exact: true }).click();

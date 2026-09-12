@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
+import { ArrowUpRight, RefreshCw } from "lucide-react";
 import { storage } from "./storage";
 import { pendingClientRelease } from "../../shared/builderClientPublication";
 import type {
@@ -6,6 +7,11 @@ import type {
   ClientPublicationJob,
   ClientPublicationReview,
 } from "../../shared/builderClientPublication";
+import { Card, Head, Notice, Pill } from "./shell";
+import { ProjectName } from "./activeProject";
+
+/* Publishing a client project: choose a destination, review what goes live, then watch the release. */
+
 const labels: Record<ClientPublicationJob["phase"], string> = {
   queued: "Queued",
   building: "Building static website",
@@ -16,6 +22,25 @@ const labels: Record<ClientPublicationJob["phase"], string> = {
   rolled_back: "Previous release restored",
   recovery_required: "Recovery needs attention",
 };
+const tones: Record<
+  ClientPublicationJob["phase"],
+  "grey" | "green" | "orange" | "blue" | "primary"
+> = {
+  queued: "blue",
+  building: "blue",
+  activating: "blue",
+  verifying: "blue",
+  live: "green",
+  failed: "orange",
+  rolled_back: "grey",
+  recovery_required: "orange",
+};
+const actionLabels: Record<ClientPublicationJob["action"], string> = {
+  publish: "Publish",
+  unpublish: "Unpublish",
+  rollback: "Restore earlier release",
+} as Record<ClientPublicationJob["action"], string>;
+
 export default function ClientPublications({
   onChanged,
 }: {
@@ -135,254 +160,289 @@ export default function ClientPublications({
         pendingClientRelease(job),
     );
   return (
-    <section className="builder-client-publications">
-      <h1>Client releases</h1>
-      <p>
-        Publish a complete saved project to an explicit destination. Saving
-        drafts, exporting a website and publishing are separate actions.
-      </p>
-      {!loaded && (
-        <p role="status">Loading destinations and release history…</p>
-      )}
-      {loaded && !destinations.length && !error && !refreshError && (
-        <div className="builder-card builder-project-card">
-          <h2>No publication destination configured</h2>
-          <p>
-            A server administrator must connect a dedicated client staging or
-            production host. This project cannot publish over Kaizen. Local
-            setup is documented in docs/client-publication.md.
+    <>
+      <Head
+        info={<ProjectName />}
+        title="Releases"
+        description="Publish the saved project to its destination and keep track of every release. Saving drafts, exporting the website and publishing are separate steps."
+      >
+        <button type="button" disabled={busy} onClick={() => void refresh()}>
+          <RefreshCw size={16} /> Refresh release status
+        </button>
+      </Head>
+      <div className="builder-page-body">
+        {!loaded && (
+          <p role="status" className="builder-hint">
+            Loading destinations and release history…
           </p>
-        </div>
-      )}
-      {!!destinations.length && (
-        <div className="builder-card builder-project-card">
-          <h2>Publication destination</h2>
-          <label>
-            Choose destination
-            <select
-              value={selected}
-              disabled={busy}
-              onChange={(event) => {
-                setSelected(event.target.value);
-                setReview(undefined);
-              }}
-            >
-              <option value="">Choose a destination…</option>
-              {destinations.map((value) => (
-                <option key={value.destinationId} value={value.destinationId}>
-                  {value.label} · {value.environment} · {value.origin}
-                </option>
-              ))}
-            </select>
-          </label>
-          {destination && (
+        )}
+        {loaded && !destinations.length && !error && !refreshError && (
+          <Card
+            title="No publishing destination yet"
+            description="A server administrator needs to connect a dedicated staging or production host for this client. Projects can never publish over the Kaizen site. Setup is documented in docs/client-publication.md."
+          />
+        )}
+        {!!destinations.length && (
+          <Card
+            title="Publish"
+            description="Choose where this website goes live, then review exactly what the release contains."
+          >
+            <div className="builder-form">
+              <label>
+                Choose destination
+                <select
+                  value={selected}
+                  disabled={busy}
+                  onChange={(event) => {
+                    setSelected(event.target.value);
+                    setReview(undefined);
+                  }}
+                >
+                  <option value="">Choose a destination…</option>
+                  {destinations.map((value) => (
+                    <option
+                      key={value.destinationId}
+                      value={value.destinationId}
+                    >
+                      {value.label} · {value.environment} · {value.origin}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              {destination && (
+                <p className="builder-hint">
+                  <strong>{destination.environment}</strong> ·{" "}
+                  <a href={destination.origin} target="_blank" rel="noreferrer">
+                    {destination.origin}
+                  </a>
+                </p>
+              )}
+            </div>
+            <div className="builder-row builder-actions">
+              <button
+                type="button"
+                className="builder-primary"
+                disabled={busy || !loaded || !destination || pending(selected)}
+                onClick={() => void run(() => prepare("publish"))}
+              >
+                Review saved project for publication
+              </button>
+              <button
+                type="button"
+                disabled={busy || !loaded || !destination || pending(selected)}
+                onClick={() => void run(() => prepare("unpublish"))}
+              >
+                Take website offline…
+              </button>
+            </div>
+          </Card>
+        )}
+        {review && (
+          <Card
+            className="builder-review"
+            title={`Review ${
+              review.action === "publish"
+                ? "publication"
+                : review.action === "rollback"
+                  ? "rollback"
+                  : "unpublication"
+            }`}
+            description={`${review.destination.label} · ${review.destination.environment} · ${review.destination.origin}`}
+          >
             <p>
-              <strong>{destination.environment}</strong> ·{" "}
-              <a href={destination.origin} target="_blank" rel="noreferrer">
-                {destination.origin}
-              </a>
+              {review.action === "unpublish"
+                ? "This replaces the website with an unavailable page. Its current URLs will return 404. Retained releases can be restored later."
+                : "This release contains the pages below with shared styles, configured services and bundled assets. Anything saved after the release starts stays a draft."}
             </p>
-          )}
-          <div className="builder-project-actions">
-            <button
-              disabled={busy || !loaded || !destination || pending(selected)}
-              onClick={() => void run(() => prepare("publish"))}
-            >
-              Review saved project for publication
-            </button>
-            <button
-              disabled={busy || !loaded || !destination || pending(selected)}
-              onClick={() => void run(() => prepare("unpublish"))}
-            >
-              Review unpublishing this website
-            </button>
-          </div>
-        </div>
-      )}
-      {review && (
-        <div className="builder-card builder-project-card">
-          <h2>
-            Review{" "}
-            {review.action === "publish"
-              ? "publication"
-              : review.action === "rollback"
-                ? "rollback"
-                : "unpublication"}
-          </h2>
-          <p>
-            <strong>
-              {review.destination.label} · {review.destination.environment}
-            </strong>
-            <br />
-            {review.destination.origin}
-          </p>
-          <p>
-            {review.action === "unpublish"
-              ? "Replaces this website with an unavailable page. Existing page routes will return 404. Retained releases can be restored."
-              : "This release contains the pages below, shared styles, configured services and bundled assets. Changes saved after starting remain drafts."}
-          </p>
-          {review.action !== "unpublish" && (
-            <ul>
-              {review.pages.map((page) => (
-                <li key={page.id}>
-                  {page.title} — /{page.slug}/
-                </li>
-              ))}
-            </ul>
-          )}
-          {!!review.warnings?.length && (
-            <section aria-label="Publication checks">
-              <h3>Check before publishing</h3>
-              <p>
-                These destinations or services are not supplied by this release.
-              </p>
-              <ul>
-                {review.warnings.map((warning) => (
-                  <li key={warning}>{warning}</li>
+            {review.action !== "unpublish" && (
+              <ul className="builder-review-list">
+                {review.pages.map((page) => (
+                  <li key={page.id}>
+                    {page.title} — /{page.slug}/
+                  </li>
                 ))}
               </ul>
-            </section>
-          )}
-          <div className="builder-project-actions">
-            <button
-              className="builder-primary"
-              disabled={
-                busy || !loaded || pending(review.destination.destinationId)
-              }
-              onClick={() =>
-                void run(async () => {
-                  const job = await storage.clientPublication({
-                    action: "client-release-start",
-                    reviewId: review.id,
-                  });
-                  setJobs((current) => [
-                    job,
-                    ...current.filter((item) => item.id !== job.id),
-                  ]);
-                  setReview(undefined);
-                  setMessage(
-                    "Release requested. Check its status below; success requires verification of the served website.",
-                  );
-                  if (cursor.current !== null) historyPage([null]);
-                  await refresh();
-                })
-              }
-            >
-              {review.action === "publish"
-                ? "Publish reviewed project"
-                : review.action === "rollback"
-                  ? "Restore reviewed release"
-                  : "Unpublish reviewed website"}
-            </button>
-            <button disabled={busy} onClick={() => setReview(undefined)}>
-              Cancel review
-            </button>
-          </div>
-        </div>
-      )}
-      {message && <p role="status">{message}</p>}
-      {error && <p role="alert">{error}</p>}
-      {refreshError && <p role="alert">{refreshError}</p>}
-      <h2>Release history</h2>
-      <button disabled={busy} onClick={() => void refresh()}>
-        Refresh release status
-      </button>
-      <nav
-        aria-label="Release history pages"
-        className="builder-project-actions"
-      >
-        <button
-          disabled={busy || cursors.length === 1}
-          onClick={() => historyPage([null])}
-        >
-          Latest releases
-        </button>
-        <button
-          disabled={busy || cursors.length === 1}
-          onClick={() => historyPage(cursors.slice(0, -1))}
-        >
-          Newer releases
-        </button>
-        <button
-          disabled={busy || !loaded || !nextCursor}
-          onClick={() => historyPage([...cursors, nextCursor])}
-        >
-          Older releases
-        </button>
-      </nav>
-      <p>
-        History page {cursors.length}. Current releases remain visible on every
-        page.
-      </p>
-      {loaded && !jobs.length && !refreshError && (
-        <p>No releases have been requested for this project.</p>
-      )}
-      {jobs.map((job) => (
-        <article
-          className="builder-card builder-project-card"
-          key={job.id}
-          data-release-id={job.id}
-        >
-          <h3>
-            {job.destination.label} · {job.destination.environment}
-          </h3>
-          <p role="status">
-            {labels[job.phase]}
-            {job.active ? " · Last verified baseline" : ""}
-          </p>
-          <p>
-            {job.action} · {new Date(job.createdAt).toLocaleString()}
-            <br />
-            {job.destination.origin}
-          </p>
-          {job.error && <p role="alert">{job.error}</p>}
-          {job.recoveryAvailable && (
-            <div>
-              <p>
-                Recovery reloads this destination's selected artifact and
-                verifies its served output before updating publication history.
-                Newer drafts are preserved.
-              </p>
+            )}
+            {!!review.warnings?.length && (
+              <section
+                aria-label="Publication checks"
+                className="builder-review-warnings"
+              >
+                <h3>Check before publishing</h3>
+                <p className="builder-hint">
+                  These destinations or services are not part of this release.
+                </p>
+                <ul>
+                  {review.warnings.map((warning) => (
+                    <li key={warning}>{warning}</li>
+                  ))}
+                </ul>
+              </section>
+            )}
+            <div className="builder-row builder-actions">
               <button
-                disabled={busy}
+                type="button"
+                className="builder-primary"
+                disabled={
+                  busy || !loaded || pending(review.destination.destinationId)
+                }
                 onClick={() =>
                   void run(async () => {
-                    await storage.clientPublication({
-                      action: "client-release-recover",
-                      jobId: job.id,
+                    const job = await storage.clientPublication({
+                      action: "client-release-start",
+                      reviewId: review.id,
                     });
+                    setJobs((current) => [
+                      job,
+                      ...current.filter((item) => item.id !== job.id),
+                    ]);
                     setReview(undefined);
                     setMessage(
-                      "Recovery verified the selected website. Drafts were preserved.",
+                      "Release requested. Follow its status below; it counts as live only after the served website is verified.",
                     );
+                    if (cursor.current !== null) historyPage([null]);
                     await refresh();
-                    changed.current();
                   })
                 }
               >
-                Check and reconcile interrupted release
+                {review.action === "publish"
+                  ? "Publish reviewed project"
+                  : review.action === "rollback"
+                    ? "Restore reviewed release"
+                    : "Unpublish reviewed website"}
+              </button>
+              <button
+                type="button"
+                disabled={busy}
+                onClick={() => setReview(undefined)}
+              >
+                Cancel review
               </button>
             </div>
-          )}
-          {job.active && (
-            <a href={job.destination.origin} target="_blank" rel="noreferrer">
-              Open destination website
-            </a>
-          )}
-          {job.phase === "live" && !job.active && (
+          </Card>
+        )}
+        {message && <Notice tone="success">{message}</Notice>}
+        {error && <Notice tone="error">{error}</Notice>}
+        {refreshError && <Notice tone="error">{refreshError}</Notice>}
+        <Card
+          title="Release history"
+          description="Releases in progress stay visible on every page of the history."
+        >
+          <nav
+            aria-label="Release history pages"
+            className="builder-row builder-history-nav"
+          >
             <button
-              disabled={busy || pending(job.destination.destinationId)}
-              onClick={() => void run(() => prepare("rollback", job))}
+              type="button"
+              disabled={busy || cursors.length === 1}
+              onClick={() => historyPage([null])}
             >
-              Review restoring this release
+              Latest releases
             </button>
+            <button
+              type="button"
+              disabled={busy || cursors.length === 1}
+              onClick={() => historyPage(cursors.slice(0, -1))}
+            >
+              Newer releases
+            </button>
+            <button
+              type="button"
+              disabled={busy || !loaded || !nextCursor}
+              onClick={() => historyPage([...cursors, nextCursor])}
+            >
+              Older releases
+            </button>
+            <span className="builder-hint">History page {cursors.length}.</span>
+          </nav>
+          {loaded && !jobs.length && !refreshError && (
+            <p className="builder-empty">
+              No releases have been requested for this project yet.
+            </p>
           )}
-          <details>
-            <summary>Release log</summary>
-            <pre>{job.log || "Waiting for the publisher…"}</pre>
-          </details>
-        </article>
-      ))}
-    </section>
+          <div className="builder-release-cards">
+            {jobs.map((job) => (
+              <article
+                className="builder-release-card"
+                key={job.id}
+                data-release-id={job.id}
+              >
+                <div className="builder-release-card-head">
+                  <div>
+                    <h3>
+                      {job.destination.label} · {job.destination.environment}
+                    </h3>
+                    <p className="builder-hint">
+                      {actionLabels[job.action] || job.action} ·{" "}
+                      {new Date(job.createdAt).toLocaleString()} ·{" "}
+                      {job.destination.origin}
+                    </p>
+                  </div>
+                  <p role="status" className="builder-release-card-status">
+                    <Pill tone={tones[job.phase]}>{labels[job.phase]}</Pill>
+                    {job.active && <Pill tone="green">Live now</Pill>}
+                  </p>
+                </div>
+                {job.error && <Notice tone="error">{job.error}</Notice>}
+                {job.recoveryAvailable && (
+                  <div className="builder-release-recovery">
+                    <p className="builder-hint">
+                      Recovery reloads this destination's selected release and
+                      verifies its served output before updating the history.
+                      Newer drafts are preserved.
+                    </p>
+                    <button
+                      type="button"
+                      disabled={busy}
+                      onClick={() =>
+                        void run(async () => {
+                          await storage.clientPublication({
+                            action: "client-release-recover",
+                            jobId: job.id,
+                          });
+                          setReview(undefined);
+                          setMessage(
+                            "Recovery verified the selected website. Drafts were preserved.",
+                          );
+                          await refresh();
+                          changed.current();
+                        })
+                      }
+                    >
+                      Check and reconcile interrupted release
+                    </button>
+                  </div>
+                )}
+                <div className="builder-row">
+                  {job.active && (
+                    <a
+                      href={job.destination.origin}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      Open destination website{" "}
+                      <ArrowUpRight size={14} aria-hidden="true" />
+                    </a>
+                  )}
+                  {job.phase === "live" && !job.active && (
+                    <button
+                      type="button"
+                      disabled={busy || pending(job.destination.destinationId)}
+                      onClick={() => void run(() => prepare("rollback", job))}
+                    >
+                      Review restoring this release
+                    </button>
+                  )}
+                </div>
+                <details>
+                  <summary>Release log</summary>
+                  <pre>{job.log || "Waiting for the publisher…"}</pre>
+                </details>
+              </article>
+            ))}
+          </div>
+        </Card>
+      </div>
+    </>
   );
 }

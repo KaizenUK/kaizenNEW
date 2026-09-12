@@ -54,7 +54,7 @@ export default function CompanionWindow() {
       );
   }
   function disconnect(
-    message = "Disconnected. Reconnect from the hosted builder to continue.",
+    message = "Disconnected. Connect again from the builder to continue.",
   ) {
     generation.current++;
     enabled.current = false;
@@ -86,9 +86,7 @@ export default function CompanionWindow() {
       !/^[a-f0-9-]{36}$/.test(channel) ||
       !window.opener
     ) {
-      setError(
-        "Open this window using Connect local checkout in the hosted builder.",
-      );
+      setError("Open this window from the builder: choose Connect helper.");
       return;
     }
     let ready = false;
@@ -133,24 +131,22 @@ export default function CompanionWindow() {
           send({
             type: "kaizen-companion-result",
             id: data.id,
-            error: "Wait for the pending local operations to finish.",
+            error: "Wait for the current work to finish first.",
           });
           return;
         }
         inFlight.current++;
         try {
           if (JSON.stringify(data.input).length > 51 * 1024 * 1024)
-            throw new Error(
-              "The local request exceeds the connection size limit.",
-            );
-          setActivity("Working on the approved repository…");
+            throw new Error("That request is too large for this connection.");
+          setActivity("Working in the shared folder…");
           const result = await localRequest(
             `/__builder-local?project=${encodeURIComponent(current.projectId)}`,
             { connection: current.token, request: data.input },
           );
           if (session.current === current) {
             send({ type: "kaizen-companion-result", id: data.id, result });
-            setActivity("Local operation finished.");
+            setActivity("Done.");
           }
         } catch (e) {
           if (session.current === current) {
@@ -159,9 +155,7 @@ export default function CompanionWindow() {
               id: data.id,
               error: e.message,
             });
-            setActivity(
-              "Local operation needs attention in the hosted builder.",
-            );
+            setActivity("Something needs your attention in the builder tab.");
           }
         } finally {
           inFlight.current--;
@@ -176,9 +170,7 @@ export default function CompanionWindow() {
         const info = await response.json();
         if (!live.current || generation.current !== startingGeneration) return;
         if (!response.ok || !info.origins?.includes(origin))
-          throw new Error(
-            "This builder origin is not approved by the local companion.",
-          );
+          throw new Error("The helper does not trust this builder address.");
         peer.current = { origin, channel, lastSeen: Date.now() };
         setRoot(info.root);
         ready = true;
@@ -197,7 +189,7 @@ export default function CompanionWindow() {
         (session.current && session.current.expiresAt <= Date.now())
       ) {
         disconnect(
-          "Hosted builder closed, stopped responding or the connection expired.",
+          "The builder tab closed, stopped responding, or the connection expired.",
         );
         ready = false;
         clearInterval(timer);
@@ -215,28 +207,28 @@ export default function CompanionWindow() {
     <div className="builder-app builder-auth" data-theme="light">
       <main className="builder-auth-card builder-companion-card">
         <Brand />
-        <h1>Local checkout connection</h1>
+        <h1>Allow access to a folder?</h1>
         {!localMode ? (
           <p>
-            Start Kaizen locally with pnpm dev, then connect from the hosted
-            builder.
+            Run <code>pnpm dev</code> in your Kaizen folder, then choose Connect
+            helper in the builder.
           </p>
         ) : (
           <>
             {identity && (
               <>
                 <p>
-                  <strong>{identity.projectName}</strong>
+                  The builder for <strong>{identity.projectName}</strong> (
+                  {identity.origin}) wants to open a folder on this computer.
                 </p>
-                <p>{identity.origin}</p>
-                <small>
+                <p className="builder-hint">
                   Account {identity.accountId} · Project {identity.projectId}
-                </small>
-                <p>
-                  This window grants that builder tab access to the selected
-                  folder for two hours. Source drafts stay on this computer.
-                  File changes and builds still require their review steps. Keep
-                  this window open while editing.
+                </p>
+                <p className="builder-hint">
+                  Allowing gives that builder tab access to one folder for two
+                  hours. Your edits stay on this computer, and every file change
+                  or build still asks you first. Keep this window open while you
+                  edit.
                 </p>
                 <form
                   className="builder-login"
@@ -276,7 +268,7 @@ export default function CompanionWindow() {
                   }}
                 >
                   <label>
-                    Approved repository folder
+                    Folder to share
                     <input
                       required
                       value={root}
@@ -284,18 +276,18 @@ export default function CompanionWindow() {
                       onChange={(event) => setRoot(event.target.value)}
                     />
                   </label>
-                  <label>
+                  <label className="builder-checkbox">
                     <input
                       type="checkbox"
                       checked={newFolder}
                       disabled={connected || busy || finished}
                       onChange={(event) => setNewFolder(event.target.checked)}
-                    />{" "}
-                    New folder for restoring a native backup
+                    />
+                    This is a new, empty folder for restoring a backup
                   </label>
                   {!connected && !finished && (
                     <button className="builder-primary" disabled={busy}>
-                      {busy ? "Connecting…" : "Connect selected folder"}
+                      {busy ? "Connecting…" : "Allow this folder"}
                     </button>
                   )}
                 </form>
@@ -304,15 +296,12 @@ export default function CompanionWindow() {
             {connected && (
               <>
                 <p role="status">
-                  Connected. Review and edit in the hosted builder.
+                  Connected. Go back to the builder tab to carry on.
                 </p>
                 <button onClick={() => disconnect()}>
-                  Disconnect local access
+                  Stop sharing this folder
                 </button>
-                <p>
-                  Requests already accepted may finish. Review their result
-                  before retrying.
-                </p>
+                <p>Anything already in progress will finish first.</p>
               </>
             )}
             {activity && <p role="status">{activity}</p>}

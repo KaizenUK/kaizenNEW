@@ -28,7 +28,20 @@ const image = () =>
     alt: "Abstract green hills and a yellow sun",
   });
 export const starterBlocks: Record<BlockType, () => Block> = {
-  Registered: () => block("Registered", { registrationId:"example-card-v1", text:"Review this code before integration.",style:{desktop:{padding:24,radius:16,background:"#ffffff",borderWidth:1,borderColor:"#d8e0d1"}} }),
+  Registered: () =>
+    block("Registered", {
+      registrationId: "example-card-v1",
+      text: "Review this code before integration.",
+      style: {
+        desktop: {
+          padding: 24,
+          radius: 16,
+          background: "#ffffff",
+          borderWidth: 1,
+          borderColor: "#d8e0d1",
+        },
+      },
+    }),
   ContentList: () =>
     block("ContentList", {
       text: "Ideas worth sharing",

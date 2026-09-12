@@ -1,4 +1,5 @@
 import { expect, test } from "./browser-fixture";
+import { BUILDER_TEST_ORIGIN } from "./ports";
 import { readFile, writeFile } from "node:fs/promises";
 import { createHash } from "node:crypto";
 import { starterBlocks } from "../../client/visual-builder/starters";
@@ -151,10 +152,12 @@ test("optimised images retain originals and smaller mobile files through editing
       frame.locator('[data-block-id="optimised-background"]'),
     ).toHaveCSS(
       "background-image",
-      `url("http://127.0.0.1:4322${asset.image!.variants[1].url}")`,
+      `url("${BUILDER_TEST_ORIGIN}${asset.image!.variants[1].url}")`,
     );
     await page.getByRole("button", { name: "Publish", exact: true }).click();
-    await page.getByRole("button", { name: "Publish now", exact: true }).click();
+    await page
+      .getByRole("button", { name: "Publish now", exact: true })
+      .click();
     await expect(page.locator(".builder-toast")).toContainText(/publish/i);
     const mobile = await context.newPage();
     await mobile.setViewportSize({ width: 390, height: 844 });
@@ -174,7 +177,7 @@ test("optimised images retain originals and smaller mobile files through editing
       mobile.locator('[data-block-id="optimised-background"]'),
     ).toHaveCSS(
       "background-image",
-      `url("http://127.0.0.1:4322${asset.image!.variants[1].url}")`,
+      `url("${BUILDER_TEST_ORIGIN}${asset.image!.variants[1].url}")`,
     );
     await mobile.screenshot({ path: "test-results/builder-images-mobile.png" });
     await mobile.close();

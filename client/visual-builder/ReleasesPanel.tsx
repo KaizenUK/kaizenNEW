@@ -2,6 +2,8 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 import type { ReleaseStatus } from "../../shared/builderReleases";
 import type { Workspace } from "../../shared/visualBuilder";
 import { storage } from "./storage";
+import { Card, Head, Notice } from "./shell";
+import { ProjectName } from "./activeProject";
 
 const labels: Record<ReleaseStatus["status"], string> = {
   queued: "Queued",
@@ -93,172 +95,173 @@ export default function ReleasesPanel({
     }
   }
   return (
-    <section aria-labelledby="builder-releases-title">
-      <div className="builder-section-heading">
-        <h2 id="builder-releases-title">Releases</h2>
-        <div className="builder-row">
-          <button onClick={() => void refresh()} disabled={busy}>
-            Refresh status
-          </button>
-          <button onClick={onClose} disabled={busy}>
-            Back to pages
-          </button>
-        </div>
-      </div>
-      <p>
-        A queued or built release is not live yet. Successful releases are
-        confirmed against the public site. Drafts stay editable throughout
-        deployment.
-      </p>
-      {!loaded && !error && <p role="status">Loading release status…</p>}
-      {error && (
-        <p role="alert" className="builder-error">
-          {error}
-        </p>
-      )}
-      {message && <p role="status">{message}</p>}
-      {review && (
-        <div
-          className="builder-release-review"
-          role="region"
-          aria-label="Review release action"
-        >
-          <h3>
-            {review.action === "rollback"
-              ? "Restore an earlier live release"
-              : "Unpublish this page"}
-          </h3>
-          <p>{review.label}</p>
-          <p>
-            {review.action === "rollback"
-              ? "The entire public site returns to this retained release, including its rendered content and redirects. Your current drafts stay available."
-              : "This page will leave the public site after the deployment succeeds. Its editable draft and revisions stay available. Links to its current URL may stop working."}
+    <>
+      <Head
+        info={<ProjectName fallback="Kaizen workspace" />}
+        title="Releases"
+        description="Every deployment of the live site. A queued or built release is not live until it has been checked against the public site. Drafts stay editable throughout."
+      >
+        <button type="button" onClick={() => void refresh()} disabled={busy}>
+          Refresh status
+        </button>
+        <button type="button" onClick={onClose} disabled={busy}>
+          Back to pages
+        </button>
+      </Head>
+      <div className="builder-page-body">
+        {!loaded && !error && (
+          <p role="status" className="builder-hint">
+            Loading release status…
           </p>
-          <button
-            disabled={busy || !loaded || Boolean(error) || hasPending}
-            className="builder-primary"
-            onClick={() =>
-              void run(async () => {
-                if (review.action === "rollback")
+        )}
+        {error && <Notice tone="error">{error}</Notice>}
+        {message && <Notice tone="success">{message}</Notice>}
+        {review && (
+          <Card
+            className="builder-review"
+            ariaLabel="Review release action"
+            title={
+              review.action === "rollback"
+                ? "Restore an earlier live release"
+                : "Unpublish this page"
+            }
+            description={review.label}
+          >
+            <p>
+              {review.action === "rollback"
+                ? "The entire public site returns to this retained release, including its rendered content and redirects. Your current drafts stay available."
+                : "This page will leave the public site after the deployment succeeds. Its editable draft and revisions stay available. Links to its current URL may stop working."}
+            </p>
+            <button
+              disabled={busy || !loaded || Boolean(error) || hasPending}
+              className="builder-primary"
+              onClick={() =>
+                void run(async () => {
+                  if (review.action === "rollback")
+                    return storage.releaseAction({
+                      action: "rollback",
+                      targetId: review.id,
+                      requestId: crypto.randomUUID(),
+                    });
+                  const current = await storage.load();
+                  const page = current.pages.find(
+                    (page) => page.id === review.id,
+                  );
+                  if (!page?.published)
+                    throw new Error(
+                      "This page no longer has a published version. Refresh the page list.",
+                    );
                   return storage.releaseAction({
-                    action: "rollback",
-                    targetId: review.id,
+                    action: "unpublish",
+                    id: page.id,
+                    version: page.version,
                     requestId: crypto.randomUUID(),
                   });
-                const current = await storage.load();
-                const page = current.pages.find(
-                  (page) => page.id === review.id,
-                );
-                if (!page?.published)
-                  throw new Error(
-                    "This page no longer has a published version. Refresh the page list.",
-                  );
-                return storage.releaseAction({
-                  action: "unpublish",
-                  id: page.id,
-                  version: page.version,
-                  requestId: crypto.randomUUID(),
-                });
-              })
-            }
-          >
-            {review.action === "rollback"
-              ? "Queue rollback"
-              : "Queue unpublish"}
-          </button>
-          <button disabled={busy} onClick={() => setReview(undefined)}>
-            Cancel
-          </button>
-        </div>
-      )}
-      <ol className="builder-release-list" aria-label="Release history">
-        {releases.map((release) => (
-          <li key={release.id}>
-            <div className="builder-row">
-              <strong>
-                {release.live ? "Live now" : labels[release.status]}
-              </strong>
-              <span>{new Date(release.createdAt).toLocaleString()}</span>
-            </div>
-            <p>
-              {release.action === "rollback"
-                ? "Rollback"
-                : release.action === "unpublish"
-                  ? "Unpublish page"
-                  : release.action === "site"
-                    ? "Shared site design"
-                    : release.action === "deploy"
-                      ? "Site deployment"
-                      : "Page publication"}{" "}
-              · <code>{release.id.slice(0, 8)}</code>
-            </p>
-            {release.error && <p>{release.error}</p>}
-            {release.status === "queued" && (
-              <button
-                disabled={busy || Boolean(error)}
-                onClick={() =>
-                  void run(() =>
-                    storage.releaseAction({
-                      action: "retry",
-                      requestId: release.id,
-                    }),
-                  )
-                }
-              >
-                Retry dispatch
-              </button>
-            )}
-            {release.status === "live" && !release.live && (
-              <button
-                disabled={busy || Boolean(error) || hasPending}
-                onClick={() =>
-                  setReview({
-                    action: "rollback",
-                    id: release.id,
-                    label: `Release from ${new Date(release.createdAt).toLocaleString()} · ${release.id.slice(0, 8)}`,
-                  })
-                }
-              >
-                Review rollback
-              </button>
-            )}
-          </li>
-        ))}
-      </ol>
-      {loaded && !releases.length && (
-        <p>
-          No coordinated releases yet. Publish a page or site design to create
-          the first release.
-        </p>
-      )}
-      {workspace.pages.some((page) => page.published) && (
-        <>
-          <h3>Published pages</h3>
-          <ul className="builder-release-list">
-            {workspace.pages
-              .filter((page) => page.published)
-              .map((page) => (
-                <li key={page.id}>
-                  <span>
-                    {page.published!.title} · /{page.published!.slug}/
-                  </span>
+                })
+              }
+            >
+              {review.action === "rollback"
+                ? "Queue rollback"
+                : "Queue unpublish"}
+            </button>
+            <button disabled={busy} onClick={() => setReview(undefined)}>
+              Cancel
+            </button>
+          </Card>
+        )}
+        <Card title="Release history">
+          <ol className="builder-release-list" aria-label="Release history">
+            {releases.map((release) => (
+              <li key={release.id}>
+                <div className="builder-row">
+                  <strong>
+                    {release.live ? "Live now" : labels[release.status]}
+                  </strong>
+                  <span>{new Date(release.createdAt).toLocaleString()}</span>
+                </div>
+                <p>
+                  {release.action === "rollback"
+                    ? "Rollback"
+                    : release.action === "unpublish"
+                      ? "Unpublish page"
+                      : release.action === "site"
+                        ? "Shared site design"
+                        : release.action === "deploy"
+                          ? "Site deployment"
+                          : "Page publication"}{" "}
+                  · <code>{release.id.slice(0, 8)}</code>
+                </p>
+                {release.error && <p>{release.error}</p>}
+                {release.status === "queued" && (
                   <button
-                    disabled={busy || !loaded || Boolean(error) || hasPending}
+                    disabled={busy || Boolean(error)}
+                    onClick={() =>
+                      void run(() =>
+                        storage.releaseAction({
+                          action: "retry",
+                          requestId: release.id,
+                        }),
+                      )
+                    }
+                  >
+                    Retry dispatch
+                  </button>
+                )}
+                {release.status === "live" && !release.live && (
+                  <button
+                    disabled={busy || Boolean(error) || hasPending}
                     onClick={() =>
                       setReview({
-                        action: "unpublish",
-                        id: page.id,
-                        label: `${page.published!.title} · /${page.published!.slug}/`,
+                        action: "rollback",
+                        id: release.id,
+                        label: `Release from ${new Date(release.createdAt).toLocaleString()} · ${release.id.slice(0, 8)}`,
                       })
                     }
                   >
-                    Review unpublish
+                    Review rollback
                   </button>
-                </li>
-              ))}
-          </ul>
-        </>
-      )}
-    </section>
+                )}
+              </li>
+            ))}
+          </ol>
+          {loaded && !releases.length && (
+            <p className="builder-empty">
+              No releases yet. Publish a page or the site design to create the
+              first one.
+            </p>
+          )}
+        </Card>
+        {workspace.pages.some((page) => page.published) && (
+          <Card
+            title="Published pages"
+            description="Pages currently on the live site. Unpublishing removes a page from the site after the release succeeds; its draft and revisions stay."
+          >
+            <ul className="builder-release-list">
+              {workspace.pages
+                .filter((page) => page.published)
+                .map((page) => (
+                  <li key={page.id}>
+                    <span>
+                      {page.published!.title} · /{page.published!.slug}/
+                    </span>
+                    <button
+                      disabled={busy || !loaded || Boolean(error) || hasPending}
+                      onClick={() =>
+                        setReview({
+                          action: "unpublish",
+                          id: page.id,
+                          label: `${page.published!.title} · /${page.published!.slug}/`,
+                        })
+                      }
+                    >
+                      Review unpublish
+                    </button>
+                  </li>
+                ))}
+            </ul>
+          </Card>
+        )}
+      </div>
+    </>
   );
 }

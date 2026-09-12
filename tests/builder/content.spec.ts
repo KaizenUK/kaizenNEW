@@ -102,7 +102,9 @@ test("Sanity listings and field bindings stay editable while deployments refresh
       .getByRole("button", { name: "Return to editor", exact: true })
       .click();
     await page.getByRole("button", { name: "Publish", exact: true }).click();
-    await page.getByRole("button", { name: "Publish now", exact: true }).click();
+    await page
+      .getByRole("button", { name: "Publish now", exact: true })
+      .click();
     await expect(page.locator(".builder-toast")).toContainText(/publish/i);
     const live = await context.newPage();
     await live.setViewportSize({ width: 390, height: 844 });

@@ -9,14 +9,26 @@ import { libraryFixture } from "./library-fixture";
 
 describe("hosted project draft validation", () => {
   it("keeps the homepage and page order when saving either existing page", () => {
-    let workspace = { pages: [], assets: [], saved: [] } as ReturnType<typeof libraryFixture>;
+    let workspace = { pages: [], assets: [], saved: [] } as ReturnType<
+      typeof libraryFixture
+    >;
     const ids = [crypto.randomUUID(), crypto.randomUUID()];
     for (const [index, slug] of ["home", "about"].entries()) {
-      workspace = applyProjectDraftAction(workspace, { action: "save", id: ids[index], version: 0, document: newDocument(slug, slug, false) }).workspace;
+      workspace = applyProjectDraftAction(workspace, {
+        action: "save",
+        id: ids[index],
+        version: 0,
+        document: newDocument(slug, slug, false),
+      }).workspace;
     }
     for (const id of [ids[0], ids[1], ids[0]]) {
       const page = workspace.pages.find((page) => page.id === id)!;
-      workspace = applyProjectDraftAction(workspace, { action: "save", id, version: page.version, document: { ...page.draft, description: "A newer draft" } }).workspace;
+      workspace = applyProjectDraftAction(workspace, {
+        action: "save",
+        id,
+        version: page.version,
+        document: { ...page.draft, description: "A newer draft" },
+      }).workspace;
       expect(workspace.pages.map((page) => page.id)).toEqual(ids);
       expect(workspace.pages[0].draft.slug).toBe("home");
     }

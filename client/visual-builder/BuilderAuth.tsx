@@ -191,6 +191,7 @@ export default function BuilderAuth({ children }: { children: ReactNode }) {
             {!setup && (
               <button
                 type="button"
+                className="builder-text-button builder-auth-switch"
                 disabled={busy}
                 onClick={() => {
                   setReset(!reset);
