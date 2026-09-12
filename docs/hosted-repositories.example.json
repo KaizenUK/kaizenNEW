@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "projects": [
+    {
+      "projectId": "kaizen",
+      "repositoryUrl": "git@github.com:YOUR_ORG/YOUR_REPOSITORY.git",
+      "branch": "stage"
+    }
+  ]
+}

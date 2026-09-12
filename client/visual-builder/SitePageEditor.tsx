@@ -293,6 +293,7 @@ export default function SitePageEditor({
           <IconButton
             label="Back to pages"
             icon={<ArrowLeft size={18} />}
+            disabled={busy || (!draft.ready && changed > 0)}
             onClick={() => {
               if (!inspection || (!draft.ready && !changed)) {
                 onBack();

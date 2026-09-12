@@ -38,6 +38,7 @@ export function useSourceEditingDraft(inspection?: SourceInspection) {
     if (!inspection) return;
     let current = true;
     setReady(false);
+    setStatus("Reading saved edits…");
     setError("");
     storage
       .repository({

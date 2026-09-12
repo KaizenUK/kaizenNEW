@@ -14,6 +14,7 @@
     "start": "astro preview",
     "test": "vitest --run --config vitest.config.ts",
     "test:builder:browser": "playwright test --config playwright.builder.config.ts",
+    "builder:hosted-helper": "tsx scripts/builder-hosted-helper.ts",
     "clean:caches": "node -e \"const fs=require('node:fs'); for (const p of ['.vite','node_modules/.vite','.astro']) { try { fs.rmSync(p,{ recursive: true, force: true }); } catch {} }\"",
     "format.fix": "prettier --write .",
     "typecheck": "astro check && tsc --noEmit",

@@ -14,6 +14,7 @@ export async function openSiteProject(
   project: { id: string },
   root: string,
   hostedWorkspace = false,
+  repositoryService?: { origin: string; accessToken: string },
 ) {
   const hosted = hostedRepositoryTests || hostedWorkspace;
   if (hosted) {
@@ -26,7 +27,7 @@ export async function openSiteProject(
         email: "fixture@example.invalid",
         user_metadata: {},
       },
-      access_token: "fixture-hosted-token",
+      access_token: repositoryService?.accessToken || "fixture-hosted-token",
       expires_at: Math.floor(Date.now() / 1000) + 3600,
     };
     if (hostedWorkspace)
@@ -101,9 +102,26 @@ export async function openSiteProject(
     await page.route("**/editor-api/builder-repository", async (route) => {
       const input = route.request().postDataJSON();
       expect(route.request().headers().authorization).toBe(
-        "Bearer fixture-hosted-token",
+        `Bearer ${session.access_token}`,
       );
       expect(input.projectId).toBe(project.id);
+      if (repositoryService) {
+        const response = await page.request.post(
+          `${repositoryService.origin}/editor-api/builder-repository`,
+          {
+            headers: {
+              Authorization: `Bearer ${session.access_token}`,
+              Origin: "https://builder.example",
+            },
+            data: input,
+          },
+        );
+        await route.fulfill({
+          status: response.status(),
+          json: await response.json(),
+        });
+        return;
+      }
       if (input.action === "repository-connect") {
         await route.fulfill({
           json: {

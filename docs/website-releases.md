@@ -90,9 +90,39 @@ The initial `repository-connect` action must verify the session, current project
 
 401/403, unavailable-service responses and connection loss end the client's connection while preserving recovery. Conflicts keep their original message. A timeout or account change can leave an already accepted write's outcome unknown; the client does not resend it automatically. Token refresh and return from the browser's page cache establish a fresh connection. Failed requests use the safe operator diagnostics path.
 
-The endpoint is the contract for L1-T2, not a deployed Supabase function. Add an exact proxy route to the new loopback hosted-helper service ahead of the existing `/editor-api/` Supabase proxy when rolling out L1. Do not deploy the new client default by itself. The real working-copy service, deployment/authentication checks and operational configuration remain L1-T2–T7.
+The endpoint is served by the L1-T2 loopback service, not a Supabase function. Add an exact proxy route to the new hosted-helper service ahead of the existing `/editor-api/` Supabase proxy when rolling out L1. Do not deploy the new client default by itself. Build jobs, authenticated previews, Save to website, Kaizen provisioning and full operations follow in L1-T3–T7.
 
 Hosted preview URLs must be on the builder's origin under `/editor-preview/<project>/…`. The client refuses another project, outside origin, credentials or escaped path separators and uses an opaque `allow-scripts` sandbox, including previews opened in a window. L1-T4 must make the authenticated HTML and module/asset delivery work in that sandbox while enforcing the editor cookie and membership on reads. The browser fixtures use an isolated HTTP adapter and CORS headers around real temporary-repository snapshots to exercise the client; they are not a production proxy or cookie policy.
+
+### Hosted working-copy service
+
+`pnpm builder:hosted-helper` starts `scripts/builder-hosted-helper.ts` on Linux, listening only on `127.0.0.1` (default port 4334). Run it as a dedicated service account with a private home and no unrelated Git configuration or credentials. The service currently handles connection, repository/source inspection, account-specific source drafts, source/export review and apply, Git status, explicit fetch, build-command review and private folder-backup review/download. Build execution/status/cancellation, source-preview delivery, commit/push and opening/restoring builder archives return an explicit unavailable response until their hosted workflows are implemented. They never fall through to the local helper. This intermediate service is not yet the complete hosted editing journey.
+
+Set these in the service environment, without `VITE_` prefixes:
+
+| Setting | Purpose |
+| --- | --- |
+| `BUILDER_HOSTED_PROJECTS_FILE` | Absolute path to operator-owned repository configuration; use [the example](hosted-repositories.example.json). |
+| `BUILDER_HOSTED_WORK_DIRECTORY` | Dedicated private directory for working copies, drafts and locks, outside the web root and developer checkouts. |
+| `BUILDER_HOSTED_CREDENTIALS_DIRECTORY` | Separate private directory for per-project SSH files; must not overlap the work directory. |
+| `BUILDER_HOSTED_SUPABASE_URL` | HTTPS Supabase project origin. |
+| `BUILDER_HOSTED_SUPABASE_ANON_KEY` | API key used with the caller's verified access token. A service-role key is not required. |
+| `BUILDER_HOSTED_PORT` | Optional loopback port. |
+| `ALLOWED_STUDIO_ORIGINS` | Explicit allowed editor origins, with the parser/defaults described above. |
+
+The repository file has `version: 1` and a `projects` array of `{ projectId, repositoryUrl, branch }`. It supports explicit `git@hostname:owner/repository.git` SSH addresses and ordinary branch names. Local/file/HTTP URLs, URL credentials, executable protocol extensions and Git-option inputs are refused. No repository URL, branch or credential path comes from an editor's repository request. Project settings and public-key provisioning in the interface remain L1-T6; these are operator settings for now.
+
+For each configured ID, provision `<credentials>/<projectId>/deploy-key` and `<credentials>/<projectId>/known_hosts` under the service account. Directories must be mode 0700 and these files mode 0600, owned by that account, without symlinks or hard-linked credential files. Put only the public half of that project's deploy key into the Git host. Pin the Git host's independently verified SSH host key in `known_hosts`; a scan alone does not verify its identity. Clone/fetch uses this one identity, strict host checking, no SSH agent, no interactive prompts, no global Git/SSH configuration and no inherited service secrets. Raw Git/SSH errors are not returned to the browser.
+
+Each project receives `<work>/projects/<projectId>/checkout`. The first authorized action clones only the configured branch into a temporary folder and moves the completed clone into place. A private repository marker preserves its configured identity. Later calls verify the real folder, `.git` directory, origin and branch, and reject linked/shared Git stores or a changed configuration. They do not reset, replace or silently reclone an existing working copy. Configuration changes need an explicit operator migration; preserve the old folder and its drafts. `repository-fetch` updates remote-tracking refs only. It does not pull, merge, push or overwrite pending source edits.
+
+Every request first verifies its bearer token with Supabase Auth. It calls the existing `builder_project_access` database function as that user with `capability: "edit"`, including a second check after waiting for the project lock. Archived projects and revoked/non-members are refused before repository work begins. The old editor cookie by itself grants no repository access. There is no membership cache. A request already authorized and executing can finish after membership is revoked; later calls must pass a fresh check.
+
+One operation per project runs at a time, with a bounded in-process queue and an exclusive file lock shared by service processes. Different projects can proceed independently. A stopped process's lock is deliberately not stolen automatically: establish that its operation has stopped, preserve its working copy, and remove only that specific lock before retrying. Full restart/health/rotation/disk-limit procedures remain L1-T7. Review IDs are limited to their verified account/project, bounded and expiring, and consumed before an apply attempt. Account drafts live outside the checkout in that project's private data; another member cannot use their review IDs or backup downloads. Concurrent source changes retain the existing conflict/recovery protections.
+
+The service bounds HTTP concurrency, project queues, upload size and upload/auth/Git waits. It rejects unsupported content encodings, wrong origins, cookie-only calls, unknown actions and cross-folder/nested-root inputs. Existing repository modules retain source path and symlink checks. Client-visible failures use the L0 safe reporting path; server startup errors contain a fixed configuration message. Build isolation for client code remains the L5-T4 decision; no untrusted build execution is enabled by L1-T2.
+
+Local verification uses a real loopback service, temporary Git seed/bare/working repositories and a fixture SSH executable running real `git-upload-pack`. Auth and database HTTP responses are fixtures; the access function itself retains its existing database tests. The browser scenario exercises real source inspection, saved drafts, review/apply, reopen and access revocation through this service. It does not prove live Git-host authentication, VPS proxy configuration or a fully built hosted canvas. Those require the subsequent tasks and the gate's actual Kaizen check.
 
 ## Builder error visibility
 
