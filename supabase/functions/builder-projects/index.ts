@@ -5,6 +5,7 @@ import { fetchContentCatalogue } from "../../../shared/builderContent.ts";
 import {
   validProjectId,
   projectName,
+  projectCapabilities,
 } from "../../../shared/builderProjects.ts";
 import {
   applyProjectDraftAction,
@@ -35,6 +36,7 @@ const projectRecord = (row: any, member: any) => ({
   createdAt: row.created_at,
   updatedAt: row.updated_at,
   destination: row.destination,
+  capabilities: projectCapabilities(row.capabilities),
   access: { role: member.role, canPublish: member.can_publish },
 });
 
@@ -202,16 +204,16 @@ Deno.serve(async (request) => {
       return json(200, { ok: true });
     }
     if (action === "duplicate") {
-      const source: Workspace =
-        target === "kaizen"
-          ? check(await user.rpc("builder_backup_workspace"))
-          : check(
-              await user
-                .from("builder_project_workspaces")
-                .select("payload")
-                .eq("project_id", target)
-                .single(),
-            ).payload;
+      const source: Workspace = projectCapabilities(project.capabilities)
+        .legacyWorkspace
+        ? check(await user.rpc("builder_backup_workspace"))
+        : check(
+            await user
+              .from("builder_project_workspaces")
+              .select("payload")
+              .eq("project_id", target)
+              .single(),
+          ).payload;
       const id = check(
         await user.rpc("builder_create_project", {
           project_name: projectName(input.name),
@@ -223,17 +225,19 @@ Deno.serve(async (request) => {
         for (const asset of source.assets) {
           if (!isPreviewId(asset.id))
             throw new Error("Invalid source asset ID.");
-          const sourceBucket =
-            target === "kaizen"
-              ? ["image", "icon", "font"].includes(asset.kind)
-                ? "builder-media"
-                : "builder-source"
-              : "builder-project-files";
+          const sourceBucket = projectCapabilities(project.capabilities)
+            .legacyWorkspace
+            ? ["image", "icon", "font"].includes(asset.kind)
+              ? "builder-media"
+              : "builder-source"
+            : "builder-project-files";
           const file = check(
             await user.storage
               .from(sourceBucket)
               .download(
-                target === "kaizen" ? asset.id : `${target}/${asset.id}`,
+                projectCapabilities(project.capabilities).legacyWorkspace
+                  ? asset.id
+                  : `${target}/${asset.id}`,
               ),
           );
           const buffer = await file.arrayBuffer();
@@ -304,7 +308,7 @@ Deno.serve(async (request) => {
         );
       }
     }
-    if (target === "kaizen")
+    if (projectCapabilities(project.capabilities).legacyWorkspace)
       return json(409, {
         error: "The original site uses the preserved Kaizen workspace API.",
       });

@@ -2,6 +2,10 @@ import { createClient } from "npm:@supabase/supabase-js@2.98.0";
 import { getCorsHeaders, isOriginAllowed } from "../_shared/editorAuth.ts";
 import type { Workspace } from "../../../shared/visualBuilder.ts";
 import { prepareReleaseRequest } from "../../../shared/builderReleases.ts";
+import {
+  requireGithubPublication,
+  PublicationAccessError,
+} from "../_shared/githubPublication.ts";
 
 Deno.serve(async (request) => {
   const headers = getCorsHeaders(request);
@@ -23,23 +27,16 @@ Deno.serve(async (request) => {
   const { data: auth, error: authError } = await service.auth.getUser(token);
   if (authError || !auth.user)
     return json(401, { error: "Your session expired. Please sign in again." });
-  const { data: membership, error: membershipError } = await service
-    .from("builder_project_members")
-    .select("user_id,can_publish")
-    .eq("project_id", "kaizen")
-    .eq("user_id", auth.user.id)
-    .maybeSingle();
-  if (membershipError || !membership?.can_publish)
-    return json(403, { error: "Kaizen project publish permission required" });
-  const { data: project, error: projectError } = await service
-    .from("builder_projects")
-    .select("archived")
-    .eq("id", "kaizen")
-    .single();
-  if (projectError || project.archived)
-    return json(403, {
-      error: "Restore the Kaizen project before publishing.",
+  let body;
+  try {
+    body = await request.json();
+    await requireGithubPublication(service, body?.projectId, auth.user.id);
+  } catch (error) {
+    return json(error instanceof PublicationAccessError ? error.status : 400, {
+      error:
+        error instanceof Error ? error.message : "Invalid publication request.",
     });
+  }
   const githubToken = Deno.env.get("GITHUB_DEPLOY_TOKEN");
   const repo = Deno.env.get("GITHUB_DEPLOY_REPO");
   if (!githubToken || !/^[\w.-]+\/[\w.-]+$/.test(repo || ""))
@@ -66,7 +63,6 @@ Deno.serve(async (request) => {
         "Set up the verified release worker before publishing. Follow docs/website-releases.md; no published data was changed.",
     });
   try {
-    const body = await request.json();
     const uuid = (value: unknown): value is string =>
       typeof value === "string" &&
       /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(
@@ -200,6 +196,7 @@ Deno.serve(async (request) => {
             Deno.env.get("GITHUB_DEPLOY_EVENT_TYPE") || "sanity-update",
           client_payload: {
             source: "builder",
+            projectId: body.projectId,
             releaseId: requestId,
             action: release.action || action,
             target: Deno.env.get("GITHUB_DEPLOY_TARGET") || "main",

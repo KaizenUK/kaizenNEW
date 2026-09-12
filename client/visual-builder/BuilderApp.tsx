@@ -44,7 +44,7 @@ import {
   type BuilderTheme,
   type BuilderView,
 } from "./shell";
-import { ProjectName } from "./activeProject";
+import { ProjectName, useProjectCapabilities } from "./activeProject";
 import PagesView, { pageStatus } from "./PagesView";
 import ProjectsView, { ProjectIdentity } from "./ProjectsView";
 import BuilderAuth from "./BuilderAuth";
@@ -53,7 +53,7 @@ import HostedRepository from "./HostedRepository";
 import { companionConnection } from "./companionConnection";
 import ClientSettings from "./ClientSettings";
 import ClientPublications from "./ClientPublications";
-import { activeProjectId } from "./projectStorage";
+import { activeProjectId, clearProjectCache } from "./projectStorage";
 import PublishDialog from "./PublishDialog";
 import BlockPalette from "./BlockPalette";
 import {
@@ -99,6 +99,8 @@ import ExistingPages from "./ExistingPages";
 import SitePages, { siteRoutePath, type SitePage } from "./SitePages";
 import SitePageEditor from "./SitePageEditor";
 import type { PageInventory } from "../../shared/builderPageInventory";
+import { FormEndpointContext } from "./FormEndpointContext";
+import { builderFormEndpoint } from "./formConfig";
 import { ImageContext } from "./ImageContext";
 import { imageIndex, materializeImages } from "../../shared/builderImages";
 import ContentProvider from "./ContentProvider";
@@ -122,12 +124,25 @@ export default function BuilderApp(props: { inventory?: PageInventory } = {}) {
   return (
     <BuilderAuth>
       <HostedMediaProvider>
-        <BuilderWorkspace {...props} />
+        <ProjectForms>
+          <BuilderWorkspace {...props} />
+        </ProjectForms>
       </HostedMediaProvider>
     </BuilderAuth>
   );
 }
+function ProjectForms({ children }: { children: React.ReactNode }) {
+  const capabilities = useProjectCapabilities();
+  return (
+    <FormEndpointContext.Provider
+      value={capabilities.legacyWorkspace ? builderFormEndpoint : ""}
+    >
+      {children}
+    </FormEndpointContext.Provider>
+  );
+}
 function BuilderWorkspace({ inventory }: { inventory?: PageInventory } = {}) {
+  const capabilities = useProjectCapabilities();
   const [workspace, setWorkspace] = useState<Workspace>();
   const [active, setActive] = useState<BuilderPage>();
   const [error, setError] = useState("");
@@ -211,6 +226,8 @@ function BuilderWorkspace({ inventory }: { inventory?: PageInventory } = {}) {
     const { data } = cloud.auth.onAuthStateChange((_event, session) => {
       if (authAccount.current !== session?.user.id) {
         companionConnection.disconnect();
+        clearProjectCache();
+        window.dispatchEvent(new Event("builder-projects-changed"));
         authAccount.current = session?.user.id;
         loadSequence.current++;
         setActive(undefined);
@@ -413,7 +430,7 @@ function BuilderWorkspace({ inventory }: { inventory?: PageInventory } = {}) {
           }
           theme={theme}
           onToggleTheme={toggleTheme}
-          hasInventory={Boolean(inventory) && activeProjectId === "kaizen"}
+          hasInventory={Boolean(inventory) && capabilities.hasInventory}
           pendingCount={pendingCount}
         />
       }
@@ -426,7 +443,7 @@ function BuilderWorkspace({ inventory }: { inventory?: PageInventory } = {}) {
         ) : (
           <HostedRepository existingPath={existingPath} />
         ))}
-      {current === "settings" && workspace && activeProjectId !== "kaizen" && (
+      {current === "settings" && workspace && !capabilities.legacyWorkspace && (
         <ClientSettings workspace={workspace} onChange={replaceWorkspace} />
       )}
       {current === "pages" && (
@@ -443,7 +460,7 @@ function BuilderWorkspace({ inventory }: { inventory?: PageInventory } = {}) {
           sitePages={
             workspace && (
               <SitePages
-                inventory={activeProjectId === "kaizen" ? inventory : undefined}
+                inventory={capabilities.hasInventory ? inventory : undefined}
                 onOpen={setSitePage}
                 onOpenBuilder={(path) => {
                   const existing = workspace.pages.find(
@@ -596,11 +613,11 @@ function BuilderWorkspace({ inventory }: { inventory?: PageInventory } = {}) {
         )}
       {current === "releases" &&
         workspace &&
-        activeProjectId !== "kaizen" &&
+        capabilities.publishPath === "worker" &&
         panel(<ClientPublications onChanged={() => void reload()} />)}
       {current === "releases" &&
         workspace &&
-        activeProjectId === "kaizen" &&
+        capabilities.publishPath === "github" &&
         !localMode &&
         panel(
           <ReleasesPanel
@@ -669,6 +686,7 @@ function EditorInner({
   theme = "light" as BuilderTheme,
   onToggleTheme = () => {},
 }) {
+  const capabilities = useProjectCapabilities();
   const [document, setDocument] = useState<PageDocument>(clone(page.draft));
   const content = useContext(ContentContext);
   useEffect(() => {
@@ -774,7 +792,7 @@ function EditorInner({
     setBusy(true);
     try {
       const current = await save("Saved before publishing");
-      if (activeProjectId !== "kaizen") {
+      if (capabilities.publishPath === "worker") {
         onClientReleases();
         return;
       }
@@ -904,6 +922,8 @@ function EditorShell({
   onBack,
   restore,
 }) {
+  const capabilities = useProjectCapabilities();
+  const formEndpoint = useContext(FormEndpointContext);
   const media = useContext(MediaContext);
   const content = useContext(ContentContext);
   const {
@@ -1144,7 +1164,7 @@ function EditorShell({
             resolveContentDocument(shared, content.catalogue),
             workspace.assets,
           );
-          const html = renderPreviewHtml(media(resolved));
+          const html = renderPreviewHtml(media(resolved), formEndpoint);
           resolvedPreview = resolved;
           return html;
         } catch (error) {
@@ -1308,7 +1328,7 @@ function EditorShell({
               disabled={busy}
               className="builder-primary"
               onClick={() =>
-                activeProjectId === "kaizen"
+                capabilities.publishPath === "github"
                   ? setPublishOpen(true)
                   : void publish()
               }
@@ -1705,7 +1725,7 @@ function EditorShell({
                           "slug",
                           normalizeSlug(
                             e.target.value,
-                            activeProjectId === "kaizen",
+                            capabilities.hasInventory,
                           ),
                         );
                       } catch (error) {

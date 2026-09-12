@@ -10,9 +10,8 @@ import { initialSiteDesign, siteAffectedPages } from "../../shared/builderSite";
 import { starterBlocks } from "./starters";
 import { storage } from "./storage";
 import { downloadText } from "./AssetLibrary";
-import { activeProjectId } from "./projectStorage";
 import { Card, Head, Notice, Pill } from "./shell";
-import { ProjectName } from "./activeProject";
+import { ProjectName, useProjectCapabilities } from "./activeProject";
 
 /* Shared design for the whole site: styles, tokens, headers/footers and reusable components. */
 
@@ -36,6 +35,7 @@ export default function SitePanel({
   onBack: () => void;
 }) {
   // One starting design so a fresh workspace does not look "unsaved" before anything changes.
+  const capabilities = useProjectCapabilities();
   const [initial] = useState<SiteDesign>(
     () => workspace.site?.draft || initialSiteDesign(),
   );
@@ -574,11 +574,10 @@ export default function SitePanel({
                 Download site draft (JSON)
               </button>
             </div>
-            {activeProjectId === "kaizen" && (
+            {capabilities.hasInventory && (
               <p className="builder-hint">
-                Existing Kaizen pages built with Astro and Sanity keep their
-                current editors. The builder owns newly created URLs and cannot
-                automatically edit existing page source or uploaded code.
+                Open existing website pages from Pages to edit supported text,
+                links and images. Site design controls apply to builder pages.
               </p>
             )}
           </Card>

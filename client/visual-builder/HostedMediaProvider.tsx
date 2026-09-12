@@ -5,9 +5,10 @@ import React, {
   useSyncExternalStore,
 } from "react";
 import { getSupabaseClient } from "../lib/supabase";
+import { useProjectCapabilities } from "./activeProject";
+import { builderCloudEnabled } from "./builderMode";
 import { MediaContext } from "./MediaContext";
 import {
-  hostedProject,
   presentProjectMedia,
   projectMediaVersion,
   refreshProjectMedia,
@@ -20,6 +21,8 @@ export function HostedMediaProvider({
 }: {
   children: React.ReactNode;
 }) {
+  const capabilities = useProjectCapabilities();
+  const hostedProject = builderCloudEnabled && !capabilities.legacyWorkspace;
   const version = useSyncExternalStore(
     subscribeProjectMedia,
     projectMediaVersion,
@@ -31,7 +34,7 @@ export function HostedMediaProvider({
     () =>
       <T,>(value: T): T =>
         hostedProject ? presentProjectMedia(value) : value,
-    [version],
+    [version, hostedProject],
   );
   useEffect(() => {
     if (!hostedProject) return;
@@ -75,7 +78,7 @@ export function HostedMediaProvider({
       window.removeEventListener("online", visible);
       document.removeEventListener("visibilitychange", visible);
     };
-  }, [retry]);
+  }, [retry, hostedProject]);
   return (
     <MediaContext.Provider value={projection}>
       {children}

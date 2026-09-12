@@ -13,7 +13,7 @@ import { sharedInstance } from "../../shared/builderSite";
 import ResponsiveField from "./ResponsiveField";
 import RichTextToolbar from "./RichTextToolbar";
 import { SharedChoice, InstanceOverrides } from "./SharedFields";
-import { builderFormEndpoint } from "./formConfig";
+import { FormEndpointContext } from "./FormEndpointContext";
 import { CategoryField, ContentBindingField } from "./ContentFields";
 import {
   blockRegistry,
@@ -21,6 +21,18 @@ import {
   registeredDefaults,
 } from "../../shared/builderRegistry";
 export { default as ResponsiveField } from "./ResponsiveField";
+function FormDeliveryHint() {
+  const endpoint = useContext(FormEndpointContext);
+  return (
+    <p className="builder-help">
+      {endpoint === "/__builder-contact"
+        ? "Local test receiver: messages stay in this development workspace. No email is sent."
+        : endpoint
+          ? "Connected to the configured contact service. Test delivery after deploying."
+          : "Delivery needs connecting before visitors can send messages. Configure the contact service for this site."}
+    </p>
+  );
+}
 export const LibraryContext = createContext<Asset[]>([]);
 export const assetComponentName = (asset: Asset) =>
   `Asset${asset.kind === "icon" ? "Icon" : "Image"}_${asset.id}`;
@@ -385,15 +397,7 @@ export const builderConfig: Config = {
                   delivery: {
                     type: "custom",
                     label: "Message delivery",
-                    render: () => (
-                      <p className="builder-help">
-                        {builderFormEndpoint === "/__builder-contact"
-                          ? "Local test receiver: messages stay in this development workspace. No email is sent."
-                          : builderFormEndpoint
-                            ? "Connected to the configured contact service. Test delivery after deploying."
-                            : "Delivery needs connecting before visitors can send messages. Configure the contact service for this site."}
-                      </p>
-                    ),
+                    render: () => <FormDeliveryHint />,
                   },
                   text: { type: "text", label: "Heading" },
                   description: { type: "textarea", label: "Introduction" },

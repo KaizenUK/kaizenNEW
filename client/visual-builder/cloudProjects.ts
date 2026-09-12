@@ -1,11 +1,15 @@
 import { getSupabaseClient } from "../lib/supabase";
-import { activeProjectId } from "./projectStorage";
+import { activeProjectId, requireActiveProject } from "./projectStorage";
 import { resumableUpload, type UploadControl } from "./resumableUpload";
 import type { Asset } from "../../shared/visualBuilder";
 
 import { builderCloudEnabled } from "./builderMode";
-export const hostedProject =
-  builderCloudEnabled && activeProjectId !== "kaizen";
+export async function hostedProject(): Promise<boolean> {
+  return (
+    builderCloudEnabled &&
+    !(await requireActiveProject()).capabilities.legacyWorkspace
+  );
+}
 const canonicalToSigned = new Map<string, string>();
 const signedToCanonical = new Map<string, string>();
 let mediaAccount: string | undefined;

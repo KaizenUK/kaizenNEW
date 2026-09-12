@@ -5,7 +5,11 @@ import {
   uploadProjectFile,
   projectMediaUrl,
 } from "./cloudProjects";
-import { activeProjectId, projectUrl } from "./projectStorage";
+import {
+  activeProjectId,
+  projectUrl,
+  requireActiveProject,
+} from "./projectStorage";
 import { companionConnection } from "./companionConnection";
 import {
   validateClientSettings,
@@ -94,7 +98,7 @@ export const storage = {
     version: number,
     settings: ClientSettings,
   ): Promise<SettingsState> {
-    if (activeProjectId === "kaizen")
+    if ((await requireActiveProject()).capabilities.legacyWorkspace)
       throw new Error(
         "The original site's services remain configured in its deployment environment.",
       );
@@ -103,10 +107,10 @@ export const storage = {
       version,
       settings: validateClientSettings(settings),
     };
-    return hostedProject ? cloudProjectRequest(input) : local(input);
+    return (await hostedProject()) ? cloudProjectRequest(input) : local(input);
   },
   async resolveMediaUrl(url: string) {
-    return hostedProject ? projectMediaUrl(url) : url;
+    return (await hostedProject()) ? projectMediaUrl(url) : url;
   },
   async repository(input: Record<string, unknown>): Promise<any> {
     if (!localMode) {
@@ -117,17 +121,15 @@ export const storage = {
     return local(input);
   },
   async clientPublication(input: Record<string, unknown>): Promise<any> {
-    if (activeProjectId === "kaizen")
-      throw new Error(
-        "Use the original Kaizen release workflow for this workspace.",
-      );
-    return hostedProject ? cloudProjectRequest(input) : local(input);
+    if ((await requireActiveProject()).capabilities.publishPath !== "worker")
+      throw new Error("Use this project’s GitHub release workflow.");
+    return (await hostedProject()) ? cloudProjectRequest(input) : local(input);
   },
   async setAssetConversion(
     expected: Asset,
     draft: ConversionDraft,
   ): Promise<Asset> {
-    if (hostedProject)
+    if (await hostedProject())
       return cloudProjectRequest({
         action: "asset-conversion",
         expected,
@@ -140,7 +142,7 @@ export const storage = {
         );
   },
   async uploadScope(): Promise<string> {
-    if (hostedProject) return cloudProjectScope();
+    if (await hostedProject()) return cloudProjectScope();
     if (localMode) {
       const response = await fetch(projectUrl("/__builder-local?scope=1"));
       if (!response.ok)
@@ -153,7 +155,7 @@ export const storage = {
     return `${new URL(import.meta.env.VITE_SUPABASE_URL).origin}:${data.user.id}`;
   },
   async setAssetImage(expected: Asset, image: AssetImage): Promise<Asset> {
-    if (hostedProject)
+    if (await hostedProject())
       return cloudProjectRequest({ action: "asset-image", expected, image });
     return localMode
       ? local({ action: "asset-image", expected, image })
@@ -203,38 +205,43 @@ export const storage = {
     return result;
   },
   async loadBackupWorkspace(): Promise<Workspace> {
-    if (hostedProject) return cloudProjectRequest({ action: "load" }, true);
+    if (await hostedProject())
+      return cloudProjectRequest({ action: "load" }, true);
     return localMode
       ? local()
       : unwrap(await cloud.rpc("builder_backup_workspace"));
   },
   async restoreBackup(plan: RestorePlan): Promise<Workspace> {
-    if (plan.settings && activeProjectId === "kaizen")
+    if (
+      plan.settings &&
+      (await requireActiveProject()).capabilities.legacyWorkspace
+    )
       throw new Error(
         "Restore a client-settings backup into a client project. The original Kaizen site's services remain deployment-managed.",
       );
-    if (hostedProject)
+    if (await hostedProject())
       return cloudProjectRequest({ action: "restore-backup", plan });
     return localMode
       ? local({ action: "restore-backup", plan })
       : unwrap(await cloud.rpc("builder_restore_backup", { plan }));
   },
   async updateAssetMetadata(changes: AssetMetadataChange[]): Promise<Asset[]> {
-    if (hostedProject)
+    if (await hostedProject())
       return cloudProjectRequest({ action: "asset-metadata", changes });
     return localMode
       ? local({ action: "asset-metadata", changes })
       : unwrap(await cloud.rpc("builder_update_asset_metadata", { changes }));
   },
   async replaceAsset(review: AssetReplacementReview): Promise<Workspace> {
-    if (hostedProject)
+    if (await hostedProject())
       return cloudProjectRequest({ action: "replace-asset", review });
     return localMode
       ? local({ action: "replace-asset", review })
       : unwrap(await cloud.rpc("builder_replace_asset", { review }));
   },
   async loadContent(): Promise<ContentCatalogue> {
-    if (hostedProject) return cloudProjectRequest({ action: "content" });
+    if (await hostedProject())
+      return cloudProjectRequest({ action: "content" });
     if (localMode) {
       const response = await fetch(projectUrl("/__builder-content"));
       const result = await response.json();
@@ -249,7 +256,7 @@ export const storage = {
     return unwrap(await cloud.functions.invoke("builder-content"));
   },
   async load(): Promise<Workspace> {
-    if (hostedProject) return cloudProjectRequest({ action: "load" });
+    if (await hostedProject()) return cloudProjectRequest({ action: "load" });
     if (localMode) return local();
     if (!cloud)
       throw new Error(
@@ -295,7 +302,7 @@ export const storage = {
   },
   async saveSite(version: number, design: SiteDesign): Promise<SiteState> {
     validateSiteDesign(design);
-    if (hostedProject)
+    if (await hostedProject())
       return cloudProjectRequest({ action: "site", version, design });
     return localMode
       ? local({ action: "site", version, design })
@@ -309,7 +316,8 @@ export const storage = {
   async publishSite(
     workspace: Workspace,
   ): Promise<{ workspace: Workspace; message: string }> {
-    if (hostedProject) return cloudProjectRequest({ action: "publish-site" });
+    if (await hostedProject())
+      return cloudProjectRequest({ action: "publish-site" });
     if (localMode)
       return {
         workspace: await local({
@@ -324,6 +332,7 @@ export const storage = {
     return unwrap(
       await cloud.functions.invoke("builder-publish", {
         body: {
+          projectId: activeProjectId,
           action: "site",
           version: workspace.site?.version,
           pageVersions: Object.fromEntries(
@@ -334,7 +343,7 @@ export const storage = {
     );
   },
   async releases(): Promise<ReleaseStatus[]> {
-    if (hostedProject) return [];
+    if (await hostedProject()) return [];
     if (localMode) return [];
     return unwrap(await cloud.rpc("builder_list_releases"));
   },
@@ -343,7 +352,7 @@ export const storage = {
     rules: BuilderRedirect[],
   ): Promise<RouteState> {
     const normalized = validateBuilderRedirects(rules);
-    if (hostedProject)
+    if (await hostedProject())
       return cloudProjectRequest({
         action: "routes",
         version,
@@ -361,7 +370,8 @@ export const storage = {
   async publishRoutes(
     version: number,
   ): Promise<{ message: string; workspace?: Workspace }> {
-    if (hostedProject) return cloudProjectRequest({ action: "publish-routes" });
+    if (await hostedProject())
+      return cloudProjectRequest({ action: "publish-routes" });
     if (localMode)
       return {
         workspace: await local({ action: "publish-routes", version }),
@@ -369,7 +379,12 @@ export const storage = {
       };
     const result = unwrap(
       await cloud.functions.invoke("builder-publish", {
-        body: { action: "redirects", version, requestId: crypto.randomUUID() },
+        body: {
+          projectId: activeProjectId,
+          action: "redirects",
+          version,
+          requestId: crypto.randomUUID(),
+        },
       }),
     );
     if (result.error) throw new Error(result.error);
@@ -382,7 +397,7 @@ export const storage = {
   ): Promise<PreviewSummary> {
     validatePreviewDocument(document);
     if (!isPreviewId(id)) throw new Error("Invalid preview ID.");
-    if (hostedProject)
+    if (await hostedProject())
       return cloudProjectRequest({
         action: "preview-create",
         previewId: id,
@@ -401,7 +416,7 @@ export const storage = {
   },
   async readPreview(id: string): Promise<PrivatePreview> {
     if (!isPreviewId(id)) throw new Error("Invalid preview link.");
-    const preview = hostedProject
+    const preview = (await hostedProject())
       ? await cloudProjectRequest({ action: "preview-read", previewId: id })
       : localMode
         ? await local({ action: "preview-read", id })
@@ -412,13 +427,14 @@ export const storage = {
     return preview;
   },
   async previews(): Promise<PreviewSummary[]> {
-    if (hostedProject) return cloudProjectRequest({ action: "preview-list" });
+    if (await hostedProject())
+      return cloudProjectRequest({ action: "preview-list" });
     return localMode
       ? local({ action: "preview-list" })
       : unwrap(await cloud.rpc("builder_list_previews"));
   },
   async revokePreview(id: string): Promise<void> {
-    if (hostedProject)
+    if (await hostedProject())
       return cloudProjectRequest({ action: "preview-revoke", previewId: id });
     if (!isPreviewId(id)) throw new Error("Invalid preview ID.");
     if (localMode) await local({ action: "preview-revoke", id });
@@ -431,7 +447,7 @@ export const storage = {
     id?: string;
     version?: number;
   }): Promise<{ release: ReleaseStatus; message: string }> {
-    if (hostedProject)
+    if (await hostedProject())
       return cloudProjectRequest({
         action: "release-action",
         releaseAction: body,
@@ -439,7 +455,9 @@ export const storage = {
     if (localMode)
       throw new Error("Hosted release controls require the shared workspace.");
     const result = unwrap(
-      await cloud.functions.invoke("builder-publish", { body }),
+      await cloud.functions.invoke("builder-publish", {
+        body: { ...body, projectId: activeProjectId },
+      }),
     );
     if (result.error) throw new Error(result.error);
     return result;
@@ -451,7 +469,7 @@ export const storage = {
     label = "Autosaved draft",
   ): Promise<BuilderPage> {
     validateDocument(document);
-    if (hostedProject)
+    if (await hostedProject())
       return cloudProjectRequest({
         action: "save",
         id,
@@ -473,7 +491,7 @@ export const storage = {
   async publish(
     page: BuilderPage,
   ): Promise<{ page: BuilderPage; message: string }> {
-    if (hostedProject)
+    if (await hostedProject())
       return cloudProjectRequest({
         action: "publish",
         id: page.id,
@@ -490,7 +508,11 @@ export const storage = {
       };
     const result = unwrap(
       await cloud.functions.invoke("builder-publish", {
-        body: { id: page.id, version: page.version },
+        body: {
+          projectId: activeProjectId,
+          id: page.id,
+          version: page.version,
+        },
       }),
     );
     if (result.error) throw new Error(result.error);
@@ -550,7 +572,8 @@ export const storage = {
     control: UploadControl = {},
   ): Promise<Asset> {
     control.signal?.throwIfAborted();
-    if (hostedProject) return uploadProjectFile(asset, blob, progress, control);
+    if (await hostedProject())
+      return uploadProjectFile(asset, blob, progress, control);
     if (control.scope && (await storage.uploadScope()) !== control.scope)
       throw new Error(
         "The signed-in upload workspace changed. Sign in with the original account to resume.",
@@ -719,7 +742,8 @@ export const storage = {
     progress: (percent: number) => void,
     control: UploadControl = {},
   ): Promise<Asset> {
-    if (hostedProject) return uploadProjectFile(asset, blob, progress, control);
+    if (await hostedProject())
+      return uploadProjectFile(asset, blob, progress, control);
     let uploadUrl: string;
     let headers: Record<string, string>;
     if (localMode) {
@@ -786,7 +810,8 @@ export const storage = {
     return result;
   },
   async updateAsset(asset: Asset): Promise<Asset> {
-    if (hostedProject) return cloudProjectRequest({ action: "asset", asset });
+    if (await hostedProject())
+      return cloudProjectRequest({ action: "asset", asset });
     if (localMode) return local({ action: "asset", asset });
     unwrap(
       await cloud
@@ -797,7 +822,8 @@ export const storage = {
     return asset;
   },
   async saveBlock(item: SavedBlock): Promise<SavedBlock> {
-    if (hostedProject) return cloudProjectRequest({ action: "saved", item });
+    if (await hostedProject())
+      return cloudProjectRequest({ action: "saved", item });
     if (localMode) return local({ action: "saved", item });
     unwrap(
       await cloud.from("builder_saved").upsert({ id: item.id, payload: item }),
@@ -805,7 +831,7 @@ export const storage = {
     return item;
   },
   async download(asset: Asset) {
-    if (hostedProject)
+    if (await hostedProject())
       return projectMediaUrl(
         asset.url,
         ["image", "icon", "font"].includes(asset.kind) ? undefined : asset.name,

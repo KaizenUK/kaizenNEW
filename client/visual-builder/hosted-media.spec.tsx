@@ -24,6 +24,16 @@ vi.mock("../lib/supabase", () => ({
 }));
 vi.mock("./projectStorage", () => ({
   activeProjectId: "11111111-1111-4111-8111-111111111111",
+  cachedProjects: async () => [
+    {
+      id: "11111111-1111-4111-8111-111111111111",
+      capabilities: {
+        hasInventory: false,
+        legacyWorkspace: false,
+        publishPath: "worker",
+      },
+    },
+  ],
 }));
 const canonical =
   "/builder-project-media/11111111-1111-4111-8111-111111111111/22222222-2222-4222-8222-222222222222";

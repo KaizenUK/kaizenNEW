@@ -14,6 +14,8 @@ Do not narrow the goal to building new sites or content-only editing. Preserve o
 
 ## Linux continuation — 12 September 2026
 
+**Builder launch:** Start with [the launch brief](docs/handover/codex-launch-brief.md), then follow [the ordered launch task map](docs/builder-launch-plan.md). Implementation is on `codex/builder-launch`; the task map records evidence and remaining acceptance. The private beta gate requires Sean’s hands-on acceptance before further work.
+
 **Latest acceptance:** Sean confirmed that, from the live builder connected to `/home/sean/Documents/GitHub/kaizenNEW`, he opened the page, clicked **Build**, waited, and the project appeared. This clears the reported hosted-preview blocker. He waived Firefox/Safari checks and asked that any future Retry failure be handled as a bug fix rather than delaying this task. Retry was not needed in his successful first-build journey. See [the acceptance update](docs/existing-site-visual-editing-plan.md#user-confirmed-hosted-preview--12-september-2026).
 
 The existing-site canvas is deployed as `9aca128` / `gh-34712289074-1`. Local helper server-stop detection is in `d7d9359`. Website routes open from Pages into the real built page, with direct text editing, link addresses, image replacement, section ordering, shared outline/undo history, draft recovery, review/apply and an explicit commit step. The old field editor and separate selector are fallbacks. This answers the handover's **critical correction in code**, and Sean has confirmed the real hosted page now appears.

@@ -1,5 +1,8 @@
 import type { BuilderProject } from "../../shared/builderProjects";
-import { LEGACY_PROJECT_ID } from "../../shared/builderProjects";
+import {
+  LEGACY_PROJECT_ID,
+  projectCapabilities,
+} from "../../shared/builderProjects";
 import { getSupabaseClient } from "../lib/supabase";
 import { builderCloudEnabled } from "./builderMode";
 
@@ -56,4 +59,40 @@ export async function projectRequest(input?: unknown): Promise<any> {
     window.dispatchEvent(new Event("builder-projects-changed"));
   return result;
 }
-export const listProjects = (): Promise<BuilderProject[]> => projectRequest();
+let projectCache: Promise<BuilderProject[]> | undefined;
+export function clearProjectCache() {
+  projectCache = undefined;
+}
+if (typeof window !== "undefined")
+  window.addEventListener("builder-projects-changed", clearProjectCache);
+export function cachedProjects(): Promise<BuilderProject[]> {
+  if (!projectCache) {
+    const pending = projectRequest()
+      .then((items: BuilderProject[]) =>
+        items.map((item) => ({
+          ...item,
+          capabilities: projectCapabilities(item.capabilities),
+        })),
+      )
+      .catch((error) => {
+        if (projectCache === pending) projectCache = undefined;
+        throw error;
+      });
+    projectCache = pending;
+  }
+  return projectCache;
+}
+export const listProjects = (): Promise<BuilderProject[]> => {
+  clearProjectCache();
+  return cachedProjects();
+};
+export async function requireActiveProject(): Promise<BuilderProject> {
+  const project = (await cachedProjects()).find(
+    (item) => item.id === activeProjectId,
+  );
+  if (!project)
+    throw new Error(
+      "Project unavailable. Return to Projects and check your access.",
+    );
+  return project;
+}

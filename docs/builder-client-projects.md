@@ -15,6 +15,16 @@ Creating or duplicating a project leaves its deployment destination unconfigured
 
 The original workspace is registered as **Kaizen workspace** in its existing directory. Registration does not move or rewrite its drafts, publications, assets, uploads, previews, submissions or history. `projects.json` is the catalogue; new project stores are under `.kaizen-builder/projects/<id>/`. Duplicates copy registered assets and all workspace history, remapping local asset references. They reset the site URL, form receiver and CMS connection, and do not copy submission records, private preview links or destination configuration. Choose the new client's services explicitly. Archive is reversible and prevents writes.
 
+## Project capabilities
+
+Project behaviour comes from `builder_projects.capabilities` (hosted) or each catalogue entry's `capabilities` (local). `hasInventory` enables the supplied existing-page inventory and reserves its original routes; `legacyWorkspace` selects the preserved original workspace, storage API and deployment-managed services; `publishPath` selects `github` or `worker` in Releases. These are operator configuration, not member permissions. The existing owner/editor and separate publish grants remain enforced by the server.
+
+New, copied, imported and helper-linked projects start with `{ "hasInventory": false, "legacyWorkspace": false, "publishPath": "worker" }`, and no deployment destination. Only the original workspace is migrated to `{ "hasInventory": true, "legacyWorkspace": true, "publishPath": "github" }`. The GitHub worker still represents one preserved workspace: a database constraint permits only one legacy project and requires GitHub routing to match it. Arbitrary additional GitHub destinations are not enabled by flipping a switch. A project ID is still used as its stable storage address and for migration registration; product screens no longer infer these capabilities from that ID.
+
+`builder-projects` returns only validated capability fields. Missing or invalid hosted settings stop workspace routing with an actionable error. Every `builder-publish` request must name `projectId`; the function checks membership, publish permission, archive state and the configured GitHub route before reading the release workspace or dispatching. Client projects continue through their configured worker destinations. The browser clears its configuration cache when the account changes. Previews receive their form receiver explicitly; a client cannot inherit the original site's receiver from its ID or the hosting environment.
+
+Deploy migration `202609120001_builder_project_capabilities.sql` before the updated projects function and frontend, and release `builder-publish` with the frontend. Refresh already-open tabs: old publication requests without a project ID are rejected. Local catalogue upgrades add settings without rewriting workspace drafts, history, assets or paths. Capability changes require operator access; the member-facing project API does not accept them.
+
 ## Integrating a cloned repository
 
 ### Connect the hosted editor to this computer

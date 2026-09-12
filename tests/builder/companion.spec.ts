@@ -79,6 +79,11 @@ test("hosted repository UI edits real local source across origins with consent, 
             name: "Companion client",
             archived: false,
             destination: { kind: "unconfigured", label: "Not connected" },
+            capabilities: {
+              hasInventory: false,
+              legacyWorkspace: false,
+              publishPath: "worker",
+            },
           },
         ],
       });

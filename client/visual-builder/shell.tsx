@@ -1,8 +1,7 @@
 import React, { useEffect, useState, type ReactNode } from "react";
 import { Brand } from "./Brand";
 export { Brand } from "./Brand";
-import { ProjectIdentity } from "./activeProject";
-import { activeProjectId } from "./projectStorage";
+import { ProjectIdentity, useProjectCapabilities } from "./activeProject";
 import {
   Archive,
   ArrowUpRight,
@@ -112,7 +111,8 @@ export function Sidebar({
   hasInventory: boolean;
   pendingCount: number;
 }) {
-  const legacy = activeProjectId === "kaizen";
+  const capabilities = useProjectCapabilities();
+  const legacy = capabilities.legacyWorkspace;
   // Grouped by what the user is trying to do, in the order the work happens.
   const groups: { title: string; items: NavItem[] }[] = [
     {
@@ -130,7 +130,7 @@ export function Sidebar({
           id: "releases",
           label: "Releases",
           icon: <Rocket size={22} />,
-          hidden: localMode && legacy,
+          hidden: localMode && capabilities.publishPath === "github",
           count: pendingCount,
         },
         { id: "redirects", label: "Redirects", icon: <Link2 size={22} /> },

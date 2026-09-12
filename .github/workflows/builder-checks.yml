@@ -32,6 +32,7 @@ on:
       - "supabase/functions/builder-content/**"
       - "supabase/functions/builder-projects/**"
       - "supabase/functions/_shared/clientPublication.ts"
+      - "supabase/functions/_shared/githubPublication.ts"
       - "public/builder-samples/**"
       - "scripts/builder-local.ts"
       - "scripts/builder-client-publisher.ts"
