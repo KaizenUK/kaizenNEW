@@ -36,6 +36,8 @@ on:
       - "supabase/functions/builder-contact/**"
       - "supabase/functions/builder-content/**"
       - "supabase/functions/builder-projects/**"
+      - "supabase/functions/builder-invite/**"
+      - "supabase/functions/_shared/builderInvitations.ts"
       - "supabase/functions/_shared/clientPublication.ts"
       - "supabase/functions/_shared/githubPublication.ts"
       - "supabase/functions/_shared/clientDiagnostics.ts"
@@ -105,7 +107,7 @@ jobs:
       - uses: denoland/setup-deno@v2
         with:
           deno-version: v2.x
-      - run: deno check --config supabase/functions/builder-projects/deno.json supabase/functions/builder-projects/index.ts supabase/functions/builder-publish/index.ts supabase/functions/builder-contact/index.ts supabase/functions/builder-content/index.ts
+      - run: deno check --config supabase/functions/builder-projects/deno.json supabase/functions/builder-projects/index.ts supabase/functions/builder-publish/index.ts supabase/functions/builder-contact/index.ts supabase/functions/builder-content/index.ts supabase/functions/builder-invite/index.ts
       - run: pnpm typecheck
       - name: Keep server credentials out of the Studio build
         run: |

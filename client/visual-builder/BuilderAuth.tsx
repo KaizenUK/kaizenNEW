@@ -1,4 +1,4 @@
-import React, { useEffect, useState, type ReactNode } from "react";
+import React, { useEffect, useRef, useState, type ReactNode } from "react";
 import type { Session } from "@supabase/supabase-js";
 import { cloud, localMode } from "./storage";
 import { Brand } from "./shell";
@@ -14,6 +14,8 @@ export default function BuilderAuth({ children }: { children: ReactNode }) {
         /(?:^#|&)type=(?:invite|recovery)(?:&|$)/.test(location.hash)),
   );
   const [email, setEmail] = useState("");
+  const [name, setName] = useState("");
+  const account = useRef<string | undefined>(undefined);
   const [password, setPassword] = useState("");
   const [confirmation, setConfirmation] = useState("");
   const [busy, setBusy] = useState(false);
@@ -25,6 +27,12 @@ export default function BuilderAuth({ children }: { children: ReactNode }) {
     let mounted = true;
     const accept = (next: Session | null) => {
       if (!mounted) return;
+      if (account.current !== next?.user.id) {
+        account.current = next?.user.id;
+        const candidate =
+          next?.user.user_metadata?.full_name ?? next?.user.user_metadata?.name;
+        setName(typeof candidate === "string" ? candidate : "");
+      }
       setSession(next);
       setReady(true);
       if (next?.user.user_metadata?.builder_password_set === false)
@@ -56,6 +64,8 @@ export default function BuilderAuth({ children }: { children: ReactNode }) {
   if (localMode || !cloud) return children;
   if (ready && session && !settingPassword) return children;
   const setup = Boolean(session && settingPassword);
+  const invitedSetup =
+    setup && session?.user.user_metadata?.builder_password_set === false;
   return (
     <div className="builder-app builder-auth" data-theme="light">
       <main className="builder-auth-card">
@@ -73,6 +83,15 @@ export default function BuilderAuth({ children }: { children: ReactNode }) {
               setNotice("");
               try {
                 if (setup) {
+                  if (
+                    invitedSetup &&
+                    (!name.trim() ||
+                      name.length > 200 ||
+                      /[<>\u0000-\u001f\u007f]/.test(name))
+                  )
+                    throw new Error(
+                      "Add your name using 1–200 characters, without brackets or control characters.",
+                    );
                   if (password.length < 12)
                     throw new Error(
                       "Use at least 12 characters for your password.",
@@ -81,7 +100,10 @@ export default function BuilderAuth({ children }: { children: ReactNode }) {
                     throw new Error("The passwords do not match.");
                   const result = await cloud.auth.updateUser({
                     password,
-                    data: { builder_password_set: true },
+                    data: {
+                      builder_password_set: true,
+                      ...(invitedSetup ? { full_name: name.trim() } : {}),
+                    },
                   });
                   if (result.error) throw result.error;
                   const url = new URL(location.href);
@@ -120,14 +142,18 @@ export default function BuilderAuth({ children }: { children: ReactNode }) {
           >
             <h1>
               {setup
-                ? "Set your password"
+                ? invitedSetup
+                  ? "Set up your account"
+                  : "Set your password"
                 : reset
                   ? "Reset your password"
                   : "Sign in to Kaizen Builder"}
             </h1>
             <p>
               {setup
-                ? `Choose a password for ${session?.user.email}.`
+                ? invitedSetup
+                  ? `Add your name and choose a password for ${session?.user.email}.`
+                  : `Choose a password for ${session?.user.email}.`
                 : "Use your invited editor account to access your projects."}
             </p>
             {settingPassword && !session && (
@@ -146,6 +172,19 @@ export default function BuilderAuth({ children }: { children: ReactNode }) {
                   required
                   value={email}
                   onChange={(event) => setEmail(event.target.value)}
+                />
+              </label>
+            )}
+            {invitedSetup && (
+              <label>
+                Your name
+                <input
+                  name="full-name"
+                  autoComplete="name"
+                  required
+                  maxLength={200}
+                  value={name}
+                  onChange={(event) => setName(event.target.value)}
                 />
               </label>
             )}

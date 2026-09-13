@@ -195,12 +195,7 @@ Deno.serve(async (request) => {
     if (action === "members")
       return json(
         200,
-        check(
-          await user
-            .from("builder_project_members")
-            .select("user_id,role,can_publish")
-            .eq("project_id", target),
-        ),
+        check(await user.rpc("builder_member_directory", { target })),
       );
     if (action === "set-member") {
       check(

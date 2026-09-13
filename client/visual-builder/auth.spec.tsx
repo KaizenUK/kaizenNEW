@@ -105,6 +105,7 @@ it("requires matching passwords and a successful server update before opening an
     },
   };
   await mount();
+  await fill("full-name", "Fixture Editor");
   await fill("password", "new-password-123");
   await fill("confirmation", "different-password");
   await submit();
@@ -119,7 +120,7 @@ it("requires matching passwords and a successful server update before opening an
   await submit();
   expect(mock.update).toHaveBeenLastCalledWith({
     password: "new-password-123",
-    data: { builder_password_set: true },
+    data: { builder_password_set: true, full_name: "Fixture Editor" },
   });
   expect(host.querySelector("[data-workspace]")).not.toBeNull();
   expect(location.search).toBe("");
@@ -143,4 +144,24 @@ it("handles recovery while the password reset form is open", async () => {
   );
   expect(host.querySelector('input[name="password"]')).not.toBeNull();
   expect(host.querySelector("[data-workspace]")).toBeNull();
+});
+
+it("keeps an invited account closed until its owner supplies a valid name", async () => {
+  mock.session = {
+    user: {
+      id: "invited-fixture",
+      email: "editor@example.test",
+      user_metadata: { builder_password_set: false },
+    },
+  };
+  await mount();
+  await fill("password", "new-password-123");
+  await fill("confirmation", "new-password-123");
+  for (const name of ["   ", "<not-a-git-author>"]) {
+    await fill("full-name", name);
+    await submit();
+    expect(mock.update).not.toHaveBeenCalled();
+    expect(host.textContent).toContain("Add your name");
+    expect(host.querySelector("[data-workspace]")).toBeNull();
+  }
 });

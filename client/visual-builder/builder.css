@@ -3016,6 +3016,58 @@
   padding: 12px 0;
   overflow-wrap: anywhere;
 }
+.builder-project-members {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.builder-project-members summary {
+  cursor: pointer;
+  font-weight: 600;
+}
+.builder-app .builder-project-members form {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  align-items: stretch;
+  gap: 16px;
+  max-width: 520px;
+  margin-top: 20px;
+}
+.builder-project-members form h3 {
+  margin: 0;
+  font-size: 18px;
+  line-height: 1.4;
+}
+.builder-project-members form input:not([type="checkbox"]),
+.builder-project-members form select {
+  min-width: 0;
+  width: 100%;
+}
+.builder-app .builder-project-members .builder-project-filter {
+  display: flex;
+  align-items: center;
+}
+.builder-member-row {
+  border-bottom: 1px solid var(--border);
+}
+.builder-member-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.builder-member-actions button,
+.builder-member-confirm button {
+  white-space: normal;
+  height: auto;
+  min-height: 40px;
+}
+.builder-member-confirm {
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+}
+.builder-member-confirm button {
+  margin: 4px;
+}
 
 .builder-auth {
   display: grid;

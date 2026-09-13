@@ -442,3 +442,8 @@ verify_jwt = false
 # The handler verifies the JWT with auth.getUser, then uses RLS-backed membership.
 verify_jwt = false
 entrypoint = "./functions/builder-projects/index.ts"
+
+[functions.builder-invite]
+# The handler verifies Auth before the owner-only invitation RPCs or admin email API.
+verify_jwt = false
+entrypoint = "./functions/builder-invite/index.ts"
