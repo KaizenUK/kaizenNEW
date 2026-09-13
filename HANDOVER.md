@@ -152,8 +152,10 @@ An isolated experiment attempted an HTTPS editor iframe using a random `*.localh
 
 ## Production map — no secret values
 
-- VPS SSH alias `kaizen-server`: `root@144.91.72.17`, Ubuntu 24.04.5. Local alias used `~/.ssh/id_ed25519`.
+- VPS SSH alias on Linux: `kaizen-vps` (`root@144.91.72.17`), confirmed by Sean and verified on 13 September. The previous Windows alias was `kaizen-server`; use `ssh kaizen-vps` here.
 - Main production checkout `/srv/kaizen/production`; retained store `/var/lib/kaizen/production`; private environment `/etc/kaizen/production.env`.
+- Launch staging checkout `/srv/kaizen/staging`, store `/var/lib/kaizen/staging`, Apache HTTPS → Nginx 8093. The verified existing-site baseline and remaining hosted setup are recorded in [the launch log](docs/builder-launch-plan.md).
+- Supabase management-token file restored with restricted permissions at `/home/sean/.config/kaizen/supabase-access-token.txt`; never print or commit its contents. L0 migrations through `202609120003` are applied; matching functions/frontend remain pending.
 - Server Node `/opt/kaizen-runtime/node/bin/node` (22.23.2 at verification).
 - Client worker `/opt/kaizen-builder` resolves to `/opt/kaizen-builder-releases/1179886`. Retained prior copy `/opt/kaizen-builder-before-1179886`. Service/timer `kaizen-client-worker.service` / `.timer`; timer active. Jobs `/var/lib/kaizen-client-worker/jobs`.
 - Destination registry `/etc/kaizen/client-destinations.json`; worker secrets `/etc/kaizen/client-worker.env`, mode 0600. Browser settings must never receive these.

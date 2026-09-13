@@ -5,6 +5,7 @@ import { tmpdir } from "node:os";
 import path from "node:path";
 import { HostedRepositoryAccess } from "../../scripts/builder-hosted-auth";
 import type { RepositorySaveTarget } from "../../shared/builderRepositorySave";
+import type { RepositoryPublishTarget } from "../../shared/builderRepositoryPublish";
 import type { HostedSaveReleases } from "../../scripts/builder-hosted-save-release";
 import { HostedWebsiteFolders } from "../../scripts/builder-hosted-folders";
 import {
@@ -30,6 +31,8 @@ export async function hostedHelperFixture(
   previewOrigin?: string,
   setupSeed?: (seed: string) => Promise<void>,
   saving?: { target: RepositorySaveTarget; releases?: HostedSaveReleases },
+  setup?: "empty" | "approved",
+  publishing?: { target: RepositoryPublishTarget; fetch: typeof fetch },
 ) {
   const directory = await mkdtemp(path.join(tmpdir(), "kaizen-hosted-helper-"));
   const seed = path.join(directory, "seed"),
@@ -75,7 +78,7 @@ export async function hostedHelperFixture(
   );
   await writeFile(
     path.join(seed, ".gitignore"),
-    ".kaizen/\nnode_modules/\ndist/\n.env\n",
+    ".kaizen/\n.astro/\nnode_modules\ndist/\n.env\n",
   );
   await setupSeed?.(seed);
   await git(seed, ["init", "-b", "stage"]);
@@ -85,6 +88,7 @@ export async function hostedHelperFixture(
   await git(seed, ["commit", "-m", "Fixture site"]);
   await git(directory, ["clone", "--bare", seed, remote]);
   const sshLog = path.join(directory, "ssh.jsonl");
+  const authorizedKey = path.join(directory, "authorized-deploy-key.pub");
   await writeFile(
     path.join(bin, "ssh"),
     `#!${process.execPath}
@@ -92,6 +96,7 @@ const {appendFileSync}=require('node:fs');const {spawn}=require('node:child_proc
 const args=process.argv.slice(2);appendFileSync(${JSON.stringify(sshLog)},JSON.stringify({args,environment:Object.keys(process.env)})+'\\n');
 const operation=args[args.length-1];
 if(!["git-upload-pack 'fixture/site.git'","git-receive-pack 'fixture/site.git'"].includes(operation)||!args.includes('StrictHostKeyChecking=yes')||!args.includes('IdentitiesOnly=yes')||!args.includes('BatchMode=yes'))process.exit(74);
+if(${Boolean(setup)}){try{const {readFileSync}=require('node:fs');const {spawnSync}=require('node:child_process');const key=args[args.indexOf('-i')+1];const publicKey=spawnSync('ssh-keygen',['-y','-f',key],{encoding:'utf8'}).stdout.trim().split(' ').slice(0,2).join(' ');if(publicKey!==readFileSync(${JSON.stringify(authorizedKey)},'utf8').trim().split(' ').slice(0,2).join(' '))process.exit(78);}catch{process.exit(78);}}
 const child=spawn(operation.split(' ')[0],[${JSON.stringify(remote)}],{stdio:'inherit',env:{...process.env,GIT_CONFIG_PARAMETERS:undefined,GIT_CONFIG_COUNT:undefined}});child.on('exit',code=>process.exit(code??1));
 `,
     { mode: 0o700 },
@@ -104,22 +109,36 @@ const child=spawn(operation.split(' ')[0],[${JSON.stringify(remote)}],{stdio:'in
     repositoryUrl: `git@${saving?.target.workflow ? "github.com" : "fixture.invalid"}:fixture/site.git`,
     branch: "stage",
     ...(saving ? { saveToWebsite: saving.target } : {}),
+    ...(publishing ? { publishToWebsite: publishing.target } : {}),
   }));
+  let hostKey: string | undefined;
+  if (setup) {
+    const key = path.join(directory, "host-key");
+    await exec("ssh-keygen", ["-q", "-t", "ed25519", "-N", "", "-f", key]);
+    hostKey = (await readFile(`${key}.pub`, "utf8")).trim();
+  }
   for (const id of projectIds) {
     await mkdir(path.join(credentials, id), { recursive: true, mode: 0o700 });
-    await writeFile(
-      path.join(credentials, id, "deploy-key"),
-      "fixture-only-key-material",
-      { mode: 0o600 },
-    );
+    if (!setup)
+      await writeFile(
+        path.join(credentials, id, "deploy-key"),
+        "fixture-only-key-material",
+        { mode: 0o600 },
+      );
     await writeFile(
       path.join(credentials, id, "known_hosts"),
-      "fixture.invalid fixture-host-key",
+      hostKey
+        ? `fixture.invalid,github.com ${hostKey}\n`
+        : "fixture.invalid fixture-host-key",
       { mode: 0o600 },
     );
   }
   const members = new Map(
     projectIds.map((id) => [id, new Set([helperOwner, helperEditor])]),
+  );
+  const owners = new Map(projectIds.map((id) => [id, new Set([helperOwner])]));
+  const publishers = new Map(
+    projectIds.map((id) => [id, new Set([helperOwner])]),
   );
   const archived = new Set<string>();
   const calls: { route: string; token: string; body?: any }[] = [];
@@ -171,7 +190,11 @@ const child=spawn(operation.split(' ')[0],[${JSON.stringify(remote)}],{stdio:'in
       if (route === "/rest/v1/rpc/builder_project_access") {
         await beforeMembership?.();
         return Response.json(
-          body.capability === "edit" &&
+          (body.capability === "edit" ||
+            (body.capability === "publish" &&
+              publishers.get(body.target)?.has(claims.sub)) ||
+            (body.capability === "owner" &&
+              owners.get(body.target)?.has(claims.sub))) &&
             body.actor === claims.sub &&
             !archived.has(body.target) &&
             Boolean(members.get(body.target)?.has(claims.sub)),
@@ -183,11 +206,14 @@ const child=spawn(operation.split(' ')[0],[${JSON.stringify(remote)}],{stdio:'in
   const folders = new HostedWebsiteFolders(
     path.join(directory, "work"),
     credentials,
-    configured,
+    setup === "empty"
+      ? projectIds.map((projectId) => ({ projectId, setup: true as const }))
+      : configured,
   );
   const service = new HostedHelperService(folders, access, {
     ...(previewOrigin ? { editorOrigin: previewOrigin } : {}),
     ...(saving?.releases ? { saveReleases: saving.releases } : {}),
+    ...(publishing ? { publicationFetch: publishing.fetch } : {}),
   });
   const helper = await startHostedHelper({
     service,
@@ -230,6 +256,9 @@ const child=spawn(operation.split(' ')[0],[${JSON.stringify(remote)}],{stdio:'in
     helper,
     send,
     members,
+    owners,
+    publishers,
+    authorizeKey: (publicKey: string) => writeFile(authorizedKey, publicKey),
     profiles,
     archived,
     calls,

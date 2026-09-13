@@ -148,6 +148,8 @@ describe("hosted build jobs", () => {
         "fixture-token",
       );
       await expect.poll(() => startEntered).toBe(true);
+      expect(() => queue.assertIdle(helperProject)).toThrow("Finish or cancel");
+      expect(() => queue.assertIdle(helperOtherProject)).not.toThrow();
       expect(queue.cancel(helperProject, helperOwner, job.id)).toMatchObject({
         status: "queued",
         cancelling: true,
@@ -165,6 +167,7 @@ describe("hosted build jobs", () => {
         .poll(() => queue.status(helperProject, helperOwner, job.id).status)
         .toBe("cancelled");
       expect(released).toBe(true);
+      expect(() => queue.assertIdle(helperProject)).not.toThrow();
     } finally {
       unlockStart();
       finishChild();

@@ -53,6 +53,7 @@ import RepositoryPanel from "./RepositoryPanel";
 import HostedRepository from "./HostedRepository";
 import { repositoryConnection } from "./repositoryConnection";
 import ClientSettings from "./ClientSettings";
+import RepositorySettings from "./RepositorySettings";
 import ProblemReport from "./ProblemReport";
 import { startErrorReporting } from "./errorReporting";
 import {
@@ -475,9 +476,14 @@ function BuilderWorkspace({ inventory }: { inventory?: PageInventory } = {}) {
         ))}
       {current === "settings" &&
         (workspace && !capabilities.legacyWorkspace ? (
-          <ClientSettings workspace={workspace} onChange={replaceWorkspace}>
-            <ProblemReport />
-          </ClientSettings>
+          <>
+            <ClientSettings workspace={workspace} onChange={replaceWorkspace}>
+              <ProblemReport />
+            </ClientSettings>
+            <div className="builder-page-body">
+              <RepositorySettings />
+            </div>
+          </>
         ) : (
           <>
             <Head
@@ -492,6 +498,7 @@ function BuilderWorkspace({ inventory }: { inventory?: PageInventory } = {}) {
                   : "Project details are unavailable. You can still report a problem."}
               </Notice>
               <ProblemReport />
+              {workspace && <RepositorySettings />}
             </div>
           </>
         ))}

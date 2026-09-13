@@ -23,12 +23,18 @@ import { HostedBuildQueue } from "./builder-hosted-builds";
 import { HostedPreviews } from "./builder-hosted-previews";
 import { HostedWebsiteSaves } from "./builder-hosted-saves";
 import { HostedSaveReleases } from "./builder-hosted-save-release";
+import { HostedRepositorySettings } from "./builder-hosted-settings";
+import { repositorySetupActions } from "../shared/builderRepositorySettings";
+import { repositoryPublishActions } from "../shared/builderRepositoryPublish";
+import { HostedWebsitePublishing } from "./builder-hosted-publishing";
 import { SourceDrafts } from "./builder-source-drafts";
 import { NativeRepositoryBackups } from "./builder-native-backup";
 
 const endpoint = "/editor-api/builder-repository";
 const maxBody = 52 * 1024 * 1024;
 const actions = new Set([
+  ...repositorySetupActions,
+  ...repositoryPublishActions,
   "repository-connect",
   "repository-inspect-current",
   "repository-inspect",
@@ -100,13 +106,25 @@ export class HostedHelperService {
   private closed = false;
   private builds: HostedBuildQueue;
   private saves: HostedWebsiteSaves;
+  private settings: HostedRepositorySettings;
+  private publishing: HostedWebsitePublishing;
   readonly previews?: HostedPreviews;
   constructor(
     readonly folders: HostedWebsiteFolders,
     readonly access: HostedRepositoryAccess,
-    options?: { editorOrigin?: string; saveReleases?: HostedSaveReleases },
+    options?: {
+      editorOrigin?: string;
+      saveReleases?: HostedSaveReleases;
+      publicationFetch?: typeof fetch;
+    },
   ) {
     this.saves = new HostedWebsiteSaves(folders, options?.saveReleases);
+    this.settings = new HostedRepositorySettings(folders);
+    this.publishing = new HostedWebsitePublishing(
+      folders,
+      options?.saveReleases,
+      options?.publicationFetch,
+    );
     this.builds = new HostedBuildQueue({
       folders,
       authorize: async (token, projectId) => {
@@ -149,6 +167,12 @@ export class HostedHelperService {
     const projectId = input.projectId;
     // Reject an unauthorised project before any disk access; check again after waiting for its lock.
     await this.access.requireProject(token, actor, projectId);
+    const setup = repositorySetupActions.has(input.action);
+    if (setup)
+      await this.access.requireProject(token, actor, projectId, "owner");
+    const publishing = repositoryPublishActions.has(input.action);
+    if (publishing)
+      await this.access.requireProject(token, actor, projectId, "publish");
     if (comingNext.has(input.action))
       throw new HostedHelperError(
         501,
@@ -159,7 +183,7 @@ export class HostedHelperService {
         400,
         "Choose a supported website folder action.",
       );
-    this.folders.configuration(projectId);
+    this.folders.admission(projectId);
     const root = this.folders.root(projectId);
     if (
       (input.root !== undefined && input.root !== root) ||
@@ -177,6 +201,29 @@ export class HostedHelperService {
           "The hosted helper is restarting. Reconnect shortly.",
         );
       await this.access.requireProject(token, actor, projectId);
+      if (setup)
+        await this.access.requireProject(token, actor, projectId, "owner");
+      if (publishing)
+        await this.access.requireProject(token, actor, projectId, "publish");
+      if (await this.settings.refresh(projectId))
+        await this.invalidateProject(projectId);
+      if (setup) {
+        switch (input.action) {
+          case "repository-settings-read":
+            return this.settings.read(projectId);
+          case "repository-settings-save":
+            return this.settings.save(
+              projectId,
+              input.version,
+              input.repository,
+              () => this.invalidateProject(projectId),
+            );
+          case "repository-settings-key":
+            return this.settings.createKey(projectId, input.version);
+          case "repository-settings-connect":
+            return this.settings.connect(projectId, input.version);
+        }
+      }
       await this.folders.ensure(projectId);
       let operations = this.projects.get(projectId);
       if (!operations) {
@@ -219,6 +266,15 @@ export class HostedHelperService {
       }
     });
   }
+  private async invalidateProject(projectId: string) {
+    this.builds.assertIdle(projectId);
+    this.saves.assertCanReconfigure(projectId);
+    this.publishing.assertCanReconfigure(projectId);
+    await this.projects.get(projectId)?.runner.close();
+    this.projects.delete(projectId);
+    this.saves.forget(projectId);
+    this.publishing.forget(projectId);
+  }
   private async perform(
     input: Record<string, any>,
     actor: RepositoryActor,
@@ -254,7 +310,33 @@ export class HostedHelperService {
           ...(this.folders.configuration(projectId).saveToWebsite
             ? { canSaveToWebsite: true }
             : {}),
+          ...(this.folders.configuration(projectId).publishToWebsite
+            ? { canPublishWebsite: true }
+            : {}),
         };
+      case "repository-publish-review":
+      case "repository-publish": {
+        this.builds.assertIdle(projectId);
+        this.saves.assertCanReconfigure(projectId);
+        if (input.action === "repository-publish-review")
+          return this.publishing.review(projectId, actor);
+        return this.publishing.publish(
+          projectId,
+          actor,
+          input.reviewId,
+          async () => {
+            const current = await this.access.verify(token);
+            await this.access.requireProject(
+              token,
+              current,
+              projectId,
+              "publish",
+            );
+          },
+        );
+      }
+      case "repository-publish-status":
+        return this.publishing.status(projectId, actor, input.reviewId);
       case "repository-inspect-current":
       case "repository-inspect":
         return inspectRepository(root);

@@ -4089,3 +4089,31 @@
   max-height: 40vh;
   overflow: auto;
 }
+.builder-repository-settings form,
+.builder-repository-key {
+  margin-top: 20px;
+}
+.builder-repository-settings input,
+.builder-repository-settings textarea {
+  width: 100%;
+  min-width: 0;
+}
+.builder-repository-settings textarea,
+.builder-repository-settings code {
+  overflow-wrap: anywhere;
+}
+.builder-repository-key {
+  border-top: 1px solid var(--border);
+  padding-top: 16px;
+}
+.builder-repository-publish p,
+.builder-repository-publish details {
+  margin: 12px 0;
+}
+.builder-repository-publish code {
+  overflow-wrap: anywhere;
+}
+.builder-repository-publish .builder-row {
+  gap: 12px;
+  margin-top: 16px;
+}

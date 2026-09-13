@@ -18,7 +18,12 @@ import { BUILDER_TEST_ORIGIN } from "./ports";
 import { HostedSaveReleases } from "../../scripts/builder-hosted-save-release";
 
 /** A real TLS reverse proxy and hosted service. Only certificates, SSH and Supabase accounts are fixtures. */
-export async function hostedPreviewFixture(projectId: string, saving = false) {
+export async function hostedPreviewFixture(
+  projectId: string,
+  saving = false,
+  setup = false,
+  publishing = false,
+) {
   const directory = await mkdtemp(
     path.join(tmpdir(), "kaizen-hosted-preview-"),
   );
@@ -89,6 +94,15 @@ export async function hostedPreviewFixture(projectId: string, saving = false) {
   const address = server.address();
   const origin = `https://127.0.0.1:${typeof address === "object" && address ? address.port : 0}`;
   const deployment = { status: "queued", conclusion: null as string | null };
+  const productionDeployment = {
+    status: "queued",
+    conclusion: null as string | null,
+  };
+  const publication = {
+    stageCommit: "",
+    productionCommit: "",
+    stageReleaseId: "fixture-stage-release",
+  };
   const api = await hostedHelperFixture(
     [projectId],
     "import { build } from 'astro'; await build({logLevel:'silent'});",
@@ -144,27 +158,70 @@ export async function hostedPreviewFixture(projectId: string, saving = false) {
                     id: 123,
                     event: "push",
                     head_sha: new URL(String(url)).searchParams.get("head_sha"),
-                    head_branch: "stage",
-                    ...deployment,
+                    head_branch: new URL(String(url)).searchParams.get(
+                      "branch",
+                    ),
+                    ...(new URL(String(url)).searchParams.get("branch") ===
+                    "main"
+                      ? productionDeployment
+                      : deployment),
                   },
                 ],
               }),
           }),
         }
       : undefined,
+    setup ? "approved" : undefined,
+    publishing
+      ? {
+          target: {
+            environment: "production",
+            branch: "main",
+            url: "https://production.fixture.invalid",
+            workflow: "deploy.yml",
+          },
+          // GitHub deployment and public marker responses are fixture observations; pushes and preview builds remain real.
+          fetch: async (url) =>
+            Response.json({
+              schemaVersion: 1,
+              commit:
+                new URL(String(url)).origin === origin
+                  ? publication.stageCommit
+                  : publication.productionCommit,
+              releaseId:
+                new URL(String(url)).origin === origin
+                  ? publication.stageReleaseId
+                  : "fixture-production-release",
+            }),
+        }
+      : undefined,
   );
+  if (publishing) {
+    publication.stageCommit = publication.productionCommit = await api.git(
+      api.remote,
+      ["rev-parse", "stage"],
+    );
+    await api.git(api.remote, ["branch", "main", publication.stageCommit]);
+  }
   helperOrigin = api.helper.origin;
-  await api.send({ action: "repository-connect", projectId });
-  await symlink(
-    path.resolve("node_modules"),
-    path.join(api.folders.root(projectId), "node_modules"),
-    "dir",
-  );
+  const prepareDependencies = () =>
+    symlink(
+      path.resolve("node_modules"),
+      path.join(api.folders.root(projectId), "node_modules"),
+      "dir",
+    );
+  if (!setup) {
+    await api.send({ action: "repository-connect", projectId });
+    await prepareDependencies();
+  }
   return {
     api,
     origin,
     requests,
     deployment,
+    productionDeployment,
+    publication,
+    prepareDependencies,
     close: async () => {
       server.closeAllConnections();
       await new Promise<void>((resolve) => server.close(() => resolve()));

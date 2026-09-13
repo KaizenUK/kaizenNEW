@@ -27,6 +27,8 @@ on:
       - "shared/builderSiteMetadata.ts"
       - "shared/builderProjectOperations.ts"
       - "shared/builderRepositorySave.ts"
+      - "shared/builderRepositorySettings.ts"
+      - "shared/builderRepositoryPublish.ts"
       - "shared/publicRoutePolicy.js"
       - "shared/nginxRedirects.js"
       - "supabase/migrations/*builder*"
@@ -66,6 +68,10 @@ on:
       - "shared/builderSourceEditing.ts"
       - "scripts/builder-runner.ts"
       - "scripts/deploy-public-release.sh"
+      - "scripts/verify-studio-env.mjs"
+      - "apps/studio/**"
+      - "scripts/preflight-public-deploy.sh"
+      - "tests/deploy/**"
       - "scripts/generate-nginx-redirects.mjs"
       - "scripts/generate-builder-style-css.mjs"
       - "src/pages/**"
@@ -99,8 +105,14 @@ jobs:
       - uses: denoland/setup-deno@v2
         with:
           deno-version: v2.x
-      - run: deno check --config supabase/functions/builder-projects/deno.json supabase/functions/builder-projects/index.ts supabase/functions/builder-publish/index.ts supabase/functions/builder-contact/index.ts
+      - run: deno check --config supabase/functions/builder-projects/deno.json supabase/functions/builder-projects/index.ts supabase/functions/builder-publish/index.ts supabase/functions/builder-contact/index.ts supabase/functions/builder-content/index.ts
       - run: pnpm typecheck
+      - name: Keep server credentials out of the Studio build
+        run: |
+          pnpm --dir apps/studio install --frozen-lockfile
+          pnpm test:studio:env
+      - name: Refuse overlapping staging and production destinations
+        run: bash tests/deploy/preflight.sh
       - run: pnpm exec playwright install --with-deps chromium
       - run: pnpm test
         env:
@@ -123,7 +135,7 @@ jobs:
           npm --prefix "$export_fixture" run typecheck
           npm --prefix "$export_fixture" run build
           node tests/builder/verify-client-repositories.mjs "$astro_fixture" "$export_fixture"
-          pnpm exec tsx tests/builder/verify-local-runner.ts "$astro_fixture" "$export_fixture"
+          pnpm run test:builder:runner "$astro_fixture" "$export_fixture"
       - name: Verify release activation and rollback with Nginx
         run: |
           sudo apt-get update

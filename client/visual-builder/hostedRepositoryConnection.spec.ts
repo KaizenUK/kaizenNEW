@@ -19,6 +19,7 @@ afterEach(() => {
 function fixture(
   previewSession = false,
   canSaveToWebsite: unknown = undefined,
+  canPublishWebsite: unknown = undefined,
 ) {
   let session: RepositorySession | null = {
     user: { id: "owner" },
@@ -38,6 +39,7 @@ function fixture(
               expiresAt: Date.now() + 7200_000,
               previewSession,
               canSaveToWebsite,
+              canPublishWebsite,
             }
           : { action: body.action, root },
       );
@@ -64,6 +66,106 @@ function fixture(
   };
 }
 describe("hosted repository transport", () => {
+  it("allows only explicit owner setup actions before a folder connects, with the current session and project boundaries", async () => {
+    const api = fixture();
+    api.server.mockResolvedValueOnce(
+      Response.json({ error: "Setup needed" }, { status: 404 }),
+    );
+    await expect(api.open()).rejects.toThrow("Setup needed");
+    expect(api.client.snapshot()).toMatchObject({
+      status: "disconnected",
+      accountId: "owner",
+    });
+    const before = api.server.mock.calls.length;
+    for (const action of [
+      "repository-source-inspect",
+      "repository-settings-unknown",
+    ])
+      await expect(api.client.request({ action })).rejects.toThrow(
+        "Setup needed",
+      );
+    await expect(
+      api.client.request({
+        action: "repository-settings-read",
+        root: "/another",
+      }),
+    ).rejects.toThrow("another website folder");
+    expect(api.server.mock.calls).toHaveLength(before);
+    for (const action of [
+      "repository-settings-read",
+      "repository-settings-save",
+      "repository-settings-key",
+      "repository-settings-connect",
+    ])
+      await api.client.request({ action, projectId: "spoofed" });
+    for (const [, request] of api.server.mock.calls.slice(before)) {
+      expect(JSON.parse(request!.body as string).projectId).toBe(projectId);
+      expect(request!.headers).toMatchObject({
+        Authorization: "Bearer owner-token",
+      });
+    }
+    api.getSession.mockResolvedValueOnce(null);
+    await expect(
+      api.client.request({ action: "repository-settings-read" }),
+    ).rejects.toThrow("expired");
+    expect(api.server.mock.calls).toHaveLength(before + 4);
+  });
+  it("keeps setup bound to its account even when neither account has a connected folder", async () => {
+    const api = fixture();
+    api.server.mockResolvedValueOnce(
+      Response.json({ error: "Setup needed" }, { status: 404 }),
+    );
+    await expect(api.open()).rejects.toThrow("Setup needed");
+    let complete!: (result: Response) => void;
+    let entered!: () => void;
+    const ready = new Promise<void>((resolve) => {
+      entered = resolve;
+    });
+    api.server.mockImplementationOnce(
+      () =>
+        new Promise((resolve) => {
+          complete = resolve;
+          entered();
+        }),
+    );
+    const pending = api.client.request({ action: "repository-settings-key" });
+    const outcome = expect(pending).rejects.toThrow();
+    await ready;
+    api.server.mockResolvedValueOnce(
+      Response.json({ error: "Setup needed" }, { status: 404 }),
+    );
+    await expect(
+      api.setSession({
+        ...api.session(),
+        user: { id: "new-owner" },
+        access_token: "new-token",
+      }),
+    ).rejects.toThrow("Setup needed");
+    complete(Response.json({ publicKey: "old account public key" }));
+    await outcome;
+    expect(api.client.snapshot()).toMatchObject({
+      status: "disconnected",
+      accountId: "new-owner",
+    });
+  });
+  it("requires a fresh connection and deployment capabilities after changing repository setup", async () => {
+    const api = fixture(false, true, true);
+    await api.open();
+    api.server.mockResolvedValueOnce(
+      Response.json({ connected: false, version: 1 }),
+    );
+    await api.client.request({ action: "repository-settings-save" });
+    expect(api.client.snapshot()).toMatchObject({
+      status: "disconnected",
+      root,
+      accountId: "owner",
+    });
+    expect(api.client.snapshot().canSaveToWebsite).toBeUndefined();
+    expect(api.client.snapshot().canPublishWebsite).toBeUndefined();
+    await expect(
+      api.client.request({ action: "repository-save" }),
+    ).rejects.toThrow("Check the website folder");
+  });
   it("enables website saving only when the server advertises it and clears the capability when the account ends", async () => {
     for (const capability of [undefined, false, "true", true]) {
       const api = fixture(false, capability);
@@ -73,6 +175,18 @@ describe("hosted repository transport", () => {
       expect(api.client.snapshot().canSaveToWebsite).toBe(capability === true);
       await api.setSession(null);
       expect(api.client.snapshot().canSaveToWebsite).toBeUndefined();
+    }
+  });
+  it("requires explicit production approval independently of staging and clears it when the account changes", async () => {
+    for (const capability of [undefined, false, "true", true]) {
+      const api = fixture(false, true, capability);
+      await api.open();
+      expect(api.client.snapshot().canSaveToWebsite).toBe(true);
+      expect(api.client.snapshot().canPublishWebsite).toBe(capability === true);
+      api.client.disconnect("Connection interrupted");
+      expect(api.client.snapshot().canPublishWebsite).toBe(capability === true);
+      await api.setSession(null);
+      expect(api.client.snapshot().canPublishWebsite).toBeUndefined();
     }
   });
   it("confines preview navigation to the public view and rejects forged nonces, external URLs and escaped traversal", () => {

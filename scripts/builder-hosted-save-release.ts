@@ -1,5 +1,6 @@
 import type { HostedProjectRepository } from "./builder-hosted-folders";
 import type { RepositorySaveStatus } from "../shared/builderRepositorySave";
+import type { RepositoryPublishTarget } from "../shared/builderRepositoryPublish";
 
 type Release = NonNullable<RepositorySaveStatus["release"]>;
 /** Observes the configured deployment workflow for this exact commit; a Git push alone is not a release. */
@@ -11,25 +12,33 @@ export class HostedSaveReleases {
   async status(
     repository: HostedProjectRepository,
     commit: string,
+    publication?: RepositoryPublishTarget,
   ): Promise<Release> {
+    const destination = publication ? "production" : "staging";
+    const branch = publication?.branch || repository.branch;
     const unavailable: Release = {
       state: "unavailable",
-      message:
-        "Deployment status is unavailable. Your commit is saved; check staging or ask the owner to inspect the deployment.",
+      message: `Deployment status is unavailable. Your commit is saved; check ${destination} or ask the owner to inspect the deployment.`,
     };
     const repo = /^git@github\.com:([\w.-]+)\/([\w.-]+)\.git$/.exec(
       repository.repositoryUrl,
     );
-    const workflow = repository.saveToWebsite?.workflow;
+    const workflow = (publication || repository.saveToWebsite)?.workflow;
     if (!repo || !workflow)
       return {
         ...unavailable,
-        message:
-          "Deployment tracking is not configured. Open staging to check your saved changes.",
+        message: `Deployment tracking is not configured. Open ${destination} to check your saved changes.`,
       };
     for (const [key, value] of this.cache)
       if (value.expiresAt <= Date.now()) this.cache.delete(key);
-    const key = `${repository.projectId}:${commit}`;
+    const key = JSON.stringify([
+      repository.projectId,
+      repository.repositoryUrl,
+      branch,
+      workflow,
+      destination,
+      commit,
+    ]);
     if (this.cache.has(key)) return this.cache.get(key)!.value;
     let result = unavailable;
     try {
@@ -37,7 +46,7 @@ export class HostedSaveReleases {
         `https://api.github.com/repos/${repo[1]}/${repo[2]}/actions/workflows/${workflow}/runs`,
       );
       url.search = new URLSearchParams({
-        branch: repository.branch,
+        branch,
         head_sha: commit,
         event: "push",
         per_page: "5",
@@ -61,7 +70,7 @@ export class HostedSaveReleases {
         .filter(
           (run) =>
             run.head_sha === commit &&
-            run.head_branch === repository.branch &&
+            run.head_branch === branch &&
             run.event === "push" &&
             Number.isSafeInteger(run.id) &&
             run.id > 0,
@@ -81,20 +90,20 @@ export class HostedSaveReleases {
             run.conclusion === "success"
               ? {
                   state: "succeeded",
-                  message:
-                    "The staging deployment workflow succeeded. Open staging and check the page before publishing.",
+                  message: publication
+                    ? "The production deployment workflow succeeded. Open the live website and check your changes."
+                    : "The staging deployment workflow succeeded. Open staging and check the page before publishing.",
                   url,
                 }
               : {
                   state: "failed",
-                  message:
-                    "The staging deployment did not succeed. Your commit is saved; open the deployment details or ask the owner to check it.",
+                  message: `The ${destination} deployment did not succeed. Your commit is saved; open the deployment details or ask the owner to check it.`,
                   url,
                 };
         else if (run.status === "in_progress")
           result = {
             state: "building",
-            message: "Your saved changes are being deployed to staging.",
+            message: `Your saved changes are being deployed to ${destination}.`,
             url,
           };
         else if (
@@ -102,8 +111,7 @@ export class HostedSaveReleases {
         )
           result = {
             state: "queued",
-            message:
-              "Your saved changes are waiting for the staging deployment.",
+            message: `Your saved changes are waiting for the ${destination} deployment.`,
             url,
           };
       }

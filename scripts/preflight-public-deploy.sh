@@ -12,6 +12,25 @@ done
 [[ -w "$KAIZEN_APP_DIR" ]] || fail 'The SSH user cannot write the application checkout.'
 [[ -f "$KAIZEN_RELEASE_STORE/active.conf" ]] || fail "No initialised release store at $KAIZEN_RELEASE_STORE. Follow docs/website-releases.md."
 [[ -w "$KAIZEN_RELEASE_STORE" ]] || fail 'The SSH user cannot write the release store.'
+if [[ "${KAIZEN_DEPLOY_BRANCH:-}" == stage ]]; then
+  for variable in KAIZEN_PRODUCTION_APP_DIR KAIZEN_PRODUCTION_RELEASE_STORE KAIZEN_PRODUCTION_DOMAIN; do
+    [[ -n "${!variable:-}" ]] || fail "Staging needs $variable to protect the production destination."
+  done
+  for protected in "$KAIZEN_PRODUCTION_APP_DIR" "$KAIZEN_PRODUCTION_RELEASE_STORE"; do
+    [[ "$protected" == /* ]] || fail 'Production protection directories must be absolute.'
+    protected="$(realpath -m "$protected")"
+    [[ "$protected" != / ]] || fail 'Production protection needs dedicated directories.'
+    for candidate in "$KAIZEN_APP_DIR" "$KAIZEN_RELEASE_STORE"; do
+      candidate="$(realpath -e "$candidate")"
+      case "$candidate/" in "$protected/"*) fail 'Staging cannot use or contain a production directory.' ;; esac
+      case "$protected/" in "$candidate/"*) fail 'Staging cannot use or contain a production directory.' ;; esac
+    done
+  done
+  stage_domain="${KAIZEN_PUBLIC_DOMAIN,,}"
+  production_domain="${KAIZEN_PRODUCTION_DOMAIN,,}"
+  [[ "$stage_domain" =~ ^[a-z0-9][a-z0-9.-]+$ && "$production_domain" =~ ^[a-z0-9][a-z0-9.-]+$ ]] || fail 'Deployment domains must be hostnames.'
+  [[ "${stage_domain#www.}" != "${production_domain#www.}" ]] || fail 'Staging cannot use the production domain.'
+fi
 command -v node >/dev/null || fail 'Node.js is not installed on the destination host.'
 node -e 'if (Number(process.versions.node.split(".")[0]) < 22) process.exit(1)' || fail 'The destination needs Node.js 22 or later. Set VPS_NODE_BIN to its bin directory.'
 for executable in corepack git flock nginx; do

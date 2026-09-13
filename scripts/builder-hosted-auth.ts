@@ -145,18 +145,23 @@ export class HostedRepositoryAccess {
     token: string,
     actor: RepositoryActor,
     projectId: string,
+    capability: "edit" | "owner" | "publish" = "edit",
   ) {
     if (actor.expiresAt <= Date.now())
       throw new HostedHelperError(401, "Your sign-in expired. Sign in again.");
     const allowed = await this.request(
       "/rest/v1/rpc/builder_project_access",
       token,
-      { target: projectId, capability: "edit", actor: actor.id },
+      { target: projectId, capability, actor: actor.id },
     );
     if (allowed !== true)
       throw new HostedHelperError(
         403,
-        "Project access ended or the project is archived. Ask its owner to check your access.",
+        capability === "owner"
+          ? "Only a project owner can manage its website repository."
+          : capability === "publish"
+            ? "You need this project's publish permission to publish its website."
+            : "Project access ended or the project is archived. Ask its owner to check your access.",
       );
   }
 }

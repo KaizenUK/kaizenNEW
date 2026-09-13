@@ -4,6 +4,7 @@ import type { Workspace } from "../../shared/visualBuilder";
 import { storage } from "./storage";
 import { Card, Head, Notice } from "./shell";
 import { ProjectName } from "./activeProject";
+import RepositoryPublish from "./RepositoryPublish";
 
 const labels: Record<ReleaseStatus["status"], string> = {
   queued: "Queued",
@@ -109,6 +110,7 @@ export default function ReleasesPanel({
         </button>
       </Head>
       <div className="builder-page-body">
+        <RepositoryPublish />
         {!loaded && !error && (
           <p role="status" className="builder-hint">
             Loading release status…

@@ -293,8 +293,10 @@ test("a hosted project inspects, saves and applies original source through the r
       .locator(".builder-site-field-editor textarea")
       .fill("Keep my local recovery");
     await expect(
-      page.getByRole("alert").filter({ hasText: "Project access ended" }),
-    ).toBeVisible();
+      page.getByRole("alert").filter({
+        has: page.getByRole("button", { name: "Retry saving edits" }),
+      }),
+    ).toContainText("Project access ended");
     await expect(
       page.getByRole("button", { name: "Review my changes", exact: true }),
     ).toBeDisabled();

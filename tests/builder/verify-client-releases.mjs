@@ -30,6 +30,23 @@ const source = path.resolve(process.argv[2], "dist");
 await readFile(path.join(source, "about/index.html"));
 const binary = process.env.KAIZEN_NGINX_BINARY || "nginx",
   run = promisify(execFile);
+// Reload verification can finish while an older Nginx worker is still draining.
+// Subsequent observations must also require the expected bytes after that handoff.
+async function afterReload(observe) {
+  for (let attempt = 0; ; attempt++) {
+    try {
+      return await observe();
+    } catch (error) {
+      if (attempt === 4) throw error;
+      await new Promise((resolve) => setTimeout(resolve, 100));
+    }
+  }
+}
+const siteFetch = (url, options = {}) =>
+  fetch(url, {
+    ...options,
+    headers: { ...options.headers, Connection: "close" },
+  });
 const base = path.resolve("test-results/client-nginx-releases");
 await mkdir(base, { recursive: true });
 const root = await mkdtemp(path.join(base, "run-")),
@@ -242,6 +259,8 @@ try {
   await alias.body?.cancel();
   const bad = path.join(root, "bad-build");
   await cp(next, bad, { recursive: true });
+  // The asset bytes are unchanged. A draining previous worker must not mask the
+  // candidate's broken route: every response must carry the candidate identity.
   await writeFile(
     path.join(bad, "redirects.generated.conf"),
     `${builderNginxRules(redirects).join("\n")}\nlocation = "/assets/revision-two.css" {return 200 "wrong CSS";}\n`,
@@ -260,22 +279,30 @@ try {
       ),
     /previous release was restored and verified/,
   );
-  await checkLive(target.origin, release);
+  await afterReload(() => checkLive(target.origin, release));
   await clientPublicationAction(
     registered,
     "unpublish",
     { id: "unpublished" },
     adapters,
   );
-  assert.equal((await fetch(`${target.origin}/contact/`)).status, 404);
+  await afterReload(async () => {
+    const response = await siteFetch(`${target.origin}/contact/`);
+    await response.body?.cancel();
+    assert.equal(response.status, 404);
+  });
   await clientPublicationAction(
     registered,
     "rollback",
     { id: release.id },
     adapters,
   );
-  await checkLive(target.origin, release);
-  assert.equal((await fetch(`${target.origin}/contact/`)).status, 200);
+  await afterReload(async () => {
+    await checkLive(target.origin, release);
+    const response = await siteFetch(`${target.origin}/contact/`);
+    await response.body?.cancel();
+    assert.equal(response.status, 200);
+  });
   const { chromium, expect } = await import("@playwright/test");
   const context = await chromium.launchPersistentContext(
     path.join(root, "browser-profile"),
@@ -344,7 +371,7 @@ try {
       { id: media.id },
       adapters,
     );
-    const checked = await checkLive(target.origin, media);
+    const checked = await afterReload(() => checkLive(target.origin, media));
     assert.ok(
       media.files.some((file) => /assets\/.*-[a-f0-9]{16}\./.test(file.path)),
     );

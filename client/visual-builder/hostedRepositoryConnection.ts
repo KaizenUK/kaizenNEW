@@ -1,4 +1,5 @@
 import { validProjectId } from "../../shared/builderProjects";
+import { repositorySetupActions } from "../../shared/builderRepositorySettings";
 
 export type RepositorySession = {
   user: { id: string };
@@ -12,6 +13,7 @@ export type HostedRepositoryState = {
   error?: string;
   accountId?: string;
   canSaveToWebsite?: boolean;
+  canPublishWebsite?: boolean;
 };
 const ended =
   "The helper connection ended. An accepted operation may have finished; review the website before retrying a change.";
@@ -103,7 +105,12 @@ export class HostedRepositoryConnection {
       expiresAt: undefined,
       error,
       ...(clearRoot
-        ? { root: undefined, accountId: undefined, canSaveToWebsite: undefined }
+        ? {
+            root: undefined,
+            accountId: undefined,
+            canSaveToWebsite: undefined,
+            canPublishWebsite: undefined,
+          }
         : {}),
     });
   }
@@ -187,6 +194,7 @@ export class HostedRepositoryConnection {
         const session = await this.currentSession();
         if (version !== this.generation) throw new Error(ended);
         this.session = session;
+        this.update({ accountId: session.user.id });
         const result = await this.send(
           { action: "repository-connect" },
           session,
@@ -217,6 +225,7 @@ export class HostedRepositoryConnection {
           root: result.root,
           accountId: session.user.id,
           canSaveToWebsite: result.canSaveToWebsite === true,
+          canPublishWebsite: result.canPublishWebsite === true,
           expiresAt,
           error: undefined,
         });
@@ -247,11 +256,15 @@ export class HostedRepositoryConnection {
   async request(input: Record<string, unknown>): Promise<any> {
     const version = this.generation;
     const session = await this.currentSession();
+    const setup =
+      typeof input.action === "string" &&
+      repositorySetupActions.has(input.action);
     if (
       version !== this.generation ||
-      this.state.status !== "connected" ||
-      !this.state.expiresAt ||
-      this.state.expiresAt <= Date.now()
+      (!setup &&
+        (this.state.status !== "connected" ||
+          !this.state.expiresAt ||
+          this.state.expiresAt <= Date.now()))
     )
       throw new Error(
         this.state.error ||
@@ -270,7 +283,21 @@ export class HostedRepositoryConnection {
       throw new Error(
         "This operation belongs to another website folder. Reopen the intended project.",
       );
-    return this.send(input, session, version);
+    const result = await this.send(input, session, version);
+    if (
+      setup &&
+      input.action !== "repository-settings-read" &&
+      result?.connected === false
+    ) {
+      this.update({
+        canSaveToWebsite: undefined,
+        canPublishWebsite: undefined,
+      });
+      this.disconnect(
+        "Repository setup changed. Check the website folder before editing.",
+      );
+    }
+    return result;
   }
   private async send(
     input: Record<string, unknown>,

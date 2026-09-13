@@ -1,5 +1,6 @@
 import { afterEach, describe, expect, it } from "vitest";
 import { createServer, type Server } from "node:http";
+import { createHash } from "node:crypto";
 import {
   mkdtemp,
   mkdir,
@@ -17,6 +18,7 @@ import {
   checkLive,
   listReleases,
   verifyRelease,
+  nginxConfig,
 } from "../../scripts/kaizen-releases.mjs";
 
 const temporaryRoot = path.resolve("test-results/release-transactions");
@@ -41,7 +43,7 @@ async function fixture(edgeScripts = false) {
     old = path.join(root, "old"),
     next = path.join(root, "next");
   async function build(directory: string, label: string) {
-    for (const item of ["builder", "campaign", "_astro"])
+    for (const item of ["builder", "campaign", "about", "assets", "_astro"])
       await mkdir(path.join(directory, item), { recursive: true });
     await writeFile(
       path.join(directory, "index.html"),
@@ -54,6 +56,18 @@ async function fixture(edgeScripts = false) {
     await writeFile(
       path.join(directory, "campaign/index.html"),
       `<!doctype html><html data-kaizen-builder-page><p>CMS snapshot ${label}</p></html>`,
+    );
+    await writeFile(
+      path.join(directory, "about/index.html"),
+      `<!doctype html><title>About ${label}</title><link rel="stylesheet" href="/assets/site.css"><h1>Native ${label}</h1><img src="/assets/logo.svg" alt="Logo">`,
+    );
+    await writeFile(
+      path.join(directory, "assets/site.css"),
+      `/* ${label} */ h1 { color: blue; }`,
+    );
+    await writeFile(
+      path.join(directory, "assets/logo.svg"),
+      `<svg xmlns="http://www.w3.org/2000/svg"><title>${label}</title></svg>`,
     );
     await writeFile(
       path.join(directory, `_astro/${label}.hash.js`),
@@ -74,18 +88,26 @@ async function fixture(edgeScripts = false) {
   await stageRelease({ source: next, store, id: "new-release" });
   await initialiseStore({ store, id: original.id });
   let active = "",
-    wrongPage = false,
+    wrongPage: string | null = null,
     rejectNewConfig = false,
     failReload = false;
   const readConfig = () => readFile(path.join(store, "active.conf"), "utf8");
   const rootFrom = (config: string) => config.match(/^root "([^"]+)";/m)![1];
   active = rootFrom(await readConfig());
+  let activeIdentity = (await readConfig()).match(
+    /add_header X-Kaizen-Release "([^"]+)"/,
+  )?.[1];
+  const responseIdentities = new Map<string, string | null>();
   // Real HTTP + filesystem activation, with a small in-memory Nginx control adapter.
   // The adapter changes served roots only on reload, as Nginx does; Linux/Nginx smoke coverage lives in CI.
   const server = createServer(async (req, res) => {
     try {
       const url = new URL(req.url!, "http://localhost"),
         name = url.pathname;
+      const identity = responseIdentities.has(name)
+        ? responseIdentities.get(name)
+        : activeIdentity;
+      if (identity) res.setHeader("X-Kaizen-Release", identity);
       if (name === "/retired/") {
         const conf = await readFile(
           path.join(active, "..", "redirects.conf"),
@@ -96,7 +118,7 @@ async function fixture(edgeScripts = false) {
         });
         return res.end();
       }
-      if (wrongPage && active.includes("new-release") && name === "/campaign/")
+      if (wrongPage && active.includes("new-release") && name === wrongPage)
         return res.end("Different content behind the same marker");
       const file = name.startsWith("/_astro/")
         ? path.join(store, "immutable", name.slice(1))
@@ -140,6 +162,9 @@ async function fixture(edgeScripts = false) {
       if (failReload && (await readConfig()).includes("new-release"))
         throw new Error("Reload command failed");
       active = rootFrom(await readConfig());
+      activeIdentity = (await readConfig()).match(
+        /add_header X-Kaizen-Release "([^"]+)"/,
+      )?.[1];
     },
   };
   return {
@@ -150,12 +175,215 @@ async function fixture(edgeScripts = false) {
     origin,
     adapters,
     readConfig,
-    damagePage: () => (wrongPage = true),
+    responseIdentity: (pathname: string, identity: string | null) =>
+      responseIdentities.set(pathname, identity),
+    damagePage: (pathname = "/campaign/") => (wrongPage = pathname),
     rejectConfig: () => (rejectNewConfig = true),
     rejectReload: () => (failReload = true),
   };
 }
 describe("retained website releases", () => {
+  it.each([
+    ["/assets/site.css", "another-release"],
+    ["/assets/site.css", null],
+    ["/retired/", null],
+    ["/.well-known/kaizen-release.json", "another-release"],
+  ])(
+    "rejects correct bytes at %s when the response has release identity %s",
+    async (pathname, identity) => {
+      const f = await fixture();
+      f.responseIdentity(pathname!, identity);
+      const manifest = await verifyRelease(f.store, "old-release");
+      if (pathname === "/retired/")
+        manifest.redirectChecks = [
+          {
+            source: "/retired/",
+            destination: "/old/",
+            status: 301,
+            preserveQuery: true,
+          },
+        ];
+      await expect(checkLive(f.origin, manifest)).rejects.toThrow(
+        "different release or is missing its release identity",
+      );
+    },
+  );
+  it("does not allow removal of the response-identity requirement from a new retained manifest", async () => {
+    const f = await fixture();
+    const manifest = await verifyRelease(f.store, "new-release");
+    delete manifest.responseIdentity;
+    await writeFile(
+      path.join(f.store, "releases/new-release/release.json"),
+      JSON.stringify(manifest),
+    );
+    await expect(verifyRelease(f.store, "new-release")).rejects.toThrow(
+      "retained release marker does not match",
+    );
+  });
+  it("upgrades an intact legacy serving configuration and artifact without rewriting retained files", async () => {
+    const f = await fixture();
+    const manifest = await verifyRelease(f.store, "old-release");
+    const directory = path.join(f.store, "releases/old-release");
+    const markerPath = ".well-known/kaizen-release.json";
+    const marker = JSON.parse(
+      await readFile(path.join(directory, "site", markerPath), "utf8"),
+    );
+    delete marker.responseIdentity;
+    delete manifest.responseIdentity;
+    const bytes = Buffer.from(JSON.stringify(marker));
+    const file = manifest.files.find(
+      (entry: { path: string }) => entry.path === markerPath,
+    );
+    file.size = bytes.length;
+    file.sha256 = createHash("sha256").update(bytes).digest("hex");
+    await writeFile(path.join(directory, "site", markerPath), bytes);
+    const retained = JSON.stringify(manifest);
+    await writeFile(path.join(directory, "release.json"), retained);
+    await writeFile(
+      path.join(f.store, "active.conf"),
+      nginxConfig(f.store, "old-release", false, false),
+    );
+    await f.adapters.reload();
+    await checkLive(f.origin, await verifyRelease(f.store, "old-release"));
+    await activateRelease(
+      { store: f.store, id: "new-release", origin: f.origin },
+      f.adapters,
+    );
+    await checkLive(f.origin, await verifyRelease(f.store, "new-release"));
+    expect(await readFile(path.join(directory, "release.json"), "utf8")).toBe(
+      retained,
+    );
+  });
+  it("waits for a verified baseline after a graceful reload before changing the serving configuration", async () => {
+    const f = await fixture();
+    let oldChecks = 0;
+    let switched = false;
+    await activateRelease(
+      { store: f.store, id: "new-release", origin: f.origin },
+      {
+        ...f.adapters,
+        checkLive: async (origin: string, manifest: { id: string }) => {
+          if (manifest.id === "old-release" && ++oldChecks < 3) {
+            expect(switched).toBe(false);
+            throw new Error("A previous worker is still draining.");
+          }
+          await checkLive(origin, manifest);
+        },
+        beforeSwitch: () => {
+          expect(oldChecks).toBe(3);
+          switched = true;
+        },
+      },
+    );
+    expect(switched).toBe(true);
+  });
+  it("preserves the serving configuration when baseline identity never verifies", async () => {
+    const f = await fixture();
+    const before = await f.readConfig();
+    f.responseIdentity("/.well-known/kaizen-release.json", null);
+    await expect(
+      activateRelease(
+        { store: f.store, id: "new-release", origin: f.origin },
+        f.adapters,
+      ),
+    ).rejects.toThrow("missing its release identity");
+    expect(await f.readConfig()).toBe(before);
+    expect((await listReleases(f.store)).transactions).toHaveLength(0);
+  });
+  it.each([
+    "/about/",
+    "/assets/site.css",
+    "/assets/logo.svg",
+    "/_astro/new.hash.js",
+  ])(
+    "refuses wrong native website bytes at %s even when the marker and homepage match",
+    async (pathname) => {
+      const f = await fixture();
+      const manifest = await verifyRelease(f.store, "new-release");
+      expect(manifest.schemaVersion).toBe(3);
+      expect(
+        manifest.checks.some(
+          (check: { path: string }) => check.path === pathname,
+        ),
+      ).toBe(true);
+      f.damagePage(pathname);
+      await expect(
+        activateRelease(
+          { store: f.store, id: "new-release", origin: f.origin },
+          f.adapters,
+        ),
+      ).rejects.toThrow("does not match");
+      expect(await f.readConfig()).toContain("old-release");
+      await checkLive(f.origin, await verifyRelease(f.store, "old-release"));
+    },
+  );
+  it("requires every public-file check for new native releases while retaining legacy rollback compatibility", async () => {
+    const f = await fixture();
+    const file = path.join(f.store, "releases/new-release/release.json");
+    const manifest = await verifyRelease(f.store, "new-release");
+    manifest.checks = manifest.checks.filter(
+      (check: { path: string }) => check.path !== "/about/",
+    );
+    await writeFile(file, JSON.stringify(manifest));
+    await expect(verifyRelease(f.store, "new-release")).rejects.toThrow(
+      "every served file",
+    );
+    manifest.schemaVersion = 1;
+    manifest.checks = manifest.checks.filter((check: { path: string }) =>
+      ["/", "/builder/", "/campaign/"].includes(check.path),
+    );
+    await writeFile(file, JSON.stringify(manifest));
+    await checkLive(f.origin, await verifyRelease(f.store, "old-release"));
+    expect((await verifyRelease(f.store, "new-release")).schemaVersion).toBe(1);
+  });
+  it("keeps Apache/PHP configuration out of the Nginx public artifact without changing source output", async () => {
+    const f = await fixture();
+    const source = f.next;
+    const controls = [
+      ".htaccess",
+      "about/.htaccess",
+      ".user.ini",
+      "about/.user.ini",
+    ];
+    for (const file of controls)
+      await writeFile(path.join(source, file), "Require all denied\n");
+    const release = await stageRelease({
+      source,
+      store: f.store,
+      id: "apache-control",
+    });
+    for (const file of controls) {
+      expect(await readFile(path.join(source, file), "utf8")).toBe(
+        "Require all denied\n",
+      );
+      await expect(
+        readFile(path.join(f.store, "releases", release.id, "site", file)),
+      ).rejects.toMatchObject({ code: "ENOENT" });
+    }
+    await activateRelease(
+      { store: f.store, id: release.id, origin: f.origin },
+      f.adapters,
+    );
+    await checkLive(f.origin, release);
+  });
+  it("rejects a native release marker whose source commit was changed while keeping the release ID", async () => {
+    const f = await fixture();
+    const manifest = await verifyRelease(f.store, "old-release");
+    const file = path.join(
+      f.store,
+      "releases",
+      manifest.id,
+      "site/.well-known/kaizen-release.json",
+    );
+    const marker = JSON.parse(await readFile(file, "utf8"));
+    await writeFile(
+      file,
+      JSON.stringify({ ...marker, commit: "a".repeat(40) }),
+    );
+    await expect(checkLive(f.origin, manifest)).rejects.toThrow(
+      "served release marker does not match",
+    );
+  });
   it("requests unmodified HTML through an injecting edge while still rejecting wrong page bytes", async () => {
     const f = await fixture(true);
     expect(await (await fetch(`${f.origin}/builder/`)).text()).toContain(
@@ -211,7 +439,7 @@ describe("retained website releases", () => {
               await (await fetch(`${f.origin}/campaign/`)).text(),
             ).toContain("CMS snapshot new");
             expect(body.proof.artifactId).toBe("coordinated-release");
-            expect(body.proof.checkedResponses).toBe(4);
+            expect(body.proof.checkedResponses).toBe(8);
             if (outcome === "rejected")
               throw new Error("Database refused promotion");
             if (outcome === "uncertain") {

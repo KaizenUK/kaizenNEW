@@ -34,6 +34,24 @@ export class HostedWebsiteSaves {
         "Finish saving the earlier commit before applying another change. Your new editing draft is kept.",
       );
   }
+  assertCanReconfigure(projectId: string) {
+    if (
+      [...this.receipts.values()].some(
+        (receipt) =>
+          receipt.status.projectId === projectId &&
+          receipt.status.phase !== "saved",
+      )
+    )
+      throw new HostedHelperError(
+        409,
+        "Save the applied website changes before changing the repository settings.",
+      );
+  }
+  forget(projectId: string) {
+    this.assertCanReconfigure(projectId);
+    for (const [id, receipt] of this.receipts)
+      if (receipt.status.projectId === projectId) this.receipts.delete(id);
+  }
   remember(
     projectId: string,
     actor: RepositoryActor,

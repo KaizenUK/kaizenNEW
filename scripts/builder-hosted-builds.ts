@@ -28,6 +28,17 @@ export class HostedBuildQueue {
   private running = new Map<string, Promise<void>>();
   private closed = false;
   private scheduled = false;
+  assertIdle(projectId: string) {
+    if (
+      [...this.entries.values()].some(
+        (entry) => entry.value.projectId === projectId && active(entry.value),
+      )
+    )
+      throw new HostedHelperError(
+        409,
+        "Finish or cancel this project's builds before changing its repository settings.",
+      );
+  }
   constructor(
     private adapters: Adapters,
     private concurrency = 2,

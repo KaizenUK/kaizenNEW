@@ -9,6 +9,7 @@ import type {
 } from "../../shared/builderClientPublication";
 import { Card, Head, Notice, Pill } from "./shell";
 import { ProjectName } from "./activeProject";
+import RepositoryPublish from "./RepositoryPublish";
 
 /* Publishing a client project: choose a destination, review what goes live, then watch the release. */
 
@@ -171,6 +172,7 @@ export default function ClientPublications({
         </button>
       </Head>
       <div className="builder-page-body">
+        <RepositoryPublish />
         {!loaded && (
           <p role="status" className="builder-hint">
             Loading destinations and release history…

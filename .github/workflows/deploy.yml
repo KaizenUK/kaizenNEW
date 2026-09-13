@@ -116,9 +116,12 @@ jobs:
         uses: appleboy/ssh-action@v1.2.0
         env:
           KAIZEN_PREFLIGHT_ONLY: ${{ inputs.preflight_only || false }}
-          KAIZEN_APP_DIR: ${{ secrets.VPS_APP_DIR_STAGE }}
-          KAIZEN_RELEASE_STORE: ${{ secrets.VPS_RELEASES_DIR_STAGE }}
-          KAIZEN_PUBLIC_DOMAIN: ${{ secrets.VPS_PUBLIC_DOMAIN_STAGE || 'stage.kaizenweb.co.uk' }}
+          KAIZEN_APP_DIR: ${{ vars.KAIZEN_STAGE_APP_DIR || '/srv/kaizen/staging' }}
+          KAIZEN_RELEASE_STORE: ${{ vars.KAIZEN_STAGE_RELEASE_STORE || '/var/lib/kaizen/staging' }}
+          KAIZEN_PUBLIC_DOMAIN: ${{ vars.KAIZEN_STAGE_DOMAIN || 'stage.kaizenweb.co.uk' }}
+          KAIZEN_PRODUCTION_APP_DIR: ${{ secrets.VPS_APP_DIR_PROD || '/srv/kaizen/production' }}
+          KAIZEN_PRODUCTION_RELEASE_STORE: ${{ secrets.VPS_RELEASES_DIR_PROD || '/var/lib/kaizen/production' }}
+          KAIZEN_PRODUCTION_DOMAIN: ${{ secrets.VPS_PUBLIC_DOMAIN_PROD || 'kaizenweb.co.uk' }}
           KAIZEN_BUILDER_REQUEST_ID: ${{ github.event.client_payload.releaseId }}
           KAIZEN_DEPLOY_BRANCH: stage
           KAIZEN_DEPLOY_SHA: ${{ steps.metadata.outputs.sha }}
@@ -130,7 +133,7 @@ jobs:
           port: ${{ secrets.VPS_PORT || '22' }}
           fingerprint: ${{ secrets.VPS_HOST_FINGERPRINT }}
           command_timeout: 30m
-          envs: KAIZEN_APP_DIR,KAIZEN_RELEASE_STORE,KAIZEN_PUBLIC_DOMAIN,KAIZEN_DEPLOY_BRANCH,KAIZEN_DEPLOY_SHA,KAIZEN_RELEASE_ID,KAIZEN_BUILDER_REQUEST_ID,KAIZEN_NODE_BIN,KAIZEN_PREFLIGHT_ONLY,NODE_OPTIONS,PUBLIC_SANITY_PROJECT_ID,PUBLIC_SANITY_DATASET,SANITY_STUDIO_DATASET,SANITY_API_TOKEN,VITE_SUPABASE_URL,VITE_SUPABASE_ANON_KEY,VITE_BUILD_NUMBER,VITE_BUILD_SHA
+          envs: KAIZEN_APP_DIR,KAIZEN_RELEASE_STORE,KAIZEN_PUBLIC_DOMAIN,KAIZEN_PRODUCTION_APP_DIR,KAIZEN_PRODUCTION_RELEASE_STORE,KAIZEN_PRODUCTION_DOMAIN,KAIZEN_DEPLOY_BRANCH,KAIZEN_DEPLOY_SHA,KAIZEN_RELEASE_ID,KAIZEN_BUILDER_REQUEST_ID,KAIZEN_NODE_BIN,KAIZEN_PREFLIGHT_ONLY,NODE_OPTIONS,PUBLIC_SANITY_PROJECT_ID,PUBLIC_SANITY_DATASET,SANITY_STUDIO_DATASET,SANITY_API_TOKEN,VITE_SUPABASE_URL,VITE_SUPABASE_ANON_KEY,VITE_BUILD_NUMBER,VITE_BUILD_SHA
           script: |
             set -euo pipefail
             test -n "$KAIZEN_APP_DIR" || { echo "Missing VPS_APP_DIR for the selected target" >&2; exit 1; }
@@ -175,10 +178,10 @@ jobs:
             curl -fsS -H "Host: $KAIZEN_STUDIO_DOMAIN" http://127.0.0.1/studio/ >/dev/null
 
       - name: Copy retained stage Studio build to its separate host
-        if: steps.target.outputs.branch == 'stage' && github.event.client_payload.action != 'rollback' && inputs.preflight_only != true
+        if: steps.target.outputs.branch == 'stage' && vars.KAIZEN_STAGE_STUDIO_ENABLED == 'true' && github.event.client_payload.action != 'rollback' && inputs.preflight_only != true
         uses: appleboy/ssh-action@v1.2.0
         env:
-          KAIZEN_RELEASE_STORE: ${{ secrets.VPS_RELEASES_DIR_STAGE }}
+          KAIZEN_RELEASE_STORE: ${{ vars.KAIZEN_STAGE_RELEASE_STORE || '/var/lib/kaizen/staging' }}
           KAIZEN_STUDIO_ROOT: ${{ secrets.VPS_STUDIO_WEB_ROOT_STAGE }}
           KAIZEN_STUDIO_DOMAIN: ${{ secrets.VPS_STUDIO_DOMAIN_STAGE || 'studio-stage.kaizenweb.co.uk' }}
           KAIZEN_RELEASE_ID: gh-${{ github.run_id }}-${{ github.run_attempt }}

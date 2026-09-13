@@ -16,6 +16,7 @@ import path from "node:path";
 import { validProjectId } from "../shared/builderProjects";
 import { HostedHelperError, accountId } from "./builder-hosted-auth";
 import type { RepositorySaveTarget } from "../shared/builderRepositorySave";
+import type { RepositoryPublishTarget } from "../shared/builderRepositoryPublish";
 import type { RepositoryGitCommand } from "./builder-repository-git";
 
 const exec = promisify(execFile);
@@ -24,7 +25,11 @@ export type HostedProjectRepository = {
   repositoryUrl: string;
   branch: string;
   saveToWebsite?: RepositorySaveTarget;
+  publishToWebsite?: RepositoryPublishTarget;
 };
+export type HostedProjectConfiguration =
+  | HostedProjectRepository
+  | { projectId: string; setup: true };
 const configurationError = () =>
   new HostedHelperError(
     503,
@@ -34,7 +39,7 @@ const shellQuote = (value: string) => `'${value.replace(/'/g, `'"'"'`)}'`;
 
 export function hostedProjectRepositories(
   value: unknown,
-): HostedProjectRepository[] {
+): HostedProjectConfiguration[] {
   const input = value as { version?: unknown; projects?: unknown };
   if (
     input?.version !== 1 ||
@@ -44,6 +49,16 @@ export function hostedProjectRepositories(
     throw configurationError();
   const seen = new Set<string>();
   return input.projects.map((item: any) => {
+    if (item?.setup === true) {
+      if (
+        !validProjectId(item.projectId) ||
+        seen.has(item.projectId) ||
+        Object.keys(item).some((key) => !["projectId", "setup"].includes(key))
+      )
+        throw configurationError();
+      seen.add(item.projectId);
+      return { projectId: item.projectId, setup: true as const };
+    }
     if (
       !item ||
       typeof item.projectId !== "string" ||
@@ -99,11 +114,55 @@ export function hostedProjectRepositories(
         ...(save.workflow ? { workflow: save.workflow } : {}),
       };
     }
+    let publishToWebsite: RepositoryPublishTarget | undefined;
+    if (item.publishToWebsite !== undefined) {
+      const publish = item.publishToWebsite;
+      let url: URL;
+      try {
+        url = new URL(publish?.url);
+      } catch {
+        throw configurationError();
+      }
+      // Reuse the same branch grammar without admitting another configuration or deployment target.
+      hostedProjectRepositories({
+        version: 1,
+        projects: [
+          {
+            projectId: item.projectId,
+            repositoryUrl: item.repositoryUrl,
+            branch: publish.branch,
+          },
+        ],
+      });
+      if (
+        !saveToWebsite ||
+        publish.environment !== "production" ||
+        publish.branch === item.branch ||
+        url.protocol !== "https:" ||
+        url.origin !== publish.url ||
+        publish.url === saveToWebsite.url ||
+        (publish.workflow !== undefined &&
+          (!/^git@github\.com:/.test(item.repositoryUrl) ||
+            typeof publish.workflow !== "string" ||
+            !/^[a-zA-Z0-9_.-]+\.ya?ml$/.test(publish.workflow))) ||
+        Object.keys(publish).some(
+          (key) => !["environment", "branch", "url", "workflow"].includes(key),
+        )
+      )
+        throw configurationError();
+      publishToWebsite = {
+        environment: "production",
+        branch: publish.branch,
+        url: url.origin,
+        ...(publish.workflow ? { workflow: publish.workflow } : {}),
+      };
+    }
     return {
       projectId: item.projectId,
       repositoryUrl: item.repositoryUrl,
       branch: item.branch,
       ...(saveToWebsite ? { saveToWebsite } : {}),
+      ...(publishToWebsite ? { publishToWebsite } : {}),
     };
   });
 }
@@ -130,7 +189,7 @@ export async function unlinkedPath(value: string) {
     if (stat?.isSymbolicLink()) throw configurationError();
   }
 }
-async function privateDirectory(value: string) {
+export async function privateDirectory(value: string) {
   await unlinkedPath(value);
   await mkdir(value, { recursive: true, mode: 0o700 });
   const stat = await lstat(value);
@@ -142,7 +201,7 @@ async function privateDirectory(value: string) {
   )
     throw configurationError();
 }
-async function privateFile(value: string, maxBytes: number) {
+export async function privateFile(value: string, maxBytes: number) {
   await unlinkedPath(value);
   const stat = await lstat(value).catch(() => {
     throw configurationError();
@@ -160,11 +219,12 @@ async function privateFile(value: string, maxBytes: number) {
 
 export class HostedWebsiteFolders {
   private queue = new Map<string, { tail: Promise<unknown>; count: number }>();
-  private configured: Map<string, HostedProjectRepository>;
+  private configured: Map<string, HostedProjectConfiguration>;
+  private initial: Map<string, HostedProjectConfiguration>;
   constructor(
     readonly directory: string,
     readonly credentialsDirectory: string,
-    projects: HostedProjectRepository[],
+    projects: HostedProjectConfiguration[],
   ) {
     if (
       ![directory, credentialsDirectory].every(
@@ -188,10 +248,32 @@ export class HostedWebsiteFolders {
         item,
       ]),
     );
+    this.initial = new Map(this.configured);
+  }
+  admission(id: string) {
+    const value = this.initial.get(id);
+    if (!value)
+      throw new HostedHelperError(
+        404,
+        "This project needs the operator to enable hosted repository setup.",
+      );
+    return value;
+  }
+  installConfiguration(
+    id: string,
+    repository: HostedProjectRepository | undefined,
+  ) {
+    this.admission(id);
+    if (repository && repository.projectId !== id) throw configurationError();
+    const next = hostedProjectRepositories({
+      version: 1,
+      projects: [repository || { projectId: id, setup: true }],
+    })[0];
+    this.configured.set(id, next);
   }
   configuration(id: string) {
     const configured = this.configured.get(id);
-    if (!configured)
+    if (!configured || "setup" in configured)
       throw new HostedHelperError(
         404,
         "This project's hosted website folder is not configured yet.",
@@ -508,6 +590,9 @@ export class HostedWebsiteFolders {
     return this.git(await this.check(id), ["rev-parse", "HEAD"]);
   }
   async remoteHead(id: string) {
+    return this.remoteBranchHead(id, this.configuration(id).branch);
+  }
+  private async remoteBranchHead(id: string, branch: string) {
     const root = await this.check(id),
       configured = this.configuration(id);
     const value = await this.git(
@@ -517,14 +602,14 @@ export class HostedWebsiteFolders {
         "--refs",
         "--",
         configured.repositoryUrl,
-        `refs/heads/${configured.branch}`,
+        `refs/heads/${branch}`,
       ],
       await this.credentials(id),
     );
     const [sha, ref, ...extra] = value.split(/\s+/);
     if (
       !/^(?:[a-f0-9]{40}|[a-f0-9]{64})$/.test(sha) ||
-      ref !== `refs/heads/${configured.branch}` ||
+      ref !== `refs/heads/${branch}` ||
       extra.length
     )
       throw new HostedHelperError(
@@ -532,6 +617,138 @@ export class HostedWebsiteFolders {
         "The configured website branch is missing or changed. Ask the owner to check it before saving.",
       );
     return sha;
+  }
+  productionTarget(id: string) {
+    const target = this.configuration(id).publishToWebsite;
+    if (!target)
+      throw new HostedHelperError(
+        501,
+        "Production publishing needs the operator to configure this website's destination.",
+      );
+    return target;
+  }
+  async productionHead(id: string) {
+    return this.remoteBranchHead(id, this.productionTarget(id).branch);
+  }
+  async fetchProduction(id: string) {
+    const root = await this.check(id),
+      configured = this.configuration(id),
+      target = this.productionTarget(id);
+    // Fetch objects only; never move the website branch, checkout or user's index.
+    await this.git(
+      root,
+      [
+        "fetch",
+        "--no-tags",
+        "--no-write-fetch-head",
+        "--no-recurse-submodules",
+        "--",
+        configured.repositoryUrl,
+        `refs/heads/${target.branch}`,
+      ],
+      await this.credentials(id),
+    );
+  }
+  async publicationFiles(id: string, commit: string, base: string) {
+    await this.assertPublicationAncestry(id, commit, base);
+    const changed = await this.git(
+      await this.check(id),
+      [
+        "diff",
+        "--no-ext-diff",
+        "--no-textconv",
+        "--name-only",
+        "-z",
+        base,
+        commit,
+        "--",
+      ],
+      undefined,
+      true,
+    );
+    const files = changed.split("\0").filter(Boolean);
+    if (
+      files.length > 500 ||
+      files.some(
+        (file) => file.length > 4096 || /[\u0000-\u001f\u007f]/.test(file),
+      )
+    )
+      throw new HostedHelperError(
+        409,
+        "This publication is too large to review here. Ask the owner to reconcile the website branches.",
+      );
+    return files;
+  }
+  private async assertPublicationAncestry(
+    id: string,
+    commit: string,
+    base: string,
+  ) {
+    const root = await this.check(id);
+    if (
+      !/^(?:[a-f0-9]{40}|[a-f0-9]{64})$/.test(commit) ||
+      !/^(?:[a-f0-9]{40}|[a-f0-9]{64})$/.test(base) ||
+      (await this.head(id)) !== commit
+    )
+      throw new HostedHelperError(
+        409,
+        "The reviewed website revision changed. Review staging again before publishing.",
+      );
+    const pending = [commit],
+      seen = new Set<string>();
+    // Actual object parents are authoritative, including merge commits. Grafts/replacement refs cannot make a rewrite look safe.
+    while (pending.length && seen.size < 512) {
+      const current = pending.shift()!;
+      if (current === base) return;
+      if (seen.has(current)) continue;
+      seen.add(current);
+      const parents = (await this.git(root, ["cat-file", "commit", current]))
+        .split("\n\n", 1)[0]
+        .split("\n")
+        .filter((line) => line.startsWith("parent "))
+        .map((line) => line.slice(7));
+      if (
+        parents.some(
+          (parent) => !/^(?:[a-f0-9]{40}|[a-f0-9]{64})$/.test(parent),
+        )
+      )
+        break;
+      if (pending.length + parents.length > 1024) break;
+      pending.push(...parents);
+    }
+    throw new HostedHelperError(
+      409,
+      "Production has work outside this staging revision, or its history needs an operator check. Reconcile the branches before publishing; no history will be replaced.",
+    );
+  }
+  async pushPublication(
+    id: string,
+    commit: string,
+    base: string,
+    authorize: () => Promise<void>,
+  ) {
+    const target = this.productionTarget(id),
+      configured = this.configuration(id);
+    await this.assertPublicationAncestry(id, commit, base);
+    const root = await this.check(id),
+      ssh = await this.credentials(id);
+    // Check again after walking the real history, directly before launching the push.
+    await authorize();
+    await this.git(
+      root,
+      [
+        "push",
+        "--porcelain",
+        "--no-follow-tags",
+        "--no-signed",
+        "--recurse-submodules=no",
+        `--force-with-lease=refs/heads/${target.branch}:${base}`,
+        "--",
+        configured.repositoryUrl,
+        `${commit}:refs/heads/${target.branch}`,
+      ],
+      ssh,
+    );
   }
   async pushCommit(id: string, commit: string, base: string) {
     const root = await this.check(id),

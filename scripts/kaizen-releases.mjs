@@ -136,7 +136,7 @@ async function assertClientStore(root, client) {
       "Release identity does not match this store's client destination.",
     );
 }
-function clientFileChecks(files) {
+function publicFileChecks(files) {
   return files
     .filter((file) => file.path !== MARKER)
     .map((file) => ({
@@ -298,10 +298,20 @@ function nginxPath(value) {
     );
   return value.replaceAll("\\", "/");
 }
-export function nginxConfig(root, id, client = false) {
+export function nginxConfig(root, id, client = false, responseIdentity = true) {
   releaseId(id);
   const location = nginxPath(path.join(root, "releases", id));
-  return `# Kaizen managed release: ${id}\nroot "${location}/site";\ninclude "${location}/redirects.conf";\n# Keep immutable build assets available to visitors with an older page open.\nlocation ^~ /_astro/ { alias "${nginxPath(path.join(root, "immutable", "_astro"))}/"; }\n${client ? `location ^~ /assets/ { alias "${nginxPath(path.join(root, "immutable", "assets"))}/"; }\n` : ""}location = /.well-known/kaizen-release.json { add_header Cache-Control "no-store" always; try_files $uri =404; }\n`;
+  const identity = responseIdentity
+    ? `add_header X-Kaizen-Release "${id}" always; `
+    : "";
+  return `# Kaizen managed release: ${id}\nroot "${location}/site";\n${identity ? `${identity.trim()}\n` : ""}include "${location}/redirects.conf";\n# Keep immutable build assets available to visitors with an older page open.\nlocation ^~ /_astro/ { alias "${nginxPath(path.join(root, "immutable", "_astro"))}/"; }\n${client ? `location ^~ /assets/ { alias "${nginxPath(path.join(root, "immutable", "assets"))}/"; }\n` : ""}location = /.well-known/kaizen-release.json { ${identity}add_header Cache-Control "no-store" always; try_files $uri =404; }\n`;
+}
+function matchesManagedConfig(root, id, client, text) {
+  // Accept the exact retained format from before per-response identities were
+  // introduced, without accepting arbitrary edits to a serving configuration.
+  return [true, false].some(
+    (identity) => text === nginxConfig(root, id, client, identity),
+  );
 }
 async function currentConfig(root) {
   const file = path.join(root, "active.conf");
@@ -314,7 +324,10 @@ async function currentConfig(root) {
     throw new Error("The active release include must be a regular file.");
   const text = await readFile(file, "utf8"),
     id = text.match(/^# Kaizen managed release: ([\w-]+)\n/)?.[1];
-  if (!id || text !== nginxConfig(root, id, Boolean(await clientBinding(root))))
+  if (
+    !id ||
+    !matchesManagedConfig(root, id, Boolean(await clientBinding(root)), text)
+  )
     throw new Error(
       "The active release include was edited outside Kaizen. Inspect it before deploying.",
     );
@@ -409,6 +422,9 @@ export async function stageRelease({
     for (const name of names) {
       if (
         name === MARKER ||
+        // Apache/PHP control files belong to the source export, never Nginx's
+        // public artifact. Nginx correctly denies serving these dotfiles.
+        [".htaccess", ".user.ini"].includes(path.posix.basename(name)) ||
         ["redirects.generated.conf", "redirects.generated.json"].includes(name)
       )
         continue;
@@ -435,6 +451,7 @@ export async function stageRelease({
         releaseId: id,
         createdAt,
         commit,
+        responseIdentity: "release-id-v1",
         ...(client ? { client } : {}),
       }),
       { flag: "wx", mode: 0o644 },
@@ -449,24 +466,11 @@ export async function stageRelease({
       flag: "wx",
       mode: 0o644,
     });
-    const files = [],
-      checks = [];
+    const files = [];
     for (const name of await filesIn(path.join(temporary, "site"))) {
       const file = path.join(temporary, "site", name),
         stat = await lstat(file);
       files.push({ path: name, size: stat.size, sha256: await hashFile(file) });
-      if (name.endsWith("index.html")) {
-        const html = await readFile(file, "utf8");
-        if (
-          name === "index.html" ||
-          name === "builder/index.html" ||
-          html.includes("data-kaizen-builder-page")
-        )
-          checks.push({
-            path: name === "index.html" ? "/" : `/${name.slice(0, -10)}`,
-            sha256: files.at(-1).sha256,
-          });
-      }
     }
     const redirectMetadata =
       redirectRules !== null
@@ -482,13 +486,16 @@ export async function stageRelease({
     if (redirectMetadata.schemaVersion !== 1)
       throw new Error("Invalid redirect metadata version.");
     const manifest = {
-      schemaVersion: client ? 2 : 1,
+      // Version 3 adds complete served-file verification for native Kaizen sites.
+      // Retained version 1 releases keep their original checks for rollback.
+      schemaVersion: client ? 2 : 3,
+      responseIdentity: "release-id-v1",
       ...(client ? { client } : {}),
       id,
       createdAt,
       commit,
       files,
-      checks: client ? clientFileChecks(files) : checks,
+      checks: publicFileChecks(files),
       redirectHash: digest(redirects),
       redirectChecks: validateRedirectChecks(redirectMetadata.checks),
     };
@@ -524,7 +531,9 @@ export async function verifyRelease(store, id) {
     await readFile(path.join(directory, "release.json"), "utf8"),
   );
   if (
-    ![1, 2].includes(manifest.schemaVersion) ||
+    ![1, 2, 3].includes(manifest.schemaVersion) ||
+    (manifest.responseIdentity !== undefined &&
+      manifest.responseIdentity !== "release-id-v1") ||
     manifest.id !== id ||
     !Array.isArray(manifest.files) ||
     !Array.isArray(manifest.checks)
@@ -532,7 +541,7 @@ export async function verifyRelease(store, id) {
     throw new Error("Invalid release manifest.");
   if (manifest.schemaVersion === 2) validateClientDestination(manifest.client);
   else if (manifest.client)
-    throw new Error("Legacy manifests cannot claim a client destination.");
+    throw new Error("This release manifest cannot claim a client destination.");
   await assertClientStore(root, manifest.client);
   validateRedirectChecks(manifest.redirectChecks);
   const actual = await filesIn(path.join(directory, "site"));
@@ -557,19 +566,25 @@ export async function verifyRelease(store, id) {
   );
   if (
     marker.releaseId !== id ||
+    marker.responseIdentity !== manifest.responseIdentity ||
     (manifest.client &&
       (!sameClient(marker.client, manifest.client) ||
         marker.schemaVersion !== 2))
   )
     throw new Error("The retained release marker does not match.");
-  if (manifest.client) {
+  if (manifest.schemaVersion !== 1) {
     if (
       JSON.stringify(manifest.checks) !==
-      JSON.stringify(clientFileChecks(manifest.files))
+      JSON.stringify(publicFileChecks(manifest.files))
     )
-      throw new Error("Client releases must verify every served file.");
+      throw new Error("Releases must verify every served file.");
     if (!manifest.checks.some((check) => check.path === "/"))
-      throw new Error("Client release has no homepage check.");
+      throw new Error("The release has no homepage check.");
+    if (
+      !manifest.client &&
+      !manifest.checks.some((check) => check.path === "/builder/")
+    )
+      throw new Error("The release is missing its builder check.");
     return manifest;
   }
   for (const check of manifest.checks) {
@@ -705,6 +720,17 @@ export async function checkLive(
     throw new Error(
       "Use an HTTPS site origin, or loopback HTTP for local tests.",
     );
+  async function requireIdentity(response, pathname) {
+    if (
+      manifest.responseIdentity === "release-id-v1" &&
+      response.headers.get("x-kaizen-release") !== manifest.id
+    ) {
+      await response.body?.cancel();
+      throw new Error(
+        `The live response for ${pathname} came from a different release or is missing its release identity.`,
+      );
+    }
+  }
   async function get(pathname) {
     const url = new URL(pathname, base);
     url.searchParams.set("kaizen-release-check", randomUUID());
@@ -720,6 +746,7 @@ export async function checkLive(
       },
       signal: AbortSignal.timeout(timeout),
     });
+    await requireIdentity(response, pathname);
     if (!response.ok)
       throw new Error(
         `Live check failed for ${pathname}: HTTP ${response.status}.`,
@@ -729,12 +756,12 @@ export async function checkLive(
   const markerBytes = await get(`/${MARKER}`);
   const marker = JSON.parse(new TextDecoder().decode(markerBytes));
   if (
-    manifest.client &&
+    manifest.schemaVersion !== 1 &&
     digest(markerBytes) !==
       manifest.files.find((file) => file.path === MARKER)?.sha256
   )
     throw new Error(
-      "The served client release marker does not match the retained artifact.",
+      "The served release marker does not match the retained artifact.",
     );
   if (
     marker.releaseId !== manifest.id ||
@@ -769,6 +796,7 @@ export async function checkLive(
           },
           signal: AbortSignal.timeout(timeout),
         });
+        await requireIdentity(response, check.source);
         const location = response.headers.get("location");
         await response.body?.cancel();
         if (
@@ -830,7 +858,10 @@ export async function activateRelease(
       throw new Error(
         "Cannot activate a release from another client destination.",
       );
-    await health(origin, old); // Do not replace an unverified baseline.
+    // A previous successful reload may still have an older worker draining.
+    // Require the complete baseline proof before any mutation, with the same
+    // bounded observation used for activation and restoration.
+    await observe(old);
     await installImmutableAssets(root, manifest);
     const next = nginxConfig(root, id, Boolean(manifest.client)),
       file = path.join(root, "active.conf"),
@@ -927,7 +958,7 @@ export async function reconcileRelease(
       const manifest = await verifyRelease(root, restoreId || id);
       if (
         restoreId &&
-        selected.text !== nginxConfig(root, id, Boolean(manifest.client))
+        !matchesManagedConfig(root, id, Boolean(manifest.client), selected.text)
       )
         throw new Error(
           "The active include was edited externally; recovery has preserved it.",
