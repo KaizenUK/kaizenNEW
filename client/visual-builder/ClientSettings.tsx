@@ -14,10 +14,12 @@ export default function ClientSettings({
   workspace,
   onChange,
   children,
+  viewSettings,
 }: {
   workspace: Workspace;
   onChange: (value: Workspace) => void;
   children?: React.ReactNode;
+  viewSettings?: React.ReactNode;
 }) {
   const [draft, setDraft] = useState<Settings>(
     () => workspace.settings?.value || defaultClientSettings(),
@@ -55,6 +57,7 @@ export default function ClientSettings({
         title="Settings"
         description="Public details used when this website is exported or connected to services. Saving here never publishes anything."
       />
+      {viewSettings && <div className="builder-page-body">{viewSettings}</div>}
       <form
         className="builder-page-body"
         onSubmit={(event) => {

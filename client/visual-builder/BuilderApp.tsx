@@ -49,6 +49,7 @@ import { ProjectName, useProjectCapabilities } from "./activeProject";
 import PagesView, { pageStatus } from "./PagesView";
 import ProjectsView, { ProjectIdentity } from "./ProjectsView";
 import BuilderAuth from "./BuilderAuth";
+import { BuilderViewProvider, BuilderViewSettings } from "./viewMode";
 import RepositoryPanel from "./RepositoryPanel";
 import HostedRepository from "./HostedRepository";
 import { repositoryConnection } from "./repositoryConnection";
@@ -132,11 +133,13 @@ const errorMessage = (error: unknown) =>
 export default function BuilderApp(props: { inventory?: PageInventory } = {}) {
   return (
     <BuilderAuth>
-      <HostedMediaProvider>
-        <ProjectForms>
-          <BuilderWorkspace {...props} />
-        </ProjectForms>
-      </HostedMediaProvider>
+      <BuilderViewProvider>
+        <HostedMediaProvider>
+          <ProjectForms>
+            <BuilderWorkspace {...props} />
+          </ProjectForms>
+        </HostedMediaProvider>
+      </BuilderViewProvider>
     </BuilderAuth>
   );
 }
@@ -477,7 +480,11 @@ function BuilderWorkspace({ inventory }: { inventory?: PageInventory } = {}) {
       {current === "settings" &&
         (workspace && !capabilities.legacyWorkspace ? (
           <>
-            <ClientSettings workspace={workspace} onChange={replaceWorkspace}>
+            <ClientSettings
+              workspace={workspace}
+              onChange={replaceWorkspace}
+              viewSettings={<BuilderViewSettings />}
+            >
               <ProblemReport />
             </ClientSettings>
             <div className="builder-page-body">
@@ -492,6 +499,7 @@ function BuilderWorkspace({ inventory }: { inventory?: PageInventory } = {}) {
               description="Manage this website and get help."
             />
             <div className="builder-page-body">
+              <BuilderViewSettings />
               <Notice>
                 {workspace
                   ? "Website connections are managed by the site owner."

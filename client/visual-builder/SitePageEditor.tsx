@@ -39,6 +39,7 @@ import type { SitePage } from "./SitePages";
 import type { RepositoryGitStatus } from "../../scripts/builder-repository-git";
 import AssetLibrary from "./AssetLibrary";
 import RepositorySave from "./RepositorySave";
+import { useBuilderViewMode } from "./viewMode";
 
 export default function SitePageEditor({
   page,
@@ -57,6 +58,7 @@ export default function SitePageEditor({
   onToggleTheme: () => void;
   inventory?: PageInventory;
 }) {
+  const developer = useBuilderViewMode().mode === "developer";
   const [inspection, setInspection] = useState<SourceInspection>(),
     [error, setError] = useState(""),
     [notice, setNotice] = useState("");
@@ -671,19 +673,28 @@ export default function SitePageEditor({
               </h2>
               {build.plan && (
                 <>
-                  <p>
-                    <code>{build.plan.command}</code>
-                  </p>
-                  <dl>
-                    {build.plan.scripts.map((script) => (
-                      <React.Fragment key={script.name}>
-                        <dt>{script.name}</dt>
-                        <dd>
-                          <code>{script.command}</code>
-                        </dd>
-                      </React.Fragment>
-                    ))}
-                  </dl>
+                  {developer ? (
+                    <>
+                      <p>
+                        <code>{build.plan.command}</code>
+                      </p>
+                      <dl>
+                        {build.plan.scripts.map((script) => (
+                          <React.Fragment key={script.name}>
+                            <dt>{script.name}</dt>
+                            <dd>
+                              <code>{script.command}</code>
+                            </dd>
+                          </React.Fragment>
+                        ))}
+                      </dl>
+                    </>
+                  ) : (
+                    <p>
+                      Build the website preview so you can edit on the page.
+                      Your website stays unchanged.
+                    </p>
+                  )}
                   <button
                     type="button"
                     className="builder-primary"
@@ -726,13 +737,17 @@ export default function SitePageEditor({
               )}
               {build.error && (
                 <>
-                  <Notice tone="error">{build.error}</Notice>
+                  <Notice tone="error">
+                    {developer
+                      ? build.error
+                      : "The preview could not be built. Your edits are kept. Try again, or ask the website owner for help."}
+                  </Notice>
                   <button type="button" onClick={build.retry}>
                     Try building again
                   </button>
                 </>
               )}
-              {build.job && (
+              {developer && build.job && (
                 <details>
                   <summary>Build log</summary>
                   <pre>{build.job.log || "Waiting for output…"}</pre>

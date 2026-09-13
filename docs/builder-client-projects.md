@@ -124,7 +124,7 @@ Run `node tests/builder/verify-hosted-projects.mjs` against the intended test de
 
 Open the client project, connect the helper to its website folder, and return to **Pages**. **Pages from the website's code** lists the inspected routes. **Edit** opens the original page inside the editor, with Outline, Assets and Sections alongside it. The older existing-page inventory opens the same editor.
 
-On the first preview build, check the displayed command and scripts and click **Build**. Later builds with the same scripts in the same helper connection reuse that consent; a changed command or a new connection asks again. Builds retain the previous snapshot while the updated preview is prepared. Nothing is installed or published by this flow.
+On the first preview build, click **Build**. Developer view shows the command and scripts to review first; client view explains the preview action. Later builds with the same scripts in the same helper connection reuse that consent; a changed command or a new connection asks again. Builds retain the previous snapshot while the updated preview is prepared. Nothing is installed or published by this flow.
 
 Double-click a safely matched text element, or focus it and press Enter, to type on the page. Clicking a link selects its text and address. **Replace image** uses the project asset library; the file proposal includes the copied image and original source edits. Section arrows and drag work only when the rendered group matches the inspected source; the Sections panel remains the fallback. Grey content is managed by code or a CMS, or cannot be matched safely. Imported shared-file changes affect every page using that file. General design changes to unregistered source components remain outside this editor's controls.
 
@@ -134,6 +134,16 @@ After apply, **Commit these changes** records only the files belonging to that a
 
 Chromium's HTTPS-to-loopback frame needs the browser's Local Network Access permission in addition to helper folder approval. A failed frame offers the window preview and the local editor. The local editor fallback explicitly selects local mode on the loopback development server, even when that server also has hosted settings configured. See [current browser evidence](existing-site-visual-editing-plan.md#user-confirmed-hosted-preview--12-september-2026): Sean confirmed that the live builder completed Build and displayed the project from his connected checkout. The earlier Codex in-app blank frame is historical diagnostic evidence. The actual local fallback also completed a reviewed text apply/rebuild/restore; the automated suite covers the editing and commit operations. Firefox/Safari checks were waived, and any future Retry failure will be handled as a bug fix at Sean's request. These statements do not claim that he manually repeated every editing operation.
 
+
+### Client and developer views
+
+Editors use **Client view**, whether or not they can publish. Owners start in **Developer view** and can turn off **Settings → Your view → Show developer details** to see the simpler presentation. The local developer helper starts with developer details and offers the same switch. The choice is remembered separately for each account and website in the current browser; it does not change anyone's role or publishing permission. If browser storage is unavailable, the switch still works for the current visit and says it could not remember the choice.
+
+Client view labels the existing-page list **Website pages** and omits code-ownership labels for supported pages. Pages requiring a developer retain that notice. Preview builds show the action in plain language, with a helpful failure message and explicit retry. Developer view retains command/script review, detailed errors and build logs. Both views use the same real canvas, saved drafts and reviewed source operations.
+
+Project access is checked using the signed-in account, independently of the shared project-list cache. Sign-out, account changes and newer membership reads discard earlier responses; unknown or unavailable access uses client view. Returning focus to the builder refreshes the view's membership check. A stored developer preference cannot give an editor owner controls. The server continues to enforce every actual edit and publication permission.
+
+This is **L2-T2**. The complete removal of file, branch and commit details from client view is the following **L3-T1** task, with status wording in L3-T2. The [launch task map](builder-launch-plan.md#implementation-log--l2) records local evidence and the pending L2 milestone deployment.
 
 ### Invitations and first sign-in
 

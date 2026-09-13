@@ -5,6 +5,7 @@ import { repositoryConnection } from "./repositoryConnection";
 import { storage } from "./storage";
 import { activeProjectId } from "./projectStorage";
 import { Card, Notice, Pill } from "./shell";
+import { useBuilderViewMode } from "./viewMode";
 
 export type SitePage = {
   root: string;
@@ -32,6 +33,8 @@ export default function SitePages({
   onOpen: (page: SitePage) => void;
   onConnect: () => void;
 }) {
+  const { mode } = useBuilderViewMode();
+  const developer = mode === "developer";
   const connection = useSyncExternalStore(
     repositoryConnection.subscribe,
     repositoryConnection.snapshot,
@@ -93,7 +96,10 @@ export default function SitePages({
         `${r.title} ${r.path}`.toLowerCase().includes(query.toLowerCase()),
       ) || [];
   return (
-    <Card title="Pages from the website's code" ariaLabel="Website pages">
+    <Card
+      title={developer ? "Pages from the website's code" : "Website pages"}
+      ariaLabel="Website pages"
+    >
       {connection.status !== "connected" && (
         <p>
           {connection.status === "connecting"
@@ -127,15 +133,20 @@ export default function SitePages({
                   <strong>{row.title}</strong>
                   <small>{row.path}</small>
                 </div>
-                <Pill
-                  tone={row.ownership === "code-managed" ? "primary" : "grey"}
-                >
-                  {row.ownership === "builder-editable"
-                    ? "Builder page"
-                    : row.ownership === "code-managed"
-                      ? "Managed in code"
-                      : "Needs a developer"}
-                </Pill>
+                {(developer ||
+                  !["builder-editable", "code-managed"].includes(
+                    row.ownership,
+                  )) && (
+                  <Pill
+                    tone={row.ownership === "code-managed" ? "primary" : "grey"}
+                  >
+                    {row.ownership === "builder-editable"
+                      ? "Builder page"
+                      : row.ownership === "code-managed"
+                        ? "Managed in code"
+                        : "Needs a developer"}
+                  </Pill>
+                )}
                 <button
                   type="button"
                   aria-label={`Edit existing ${row.path}`}
