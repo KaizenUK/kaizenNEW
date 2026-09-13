@@ -8,6 +8,8 @@ import type { HostedRepositoryState } from "./hostedRepositoryConnection";
 import type { RepositorySaveStatus } from "../../shared/builderRepositorySave";
 import { repositoryConnection } from "./repositoryConnection";
 import { storage } from "./storage";
+import { Pill } from "./shell";
+import { builderStatuses, repositorySaveState } from "./builderStatus";
 import { projectUrl } from "./projectStorage";
 import { useBuilderViewMode } from "./viewMode";
 import {
@@ -23,6 +25,7 @@ type Props = {
   disabled?: boolean;
   hasUnappliedChanges?: boolean;
   onCommit?: (commit: string) => void;
+  onStatusChange?: () => void;
 };
 export default function RepositorySave(props: Props) {
   const connection = useSyncExternalStore(
@@ -51,6 +54,7 @@ function SaveControls({
   disabled = false,
   hasUnappliedChanges = false,
   onCommit,
+  onStatusChange,
   connection,
 }: Props & { connection: HostedRepositoryState }) {
   const developer = useBuilderViewMode().mode === "developer";
@@ -64,6 +68,16 @@ function SaveControls({
   useEffect(() => {
     if (status?.commit) onCommit?.(status.commit);
   }, [status?.commit, onCommit]);
+  useEffect(() => {
+    onStatusChange?.();
+  }, [
+    status?.phase,
+    status?.commit,
+    status?.release?.state,
+    status?.delivery,
+    onStatusChange,
+  ]);
+  const state = builderStatuses[repositorySaveState(status)];
   const query = {
     action: "repository-save-status",
     root,
@@ -82,8 +96,7 @@ function SaveControls({
         if (
           next &&
           (next.phase === "committed" ||
-            (next.phase === "saved" &&
-              !["succeeded", "failed"].includes(next.release?.state)))
+            (next.phase === "saved" && next.release?.state !== "failed"))
         )
           timer = setTimeout(read, 10000);
       } catch (error) {
@@ -101,6 +114,7 @@ function SaveControls({
     generation.current++;
     try {
       setStatus(await storage.repository(query));
+      onStatusChange?.();
       setError("");
       setRefresh((value) => value + 1);
     } catch (error) {
@@ -113,6 +127,11 @@ function SaveControls({
     <section className="builder-repository-save" aria-label="Save to website">
       <div>
         <strong>Save to website</strong>
+        {status && (
+          <Pill tone={state.tone} title={state.detail}>
+            {state.label}
+          </Pill>
+        )}
         {status ? (
           <p role="status">
             {developer ? status.message : clientSaveMessage(status)}
@@ -144,7 +163,7 @@ function SaveControls({
           <p role="status" aria-label="Staging deployment">
             {developer
               ? status.release.message
-              : clientDeploymentMessage(status.release.state)}
+              : clientDeploymentMessage(status.release.state, status.delivery)}
           </p>
         )}
       </div>

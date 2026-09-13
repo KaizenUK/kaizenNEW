@@ -50,6 +50,7 @@ const actions = new Set([
   "repository-apply",
   "repository-save",
   "repository-save-status",
+  "repository-website-status",
   "repository-build-review",
   "repository-build-start",
   "repository-build-status",
@@ -382,6 +383,11 @@ export class HostedHelperService {
         return operations.repositories.inspectSourcePage(root, input.route);
       case "repository-source-draft-read":
         return (await drafts()).read(root, input.route);
+      case "repository-website-status":
+        return this.saves.websiteStatus(
+          projectId,
+          (await (await drafts()).list(root)).map((draft) => draft.route),
+        );
       case "repository-source-draft-save":
         await this.folders.disk.check(
           projectId,

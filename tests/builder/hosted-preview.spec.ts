@@ -123,7 +123,7 @@ test("a real HTTPS hosted editor frames private Astro, React, styles, fonts and 
     await heading.fill("Edited on the private HTTPS page");
     await heading.press("Tab");
     await expect(page.getByLabel("Source editing draft")).toContainText(
-      "Edits saved",
+      "Saved",
     );
     await page
       .getByRole("button", { name: "Review my changes", exact: true })

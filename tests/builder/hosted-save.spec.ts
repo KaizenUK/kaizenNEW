@@ -257,10 +257,11 @@ for (const view of ["developer", "client"] as const) {
           /src\/|[Bb]ranch|[Cc]ommit|repository|[Pp]ush|files changed/,
         );
       }
+      fixture.publication.stageCommit = commit;
       fixture.deployment.status = "completed";
       fixture.deployment.conclusion = "success";
       await expect(savePanel.getByLabel("Staging deployment")).toContainText(
-        view === "developer" ? "workflow succeeded" : "finished updating",
+        view === "developer" ? "workflow succeeded" : "On staging",
         { timeout: 25000 },
       );
       if (view === "developer") {

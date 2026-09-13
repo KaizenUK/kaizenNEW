@@ -105,7 +105,7 @@ test("M2: an independently built Astro React island hydrates inside the editable
     await title.dblclick();
     await title.fill("Our edited React studio");
     await expect(page.getByLabel("Source editing draft")).toContainText(
-      "Edits saved",
+      "Saved",
     );
     await frame.getByRole("heading", { name: "Registered panel" }).click();
     await expect(
@@ -133,7 +133,7 @@ test("M2: an independently built Astro React island hydrates inside the editable
       .getByRole("button", { name: "Apply changes to the folder", exact: true })
       .click();
     await expect(page.getByLabel("Source editing draft")).toContainText(
-      "No changes yet",
+      "Saved",
     );
     await expect(
       page.locator('iframe[title="Website canvas"]'),

@@ -16,6 +16,7 @@ export function clientSaveMessage(status: RepositorySaveStatus) {
 
 export function clientDeploymentMessage(
   state: NonNullable<RepositorySaveStatus["release"]>["state"],
+  delivery?: RepositorySaveStatus["delivery"],
 ) {
   switch (state) {
     case "waiting":
@@ -25,7 +26,11 @@ export function clientDeploymentMessage(
     case "building":
       return "Staging is updating.";
     case "succeeded":
-      return "Staging finished updating. Open staging to check your changes.";
+      return delivery === "reported"
+        ? "On staging. Open staging to check your changes."
+        : delivery === "waiting"
+          ? "The update finished, but staging is reporting a different version. Check the saved state again."
+          : "The update finished, but staging could not be checked. Open staging, or check the saved state again.";
     case "failed":
       return "Staging could not be updated. Your saved changes are kept. Ask the website owner for help.";
     case "unavailable":

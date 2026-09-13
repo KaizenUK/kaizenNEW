@@ -34,10 +34,27 @@ For a static local publication check, set `BUILDER_LOCAL_BUILD=1` for a build. N
 The builder chrome follows the Unity Dashboard Kit (Poppins headings, Inter body, purple `#6C5DD3` primary, 24px cards). The tokens live at the top of `client/visual-builder/builder.css`; the shell components are in `client/visual-builder/shell.tsx`.
 
 - A permanent left sidebar reaches Pages, Site design, Assets, Releases (shared workspace only, with a badge counting pages that have unpublished changes), URL redirects, Private previews, Project backups and Existing site pages. The footer toggles dark mode (remembered per browser) and links back to the live site.
-- **Pages** lists every page with a live thumbnail, a status pill (Draft, Published, or Changes to publish, judged from edit times after the last publication), filter tabs, search and sorting. The purple banner creates a blank page or the starter template.
+- **Pages** lists every page with a live thumbnail, a status pill using the shared saved/publication language, filter tabs, search and sorting. **Saved** includes both new pages and newer saved changes; **Live** includes pages at their current production baseline. The purple banner creates a blank page or the starter template.
 - **Assets** opens the same library that the editor shows in its Assets panel, so packs can be managed without opening a page.
 - The editor keeps undo/redo, device preview, the page URL, save status, Save, Preview, Export ZIP and Publish in one top bar. The left panel offers Blocks (searchable, ready-made sections first), Assets and Layers; the right panel offers Design, Page, Styles and Revisions. Selected blocks can be copied, pasted, duplicated or deleted from the inspector header.
 - **Publish** opens a check first: a search-result preview and a short list covering title, URL, shared header/footer, search description and indexing. Publishing proceeds from that dialog; nothing goes live from the top bar directly.
+
+## Saved and published states
+
+Pages, the editor header/footer and Releases use these labels:
+
+| Label | Meaning |
+| --- | --- |
+| **Draft** | Current edits have not yet been saved. Keep the editor open while saving, or when saving needs attention. |
+| **Saved** | Edits are kept. They may still need review, apply or deployment. Saving does not publish them. |
+| **On staging** | The observed version is on staging. Check it before publishing. |
+| **Live** | The observed version is on the production website. |
+
+A new edit returns to Draft, then Saved after acknowledgement. A saved private source draft stays Saved even when an older version of that page is live. Builder-page badges compare saved edits against the verified production snapshot; when a staging baseline is unavailable they conservatively stay Saved. Local preview publication alone does not establish a public release.
+
+For hosted source pages, destination labels require a clean website folder, a successful deployment workflow for its exact version, and a matching destination release marker. Unrelated folder edits keep this whole-folder observation at Saved; a Save receipt can separately confirm that its particular changes reached staging. Unavailable tracking stays Saved. The marker identifies a version; it does not replace checking the rendered page.
+
+Releases also show progress and exceptions: Queued, Building, Updating website, Checking website, Update failed, Previous release restored and Recovery needs attention. **Earlier release** means a verified release has been replaced. **Offline** means an active unpublish operation took that destination offline. Staging releases never use the Live badge.
 
 ## Editing and whole-site design
 
@@ -173,7 +190,7 @@ The public frontend is release `gh-34712289074-1` from `9aca128`; `d7d9359` adds
 
 ## Existing-site canvas
 
-The launch branch uses the hosted helper by default for a signed-in project. It connects to the website folder configured for that project; a saved folder preference from this computer is ignored. **Export & handoff → Hosted helper** shows the connection and offers **Refresh connection**. L1-T1–T3 provide the client transport, server working-copy actions and queued builds. Protected preview delivery, Save to website and Kaizen setup follow in L1-T4–T6. Do not deploy this default until the full journey is ready. The current production acceptance above still describes the paired local helper.
+Hosted projects connect to their configured website folder automatically after sign-in. **Export & handoff → Hosted helper** shows the connection and offers **Refresh connection**. The hosted service provides source editing, saved drafts, queued builds, protected previews, Save to website and explicit publication through Releases. Developers can still choose the approved local helper. See the launch task map for the distinction between currently deployed milestones and newer launch-branch work.
 
 Hosted builds show their queue position, progress and bounded build log. **Cancel build** removes a waiting job or stops a running one and restores its previous output before reporting cancellation. You can keep saving editing drafts while a build runs; applying changes to the website folder waits until it finishes. Reopening the page resumes an active job and preserves a failed or cancelled result. Choose **Try building again** or **Build again** when ready to retry. Jobs and logs expire when the helper restarts. A finished build only offers a preview when the protected preview service has supplied one.
 

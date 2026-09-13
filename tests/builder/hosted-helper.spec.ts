@@ -57,7 +57,7 @@ test("the hosted editor follows queued builds, keeps drafts, shows failures and 
     const input = page.locator(".builder-site-field-editor textarea");
     await input.fill("Keep these edits while building");
     await expect(page.getByLabel("Source editing draft")).toContainText(
-      "Edits saved",
+      "Saved",
     );
     await page.getByRole("button", { name: "Build", exact: true }).click();
     await expect(
@@ -162,7 +162,7 @@ test("the hosted editor follows queued builds, keeps drafts, shows failures and 
       .click();
     await expect(input).toHaveValue("Keep these edits while building");
     await expect(page.getByLabel("Source editing draft")).toContainText(
-      "Restored your saved edits",
+      "Saved",
     );
     await expect(
       page.getByRole("button", { name: "Review my changes", exact: true }),
@@ -231,7 +231,7 @@ test("a hosted project inspects, saves and applies original source through the r
     const input = page.locator(".builder-site-field-editor textarea");
     await input.fill("Saved through the hosted service");
     await expect(page.getByLabel("Source editing draft")).toContainText(
-      "Edits saved",
+      "Saved",
     );
     for (const width of [1440, 390]) {
       await page.setViewportSize({ width, height: 1000 });

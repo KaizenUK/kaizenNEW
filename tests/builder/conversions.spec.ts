@@ -159,7 +159,7 @@ test("save a developer brief, reuse a reviewed component and publish its respons
       .fill(slug);
     await page.getByRole("button", { name: "Save", exact: true }).click();
     await expect(page.locator(".builder-save-status")).toContainText(
-      "All changes saved",
+      "Saved",
     );
     await page.getByRole("button", { name: "Publish", exact: true }).click();
     await page

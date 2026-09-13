@@ -5,17 +5,8 @@ import { storage } from "./storage";
 import { Card, Head, Notice } from "./shell";
 import { ProjectName } from "./activeProject";
 import RepositoryPublish from "./RepositoryPublish";
+import { mainReleaseStatus } from "./builderStatus";
 
-const labels: Record<ReleaseStatus["status"], string> = {
-  queued: "Queued",
-  building: "Building",
-  activating: "Activating",
-  verifying: "Checking the live site",
-  live: "Verified release",
-  failed: "Failed before activation",
-  rolled_back: "Previous release restored",
-  recovery_required: "Recovery needs attention",
-};
 const pending = (release: ReleaseStatus) =>
   [
     "queued",
@@ -176,8 +167,8 @@ export default function ReleasesPanel({
             {releases.map((release) => (
               <li key={release.id}>
                 <div className="builder-row">
-                  <strong>
-                    {release.live ? "Live now" : labels[release.status]}
+                  <strong title={mainReleaseStatus(release).detail}>
+                    {mainReleaseStatus(release).label}
                   </strong>
                   <span>{new Date(release.createdAt).toLocaleString()}</span>
                 </div>

@@ -2695,7 +2695,6 @@
     grid-template-columns: 240px minmax(0, 1fr) 300px;
   }
   .builder-editor-crumbs,
-  .builder-save-status,
   .builder-editor-center .builder-hint,
   .builder-canvas-width {
     display: none;
@@ -2812,13 +2811,25 @@
     display: none;
   }
   .builder-app .builder-page-row {
-    grid-template-columns: minmax(0, 1fr) 40px;
+    grid-template-columns: minmax(0, 1fr) 24px;
+    gap: 12px;
   }
   .builder-page-row-date {
     display: none;
   }
-  .builder-page-row > .builder-pill {
+  .builder-page-row .builder-thumb {
     display: none;
+  }
+  .builder-page-row > .builder-pill {
+    display: inline-flex;
+    padding: 4px 8px;
+    grid-column: 1;
+    grid-row: 2;
+    justify-self: start;
+  }
+  .builder-page-row > svg {
+    grid-column: 2;
+    grid-row: 1;
   }
 }
 

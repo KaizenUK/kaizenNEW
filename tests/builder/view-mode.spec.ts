@@ -94,9 +94,21 @@ test("an owner can use both views on Pages and the real website editor, with the
       .getByRole("heading", { level: 1 });
     await expect(title).toHaveText("A garden to enjoy");
     await title.dblclick();
+    const savedDraft = page.waitForResponse(
+      (response) =>
+        response.status() === 200 &&
+        (response.request().postData() || "").includes(
+          "repository-source-draft-save",
+        ) &&
+        (response.request().postData() || "").includes(
+          "A garden edited in client view",
+        ),
+    );
     await title.fill("A garden edited in client view");
+    await title.press("Tab");
+    await savedDraft;
     await expect(page.getByLabel("Source editing draft")).toContainText(
-      "Edits saved",
+      "Saved",
     );
     await page.reload();
     await expect(

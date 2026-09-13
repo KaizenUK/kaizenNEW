@@ -1,5 +1,7 @@
 import React, {
   useEffect,
+  useMemo,
+  useCallback,
   useRef,
   useState,
   useSyncExternalStore,
@@ -39,6 +41,8 @@ import type { SitePage } from "./SitePages";
 import type { RepositoryGitStatus } from "../../scripts/builder-repository-git";
 import AssetLibrary from "./AssetLibrary";
 import RepositorySave from "./RepositorySave";
+import { useWebsiteStatus } from "./useWebsiteStatus";
+import { builderStatuses, websitePageStatus } from "./builderStatus";
 import { useBuilderViewMode } from "./viewMode";
 import {
   clientSourceError,
@@ -121,17 +125,33 @@ export default function SitePageEditor({
     inspection?.fields.filter((f) => canvas.ids.includes(f.id)) || [];
   const changed =
     Object.keys(draft.values).length + Object.keys(draft.orders).length;
-  const clientDraftStatus = !draft.ready
-    ? "Reading saved edits…"
-    : draft.stale
-      ? "Earlier edits need recovery"
-      : draft.error
-        ? "Edits not saved"
-        : !draft.saved
-          ? "Saving edits…"
-          : changed
-            ? "Edits saved for review"
-            : "No changes yet";
+  const [websiteRefresh, setWebsiteRefresh] = useState(0);
+  const websiteKey = useMemo(
+    () => ({ inspection, appliedPlan, savedCommit, websiteRefresh }),
+    [inspection, appliedPlan, savedCommit, websiteRefresh],
+  );
+  const website = useWebsiteStatus(websiteKey);
+  const websiteChanged = useCallback(
+    () => setWebsiteRefresh((value) => value + 1),
+    [],
+  );
+  const pageState =
+    draft.stale || draft.error || !draft.saved
+      ? {
+          ...builderStatuses.draft,
+          detail: draft.stale
+            ? "Earlier edits need recovery."
+            : draft.error
+              ? "Edits could not be saved. Keep this window open and try saving again."
+              : "Saving your edits…",
+        }
+      : changed || draft.assets.length
+        ? {
+            ...builderStatuses.saved,
+            detail: "Your edits are saved for review.",
+          }
+        : websitePageStatus(website, page.route);
+  const draftLabel = draft.ready ? pageState.label : "Reading saved edits…";
   const locked = busy || !draft.ready || Boolean(draft.stale);
   const disconnected = connection.status !== "connected";
   const expiring =
@@ -368,12 +388,9 @@ export default function SitePageEditor({
             className="builder-save-status"
             role="status"
             aria-label="Source editing draft"
+            title={draft.ready ? pageState.detail : undefined}
           >
-            {!developer
-              ? clientDraftStatus
-              : draft.status.startsWith("Edits saved")
-                ? repositoryConnection.savedLabel
-                : draft.status || "Reading the page…"}
+            {draftLabel}
           </span>
         </div>
         <div className="builder-editor-center builder-canvas-toolbar">
@@ -1063,17 +1080,18 @@ export default function SitePageEditor({
         </aside>
       </div>
       <footer className="builder-site-footer">
-        <span title={developer ? page.route : undefined}>
+        <span title={developer ? page.route : pageState.detail}>
           {developer ? (
             <>
-              {page.path} · <span className="builder-hint">{page.route}</span> ·{" "}
-              {changed} unapplied {changed === 1 ? "change" : "changes"}
+              {page.path} · {draftLabel} ·{" "}
+              <span className="builder-hint">{page.route}</span> · {changed}{" "}
+              unapplied {changed === 1 ? "change" : "changes"}
               {git?.isRepository &&
                 ` · Branch ${git.branch} · ${git.files.length} files changed since the last commit`}
             </>
           ) : (
             <>
-              {page.title} · {clientDraftStatus}
+              {page.title} · {draftLabel}
             </>
           )}
         </span>
@@ -1090,6 +1108,7 @@ export default function SitePageEditor({
             disabled={locked || build.busy}
             hasUnappliedChanges={changed > 0 || draft.assets.length > 0}
             onCommit={setSavedCommit}
+            onStatusChange={websiteChanged}
           />
         ) : (
           developer &&

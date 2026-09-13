@@ -25,7 +25,7 @@ it("distinguishes an unconfirmed send, saved change and staging outcome without 
   expect(clientSaveMessage({ ...value, phase: "recovery_required" })).toContain(
     "has not been repeated",
   );
-  expect(clientDeploymentMessage("succeeded")).toContain(
+  expect(clientDeploymentMessage("succeeded", "reported")).toContain(
     "Open staging to check",
   );
   expect(clientDeploymentMessage("failed")).toContain("could not be updated");

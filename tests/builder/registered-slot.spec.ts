@@ -54,7 +54,7 @@ test("registered content slots retain nested visual edits through save and reope
     .getByRole("button", { name: "Mobile preview", exact: true })
     .click();
   await expect(page.locator(".builder-save-status")).toContainText(
-    "All changes saved",
+    "Saved",
   );
   await page.reload();
   await page

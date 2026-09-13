@@ -8,7 +8,9 @@ import type { RepositoryPublishStatus } from "../../shared/builderRepositoryPubl
 import { repositoryConnection } from "./repositoryConnection";
 import { storage } from "./storage";
 import { useActiveProject } from "./activeProject";
-import { Card, Notice } from "./shell";
+import { useWebsiteStatus } from "./useWebsiteStatus";
+import { builderStatuses, repositoryPublicationState } from "./builderStatus";
+import { Card, Notice, Pill } from "./shell";
 
 export default function RepositoryPublish() {
   const { project } = useActiveProject();
@@ -36,6 +38,7 @@ function Publication({ connected }: { connected: boolean }) {
   const [busy, setBusy] = useState(false),
     [error, setError] = useState("");
   const [refresh, setRefresh] = useState(0);
+  const website = useWebsiteStatus(`${refresh}:${status?.review.id || ""}`);
   const generation = useRef(0),
     mounted = useRef(true);
   useEffect(() => {
@@ -60,7 +63,7 @@ function Publication({ connected }: { connected: boolean }) {
         if (
           value &&
           (value.phase === "uncertain" ||
-            (value.phase === "sent" && value.delivery !== "reported"))
+            (value.phase === "sent" && value.release?.state !== "failed"))
         )
           timer = setTimeout(read, 10000);
       } catch (error) {
@@ -113,6 +116,21 @@ function Publication({ connected }: { connected: boolean }) {
         {error && <Notice tone="error">{error}</Notice>}
         {status && (
           <>
+            <Pill
+              tone={
+                builderStatuses[repositoryPublicationState(status, website)]
+                  .tone
+              }
+              title={
+                builderStatuses[repositoryPublicationState(status, website)]
+                  .detail
+              }
+            >
+              {
+                builderStatuses[repositoryPublicationState(status, website)]
+                  .label
+              }
+            </Pill>
             <p role="status">{status.message}</p>
             {status.error && <Notice tone="error">{status.error}</Notice>}
             <div className="builder-row">

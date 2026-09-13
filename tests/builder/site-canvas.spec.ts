@@ -57,7 +57,7 @@ test("M1/M2: website Pages → on-page editing → review → apply → rebuilt 
     await expect(heading).toHaveAttribute("contenteditable", "plaintext-only");
     await heading.fill("A garden for everyone");
     await expect(page.getByLabel("Source editing draft")).toContainText(
-      "Edits saved",
+      "Saved",
     );
     await page.getByRole("button", { name: "Undo", exact: true }).click();
     await expect(frame.getByRole("heading", { level: 1 })).toHaveText(
@@ -125,7 +125,7 @@ test("M1/M2: website Pages → on-page editing → review → apply → rebuilt 
           .replace("/second/", "/new-address/"),
       );
     await expect(page.getByLabel("Source editing draft")).toContainText(
-      "No changes yet",
+      "Saved",
     );
     await expect(
       page.locator('iframe[title="Website canvas"]'),

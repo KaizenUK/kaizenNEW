@@ -1,14 +1,46 @@
 import type { HostedProjectRepository } from "./builder-hosted-folders";
 import type { RepositorySaveStatus } from "../shared/builderRepositorySave";
 import type { RepositoryPublishTarget } from "../shared/builderRepositoryPublish";
+import { hostedReleaseMarker } from "./builder-hosted-release-marker";
 
 type Release = NonNullable<RepositorySaveStatus["release"]>;
 /** Observes the configured deployment workflow for this exact commit; a Git push alone is not a release. */
 export class HostedSaveReleases {
   private cache = new Map<string, { expiresAt: number; value: Release }>();
+  private markers = new Map<
+    string,
+    { expiresAt: number; commit: string | null }
+  >();
   constructor(
     private options: { githubToken?: string; fetch?: typeof fetch } = {},
   ) {}
+  async delivery(
+    origin: string,
+    commit: string,
+  ): Promise<NonNullable<RepositorySaveStatus["delivery"]>> {
+    for (const [key, value] of this.markers)
+      if (value.expiresAt <= Date.now()) this.markers.delete(key);
+    let marker = this.markers.get(origin);
+    if (!marker) {
+      let reported: string | null = null;
+      try {
+        reported = (
+          await hostedReleaseMarker(origin, this.options.fetch || fetch)
+        ).commit;
+      } catch {
+        /* Keep a successful save separate from a failed observation. */
+      }
+      marker = { expiresAt: Date.now() + 10000, commit: reported };
+      if (this.markers.size >= 256)
+        this.markers.delete(this.markers.keys().next().value!);
+      this.markers.set(origin, marker);
+    }
+    return marker.commit === null
+      ? "unavailable"
+      : marker.commit === commit
+        ? "reported"
+        : "waiting";
+  }
   async status(
     repository: HostedProjectRepository,
     commit: string,

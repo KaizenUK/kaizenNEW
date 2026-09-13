@@ -47,6 +47,7 @@ import {
 } from "./shell";
 import { ProjectName, useProjectCapabilities } from "./activeProject";
 import PagesView, { pageStatus } from "./PagesView";
+import { editorStatus } from "./builderStatus";
 import ProjectsView, { ProjectIdentity } from "./ProjectsView";
 import BuilderAuth from "./BuilderAuth";
 import { observeAuthSession } from "./authSession";
@@ -786,7 +787,9 @@ function EditorInner({
       : document.theme),
     tokens: workspace.site?.draft.theme.tokens || document.theme.tokens,
   };
-  const [status, setStatus] = useState("All changes saved");
+  const [status, setStatus] = useState<"dirty" | "saving" | "saved" | "failed">(
+    "saved",
+  );
   const [notice, setNotice] = useState("");
   const [busy, setBusy] = useState(false);
   const [generation, setGeneration] = useState(0);
@@ -799,11 +802,7 @@ function EditorInner({
   const change = useCallback((value: PageDocument) => {
     documentRef.current = value;
     setDocument(value);
-    setStatus(
-      JSON.stringify(value) !== saved.current
-        ? "Unsaved changes"
-        : "All changes saved",
-    );
+    setStatus(JSON.stringify(value) !== saved.current ? "dirty" : "saved");
   }, []);
   useEffect(() => {
     mounted.current = true;
@@ -824,10 +823,10 @@ function EditorInner({
       const operation = async () => {
         const snapshot = clone(documentRef.current);
         if (JSON.stringify(snapshot) === saved.current) {
-          if (mounted.current) setStatus("All changes saved");
+          if (mounted.current) setStatus("saved");
           return pageRef.current;
         }
-        if (mounted.current) setStatus("Saving…");
+        if (mounted.current) setStatus("saving");
         const next = await (saveOverride || storage.save)(
           pageRef.current.id,
           pageRef.current.version,
@@ -841,8 +840,8 @@ function EditorInner({
         if (mounted.current)
           setStatus(
             JSON.stringify(documentRef.current) === saved.current
-              ? "All changes saved"
-              : "Unsaved changes",
+              ? "saved"
+              : "dirty",
           );
         return next;
       };
@@ -851,7 +850,7 @@ function EditorInner({
       return promise.catch((error) => {
         saveError.current = true;
         if (mounted.current) {
-          setStatus("Save failed · draft still in editor");
+          setStatus("failed");
           setNotice(errorMessage(error));
         }
         throw error;
@@ -1001,6 +1000,12 @@ function EditorShell({
   restore,
 }) {
   const capabilities = useProjectCapabilities();
+  const pageState = editorStatus(
+    status,
+    isComponent || (localMode && capabilities.publishPath === "github")
+      ? undefined
+      : page,
+  );
   const formEndpoint = useContext(FormEndpointContext);
   const media = useContext(MediaContext);
   const content = useContext(ContentContext);
@@ -1276,9 +1281,13 @@ function EditorShell({
                 : document.title || "Untitled page"}
             </button>
           </div>
-          <span className="builder-save-status" role="status">
-            <Check size={13} />
-            {status}
+          <span
+            className="builder-save-status"
+            role="status"
+            title={pageState.detail}
+          >
+            {pageState.label === "Draft" ? null : <Check size={13} />}
+            {pageState.label}
           </span>
         </div>
         <div className="builder-editor-center builder-canvas-toolbar">
@@ -1583,7 +1592,9 @@ function EditorShell({
             <strong>
               {localMode ? "Local workspace" : "Shared workspace"}
             </strong>
-            <span>Draft · changes go live only when you publish</span>
+            <span role="status" title={pageState.detail}>
+              {pageState.label} · {pageState.detail}
+            </span>
           </div>
         </main>
         <aside className="builder-sidebar builder-right">

@@ -247,10 +247,9 @@ test("Unity publishes a frozen client project, preserves newer drafts, rolls bac
       document: newer,
     });
     const firstRow = page.locator(`[data-release-id="${first.id}"]`);
-    await expect(firstRow.getByRole("status")).toContainText(
-      "Verified release",
-      { timeout: 60000 },
-    );
+    await expect(firstRow.getByRole("status")).toContainText("Live", {
+      timeout: 60000,
+    });
     let workspace = await (
       await page.request.get(`/__builder-local?project=${project.id}`)
     ).json();
@@ -326,10 +325,9 @@ test("Unity publishes a frozen client project, preserves newer drafts, rolls bac
       .click();
     const failed = await (await failureResponse).json();
     const failedRow = page.locator(`[data-release-id="${failed.id}"]`);
-    await expect(failedRow.getByRole("status")).toContainText(
-      "Failed before publication",
-      { timeout: 60000 },
-    );
+    await expect(failedRow.getByRole("status")).toContainText("Update failed", {
+      timeout: 60000,
+    });
     await expect(failedRow.getByRole("alert")).toContainText(
       "Import this media",
     );
@@ -397,7 +395,7 @@ test("Unity publishes a frozen client project, preserves newer drafts, rolls bac
     const rollback = await (await rollbackResponse).json();
     await expect(
       page.locator(`[data-release-id="${rollback.id}"]`).getByRole("status"),
-    ).toContainText("Verified release", { timeout: 60000 });
+    ).toContainText("Live", { timeout: 60000 });
     await expect
       .poll(
         async () => await (await page.request.get(`${origin}/about/`)).text(),
@@ -472,10 +470,9 @@ test("Unity publishes a frozen client project, preserves newer drafts, rolls bac
     await interruptedRow
       .getByRole("button", { name: "Check and reconcile interrupted release" })
       .click();
-    await expect(interruptedRow.getByRole("status")).toContainText(
-      "Verified release",
-      { timeout: 60000 },
-    );
+    await expect(interruptedRow.getByRole("status")).toContainText("Live", {
+      timeout: 60000,
+    });
     for (const guard of recoveryGuards)
       await expect
         .poll(async () =>
@@ -514,7 +511,7 @@ test("Unity publishes a frozen client project, preserves newer drafts, rolls bac
     const unpublished = await (await unpublishResponse).json();
     await expect(
       page.locator(`[data-release-id="${unpublished.id}"]`).getByRole("status"),
-    ).toContainText("Verified release", { timeout: 60000 });
+    ).toContainText("Offline", { timeout: 60000 });
     await expect
       .poll(async () => (await page.request.get(`${origin}/about/`)).status())
       .toBe(404);

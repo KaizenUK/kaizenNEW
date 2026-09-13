@@ -5,6 +5,8 @@ import { repositoryConnection } from "./repositoryConnection";
 import { storage } from "./storage";
 import { activeProjectId } from "./projectStorage";
 import { Card, Notice, Pill } from "./shell";
+import { useWebsiteStatus } from "./useWebsiteStatus";
+import { websitePageStatus } from "./builderStatus";
 import { useBuilderViewMode } from "./viewMode";
 
 export type SitePage = {
@@ -44,6 +46,7 @@ export default function SitePages({
     [error, setError] = useState(""),
     [query, setQuery] = useState(""),
     [attempt, setAttempt] = useState(0);
+  const website = useWebsiteStatus(attempt);
   useEffect(() => {
     if (connection.status !== "connected") {
       setModel(undefined);
@@ -133,20 +136,30 @@ export default function SitePages({
                   <strong>{row.title}</strong>
                   <small>{row.path}</small>
                 </div>
-                {(developer ||
-                  !["builder-editable", "code-managed"].includes(
-                    row.ownership,
-                  )) && (
+                <div className="builder-existing-actions">
+                  {(developer ||
+                    !["builder-editable", "code-managed"].includes(
+                      row.ownership,
+                    )) && (
+                    <Pill
+                      tone={
+                        row.ownership === "code-managed" ? "primary" : "grey"
+                      }
+                    >
+                      {row.ownership === "builder-editable"
+                        ? "Builder page"
+                        : row.ownership === "code-managed"
+                          ? "Managed in code"
+                          : "Needs a developer"}
+                    </Pill>
+                  )}
                   <Pill
-                    tone={row.ownership === "code-managed" ? "primary" : "grey"}
+                    tone={websitePageStatus(website, row.file).tone}
+                    title={websitePageStatus(website, row.file).detail}
                   >
-                    {row.ownership === "builder-editable"
-                      ? "Builder page"
-                      : row.ownership === "code-managed"
-                        ? "Managed in code"
-                        : "Needs a developer"}
+                    {websitePageStatus(website, row.file).label}
                   </Pill>
-                )}
+                </div>
                 <button
                   type="button"
                   aria-label={`Edit existing ${row.path}`}

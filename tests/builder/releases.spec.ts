@@ -52,7 +52,7 @@ test("release controls show observed states and require an explicit rollback/unp
   await expect(
     page.getByRole("heading", { name: "Releases", exact: true }),
   ).toBeVisible();
-  await expect(page.getByText("Live now", { exact: true })).toBeVisible();
+  await expect(page.getByText("Live", { exact: true })).toBeVisible();
   await page
     .getByRole("button", { name: "Review rollback", exact: true })
     .click();
@@ -93,7 +93,7 @@ test("release controls show observed states and require an explicit rollback/unp
     .getByRole("button", { name: "Refresh status", exact: true })
     .click();
   await expect(
-    page.getByText("Checking the live site", { exact: true }),
+    page.getByText("Checking website", { exact: true }),
   ).toBeVisible();
   await expect(
     page.getByRole("button", { name: "Review rollback" }),

@@ -29,7 +29,7 @@ test("M4: apply and commit from the editor keeps unrelated work uncommitted", as
     await heading.dblclick();
     await heading.fill("Garden after");
     await expect(page.getByLabel("Source editing draft")).toContainText(
-      "Edits saved",
+      "Saved",
     );
     await page
       .getByRole("button", { name: "Review my changes", exact: true })

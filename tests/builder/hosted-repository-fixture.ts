@@ -141,6 +141,18 @@ export async function openSiteProject(
         });
         return;
       }
+      if (input.action === "repository-website-status") {
+        await route.fulfill({
+          json: {
+            state: "saved",
+            head: "a".repeat(40),
+            draftRoutes: [],
+            detail: "Saved in the fixture website folder.",
+            checkedAt: new Date().toISOString(),
+          },
+        });
+        return;
+      }
       if (input.action === "repository-inspect-current") {
         input.action = "repository-inspect";
         input.root = root;

@@ -12,6 +12,8 @@ import type {
 } from "./builder-repository";
 import type { RepositorySaveStatus } from "../shared/builderRepositorySave";
 import { HostedSaveReleases } from "./builder-hosted-save-release";
+import { repositoryGitStatus } from "./builder-repository-git";
+import type { WebsiteStatus } from "../shared/builderWebsiteStatus";
 import { HostedReceiptStore, receiptError } from "./builder-hosted-receipts";
 
 type Receipt = {
@@ -150,6 +152,65 @@ export class HostedWebsiteSaves {
       saveReceipts,
       () => [],
     );
+  }
+  async websiteStatus(
+    projectId: string,
+    draftRoutes: string[],
+  ): Promise<WebsiteStatus> {
+    const config = this.folders.configuration(projectId);
+    const git = this.folders.localGit(projectId);
+    const root = this.folders.root(projectId);
+    const before = await repositoryGitStatus(root, git);
+    const head = await this.folders.head(projectId);
+    const result: WebsiteStatus = {
+      state: "saved",
+      head,
+      draftRoutes,
+      checkedAt: new Date().toISOString(),
+      detail:
+        "Saved in the website folder. Deployment has not been confirmed for this version.",
+    };
+    if (before.files.length || before.inProgress) {
+      result.detail =
+        "The website folder has saved changes that have not been confirmed at a destination.";
+      return result;
+    }
+    const matches = async (production: boolean) => {
+      const target = production
+        ? config.publishToWebsite
+        : config.saveToWebsite;
+      if (!target) return false;
+      const release = await this.releases.status(
+        config,
+        head,
+        production ? config.publishToWebsite : undefined,
+      );
+      return (
+        release.state === "succeeded" &&
+        (await this.releases.delivery(target.url, head)) === "reported"
+      );
+    };
+    const [production, staging] = await Promise.all([
+      matches(true),
+      matches(false),
+    ]);
+    // External Git changes must not let an earlier observation describe the next checkout.
+    const after = await repositoryGitStatus(root, git);
+    if (
+      after.files.length ||
+      after.inProgress ||
+      (await this.folders.head(projectId)) !== head
+    )
+      return result;
+    if (production) {
+      result.state = "live";
+      result.detail = "This website version is confirmed on the live website.";
+    } else if (staging) {
+      result.state = "staging";
+      result.detail = "This website version is confirmed on staging.";
+    }
+    result.checkedAt = new Date().toISOString();
+    return result;
   }
   async refresh(projectId: string) {
     const records = await this.records.read(projectId);
@@ -366,11 +427,18 @@ export class HostedWebsiteSaves {
     }
     await this.persist(projectId);
     const value = structuredClone(receipt.status);
-    if (value.phase === "saved")
+    if (value.phase === "saved") {
       value.release = await this.releases.status(
         this.folders.configuration(projectId),
         value.commit!,
       );
+      value.delivery =
+        value.release.state === "succeeded"
+          ? await this.releases.delivery(value.destinationUrl, value.commit!)
+          : ["queued", "building", "waiting"].includes(value.release.state)
+            ? "waiting"
+            : "unavailable";
+    }
     return value;
   }
   async save(

@@ -196,7 +196,7 @@ test("responsive styles survive autosave, reopening, preview and local publicati
   await page.keyboard.press("Control+Shift+z");
   await expect(frame.locator(".kb-hero")).toHaveCSS("padding-bottom", "20px");
   await expect(page.locator(".builder-save-status")).toContainText(
-    "All changes saved",
+    "Saved",
     { timeout: 20_000 },
   );
   const slug = (
@@ -245,7 +245,7 @@ test("responsive styles survive autosave, reopening, preview and local publicati
     .click();
   await expect(frame.locator(".kb-hero")).toHaveCSS("padding-left", "48px");
   await expect(page.locator(".builder-save-status")).toContainText(
-    "All changes saved",
+    "Saved",
   );
   await live.setViewportSize({ width: 1280, height: 900 });
   await live.reload();
@@ -438,7 +438,7 @@ test("rich text supports inline formatting and links in preview", async ({
   );
   await expect(frame.locator(".kb-richtext a")).toHaveText("chapter");
   await expect(page.locator(".builder-save-status")).toContainText(
-    "All changes saved",
+    "Saved",
   );
   const slug = (
     await page.locator(".builder-canvas-toolbar .builder-hint").innerText()

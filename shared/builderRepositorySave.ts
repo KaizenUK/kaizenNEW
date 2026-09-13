@@ -14,6 +14,8 @@ export type RepositorySaveStatus = {
   commit?: string;
   message: string;
   error?: string;
+  /** Fresh destination marker observation; never inferred from a workflow result. */
+  delivery?: "waiting" | "reported" | "unavailable";
   release?: {
     state:
       | "waiting"

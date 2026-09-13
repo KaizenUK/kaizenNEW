@@ -76,6 +76,8 @@ test("a publisher saves an existing page to staging and explicitly publishes tha
       .click();
     await expect(panel.getByRole("alert")).toContainText("not serving");
     publication.stageCommit = staged;
+    fixture.deployment.status = "completed";
+    fixture.deployment.conclusion = "success";
     await panel
       .getByRole("button", { name: "Review staged website", exact: true })
       .click();
@@ -148,6 +150,8 @@ test("a publisher saves an existing page to staging and explicitly publishes tha
       ),
     ).toBeVisible();
     publication.productionCommit = staged;
+    fixture.productionDeployment.status = "completed";
+    fixture.productionDeployment.conclusion = "success";
     await panel
       .getByRole("button", { name: "Check publication state", exact: true })
       .click();
@@ -156,6 +160,9 @@ test("a publisher saves an existing page to staging and explicitly publishes tha
         exact: false,
       }),
     ).toBeVisible();
+    await expect(
+      panel.locator(".builder-pill").filter({ hasText: /^Live$/ }),
+    ).toBeVisible({ timeout: 25000 });
     for (const width of [1440, 390]) {
       await page.setViewportSize({ width, height: 1000 });
       await panel.scrollIntoViewIfNeeded();
@@ -166,6 +173,65 @@ test("a publisher saves an existing page to staging and explicitly publishes tha
       ).toBe(true);
       await panel.screenshot({
         path: `test-results/hosted-publish-sent-${width}.png`,
+      });
+    }
+    await page.getByRole("button", { name: "Pages", exact: true }).click();
+    const existing = page.getByRole("region", {
+      name: "Website pages",
+      exact: true,
+    });
+    await expect(
+      existing.locator("li").filter({
+        has: page.getByRole("button", {
+          name: "Edit existing /",
+          exact: true,
+        }),
+      }),
+    ).toContainText("Live");
+    for (const width of [1440, 390]) {
+      await page.setViewportSize({ width, height: 1000 });
+      expect(
+        await page.evaluate(
+          () => document.documentElement.scrollWidth <= innerWidth,
+        ),
+      ).toBe(true);
+      if (width === 1440) {
+        const row = existing
+          .locator("li")
+          .filter({
+            has: page.getByRole("button", {
+              name: "Edit existing /",
+              exact: true,
+            }),
+          });
+        const title = await row.locator("strong").boundingBox();
+        const edit = await row.getByRole("button").boundingBox();
+        expect(Math.abs(title!.y - edit!.y)).toBeLessThan(edit!.height);
+      }
+      await existing.screenshot({
+        path: `test-results/l3-status-pages-live-${width}.png`,
+      });
+    }
+    await page
+      .getByRole("button", { name: "Edit existing /", exact: true })
+      .click();
+    await expect(page.getByLabel("Source editing draft")).toHaveText("Live");
+    await expect(page.locator(".builder-site-footer")).toContainText("Live");
+    for (const width of [1440, 390]) {
+      await page.setViewportSize({ width, height: 1000 });
+      expect(
+        await page.evaluate(
+          () => document.documentElement.scrollWidth <= innerWidth,
+        ),
+      ).toBe(true);
+      await page
+        .getByRole("button", {
+          name: width === 390 ? "Mobile preview" : "Desktop preview",
+          exact: true,
+        })
+        .click();
+      await page.screenshot({
+        path: `test-results/l3-status-editor-live-${width}.png`,
       });
     }
   } finally {

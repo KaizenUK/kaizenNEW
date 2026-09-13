@@ -308,9 +308,7 @@ test("hosted repository UI edits real local source across origins with consent, 
   );
   await canvas.getByRole("heading").dblclick();
   await canvas.getByRole("heading").fill("Edited inside the hosted canvas");
-  await expect(page.getByLabel("Source editing draft")).toContainText(
-    "Edits saved on this computer",
-  );
+  await expect(page.getByLabel("Source editing draft")).toContainText("Saved");
   await popup.getByRole("button", { name: "Stop sharing this folder" }).click();
   await expect(page.getByRole("alert")).toContainText("Not connected");
   await canvas.getByRole("heading").dblclick();
@@ -326,9 +324,7 @@ test("hosted repository UI edits real local source across origins with consent, 
   popup = await reconnectEvent;
   await expect(popup.getByLabel("Folder to share")).toHaveValue(root);
   await popup.getByRole("button", { name: "Allow this folder" }).click();
-  await expect(page.getByLabel("Source editing draft")).toContainText(
-    "Edits saved on this computer",
-  );
+  await expect(page.getByLabel("Source editing draft")).toContainText("Saved");
   const oldFrame = await page
     .locator('iframe[title="Website canvas"]')
     .getAttribute("src");

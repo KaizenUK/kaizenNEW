@@ -8,6 +8,7 @@ import type {
 import type { RepositoryPlan } from "../../scripts/builder-repository";
 import { useSourceEditingDraft } from "./useSourceEditingDraft";
 import { useSourceSelection } from "./useSourceSelection";
+import { builderStatuses } from "./builderStatus";
 import { Notice, Pill } from "./shell";
 
 /* The page's words shown as a content outline: read it like a page, click a line to change it. */
@@ -125,7 +126,20 @@ export default function SourcePageEditor({
             aria-label="Source editing draft"
             className="builder-source-status"
           >
-            <Pill tone={changed ? "orange" : "grey"}>{draft.status}</Pill>
+            {draft.ready && (
+              <Pill
+                tone={
+                  draft.saved && !draft.stale && !draft.error
+                    ? builderStatuses.saved.tone
+                    : builderStatuses.draft.tone
+                }
+              >
+                {draft.saved && !draft.stale && !draft.error
+                  ? builderStatuses.saved.label
+                  : builderStatuses.draft.label}
+              </Pill>
+            )}
+            <span>{draft.status}</span>
           </p>
         )}
         {(changed > 0 || draft.stale) && (

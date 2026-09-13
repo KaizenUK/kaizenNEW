@@ -142,7 +142,7 @@ test("hosted projects open their managed folder by default and keep edits when a
     await heading.dblclick();
     await heading.fill("My open website edit");
     await expect(page.getByLabel("Source editing draft")).toContainText(
-      "Edits saved",
+      "Saved",
     );
     await expect(page.getByLabel("Source editing draft")).not.toContainText(
       "on this computer",

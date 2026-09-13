@@ -10,32 +10,10 @@ import type {
 import { Card, Head, Notice, Pill } from "./shell";
 import { ProjectName } from "./activeProject";
 import RepositoryPublish from "./RepositoryPublish";
+import { clientReleaseStatus } from "./builderStatus";
 
 /* Publishing a client project: choose a destination, review what goes live, then watch the release. */
 
-const labels: Record<ClientPublicationJob["phase"], string> = {
-  queued: "Queued",
-  building: "Building static website",
-  activating: "Activating release",
-  verifying: "Checking served output",
-  live: "Verified release",
-  failed: "Failed before publication",
-  rolled_back: "Previous release restored",
-  recovery_required: "Recovery needs attention",
-};
-const tones: Record<
-  ClientPublicationJob["phase"],
-  "grey" | "green" | "orange" | "blue" | "primary"
-> = {
-  queued: "blue",
-  building: "blue",
-  activating: "blue",
-  verifying: "blue",
-  live: "green",
-  failed: "orange",
-  rolled_back: "grey",
-  recovery_required: "orange",
-};
 const actionLabels: Record<ClientPublicationJob["action"], string> = {
   publish: "Publish",
   unpublish: "Unpublish",
@@ -381,8 +359,12 @@ export default function ClientPublications({
                     </p>
                   </div>
                   <p role="status" className="builder-release-card-status">
-                    <Pill tone={tones[job.phase]}>{labels[job.phase]}</Pill>
-                    {job.active && <Pill tone="green">Live now</Pill>}
+                    <Pill
+                      tone={clientReleaseStatus(job).tone}
+                      title={clientReleaseStatus(job).detail}
+                    >
+                      {clientReleaseStatus(job).label}
+                    </Pill>
                   </p>
                 </div>
                 {job.error && <Notice tone="error">{job.error}</Notice>}

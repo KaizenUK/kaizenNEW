@@ -10,6 +10,8 @@ import type { BuilderPage, Workspace } from "../../shared/visualBuilder";
 import { Head, Notice, Pill, formatWhen } from "./shell";
 import { ProjectName } from "./activeProject";
 import PageThumbnail from "./PageThumbnail";
+import { useProjectCapabilities } from "./activeProject";
+import { builderStatuses, savedPageStatus } from "./builderStatus";
 
 /* The workspace home: every page with its status, plus the two ways to start a new one. */
 
@@ -24,22 +26,21 @@ const tones = [
   "#B8E0F2",
 ];
 
-export function pageStatus(page: BuilderPage): {
+export function pageStatus(
+  page: BuilderPage,
+  localPreview = false,
+): {
   label: string;
-  tone: "grey" | "green" | "orange";
+  tone: "grey" | "green" | "orange" | "blue";
   filter: Filter;
+  detail: string;
 } {
-  if (!page.published)
-    return { label: "Draft", tone: "grey", filter: "drafts" };
-  // Published snapshots are resolved copies of the draft, so compare edit times rather than content.
-  const publishedAt = page.publishedAt ? Date.parse(page.publishedAt) : NaN;
-  const lastEdit = Math.max(
-    Date.parse(page.updatedAt) || 0,
-    ...page.revisions.map((revision) => Date.parse(revision.createdAt) || 0),
-  );
-  if (Number.isFinite(publishedAt) && lastEdit > publishedAt + 1500)
-    return { label: "Changes to publish", tone: "orange", filter: "changed" };
-  return { label: "Published", tone: "green", filter: "published" };
+  const state = localPreview ? "saved" : savedPageStatus(page);
+  return {
+    ...builderStatuses[state],
+    filter:
+      state === "live" ? "published" : page.published ? "changed" : "drafts",
+  };
 }
 
 export default function PagesView({
@@ -67,6 +68,8 @@ export default function PagesView({
   onRetry: () => void;
   login?: ReactNode;
 }) {
+  const capabilities = useProjectCapabilities();
+  const localPreview = localMode && capabilities.publishPath === "github";
   const [filter, setFilter] = useState<Filter>("all");
   const [sort, setSort] = useState<Sort>("updated");
   const [query, setQuery] = useState("");
@@ -74,14 +77,22 @@ export default function PagesView({
   const counts = useMemo(() => {
     const result = { all: pages.length, drafts: 0, published: 0, changed: 0 };
     pages.forEach((page) => {
-      result[pageStatus(page).filter] += 1;
+      const category = pageStatus(page, localPreview).filter;
+      result[category] += 1;
+      if (category === "changed") result.drafts += 1;
     });
     return result;
-  }, [pages]);
+  }, [pages, localPreview]);
   const visible = useMemo(() => {
     const needle = query.trim().toLowerCase();
     return pages
-      .filter((page) => filter === "all" || pageStatus(page).filter === filter)
+      .filter(
+        (page) =>
+          filter === "all" ||
+          (filter === "drafts"
+            ? pageStatus(page, localPreview).filter !== "published"
+            : pageStatus(page, localPreview).filter === filter),
+      )
       .filter(
         (page) =>
           !needle ||
@@ -94,7 +105,7 @@ export default function PagesView({
           ? a.draft.title.localeCompare(b.draft.title)
           : Date.parse(b.updatedAt) - Date.parse(a.updatedAt),
       );
-  }, [pages, filter, query, sort]);
+  }, [pages, filter, query, sort, localPreview]);
   const signedIn = Boolean(workspace) || localMode;
   return (
     <>
@@ -202,9 +213,8 @@ export default function PagesView({
                   {(
                     [
                       ["all", "All"],
-                      ["drafts", "Drafts"],
-                      ["published", "Published"],
-                      ["changed", "Changes to publish"],
+                      ["drafts", "Saved"],
+                      ["published", "Live"],
                     ] as const
                   ).map(([id, label]) => (
                     <button
@@ -233,12 +243,14 @@ export default function PagesView({
                 <span>Page</span>
                 <span>Status</span>
                 <span>Last edited</span>
-                <span className="builder-page-row-published">Published</span>
+                <span className="builder-page-row-published">
+                  Last published
+                </span>
                 <span />
               </div>
               <div className="builder-page-list">
                 {visible.map((page, index) => {
-                  const status = pageStatus(page);
+                  const status = pageStatus(page, localPreview);
                   return (
                     <button
                       type="button"
@@ -259,7 +271,9 @@ export default function PagesView({
                           <small>/{page.draft.slug}/</small>
                         </span>
                       </span>
-                      <Pill tone={status.tone}>{status.label}</Pill>
+                      <Pill tone={status.tone} title={status.detail}>
+                        {status.label}
+                      </Pill>
                       <span className="builder-page-row-date">
                         {formatWhen(page.updatedAt)}
                       </span>

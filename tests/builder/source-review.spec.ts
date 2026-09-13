@@ -53,14 +53,14 @@ for (const mode of ["client", "developer"] as const) {
       if (mode === "client") {
         await expect.poll(() => saving).toBe(true);
         await expect(page.getByLabel("Source editing draft")).toHaveText(
-          "Saving edits…",
+          "Draft",
         );
         await expect(page.locator(".builder-site-footer")).toContainText(
-          "Saving edits…",
+          "Draft",
         );
         releaseDraft();
         await expect(page.getByLabel("Source editing draft")).toHaveText(
-          "Edits saved for review",
+          "Saved",
         );
       }
       await frame.getByRole("link", { name: "Visit us" }).click();
@@ -84,14 +84,19 @@ for (const mode of ["client", "developer"] as const) {
         .getByRole("button", { name: "Move section up", exact: true })
         .click();
       await expect(page.getByLabel("Source editing draft")).toContainText(
-        "Edits saved",
+        "Saved",
       );
       const footer = page.locator(".builder-site-footer");
       if (mode === "client") {
         await expect(footer).not.toContainText(
           /src\/|[Bb]ranch|[Cc]ommit|files changed/,
         );
-        await expect(footer.locator("[title]")).toHaveCount(0);
+        for (const title of await footer
+          .locator("[title]")
+          .evaluateAll((elements) =>
+            elements.map((element) => element.getAttribute("title")),
+          ))
+          expect(title).not.toMatch(/src\/|fixture-stage|branch|commit/i);
         await expect(
           page.getByText("Where it comes from", { exact: true }),
         ).toHaveCount(0);
@@ -188,7 +193,7 @@ for (const mode of ["client", "developer"] as const) {
         .click();
       await expect(dialog).toHaveCount(0);
       await expect(page.getByLabel("Source editing draft")).toContainText(
-        "No changes yet",
+        "Saved",
       );
       await expect(
         page.locator('iframe[title="Website canvas"]'),

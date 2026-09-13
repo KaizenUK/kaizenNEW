@@ -152,22 +152,37 @@ export async function hostedPreviewFixture(
           },
           releases: new HostedSaveReleases({
             fetch: async (url) =>
-              Response.json({
-                workflow_runs: [
-                  {
-                    id: 123,
-                    event: "push",
-                    head_sha: new URL(String(url)).searchParams.get("head_sha"),
-                    head_branch: new URL(String(url)).searchParams.get(
-                      "branch",
-                    ),
-                    ...(new URL(String(url)).searchParams.get("branch") ===
-                    "main"
-                      ? productionDeployment
-                      : deployment),
-                  },
-                ],
-              }),
+              new URL(String(url)).pathname ===
+              "/.well-known/kaizen-release.json"
+                ? Response.json({
+                    schemaVersion: 1,
+                    commit:
+                      new URL(String(url)).origin === origin
+                        ? publication.stageCommit
+                        : publication.productionCommit,
+                    releaseId:
+                      new URL(String(url)).origin === origin
+                        ? publication.stageReleaseId
+                        : "fixture-production-release",
+                  })
+                : Response.json({
+                    workflow_runs: [
+                      {
+                        id: 123,
+                        event: "push",
+                        head_sha: new URL(String(url)).searchParams.get(
+                          "head_sha",
+                        ),
+                        head_branch: new URL(String(url)).searchParams.get(
+                          "branch",
+                        ),
+                        ...(new URL(String(url)).searchParams.get("branch") ===
+                        "main"
+                          ? productionDeployment
+                          : deployment),
+                      },
+                    ],
+                  }),
           }),
         }
       : undefined,
