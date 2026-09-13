@@ -1005,7 +1005,7 @@ export default function SitePageEditor({
             root={page.root}
             route={page.route}
             appliedPlan={appliedPlan}
-            disabled={busy || build.busy}
+            disabled={locked || build.busy}
             hasUnappliedChanges={changed > 0 || draft.assets.length > 0}
             onCommit={setSavedCommit}
           />

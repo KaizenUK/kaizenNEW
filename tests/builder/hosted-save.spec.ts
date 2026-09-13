@@ -285,6 +285,16 @@ test("an interrupted commit survives helper restart and shows an operator check 
     { api } = fixture;
   const root = api.folders.root(project.id);
   const originalWrite = HostedReceiptStore.prototype.write;
+  let releaseInspection: () => void = () => {};
+  const inspectionReady = new Promise<void>((resolve) => {
+    releaseInspection = resolve;
+  });
+  let releaseDraft: () => void = () => {};
+  const draftReady = new Promise<void>((resolve) => {
+    releaseDraft = resolve;
+  });
+  let holdInspection = true;
+  let holdDraft = true;
   try {
     const inspection = (
       await api.send({
@@ -323,6 +333,19 @@ test("an interrupted commit survives helper restart and shows an operator check 
         direct: true,
         editorOrigin: fixture.origin,
       });
+      await page.route("**/editor-api/builder-repository", async (route) => {
+        if (
+          holdInspection &&
+          route.request().postDataJSON()?.action === "repository-source-inspect"
+        )
+          await inspectionReady;
+        if (
+          holdDraft &&
+          route.request().postDataJSON()?.action === "repository-source-draft-read"
+        )
+          await draftReady;
+        await route.fallback();
+      });
       await page
         .getByRole("button", { name: "Edit existing /", exact: true })
         .click();
@@ -332,6 +355,21 @@ test("an interrupted commit survives helper restart and shows an operator check 
       name: "Save to website",
       exact: true,
     });
+    // Save status can arrive before source inspection and draft/build checks.
+    // The action must not briefly enable and disappear beneath an early click.
+    await expect(
+      panel.getByRole("button", { name: "Save to website", exact: true }),
+    ).toBeDisabled();
+    holdInspection = false;
+    releaseInspection();
+    await expect(
+      page.getByRole("button", { name: "Build", exact: true }),
+    ).toBeEnabled();
+    await expect(
+      panel.getByRole("button", { name: "Save to website", exact: true }),
+    ).toBeDisabled();
+    holdDraft = false;
+    releaseDraft();
     await expect(
       panel.getByRole("button", { name: "Save to website", exact: true }),
     ).toBeEnabled();
@@ -403,6 +441,8 @@ test("an interrupted commit survives helper restart and shows an operator check 
       await readFile(path.join(root, "src/pages/index.astro"), "utf8"),
     ).toContain("Preserve this interrupted save");
   } finally {
+    releaseInspection();
+    releaseDraft();
     HostedReceiptStore.prototype.write = originalWrite;
     drainRepositoryRoutes.delete(page);
     try {
