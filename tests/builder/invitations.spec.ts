@@ -82,14 +82,15 @@ async function invitationFixture(page: Page) {
       contentType: "application/javascript",
       body: `
     const invited=new URLSearchParams(location.search).get('actor')==='invited';
-    let session={access_token:invited?'fixture-invited-token':'fixture-owner-token',user:{id:invited?'${person}':'${owner}',email:invited?'person@example.test':'owner@example.test',user_metadata:invited?{builder_password_set:false}:{full_name:'Fixture Owner'}}};
+    let session={refresh_token:'fixture-refresh',expires_at:Math.floor(Date.now()/1000)+3600,access_token:invited?'fixture-invited-token':'fixture-owner-token',user:{id:invited?'${person}':'${owner}',email:invited?'person@example.test':'owner@example.test',user_metadata:invited?{builder_password_set:false}:{full_name:'Fixture Owner'}}};
     const callbacks=new Set();
     async function invoke(name,options){const headers=new Headers({'content-type':'application/json',authorization:'Bearer '+session.access_token});new Headers(options.headers||{}).forEach((value,key)=>headers.set(key,value));const response=await fetch('/__invitation-api/'+name,{method:'POST',headers,body:JSON.stringify(options.body)});
       const data=await response.clone().json();return {data:response.ok?data:null,error:response.ok?null:{message:'Fixture request failed',context:response}};}
-    const client={functions:{invoke},auth:{getSession:async()=>({data:{session},error:null}),onAuthStateChange:fn=>{callbacks.add(fn);return {data:{subscription:{unsubscribe:()=>callbacks.delete(fn)}}}},
+    const client={functions:{invoke},auth:{initialize:async()=>({error:null}),refreshSession:async()=>({data:{session},error:null}),getSession:async()=>({data:{session},error:null}),onAuthStateChange:fn=>{callbacks.add(fn);return {data:{subscription:{unsubscribe:()=>callbacks.delete(fn)}}}},
       updateUser:async update=>{await invoke('auth-update',{body:update});session={...session,user:{...session.user,user_metadata:{...session.user.user_metadata,...update.data}}};for(const fn of callbacks)fn('USER_UPDATED',session);return {data:{user:session.user},error:null};},
       signOut:async()=>{session=null;for(const fn of callbacks)fn('SIGNED_OUT',null);return {error:null};}}};
     export const getSupabaseClient=()=>client;
+    export const createIsolatedSupabaseClient=()=>({auth:{setSession:async tokens=>({data:{user:tokens.access_token===session.access_token?session.user:null},error:null}),updateUser:client.auth.updateUser,stopAutoRefresh:async()=>{}}});
   `,
     }),
   );

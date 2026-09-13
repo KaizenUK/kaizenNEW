@@ -12,8 +12,10 @@ test("hosted media presentation renews in a real browser without resetting open 
     route.fulfill({
       contentType: "application/javascript",
       body: `
+    export const createIsolatedSupabaseClient=()=>{throw new Error('Account changes are outside this fixture');};
     export function getSupabaseClient() { return {
       auth: {
+        initialize: async () => ({error:null}),
         getSession: async () => ({data:{session:{user:{id:'fixture-owner'},access_token:'fixture-token'}},error:null}),
         onAuthStateChange: callback => {window.fixtureAuth=callback;return {data:{subscription:{unsubscribe(){}}}};}
       },

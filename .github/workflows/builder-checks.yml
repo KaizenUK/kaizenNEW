@@ -5,6 +5,7 @@ on:
     paths:
       - "client/visual-builder/**"
       - "client/lib/supabase*.ts"
+      - "client/lib/authRedirect.ts"
       - "shared/builderAccount.ts"
       - "shared/visualBuilder.ts"
       - "shared/builderSite.ts"

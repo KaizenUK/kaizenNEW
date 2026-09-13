@@ -1,10 +1,9 @@
 import {
-  createClient,
   type Session,
   type SupabaseClient,
   type User,
 } from "@supabase/supabase-js";
-import { supabaseUrl, supabaseKey } from "../lib/supabaseConfig";
+import { createIsolatedSupabaseClient } from "../lib/supabase";
 import { cloud } from "./storage";
 import { accountName, accountEmail } from "../../shared/builderAccount";
 
@@ -16,6 +15,12 @@ export type AccountAction =
       password: string;
       confirmation: string;
       nonce?: string;
+    }
+  | {
+      action: "setup-password";
+      password: string;
+      confirmation: string;
+      name?: string;
     }
   | { action: "reauthenticate" }
   | { action: "signout-others" };
@@ -69,15 +74,7 @@ type Dependencies = {
 };
 const defaults = (): Dependencies => ({
   main: cloud,
-  isolated: () =>
-    createClient(supabaseUrl, supabaseKey, {
-      auth: {
-        persistSession: false,
-        autoRefreshToken: false,
-        detectSessionInUrl: false,
-        storageKey: `kaizen-account-operation-${crypto.randomUUID()}`,
-      },
-    }),
+  isolated: createIsolatedSupabaseClient,
   redirectTo: new URL("/builder/?view=account", location.origin).href,
 });
 
@@ -111,16 +108,28 @@ export async function changeAccount(
     );
   if (input.action === "email" && !accountEmail(input.email))
     throw new AccountChangeError("Enter a valid email address.");
-  if (input.action === "password") {
+  if (input.action === "password" || input.action === "setup-password") {
     if (input.password.length < 12)
       throw new AccountChangeError(
         "Use at least 12 characters for your password.",
       );
     if (input.password !== input.confirmation)
       throw new AccountChangeError("The passwords do not match.");
-    if (input.nonce && !/^\d{6}$/.test(input.nonce))
+    if (
+      input.action === "password" &&
+      input.nonce &&
+      !/^\d{6}$/.test(input.nonce)
+    )
       throw new AccountChangeError(
         "Enter the six-digit confirmation code from your email.",
+      );
+    if (
+      input.action === "setup-password" &&
+      input.name !== undefined &&
+      !accountName(input.name)
+    )
+      throw new AccountChangeError(
+        "Add your name using 1–200 characters, without brackets or control characters.",
       );
   }
   const isolated = dependencies.isolated();
@@ -158,7 +167,19 @@ export async function changeAccount(
             ? { email: accountEmail(input.email)! }
             : {
                 password: input.password,
-                ...(input.nonce ? { nonce: input.nonce } : {}),
+                ...(input.action === "password" && input.nonce
+                  ? { nonce: input.nonce }
+                  : {}),
+                ...(input.action === "setup-password"
+                  ? {
+                      data: {
+                        builder_password_set: true,
+                        ...(input.name !== undefined
+                          ? { full_name: accountName(input.name)! }
+                          : {}),
+                      },
+                    }
+                  : {}),
               },
         input.action === "email"
           ? { emailRedirectTo: dependencies.redirectTo }
@@ -173,7 +194,7 @@ export async function changeAccount(
       notice =
         input.action === "name"
           ? "Your name is saved. Return to the website editor and try Save to website again."
-          : input.action === "password"
+          : input.action === "password" || input.action === "setup-password"
             ? "Your password has changed. Use the new password next time you sign in."
             : user.email?.toLowerCase() ===
                   accountEmail(input.email)!.toLowerCase() && !user.new_email

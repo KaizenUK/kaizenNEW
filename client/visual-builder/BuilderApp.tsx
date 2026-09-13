@@ -49,6 +49,8 @@ import { ProjectName, useProjectCapabilities } from "./activeProject";
 import PagesView, { pageStatus } from "./PagesView";
 import ProjectsView, { ProjectIdentity } from "./ProjectsView";
 import BuilderAuth from "./BuilderAuth";
+import { observeAuthSession } from "./authSession";
+import { authErrorMessage } from "./authState";
 import AccountPage from "./AccountPage";
 import { BuilderViewProvider, BuilderViewSettings } from "./viewMode";
 import RepositoryPanel from "./RepositoryPanel";
@@ -255,14 +257,9 @@ function BuilderWorkspace({ inventory }: { inventory?: PageInventory } = {}) {
       );
       return;
     }
-    cloud.auth.getSession().then(({ data }) => {
-      setSignedIn(Boolean(data.session));
-      setSessionEmail(data.session?.user?.email || "");
-      if (data.session && !previewId) void reload();
-      else setLoading(false);
-    });
-    const { data } = cloud.auth.onAuthStateChange((_event, session) => {
-      if (authAccount.current !== session?.user.id) {
+    const stop = observeAuthSession(cloud.auth, (_event, session, failure) => {
+      const changed = authAccount.current !== session?.user.id;
+      if (changed) {
         clearProjectCache();
         clearDiagnostics();
         window.dispatchEvent(new Event("builder-projects-changed"));
@@ -270,15 +267,30 @@ function BuilderWorkspace({ inventory }: { inventory?: PageInventory } = {}) {
         loadSequence.current++;
         setActive(undefined);
         setEditingComponent(undefined);
+        setSitePage(undefined);
+        setExistingPath(undefined);
         setWorkspace(undefined);
       }
       setSignedIn(Boolean(session));
       setSessionEmail(session?.user?.email || "");
-      if (session && !previewId && _event !== "TOKEN_REFRESHED")
-        setTimeout(() => void reload(), 0);
-      else if (!session) setWorkspace(undefined);
+      if (failure) {
+        setError(authErrorMessage(failure, "check"));
+        setLoading(false);
+      } else if (
+        session &&
+        !previewId &&
+        (_event !== "TOKEN_REFRESHED" || changed)
+      )
+        void reload();
+      else if (!session || previewId) {
+        setWorkspace(undefined);
+        setLoading(false);
+      }
     });
-    return () => data.subscription.unsubscribe();
+    return () => {
+      stop();
+      loadSequence.current++;
+    };
   }, [reload, previewId]);
   const onPage = (page: BuilderPage) =>
     setWorkspace((w) => ({

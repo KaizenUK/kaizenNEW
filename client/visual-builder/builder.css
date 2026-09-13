@@ -3087,6 +3087,8 @@
 }
 .builder-auth-card {
   width: min(100%, 460px);
+  min-width: 0;
+  overflow-wrap: anywhere;
   padding: 32px;
   border: 1px solid var(--border);
   border-radius: 20px;

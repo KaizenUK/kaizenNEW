@@ -333,3 +333,40 @@ it("uses server-verified account details and keeps the same name/email standard 
   expect(accountName(" Alex ")).toBe("Alex");
   expect(accountEmail(" name@example.test ")).toBe("name@example.test");
 });
+
+it("sets an invited account password and chosen name through its captured SDK session", async () => {
+  const f = fixture();
+  const result = await f.change({
+    action: "setup-password",
+    password: "new-fixture-password",
+    confirmation: "new-fixture-password",
+    name: "Invited person",
+  });
+  expect(result.user?.user_metadata.full_name).toBe("Invited person");
+  expect(result.user?.user_metadata.builder_password_set).toBe(true);
+  expect(f.state.people.get(two)!.user_metadata.full_name).toBe(
+    "Original name",
+  );
+});
+it("finishes password recovery without replacing an existing account name", async () => {
+  const f = fixture();
+  const result = await f.change({
+    action: "setup-password",
+    password: "new-fixture-password",
+    confirmation: "new-fixture-password",
+  });
+  expect(result.user?.user_metadata.full_name).toBe("Original name");
+  expect(result.user?.user_metadata.builder_password_set).toBe(true);
+});
+it("refuses an invalid setup name before a provider request", async () => {
+  const f = fixture();
+  await expect(
+    f.change({
+      action: "setup-password",
+      password: "new-fixture-password",
+      confirmation: "new-fixture-password",
+      name: "<invalid>",
+    }),
+  ).rejects.toThrow(/Add your name/);
+  expect(f.state.requests).toEqual([]);
+});

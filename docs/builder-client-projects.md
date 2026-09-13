@@ -155,6 +155,16 @@ Email delivery and project membership cannot be one database transaction. A fail
 
 This is the L2 launch implementation. [HANDOVER](../HANDOVER.md#linux-continuation--12-september-2026) records the deployed revision; the L2 migration, functions and frontend ship together at its milestone. Local fixtures prove these journeys without sending real invitations.
 
+### Sign-in and password links
+
+Use your invited email and password to sign in. If they do not match, check both or choose **Forgot password?**. An unconfirmed email message directs you to the latest invitation or the website owner for a resend. An invited account that has not finished setup stays on **Set up your account** until its own name and password have been saved successfully.
+
+An expired, invalid or reused invitation/reset link says what is known and offers **Request a new password reset link**. The provider does not always distinguish expiry from prior use, so the builder explains both possibilities instead of claiming to know which occurred. A bookmarked setup page without a fresh link is described separately. See [Supabase's error meanings](https://supabase.com/docs/guides/auth/debugging/error-codes) and [its explanation of consumed email links](https://supabase.com/docs/guides/troubleshooting/otp-verification-failures-token-has-expired-or-otp_expired-errors-5ee4d0).
+
+If a failed link leaves you signed in, the screen names that current account and offers **Continue with this account** or **Sign out and use another account**. It does not turn the failed link into a password-change form for that account. A working recovery link identifies the account whose password will change. Late responses cannot open an older invited account or dismiss another person's unfinished setup.
+
+After a reset request is acknowledged, check your email; the wording deliberately does not reveal whether an address belongs to an account or claim that its email was delivered. If the response is lost, check your inbox before explicitly requesting another link. The builder never resends by itself. The reset destination keeps the selected website. A newly acknowledged request clears the old link's error. Setup and recovery use the same protected account update as Account, and profile details are supplied by the account holder.
+
 ### Your account
 
 Open **Account** in the hosted builder sidebar, or follow **Account details** in the Save panel. Account settings remain available when a website workspace cannot load. The link from Save opens a separate tab, keeping the editor and its pending changes open. The local helper has no hosted account settings.

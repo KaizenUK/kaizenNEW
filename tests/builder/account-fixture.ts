@@ -10,7 +10,14 @@ const authOrigin = "https://account-fixture.supabase.test";
 
 /** The browser uses the real Supabase SDK and Account UI. Only the provider's
  * HTTP boundary is fake; deletion RPCs execute the actual PostgreSQL migrations. */
-export async function accountFixture(page: Page) {
+export async function accountFixture(
+  page: Page,
+  options: {
+    signedOut?: boolean;
+    invited?: boolean;
+    initialAccount?: string;
+  } = {},
+) {
   const projectResponse = await page.request.post("/__builder-projects", {
     headers: { "X-Kaizen-Builder": "1" },
     data: { action: "create", name: "Garden website" },
@@ -58,6 +65,10 @@ export async function accountFixture(page: Page) {
     pendingEmail: new Map<string, string>(),
     requireCode: false,
     failDelete: false,
+    password: "fixture-current-password",
+    loginError: undefined as string | undefined,
+    resetFailure: false,
+    resets: [] as { email: string; redirectTo: string | null }[],
   };
   const tokens = new Map<string, string>(),
     refreshes = new Map<string, string>();
@@ -194,6 +205,41 @@ export async function accountFixture(page: Page) {
       request.headers().authorization?.replace(/^Bearer /, "") || "";
     const actor = tokens.get(bearer),
       user = actor ? await readUser(actor) : null;
+    if (url.pathname === "/auth/v1/recover") {
+      state.resets.push({
+        email: request.postDataJSON().email,
+        redirectTo: url.searchParams.get("redirect_to"),
+      });
+      await reply(
+        state.resetFailure
+          ? {
+              code: "unexpected_failure",
+              message: "Private fixture provider detail",
+            }
+          : {},
+        state.resetFailure ? 503 : 200,
+      );
+      return;
+    }
+    if (
+      url.pathname === "/auth/v1/token" &&
+      url.searchParams.get("grant_type") === "password"
+    ) {
+      const body = request.postDataJSON();
+      const person = await readUser(accountPerson);
+      const code =
+        state.loginError ||
+        (body.email !== person?.email || body.password !== state.password
+          ? "invalid_credentials"
+          : undefined);
+      await reply(
+        code
+          ? { code, message: "Private fixture sign-in detail" }
+          : await session(accountPerson),
+        code ? 400 : 200,
+      );
+      return;
+    }
     if (url.pathname === "/auth/v1/token") {
       const id = refreshes.get(request.postDataJSON().refresh_token);
       await reply(
@@ -232,6 +278,7 @@ export async function accountFixture(page: Page) {
             "update auth.users set raw_user_meta_data=raw_user_meta_data||$2::jsonb where id=$1",
             [actor, JSON.stringify(body.data)],
           );
+        if (body.password) state.password = body.password;
         if (body.email) state.pendingEmail.set(actor, body.email);
       }
       await reply(await readUser(actor));
@@ -302,20 +349,63 @@ export async function accountFixture(page: Page) {
       `Unhandled account fixture request: ${request.method()} ${url.pathname}`,
     );
   });
-  const initial = await session(accountPerson);
+  if (options.invited)
+    await db.query(
+      "update auth.users set raw_user_meta_data=raw_user_meta_data||'{\"builder_password_set\":false}'::jsonb where id=$1",
+      [accountPerson],
+    );
+  const initial = options.signedOut
+    ? null
+    : await session(options.initialAccount || accountPerson);
   await page.addInitScript((value) => {
-    if (!localStorage.getItem("sb-account-fixture-auth-token"))
+    if (sessionStorage.getItem("account-fixture-seeded")) return;
+    sessionStorage.setItem("account-fixture-seeded", "1");
+    if (value && !localStorage.getItem("sb-account-fixture-auth-token"))
       localStorage.setItem(
         "sb-account-fixture-auth-token",
         JSON.stringify(value),
       );
   }, initial);
+  const usedLinks = new Set<string>();
+  await page.route("**/__account-fixture-link/*", async (route) => {
+    const kind = new URL(route.request().url()).pathname.split("/").pop()!;
+    if (!["invite", "recovery", "expired"].includes(kind))
+      throw new Error("Unknown fixture link");
+    const destination = new URL(
+      `/builder/?project=${project.id}&view=account&password=setup`,
+      route.request().url(),
+    );
+    if (kind === "expired" || usedLinks.has(kind)) {
+      destination.hash = new URLSearchParams({
+        error: "access_denied",
+        error_code: "otp_expired",
+        error_description: "Email link is invalid or has expired",
+      }).toString();
+    } else {
+      usedLinks.add(kind);
+      const next = await session(accountPerson);
+      destination.hash = new URLSearchParams({
+        type: kind,
+        access_token: next.access_token,
+        refresh_token: next.refresh_token,
+        token_type: next.token_type,
+        expires_in: String(next.expires_in),
+      }).toString();
+    }
+    await route.fulfill({
+      status: 302,
+      headers: { location: destination.href },
+    });
+  });
   await page.goto(`/builder/?project=${project.id}&view=account`);
   return {
     db,
     state,
     project,
     readUser,
+    async openPasswordLink(kind: "invite" | "recovery" | "expired") {
+      await page.goto(`/__account-fixture-link/${kind}`);
+    },
     async switchAccount(id: string) {
       const next = await session(id);
       await page.evaluate(async (next) => {
