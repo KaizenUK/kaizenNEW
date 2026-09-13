@@ -269,6 +269,23 @@ export function useSourceEditingDraft(inspection?: SourceInspection) {
     stale,
     error,
     status,
+    saved:
+      ready &&
+      !stale &&
+      !error &&
+      persisted.current ===
+        JSON.stringify(
+          Object.keys(values).length ||
+            Object.keys(orders).length ||
+            assets.length
+            ? {
+                inspection,
+                values,
+                orders,
+                ...(assets.length ? { assets } : {}),
+              }
+            : null,
+        ),
     version,
     flush,
     discardStale,

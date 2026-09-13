@@ -9,6 +9,12 @@ import type { RepositorySaveStatus } from "../../shared/builderRepositorySave";
 import { repositoryConnection } from "./repositoryConnection";
 import { storage } from "./storage";
 import { projectUrl } from "./projectStorage";
+import { useBuilderViewMode } from "./viewMode";
+import {
+  clientDeploymentMessage,
+  clientSaveError,
+  clientSaveMessage,
+} from "./repositorySaveCopy";
 
 type Props = {
   root: string;
@@ -47,6 +53,7 @@ function SaveControls({
   onCommit,
   connection,
 }: Props & { connection: HostedRepositoryState }) {
+  const developer = useBuilderViewMode().mode === "developer";
   const disconnected = connection.status !== "connected";
   const [status, setStatus] = useState<RepositorySaveStatus | null>(null),
     [error, setError] = useState(""),
@@ -89,7 +96,6 @@ function SaveControls({
       clearTimeout(timer);
     };
   }, [disconnected, root, route, appliedPlan, status?.phase, refresh]);
-  if (!status && !error) return null;
   async function check() {
     setBusy(true);
     generation.current++;
@@ -108,14 +114,16 @@ function SaveControls({
       <div>
         <strong>Save to website</strong>
         {status ? (
-          <p role="status">{status.message}</p>
+          <p role="status">
+            {developer ? status.message : clientSaveMessage(status)}
+          </p>
         ) : (
           <p>
             Review and apply your changes, then save them to staging. Publish is
             a separate step.
           </p>
         )}
-        {status?.phase === "applied" && (
+        {developer && status?.phase === "applied" && (
           <p className="builder-hint">
             Sends the applied changes to staging. Publish is a separate step.
           </p>
@@ -126,14 +134,25 @@ function SaveControls({
           </p>
         )}
         {(error || status?.error) && (
-          <p role="alert">{error || status?.error}</p>
+          <p role="alert">
+            {developer
+              ? error || status?.error
+              : clientSaveError(error || status?.error || "")}
+          </p>
         )}
         {status?.release && (
           <p role="status" aria-label="Staging deployment">
-            {status.release.message}
+            {developer
+              ? status.release.message
+              : clientDeploymentMessage(status.release.state)}
           </p>
         )}
       </div>
+      {!status && (
+        <button type="button" className="builder-primary" disabled>
+          Save to website
+        </button>
+      )}
       {status && ["applied", "committed"].includes(status.phase) && (
         <form
           onSubmit={async (event) => {
@@ -158,7 +177,7 @@ function SaveControls({
             }
           }}
         >
-          {status.phase === "applied" && (
+          {developer && status.phase === "applied" && (
             <label>
               Change summary
               <input
@@ -203,13 +222,13 @@ function SaveControls({
             Open staging
           </a>
         )}
-        {status?.release?.url && (
+        {developer && status?.release?.url && (
           <a href={status.release.url} target="_blank" rel="noreferrer">
             Deployment details
           </a>
         )}
       </div>
-      {status && (
+      {developer && status && (
         <details>
           <summary>Save details</summary>
           <p>

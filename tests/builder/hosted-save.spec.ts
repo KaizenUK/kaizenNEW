@@ -10,262 +10,313 @@ import {
 } from "../../scripts/builder-hosted-receipts";
 
 test.use({ ignoreHTTPSErrors: true });
-test("hosted save isolates the applied source, explains staged work and push rejection, and restores a retry after reopening", async ({
-  page,
-  context,
-}) => {
-  const project = await (
-    await page.request.post("/__builder-projects", {
-      headers: { "X-Kaizen-Builder": "1" },
-      data: { action: "create", name: "Save to staging" },
-    })
-  ).json();
-  // Finish development dependency discovery before loading the TLS editor.
-  await page.goto(`/builder/?project=${project.id}`);
-  await expect(
-    page.getByRole("heading", { name: "Pages", exact: true }),
-  ).toBeVisible();
-  const fixture = await hostedPreviewFixture(project.id, true);
-  const { api } = fixture;
-  const root = api.folders.root(project.id);
-  const remoteHead = () =>
-    api.git(api.remote, ["rev-parse", "refs/heads/stage"]);
-  const base = await remoteHead();
-  const savePanel = page.getByRole("region", {
-    name: "Save to website",
-    exact: true,
-  });
-  try {
-    await openSiteProject(page, project, root, true, {
-      origin: api.helper.origin,
-      accessToken: helperToken(),
-      direct: true,
-      editorOrigin: fixture.origin,
-    });
-    await page
-      .getByRole("button", { name: "Edit existing /", exact: true })
-      .click();
-    await page.getByRole("button", { name: "Build", exact: true }).click();
-    const iframe = page.locator('iframe[title="Website canvas"]');
-    await expect(iframe).toBeVisible({ timeout: 45000 });
-    const originalFrame = await iframe.getAttribute("src");
-    const heading = page
-      .frameLocator('iframe[title="Website canvas"]')
-      .getByRole("heading", { level: 1 });
-    await heading.dblclick();
-    await heading.fill("Saved from the hosted browser");
-    await heading.press("Tab");
-    await page
-      .getByRole("button", { name: "Review my changes", exact: true })
-      .click();
-    await page
-      .getByRole("button", { name: "Apply changes to the folder", exact: true })
-      .click();
-    await expect(iframe).not.toHaveAttribute("src", originalFrame!, {
-      timeout: 45000,
-    });
-    await expect(heading).toHaveText("Saved from the hosted browser");
-    await expect(
-      savePanel.getByRole("button", { name: "Save to website", exact: true }),
-    ).toBeEnabled();
-    const accountLink = savePanel.getByRole("link", {
-      name: "Account details",
-      exact: true,
-    });
-    await expect(accountLink).toHaveAttribute("target", "_blank");
-    const accountUrl = new URL(
-      (await accountLink.getAttribute("href"))!,
-      page.url(),
-    );
-    expect(accountUrl.searchParams.get("view")).toBe("account");
-    expect(accountUrl.searchParams.get("project")).toBe(project.id);
-    expect(await remoteHead()).toBe(base);
-    for (const width of [1440, 390]) {
-      await page.setViewportSize({ width, height: 1000 });
-      if (width === 390) {
-        await page
-          .getByRole("button", { name: "Mobile preview", exact: true })
-          .click();
-        await page
-          .getByRole("navigation", { name: "Editor panels" })
-          .getByRole("button", { name: "Page", exact: true })
-          .click();
-      }
-      await expect(
-        savePanel.getByRole("button", { name: "Save to website", exact: true }),
-      ).toBeVisible();
-      expect(
-        await page.evaluate(
-          () => document.documentElement.scrollWidth <= innerWidth,
-        ),
-      ).toBe(true);
-      await page.screenshot({
-        path: `test-results/hosted-save-ready-${width}.png`,
-      });
-    }
-    await page.setViewportSize({ width: 1440, height: 1000 });
-    await page
-      .getByRole("button", { name: "Desktop preview", exact: true })
-      .click();
-    await writeFile(path.join(root, "README.md"), "Unrelated staged work\n");
-    await api.git(root, ["add", "README.md"]);
-    await savePanel
-      .getByLabel("Change summary")
-      .fill("Update the homepage heading");
-    await savePanel
-      .getByRole("button", { name: "Save to website", exact: true })
-      .click();
-    await expect(savePanel.getByRole("alert")).toContainText("already staged");
-    expect(await remoteHead()).toBe(base);
-    expect(await api.git(root, ["diff", "--cached", "--name-only"])).toBe(
-      "README.md",
-    );
-    await api.git(root, ["reset", "--", "README.md"]);
-    const hook = path.join(api.remote, "hooks/pre-receive");
-    await writeFile(
-      hook,
-      "#!/bin/sh\necho private-rejection-detail >&2\nexit 1\n",
-      { mode: 0o700 },
-    );
-    await savePanel
-      .getByRole("button", { name: "Save to website", exact: true })
-      .click();
-    await expect(
-      savePanel.getByRole("button", {
-        name: "Retry saving to website",
-        exact: true,
-      }),
-    ).toBeEnabled();
-    await expect(savePanel.getByRole("alert")).toContainText(
-      "push was rejected",
-    );
-    await expect(savePanel).not.toContainText("private-rejection-detail");
-    const commit = await api.git(root, ["rev-parse", "HEAD"]);
-    expect(commit).not.toBe(base);
-    expect(await remoteHead()).toBe(base);
-    // Exercise the disconnect a real proxy can report while the helper stops.
-    // Recovery must work after reconnecting, regardless of which read was in flight.
-    await page.route(
-      "**/editor-api/builder-repository",
-      (route) =>
-        route.fulfill({
-          status: 503,
-          json: {
-            error: "The hosted helper is restarting. Reconnect shortly.",
-          },
-        }),
-      { times: 1 },
-    );
-    await page
-      .getByRole("button", { name: "Back to pages", exact: true })
-      .click();
-    await expect(
-      page.getByRole("button", { name: "Connect helper", exact: true }),
-    ).toBeVisible();
-    await fixture.restart();
-    await page.reload();
+for (const view of ["developer", "client"] as const) {
+  test(`${view} hosted save isolates the applied source, explains staged work and push rejection, and restores a retry after reopening`, async ({
+    page,
+    context,
+  }) => {
+    const project = await (
+      await page.request.post("/__builder-projects", {
+        headers: { "X-Kaizen-Builder": "1" },
+        data: { action: "create", name: "Save to staging" },
+      })
+    ).json();
+    // Finish development dependency discovery before loading the TLS editor.
+    await page.goto(`/builder/?project=${project.id}`);
     await expect(
       page.getByRole("heading", { name: "Pages", exact: true }),
     ).toBeVisible();
-    await page
-      .getByRole("button", { name: "Edit existing /", exact: true })
-      .click();
-    await expect(
-      savePanel.getByRole("button", {
-        name: "Retry saving to website",
-        exact: true,
-      }),
-    ).toBeEnabled();
-    await savePanel
-      .getByRole("button", { name: "Check saved state", exact: true })
-      .click();
-    await expect(
-      savePanel.getByRole("button", {
-        name: "Retry saving to website",
-        exact: true,
-      }),
-    ).toBeEnabled();
-    expect(await remoteHead()).toBe(base);
-    await rm(hook);
-    await savePanel
-      .getByRole("button", { name: "Retry saving to website", exact: true })
-      .click();
-    await expect(
-      savePanel.getByRole("link", { name: "Open staging", exact: true }),
-    ).toHaveAttribute("href", fixture.origin);
-    await expect(savePanel.getByLabel("Staging deployment")).toContainText(
-      "waiting",
-    );
-    expect(await remoteHead()).toBe(commit);
-    expect(
-      await api.git(api.remote, ["show", "-s", "--format=%an <%ae>", "stage"]),
-    ).toBe("Fixture owner <owner@example.invalid>");
-    expect(
-      await api.git(api.remote, ["show", "stage:src/pages/index.astro"]),
-    ).toContain("Saved from the hosted browser");
-    expect(await api.git(api.remote, ["show", "stage:README.md"])).toBe(
-      "Unrelated repository content",
-    );
-    expect(await readFile(path.join(root, "README.md"), "utf8")).toBe(
-      "Unrelated staged work\n",
-    );
-    expect(await api.git(api.remote, ["rev-list", "--count", "stage"])).toBe(
-      "2",
-    );
-    expect(await api.git(api.remote, ["branch", "--list", "main"])).toBe("");
-    const gitState = await api.send({
-      action: "repository-git-status",
-      projectId: project.id,
+    const fixture = await hostedPreviewFixture(project.id, true);
+    const { api } = fixture;
+    const root = api.folders.root(project.id);
+    const remoteHead = () =>
+      api.git(api.remote, ["rev-parse", "refs/heads/stage"]);
+    const base = await remoteHead();
+    const savePanel = page.getByRole("region", {
+      name: "Save to website",
+      exact: true,
     });
-    expect(gitState.status).toBe(200);
-    await expect(page.locator(".builder-site-footer")).toContainText(
-      `${gitState.body.files.length} files changed since the last commit`,
-    );
-    fixture.deployment.status = "completed";
-    fixture.deployment.conclusion = "success";
-    await expect(savePanel.getByLabel("Staging deployment")).toContainText(
-      "workflow succeeded",
-      { timeout: 25000 },
-    );
-    await expect(
-      savePanel.getByRole("link", { name: "Deployment details", exact: true }),
-    ).toHaveAttribute(
-      "href",
-      "https://github.com/fixture/site/actions/runs/123",
-    );
-    for (const width of [1440, 390]) {
-      await page.setViewportSize({ width, height: 1000 });
-      if (width === 390) {
-        await page
-          .getByRole("button", { name: "Mobile preview", exact: true })
-          .click();
-        await page
-          .getByRole("navigation", { name: "Editor panels" })
-          .getByRole("button", { name: "Page", exact: true })
-          .click();
+    try {
+      await openSiteProject(page, project, root, true, {
+        origin: api.helper.origin,
+        accessToken: helperToken(),
+        direct: true,
+        editorOrigin: fixture.origin,
+      });
+      await page.evaluate(
+        ({ project, view }) =>
+          localStorage.setItem(
+            `kaizen-builder-view:22222222-2222-4222-8222-222222222222:${project}`,
+            view,
+          ),
+        { project: project.id, view },
+      );
+      await page.reload();
+      await page
+        .getByRole("button", { name: "Edit existing /", exact: true })
+        .click();
+      await page.getByRole("button", { name: "Build", exact: true }).click();
+      const iframe = page.locator('iframe[title="Website canvas"]');
+      await expect(iframe).toBeVisible({ timeout: 45000 });
+      const originalFrame = await iframe.getAttribute("src");
+      const heading = page
+        .frameLocator('iframe[title="Website canvas"]')
+        .getByRole("heading", { level: 1 });
+      await heading.dblclick();
+      await heading.fill("Saved from the hosted browser");
+      await heading.press("Tab");
+      await page
+        .getByRole("button", { name: "Review my changes", exact: true })
+        .click();
+      await page
+        .getByRole("button", {
+          name: "Apply changes to the folder",
+          exact: true,
+        })
+        .click();
+      await expect(iframe).not.toHaveAttribute("src", originalFrame!, {
+        timeout: 45000,
+      });
+      await expect(heading).toHaveText("Saved from the hosted browser");
+      await expect(
+        savePanel.getByRole("button", { name: "Save to website", exact: true }),
+      ).toBeEnabled();
+      const accountLink = savePanel.getByRole("link", {
+        name: "Account details",
+        exact: true,
+      });
+      await expect(accountLink).toHaveAttribute("target", "_blank");
+      const accountUrl = new URL(
+        (await accountLink.getAttribute("href"))!,
+        page.url(),
+      );
+      expect(accountUrl.searchParams.get("view")).toBe("account");
+      expect(accountUrl.searchParams.get("project")).toBe(project.id);
+      expect(await remoteHead()).toBe(base);
+      for (const width of [1440, 390]) {
+        await page.setViewportSize({ width, height: 1000 });
+        if (width === 390) {
+          await page
+            .getByRole("button", { name: "Mobile preview", exact: true })
+            .click();
+          await page
+            .getByRole("navigation", { name: "Editor panels" })
+            .getByRole("button", { name: "Page", exact: true })
+            .click();
+        }
+        await expect(
+          savePanel.getByRole("button", {
+            name: "Save to website",
+            exact: true,
+          }),
+        ).toBeVisible();
+        expect(
+          await page.evaluate(
+            () => document.documentElement.scrollWidth <= innerWidth,
+          ),
+        ).toBe(true);
+        await page.screenshot({
+          path: `test-results/hosted-save-ready-${view}-${width}.png`,
+        });
       }
+      await page.setViewportSize({ width: 1440, height: 1000 });
+      await page
+        .getByRole("button", { name: "Desktop preview", exact: true })
+        .click();
+      await writeFile(path.join(root, "README.md"), "Unrelated staged work\n");
+      await api.git(root, ["add", "README.md"]);
+      if (view === "developer") {
+        await savePanel
+          .getByLabel("Change summary")
+          .fill("Update the homepage heading");
+      } else {
+        await expect(savePanel.getByLabel("Change summary")).toHaveCount(0);
+        await expect(
+          savePanel.getByText("Save details", { exact: true }),
+        ).toHaveCount(0);
+      }
+      await savePanel
+        .getByRole("button", { name: "Save to website", exact: true })
+        .click();
+      await expect(savePanel.getByRole("alert")).toContainText(
+        view === "developer" ? "already staged" : "Other changes",
+      );
+      expect(await remoteHead()).toBe(base);
+      expect(await api.git(root, ["diff", "--cached", "--name-only"])).toBe(
+        "README.md",
+      );
+      await api.git(root, ["reset", "--", "README.md"]);
+      const hook = path.join(api.remote, "hooks/pre-receive");
+      await writeFile(
+        hook,
+        "#!/bin/sh\necho private-rejection-detail >&2\nexit 1\n",
+        { mode: 0o700 },
+      );
+      await savePanel
+        .getByRole("button", { name: "Save to website", exact: true })
+        .click();
+      await expect(
+        savePanel.getByRole("button", {
+          name: "Retry saving to website",
+          exact: true,
+        }),
+      ).toBeEnabled();
+      await expect(savePanel.getByRole("alert")).toContainText(
+        view === "developer" ? "push was rejected" : "could not be confirmed",
+      );
+      await expect(savePanel).not.toContainText("private-rejection-detail");
+      const commit = await api.git(root, ["rev-parse", "HEAD"]);
+      expect(commit).not.toBe(base);
+      expect(await remoteHead()).toBe(base);
+      // Exercise the disconnect a real proxy can report while the helper stops.
+      // Recovery must work after reconnecting, regardless of which read was in flight.
+      await page.route(
+        "**/editor-api/builder-repository",
+        (route) =>
+          route.fulfill({
+            status: 503,
+            json: {
+              error: "The hosted helper is restarting. Reconnect shortly.",
+            },
+          }),
+        { times: 1 },
+      );
+      await page
+        .getByRole("button", { name: "Back to pages", exact: true })
+        .click();
+      await expect(
+        page.getByRole("button", { name: "Connect helper", exact: true }),
+      ).toBeVisible();
+      await fixture.restart();
+      await page.reload();
+      await expect(
+        page.getByRole("heading", { name: "Pages", exact: true }),
+      ).toBeVisible();
+      await page
+        .getByRole("button", { name: "Edit existing /", exact: true })
+        .click();
+      await expect(
+        savePanel.getByRole("button", {
+          name: "Retry saving to website",
+          exact: true,
+        }),
+      ).toBeEnabled();
+      await savePanel
+        .getByRole("button", { name: "Check saved state", exact: true })
+        .click();
+      await expect(
+        savePanel.getByRole("button", {
+          name: "Retry saving to website",
+          exact: true,
+        }),
+      ).toBeEnabled();
+      expect(await remoteHead()).toBe(base);
+      await rm(hook);
+      await savePanel
+        .getByRole("button", { name: "Retry saving to website", exact: true })
+        .click();
       await expect(
         savePanel.getByRole("link", { name: "Open staging", exact: true }),
-      ).toBeVisible();
+      ).toHaveAttribute("href", fixture.origin);
+      await expect(savePanel.getByLabel("Staging deployment")).toContainText(
+        view === "developer" ? "waiting" : "queued",
+      );
+      expect(await remoteHead()).toBe(commit);
       expect(
-        await page.evaluate(
-          () => document.documentElement.scrollWidth <= innerWidth,
-        ),
-      ).toBe(true);
-      await page.screenshot({ path: `test-results/hosted-save-${width}.png` });
-    }
-  } finally {
-    drainRepositoryRoutes.delete(page);
-    try {
-      if (!page.isClosed()) {
-        await page.unrouteAll({ behavior: "wait" });
-        await context.unrouteAll({ behavior: "wait" });
+        await api.git(api.remote, [
+          "show",
+          "-s",
+          "--format=%an <%ae>",
+          "stage",
+        ]),
+      ).toBe("Fixture owner <owner@example.invalid>");
+      expect(
+        await api.git(api.remote, ["show", "stage:src/pages/index.astro"]),
+      ).toContain("Saved from the hosted browser");
+      expect(await api.git(api.remote, ["show", "stage:README.md"])).toBe(
+        "Unrelated repository content",
+      );
+      expect(await readFile(path.join(root, "README.md"), "utf8")).toBe(
+        "Unrelated staged work\n",
+      );
+      expect(await api.git(api.remote, ["rev-list", "--count", "stage"])).toBe(
+        "2",
+      );
+      expect(await api.git(api.remote, ["branch", "--list", "main"])).toBe("");
+      const gitState = await api.send({
+        action: "repository-git-status",
+        projectId: project.id,
+      });
+      expect(gitState.status).toBe(200);
+      if (view === "developer") {
+        await expect(page.locator(".builder-site-footer")).toContainText(
+          `${gitState.body.files.length} files changed since the last commit`,
+        );
+      } else {
+        await expect(page.locator(".builder-site-footer")).not.toContainText(
+          /src\/|[Bb]ranch|[Cc]ommit|repository|[Pp]ush|files changed/,
+        );
+      }
+      fixture.deployment.status = "completed";
+      fixture.deployment.conclusion = "success";
+      await expect(savePanel.getByLabel("Staging deployment")).toContainText(
+        view === "developer" ? "workflow succeeded" : "finished updating",
+        { timeout: 25000 },
+      );
+      if (view === "developer") {
+        await expect(
+          savePanel.getByRole("link", {
+            name: "Deployment details",
+            exact: true,
+          }),
+        ).toHaveAttribute(
+          "href",
+          "https://github.com/fixture/site/actions/runs/123",
+        );
+      } else {
+        await expect(
+          savePanel.getByRole("link", {
+            name: "Deployment details",
+            exact: true,
+          }),
+        ).toHaveCount(0);
+      }
+      for (const width of [1440, 390]) {
+        await page.setViewportSize({ width, height: 1000 });
+        if (width === 390) {
+          await page
+            .getByRole("button", { name: "Mobile preview", exact: true })
+            .click();
+          await page
+            .getByRole("navigation", { name: "Editor panels" })
+            .getByRole("button", { name: "Page", exact: true })
+            .click();
+        }
+        await expect(
+          savePanel.getByRole("link", { name: "Open staging", exact: true }),
+        ).toBeVisible();
+        expect(
+          await page.evaluate(
+            () => document.documentElement.scrollWidth <= innerWidth,
+          ),
+        ).toBe(true);
+        await page.screenshot({
+          path: `test-results/hosted-save-${view}-${width}.png`,
+        });
       }
     } finally {
-      await fixture.close();
+      drainRepositoryRoutes.delete(page);
+      try {
+        if (!page.isClosed()) {
+          await page.unrouteAll({ behavior: "wait" });
+          await context.unrouteAll({ behavior: "wait" });
+        }
+      } finally {
+        await fixture.close();
+      }
     }
-  }
-});
+  });
+}
 
 test("an interrupted commit survives helper restart and shows an operator check without another save action", async ({
   page,
@@ -341,7 +392,8 @@ test("an interrupted commit survives helper restart and shows an operator check 
           await inspectionReady;
         if (
           holdDraft &&
-          route.request().postDataJSON()?.action === "repository-source-draft-read"
+          route.request().postDataJSON()?.action ===
+            "repository-source-draft-read"
         )
           await draftReady;
         await route.fallback();

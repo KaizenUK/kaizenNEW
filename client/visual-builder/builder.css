@@ -3939,6 +3939,13 @@
   background: var(--panel);
   border-radius: 12px;
 }
+.builder-site-review[role="dialog"] {
+  box-sizing: border-box;
+  width: auto;
+  min-width: 0;
+  margin: 0;
+  overflow-wrap: anywhere;
+}
 .builder-site-review pre {
   white-space: pre-wrap;
   overflow-wrap: anywhere;
@@ -3946,6 +3953,48 @@
 }
 .builder-site-review details {
   margin: 14px 0;
+}
+.builder-change-review {
+  list-style: none;
+  padding: 0;
+  display: grid;
+  gap: 20px;
+}
+.builder-change-review > li {
+  min-width: 0;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 20px;
+}
+.builder-change-review h3,
+.builder-change-review h4 {
+  margin: 0 0 8px;
+}
+.builder-change-pair {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+.builder-change-pair > div {
+  min-width: 0;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+.builder-change-pair p,
+.builder-change-pair li {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.builder-change-pair p {
+  margin: 0;
+}
+@media (max-width: 600px) {
+  .builder-change-pair {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .builder-site-review {
+    padding: 20px;
+  }
 }
 .builder-modal-overlay {
   position: fixed;

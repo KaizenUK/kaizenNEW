@@ -40,6 +40,12 @@ import type { RepositoryGitStatus } from "../../scripts/builder-repository-git";
 import AssetLibrary from "./AssetLibrary";
 import RepositorySave from "./RepositorySave";
 import { useBuilderViewMode } from "./viewMode";
+import {
+  clientSourceError,
+  sourceFieldLabel,
+  sourceReviewChanges,
+  type SourceReviewChange,
+} from "./sourceReview";
 
 export default function SitePageEditor({
   page,
@@ -85,6 +91,19 @@ export default function SitePageEditor({
     repositoryConnection.snapshot,
   );
   const draft = useSourceEditingDraft(inspection);
+  const editKey = JSON.stringify([
+    inspection,
+    draft.values,
+    draft.orders,
+    draft.assets,
+  ]);
+  const currentEditKey = useRef(editKey);
+  currentEditKey.current = editKey;
+  const [reviewed, setReviewed] = useState<{
+    planId: string;
+    editKey: string;
+    changes: SourceReviewChange[];
+  }>();
   const build = useSiteBuild(inspection);
   const frameRef = useRef<HTMLIFrameElement>(null);
   const canvas = useSourceCanvas(
@@ -102,6 +121,17 @@ export default function SitePageEditor({
     inspection?.fields.filter((f) => canvas.ids.includes(f.id)) || [];
   const changed =
     Object.keys(draft.values).length + Object.keys(draft.orders).length;
+  const clientDraftStatus = !draft.ready
+    ? "Reading saved edits…"
+    : draft.stale
+      ? "Earlier edits need recovery"
+      : draft.error
+        ? "Edits not saved"
+        : !draft.saved
+          ? "Saving edits…"
+          : changed
+            ? "Edits saved for review"
+            : "No changes yet";
   const locked = busy || !draft.ready || Boolean(draft.stale);
   const disconnected = connection.status !== "connected";
   const expiring =
@@ -215,10 +245,19 @@ export default function SitePageEditor({
     };
   }, []);
   async function review() {
+    if (!inspection) return;
     setBusy(true);
     setError("");
     try {
+      const edits = structuredClone({
+        inspection,
+        values: draft.values,
+        orders: draft.orders,
+        ...(draft.assets.length ? { assets: draft.assets } : {}),
+      });
+      const changes = sourceReviewChanges(edits, workspace.assets);
       await draft.flush();
+      const draftVersion = draft.version.current;
       const media = await Promise.all(
         draft.assets.map(async (replacement) => {
           const asset = workspace.assets.find(
@@ -241,18 +280,22 @@ export default function SitePageEditor({
           return { assetId: asset.id, name: asset.name, base64 };
         }),
       );
+      if (currentEditKey.current !== editKey)
+        throw new Error(
+          "Your edits changed while preparing the review. Review them again before applying.",
+        );
       const next = await storage.repository({
         action: "repository-source-prepare",
-        edits: {
-          inspection,
-          values: draft.values,
-          orders: draft.orders,
-          ...(draft.assets.length ? { assets: draft.assets } : {}),
-        },
+        edits,
         media,
-        draftVersion: draft.version.current,
+        draftVersion,
       });
+      if (currentEditKey.current !== editKey)
+        throw new Error(
+          "Your edits changed while preparing the review. Review them again before applying.",
+        );
       setPlan(next);
+      setReviewed({ planId: next.id, editKey, changes });
       setReviewOpen(true);
     } catch (e) {
       setError(e.message);
@@ -262,6 +305,15 @@ export default function SitePageEditor({
   }
   async function apply() {
     if (!plan) return;
+    if (
+      reviewed?.planId !== plan.id ||
+      reviewed.editKey !== currentEditKey.current
+    ) {
+      setError(
+        "Your edits changed after this review. Close it and review your changes again.",
+      );
+      return;
+    }
     setBusy(true);
     setError("");
     try {
@@ -317,9 +369,11 @@ export default function SitePageEditor({
             role="status"
             aria-label="Source editing draft"
           >
-            {draft.status.startsWith("Edits saved")
-              ? repositoryConnection.savedLabel
-              : draft.status || "Reading the page…"}
+            {!developer
+              ? clientDraftStatus
+              : draft.status.startsWith("Edits saved")
+                ? repositoryConnection.savedLabel
+                : draft.status || "Reading the page…"}
           </span>
         </div>
         <div className="builder-editor-center builder-canvas-toolbar">
@@ -428,20 +482,24 @@ export default function SitePageEditor({
               </button>
             }
           >
-            {error || draft.error}
+            {developer
+              ? error || draft.error
+              : clientSourceError(error || draft.error)}
           </Notice>
         )}
         {notice && <p role="status">{notice}</p>}
         {draft.stale && (
           <Notice tone="error">
-            The website's files changed. Your earlier edits are kept.{" "}
+            The website changed. Your earlier edits are kept.{" "}
             <button type="button" onClick={draft.download}>
               Download my unapplied edits
             </button>
-            <details>
-              <summary>Recover saved changes</summary>
-              <pre>{JSON.stringify(draft.stale.values, null, 2)}</pre>
-            </details>
+            {developer && (
+              <details>
+                <summary>Recover saved changes</summary>
+                <pre>{JSON.stringify(draft.stale.values, null, 2)}</pre>
+              </details>
+            )}
             <button
               type="button"
               onClick={() =>
@@ -565,7 +623,7 @@ export default function SitePageEditor({
             <div className="builder-site-panel-content">
               {inspection?.groups.map((group) => (
                 <section key={group.id}>
-                  <h3>{group.label}</h3>
+                  <h3>{developer ? group.label : "Page sections"}</h3>
                   {(draft.orders[group.id] || group.items.map((i) => i.id)).map(
                     (id, index, array) => (
                       <div className="builder-site-section" key={id}>
@@ -858,7 +916,11 @@ export default function SitePageEditor({
                         : `Current ${field.kind === "link" ? "address" : "text"}`}
                       {field.design ? (
                         <input
-                          aria-label={`${field.file} ${field.label} line ${field.line}`}
+                          aria-label={
+                            developer
+                              ? `${field.file} ${field.label} line ${field.line}`
+                              : sourceFieldLabel(field)
+                          }
                           type={
                             field.design.min !== undefined ? "number" : "text"
                           }
@@ -874,7 +936,11 @@ export default function SitePageEditor({
                         />
                       ) : (
                         <textarea
-                          aria-label={`${field.file} ${field.label} line ${field.line}`}
+                          aria-label={
+                            developer
+                              ? `${field.file} ${field.label} line ${field.line}`
+                              : sourceFieldLabel(field)
+                          }
                           rows={field.kind === "text" ? 4 : 2}
                           value={draft.values[field.id] ?? field.value}
                           maxLength={20000}
@@ -922,10 +988,14 @@ export default function SitePageEditor({
                       <summary>Original text</summary>
                       <p>{field.value}</p>
                     </details>
-                    <h4>Where it comes from</h4>
-                    <p className="builder-hint">
-                      {field.file} · line {field.line}
-                    </p>
+                    {developer && (
+                      <>
+                        <h4>Where it comes from</h4>
+                        <p className="builder-hint">
+                          {field.file} · line {field.line}
+                        </p>
+                      </>
+                    )}
                     {field.file !== page.route && (
                       <p>Shared with other pages</p>
                     )}
@@ -970,30 +1040,42 @@ export default function SitePageEditor({
               <>
                 <h3>{page.title}</h3>
                 <p>{page.path}</p>
-                <h4>Files involved</h4>
-                {inspection?.files.map((file) => (
-                  <p key={file.file} className="builder-hint">
-                    {file.file}
-                    {file.file !== page.route ? " · Shared component" : ""}
-                  </p>
-                ))}
-                <details>
-                  <summary>Managed content</summary>
-                  {inspection?.boundaries.map((reason, i) => (
-                    <p key={i}>{reason}</p>
-                  ))}
-                </details>
+                {developer && (
+                  <>
+                    <h4>Files involved</h4>
+                    {inspection?.files.map((file) => (
+                      <p key={file.file} className="builder-hint">
+                        {file.file}
+                        {file.file !== page.route ? " · Shared component" : ""}
+                      </p>
+                    ))}
+                    <details>
+                      <summary>Managed content</summary>
+                      {inspection?.boundaries.map((reason, i) => (
+                        <p key={i}>{reason}</p>
+                      ))}
+                    </details>
+                  </>
+                )}
               </>
             )}
           </div>
         </aside>
       </div>
       <footer className="builder-site-footer">
-        <span title={page.route}>
-          {page.path} · <span className="builder-hint">{page.route}</span> ·{" "}
-          {changed} unapplied {changed === 1 ? "change" : "changes"}
-          {git?.isRepository &&
-            ` · Branch ${git.branch} · ${git.files.length} files changed since the last commit`}
+        <span title={developer ? page.route : undefined}>
+          {developer ? (
+            <>
+              {page.path} · <span className="builder-hint">{page.route}</span> ·{" "}
+              {changed} unapplied {changed === 1 ? "change" : "changes"}
+              {git?.isRepository &&
+                ` · Branch ${git.branch} · ${git.files.length} files changed since the last commit`}
+            </>
+          ) : (
+            <>
+              {page.title} · {clientDraftStatus}
+            </>
+          )}
         </span>
         {changed > 0 && (
           <button type="button" onClick={draft.download}>
@@ -1010,6 +1092,7 @@ export default function SitePageEditor({
             onCommit={setSavedCommit}
           />
         ) : (
+          developer &&
           appliedPlan &&
           git?.isRepository && (
             <form
@@ -1065,24 +1148,86 @@ export default function SitePageEditor({
             >
               <X size={18} />
             </Dialog.Close>
-            {plan?.changes
-              .filter((c) => c.action !== "unchanged")
-              .map((change) => (
-                <details key={change.file}>
-                  <summary>
-                    {change.action} · {change.file}
-                  </summary>
-                  {change.preview && <pre>{change.preview}</pre>}
-                  {change.conflict && (
-                    <Notice tone="error">{change.conflict}</Notice>
-                  )}
-                </details>
-              ))}
-            {error && <Notice tone="error">{error}</Notice>}
+            {reviewed?.planId === plan?.id && (
+              <ol
+                className="builder-change-review"
+                aria-label="Before and after changes"
+              >
+                {reviewed?.changes.map((change) => (
+                  <li key={change.id}>
+                    <h3>{change.label}</h3>
+                    {change.shared && (
+                      <p className="builder-hint">
+                        Other pages using this content will change too.
+                      </p>
+                    )}
+                    <div className="builder-change-pair">
+                      {(["before", "after"] as const).map((side) => (
+                        <div key={side}>
+                          <h4>{side === "before" ? "Before" : "After"}</h4>
+                          {change.ordered ? (
+                            <ol>
+                              {change[side].map((value, index) => (
+                                <li key={index}>{value}</li>
+                              ))}
+                            </ol>
+                          ) : (
+                            <p>{change[side][0] || <em>Empty</em>}</p>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  </li>
+                ))}
+              </ol>
+            )}
+            {reviewed?.planId === plan?.id && !reviewed?.changes.length && (
+              <p>
+                There are no changes to apply. Close this review to keep
+                editing.
+              </p>
+            )}
+            {Boolean(plan?.conflicts.length) && (
+              <Notice tone="error">
+                The website changed and these edits cannot be applied. Close
+                this review and reopen the page. Your edits are kept.
+              </Notice>
+            )}
+            {developer &&
+              plan?.changes
+                .filter((c) => c.action !== "unchanged")
+                .map((change) => (
+                  <details key={change.file}>
+                    <summary>
+                      {change.action} · {change.file}
+                    </summary>
+                    {change.preview && (
+                      <details>
+                        <summary>Show the whole file</summary>
+                        <pre>{change.preview}</pre>
+                      </details>
+                    )}
+                    {change.conflict && (
+                      <Notice tone="error">{change.conflict}</Notice>
+                    )}
+                  </details>
+                ))}
+            {error && (
+              <Notice tone="error">
+                {developer ? error : clientSourceError(error)}
+              </Notice>
+            )}
             <button
               type="button"
               className="builder-primary"
-              disabled={busy || Boolean(plan?.conflicts.length)}
+              disabled={
+                busy ||
+                !plan ||
+                reviewed?.planId !== plan.id ||
+                !reviewed.changes.length ||
+                reviewed.editKey !== editKey ||
+                Boolean(plan.conflicts.length)
+              }
               onClick={() => void apply()}
             >
               Apply changes to the folder
