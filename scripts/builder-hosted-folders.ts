@@ -18,6 +18,7 @@ import { HostedHelperError, accountId } from "./builder-hosted-auth";
 import type { RepositorySaveTarget } from "../shared/builderRepositorySave";
 import type { RepositoryPublishTarget } from "../shared/builderRepositoryPublish";
 import type { RepositoryGitCommand } from "./builder-repository-git";
+import { HostedDiskGuard, type HostedDiskLimits } from "./builder-hosted-disk";
 
 const exec = promisify(execFile);
 export type HostedProjectRepository = {
@@ -218,6 +219,7 @@ export async function privateFile(value: string, maxBytes: number) {
 }
 
 export class HostedWebsiteFolders {
+  readonly disk: HostedDiskGuard;
   private queue = new Map<string, { tail: Promise<unknown>; count: number }>();
   private configured: Map<string, HostedProjectConfiguration>;
   private initial: Map<string, HostedProjectConfiguration>;
@@ -225,6 +227,7 @@ export class HostedWebsiteFolders {
     readonly directory: string,
     readonly credentialsDirectory: string,
     projects: HostedProjectConfiguration[],
+    diskLimits?: HostedDiskLimits,
   ) {
     if (
       ![directory, credentialsDirectory].every(
@@ -249,6 +252,7 @@ export class HostedWebsiteFolders {
       ]),
     );
     this.initial = new Map(this.configured);
+    this.disk = new HostedDiskGuard(directory, diskLimits);
   }
   admission(id: string) {
     const value = this.initial.get(id);
@@ -419,7 +423,13 @@ export class HostedWebsiteFolders {
     await privateFile(hosts, 1024 * 1024);
     return `ssh -F /dev/null -i ${shellQuote(key)} -o IdentitiesOnly=yes -o BatchMode=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile=${shellQuote(hosts)} -o GlobalKnownHostsFile=/dev/null -o ConnectTimeout=10 -o ConnectionAttempts=1`;
   }
-  private async git(cwd: string, args: string[], ssh?: string, raw = false) {
+  private async git(
+    cwd: string,
+    args: string[],
+    ssh?: string,
+    raw = false,
+    signal?: AbortSignal,
+  ) {
     try {
       const result = (
         await exec(
@@ -436,6 +446,10 @@ export class HostedWebsiteFolders {
             "-c",
             "core.fsmonitor=false",
             "-c",
+            "gc.auto=0",
+            "-c",
+            "maintenance.auto=false",
+            "-c",
             "credential.helper=",
             "-c",
             "submodule.recurse=false",
@@ -449,6 +463,7 @@ export class HostedWebsiteFolders {
           ],
           {
             timeout: 90_000,
+            signal,
             maxBuffer: 2 * 1024 * 1024,
             env: {
               PATH: process.env.PATH,
@@ -509,25 +524,29 @@ export class HostedWebsiteFolders {
       const ssh = await this.credentials(id),
         temporary = path.join(project, `.clone-${randomUUID()}`);
       try {
-        await this.git(
-          project,
-          [
-            "clone",
-            "--no-local",
-            "--no-hardlinks",
-            "--single-branch",
-            "--branch",
-            configured.branch,
-            "--template=",
-            "--config",
-            "core.hooksPath=/dev/null",
-            "--config",
-            "core.fsmonitor=false",
-            "--",
-            configured.repositoryUrl,
-            temporary,
-          ],
-          ssh,
+        await this.disk.run(id, async (signal) =>
+          this.git(
+            project,
+            [
+              "clone",
+              "--no-local",
+              "--no-hardlinks",
+              "--single-branch",
+              "--branch",
+              configured.branch,
+              "--template=",
+              "--config",
+              "core.hooksPath=/dev/null",
+              "--config",
+              "core.fsmonitor=false",
+              "--",
+              configured.repositoryUrl,
+              temporary,
+            ],
+            ssh,
+            false,
+            signal,
+          ),
         );
         await rename(temporary, root);
       } finally {
@@ -635,18 +654,22 @@ export class HostedWebsiteFolders {
       configured = this.configuration(id),
       target = this.productionTarget(id);
     // Fetch objects only; never move the website branch, checkout or user's index.
-    await this.git(
-      root,
-      [
-        "fetch",
-        "--no-tags",
-        "--no-write-fetch-head",
-        "--no-recurse-submodules",
-        "--",
-        configured.repositoryUrl,
-        `refs/heads/${target.branch}`,
-      ],
-      await this.credentials(id),
+    await this.disk.run(id, async (signal) =>
+      this.git(
+        root,
+        [
+          "fetch",
+          "--no-tags",
+          "--no-write-fetch-head",
+          "--no-recurse-submodules",
+          "--",
+          configured.repositoryUrl,
+          `refs/heads/${target.branch}`,
+        ],
+        await this.credentials(id),
+        false,
+        signal,
+      ),
     );
   }
   async publicationFiles(id: string, commit: string, base: string) {
@@ -790,17 +813,21 @@ export class HostedWebsiteFolders {
     const root = await this.check(id),
       configured = this.configuration(id),
       ssh = await this.credentials(id);
-    await this.git(
-      root,
-      [
-        "fetch",
-        "--no-tags",
-        "--prune",
-        "--no-recurse-submodules",
-        "origin",
-        `+refs/heads/${configured.branch}:refs/remotes/origin/${configured.branch}`,
-      ],
-      ssh,
+    await this.disk.run(id, async (signal) =>
+      this.git(
+        root,
+        [
+          "fetch",
+          "--no-tags",
+          "--prune",
+          "--no-recurse-submodules",
+          "origin",
+          `+refs/heads/${configured.branch}:refs/remotes/origin/${configured.branch}`,
+        ],
+        ssh,
+        false,
+        signal,
+      ),
     );
     return {
       root,

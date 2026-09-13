@@ -7,6 +7,7 @@ import { HostedRepositoryAccess } from "../../scripts/builder-hosted-auth";
 import type { RepositorySaveTarget } from "../../shared/builderRepositorySave";
 import type { RepositoryPublishTarget } from "../../shared/builderRepositoryPublish";
 import type { HostedSaveReleases } from "../../scripts/builder-hosted-save-release";
+import type { HostedDiskLimits } from "../../scripts/builder-hosted-disk";
 import { HostedWebsiteFolders } from "../../scripts/builder-hosted-folders";
 import {
   HostedHelperService,
@@ -33,6 +34,7 @@ export async function hostedHelperFixture(
   saving?: { target: RepositorySaveTarget; releases?: HostedSaveReleases },
   setup?: "empty" | "approved",
   publishing?: { target: RepositoryPublishTarget; fetch: typeof fetch },
+  diskLimits?: HostedDiskLimits,
 ) {
   const directory = await mkdtemp(path.join(tmpdir(), "kaizen-hosted-helper-"));
   const seed = path.join(directory, "seed"),
@@ -203,30 +205,35 @@ const child=spawn(operation.split(' ')[0],[${JSON.stringify(remote)}],{stdio:'in
       return Response.json({}, { status: 404 });
     },
   });
-  const folders = new HostedWebsiteFolders(
-    path.join(directory, "work"),
-    credentials,
-    setup === "empty"
-      ? projectIds.map((projectId) => ({ projectId, setup: true as const }))
-      : configured,
-  );
-  const service = new HostedHelperService(folders, access, {
-    ...(previewOrigin ? { editorOrigin: previewOrigin } : {}),
-    ...(saving?.releases ? { saveReleases: saving.releases } : {}),
-    ...(publishing ? { publicationFetch: publishing.fetch } : {}),
-  });
-  const helper = await startHostedHelper({
-    service,
-    port: 0,
-    origins: [previewOrigin || "https://builder.example"],
-  });
+  const start = async () => {
+    const folders = new HostedWebsiteFolders(
+      path.join(directory, "work"),
+      credentials,
+      setup === "empty"
+        ? projectIds.map((projectId) => ({ projectId, setup: true as const }))
+        : configured,
+      diskLimits,
+    );
+    const service = new HostedHelperService(folders, access, {
+      ...(previewOrigin ? { editorOrigin: previewOrigin } : {}),
+      ...(saving?.releases ? { saveReleases: saving.releases } : {}),
+      ...(publishing ? { publicationFetch: publishing.fetch } : {}),
+    });
+    const helper = await startHostedHelper({
+      service,
+      port: 0,
+      origins: [previewOrigin || "https://builder.example"],
+    });
+    return { folders, service, helper };
+  };
+  let running = await start();
   const send = async (
     input: Record<string, unknown>,
     actor = helperOwner,
     options: RequestInit = {},
   ) => {
     const response = await fetch(
-      `${helper.origin}/editor-api/builder-repository`,
+      `${running.helper.origin}/editor-api/builder-repository`,
       {
         method: "POST",
         headers: {
@@ -251,9 +258,19 @@ const child=spawn(operation.split(' ')[0],[${JSON.stringify(remote)}],{stdio:'in
     credentials,
     configured,
     git,
-    folders,
-    service,
-    helper,
+    get folders() {
+      return running.folders;
+    },
+    get service() {
+      return running.service;
+    },
+    get helper() {
+      return running.helper;
+    },
+    restart: async () => {
+      await running.helper.close();
+      running = await start();
+    },
     send,
     members,
     owners,
@@ -274,7 +291,7 @@ const child=spawn(operation.split(' ')[0],[${JSON.stringify(remote)}],{stdio:'in
         .split("\n")
         .map((line) => JSON.parse(line)),
     close: async () => {
-      await helper.close();
+      await running.helper.close();
       process.env.PATH = previousPath;
       await rm(directory, { recursive: true, force: true });
     },

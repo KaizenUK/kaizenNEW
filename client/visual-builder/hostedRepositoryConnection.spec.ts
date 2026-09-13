@@ -66,6 +66,33 @@ function fixture(
   };
 }
 describe("hosted repository transport", () => {
+  it("keeps the authenticated connection when a previous build is gone, without replaying it", async () => {
+    const api = fixture(false, true);
+    await api.open();
+    const before = api.server.mock.calls.length;
+    api.server.mockResolvedValueOnce(
+      Response.json(
+        { error: "This build is no longer available." },
+        { status: 410 },
+      ),
+    );
+    await expect(
+      api.client.request({
+        action: "repository-build-status",
+        jobId: "previous-build",
+      }),
+    ).rejects.toThrow("no longer available");
+    expect(api.client.snapshot().status).toBe("connected");
+    expect(api.server.mock.calls).toHaveLength(before + 1);
+    await api.client.request({ action: "repository-save-status" });
+    expect(api.server.mock.calls).toHaveLength(before + 2);
+    expect(
+      JSON.parse(
+        api.server.mock.calls[api.server.mock.calls.length - 1][1]!
+          .body as string,
+      ).action,
+    ).toBe("repository-save-status");
+  });
   it("allows only explicit owner setup actions before a folder connects, with the current session and project boundaries", async () => {
     const api = fixture();
     api.server.mockResolvedValueOnce(

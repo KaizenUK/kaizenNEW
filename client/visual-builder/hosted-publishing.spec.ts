@@ -1,5 +1,13 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { writeFile, lstat, rm } from "node:fs/promises";
+import {
+  writeFile,
+  readFile,
+  lstat,
+  rm,
+  symlink,
+  link,
+  chmod,
+} from "node:fs/promises";
 import path from "node:path";
 import {
   hostedHelperFixture,
@@ -11,6 +19,10 @@ import {
 import { hostedProjectRepositories } from "../../scripts/builder-hosted-folders";
 import { HostedSaveReleases } from "../../scripts/builder-hosted-save-release";
 import { hostedReleaseMarker } from "../../scripts/builder-hosted-publishing";
+import {
+  HostedReceiptStore,
+  receiptError,
+} from "../../scripts/builder-hosted-receipts";
 
 type Fixture = Awaited<ReturnType<typeof hostedHelperFixture>>;
 const fixtures: Fixture[] = [];
@@ -118,6 +130,11 @@ async function ready() {
   data.deployed.stage = await saved(data.api);
   return data;
 }
+const receiptFile = (api: Fixture) =>
+  path.join(
+    api.folders.projectDirectory(helperProject),
+    "publication-receipts.json",
+  );
 
 describe("reviewed production publication", () => {
   it("promotes the exact staged commit without creating a commit or switching the checkout and separately reports production delivery", async () => {
@@ -444,6 +461,220 @@ describe("reviewed production publication", () => {
       "publishToWebsite",
     );
   });
+});
+
+describe("durable publication recovery", () => {
+  it("reopens a private review after replacing all helper state and checks current account and project access", async () => {
+    const { api, base } = await ready();
+    const reviewed = await review(api);
+    const bytes = await readFile(receiptFile(api), "utf8");
+    expect((await lstat(receiptFile(api))).mode & 0o777).toBe(0o600);
+    expect(bytes).not.toContain(api.directory);
+    expect(bytes).not.toMatch(/fixture-signature|fixture-only-key-material/);
+    const previous = api.service;
+    await api.restart();
+    expect(api.service).not.toBe(previous);
+    const push = vi.spyOn(api.folders, "pushPublication");
+    expect((await status(api)).body).toEqual(reviewed.body);
+    api.publishers.get(helperProject)!.add(helperEditor);
+    expect(
+      (await api.send({ action: "repository-publish-status" }, helperEditor))
+        .body,
+    ).toBeNull();
+    expect(
+      (
+        await api.send(
+          {
+            action: "repository-publish-status",
+            reviewId: reviewed.body.review.id,
+          },
+          helperEditor,
+        )
+      ).status,
+    ).toBe(409);
+    expect(
+      (
+        await api.send({
+          action: "repository-publish-status",
+          projectId: helperOtherProject,
+          reviewId: reviewed.body.review.id,
+        })
+      ).status,
+    ).toBe(409);
+    api.members.get(helperProject)!.delete(helperOwner);
+    expect((await status(api)).status).toBe(403);
+    expect(push).not.toHaveBeenCalled();
+    expect(await main(api)).toBe(base);
+    expect(await readFile(receiptFile(api), "utf8")).toBe(bytes);
+  });
+  it("resolves a lost push acknowledgement after restart by reading the remote without repeating the push", async () => {
+    const { api, deployed } = await ready();
+    const reviewed = await review(api);
+    const original = api.folders.pushPublication.bind(api.folders);
+    const firstPush = vi
+      .spyOn(api.folders, "pushPublication")
+      .mockImplementationOnce(async (...args) => {
+        await original(...args);
+        vi.spyOn(api.folders, "productionHead").mockRejectedValue(
+          new Error("fixture Git host unavailable"),
+        );
+        throw new Error("private lost acknowledgement");
+      });
+    expect((await publish(api, reviewed.body.review.id)).body.phase).toBe(
+      "uncertain",
+    );
+    expect(
+      JSON.parse(await readFile(receiptFile(api), "utf8")).data[0].status.phase,
+    ).toBe("uncertain");
+    expect(firstPush).toHaveBeenCalledTimes(1);
+    await api.restart();
+    const nextPush = vi.spyOn(api.folders, "pushPublication");
+    expect((await status(api, reviewed.body.review.id)).body.phase).toBe(
+      "sent",
+    );
+    expect((await publish(api, reviewed.body.review.id)).status).toBe(409);
+    expect(nextPush).not.toHaveBeenCalled();
+    expect(await main(api)).toBe(deployed.stage);
+  });
+  it.each(["before", "after"])(
+    "keeps a recoverable record when storage fails %s the push",
+    async (when) => {
+      const { api, deployed, base } = await ready();
+      const reviewed = await review(api);
+      const original = HostedReceiptStore.prototype.write;
+      const recordWrite = vi
+        .spyOn(HostedReceiptStore.prototype, "write")
+        .mockImplementation(async function (id, data) {
+          if (
+            Array.isArray(data) &&
+            data.some(
+              (entry) =>
+                entry.status.phase ===
+                (when === "before" ? "uncertain" : "sent"),
+            )
+          )
+            throw receiptError();
+          return original.call(this, id, data);
+        });
+      const firstPush = vi.spyOn(api.folders, "pushPublication");
+      const result = await publish(api, reviewed.body.review.id);
+      expect(result).toMatchObject({
+        status: 503,
+        body: { error: expect.stringContaining("operator check") },
+      });
+      expect(firstPush).toHaveBeenCalledTimes(when === "before" ? 0 : 1);
+      const durable = JSON.parse(await readFile(receiptFile(api), "utf8"));
+      expect(durable.data[0].status.phase).toBe(
+        when === "before" ? "reviewed" : "uncertain",
+      );
+      recordWrite.mockRestore();
+      await api.restart();
+      const nextPush = vi.spyOn(api.folders, "pushPublication");
+      expect((await status(api)).body.phase).toBe(
+        when === "before" ? "reviewed" : "sent",
+      );
+      expect(nextPush).not.toHaveBeenCalled();
+      expect(await main(api)).toBe(when === "before" ? base : deployed.stage);
+    },
+  );
+  it.each([
+    "invalid-json",
+    "other-project",
+    "symlink",
+    "hardlink",
+    "public-mode",
+    "oversized",
+  ])(
+    "refuses a %s operation record without changing the remote or exposing private data",
+    async (damage) => {
+      const { api, base } = await ready();
+      const reviewed = await review(api);
+      const file = receiptFile(api),
+        original = await readFile(file, "utf8");
+      const privateFile = path.join(api.directory, "private-operation-record");
+      await writeFile(privateFile, "private fixture operator detail", {
+        mode: 0o600,
+      });
+      if (damage === "invalid-json")
+        await writeFile(file, "private invalid fixture json");
+      if (damage === "other-project")
+        await writeFile(
+          file,
+          original.replace(helperProject, helperOtherProject),
+        );
+      if (damage === "symlink" || damage === "hardlink") {
+        await rm(file);
+        await (damage === "symlink" ? symlink : link)(privateFile, file);
+      }
+      if (damage === "public-mode") await chmod(file, 0o644);
+      if (damage === "oversized")
+        await writeFile(file, " ".repeat(4 * 1024 * 1024 + 1));
+      await api.restart();
+      const push = vi.spyOn(api.folders, "pushPublication");
+      for (const result of [
+        await status(api),
+        await publish(api, reviewed.body.review.id),
+      ]) {
+        expect(result).toMatchObject({
+          status: 503,
+          body: { error: expect.stringContaining("operator check") },
+        });
+        expect(JSON.stringify(result.body)).not.toMatch(
+          /private|fixture|credentials|\.json/,
+        );
+      }
+      expect(push).not.toHaveBeenCalled();
+      expect(await main(api)).toBe(base);
+      expect(await readFile(privateFile, "utf8")).toBe(
+        "private fixture operator detail",
+      );
+    },
+  );
+  it("preserves a concurrent record edit and refuses to start the push", async () => {
+    const { api, base } = await ready();
+    const reviewed = await review(api);
+    const file = receiptFile(api),
+      changed = (await readFile(file, "utf8")) + "\n";
+    const original = HostedReceiptStore.prototype.write;
+    vi.spyOn(HostedReceiptStore.prototype, "write").mockImplementation(
+      async function (id, data) {
+        if (
+          Array.isArray(data) &&
+          data.some((entry) => entry.status.phase === "uncertain")
+        )
+          await writeFile(file, changed);
+        return original.call(this, id, data);
+      },
+    );
+    const push = vi.spyOn(api.folders, "pushPublication");
+    expect((await publish(api, reviewed.body.review.id)).status).toBe(503);
+    expect(push).not.toHaveBeenCalled();
+    expect(await main(api)).toBe(base);
+    expect(await readFile(file, "utf8")).toBe(changed);
+  });
+  it.each(["files", "stagingUrl", "productionUrl", "binding"])(
+    "rechecks restored %s against the repository and operator configuration",
+    async (field) => {
+      const { api, base, requests } = await ready();
+      const reviewed = await review(api);
+      const file = receiptFile(api),
+        record = JSON.parse(await readFile(file, "utf8"));
+      if (field === "binding") record.data[0].binding = "a".repeat(64);
+      else
+        record.data[0].status.review[field] =
+          field === "files" ? ["README.md"] : "https://outside.invalid";
+      await writeFile(file, JSON.stringify(record));
+      await api.restart();
+      requests.length = 0;
+      const push = vi.spyOn(api.folders, "pushPublication");
+      expect((await publish(api, reviewed.body.review.id)).status).toBe(
+        field === "files" ? 409 : 503,
+      );
+      expect(push).not.toHaveBeenCalled();
+      expect(requests).toEqual([]);
+      expect(await main(api)).toBe(base);
+    },
+  );
 });
 
 describe("publication delivery observations", () => {

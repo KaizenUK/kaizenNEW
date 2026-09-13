@@ -39,6 +39,7 @@ export type BuildJob = {
   previewUrl?: string;
   previewExpiresAt?: number;
   recoveryDirectory: string;
+  recoveryRequired?: boolean;
 };
 type Command = { cli: string; manager: "pnpm" | "npm" };
 type Running = {
@@ -253,7 +254,14 @@ export class RepositoryRunner {
   constructor(
     private timeoutMs = 5 * 60 * 1000,
     private previewMs = 60 * 60 * 1000,
-    private options: { environment?: NodeJS.ProcessEnv } = {},
+    private options: {
+      environment?: NodeJS.ProcessEnv;
+      watchStorage?: (
+        stop: (error: Error) => Promise<void>,
+      ) => Promise<() => Promise<void>>;
+      beforeBuild?: (job: BuildJob, fingerprint: string) => Promise<void>;
+      afterBuild?: (job: BuildJob) => Promise<void>;
+    } = {},
   ) {}
   async prepare(root: string, projectId: string): Promise<BuildPlan> {
     if (this.closed) throw new Error("The local companion is shutting down.");
@@ -472,13 +480,21 @@ export class RepositoryRunner {
   ) {
     const job = running.value;
     let previous = false,
-      prepared = false;
+      prepared = false,
+      recorded = false;
+    let stopStorageWatch: (() => Promise<void>) | undefined;
     const log = (chunk: Buffer | string) => {
       job.log = (
         job.log + chunk.toString().replace(/\x1b\[[0-9;]*[A-Za-z]/g, "")
       ).slice(-100000);
     };
     try {
+      await this.options.beforeBuild?.(structuredClone(job), fingerprint);
+      recorded = true;
+      stopStorageWatch = await this.options.watchStorage?.(async (error) => {
+        running.cancel = error.message;
+        if (running.child) await stopChild(running.child);
+      });
       const output = await realDirectory(job.root, "dist");
       await realDirectory(job.root, ".kaizen/build-recovery");
       await mkdir(job.recoveryDirectory, { recursive: true });
@@ -520,6 +536,9 @@ export class RepositoryRunner {
         });
       });
       running.child = undefined;
+      const stopWatch = stopStorageWatch;
+      stopStorageWatch = undefined;
+      await stopWatch?.();
       if (running.cancel) throw new Error(running.cancel);
       if (code !== 0)
         throw new Error(
@@ -762,13 +781,26 @@ export class RepositoryRunner {
               output,
             );
         } catch (recovery) {
+          job.recoveryRequired = true;
           job.error += ` Recovery requires attention: ${recovery.message}. Original output is retained in ${job.recoveryDirectory}.`;
         }
       // A terminal status promises that restoration has finished (or its
       // recovery error has been recorded). Polling/close must still await us.
       job.status = terminalStatus;
     } finally {
+      // Finish a check already in flight before releasing the build's lock.
+      await stopStorageWatch?.().catch(() => {});
       job.finishedAt = new Date().toISOString();
+      if (recorded)
+        try {
+          await this.options.afterBuild?.(structuredClone(job));
+        } catch {
+          this.closePreview(running);
+          job.status = "failed";
+          job.recoveryRequired = true;
+          job.error =
+            "The build record could not be completed. Ask the operator to check the preserved website and recovery files.";
+        }
     }
   }
   async close() {

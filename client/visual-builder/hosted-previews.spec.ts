@@ -230,7 +230,7 @@ describe("private hosted snapshot delivery", () => {
           helperEditor,
         )
       ).status,
-    ).toBe(404);
+    ).toBe(410);
   });
 
   it("rechecks membership, archived state and Auth on every document, bootstrap and asset read", async () => {

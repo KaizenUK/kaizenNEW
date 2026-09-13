@@ -7,7 +7,7 @@ export type RepositorySaveTarget = {
 export type RepositorySaveStatus = {
   planId: string;
   projectId: string;
-  phase: "applied" | "committed" | "saved";
+  phase: "applied" | "committed" | "saved" | "recovery_required";
   files: string[];
   branch: string;
   destinationUrl: string;

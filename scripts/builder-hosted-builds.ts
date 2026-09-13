@@ -104,7 +104,7 @@ export class HostedBuildQueue {
       entry.actor.id !== actorId
     )
       throw new HostedHelperError(
-        404,
+        410,
         "This build is not available in your project and account. Review a new build if the helper restarted.",
       );
     return entry;

@@ -11,6 +11,10 @@ export type RepositoryCommitOptions = {
   git?: RepositoryGitCommand;
   identity?: { name: string; email: string };
   expectedHead?: string;
+  /** Trusted host hook, after validation and before the first Git mutation. */
+  beforeMutation?: () => Promise<void>;
+  /** Trusted host capacity check using sizes verified by RepositoryCompanion. */
+  reserveStorage?: (additionalBytes: number) => Promise<void>;
 };
 const git = async (root: string, args: string[]) =>
   (
@@ -141,6 +145,7 @@ export async function commitRepositoryFiles(
       "The website branch moved after these changes were applied. Ask the owner to reconcile the folder before saving.",
     );
   // Explicit pathspecs: no add -A, no push, no amend, and no caller-supplied Git arguments.
+  await options.beforeMutation?.();
   await run(root, ["add", "--", ...files]);
   try {
     if (!(await run(root, ["diff", "--cached", "--name-only", "-z"])).length)

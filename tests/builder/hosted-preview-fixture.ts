@@ -222,6 +222,10 @@ export async function hostedPreviewFixture(
     productionDeployment,
     publication,
     prepareDependencies,
+    restart: async () => {
+      await api.restart();
+      helperOrigin = api.helper.origin;
+    },
     close: async () => {
       server.closeAllConnections();
       await new Promise<void>((resolve) => server.close(() => resolve()));

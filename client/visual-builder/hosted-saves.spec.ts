@@ -8,9 +8,16 @@ import {
   helperProject,
   helperOtherProject,
 } from "../../tests/builder/hosted-helper-fixture";
-import { RepositoryCompanion } from "../../scripts/builder-repository";
+import {
+  RepositoryCompanion,
+  type AppliedFileChange,
+} from "../../scripts/builder-repository";
 import { HostedHelperError } from "../../scripts/builder-hosted-auth";
 import { HostedSaveReleases } from "../../scripts/builder-hosted-save-release";
+import {
+  HostedReceiptStore,
+  receiptError,
+} from "../../scripts/builder-hosted-receipts";
 import { hostedProjectRepositories } from "../../scripts/builder-hosted-folders";
 import type { SourceInspection } from "../../shared/builderSourceEditing";
 
@@ -33,7 +40,7 @@ async function fixture() {
   fixtures.push(api);
   return api;
 }
-async function apply(api: Fixture, actor = helperOwner) {
+async function prepare(api: Fixture, actor = helperOwner) {
   const inspected = await api.send(
     { action: "repository-source-inspect", route: "src/pages/index.astro" },
     actor,
@@ -55,16 +62,20 @@ async function apply(api: Fixture, actor = helperOwner) {
     actor,
   );
   expect(plan.status).toBe(200);
-  const result = await api.send(
-    { action: "repository-apply", planId: plan.body.id },
-    actor,
-  );
-  expect(result.status).toBe(200);
   return {
-    planId: result.body.planId,
+    planId: plan.body.id as string,
     root: inspection.root,
     base: await api.git(inspection.root, ["rev-parse", "HEAD"]),
   };
+}
+async function apply(api: Fixture, actor = helperOwner) {
+  const prepared = await prepare(api, actor);
+  const result = await api.send(
+    { action: "repository-apply", planId: prepared.planId },
+    actor,
+  );
+  expect(result.status).toBe(200);
+  return prepared;
 }
 const save = (
   api: Fixture,
@@ -94,6 +105,58 @@ async function advance(api: Fixture) {
   return remote(api);
 }
 describe("hosted Save to website", () => {
+  it("reserves space before apply without leaving an operation intent or changing source when full", async () => {
+    const api = await fixture(),
+      prepared = await prepare(api);
+    const file = path.join(prepared.root, "src/pages/index.astro");
+    const before = await readFile(file);
+    const receiptFile = path.join(
+      api.folders.projectDirectory(helperProject),
+      "save-receipts.json",
+    );
+    const receiptBefore = await readFile(receiptFile);
+    vi.spyOn(api.folders.disk, "sample").mockResolvedValue({
+      bytes: api.folders.disk.limits.projectBytes - 1,
+      freeBytes: 100n * 1024n ** 3n,
+    });
+    const response = await api.send({
+      action: "repository-apply",
+      planId: prepared.planId,
+    });
+    expect(response.status).toBe(409);
+    expect(response.body.error).toContain("storage limit");
+    expect(await readFile(file)).toEqual(before);
+    expect(await api.git(prepared.root, ["status", "--porcelain"])).toBe("");
+    expect(await readFile(receiptFile)).toEqual(receiptBefore);
+  });
+  it("keeps an applied save retryable when there is no room for its Git objects", async () => {
+    const api = await fixture(),
+      applied = await apply(api);
+    const sample = vi.spyOn(api.folders.disk, "sample").mockResolvedValue({
+      bytes: api.folders.disk.limits.projectBytes - 1,
+      freeBytes: 100n * 1024n ** 3n,
+    });
+    const refused = await save(api, applied.planId);
+    expect(refused.status).toBe(409);
+    expect(refused.body.error).toContain("storage limit");
+    expect(await api.git(applied.root, ["rev-parse", "HEAD"])).toBe(
+      applied.base,
+    );
+    expect(await remote(api)).toBe(applied.base);
+    expect(
+      await api.git(applied.root, ["diff", "--cached", "--name-only"]),
+    ).toBe("");
+    const status = await api.send({
+      action: "repository-save-status",
+      route: "src/pages/index.astro",
+    });
+    expect(status.body.phase).toBe("applied");
+    sample.mockRestore();
+    const saved = await save(api, applied.planId);
+    expect(saved.status).toBe(200);
+    expect(saved.body.phase).toBe("saved");
+    expect(await remote(api)).toBe(saved.body.commit);
+  });
   it("uses restricted hosted Git for the status refresh instead of running repository-configured programs", async () => {
     const api = await fixture();
     await api.send({ action: "repository-connect" });
@@ -440,6 +503,327 @@ describe("hosted Save to website", () => {
     ).toBe("committed");
     expect((await save(api, applied.planId)).body.phase).toBe("saved");
   });
+});
+
+describe("durable Save to website recovery", () => {
+  const recordFile = (api: Fixture) =>
+    path.join(
+      api.folders.projectDirectory(helperProject),
+      "save-receipts.json",
+    );
+  const status = (api: Fixture) =>
+    api.send({
+      action: "repository-save-status",
+      route: "src/pages/index.astro",
+    });
+  it("restores an applied plan from hashes after restart and commits only its files as the current verified account", async () => {
+    const api = await fixture(),
+      applied = await apply(api);
+    const records = await readFile(recordFile(api), "utf8");
+    expect(records).not.toContain("Saved by the hosted editor");
+    expect(records).not.toContain(api.directory);
+    expect(records).not.toMatch(/fixture-signature|fixture-only-key-material/);
+    await writeFile(
+      path.join(applied.root, "README.md"),
+      "Keep separate work\n",
+    );
+    await api.restart();
+    const commit = vi.spyOn(RepositoryCompanion.prototype, "commit"),
+      push = vi.spyOn(api.folders, "pushCommit");
+    expect((await status(api)).body).toMatchObject({
+      phase: "applied",
+      planId: applied.planId,
+    });
+    expect(
+      (
+        await api.send(
+          { action: "repository-save-status", planId: applied.planId },
+          helperEditor,
+        )
+      ).status,
+    ).toBe(409);
+    expect(
+      (
+        await api.send({
+          action: "repository-save-status",
+          projectId: helperOtherProject,
+          planId: applied.planId,
+        })
+      ).status,
+    ).toBe(409);
+    api.members.get(helperProject)!.delete(helperOwner);
+    expect((await save(api, applied.planId)).status).toBe(403);
+    expect(commit).not.toHaveBeenCalled();
+    expect(push).not.toHaveBeenCalled();
+    api.members.get(helperProject)!.add(helperOwner);
+    api.profiles.get(helperOwner)!.user_metadata.full_name =
+      "Updated fixture owner";
+    const result = await save(api, applied.planId);
+    expect(result.body.phase).toBe("saved");
+    expect(
+      await api.git(api.remote, ["show", "-s", "--format=%an", "stage"]),
+    ).toBe("Updated fixture owner");
+    expect(await readFile(path.join(applied.root, "README.md"), "utf8")).toBe(
+      "Keep separate work\n",
+    );
+    expect(
+      await api.git(api.remote, [
+        "diff-tree",
+        "--no-commit-id",
+        "--name-only",
+        "-r",
+        "stage",
+      ]),
+    ).toBe("src/pages/index.astro");
+    expect(commit).toHaveBeenCalledTimes(1);
+    expect(push).toHaveBeenCalledTimes(1);
+    await api.restart();
+    expect((await status(api)).body).toMatchObject({
+      phase: "saved",
+      commit: result.body.commit,
+    });
+    expect((await save(api, applied.planId)).body.commit).toBe(
+      result.body.commit,
+    );
+    expect(commit).toHaveBeenCalledTimes(1);
+  });
+  it.each(["complete", "changed"])(
+    "recognizes a %s apply after its acknowledgement was lost without applying again",
+    async (outcome) => {
+      const api = await fixture(),
+        prepared = await prepare(api);
+      const original = HostedReceiptStore.prototype.write;
+      const writing = vi
+        .spyOn(HostedReceiptStore.prototype, "write")
+        .mockImplementation(async function (id, data) {
+          if (
+            Array.isArray(data) &&
+            data.some((entry) => entry.status.phase === "applied")
+          )
+            throw receiptError();
+          return original.call(this, id, data);
+        });
+      expect(
+        (
+          await api.send({
+            action: "repository-apply",
+            planId: prepared.planId,
+          })
+        ).status,
+      ).toBe(503);
+      const file = path.join(prepared.root, "src/pages/index.astro");
+      expect(await readFile(file, "utf8")).toContain(
+        "Saved by the hosted editor",
+      );
+      expect(
+        JSON.parse(await readFile(recordFile(api), "utf8")).data[0].pending,
+      ).toBe("apply");
+      if (outcome === "changed")
+        await writeFile(file, "Preserve a later or partial edit\n");
+      writing.mockRestore();
+      await api.restart();
+      const applyAgain = vi.spyOn(RepositoryCompanion.prototype, "apply"),
+        commit = vi.spyOn(RepositoryCompanion.prototype, "commit"),
+        push = vi.spyOn(api.folders, "pushCommit");
+      expect((await status(api)).body.phase).toBe(
+        outcome === "complete" ? "applied" : "recovery_required",
+      );
+      expect(applyAgain).not.toHaveBeenCalled();
+      expect(commit).not.toHaveBeenCalled();
+      expect(push).not.toHaveBeenCalled();
+      expect(await remote(api)).toBe(prepared.base);
+      if (outcome === "changed") {
+        expect((await save(api, prepared.planId)).body.error).toContain(
+          "operator check",
+        );
+        expect(
+          (
+            await api.send({
+              action: "repository-apply",
+              planId: "another-plan",
+            })
+          ).status,
+        ).toBe(409);
+        expect(await readFile(file, "utf8")).toBe(
+          "Preserve a later or partial edit\n",
+        );
+      }
+    },
+  );
+  it("discards only a verified unstarted apply intent after restart and preserves the original bytes", async () => {
+    const api = await fixture(),
+      prepared = await prepare(api);
+    const original = RepositoryCompanion.prototype.apply;
+    vi.spyOn(RepositoryCompanion.prototype, "apply").mockImplementationOnce(
+      async function (id, projectId, beforeMutation) {
+        return original.call(
+          this,
+          id,
+          projectId,
+          async (changes: AppliedFileChange[], additionalBytes: number) => {
+            await beforeMutation?.(changes, additionalBytes);
+            throw new Error("Fixture interruption before file mutation");
+          },
+        );
+      },
+    );
+    expect(
+      (await api.send({ action: "repository-apply", planId: prepared.planId }))
+        .status,
+    ).toBe(409);
+    expect(
+      JSON.parse(await readFile(recordFile(api), "utf8")).data[0].pending,
+    ).toBe("apply");
+    await api.restart();
+    expect((await status(api)).body).toBeNull();
+    expect(JSON.parse(await readFile(recordFile(api), "utf8")).data).toEqual(
+      [],
+    );
+    expect(
+      await readFile(path.join(prepared.root, "src/pages/index.astro"), "utf8"),
+    ).toContain("Hosted original");
+    expect(await api.git(prepared.root, ["status", "--porcelain"])).toBe("");
+    expect(await remote(api)).toBe(prepared.base);
+  });
+  it.each(["before", "after"])(
+    "retains the correct save state when the durable record fails %s committing",
+    async (when) => {
+      const api = await fixture(),
+        applied = await apply(api);
+      const original = HostedReceiptStore.prototype.write;
+      const writing = vi
+        .spyOn(HostedReceiptStore.prototype, "write")
+        .mockImplementation(async function (id, data) {
+          if (
+            Array.isArray(data) &&
+            data.some((entry) =>
+              when === "before"
+                ? entry.pending === "commit"
+                : entry.status.phase === "committed",
+            )
+          )
+            throw receiptError();
+          return original.call(this, id, data);
+        });
+      const firstPush = vi.spyOn(api.folders, "pushCommit");
+      expect((await save(api, applied.planId)).status).toBe(503);
+      const local = await api.git(applied.root, ["rev-parse", "HEAD"]);
+      expect(local === applied.base).toBe(when === "before");
+      expect(await remote(api)).toBe(applied.base);
+      expect(firstPush).not.toHaveBeenCalled();
+      writing.mockRestore();
+      await api.restart();
+      const nextCommit = vi.spyOn(RepositoryCompanion.prototype, "commit"),
+        nextPush = vi.spyOn(api.folders, "pushCommit");
+      expect((await status(api)).body.phase).toBe(
+        when === "before" ? "applied" : "recovery_required",
+      );
+      if (when === "after")
+        expect((await save(api, applied.planId)).body.error).toContain(
+          "operator check",
+        );
+      expect(nextCommit).not.toHaveBeenCalled();
+      expect(nextPush).not.toHaveBeenCalled();
+      expect(await api.git(applied.root, ["rev-parse", "HEAD"])).toBe(local);
+      expect(
+        await api.git(applied.root, ["diff", "--cached", "--name-only"]),
+      ).toBe("");
+    },
+  );
+  it("keeps a rejected commit across restart and retries that commit only after an explicit save", async () => {
+    const api = await fixture(),
+      applied = await apply(api);
+    const hook = path.join(api.remote, "hooks/pre-receive");
+    await writeFile(hook, "#!/bin/sh\nexit 1\n", { mode: 0o700 });
+    const failed = await save(api, applied.planId);
+    expect(failed.body.phase).toBe("committed");
+    await rm(hook);
+    await api.restart();
+    const commit = vi.spyOn(RepositoryCompanion.prototype, "commit"),
+      push = vi.spyOn(api.folders, "pushCommit");
+    expect((await status(api)).body).toMatchObject({
+      phase: "committed",
+      commit: failed.body.commit,
+    });
+    expect(push).not.toHaveBeenCalled();
+    expect(await remote(api)).toBe(applied.base);
+    expect((await save(api, applied.planId)).body).toMatchObject({
+      phase: "saved",
+      commit: failed.body.commit,
+    });
+    expect(push).toHaveBeenCalledTimes(1);
+    expect(commit).not.toHaveBeenCalled();
+    expect(await api.git(api.remote, ["rev-list", "--count", "stage"])).toBe(
+      "2",
+    );
+  });
+  it("resolves a lost push acknowledgement after restart without another commit or push", async () => {
+    const api = await fixture(),
+      applied = await apply(api);
+    const original = api.folders.pushCommit.bind(api.folders);
+    vi.spyOn(api.folders, "pushCommit").mockImplementationOnce(
+      async (...args) => {
+        await original(...args);
+        vi.spyOn(api.folders, "remoteHead").mockRejectedValue(
+          new Error("Fixture Git outage"),
+        );
+        throw new Error("Fixture lost acknowledgement");
+      },
+    );
+    const failed = await save(api, applied.planId);
+    expect(failed.body.phase).toBe("committed");
+    await api.restart();
+    const commit = vi.spyOn(RepositoryCompanion.prototype, "commit"),
+      push = vi.spyOn(api.folders, "pushCommit");
+    expect((await status(api)).body).toMatchObject({
+      phase: "saved",
+      commit: failed.body.commit,
+    });
+    expect((await save(api, applied.planId)).body.commit).toBe(
+      failed.body.commit,
+    );
+    expect(commit).not.toHaveBeenCalled();
+    expect(push).not.toHaveBeenCalled();
+    expect(await remote(api)).toBe(failed.body.commit);
+  });
+  it.each(["path", "hash", "project", "destination", "binding"])(
+    "refuses restored %s metadata that no longer matches the approved operation",
+    async (damage) => {
+      const api = await fixture(),
+        applied = await apply(api);
+      const file = recordFile(api),
+        record = JSON.parse(await readFile(file, "utf8")),
+        receipt = record.data[0];
+      if (damage === "path") {
+        receipt.changes[0].file = "../outside.txt";
+        receipt.status.files[0] = "../outside.txt";
+      }
+      if (damage === "hash") receipt.changes[0].after = "a".repeat(64);
+      if (damage === "project") record.projectId = helperOtherProject;
+      if (damage === "destination")
+        receipt.status.destinationUrl = "https://outside.invalid";
+      if (damage === "binding") receipt.binding = "b".repeat(64);
+      await writeFile(file, JSON.stringify(record));
+      await api.restart();
+      const commit = vi.spyOn(RepositoryCompanion.prototype, "commit"),
+        push = vi.spyOn(api.folders, "pushCommit");
+      expect((await save(api, applied.planId)).status).toBe(
+        damage === "hash" ? 409 : 503,
+      );
+      expect(commit).not.toHaveBeenCalled();
+      expect(push).not.toHaveBeenCalled();
+      expect(await api.git(applied.root, ["rev-parse", "HEAD"])).toBe(
+        applied.base,
+      );
+      expect(await remote(api)).toBe(applied.base);
+      expect(
+        await readFile(
+          path.join(applied.root, "src/pages/index.astro"),
+          "utf8",
+        ),
+      ).toContain("Saved by the hosted editor");
+    },
+  );
 });
 
 describe("saved website deployment status", () => {

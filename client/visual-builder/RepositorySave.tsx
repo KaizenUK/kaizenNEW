@@ -133,7 +133,7 @@ function SaveControls({
           </p>
         )}
       </div>
-      {status && status.phase !== "saved" && (
+      {status && ["applied", "committed"].includes(status.phase) && (
         <form
           onSubmit={async (event) => {
             event.preventDefault();

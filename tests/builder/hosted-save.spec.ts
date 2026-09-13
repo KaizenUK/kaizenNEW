@@ -4,6 +4,10 @@ import { openSiteProject } from "./hosted-repository-fixture";
 import { helperToken } from "./hosted-helper-fixture";
 import { readFile, writeFile, rm } from "node:fs/promises";
 import path from "node:path";
+import {
+  HostedReceiptStore,
+  receiptError,
+} from "../../scripts/builder-hosted-receipts";
 
 test.use({ ignoreHTTPSErrors: true });
 test("hosted save isolates the applied source, explains staged work and push rejection, and restores a retry after reopening", async ({
@@ -128,9 +132,30 @@ test("hosted save isolates the applied source, explains staged work and push rej
     const commit = await api.git(root, ["rev-parse", "HEAD"]);
     expect(commit).not.toBe(base);
     expect(await remoteHead()).toBe(base);
+    // Exercise the disconnect a real proxy can report while the helper stops.
+    // Recovery must work after reconnecting, regardless of which read was in flight.
+    await page.route(
+      "**/editor-api/builder-repository",
+      (route) =>
+        route.fulfill({
+          status: 503,
+          json: {
+            error: "The hosted helper is restarting. Reconnect shortly.",
+          },
+        }),
+      { times: 1 },
+    );
     await page
       .getByRole("button", { name: "Back to pages", exact: true })
       .click();
+    await expect(
+      page.getByRole("button", { name: "Connect helper", exact: true }),
+    ).toBeVisible();
+    await fixture.restart();
+    await page.reload();
+    await expect(
+      page.getByRole("heading", { name: "Pages", exact: true }),
+    ).toBeVisible();
     await page
       .getByRole("button", { name: "Edit existing /", exact: true })
       .click();
@@ -219,6 +244,155 @@ test("hosted save isolates the applied source, explains staged work and push rej
       await page.screenshot({ path: `test-results/hosted-save-${width}.png` });
     }
   } finally {
+    drainRepositoryRoutes.delete(page);
+    try {
+      if (!page.isClosed()) {
+        await page.unrouteAll({ behavior: "wait" });
+        await context.unrouteAll({ behavior: "wait" });
+      }
+    } finally {
+      await fixture.close();
+    }
+  }
+});
+
+test("an interrupted commit survives helper restart and shows an operator check without another save action", async ({
+  page,
+  context,
+}) => {
+  const project = await (
+    await page.request.post("/__builder-projects", {
+      headers: { "X-Kaizen-Builder": "1" },
+      data: { action: "create", name: "Interrupted save recovery" },
+    })
+  ).json();
+  await page.goto(`/builder/?project=${project.id}`);
+  await expect(
+    page.getByRole("heading", { name: "Pages", exact: true }),
+  ).toBeVisible();
+  const fixture = await hostedPreviewFixture(project.id, true),
+    { api } = fixture;
+  const root = api.folders.root(project.id);
+  const originalWrite = HostedReceiptStore.prototype.write;
+  try {
+    const inspection = (
+      await api.send({
+        action: "repository-source-inspect",
+        projectId: project.id,
+        route: "src/pages/index.astro",
+      })
+    ).body;
+    const heading = inspection.fields.find(
+      (field: { value: string }) => field.value === "Hosted original",
+    );
+    const plan = await api.send({
+      action: "repository-source-prepare",
+      projectId: project.id,
+      edits: {
+        inspection,
+        values: { [heading.id]: "Preserve this interrupted save" },
+        orders: {},
+      },
+    });
+    expect(plan.status).toBe(200);
+    expect(
+      (
+        await api.send({
+          action: "repository-apply",
+          projectId: project.id,
+          planId: plan.body.id,
+        })
+      ).status,
+    ).toBe(200);
+    const base = await api.git(api.remote, ["rev-parse", "stage"]);
+    const open = async () => {
+      await openSiteProject(page, project, root, true, {
+        origin: api.helper.origin,
+        accessToken: helperToken(),
+        direct: true,
+        editorOrigin: fixture.origin,
+      });
+      await page
+        .getByRole("button", { name: "Edit existing /", exact: true })
+        .click();
+    };
+    await open();
+    const panel = page.getByRole("region", {
+      name: "Save to website",
+      exact: true,
+    });
+    await expect(
+      panel.getByRole("button", { name: "Save to website", exact: true }),
+    ).toBeEnabled();
+    HostedReceiptStore.prototype.write = async function (id, data) {
+      if (
+        id === project.id &&
+        Array.isArray(data) &&
+        data.some((entry) => entry.status.phase === "committed")
+      )
+        throw receiptError();
+      return originalWrite.call(this, id, data);
+    };
+    await panel
+      .getByRole("button", { name: "Save to website", exact: true })
+      .click();
+    await expect(panel.getByRole("alert")).toContainText("operator check");
+    HostedReceiptStore.prototype.write = originalWrite;
+    const commit = await api.git(root, ["rev-parse", "HEAD"]);
+    expect(commit).not.toBe(base);
+    await fixture.restart();
+    await open();
+    await expect(panel.getByRole("status")).toContainText(
+      "interrupted website save needs an operator check",
+    );
+    await expect(
+      panel.getByRole("button", { name: "Save to website", exact: true }),
+    ).toHaveCount(0);
+    await expect(
+      panel.getByRole("button", {
+        name: "Retry saving to website",
+        exact: true,
+      }),
+    ).toHaveCount(0);
+    await panel
+      .getByRole("button", { name: "Check saved state", exact: true })
+      .click();
+    await expect(panel.getByRole("status")).toContainText(
+      "no save has been repeated",
+    );
+    await expect(
+      panel.getByRole("button", { name: "Check saved state", exact: true }),
+    ).toBeEnabled();
+    await expect(
+      page.getByRole("button", { name: "Build", exact: true }),
+    ).toBeEnabled();
+    for (const width of [1440, 390]) {
+      await page.setViewportSize({ width, height: 1000 });
+      if (width === 390)
+        await page
+          .getByRole("navigation", { name: "Editor panels" })
+          .getByRole("button", { name: "Page", exact: true })
+          .click();
+      await expect(
+        panel.getByRole("button", { name: "Check saved state", exact: true }),
+      ).toBeVisible();
+      expect(
+        await page.evaluate(
+          () => document.documentElement.scrollWidth <= innerWidth,
+        ),
+      ).toBe(true);
+      await page.screenshot({
+        path: `test-results/hosted-save-recovery-${width}.png`,
+      });
+    }
+    expect(await api.git(root, ["rev-parse", "HEAD"])).toBe(commit);
+    expect(await api.git(root, ["rev-list", "--count", "HEAD"])).toBe("2");
+    expect(await api.git(api.remote, ["rev-parse", "stage"])).toBe(base);
+    expect(
+      await readFile(path.join(root, "src/pages/index.astro"), "utf8"),
+    ).toContain("Preserve this interrupted save");
+  } finally {
+    HostedReceiptStore.prototype.write = originalWrite;
     drainRepositoryRoutes.delete(page);
     try {
       if (!page.isClosed()) {

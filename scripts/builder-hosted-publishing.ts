@@ -1,12 +1,96 @@
-import { randomUUID } from "node:crypto";
-import { HostedHelperError, type RepositoryActor } from "./builder-hosted-auth";
+import { createHash, randomUUID } from "node:crypto";
+import {
+  HostedHelperError,
+  accountId,
+  type RepositoryActor,
+} from "./builder-hosted-auth";
 import type { HostedWebsiteFolders } from "./builder-hosted-folders";
 import { HostedSaveReleases } from "./builder-hosted-save-release";
 import { repositoryGitStatus } from "./builder-repository-git";
 import type { RepositoryPublishStatus } from "../shared/builderRepositoryPublish";
+import { HostedReceiptStore, receiptError } from "./builder-hosted-receipts";
 
-type Entry = { actorId: string; status: RepositoryPublishStatus };
+type Entry = {
+  actorId: string;
+  binding: string;
+  status: RepositoryPublishStatus;
+};
 const conflict = (message: string) => new HostedHelperError(409, message);
+
+function publicationReceipts(data: unknown, projectId: string): Entry[] {
+  if (!Array.isArray(data) || data.length > 20) throw receiptError();
+  const seen = new Set<string>();
+  const text = (value: unknown, max = 2000) =>
+    typeof value === "string" && value.length <= max;
+  const origin = (value: unknown) => {
+    if (!text(value)) return false;
+    try {
+      const url = new URL(value as string);
+      return url.protocol === "https:" && url.origin === value;
+    } catch {
+      return false;
+    }
+  };
+  for (const item of data) {
+    const status = item?.status,
+      review = status?.review;
+    if (
+      !item ||
+      !accountId(item.actorId) ||
+      !/^[a-f0-9]{64}$/.test(item.binding || "") ||
+      Object.keys(item).some(
+        (key) => !["actorId", "binding", "status"].includes(key),
+      ) ||
+      !status ||
+      !["reviewed", "uncertain", "sent"].includes(status.phase) ||
+      !text(status.message) ||
+      (status.error !== undefined && !text(status.error)) ||
+      Object.keys(status).some(
+        (key) => !["review", "phase", "message", "error"].includes(key),
+      ) ||
+      !review ||
+      !accountId(review.id) ||
+      seen.has(review.id) ||
+      review.projectId !== projectId ||
+      !/^(?:[a-f0-9]{40}|[a-f0-9]{64})$/.test(review.commit || "") ||
+      !/^(?:[a-f0-9]{40}|[a-f0-9]{64})$/.test(review.productionBase || "") ||
+      !origin(review.stagingUrl) ||
+      !origin(review.productionUrl) ||
+      !/^[a-zA-Z0-9][a-zA-Z0-9_-]{0,95}$/.test(review.stagingReleaseId || "") ||
+      !Number.isSafeInteger(review.expiresAt) ||
+      review.expiresAt <= 0 ||
+      !Array.isArray(review.files) ||
+      review.files.length > 10000 ||
+      review.files.some(
+        (file) =>
+          !text(file, 500) ||
+          !file ||
+          file.startsWith("/") ||
+          /[\\:\u0000-\u001f]/.test(file) ||
+          file
+            .split("/")
+            .some((part) => !part || part === "." || part === ".."),
+      ) ||
+      Object.keys(review).some(
+        (key) =>
+          ![
+            "id",
+            "projectId",
+            "commit",
+            "productionBase",
+            "stagingUrl",
+            "productionUrl",
+            "stagingReleaseId",
+            "files",
+            "expiresAt",
+          ].includes(key),
+      )
+    )
+      throw receiptError();
+    seen.add(review.id);
+  }
+  return structuredClone(data);
+}
 
 /** Read-only public release identity, from an operator-approved origin. A marker does not attest all served bytes. */
 export async function hostedReleaseMarker(
@@ -61,11 +145,52 @@ export async function hostedReleaseMarker(
 /** Project-locked explicit promotion of a reviewed staging commit, preserving production history and the original checkout. */
 export class HostedWebsitePublishing {
   private entries = new Map<string, Entry>();
+  private records: HostedReceiptStore<Entry[]>;
   constructor(
     private folders: HostedWebsiteFolders,
     private releases = new HostedSaveReleases(),
     private request: typeof fetch = fetch,
-  ) {}
+  ) {
+    this.records = new HostedReceiptStore(
+      folders,
+      "publication-receipts.json",
+      publicationReceipts,
+      () => [],
+    );
+  }
+  async refresh(id: string) {
+    const records = await this.records.read(id);
+    for (const [key, entry] of this.entries)
+      if (entry.status.review.projectId === id) this.entries.delete(key);
+    for (const entry of records)
+      this.entries.set(entry.status.review.id, entry);
+  }
+  private binding(id: string) {
+    const configured = this.folders.configuration(id);
+    return createHash("sha256")
+      .update(
+        JSON.stringify([
+          configured.repositoryUrl,
+          configured.branch,
+          configured.saveToWebsite,
+          configured.publishToWebsite,
+        ]),
+      )
+      .digest("hex");
+  }
+  private persist(id: string) {
+    const entries = [...this.entries.values()]
+      .filter((entry) => entry.status.review.projectId === id)
+      .map((entry) => {
+        const {
+          release: _release,
+          delivery: _delivery,
+          ...status
+        } = entry.status;
+        return { ...entry, status };
+      });
+    return this.records.write(id, entries);
+  }
   assertCanReconfigure(id: string) {
     if (
       [...this.entries.values()].some(
@@ -78,10 +203,11 @@ export class HostedWebsitePublishing {
         "Check the outstanding production publication before changing repository settings. Its outcome is still unknown.",
       );
   }
-  forget(id: string) {
+  async forget(id: string) {
     this.assertCanReconfigure(id);
     for (const [key, entry] of this.entries)
       if (entry.status.review.projectId === id) this.entries.delete(key);
+    await this.persist(id);
   }
   private async clean(id: string) {
     await this.folders.assertNotBuilding(id);
@@ -160,7 +286,12 @@ export class HostedWebsitePublishing {
         expiresAt: Math.min(Date.now() + 15 * 60000, actor.expiresAt),
       },
     };
-    this.entries.set(value.review.id, { actorId: actor.id, status: value });
+    this.entries.set(value.review.id, {
+      actorId: actor.id,
+      binding: this.binding(id),
+      status: value,
+    });
+    await this.persist(id);
     return structuredClone(value);
   }
   private entry(id: string, actor: RepositoryActor, reviewId?: unknown) {
@@ -185,6 +316,15 @@ export class HostedWebsitePublishing {
       throw conflict(
         "This publication review belongs to another account, project or helper session. Review staging again.",
       );
+    if (entry) {
+      const configured = this.folders.configuration(id);
+      if (
+        entry.binding !== this.binding(id) ||
+        entry.status.review.stagingUrl !== configured.saveToWebsite?.url ||
+        entry.status.review.productionUrl !== configured.publishToWebsite?.url
+      )
+        throw receiptError();
+    }
     return entry;
   }
   async status(id: string, actor: RepositoryActor, reviewId?: unknown) {
@@ -228,6 +368,7 @@ export class HostedWebsitePublishing {
         status.delivery = "unavailable";
       }
     }
+    await this.persist(id);
     return structuredClone(status);
   }
   async publish(
@@ -258,6 +399,18 @@ export class HostedWebsitePublishing {
       throw conflict(
         "Production changed after this review. Review staging again before publishing.",
       );
+    if (
+      JSON.stringify(
+        await this.folders.publicationFiles(
+          id,
+          review.commit,
+          review.productionBase,
+        ),
+      ) !== JSON.stringify(review.files)
+    )
+      throw conflict(
+        "The publication file review changed. Review staging again before publishing.",
+      );
     const marker = await hostedReleaseMarker(review.stagingUrl, this.request);
     if (
       marker.commit !== review.commit ||
@@ -271,6 +424,8 @@ export class HostedWebsitePublishing {
     entry.status.message =
       "Publication was attempted. Check its state before retrying; the live site may still be deploying.";
     delete entry.status.error;
+    // Persist uncertainty before Git can begin a push. A restart only observes it.
+    await this.persist(id);
     try {
       await this.folders.pushPublication(
         id,
@@ -289,11 +444,13 @@ export class HostedWebsitePublishing {
         entry.status.phase = "reviewed";
         entry.status.message =
           "Publication did not start. Review the current website and your access before trying again.";
+        await this.persist(id);
         throw error;
       }
       entry.status.error =
         "The production push was rejected or its acknowledgement was lost. Check publication state before an explicit retry. Your staging revision is kept.";
     }
+    await this.persist(id);
     return this.status(id, actor, review.id);
   }
 }

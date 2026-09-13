@@ -1,5 +1,5 @@
 import { createServer, type IncomingMessage } from "node:http";
-import { readFile } from "node:fs/promises";
+import { readFile, realpath } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import path from "node:path";
 import { validProjectId } from "../shared/builderProjects";
@@ -29,6 +29,8 @@ import { repositoryPublishActions } from "../shared/builderRepositoryPublish";
 import { HostedWebsitePublishing } from "./builder-hosted-publishing";
 import { SourceDrafts } from "./builder-source-drafts";
 import { NativeRepositoryBackups } from "./builder-native-backup";
+import { hostedDiskLimits } from "./builder-hosted-disk";
+import { HostedBuildRecovery } from "./builder-hosted-build-recovery";
 
 const endpoint = "/editor-api/builder-repository";
 const maxBody = 52 * 1024 * 1024;
@@ -104,10 +106,12 @@ class ProjectOperations {
 export class HostedHelperService {
   private projects = new Map<string, ProjectOperations>();
   private closed = false;
+  private stopping?: Promise<void>;
   private builds: HostedBuildQueue;
   private saves: HostedWebsiteSaves;
   private settings: HostedRepositorySettings;
   private publishing: HostedWebsitePublishing;
+  private buildRecovery: HostedBuildRecovery;
   readonly previews?: HostedPreviews;
   constructor(
     readonly folders: HostedWebsiteFolders,
@@ -119,6 +123,7 @@ export class HostedHelperService {
     },
   ) {
     this.saves = new HostedWebsiteSaves(folders, options?.saveReleases);
+    this.buildRecovery = new HostedBuildRecovery(folders);
     this.settings = new HostedRepositorySettings(folders);
     this.publishing = new HostedWebsitePublishing(
       folders,
@@ -205,6 +210,25 @@ export class HostedHelperService {
         await this.access.requireProject(token, actor, projectId, "owner");
       if (publishing)
         await this.access.requireProject(token, actor, projectId, "publish");
+      await this.publishing.refresh(projectId);
+      await this.saves.refresh(projectId);
+      await this.buildRecovery.refresh(projectId);
+      if (
+        [
+          "repository-settings-save",
+          "repository-settings-key",
+          "repository-settings-connect",
+          "repository-fetch",
+          "repository-apply",
+          "repository-save",
+          "repository-publish-review",
+          "repository-publish",
+          "repository-build-review",
+          "repository-build-start",
+          "repository-native-backup-review",
+        ].includes(input.action)
+      )
+        this.buildRecovery.assertCanOperate(projectId);
       if (await this.settings.refresh(projectId))
         await this.invalidateProject(projectId);
       if (setup) {
@@ -230,10 +254,15 @@ export class HostedHelperService {
         operations = new ProjectOperations(
           new RepositoryRunner(undefined, undefined, {
             environment: await this.folders.buildEnvironment(projectId),
+            watchStorage: (stop) => this.folders.disk.watch(projectId, stop),
+            beforeBuild: (job, fingerprint) =>
+              this.buildRecovery.begin(job, fingerprint),
+            afterBuild: (job) => this.buildRecovery.finish(job),
           }),
         );
         this.projects.set(projectId, operations);
       }
+      await this.saves.recover(projectId, operations.repositories);
       try {
         if (
           [
@@ -268,12 +297,14 @@ export class HostedHelperService {
   }
   private async invalidateProject(projectId: string) {
     this.builds.assertIdle(projectId);
+    this.buildRecovery.assertCanOperate(projectId, true);
     this.saves.assertCanReconfigure(projectId);
     this.publishing.assertCanReconfigure(projectId);
     await this.projects.get(projectId)?.runner.close();
     this.projects.delete(projectId);
-    this.saves.forget(projectId);
-    this.publishing.forget(projectId);
+    await this.saves.forget(projectId);
+    await this.publishing.forget(projectId);
+    await this.buildRecovery.forget(projectId);
   }
   private async perform(
     input: Record<string, any>,
@@ -352,6 +383,10 @@ export class HostedHelperService {
       case "repository-source-draft-read":
         return (await drafts()).read(root, input.route);
       case "repository-source-draft-save":
+        await this.folders.disk.check(
+          projectId,
+          Buffer.byteLength(JSON.stringify(input.edits) || "") + 64 * 1024,
+        );
         return (await drafts()).save(
           root,
           input.route,
@@ -414,8 +449,19 @@ export class HostedHelperService {
         const result = await operations.repositories.apply(
           input.planId,
           projectId,
+          async (changes, additionalBytes) => {
+            await this.folders.disk.check(projectId, additionalBytes);
+            return this.saves.begin(
+              projectId,
+              actor,
+              base,
+              input.planId,
+              changes,
+              entry.route,
+            );
+          },
         );
-        this.saves.remember(projectId, actor, base, result, entry.route);
+        await this.saves.remember(projectId, actor, result);
         if (entry.draft) {
           try {
             await (
@@ -533,15 +579,25 @@ export class HostedHelperService {
         return { discarded: true };
     }
   }
-  async close() {
+  health() {
+    return {
+      service: "kaizen-hosted-helper",
+      status: this.closed ? "stopping" : "running",
+    } as const;
+  }
+  close() {
+    if (this.stopping) return this.stopping;
     this.closed = true;
     this.previews?.close();
-    await this.builds.close();
-    await this.folders.idle();
-    await Promise.all(
-      [...this.projects.values()].map((project) => project.runner.close()),
-    );
-    this.projects.clear();
+    this.stopping = (async () => {
+      await this.builds.close();
+      await this.folders.idle();
+      await Promise.all(
+        [...this.projects.values()].map((project) => project.runner.close()),
+      );
+      this.projects.clear();
+    })();
+    return this.stopping;
   }
 }
 
@@ -634,7 +690,8 @@ export async function startHostedHelper(options: {
       "The canonical HTTPS preview origin must be an allowed editor origin.",
     );
   let active = 0,
-    previewActive = 0;
+    previewActive = 0,
+    listeningPort = 0;
   const server = createServer(async (request, response) => {
     response.setHeader("Cache-Control", "no-store");
     response.setHeader("Content-Type", "application/json; charset=utf-8");
@@ -642,6 +699,26 @@ export async function startHostedHelper(options: {
     let counted = false;
     let previewCounted = false;
     try {
+      if (request.url === "/health") {
+        // This is an operator liveness probe, never a proxied or browser API.
+        if (
+          !["GET", "HEAD"].includes(request.method || "") ||
+          request.headers.host !== `127.0.0.1:${listeningPort}` ||
+          Object.keys(request.headers).some(
+            (name) =>
+              name === "origin" ||
+              name === "forwarded" ||
+              name.startsWith("x-forwarded-") ||
+              name === "sec-fetch-site",
+          )
+        )
+          throw new HostedHelperError(404, "Hosted helper route not found.");
+        const health = options.service.health();
+        response
+          .writeHead(health.status === "running" ? 200 : 503)
+          .end(request.method === "HEAD" ? undefined : JSON.stringify(health));
+        return;
+      }
       if (
         request.url?.startsWith("/editor-preview/") &&
         options.service.previews
@@ -744,17 +821,23 @@ export async function startHostedHelper(options: {
     server.listen(options.port ?? 4334, "127.0.0.1", resolve);
   });
   const address = server.address();
+  listeningPort = typeof address === "object" && address ? address.port : 4334;
+  let closing: Promise<void> | undefined;
   return {
     server,
-    origin: `http://127.0.0.1:${typeof address === "object" && address ? address.port : 4334}`,
-    close: async () => {
-      const stopped = new Promise<void>((resolve) =>
-        server.close(() => resolve()),
-      );
-      await options.service.close();
-      server.closeAllConnections();
-      await stopped;
-    },
+    origin: `http://127.0.0.1:${listeningPort}`,
+    close: () =>
+      (closing ??= (async () => {
+        const stopped = new Promise<void>((resolve) =>
+          server.close(() => resolve()),
+        );
+        try {
+          await options.service.close();
+        } finally {
+          server.closeAllConnections();
+          await stopped;
+        }
+      })()),
   };
 }
 
@@ -768,6 +851,7 @@ async function main() {
     process.env.BUILDER_HOSTED_WORK_DIRECTORY || "",
     process.env.BUILDER_HOSTED_CREDENTIALS_DIRECTORY || "",
     projects,
+    hostedDiskLimits(process.env),
   );
   const access = new HostedRepositoryAccess({
     url: process.env.BUILDER_HOSTED_SUPABASE_URL || "",
@@ -798,13 +882,16 @@ async function main() {
   process.once("SIGTERM", stop);
   process.once("SIGINT", stop);
 }
-if (
-  process.argv[1] &&
-  path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)
-)
-  void main().catch(() => {
-    console.error(
-      "Hosted helper could not start. Check its server-only configuration and file permissions.",
-    );
-    process.exitCode = 1;
-  });
+// The permanent service selects a versioned runtime through a symlink. Node
+// resolves the imported module but may retain that link in argv[1].
+void (async () => {
+  const entry = process.argv[1]
+    ? await realpath(process.argv[1]).catch(() => undefined)
+    : undefined;
+  if (entry === fileURLToPath(import.meta.url)) await main();
+})().catch(() => {
+  console.error(
+    "Hosted helper could not start. Check its server-only configuration and file permissions.",
+  );
+  process.exitCode = 1;
+});

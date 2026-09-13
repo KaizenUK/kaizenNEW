@@ -72,6 +72,11 @@ export type FileChange = {
   conflict?: string;
   preview?: string;
 };
+/** Private recovery metadata: paths and hashes, never source content. */
+export type AppliedFileChange = Pick<
+  FileChange,
+  "file" | "action" | "before" | "after"
+>;
 export type RepositoryPlan = {
   id: string;
   root: string;
@@ -281,6 +286,52 @@ export class RepositoryCompanion {
   async gitStatus(root: string, git?: RepositoryGitCommand) {
     return repositoryGitStatus(await repositoryRoot(root), git);
   }
+  async appliedState(root: string, changes: AppliedFileChange[]) {
+    root = await repositoryRoot(root);
+    if (!changes.length || changes.length > 20000)
+      throw new Error("Invalid applied file record.");
+    const seen = new Set<string>();
+    let before = true,
+      after = true;
+    for (const change of changes) {
+      validRelative(change.file);
+      if (
+        seen.has(change.file) ||
+        !["create", "update", "delete"].includes(change.action) ||
+        ![change.before, change.after].every(
+          (value) =>
+            value === null ||
+            (typeof value === "string" && /^[a-f0-9]{64}$/.test(value)),
+        ) ||
+        change.before === change.after
+      )
+        throw new Error("Invalid applied file record.");
+      seen.add(change.file);
+      const content = await bytes(root, change.file),
+        current = content ? hash(content) : null;
+      before &&= current === change.before;
+      after &&= current === change.after;
+    }
+    return after ? "after" : before ? "before" : "changed";
+  }
+  /** Host-only recovery; ordinary local requests still require their in-memory applied plan. */
+  async restoreApplied(
+    id: string,
+    projectId: string,
+    root: string,
+    changes: AppliedFileChange[],
+  ) {
+    if ((await this.appliedState(root, changes)) !== "after")
+      throw new Error(
+        "Changed since apply. Ask the owner to reconcile these edits before saving.",
+      );
+    this.appliedPlans.set(id, {
+      root: await repositoryRoot(root),
+      projectId,
+      changes: structuredClone(changes),
+      committing: false,
+    });
+  }
   async commit(
     id: string,
     projectId: string,
@@ -297,6 +348,7 @@ export class RepositoryCompanion {
     applied.committing = true;
     try {
       const root = await repositoryRoot(applied.root);
+      let additionalBytes = 4 * 1024 * 1024;
       for (const change of applied.changes) {
         const content = await bytes(root, change.file);
         if ((content ? hash(content) : null) !== change.after)
@@ -305,12 +357,21 @@ export class RepositoryCompanion {
               ? `Changed since apply: ${change.file}. Ask the owner to reconcile these edits before saving.`
               : `Changed since apply: ${change.file}. Review these edits in GitHub Desktop before committing.`,
           );
+        additionalBytes += (content?.byteLength || 0) * 2 + 8192;
       }
       const result = await commitRepositoryFiles(
         root,
         applied.changes.map((c) => c.file),
         message,
-        options,
+        options?.reserveStorage
+          ? {
+              ...options,
+              beforeMutation: async () => {
+                await options.reserveStorage!(additionalBytes);
+                await options.beforeMutation?.();
+              },
+            }
+          : options,
       );
       this.appliedPlans.delete(id);
       return result;
@@ -736,7 +797,14 @@ export class RepositoryCompanion {
     this.plans.set(plan.id, { plan, files, applying: false });
     return plan;
   }
-  async apply(id: string, projectId: string) {
+  async apply(
+    id: string,
+    projectId: string,
+    beforeMutation?: (
+      changes: AppliedFileChange[],
+      additionalBytes: number,
+    ) => Promise<void>,
+  ) {
     const entry = this.plans.get(id);
     if (
       !entry ||
@@ -766,6 +834,24 @@ export class RepositoryCompanion {
         originals.set(change.file, current);
       }
       // Retain a recovery copy before the first mutation. It is outside served output.
+      await beforeMutation?.(
+        changed.map(({ file, action, before, after }) => ({
+          file,
+          action,
+          before,
+          after,
+        })),
+        // Reserve both recovery copies and replacement temporaries, plus the
+        // bounded receipt and directory overhead. The caller cannot supply this size.
+        changed.reduce(
+          (size, change) =>
+            size +
+            (originals.get(change.file)?.byteLength || 0) +
+            (entry.files[change.file]?.byteLength || 0) +
+            8192,
+          4 * 1024 * 1024,
+        ),
+      );
       for (const change of changed) {
         const original = originals.get(change.file);
         if (original) {

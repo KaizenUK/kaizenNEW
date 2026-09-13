@@ -375,7 +375,7 @@ describe("hosted build jobs", () => {
     for (const action of ["repository-build-status", "repository-build-stop"]) {
       expect(
         (await api.send({ action, jobId: job.id }, helperEditor)).status,
-      ).toBe(404);
+      ).toBe(410);
       expect(
         (
           await api.send({
@@ -384,7 +384,7 @@ describe("hosted build jobs", () => {
             projectId: helperOtherProject,
           })
         ).status,
-      ).toBe(404);
+      ).toBe(410);
     }
     const queued = await enqueue(api);
     let deniedChecks = 0;
