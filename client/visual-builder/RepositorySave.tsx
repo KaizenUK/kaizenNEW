@@ -8,6 +8,7 @@ import type { HostedRepositoryState } from "./hostedRepositoryConnection";
 import type { RepositorySaveStatus } from "../../shared/builderRepositorySave";
 import { repositoryConnection } from "./repositoryConnection";
 import { storage } from "./storage";
+import { projectUrl } from "./projectStorage";
 
 type Props = {
   root: string;
@@ -181,6 +182,13 @@ function SaveControls({
         </form>
       )}
       <div className="builder-row">
+        <a
+          href={projectUrl("/builder/?view=account")}
+          target="_blank"
+          rel="noreferrer"
+        >
+          Account details
+        </a>
         {(status || error) && (
           <button
             type="button"

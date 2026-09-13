@@ -447,3 +447,8 @@ entrypoint = "./functions/builder-projects/index.ts"
 # The handler verifies Auth before the owner-only invitation RPCs or admin email API.
 verify_jwt = false
 entrypoint = "./functions/builder-invite/index.ts"
+
+[functions.builder-account]
+# Auth verifies the caller; service-only RPCs coordinate owner-approved deletion.
+verify_jwt = false
+entrypoint = "./functions/builder-account/index.ts"

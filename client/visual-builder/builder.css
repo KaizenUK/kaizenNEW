@@ -4169,3 +4169,33 @@
   gap: 12px;
   margin-top: 16px;
 }
+.builder-account > button {
+  align-self: flex-start;
+}
+.builder-account {
+  overflow-wrap: anywhere;
+}
+.builder-account .builder-form {
+  margin-top: 16px;
+}
+.builder-account-reviews {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 16px;
+}
+.builder-account-reviews li,
+.builder-account-confirm {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+  overflow-wrap: anywhere;
+}
+.builder-account-confirm {
+  padding: 20px;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: var(--surface);
+}

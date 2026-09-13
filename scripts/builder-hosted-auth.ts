@@ -1,3 +1,9 @@
+import {
+  accountName,
+  accountEmail,
+  ACCOUNT_SETUP_MESSAGE,
+} from "../shared/builderAccount";
+
 export class HostedHelperError extends Error {
   constructor(
     readonly status: number,
@@ -14,21 +20,10 @@ export type RepositoryActor = {
   email?: string;
 };
 export function repositoryAuthor(actor: RepositoryActor) {
-  if (
-    !actor.name?.trim() ||
-    actor.name.length > 200 ||
-    /[<>\u0000-\u001f\u007f]/.test(actor.name) ||
-    !actor.email ||
-    actor.email.length > 254 ||
-    !/^[^\s<>@\u0000-\u001f\u007f]+@[^\s<>@\u0000-\u001f\u007f]+\.[^\s<>@\u0000-\u001f\u007f]+$/.test(
-      actor.email,
-    )
-  )
-    throw new HostedHelperError(
-      409,
-      "Your account needs a name and valid email before saving to the website. Ask the owner to complete your account details.",
-    );
-  return { name: actor.name.trim(), email: actor.email };
+  const name = accountName(actor.name),
+    email = accountEmail(actor.email);
+  if (!name || !email) throw new HostedHelperError(409, ACCOUNT_SETUP_MESSAGE);
+  return { name, email };
 }
 export const accountId = (value: unknown): value is string =>
   typeof value === "string" &&

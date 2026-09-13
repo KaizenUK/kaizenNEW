@@ -68,6 +68,17 @@ test("hosted save isolates the applied source, explains staged work and push rej
     await expect(
       savePanel.getByRole("button", { name: "Save to website", exact: true }),
     ).toBeEnabled();
+    const accountLink = savePanel.getByRole("link", {
+      name: "Account details",
+      exact: true,
+    });
+    await expect(accountLink).toHaveAttribute("target", "_blank");
+    const accountUrl = new URL(
+      (await accountLink.getAttribute("href"))!,
+      page.url(),
+    );
+    expect(accountUrl.searchParams.get("view")).toBe("account");
+    expect(accountUrl.searchParams.get("project")).toBe(project.id);
     expect(await remoteHead()).toBe(base);
     for (const width of [1440, 390]) {
       await page.setViewportSize({ width, height: 1000 });

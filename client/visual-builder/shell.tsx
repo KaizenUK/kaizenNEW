@@ -16,12 +16,14 @@ import {
   Rocket,
   Settings,
   Share2,
+  UserRound,
   Sun,
 } from "lucide-react";
 
 /* Unity-styled shell for every workspace screen: sidebar, page head and small primitives. */
 
 export type BuilderView =
+  | "account"
   | "settings"
   | "projects"
   | "repository"
@@ -154,6 +156,13 @@ export function Sidebar({
       ],
     },
   ];
+  if (!localMode)
+    groups.push({
+      title: "Account",
+      items: [
+        { id: "account", label: "Account", icon: <UserRound size={22} /> },
+      ],
+    });
   const name = email ? email.split("@")[0] : "Local editor";
   const showLiveSite = hasInventory || legacy;
   return (

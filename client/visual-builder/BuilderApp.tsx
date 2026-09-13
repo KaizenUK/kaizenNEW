@@ -49,6 +49,7 @@ import { ProjectName, useProjectCapabilities } from "./activeProject";
 import PagesView, { pageStatus } from "./PagesView";
 import ProjectsView, { ProjectIdentity } from "./ProjectsView";
 import BuilderAuth from "./BuilderAuth";
+import AccountPage from "./AccountPage";
 import { BuilderViewProvider, BuilderViewSettings } from "./viewMode";
 import RepositoryPanel from "./RepositoryPanel";
 import HostedRepository from "./HostedRepository";
@@ -167,13 +168,16 @@ function BuilderWorkspace({ inventory }: { inventory?: PageInventory } = {}) {
   const [creating, setCreating] = useState(false);
   const [view, setView] = useState<BuilderView>(() =>
     typeof location !== "undefined" &&
-    new URLSearchParams(location.search).get("view") === "repository"
-      ? "repository"
-      : !localMode &&
-          typeof location !== "undefined" &&
-          !new URLSearchParams(location.search).has("project")
-        ? "projects"
-        : "pages",
+    new URLSearchParams(location.search).get("view") === "account"
+      ? "account"
+      : typeof location !== "undefined" &&
+          new URLSearchParams(location.search).get("view") === "repository"
+        ? "repository"
+        : !localMode &&
+            typeof location !== "undefined" &&
+            !new URLSearchParams(location.search).has("project")
+          ? "projects"
+          : "pages",
   );
   const [theme, toggleTheme] = useBuilderTheme();
   const [previewId] = useState(() =>
@@ -421,7 +425,7 @@ function BuilderWorkspace({ inventory }: { inventory?: PageInventory } = {}) {
   };
   const current: BuilderView = !signedIn
     ? "pages"
-    : view === "projects" || view === "settings"
+    : view === "projects" || view === "settings" || view === "account"
       ? view
       : workspace
         ? view
@@ -470,6 +474,7 @@ function BuilderWorkspace({ inventory }: { inventory?: PageInventory } = {}) {
       }
     >
       {current === "projects" && signedIn && <ProjectsView />}
+      {current === "account" && signedIn && <AccountPage />}
       {current === "repository" &&
         signedIn &&
         (localMode ? (

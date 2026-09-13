@@ -154,3 +154,19 @@ If the address already belongs to a confirmed account, access is added without c
 Email delivery and project membership cannot be one database transaction. A failed or lost response can mean an email was sent while access was not confirmed. The screen says so and keeps the form available. Use **Refresh members** before explicitly trying again; no email or membership write retries itself. If ownership, membership or the account changes while the request is running, completion is refused. An older invitation response cannot restore removed access. Each project can make 20 invitation attempts per hourly window; the email provider may impose an additional limit.
 
 This is the L2 launch implementation. [HANDOVER](../HANDOVER.md#linux-continuation--12-september-2026) records the deployed revision; the L2 migration, functions and frontend ship together at its milestone. Local fixtures prove these journeys without sending real invitations.
+
+### Your account
+
+Open **Account** in the hosted builder sidebar, or follow **Account details** in the Save panel. Account settings remain available when a website workspace cannot load. The link from Save opens a separate tab, keeping the editor and its pending changes open. The local helper has no hosted account settings.
+
+**Your name** is the name recorded when you use **Save to website**. Enter your own name and choose **Save my name**, then return to the editor and try saving again. The builder checks the same name and email rules when saving; it never invents your details. Saving a name does not save or publish website changes.
+
+**Email address** shows your current sign-in address separately from a requested new address. Choose **Change my email** and follow the confirmation email instructions; both addresses may need confirmation. Keep using the current address until the change is confirmed. **Password** requires matching passwords of at least 12 characters. If another confirmation is required, choose **Send confirmation code**, check your account email, then enter the latest code and your new password. Password fields clear after each submission. These controls use [Supabase account updates](https://supabase.com/docs/reference/javascript/auth-updateuser) and its [confirmation-code flow](https://supabase.com/docs/reference/javascript/auth-reauthenticate).
+
+**Sign out of other sessions** keeps this window signed in. A window that is already open may stay signed in until its current access session expires. This follows [Supabase's session scopes](https://supabase.com/docs/guides/auth/signout).
+
+**Delete my account** is a request to remove your login and access to every website. Type the displayed confirmation and submit it. Another current owner for each website must review and confirm it in **Account → Account requests to review**. Owners only see requests for websites they own. Add another owner first if you are a website's only owner. You can cancel until deletion starts. If your website access changes while waiting, cancel and make a fresh request. An account with no websites needs the builder operator to review its saved request.
+
+Once all owners confirm, account deletion cannot be undone. Website content, uploaded files and release history stay with the websites. If removal is interrupted after access ends, the screen says it has started; use **Refresh account requests**, then **Finish deletion** and explicitly confirm to retry. It does not retry automatically or call an interrupted request complete. Refreshing a profile or switching accounts cannot apply an older form's result to the new account.
+
+The [account operations guide](website-releases.md#builder-accounts) describes deployment, retained data and the operator fallback. L2-T3 is implemented locally; the task map and HANDOVER record its verification and deployment status.
