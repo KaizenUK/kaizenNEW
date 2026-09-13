@@ -20,6 +20,7 @@ import {
 import { RepositoryCompanion, inspectRepository } from "./builder-repository";
 import { RepositoryRunner, type BuildPlan } from "./builder-runner";
 import { HostedBuildQueue } from "./builder-hosted-builds";
+import { HostedPreviews } from "./builder-hosted-previews";
 import { SourceDrafts } from "./builder-source-drafts";
 import { NativeRepositoryBackups } from "./builder-native-backup";
 
@@ -41,13 +42,13 @@ const actions = new Set([
   "repository-build-start",
   "repository-build-status",
   "repository-build-stop",
+  "repository-source-frame",
+  "repository-source-preview",
   "repository-native-backup-review",
   "repository-native-backup-download",
   "repository-native-review-discard",
 ]);
 const comingNext = new Set([
-  "repository-source-frame",
-  "repository-source-preview",
   "repository-commit",
   "repository-open",
   "repository-native-restore-review",
@@ -93,9 +94,11 @@ export class HostedHelperService {
   private projects = new Map<string, ProjectOperations>();
   private closed = false;
   private builds: HostedBuildQueue;
+  readonly previews?: HostedPreviews;
   constructor(
     readonly folders: HostedWebsiteFolders,
     readonly access: HostedRepositoryAccess,
+    options?: { editorOrigin: string },
   ) {
     this.builds = new HostedBuildQueue({
       folders,
@@ -105,8 +108,18 @@ export class HostedHelperService {
       },
       runner: (projectId) => this.projects.get(projectId)!.runner,
     });
+    if (options)
+      this.previews = new HostedPreviews(
+        options.editorOrigin,
+        access,
+        this.builds,
+      );
   }
-  async request(token: string, readInput: () => Promise<unknown>) {
+  async request(
+    token: string,
+    readInput: () => Promise<unknown>,
+    preview?: { cookie?: string; grant: (cookie: string) => void },
+  ) {
     if (this.closed)
       throw new HostedHelperError(
         503,
@@ -176,7 +189,12 @@ export class HostedHelperService {
           ].includes(input.action)
         )
           await this.folders.assertNotBuilding(projectId);
-        return await this.perform(input, actor, root, operations, token);
+        // Reserve session capacity before a write, so a quota failure cannot hide an applied operation.
+        const cookie =
+          preview && this.previews?.issue(preview.cookie, actor, token);
+        const value = await this.perform(input, actor, root, operations, token);
+        if (cookie) preview!.grant(cookie);
+        return value;
       } catch (error) {
         if (error instanceof HostedHelperError) throw error;
         // Expected source conflicts keep the existing helper wording. Filesystem/Git/JSON internals do not.
@@ -225,6 +243,7 @@ export class HostedHelperService {
           projectId,
           root,
           expiresAt: Math.min(actor.expiresAt, Date.now() + 15 * 60_000),
+          ...(this.previews ? { previewSession: true } : {}),
         };
       case "repository-inspect-current":
       case "repository-inspect":
@@ -324,10 +343,48 @@ export class HostedHelperService {
         operations.issued.delete(input.planId);
         return job;
       }
-      case "repository-build-status":
-        return this.builds.status(projectId, actor.id, input.jobId);
+      case "repository-build-status": {
+        const value = this.builds.status(projectId, actor.id, input.jobId);
+        if (value.status === "succeeded" && this.previews) {
+          try {
+            const preview = await this.previews.view(
+              projectId,
+              actor.id,
+              input.jobId,
+            );
+            return {
+              ...value,
+              previewUrl: preview.url,
+              previewExpiresAt: preview.expiresAt,
+            };
+          } catch (error) {
+            if (!(error instanceof HostedHelperError) || error.status !== 410)
+              throw error;
+          }
+        }
+        return value;
+      }
       case "repository-build-stop":
         return this.builds.cancel(projectId, actor.id, input.jobId);
+      case "repository-source-frame":
+      case "repository-source-preview": {
+        if (!this.previews)
+          throw new HostedHelperError(
+            501,
+            "Configure the hosted helper's HTTPS preview origin before opening the page.",
+          );
+        const inspection = await operations.repositories.inspectSourcePage(
+          root,
+          input.route,
+        );
+        return this.previews.view(
+          projectId,
+          actor.id,
+          input.jobId,
+          inspection,
+          input.action === "repository-source-preview",
+        );
+      }
       case "repository-native-backup-review": {
         const review = await operations.backups.capture(
           root,
@@ -351,6 +408,7 @@ export class HostedHelperService {
   }
   async close() {
     this.closed = true;
+    this.previews?.close();
     await this.builds.close();
     await this.folders.idle();
     await Promise.all(
@@ -444,13 +502,33 @@ export async function startHostedHelper(options: {
       "ALLOWED_STUDIO_ORIGINS",
     ),
   );
-  let active = 0;
+  if (options.service.previews && !origins.has(options.service.previews.origin))
+    throw new Error(
+      "The canonical HTTPS preview origin must be an allowed editor origin.",
+    );
+  let active = 0,
+    previewActive = 0;
   const server = createServer(async (request, response) => {
     response.setHeader("Cache-Control", "no-store");
     response.setHeader("Content-Type", "application/json; charset=utf-8");
     response.setHeader("X-Content-Type-Options", "nosniff");
     let counted = false;
+    let previewCounted = false;
     try {
+      if (
+        request.url?.startsWith("/editor-preview/") &&
+        options.service.previews
+      ) {
+        if (previewActive >= 32)
+          throw new HostedHelperError(
+            429,
+            "Too many preview files are loading. Reopen the preview.",
+          );
+        previewActive++;
+        previewCounted = true;
+        await options.service.previews.serve(request, response);
+        return;
+      }
       if (request.url !== endpoint)
         throw new HostedHelperError(404, "Hosted helper route not found.");
       const origin = request.headers.origin;
@@ -463,11 +541,25 @@ export async function startHostedHelper(options: {
         response.setHeader("Access-Control-Allow-Origin", origin);
         response.setHeader("Vary", "Origin");
       }
+      if (request.method === "DELETE" && options.service.previews) {
+        if (origin !== options.service.previews.origin)
+          throw new HostedHelperError(
+            403,
+            "Disconnect previews from their editor.",
+          );
+        const cookie = options.service.previews.revoke(
+          request.headers.cookie,
+          request.headers["x-kaizen-preview-account"],
+        );
+        if (cookie) response.setHeader("Set-Cookie", cookie);
+        response.writeHead(204).end();
+        return;
+      }
       if (request.method === "OPTIONS") {
-        response.setHeader("Access-Control-Allow-Methods", "POST");
+        response.setHeader("Access-Control-Allow-Methods", "POST, DELETE");
         response.setHeader(
           "Access-Control-Allow-Headers",
-          "Authorization, Content-Type",
+          "Authorization, Content-Type, X-Kaizen-Preview-Account",
         );
         response.writeHead(204).end();
         return;
@@ -489,8 +581,15 @@ export async function startHostedHelper(options: {
         );
       active++;
       counted = true;
-      const value = await options.service.request(match[1], () =>
-        requestBody(request),
+      const value = await options.service.request(
+        match[1],
+        () => requestBody(request),
+        origin === options.service.previews?.origin
+          ? {
+              cookie: request.headers.cookie,
+              grant: (cookie) => response.setHeader("Set-Cookie", cookie),
+            }
+          : undefined,
       );
       response.writeHead(200).end(JSON.stringify(value));
     } catch (error) {
@@ -503,6 +602,7 @@ export async function startHostedHelper(options: {
       response.writeHead(status).end(JSON.stringify({ error: message }));
     } finally {
       if (counted) active--;
+      if (previewCounted) previewActive--;
     }
   });
   server.requestTimeout = 120_000;
@@ -549,7 +649,9 @@ async function main() {
   const port = Number(process.env.BUILDER_HOSTED_PORT || 4334);
   if (!Number.isInteger(port) || port < 1 || port > 65535) throw new Error();
   const helper = await startHostedHelper({
-    service: new HostedHelperService(folders, access),
+    service: new HostedHelperService(folders, access, {
+      editorOrigin: process.env.BUILDER_HOSTED_EDITOR_ORIGIN || "",
+    }),
     port,
     origins: parseAllowedOrigins(
       process.env.ALLOWED_STUDIO_ORIGINS,

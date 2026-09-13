@@ -369,6 +369,19 @@ export class RepositoryRunner {
     await this.require(id, projectId).done;
     return this.status(id, projectId);
   }
+  /** Immutable build bytes for the authenticated hosted presenter; never reads a request path from disk. */
+  previewFiles(id: string, projectId: string): ReadonlyMap<string, Buffer> {
+    const running = this.require(id, projectId);
+    if (
+      !running.server ||
+      !running.files ||
+      running.value.status !== "succeeded"
+    )
+      throw new Error(
+        "This preview expired or closed. Build the website again.",
+      );
+    return running.files;
+  }
   async sourcePreview(
     id: string,
     projectId: string,

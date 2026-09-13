@@ -14,7 +14,12 @@ export async function openSiteProject(
   project: { id: string },
   root: string,
   hostedWorkspace = false,
-  repositoryService?: { origin: string; accessToken: string },
+  repositoryService?: {
+    origin: string;
+    accessToken: string;
+    direct?: boolean;
+    editorOrigin?: string;
+  },
 ) {
   const hosted = hostedRepositoryTests || hostedWorkspace;
   if (hosted) {
@@ -100,6 +105,10 @@ export async function openSiteProject(
       return value;
     };
     await page.route("**/editor-api/builder-repository", async (route) => {
+      if (repositoryService?.direct) {
+        await route.continue();
+        return;
+      }
       const input = route.request().postDataJSON();
       expect(route.request().headers().authorization).toBe(
         `Bearer ${session.access_token}`,
@@ -149,6 +158,10 @@ export async function openSiteProject(
       });
     });
     await page.context().route(`**${prefix}/**`, async (route) => {
+      if (repositoryService?.direct) {
+        await route.continue();
+        return;
+      }
       const url = new URL(route.request().url());
       const [port, ...parts] = url.pathname.slice(prefix.length + 1).split("/");
       if (!ports.has(port))
@@ -181,7 +194,9 @@ export async function openSiteProject(
       await route.fulfill({ status: response.status(), headers, body });
     });
   }
-  await page.goto(`/builder/?project=${project.id}`);
+  await page.goto(
+    `${repositoryService?.editorOrigin || ""}/builder/?project=${project.id}`,
+  );
   await page.evaluate(
     ({ id, root, hosted }) =>
       localStorage.setItem(

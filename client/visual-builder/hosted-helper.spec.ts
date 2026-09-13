@@ -444,7 +444,7 @@ describe("hosted helper service", () => {
       ).status,
     ).toBe(415);
     expect(
-      (await api.send({ action: "repository-source-frame", jobId: "guess" }))
+      (await api.send({ action: "repository-commit", planId: "guess" }))
         .status,
     ).toBe(501);
     expect((await api.send({ action: "publish" })).status).toBe(400);

@@ -101,6 +101,34 @@ export class HostedBuildQueue {
   status(projectId: string, actorId: string, jobId: unknown) {
     return this.snapshot(this.require(projectId, actorId, jobId));
   }
+  previewJob(projectId: string, actorId: string, jobId: unknown) {
+    const entry = this.require(projectId, actorId, jobId);
+    if (entry.value.status !== "succeeded" || !entry.runnerId)
+      throw new HostedHelperError(
+        409,
+        "Finish building this website before opening its preview.",
+      );
+    const runner = this.adapters.runner(projectId);
+    let job: BuildJob;
+    try {
+      job = runner.status(entry.runnerId, projectId);
+    } catch {
+      throw new HostedHelperError(
+        410,
+        "This preview expired or closed. Build the website again.",
+      );
+    }
+    if (
+      !job.previewUrl ||
+      !job.previewExpiresAt ||
+      job.previewExpiresAt <= Date.now()
+    )
+      throw new HostedHelperError(
+        410,
+        "This preview expired or closed. Build the website again.",
+      );
+    return { runner, job };
+  }
   private snapshot(entry: Entry) {
     const value = structuredClone(entry.value);
     if (value.status === "building" && entry.runnerId) {

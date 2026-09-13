@@ -25,6 +25,8 @@ const exec = promisify(execFile);
 export async function hostedHelperFixture(
   projectIds = [helperProject, helperOtherProject],
   buildScript?: string,
+  previewOrigin?: string,
+  setupSeed?: (seed: string) => Promise<void>,
 ) {
   const directory = await mkdtemp(path.join(tmpdir(), "kaizen-hosted-helper-"));
   const seed = path.join(directory, "seed"),
@@ -72,6 +74,7 @@ export async function hostedHelperFixture(
     path.join(seed, ".gitignore"),
     ".kaizen/\nnode_modules/\ndist/\n.env\n",
   );
+  await setupSeed?.(seed);
   await git(seed, ["init", "-b", "stage"]);
   await git(seed, ["config", "user.name", "Fixture owner"]);
   await git(seed, ["config", "user.email", "fixture@example.invalid"]);
@@ -156,11 +159,15 @@ const child=spawn('git-upload-pack',[${JSON.stringify(remote)}],{stdio:'inherit'
     credentials,
     configured,
   );
-  const service = new HostedHelperService(folders, access);
+  const service = new HostedHelperService(
+    folders,
+    access,
+    previewOrigin ? { editorOrigin: previewOrigin } : undefined,
+  );
   const helper = await startHostedHelper({
     service,
     port: 0,
-    origins: ["https://builder.example"],
+    origins: [previewOrigin || "https://builder.example"],
   });
   const send = async (
     input: Record<string, unknown>,
@@ -174,13 +181,17 @@ const child=spawn('git-upload-pack',[${JSON.stringify(remote)}],{stdio:'inherit'
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${helperToken(actor)}`,
-          Origin: "https://builder.example",
+          Origin: previewOrigin || "https://builder.example",
         },
         body: JSON.stringify({ projectId: helperProject, ...input }),
         ...options,
       },
     );
-    return { status: response.status, body: await response.json() };
+    return {
+      status: response.status,
+      body: await response.json(),
+      headers: response.headers,
+    };
   };
   return {
     directory,

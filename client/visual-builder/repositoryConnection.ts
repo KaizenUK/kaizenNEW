@@ -4,6 +4,7 @@ import { validProjectId } from "../../shared/builderProjects";
 import { companionConnection } from "./companionConnection";
 import {
   HostedRepositoryConnection,
+  hostedPreviewNavigation,
   type HostedRepositoryState,
 } from "./hostedRepositoryConnection";
 import { repositoryMode } from "./repositoryMode";
@@ -188,6 +189,12 @@ export const repositoryConnection = {
     frame.setAttribute("sandbox", "allow-scripts");
     frame.style.cssText = "border:0;width:100vw;height:100vh;display:block";
     frame.src = url.href;
+    child.addEventListener("message", (event) => {
+      if (event.source !== frame.contentWindow || event.origin !== "null")
+        return;
+      const next = hostedPreviewNavigation(url, event.data);
+      if (next) frame.src = next.href;
+    });
     child.document.body.append(frame);
     return child;
   },

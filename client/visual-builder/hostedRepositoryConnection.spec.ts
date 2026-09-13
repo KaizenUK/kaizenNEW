@@ -1,6 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import {
   HostedRepositoryConnection,
+  hostedPreviewNavigation,
   type RepositorySession,
 } from "./hostedRepositoryConnection";
 
@@ -15,7 +16,7 @@ afterEach(() => {
   clients.splice(0).forEach((client) => client.disconnect());
   vi.useRealTimers();
 });
-function fixture() {
+function fixture(previewSession = false) {
   let session: RepositorySession | null = {
     user: { id: "owner" },
     access_token: "owner-token",
@@ -23,10 +24,17 @@ function fixture() {
   };
   const server = vi.fn<typeof fetch>(
     async (_url: string | URL | Request, request?: RequestInit) => {
+      if (request?.method === "DELETE")
+        return new Response(null, { status: 204 });
       const body = JSON.parse(request!.body as string);
       return Response.json(
         body.action === "repository-connect"
-          ? { projectId, root, expiresAt: Date.now() + 7200_000 }
+          ? {
+              projectId,
+              root,
+              expiresAt: Date.now() + 7200_000,
+              previewSession,
+            }
           : { action: body.action, root },
       );
     },
@@ -52,6 +60,104 @@ function fixture() {
   };
 }
 describe("hosted repository transport", () => {
+  it("confines preview navigation to the public view and rejects forged nonces, external URLs and escaped traversal", () => {
+    const nonce = "a".repeat(64);
+    const base = new URL(
+      `https://builder.example/editor-preview/${projectId}/${projectId}/${nonce}/`,
+    );
+    const message = {
+      type: "kaizen-preview-navigate",
+      nonce,
+      route: "/contact/?from=home#email",
+    };
+    expect(hostedPreviewNavigation(base, message)?.href).toBe(
+      base.href + "contact/?from=home#email",
+    );
+    for (const route of [
+      "//outside.example/",
+      "https://outside.example/",
+      "/../builder",
+      "/%2e%2e/builder",
+      "/%252e%252e/builder",
+      "/x%2fy",
+      "/x%5cy",
+      "/\\builder",
+      "/x\nheader",
+    ])
+      expect(
+        hostedPreviewNavigation(base, { ...message, route }),
+      ).toBeUndefined();
+    expect(
+      hostedPreviewNavigation(base, { ...message, nonce: "b".repeat(64) }),
+    ).toBeUndefined();
+    expect(hostedPreviewNavigation(base, null)).toBeUndefined();
+    expect(
+      hostedPreviewNavigation(
+        new URL("https://builder.example/builder/"),
+        message,
+      ),
+    ).toBeUndefined();
+  });
+  it("revokes the server preview session on sign-out without sending the access token", async () => {
+    const api = fixture(true);
+    await api.open();
+    await api.setSession(null);
+    expect(api.client.snapshot().status).toBe("disconnected");
+    expect(api.server.mock.calls[1][1]).toMatchObject({
+      method: "DELETE",
+      credentials: "same-origin",
+      redirect: "error",
+      cache: "no-store",
+      headers: { "X-Kaizen-Preview-Account": "owner" },
+    });
+    expect(api.server.mock.calls[1][1].headers).not.toHaveProperty(
+      "Authorization",
+    );
+  });
+  it("keeps the newer account connected when an old sign-out completes late", async () => {
+    const api = fixture(true);
+    await api.open();
+    let finish!: (response: Response) => void;
+    api.server.mockImplementationOnce(
+      () =>
+        new Promise((resolve) => {
+          finish = resolve;
+        }),
+    );
+    const closing = api.setSession(null);
+    await Promise.resolve();
+    await api.setSession({
+      user: { id: "new-account" },
+      access_token: "new-token",
+      expires_at: Date.now() / 1000 + 3600,
+    });
+    finish(new Response(null, { status: 204 }));
+    await closing;
+    expect(api.client.snapshot()).toMatchObject({
+      status: "connected",
+      accountId: "new-account",
+    });
+    expect(api.server.mock.calls.map(([, options]) => options.method)).toEqual([
+      "POST",
+      "DELETE",
+      "POST",
+    ]);
+  });
+  it("closes the editor after an unreachable sign-out and revokes a session that has expired locally", async () => {
+    const api = fixture(true);
+    await api.open();
+    api.server.mockRejectedValueOnce(new TypeError("offline"));
+    await api.setSession(null);
+    expect(api.client.snapshot().status).toBe("disconnected");
+    const expired = fixture(true);
+    await expired.open();
+    await expired.setSession({
+      ...expired.session(),
+      expires_at: Date.now() / 1000 - 1,
+    });
+    expect(expired.server.mock.calls[1][1].method).toBe("DELETE");
+    expect(expired.client.snapshot().status).toBe("disconnected");
+  });
   it("checks a server connection and sends existing action shapes with a fixed project and verified session token", async () => {
     const api = fixture();
     await api.open();

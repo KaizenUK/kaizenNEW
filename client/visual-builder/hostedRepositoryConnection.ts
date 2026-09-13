@@ -15,6 +15,33 @@ export type HostedRepositoryState = {
 const ended =
   "The helper connection ended. An accepted operation may have finished; review the website before retrying a change.";
 
+/** A preview may request a page only within its original project, build and public view. */
+export function hostedPreviewNavigation(
+  base: URL,
+  message: unknown,
+): URL | undefined {
+  const value = message as { type?: unknown; nonce?: unknown; route?: unknown };
+  const prefix =
+    /^\/editor-preview\/[a-f0-9-]{36}\/[a-f0-9-]{36}\/([a-f0-9]{64})(?=\/)/.exec(
+      base.pathname,
+    );
+  if (
+    !prefix ||
+    value?.type !== "kaizen-preview-navigate" ||
+    value.nonce !== prefix[1] ||
+    typeof value.route !== "string" ||
+    value.route.length > 4096 ||
+    !value.route.startsWith("/") ||
+    value.route.startsWith("//") ||
+    /[\\\u0000-\u0020]|%(?:2e|2f|5c|25|00)/i.test(value.route) ||
+    value.route
+      .split(/[/?#]/)
+      .some((part) => part === "." || part === ".." || part.includes(":"))
+  )
+    return;
+  return new URL(base.origin + prefix[0] + value.route);
+}
+
 /** One project and one transport for this document. Never retries a write or falls back to another folder. */
 export class HostedRepositoryConnection {
   private state: HostedRepositoryState = { status: "disconnected" };
@@ -24,6 +51,7 @@ export class HostedRepositoryConnection {
   private generation = 0;
   private expiry?: ReturnType<typeof setTimeout>;
   private connecting?: Promise<void>;
+  private previewSession = false;
   readonly endpoint: string;
   constructor(
     private options: {
@@ -77,17 +105,40 @@ export class HostedRepositoryConnection {
     });
   }
   async setSession(next: RepositorySession | null) {
+    const previous = this.session;
     const changed = this.session?.user.id !== next?.user.id;
     const refreshed = this.session?.access_token !== next?.access_token;
+    const valid = Boolean(
+      next?.expires_at && next.expires_at * 1000 > Date.now(),
+    );
     if (changed) this.disconnect(ended, true);
     else if (refreshed && this.connecting) this.disconnect(ended);
     this.session = next;
-    if (!next || !next.expires_at || next.expires_at * 1000 <= Date.now()) {
+    if ((changed || !valid) && previous && this.previewSession)
+      await this.revokePreview(previous.user.id);
+    // A delayed logout must not disconnect a newer account that has already connected.
+    if (this.session !== next) return;
+    if (!valid) {
       this.disconnect();
       return;
     }
     if (changed || refreshed || this.state.status !== "connected")
       await this.connect();
+  }
+  private async revokePreview(accountId: string) {
+    this.previewSession = false;
+    try {
+      await (this.options.fetch || fetch)(this.endpoint, {
+        method: "DELETE",
+        credentials: "same-origin",
+        redirect: "error",
+        cache: "no-store",
+        headers: { "X-Kaizen-Preview-Account": accountId },
+        signal: AbortSignal.timeout(5000),
+      });
+    } catch {
+      /* Sign-out still closes the editor; unreachable server sessions expire without renewal. */
+    }
   }
   private async currentSession() {
     let session: RepositorySession | null;
@@ -104,12 +155,17 @@ export class HostedRepositoryConnection {
       !session.expires_at ||
       session.expires_at * 1000 <= Date.now()
     ) {
+      if (this.previewSession && this.session)
+        void this.revokePreview(this.session.user.id);
       this.disconnect();
       throw new Error(
         "Your sign-in has expired. Sign in again to use the hosted helper.",
       );
     }
     if (this.session && session.user.id !== this.session.user.id) {
+      const previous = this.session;
+      if (this.previewSession) await this.revokePreview(previous.user.id);
+      if (this.session !== previous) throw new Error(ended);
       this.session = session;
       this.disconnect(
         "The signed-in account changed. Reopen this project.",
@@ -151,6 +207,7 @@ export class HostedRepositoryConnection {
           result.expiresAt,
           session.expires_at! * 1000,
         );
+        this.previewSession = result.previewSession === true;
         clearTimeout(this.expiry);
         this.update({
           status: "connected",
