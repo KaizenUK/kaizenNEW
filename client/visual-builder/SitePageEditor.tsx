@@ -38,6 +38,7 @@ import { useSourceSelection } from "./useSourceSelection";
 import type { SitePage } from "./SitePages";
 import type { RepositoryGitStatus } from "../../scripts/builder-repository-git";
 import AssetLibrary from "./AssetLibrary";
+import RepositorySave from "./RepositorySave";
 
 export default function SitePageEditor({
   page,
@@ -71,6 +72,7 @@ export default function SitePageEditor({
     [tick, setTick] = useState(Date.now());
   const [git, setGit] = useState<RepositoryGitStatus>(),
     [appliedPlan, setAppliedPlan] = useState<string>(),
+    [savedCommit, setSavedCommit] = useState<string>(),
     [commitMessage, setCommitMessage] = useState(`Update text on ${page.path}`);
   const [imagePreviews, setImagePreviews] = useState<
     Record<string, SourceImagePreview>
@@ -151,7 +153,7 @@ export default function SitePageEditor({
     return () => {
       live = false;
     };
-  }, [page.root, inspection, appliedPlan]);
+  }, [page.root, inspection, appliedPlan, savedCommit]);
   useEffect(() => {
     if (connection.status === "connected" && draft.ready && draft.error)
       void draft.retry().catch(() => {});
@@ -268,7 +270,7 @@ export default function SitePageEditor({
       setAppliedPlan(result.planId);
       setPlan(undefined);
       setReviewOpen(false);
-      setNotice("Changes applied to the folder. Building the updated preview…");
+      setNotice("Changes applied to the folder.");
       const next = await storage.repository({
         action: "repository-source-inspect",
         root: page.root,
@@ -983,40 +985,52 @@ export default function SitePageEditor({
             Download my unapplied edits
           </button>
         )}
-        {appliedPlan && git?.isRepository && (
-          <form
-            className="builder-row"
-            onSubmit={async (e) => {
-              e.preventDefault();
-              setBusy(true);
-              setError("");
-              try {
-                const result = await storage.repository({
-                  action: "repository-commit",
-                  planId: appliedPlan,
-                  message: commitMessage,
-                });
-                setAppliedPlan(undefined);
-                setNotice(result.message);
-              } catch (error) {
-                setError(error.message);
-              } finally {
-                setBusy(false);
-              }
-            }}
-          >
-            <label>
-              Commit message
-              <input
-                value={commitMessage}
-                onChange={(e) => setCommitMessage(e.target.value)}
-                maxLength={2000}
-              />
-            </label>
-            <button type="submit" disabled={busy || disconnected}>
-              Commit these changes
-            </button>
-          </form>
+        {"canSaveToWebsite" in connection && connection.canSaveToWebsite ? (
+          <RepositorySave
+            root={page.root}
+            route={page.route}
+            appliedPlan={appliedPlan}
+            disabled={busy || build.busy}
+            hasUnappliedChanges={changed > 0 || draft.assets.length > 0}
+            onCommit={setSavedCommit}
+          />
+        ) : (
+          appliedPlan &&
+          git?.isRepository && (
+            <form
+              className="builder-row"
+              onSubmit={async (e) => {
+                e.preventDefault();
+                setBusy(true);
+                setError("");
+                try {
+                  const result = await storage.repository({
+                    action: "repository-commit",
+                    planId: appliedPlan,
+                    message: commitMessage,
+                  });
+                  setAppliedPlan(undefined);
+                  setNotice(result.message);
+                } catch (error) {
+                  setError(error.message);
+                } finally {
+                  setBusy(false);
+                }
+              }}
+            >
+              <label>
+                Commit message
+                <input
+                  value={commitMessage}
+                  onChange={(e) => setCommitMessage(e.target.value)}
+                  maxLength={2000}
+                />
+              </label>
+              <button type="submit" disabled={busy || disconnected}>
+                Commit these changes
+              </button>
+            </form>
+          )
         )}
       </footer>
       <Dialog.Root open={reviewOpen} onOpenChange={setReviewOpen}>

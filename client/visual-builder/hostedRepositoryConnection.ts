@@ -11,6 +11,7 @@ export type HostedRepositoryState = {
   expiresAt?: number;
   error?: string;
   accountId?: string;
+  canSaveToWebsite?: boolean;
 };
 const ended =
   "The helper connection ended. An accepted operation may have finished; review the website before retrying a change.";
@@ -101,7 +102,9 @@ export class HostedRepositoryConnection {
       status: "disconnected",
       expiresAt: undefined,
       error,
-      ...(clearRoot ? { root: undefined, accountId: undefined } : {}),
+      ...(clearRoot
+        ? { root: undefined, accountId: undefined, canSaveToWebsite: undefined }
+        : {}),
     });
   }
   async setSession(next: RepositorySession | null) {
@@ -213,6 +216,7 @@ export class HostedRepositoryConnection {
           status: "connected",
           root: result.root,
           accountId: session.user.id,
+          canSaveToWebsite: result.canSaveToWebsite === true,
           expiresAt,
           error: undefined,
         });

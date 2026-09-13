@@ -7,7 +7,29 @@ export class HostedHelperError extends Error {
   }
 }
 
-export type RepositoryActor = { id: string; expiresAt: number };
+export type RepositoryActor = {
+  id: string;
+  expiresAt: number;
+  name?: string;
+  email?: string;
+};
+export function repositoryAuthor(actor: RepositoryActor) {
+  if (
+    !actor.name?.trim() ||
+    actor.name.length > 200 ||
+    /[<>\u0000-\u001f\u007f]/.test(actor.name) ||
+    !actor.email ||
+    actor.email.length > 254 ||
+    !/^[^\s<>@\u0000-\u001f\u007f]+@[^\s<>@\u0000-\u001f\u007f]+\.[^\s<>@\u0000-\u001f\u007f]+$/.test(
+      actor.email,
+    )
+  )
+    throw new HostedHelperError(
+      409,
+      "Your account needs a name and valid email before saving to the website. Ask the owner to complete your account details.",
+    );
+  return { name: actor.name.trim(), email: actor.email };
+}
 export const accountId = (value: unknown): value is string =>
   typeof value === "string" &&
   /^[a-f0-9]{8}-[a-f0-9]{4}-[1-5][a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/.test(
@@ -111,7 +133,13 @@ export class HostedRepositoryAccess {
         401,
         "Your sign-in expired. Sign in again to use the hosted helper.",
       );
-    return { id: user.id, expiresAt: claims.exp * 1000 };
+    const name = user.user_metadata?.full_name ?? user.user_metadata?.name;
+    return {
+      id: user.id,
+      expiresAt: claims.exp * 1000,
+      ...(typeof name === "string" ? { name } : {}),
+      ...(typeof user.email === "string" ? { email: user.email } : {}),
+    };
   }
   async requireProject(
     token: string,

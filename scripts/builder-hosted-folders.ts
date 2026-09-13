@@ -15,12 +15,15 @@ import {
 import path from "node:path";
 import { validProjectId } from "../shared/builderProjects";
 import { HostedHelperError, accountId } from "./builder-hosted-auth";
+import type { RepositorySaveTarget } from "../shared/builderRepositorySave";
+import type { RepositoryGitCommand } from "./builder-repository-git";
 
 const exec = promisify(execFile);
 export type HostedProjectRepository = {
   projectId: string;
   repositoryUrl: string;
   branch: string;
+  saveToWebsite?: RepositorySaveTarget;
 };
 const configurationError = () =>
   new HostedHelperError(
@@ -68,10 +71,39 @@ export function hostedProjectRepositories(
     )
       throw configurationError();
     seen.add(item.projectId);
+    let saveToWebsite: RepositorySaveTarget | undefined;
+    if (item.saveToWebsite !== undefined) {
+      const save = item.saveToWebsite;
+      let url: URL;
+      try {
+        url = new URL(save?.url);
+      } catch {
+        throw configurationError();
+      }
+      if (
+        save.environment !== "staging" ||
+        url.protocol !== "https:" ||
+        url.origin !== save.url ||
+        (save.workflow !== undefined &&
+          (!/^git@github\.com:/.test(item.repositoryUrl) ||
+            typeof save.workflow !== "string" ||
+            !/^[a-zA-Z0-9_.-]+\.ya?ml$/.test(save.workflow))) ||
+        Object.keys(save).some(
+          (key) => !["environment", "url", "workflow"].includes(key),
+        )
+      )
+        throw configurationError();
+      saveToWebsite = {
+        environment: "staging",
+        url: url.origin,
+        ...(save.workflow ? { workflow: save.workflow } : {}),
+      };
+    }
     return {
       projectId: item.projectId,
       repositoryUrl: item.repositoryUrl,
       branch: item.branch,
+      ...(saveToWebsite ? { saveToWebsite } : {}),
     };
   });
 }
@@ -305,12 +337,18 @@ export class HostedWebsiteFolders {
     await privateFile(hosts, 1024 * 1024);
     return `ssh -F /dev/null -i ${shellQuote(key)} -o IdentitiesOnly=yes -o BatchMode=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile=${shellQuote(hosts)} -o GlobalKnownHostsFile=/dev/null -o ConnectTimeout=10 -o ConnectionAttempts=1`;
   }
-  private async git(cwd: string, args: string[], ssh?: string) {
+  private async git(cwd: string, args: string[], ssh?: string, raw = false) {
     try {
-      return (
+      const result = (
         await exec(
           "git",
           [
+            "--literal-pathspecs",
+            "--no-replace-objects",
+            "-c",
+            "commit.gpgsign=false",
+            "-c",
+            "push.followTags=false",
             "-c",
             "core.hooksPath=/dev/null",
             "-c",
@@ -343,7 +381,8 @@ export class HostedWebsiteFolders {
             },
           },
         )
-      ).stdout.trim();
+      ).stdout;
+      return raw ? result : result.trim();
     } catch {
       // Git/SSH stderr may contain credentials, hostnames or private paths.
       throw new HostedHelperError(
@@ -356,6 +395,11 @@ export class HostedWebsiteFolders {
     const configured = this.configuration(id),
       project = this.projectDirectory(id),
       root = this.root(id);
+    const identity = JSON.stringify({
+      projectId: id,
+      repositoryUrl: configured.repositoryUrl,
+      branch: configured.branch,
+    });
     await privateDirectory(path.join(this.directory, "projects"));
     await privateDirectory(project);
     const marker = path.join(project, "repository.json");
@@ -365,11 +409,11 @@ export class HostedWebsiteFolders {
     });
     if (markerStat) {
       await privateFile(marker, 4096);
-      if ((await readFile(marker, "utf8")) !== JSON.stringify(configured))
+      if ((await readFile(marker, "utf8")) !== identity)
         throw configurationError();
     } else {
       if (await lstat(root).catch(() => null)) throw configurationError();
-      await writeFile(marker, JSON.stringify(configured), {
+      await writeFile(marker, identity, {
         flag: "wx",
         mode: 0o600,
       });
@@ -426,6 +470,21 @@ export class HostedWebsiteFolders {
     for (const item of ["commondir", "objects/info/alternates"])
       if (await lstat(path.join(root, ".git", item)).catch(() => null))
         throw configurationError();
+    const config = await this.git(root, [
+      "config",
+      "--local",
+      "--no-includes",
+      "--null",
+      "--list",
+    ]);
+    if (
+      config
+        .split("\0")
+        .some((entry) =>
+          /^(?:url\.|include\.|includeif\.)/i.test(entry.split("\n")[0]),
+        )
+    )
+      throw configurationError();
     if (
       (await this.git(root, ["rev-parse", "--show-toplevel"])) !== root ||
       (await this.git(root, ["rev-parse", "--absolute-git-dir"])) !==
@@ -437,6 +496,78 @@ export class HostedWebsiteFolders {
     )
       throw configurationError();
     return root;
+  }
+  /** Only the authenticated service supplies commands; no request contains Git arguments or destinations. */
+  localGit(id: string): RepositoryGitCommand {
+    return async (cwd, args) => {
+      if (cwd !== this.root(id)) throw configurationError();
+      return this.git(cwd, args, undefined, true);
+    };
+  }
+  async head(id: string) {
+    return this.git(await this.check(id), ["rev-parse", "HEAD"]);
+  }
+  async remoteHead(id: string) {
+    const root = await this.check(id),
+      configured = this.configuration(id);
+    const value = await this.git(
+      root,
+      [
+        "ls-remote",
+        "--refs",
+        "--",
+        configured.repositoryUrl,
+        `refs/heads/${configured.branch}`,
+      ],
+      await this.credentials(id),
+    );
+    const [sha, ref, ...extra] = value.split(/\s+/);
+    if (
+      !/^(?:[a-f0-9]{40}|[a-f0-9]{64})$/.test(sha) ||
+      ref !== `refs/heads/${configured.branch}` ||
+      extra.length
+    )
+      throw new HostedHelperError(
+        409,
+        "The configured website branch is missing or changed. Ask the owner to check it before saving.",
+      );
+    return sha;
+  }
+  async pushCommit(id: string, commit: string, base: string) {
+    const root = await this.check(id),
+      configured = this.configuration(id);
+    if (
+      !/^(?:[a-f0-9]{40}|[a-f0-9]{64})$/.test(commit) ||
+      !/^(?:[a-f0-9]{40}|[a-f0-9]{64})$/.test(base) ||
+      (await this.git(root, ["rev-parse", "HEAD"])) !== commit ||
+      // Read actual object headers: replacement refs and ancestry grafts must not disguise its parents.
+      (await this.git(root, ["cat-file", "commit", commit]))
+        .split("\n\n", 1)[0]
+        .split("\n")
+        .filter((line) => line.startsWith("parent "))
+        .join("\n") !== `parent ${base}`
+    )
+      throw new HostedHelperError(
+        409,
+        "The saved commit no longer follows the reviewed branch. Ask the owner to reconcile the folder. Nothing was pushed.",
+      );
+    // The exact lease is a compare-and-swap, with a separately verified single-child fast-forward.
+    // Never use a tracking ref as the lease or allow replacement/deletion of remote history.
+    await this.git(
+      root,
+      [
+        "push",
+        "--porcelain",
+        "--no-follow-tags",
+        "--no-signed",
+        "--recurse-submodules=no",
+        `--force-with-lease=refs/heads/${configured.branch}:${base}`,
+        "--",
+        configured.repositoryUrl,
+        `${commit}:refs/heads/${configured.branch}`,
+      ],
+      await this.credentials(id),
+    );
   }
   async fetch(id: string) {
     const root = await this.check(id),

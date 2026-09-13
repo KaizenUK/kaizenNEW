@@ -4,7 +4,12 @@
     {
       "projectId": "kaizen",
       "repositoryUrl": "git@github.com:YOUR_ORG/YOUR_REPOSITORY.git",
-      "branch": "stage"
+      "branch": "stage",
+      "saveToWebsite": {
+        "environment": "staging",
+        "url": "https://stage.example",
+        "workflow": "deploy.yml"
+      }
     }
   ]
 }

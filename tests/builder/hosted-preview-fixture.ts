@@ -15,9 +15,10 @@ import { promisify } from "node:util";
 import path from "node:path";
 import { hostedHelperFixture } from "./hosted-helper-fixture";
 import { BUILDER_TEST_ORIGIN } from "./ports";
+import { HostedSaveReleases } from "../../scripts/builder-hosted-save-release";
 
 /** A real TLS reverse proxy and hosted service. Only certificates, SSH and Supabase accounts are fixtures. */
-export async function hostedPreviewFixture(projectId: string) {
+export async function hostedPreviewFixture(projectId: string, saving = false) {
   const directory = await mkdtemp(
     path.join(tmpdir(), "kaizen-hosted-preview-"),
   );
@@ -87,6 +88,7 @@ export async function hostedPreviewFixture(projectId: string) {
   await new Promise<void>((resolve) => server.listen(0, "127.0.0.1", resolve));
   const address = server.address();
   const origin = `https://127.0.0.1:${typeof address === "object" && address ? address.port : 0}`;
+  const deployment = { status: "queued", conclusion: null as string | null };
   const api = await hostedHelperFixture(
     [projectId],
     "import { build } from 'astro'; await build({logLevel:'silent'});",
@@ -127,6 +129,29 @@ export async function hostedPreviewFixture(projectId: string) {
         path.join(seed, "public/fixture.ttf"),
       );
     },
+    saving
+      ? {
+          target: {
+            environment: "staging",
+            url: origin,
+            workflow: "deploy.yml",
+          },
+          releases: new HostedSaveReleases({
+            fetch: async (url) =>
+              Response.json({
+                workflow_runs: [
+                  {
+                    id: 123,
+                    event: "push",
+                    head_sha: new URL(String(url)).searchParams.get("head_sha"),
+                    head_branch: "stage",
+                    ...deployment,
+                  },
+                ],
+              }),
+          }),
+        }
+      : undefined,
   );
   helperOrigin = api.helper.origin;
   await api.send({ action: "repository-connect", projectId });
@@ -139,6 +164,7 @@ export async function hostedPreviewFixture(projectId: string) {
     api,
     origin,
     requests,
+    deployment,
     close: async () => {
       server.closeAllConnections();
       await new Promise<void>((resolve) => server.close(() => resolve()));

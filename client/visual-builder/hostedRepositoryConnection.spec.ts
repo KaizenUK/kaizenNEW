@@ -16,7 +16,10 @@ afterEach(() => {
   clients.splice(0).forEach((client) => client.disconnect());
   vi.useRealTimers();
 });
-function fixture(previewSession = false) {
+function fixture(
+  previewSession = false,
+  canSaveToWebsite: unknown = undefined,
+) {
   let session: RepositorySession | null = {
     user: { id: "owner" },
     access_token: "owner-token",
@@ -34,6 +37,7 @@ function fixture(previewSession = false) {
               root,
               expiresAt: Date.now() + 7200_000,
               previewSession,
+              canSaveToWebsite,
             }
           : { action: body.action, root },
       );
@@ -60,6 +64,17 @@ function fixture(previewSession = false) {
   };
 }
 describe("hosted repository transport", () => {
+  it("enables website saving only when the server advertises it and clears the capability when the account ends", async () => {
+    for (const capability of [undefined, false, "true", true]) {
+      const api = fixture(false, capability);
+      await api.open();
+      expect(api.client.snapshot().canSaveToWebsite).toBe(capability === true);
+      api.client.disconnect("Connection interrupted");
+      expect(api.client.snapshot().canSaveToWebsite).toBe(capability === true);
+      await api.setSession(null);
+      expect(api.client.snapshot().canSaveToWebsite).toBeUndefined();
+    }
+  });
   it("confines preview navigation to the public view and rejects forged nonces, external URLs and escaped traversal", () => {
     const nonce = "a".repeat(64);
     const base = new URL(

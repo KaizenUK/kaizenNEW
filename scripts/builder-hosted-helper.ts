@@ -21,6 +21,8 @@ import { RepositoryCompanion, inspectRepository } from "./builder-repository";
 import { RepositoryRunner, type BuildPlan } from "./builder-runner";
 import { HostedBuildQueue } from "./builder-hosted-builds";
 import { HostedPreviews } from "./builder-hosted-previews";
+import { HostedWebsiteSaves } from "./builder-hosted-saves";
+import { HostedSaveReleases } from "./builder-hosted-save-release";
 import { SourceDrafts } from "./builder-source-drafts";
 import { NativeRepositoryBackups } from "./builder-native-backup";
 
@@ -38,6 +40,8 @@ const actions = new Set([
   "repository-source-prepare",
   "repository-prepare",
   "repository-apply",
+  "repository-save",
+  "repository-save-status",
   "repository-build-review",
   "repository-build-start",
   "repository-build-status",
@@ -59,6 +63,7 @@ type IssuedPlan = {
   kind: "files" | "backup" | "build";
   expiresAt: number;
   draft?: { route: string; version: number };
+  route?: string;
   build?: BuildPlan;
 };
 class ProjectOperations {
@@ -94,12 +99,14 @@ export class HostedHelperService {
   private projects = new Map<string, ProjectOperations>();
   private closed = false;
   private builds: HostedBuildQueue;
+  private saves: HostedWebsiteSaves;
   readonly previews?: HostedPreviews;
   constructor(
     readonly folders: HostedWebsiteFolders,
     readonly access: HostedRepositoryAccess,
-    options?: { editorOrigin: string },
+    options?: { editorOrigin?: string; saveReleases?: HostedSaveReleases },
   ) {
+    this.saves = new HostedWebsiteSaves(folders, options?.saveReleases);
     this.builds = new HostedBuildQueue({
       folders,
       authorize: async (token, projectId) => {
@@ -108,7 +115,7 @@ export class HostedHelperService {
       },
       runner: (projectId) => this.projects.get(projectId)!.runner,
     });
-    if (options)
+    if (options?.editorOrigin !== undefined)
       this.previews = new HostedPreviews(
         options.editorOrigin,
         access,
@@ -244,6 +251,9 @@ export class HostedHelperService {
           root,
           expiresAt: Math.min(actor.expiresAt, Date.now() + 15 * 60_000),
           ...(this.previews ? { previewSession: true } : {}),
+          ...(this.folders.configuration(projectId).saveToWebsite
+            ? { canSaveToWebsite: true }
+            : {}),
         };
       case "repository-inspect-current":
       case "repository-inspect":
@@ -251,7 +261,10 @@ export class HostedHelperService {
       case "repository-fetch":
         return this.folders.fetch(projectId);
       case "repository-git-status":
-        return operations.repositories.gitStatus(root);
+        return operations.repositories.gitStatus(
+          root,
+          this.folders.localGit(projectId),
+        );
       case "repository-source-inspect":
         return operations.repositories.inspectSourcePage(root, input.route);
       case "repository-source-draft-read":
@@ -291,6 +304,7 @@ export class HostedHelperService {
           input.media,
         );
         remember(plan, "files", draft);
+        operations.issued.get(plan.id)!.route = input.edits.inspection.route;
         return plan;
       }
       case "repository-prepare": {
@@ -308,13 +322,18 @@ export class HostedHelperService {
         return plan;
       }
       case "repository-apply": {
+        this.saves.assertCanApply(projectId);
         const entry = operations.require(input.planId, actor.id, "files");
+        const base = this.folders.configuration(projectId).saveToWebsite
+          ? await this.folders.head(projectId)
+          : "";
         // Consume before a write, including failures with unknown/partial outcomes; never resend an old plan.
         operations.issued.delete(input.planId);
         const result = await operations.repositories.apply(
           input.planId,
           projectId,
         );
+        this.saves.remember(projectId, actor, base, result, entry.route);
         if (entry.draft) {
           try {
             await (
@@ -326,6 +345,32 @@ export class HostedHelperService {
           }
         }
         return result;
+      }
+      case "repository-save":
+      case "repository-save-status": {
+        if (!this.folders.configuration(projectId).saveToWebsite)
+          throw new HostedHelperError(
+            501,
+            "Save to website needs a configured staging destination. Ask the owner to finish the hosted setup.",
+          );
+        if (input.action === "repository-save-status")
+          return this.saves.status(
+            projectId,
+            actor.id,
+            input.planId,
+            input.route,
+          );
+        return this.saves.save(
+          projectId,
+          actor,
+          input.planId,
+          input.message,
+          operations.repositories,
+          async () => {
+            const current = await this.access.verify(token);
+            await this.access.requireProject(token, current, projectId);
+          },
+        );
       }
       case "repository-build-review": {
         const plan = await operations.runner.prepare(root, projectId);
@@ -651,6 +696,9 @@ async function main() {
   const helper = await startHostedHelper({
     service: new HostedHelperService(folders, access, {
       editorOrigin: process.env.BUILDER_HOSTED_EDITOR_ORIGIN || "",
+      saveReleases: new HostedSaveReleases({
+        githubToken: process.env.BUILDER_HOSTED_GITHUB_READ_TOKEN,
+      }),
     }),
     port,
     origins: parseAllowedOrigins(

@@ -4050,3 +4050,42 @@
     white-space: normal;
   }
 }
+/* Hosted source saves keep their outcome and retry action visible at narrow widths. */
+.builder-repository-save {
+  min-width: 0;
+  width: 100%;
+  display: grid;
+  gap: 8px;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--panel);
+}
+.builder-repository-save p {
+  margin: 4px 0;
+  overflow-wrap: anywhere;
+}
+.builder-repository-save form {
+  display: flex;
+  align-items: end;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.builder-repository-save label {
+  display: grid;
+  gap: 4px;
+  flex: 1 1 220px;
+}
+.builder-repository-save input {
+  min-width: 0;
+  width: 100%;
+}
+.builder-repository-save details {
+  font-size: 12px;
+  overflow-wrap: anywhere;
+}
+.builder-site-footer:has(.builder-repository-save) {
+  flex-wrap: wrap;
+  max-height: 40vh;
+  overflow: auto;
+}

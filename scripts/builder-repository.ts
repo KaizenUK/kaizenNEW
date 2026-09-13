@@ -14,6 +14,8 @@ import { createHash, randomUUID } from "node:crypto";
 import {
   repositoryGitStatus,
   commitRepositoryFiles,
+  type RepositoryCommitOptions,
+  type RepositoryGitCommand,
 } from "./builder-repository-git";
 import { unzipSync, strFromU8 } from "fflate";
 import {
@@ -276,10 +278,15 @@ export class RepositoryCompanion {
       committing: boolean;
     }
   >();
-  async gitStatus(root: string) {
-    return repositoryGitStatus(await repositoryRoot(root));
+  async gitStatus(root: string, git?: RepositoryGitCommand) {
+    return repositoryGitStatus(await repositoryRoot(root), git);
   }
-  async commit(id: string, projectId: string, message: string) {
+  async commit(
+    id: string,
+    projectId: string,
+    message: string,
+    options?: RepositoryCommitOptions,
+  ) {
     const applied = this.appliedPlans.get(id);
     if (!applied || applied.projectId !== projectId)
       throw new Error(
@@ -294,13 +301,16 @@ export class RepositoryCompanion {
         const content = await bytes(root, change.file);
         if ((content ? hash(content) : null) !== change.after)
           throw new Error(
-            `Changed since apply: ${change.file}. Review these edits in GitHub Desktop before committing.`,
+            options?.git
+              ? `Changed since apply: ${change.file}. Ask the owner to reconcile these edits before saving.`
+              : `Changed since apply: ${change.file}. Review these edits in GitHub Desktop before committing.`,
           );
       }
       const result = await commitRepositoryFiles(
         root,
         applied.changes.map((c) => c.file),
         message,
+        options,
       );
       this.appliedPlans.delete(id);
       return result;

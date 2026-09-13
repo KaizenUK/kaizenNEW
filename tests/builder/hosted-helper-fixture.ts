@@ -4,6 +4,8 @@ import { promisify } from "node:util";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import { HostedRepositoryAccess } from "../../scripts/builder-hosted-auth";
+import type { RepositorySaveTarget } from "../../shared/builderRepositorySave";
+import type { HostedSaveReleases } from "../../scripts/builder-hosted-save-release";
 import { HostedWebsiteFolders } from "../../scripts/builder-hosted-folders";
 import {
   HostedHelperService,
@@ -27,6 +29,7 @@ export async function hostedHelperFixture(
   buildScript?: string,
   previewOrigin?: string,
   setupSeed?: (seed: string) => Promise<void>,
+  saving?: { target: RepositorySaveTarget; releases?: HostedSaveReleases },
 ) {
   const directory = await mkdtemp(path.join(tmpdir(), "kaizen-hosted-helper-"));
   const seed = path.join(directory, "seed"),
@@ -87,8 +90,9 @@ export async function hostedHelperFixture(
     `#!${process.execPath}
 const {appendFileSync}=require('node:fs');const {spawn}=require('node:child_process');
 const args=process.argv.slice(2);appendFileSync(${JSON.stringify(sshLog)},JSON.stringify({args,environment:Object.keys(process.env)})+'\\n');
-if(args[args.length-1]!=="git-upload-pack 'fixture/site.git'"||!args.includes('StrictHostKeyChecking=yes')||!args.includes('IdentitiesOnly=yes')||!args.includes('BatchMode=yes'))process.exit(74);
-const child=spawn('git-upload-pack',[${JSON.stringify(remote)}],{stdio:'inherit'});child.on('exit',code=>process.exit(code??1));
+const operation=args[args.length-1];
+if(!["git-upload-pack 'fixture/site.git'","git-receive-pack 'fixture/site.git'"].includes(operation)||!args.includes('StrictHostKeyChecking=yes')||!args.includes('IdentitiesOnly=yes')||!args.includes('BatchMode=yes'))process.exit(74);
+const child=spawn(operation.split(' ')[0],[${JSON.stringify(remote)}],{stdio:'inherit',env:{...process.env,GIT_CONFIG_PARAMETERS:undefined,GIT_CONFIG_COUNT:undefined}});child.on('exit',code=>process.exit(code??1));
 `,
     { mode: 0o700 },
   );
@@ -97,8 +101,9 @@ const child=spawn('git-upload-pack',[${JSON.stringify(remote)}],{stdio:'inherit'
   const credentials = path.join(directory, "credentials");
   const configured = projectIds.map((projectId) => ({
     projectId,
-    repositoryUrl: "git@fixture.invalid:fixture/site.git",
+    repositoryUrl: `git@${saving?.target.workflow ? "github.com" : "fixture.invalid"}:fixture/site.git`,
     branch: "stage",
+    ...(saving ? { saveToWebsite: saving.target } : {}),
   }));
   for (const id of projectIds) {
     await mkdir(path.join(credentials, id), { recursive: true, mode: 0o700 });
@@ -120,6 +125,26 @@ const child=spawn('git-upload-pack',[${JSON.stringify(remote)}],{stdio:'inherit'
   const calls: { route: string; token: string; body?: any }[] = [];
   let unavailable = false;
   let beforeMembership: (() => Promise<void>) | undefined;
+  const profiles = new Map(
+    [helperOwner, helperEditor].map((id) => [
+      id,
+      {
+        id,
+        ...(saving
+          ? {
+              email:
+                id === helperOwner
+                  ? "owner@example.invalid"
+                  : "editor@example.invalid",
+              user_metadata: {
+                full_name:
+                  id === helperOwner ? "Fixture owner" : "Fixture editor",
+              },
+            }
+          : {}),
+      },
+    ]),
+  );
   const access = new HostedRepositoryAccess({
     url: "https://supabase.fixture.invalid",
     anonKey: "fixture-anon-key",
@@ -141,7 +166,8 @@ const child=spawn('git-upload-pack',[${JSON.stringify(remote)}],{stdio:'inherit'
       }
       if (!token.endsWith(".fixture-signature"))
         return Response.json({}, { status: 401 });
-      if (route === "/auth/v1/user") return Response.json({ id: claims.sub });
+      if (route === "/auth/v1/user")
+        return Response.json(profiles.get(claims.sub) || { id: claims.sub });
       if (route === "/rest/v1/rpc/builder_project_access") {
         await beforeMembership?.();
         return Response.json(
@@ -159,11 +185,10 @@ const child=spawn('git-upload-pack',[${JSON.stringify(remote)}],{stdio:'inherit'
     credentials,
     configured,
   );
-  const service = new HostedHelperService(
-    folders,
-    access,
-    previewOrigin ? { editorOrigin: previewOrigin } : undefined,
-  );
+  const service = new HostedHelperService(folders, access, {
+    ...(previewOrigin ? { editorOrigin: previewOrigin } : {}),
+    ...(saving?.releases ? { saveReleases: saving.releases } : {}),
+  });
   const helper = await startHostedHelper({
     service,
     port: 0,
@@ -205,6 +230,7 @@ const child=spawn('git-upload-pack',[${JSON.stringify(remote)}],{stdio:'inherit'
     helper,
     send,
     members,
+    profiles,
     archived,
     calls,
     outage: (value: boolean) => {

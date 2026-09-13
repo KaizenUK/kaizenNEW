@@ -7,6 +7,7 @@ import type {
 import { storage } from "./storage";
 import { exportProject, downloadProject } from "./exportProject";
 import RepositoryBuild from "./RepositoryBuild";
+import RepositorySave from "./RepositorySave";
 import SourcePageEditor from "./SourcePageEditor";
 import NativeRepositoryBackup from "./NativeRepositoryBackup";
 import { activeProjectId } from "./projectStorage";
@@ -46,6 +47,7 @@ export default function RepositoryPanel({
   const [root, setRoot] = useState("");
   const [inspection, setInspection] = useState<RepositoryInspection>();
   const [plan, setPlan] = useState<RepositoryPlan>();
+  const [appliedPlan, setAppliedPlan] = useState<string>();
   const [sourceRoute, setSourceRoute] = useState<string>();
   const [busy, setBusy] = useState(false);
   const [status, setStatus] = useState("");
@@ -358,6 +360,7 @@ export default function RepositoryPanel({
                           planId: plan.id,
                         });
                         setPlan(undefined);
+                        setAppliedPlan(result.planId);
                         setSourceRoute(undefined);
                         setStatus(result.message);
                       })
@@ -367,6 +370,13 @@ export default function RepositoryPanel({
                   </button>
                 </div>
               </Card>
+            )}
+            {inspection && (
+              <RepositorySave
+                root={inspection.root}
+                appliedPlan={appliedPlan}
+                disabled={busy}
+              />
             )}
             {inspection &&
               ["astro-react", "kaizen-export"].includes(
