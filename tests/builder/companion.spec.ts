@@ -18,7 +18,10 @@ test.beforeAll(async () => {
     configFile: false,
     root: process.cwd(),
     envDir: false,
-    cacheDir: path.resolve("test-results/companion-hosted-vite"),
+    cacheDir: await mkdtemp(path.join(tmpdir(), "kaizen-companion-vite-")),
+    // The app entry is a real file so Vite can discover its full dependency
+    // graph before the browser receives optimized imports on a cold start.
+    optimizeDeps: { entries: ["tests/builder/companion-app.tsx"] },
     server: {
       host: "127.0.0.1",
       port: COMPANION_TEST_PORT,
@@ -40,19 +43,12 @@ test.beforeAll(async () => {
             if (req.url?.startsWith("/companion-test?")) {
               res.setHeader("Content-Type", "text/html");
               res.end(
-                '<!doctype html><html><head><meta name="viewport" content="width=device-width"/><link rel="icon" href="data:,"/></head><body><div id="app"></div><script type="module" src="/@companion-test.jsx"></script></body></html>',
+                '<!doctype html><html><head><meta name="viewport" content="width=device-width"/><link rel="icon" href="data:,"/></head><body><div id="app"></div><script type="module" src="/tests/builder/companion-app.tsx"></script></body></html>',
               );
               return;
             }
             next();
           });
-        },
-        resolveId(id) {
-          if (id === "/@companion-test.jsx") return "\0companion-test.jsx";
-        },
-        load(id) {
-          if (id === "\0companion-test.jsx")
-            return `import React from 'react';import {createRoot} from 'react-dom/client';import HostedRepository from '/client/visual-builder/HostedRepository.tsx';import {companionConnection} from '/client/visual-builder/companionConnection.ts';import {storage} from '/client/visual-builder/storage.ts';import SitePageEditor from '/client/visual-builder/SitePageEditor.tsx';import '/client/visual-builder/builder.css';window.testRepository=(input)=>storage.repository(input);window.testConnection=companionConnection;function Harness(){const[site,setSite]=React.useState(false);return site?React.createElement(SitePageEditor,{page:{root:companionConnection.snapshot().root,route:'src/pages/index.astro',path:'/',title:'Paired page'},workspace:{pages:[],assets:[],saved:[]},onWorkspace:()=>{},onBack:()=>setSite(false),theme:'light',onToggleTheme:()=>{}}):React.createElement('div',{className:'builder-app','data-theme':'light'},React.createElement('button',{onClick:()=>setSite(true)},'Open website page editor'),React.createElement(HostedRepository));}createRoot(document.getElementById('app')).render(React.createElement(Harness));`;
         },
       },
     ],
