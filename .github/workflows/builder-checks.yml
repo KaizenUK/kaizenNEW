@@ -249,7 +249,6 @@ jobs:
             --setenv=KAIZEN_SANDBOX_MANAGER="$isolation_manager" \
             --setenv=KAIZEN_SANDBOX_DEPENDENCIES=/var/lib/kaizen-build-isolation-check/dependencies \
             /var/lib/kaizen-build-isolation-check/node/bin/node /var/lib/kaizen-build-isolation-check/verify.mjs
-      - run: pnpm test:builder:browser --project=chromium
       - name: Exercise the hosted repository transport
         run: pnpm test:builder:browser tests/builder/hosted-repository.spec.ts tests/builder/site-*.spec.ts --project=chromium
         env:
@@ -262,13 +261,13 @@ jobs:
           retention-days: 7
 
   browser-core:
-    name: Core journeys (${{ matrix.browser }})
+    name: Browser journeys (${{ matrix.browser }})
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 30
     strategy:
       fail-fast: false
       matrix:
-        browser: [firefox, webkit]
+        browser: [chromium, firefox, webkit]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
