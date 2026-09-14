@@ -17,6 +17,7 @@ export async function accountFixture(
     signedOut?: boolean;
     invited?: boolean;
     initialAccount?: string;
+    needsLegalAcceptance?: boolean;
   } = {},
 ) {
   const projectResponse = await page.request.post("/__builder-projects", {
@@ -45,8 +46,13 @@ export async function accountFixture(
     "202609130001_builder_invitations.sql",
     "202609130002_builder_accounts.sql",
     "202609140001_builder_function_limits.sql",
+    "202609140004_builder_legal_privacy.sql",
   ])
     await db.exec(await readFile(`supabase/migrations/${file}`, "utf8"));
+  if (!options.needsLegalAcceptance)
+    await db.exec(
+      "insert into builder_legal_acceptances(user_id,version) select id,'2026-09-14' from auth.users",
+    );
   await db.query(
     "insert into builder_projects(id,name) values($1,'Garden website'),($2,'Other website')",
     [project.id, beta],
@@ -155,13 +161,33 @@ export async function accountFixture(
             error: null,
           };
         if (
-          !/^builder_account_deletion_(request|cancel|state|prepare|complete)$/.test(
+          !/^builder_(?:account_deletion_(?:request|cancel|state|prepare|complete)|legal_(?:state|accept)|privacy_(?:projects|list|request|update))$/.test(
             name,
           )
         )
           throw new Error("Unexpected account RPC");
         const keys = Object.keys(args);
-        if (keys.some((key) => !["actor", "request", "target"].includes(key)))
+        if (
+          keys.some(
+            (key) =>
+              ![
+                "actor",
+                "request",
+                "target",
+                "expected_version",
+                "terms_hash",
+                "privacy_hash",
+                "confirmed",
+                "inbox",
+                "before_id",
+                "request_kind",
+                "request_details",
+                "request_id",
+                "next_status",
+                "owner_response",
+              ].includes(key),
+          )
+        )
           throw new Error("Unexpected RPC argument");
         try {
           return {

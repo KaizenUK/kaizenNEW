@@ -10,6 +10,7 @@ import {
   type AccountAction,
 } from "./accountAuth";
 import AccountDeletion from "./AccountDeletion";
+import PrivacyRequests from "./PrivacyRequests";
 
 export default function AccountPage() {
   const [account, setAccount] = useState<{
@@ -360,6 +361,7 @@ function AccountDetails({ user }: { user: User }) {
           Sign out of other sessions
         </button>
       </Card>
+      <PrivacyRequests key={user.id} accountId={user.id} />
       <AccountDeletion accountId={user.id} onDeleted={() => setRemoved(true)} />
     </>
   );

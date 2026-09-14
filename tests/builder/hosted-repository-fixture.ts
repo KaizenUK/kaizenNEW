@@ -1,5 +1,6 @@
 import { drainRepositoryRoutes, expect, type Page } from "./browser-fixture";
 import { BUILDER_TEST_ORIGIN } from "./ports";
+import { BUILDER_LEGAL } from "../../shared/builderLegal";
 
 export const hostedRepositoryTests =
   process.env.BUILDER_TEST_REPOSITORY_TRANSPORT === "hosted";
@@ -52,7 +53,7 @@ export async function openSiteProject(
     await page.route("**/client/lib/supabase.ts*", (route) =>
       route.fulfill({
         contentType: "application/javascript",
-        body: `let session=${JSON.stringify(session)};const listeners=new Set();const client={auth:{initialize:async()=>({error:null}),getSession:async()=>({data:{session}}),refreshSession:async()=>({data:{session}}),signOut:async()=>{session=null;for(const fn of listeners)fn('SIGNED_OUT',null);return {error:null}},onAuthStateChange:callback=>{listeners.add(callback);return {data:{subscription:{unsubscribe:()=>listeners.delete(callback)}}}}},functions:{invoke:async(name,options)=>{const response=await fetch('/__fixture-projects',{method:'POST',headers:{'Content-Type':'application/json',...options.headers},body:JSON.stringify(options.body)});return {data:await response.json(),error:response.ok?null:{message:'Fixture project request failed'}};}}};export const getSupabaseClient=()=>client;export const createIsolatedSupabaseClient=()=>{throw new Error('Account changes are outside this fixture');};`,
+        body: `let session=${JSON.stringify(session)};const listeners=new Set();const client={auth:{initialize:async()=>({error:null}),getSession:async()=>({data:{session}}),refreshSession:async()=>({data:{session}}),signOut:async()=>{session=null;for(const fn of listeners)fn('SIGNED_OUT',null);return {error:null}},onAuthStateChange:callback=>{listeners.add(callback);return {data:{subscription:{unsubscribe:()=>listeners.delete(callback)}}}}},functions:{invoke:async(name,options)=>{if(name==='builder-account'){if(options.body.action!=='legal-state')throw new Error('Unexpected account mutation in hosted repository fixture');return {data:{legal:${JSON.stringify({ ...BUILDER_LEGAL, acceptedAt: "2026-09-14T00:00:00Z" })}},error:null};}const response=await fetch('/__fixture-projects',{method:'POST',headers:{'Content-Type':'application/json',...options.headers},body:JSON.stringify(options.body)});return {data:await response.json(),error:response.ok?null:{message:'Fixture project request failed'}};}}};export const getSupabaseClient=()=>client;export const createIsolatedSupabaseClient=()=>{throw new Error('Account changes are outside this fixture');};`,
       }),
     );
     if (hostedWorkspace)

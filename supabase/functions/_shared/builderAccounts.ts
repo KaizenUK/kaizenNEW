@@ -1,5 +1,10 @@
 import { checkFunctionLimit } from "./functionLimits.ts";
 import { validProjectId } from "../../../shared/builderProjects.ts";
+import {
+  privacyActions,
+  PrivacyRequestError,
+  runPrivacyAction,
+} from "./builderPrivacy.ts";
 type Result<T> = { data: T; error: { code?: string; status?: number } | null };
 type Service = {
   auth: {
@@ -111,7 +116,8 @@ export function createAccountHandler(options: {
         const chunk = await reader.read();
         if (chunk.done) break;
         length += chunk.value.length;
-        if (length > 4096) {
+        // A 2000-character privacy response can exceed 4 KiB in UTF-8.
+        if (length > 8192) {
           await reader.cancel();
           return json(413, { error: "Account request is too large." });
         }
@@ -129,17 +135,24 @@ export function createAccountHandler(options: {
           new TextDecoder("utf-8", { fatal: true }).decode(bytes),
         );
       } catch {
+        if (length > 4096)
+          return json(413, { error: "Account request is too large." });
         return json(400, { error: "Send a valid account action." });
       }
+      if (length > 4096 && !privacyActions.has(input?.action))
+        return json(413, { error: "Account request is too large." });
       if (
         !input ||
         typeof input !== "object" ||
         Array.isArray(input) ||
-        !["state", "request", "cancel", "confirm", "finish"].includes(
+        (!["state", "request", "cancel", "confirm", "finish"].includes(
           input.action,
-        )
+        ) &&
+          !privacyActions.has(input.action))
       )
         return json(400, { error: "Choose an account action." });
+      if (privacyActions.has(input.action))
+        return json(200, await runPrivacyAction(options.service, actor, input));
       async function rpc(name: string, args: Record<string, unknown>) {
         const result = await options.service.rpc(name, args);
         if (result.error) databaseError(result.error.code);
@@ -207,12 +220,19 @@ export function createAccountHandler(options: {
           error:
             "Account deletion has started and project access has ended, but removal is not confirmed. Refresh and choose Finish deletion to check and retry.",
         });
-      return json(error instanceof AccountRequestError ? error.status : 503, {
-        error:
-          error instanceof AccountRequestError
-            ? error.message
-            : "The account request could not be confirmed. Refresh before trying again.",
-      });
+      return json(
+        error instanceof AccountRequestError ||
+          error instanceof PrivacyRequestError
+          ? error.status
+          : 503,
+        {
+          error:
+            error instanceof AccountRequestError ||
+            error instanceof PrivacyRequestError
+              ? error.message
+              : "The account request could not be confirmed. Refresh before trying again.",
+        },
+      );
     }
   };
 }

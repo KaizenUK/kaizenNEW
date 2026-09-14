@@ -15,6 +15,9 @@ const privateTables = [
   "builder_account_deletions",
   "builder_account_deletion_projects",
   "builder_function_limits",
+  "builder_legal_versions",
+  "builder_legal_acceptances",
+  "builder_privacy_requests",
 ];
 const legacyTables = [
   "builder_pages",
@@ -103,6 +106,7 @@ describe("complete builder table access matrix", () => {
     const scheduleOnly = new Set([
       "202609120003_builder_error_retention.sql",
       "202609140002_builder_function_limit_retention.sql",
+      "202609140005_builder_privacy_retention.sql",
     ]);
     for (const file of (await readdir("supabase/migrations")).sort()) {
       if (!/^\d+_(?:visual_builder|builder_.*)\.sql$/.test(file)) continue;
@@ -130,6 +134,8 @@ describe("complete builder table access matrix", () => {
       insert into builder_account_deletions(user_id,request_id,status) values('${ids.editor}','${page}','pending');
       insert into builder_account_deletion_projects(request_id,project_id) values('${page}','${alpha}');
       insert into builder_function_limits values('builder-publish','${ids.owner}',now(),1);
+      insert into builder_legal_acceptances(user_id,version) values('${ids.owner}','2026-09-14');
+      insert into builder_privacy_requests(id,user_id,project_id,requester_name,requester_email,kind,details) values('${page}','${ids.editor}','${alpha}','Privacy canary','privacy@example.test','export','Private request canary');
     `);
     for (const [project, actor] of [
       [alpha, ids.owner],

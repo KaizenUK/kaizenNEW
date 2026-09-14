@@ -17,6 +17,7 @@ import {
 } from "./authState";
 import { AccountChangeError, changeAccount } from "./accountAuth";
 import { accountEmail, accountName } from "../../shared/builderAccount";
+import BuilderLegalGate, { BuilderLegalLinks } from "./BuilderLegalGate";
 
 /** Authentication gates mounting the workspace; project access is enforced by RLS/API. */
 export default function BuilderAuth({ children }: { children: ReactNode }) {
@@ -176,7 +177,12 @@ export default function BuilderAuth({ children }: { children: ReactNode }) {
   const setup = Boolean(
     session && !linkProblem && settingAccount === session.user.id,
   );
-  if (ready && session && !setup && !linkProblem) return children;
+  if (ready && session && !setup && !linkProblem)
+    return (
+      <BuilderLegalGate key={session.user.id} accountId={session.user.id}>
+        {children}
+      </BuilderLegalGate>
+    );
   const invitedSetup =
     setup && session?.user.user_metadata?.builder_password_set === false;
   return (
@@ -419,6 +425,7 @@ export default function BuilderAuth({ children }: { children: ReactNode }) {
             )}
           </form>
         )}
+        <BuilderLegalLinks />
       </main>
     </div>
   );

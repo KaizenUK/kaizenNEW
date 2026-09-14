@@ -149,7 +149,13 @@ Your name and verified email identify the website changes you save. Enter your o
 Email and password changes may require confirmation or a code sent to your existing address. Follow the result shown after submitting; a requested change is not always immediately active.
 
 You can sign out other sessions without ending this one. Account deletion removes login and project access while retaining website content and history. An owner must review another editor's deletion request. Keep the on-screen confirmation and ownership requirements in view before confirming.
+
+At first sign-in, read the Builder Terms of Service and Privacy Policy, then choose whether to accept. The Builder records the document version; optional marketing and tracking are separate choices. Account keeps links to the current documents.
+
+**My personal data** lets you request a copy or erasure of personal information and follow the response. Choose your Builder account for Kaizen to review, or a website for its current owner. Owners use **Personal-data requests to review** to record the response after handling it securely. This request does not automatically export data, erase a website or delete your login. You can also contact privacy@kaizenweb.co.uk without signing in or accepting new terms.
 <!-- /builder-help -->
+
+Operators: see the [privacy operations guide](builder-privacy.md) for handling and retention.
 
 <a id="help-existing"></a>
 <!-- builder-help:existing -->

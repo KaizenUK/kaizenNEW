@@ -12,15 +12,20 @@ const mock = vi.hoisted(() => ({
   signIn: vi.fn(),
   update: vi.fn(),
   reset: vi.fn(),
+  invoke: vi.fn(),
 }));
 vi.mock("./storage", () => ({
   localMode: false,
   cloud: {
+    functions: { invoke: mock.invoke },
     auth: {
       getSession: mock.getSession,
       initialize: mock.initialize,
       onAuthStateChange: (callback: any) => {
-        mock.changed = callback;
+        mock.changed = (event: string, session: any) => {
+          mock.session = session;
+          callback(event, session);
+        };
         return { data: { subscription: { unsubscribe() {} } } };
       },
       signInWithPassword: mock.signIn,
@@ -48,11 +53,17 @@ vi.mock("./accountAuth", () => ({
   changeAccount: mock.update,
 }));
 import BuilderAuth from "./BuilderAuth";
+import { BUILDER_LEGAL } from "../../shared/builderLegal";
 let root: Root, host: HTMLDivElement;
 beforeEach(() => {
   (globalThis as any).IS_REACT_ACT_ENVIRONMENT = true;
   history.replaceState(null, "", "/builder/");
   mock.session = null;
+  // Existing auth scenarios use an account that already accepted this version.
+  mock.invoke.mockReset().mockResolvedValue({
+    data: { legal: { ...BUILDER_LEGAL, acceptedAt: "2026-09-14T00:00:00Z" } },
+    error: null,
+  });
   mock.recovery = undefined;
   mock.getSession.mockReset().mockImplementation(async () => ({
     data: { session: mock.session },

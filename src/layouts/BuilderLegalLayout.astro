@@ -1,0 +1,51 @@
+---
+interface Props {
+  frontmatter: { title: string; description: string; version: string };
+}
+const { title, description, version } = Astro.props.frontmatter;
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={description} />
+    <meta name="robots" content="noindex, follow" />
+    <meta name="referrer" content="no-referrer" />
+    <title>{title} · Kaizen Builder</title>
+    <link rel="icon" href="/favicon.svg" />
+  </head>
+  <body>
+    <header><a href="/builder/">Kaizen Builder</a></header>
+    <main>
+      <h1>{title}</h1>
+      <p class="version">Version {version} · Private beta</p>
+      <aside aria-label="Document status">These are the proposed Builder terms and privacy information for the private beta. Kaizen will review the wording before public subscriptions open.</aside>
+      <slot />
+    </main>
+    <footer>
+      <nav aria-label="Builder legal information">
+        <a href={`/builder/legal/${version}/terms/`}>Terms of Service</a>
+        <a href={`/builder/legal/${version}/privacy/`}>Privacy Policy</a>
+        <a href="mailto:privacy@kaizenweb.co.uk">Privacy enquiries</a>
+      </nav>
+      <p><a href="/builder/">Return to Builder</a></p>
+    </footer>
+  </body>
+</html>
+<style>
+  :global(*) { box-sizing: border-box; }
+  :global(body) { margin: 0; color: #1c2533; background: #f7f8fb; font: 1rem/1.65 system-ui, sans-serif; overflow-wrap: anywhere; }
+  header, main, footer { width: min(100% - 2rem, 48rem); margin-inline: auto; }
+  header { padding-block: 1.5rem; font-weight: 700; }
+  main { background: white; padding: clamp(1.25rem, 4vw, 3rem); border: 1px solid #d9deea; border-radius: 1rem; }
+  h1 { font-size: clamp(1.8rem, 5vw, 2.5rem); line-height: 1.2; margin: 0; }
+  .version { color: #536074; }
+  aside { background: #f0edff; border-left: 4px solid #6350ba; padding: 1rem; margin-block: 1.5rem; }
+  :global(h2) { font-size: 1.25rem; line-height: 1.4; margin-top: 2rem; }
+  :global(a) { color: #4e389a; text-underline-offset: .18em; }
+  :global(a:focus-visible) { outline: 3px solid #4e389a; outline-offset: 4px; }
+  :global(li) { margin-block: .4rem; }
+  footer { padding-block: 2rem; }
+  nav { display: flex; flex-wrap: wrap; gap: .75rem 1.5rem; }
+</style>

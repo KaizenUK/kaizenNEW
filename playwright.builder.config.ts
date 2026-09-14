@@ -11,6 +11,7 @@ const coreJourneys = [
   "accessibility",
   "auth",
   "account",
+  "legal-privacy",
   "projects",
   "editor",
   "first-run",
