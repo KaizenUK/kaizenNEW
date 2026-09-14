@@ -55,11 +55,7 @@ export default function ProjectsView() {
   const visible = projects.filter((p) => archived || !p.archived);
   return (
     <>
-      <Head
-        info="Kaizen Builder"
-        title="Projects"
-        description="Each project is one client website, with its own pages, assets, styles and history. Open a project to work on it."
-      />
+      <Head info="Kaizen Builder" title="Projects" help="projects" />
       <div className="builder-page-body">
         <form
           className="builder-card builder-project-create"
@@ -123,12 +119,6 @@ export default function ProjectsView() {
         {!busy && !projects.length && !error && (
           <Notice>Create your first project to start building.</Notice>
         )}
-        <p className="builder-hint builder-hint-block">
-          The original Kaizen workspace stays registered in place and keeps its
-          files. A duplicate copies pages, publications, assets and history, and
-          starts with no service connections, publishing destination or private
-          preview links.
-        </p>
       </div>
     </>
   );

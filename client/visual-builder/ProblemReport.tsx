@@ -46,14 +46,7 @@ export default function ProblemReport() {
     }
   }
   return (
-    <Card
-      title="Help and feedback"
-      description={
-        localMode
-          ? "Copy a short technical report to help Kaizen investigate a problem."
-          : "Safe error summaries are sent to Kaizen to help fix problems. Older reports are cleared automatically. Copy a report to share more context."
-      }
-    >
+    <Card title="Help and feedback">
       <div className="builder-row builder-actions">
         <button
           type="button"

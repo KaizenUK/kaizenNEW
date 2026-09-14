@@ -120,11 +120,7 @@ export default function PagesView({
           )
         }
         title="Pages"
-        description={
-          workspace
-            ? "Every page in this project. Drafts stay private until you publish them."
-            : undefined
-        }
+        help="pages"
         status={
           workspace ? (
             <Pill
@@ -177,10 +173,7 @@ export default function PagesView({
             <section className="builder-banner" aria-label="Add a page">
               <div className="builder-banner-text">
                 <h2>Add a page</h2>
-                <p>
-                  Start with a blank page, or with the starter template that
-                  already has a hero, features and a call to action in place.
-                </p>
+
                 <div className="builder-banner-actions">
                   <button
                     type="button"

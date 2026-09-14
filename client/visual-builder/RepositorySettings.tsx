@@ -94,7 +94,6 @@ function Setup({ connecting }: { connecting: boolean }) {
             </Pill>
           </>
         }
-        description="Connect the original website to its hosted helper. Only project owners can change this setup. Saving settings does not push or publish the website."
       >
         <button
           type="button"

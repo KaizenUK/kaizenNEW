@@ -91,7 +91,7 @@ export default function ReleasesPanel({
       <Head
         info={<ProjectName fallback="Kaizen workspace" />}
         title="Releases"
-        description="Every deployment of the live site. A queued or built release is not live until it has been checked against the public site. Drafts stay editable throughout."
+        help="releases"
       >
         <button type="button" onClick={() => void refresh()} disabled={busy}>
           Refresh status
@@ -225,10 +225,7 @@ export default function ReleasesPanel({
           )}
         </Card>
         {workspace.pages.some((page) => page.published) && (
-          <Card
-            title="Published pages"
-            description="Pages currently on the live site. Unpublishing removes a page from the site after the release succeeds; its draft and revisions stay."
-          >
+          <Card title="Published pages">
             <ul className="builder-release-list">
               {workspace.pages
                 .filter((page) => page.published)

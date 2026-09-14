@@ -91,7 +91,7 @@ export default function SitePanel({
       <Head
         info={<ProjectName />}
         title="Site design"
-        description="Shared colours, fonts, headers and footers, plus reusable components used across pages. Shared changes stay in draft until you publish them; each page chooses what it uses in its Page settings."
+        help="site"
         status={
           <Pill tone={changed ? "orange" : "green"}>
             {changed ? "Unsaved changes" : "Draft saved"}
@@ -212,10 +212,7 @@ export default function SitePanel({
           disabled={busy}
           className="builder-fieldset builder-site-grid"
         >
-          <Card
-            title="Site styles"
-            description="The base look of every page that has “Use site styles” turned on."
-          >
+          <Card title="Site styles">
             <div className="builder-form">
               {(
                 [
@@ -283,9 +280,7 @@ export default function SitePanel({
                     ))}
                 </select>
               </label>
-              <p className="builder-hint">
-                Upload fonts in Assets first, then choose one here.
-              </p>
+
               <label>
                 Corner radius
                 <input
@@ -301,10 +296,7 @@ export default function SitePanel({
               </label>
             </div>
           </Card>
-          <Card
-            title="Shared components"
-            description="Headers, footers and sections used on many pages. Edit one definition and every linked instance updates. Saved section copies stay independent until you turn them into a shared component."
-          >
+          <Card title="Shared components">
             {design.components.length > 0 && (
               <ul className="builder-component-list">
                 {design.components.map((component) => (
@@ -406,10 +398,7 @@ export default function SitePanel({
               </div>
             </div>
           </Card>
-          <Card
-            title="Design tokens"
-            description="Named values you can pick in a block's appearance controls, so spacing, colours and type stay consistent. Pages need “Use site styles” turned on."
-          >
+          <Card title="Design tokens">
             <div className="builder-form">
               {Object.entries(design.theme.tokens || {}).map(
                 ([group, values]) => (
@@ -529,10 +518,7 @@ export default function SitePanel({
               </div>
             </div>
           </Card>
-          <Card
-            title="Version history"
-            description="Every saved site design. Restoring puts an older version into this form; save it as a draft, then review publication."
-          >
+          <Card title="Version history">
             {workspace.site?.revisions.length ? (
               <div className="builder-revision-list">
                 {workspace.site.revisions

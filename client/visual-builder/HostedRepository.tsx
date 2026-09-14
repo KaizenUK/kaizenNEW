@@ -1,3 +1,4 @@
+import HelpLink from "./HelpLink";
 import React, { useEffect, useState, useSyncExternalStore } from "react";
 import { companionConnection } from "./companionConnection";
 import { repositoryConnection } from "./repositoryConnection";
@@ -45,7 +46,6 @@ export default function HostedRepository({
               </Pill>
             </>
           }
-          description="Open the website folder managed for this project. Your sign-in controls access; nothing needs to run on this computer."
         >
           {connection.root && (
             <p className="builder-hint">Website folder: {connection.root}</p>
@@ -151,7 +151,6 @@ function LocalRepository({ existingPath }: { existingPath?: string }) {
               </Pill>
             </>
           }
-          description="To work with a website folder, the builder needs the Kaizen helper running on this computer. It never opens your folders on its own."
         >
           <p className="builder-hint">
             <a
@@ -162,21 +161,7 @@ function LocalRepository({ existingPath }: { existingPath?: string }) {
               Use the hosted helper in another tab
             </a>
           </p>
-          <ol className="builder-steps">
-            <li>
-              On this computer, open a terminal in your Kaizen folder and run{" "}
-              <code>pnpm dev</code>. Leave it running.
-            </li>
-            <li>
-              Paste the address it shows into the box below and click{" "}
-              <strong>Connect helper</strong>.
-            </li>
-            <li>
-              A small window opens. Check the project name, choose the website
-              folder and click <strong>Allow this folder</strong>. Keep that
-              window open while you work.
-            </li>
-          </ol>
+          <HelpLink topic="helper" />
           {identity && (
             <p className="builder-hint">
               Connecting <strong>{identity.projectName}</strong> from{" "}
@@ -235,26 +220,6 @@ function LocalRepository({ existingPath }: { existingPath?: string }) {
               : connection.status === "connecting"
                 ? "Waiting for you to allow access in the helper window…"
                 : "Helper not connected."}
-          </p>
-          {connection.root && (
-            <p className="builder-hint">
-              Reconnect to the same folder to pick up where you left off. To use
-              a different folder,{" "}
-              <a
-                href={`/builder/?project=${encodeURIComponent(activeProjectId)}&view=repository&helper=local`}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                open a separate builder tab
-              </a>
-              . When restoring a folder backup, share a new, empty folder there.
-            </p>
-          )}
-          <p className="builder-hint">
-            Unapplied edits stay on this computer, kept separately for this
-            account and project. Builder pages stay in the hosted workspace.
-            Applying changes, committing in GitHub Desktop and publishing are
-            separate steps.
           </p>
           {(error || connection.error) && (
             <Notice tone="error">{error || connection.error}</Notice>

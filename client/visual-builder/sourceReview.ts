@@ -49,6 +49,8 @@ export function sourceFieldLabel(field: SourceField) {
 }
 
 export function clientSourceError(message: string) {
+  if (message === "Save the latest editing draft before reviewing it.")
+    return "Your newer edits are kept. Wait for Saved, then review your changes again.";
   if (/edits changed (while|after)/i.test(message))
     return "Your edits changed after this review started. Close it and review your changes again.";
   if (

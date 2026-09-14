@@ -80,12 +80,19 @@ test("an owner can use both views on Pages and the real website editor, with the
       page.getByRole("region", { name: "Website pages" }),
     );
     await openEditor(page);
-    await expect(
-      page.getByText(
-        "Build the website preview so you can edit on the page. Your website stays unchanged.",
-        { exact: true },
-      ),
-    ).toBeVisible();
+    await expect(page.locator(".builder-editor-description")).toContainText(
+      "Edit the page, review your changes",
+    );
+    await page
+      .getByRole("button", {
+        name: "Learn more about Website page editor",
+        exact: true,
+      })
+      .click();
+    await expect(page.getByRole("dialog")).toContainText(
+      "Build the website preview when asked",
+    );
+    await page.getByRole("button", { name: "Close help", exact: true }).click();
     await expect(page.locator(".builder-site-build code")).toHaveCount(0);
     await capture(page, "view-client-build");
     await page.getByRole("button", { name: "Build", exact: true }).click();

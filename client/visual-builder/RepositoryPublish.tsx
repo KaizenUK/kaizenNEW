@@ -103,10 +103,7 @@ function Publication({ connected }: { connected: boolean }) {
       aria-label="Publish website changes"
       className="builder-repository-publish"
     >
-      <Card
-        title="Publish website changes"
-        description="Review the saved website on staging before sending it to the live website."
-      >
+      <Card title="Publish website changes">
         {!connected && (
           <Notice>
             Reconnect the hosted helper to review or publish. Your saved staging

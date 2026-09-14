@@ -8,7 +8,19 @@ test("the dashboard distinguishes existing site layouts, CMS content and redirec
     .getByRole("button", { name: "Existing site pages", exact: true })
     .click();
   const inventory = page.locator(".builder-existing-pages");
-  await expect(page.getByText("website's own code")).toBeVisible();
+  await expect(page.locator(".builder-head-description")).toContainText(
+    "Find pages from the original website",
+  );
+  await page
+    .getByRole("button", {
+      name: "Learn more about Existing site pages",
+      exact: true,
+    })
+    .click();
+  await expect(page.getByRole("dialog")).toContainText(
+    "CMS-managed content remains with its CMS",
+  );
+  await page.getByRole("button", { name: "Close help", exact: true }).click();
   await inventory
     .getByRole("searchbox", { name: "Find an existing page" })
     .fill("/about/");

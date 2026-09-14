@@ -4,6 +4,215 @@ The builder lives at `/builder/`. It creates builder pages and edits safely matc
 
 This guide describes current behaviour. Earlier incremental results are retained in [verification history](builder-verification-history.md); historical statements there are not the current feature status. Deployment setup and recovery are documented in [website releases](website-releases.md).
 
+
+## In-app help
+
+The builder’s Learn more links render the marked sections below. These short sections describe user actions; the detailed reference continues afterwards.
+
+<a id="help-pages"></a>
+<!-- builder-help:pages -->
+## Pages
+
+Open a page from the list to edit it. Choose **Blank page** or **Use starter template** to add one; review its title and page address before publishing.
+
+- **Draft** means edits have not yet been saved.
+- **Saved** means edits are kept; they may still need review or deployment.
+- **On staging** means this version has been checked on staging.
+- **Live** means this version has been checked on the live website.
+
+The Saved filter includes new pages and newer saved changes. A page can have private saved changes while its previous version stays live. See [editing website pages](#help-source) or [publishing changes](#help-releases).
+<!-- /builder-help -->
+
+<a id="help-projects"></a>
+<!-- builder-help:projects -->
+## Projects
+
+Each project holds one website's pages, assets, styles, history and access. Open a project before editing its website.
+
+Use a project's menu to rename, duplicate or archive it. A duplicate copies editable content and history but starts without service connections, a publishing destination or private preview links. Archiving removes a project from the normal list; **Show archived projects** lets an owner find it again.
+
+The original Kaizen workspace keeps its existing files. Project access is managed separately: see [People and access](#help-people).
+<!-- /builder-help -->
+
+<a id="help-site"></a>
+<!-- builder-help:site -->
+## Site design
+
+Site design holds shared colours, fonts, headers, footers, reusable components and named design values. Upload a font in Assets before choosing it here. A page uses the shared theme when **Use site styles** is selected in its Page settings.
+
+Editing a shared component affects every linked instance. A saved section copy is independent. Review which pages use a shared component before changing it.
+
+Save changes first, then review publication. Publishing shared design can also publish the current drafts of pages that use it, including their other pending edits. Restoring history puts the earlier design into the form; it does not publish it.
+<!-- /builder-help -->
+
+<a id="help-assets"></a>
+<!-- builder-help:assets -->
+## Assets
+
+Import images, icons, fonts or a ZIP pack here, then place them from the editor's Assets panel. The library is shared by pages in this project.
+
+Choose an asset to inspect its preview, source and licence, references and replacement options. Keep the licence or source record with imported material. Code and design files can be saved as references; they need a reviewed implementation before they become usable blocks.
+
+An interrupted import can be resumed while this browser still holds its recovery data. Clearing browser storage removes that recovery copy. Review reported errors before reimporting a pack; an existing file may already be available.
+<!-- /builder-help -->
+
+<a id="help-releases"></a>
+<!-- builder-help:releases -->
+## Releases
+
+Saving a draft, exporting a website and publishing are separate actions. Review the saved content and destination before starting a release.
+
+1. For an existing website, **Save to website** sends the applied changes to staging.
+2. Open staging and check the result. In Releases, choose **Review staged website**, then **Publish reviewed changes** when the review is right.
+3. For builder projects, choose the destination and **Review saved project for publication**, then publish the reviewed project.
+
+**Queued**, **Building** and **Checking website** describe progress. **On staging** and **Live** identify confirmed destination versions. A failed or unavailable check does not prove the new version is live.
+
+**Earlier release** has been replaced; review restoring it if needed. Taking a website or page offline is also a separate reviewed action. Drafts and history are kept. A website owner or server administrator connects missing destinations through the project's setup.
+<!-- /builder-help -->
+
+<a id="help-redirects"></a>
+<!-- builder-help:redirects -->
+## Redirects
+
+A redirect sends visitors from an old address to a replacement page. Enter internal paths such as `/old-offer/` and `/new-offer/`, and publish the destination page first.
+
+Save the rules, review added, changed and removed redirects, then publish when ready. Restoring history changes the draft only. Update affected redirects before changing a destination page's live address.
+
+Temporary redirects use 302. Browsers can remember a permanent 301 after it changes. Rules preserve tracking query parameters; external destinations and regular expressions are not supported. Existing website and editor routes are protected.
+<!-- /builder-help -->
+
+<a id="help-previews"></a>
+<!-- builder-help:previews -->
+## Private previews
+
+Create a saved link from a page's **Preview** screen. It captures that version of the page so later edits do not alter what the reviewer sees. Choose when the link expires.
+
+Hosted preview links require an authorised editor account for the project; possessing the link does not grant access. Local preview links need the local helper and workspace to remain available. Forms do not send enquiries in a preview.
+
+Revoking a link stops future visits. A copy someone already opened cannot be recalled. Use [Releases](#help-releases) when the website should become public.
+<!-- /builder-help -->
+
+<a id="help-backups"></a>
+<!-- builder-help:backups -->
+## Backups
+
+A project backup keeps content editable in the builder: pages, shared design, revisions, saved sections, settings and the asset library. A website export is a separate [developer handoff](#help-repository).
+
+Review a backup before restoring it. Restore adds or updates drafts and preserves current publications and unrelated pages. Old published snapshots become history, not live pages.
+
+External media, CMS content and form services stay external. Account credentials, enquiries, private preview records and deployed releases are not included. For an original website folder, use its separate [folder-backup controls](#help-folder); restore into a new empty folder.
+<!-- /builder-help -->
+
+<a id="help-repository"></a>
+<!-- builder-help:repository -->
+## Export & handoff
+
+**Download website ZIP** contains the finished website, source and developer instructions, plus an editable project backup. The developer can build and host the exported website independently. Review its handoff notes for external content, forms and redirects.
+
+The website folder controls open existing source and review changes before applying them. Applying to a folder, saving to staging and publishing are separate actions. Existing source stays authoritative; unreviewed or conflicting files are not silently replaced.
+
+Hosted projects use the configured server folder. A developer can choose [a helper on this computer](#help-helper) in a separate tab. Use [Backups](#help-backups) for an editable project copy, or [Website folder backups](#help-folder) for original source.
+<!-- /builder-help -->
+
+<a id="help-settings"></a>
+<!-- builder-help:settings -->
+## Settings
+
+Set the public website address, favicon and optional form or CMS connections here. Saving settings does not publish them; export, integrate or publish again when the reviewed website is ready.
+
+The website address is its public HTTPS origin, without a subfolder. An empty address omits the sitemap from the export. The form receiver must follow the exported website's form contract; leaving it empty disables delivery. A stored enquiry does not confirm email delivery. Public Sanity connections read published documents using the Kaizen post, category and author schema; exports contain a snapshot. Private content needs a server integration.
+
+Owners can configure the hosted website folder and use **Show developer details** to switch between client and developer views. This changes presentation, not permissions. Your view choice is remembered for this account and website in this browser. Use **Report a problem** to copy or download diagnostics for the owner. The signed-in hosted builder also sends safe error summaries to Kaizen automatically; older reports are cleared.
+<!-- /builder-help -->
+
+<a id="help-account"></a>
+<!-- builder-help:account -->
+## Account
+
+Your name and verified email identify the website changes you save. Enter your own name here if Save to website asks for account details.
+
+Email and password changes may require confirmation or a code sent to your existing address. Follow the result shown after submitting; a requested change is not always immediately active.
+
+You can sign out other sessions without ending this one. Account deletion removes login and project access while retaining website content and history. An owner must review another editor's deletion request. Keep the on-screen confirmation and ownership requirements in view before confirming.
+<!-- /builder-help -->
+
+<a id="help-existing"></a>
+<!-- builder-help:existing -->
+## Existing site pages
+
+This inventory lists routes from the original website, its CMS and redirects. It updates when the website is built.
+
+Open a supported source page to edit its matched text, links, images and sections in the [website page editor](#help-source). CMS-managed content remains with its CMS; a route can explain when it needs a developer.
+
+Existing routes are reserved. Build a new builder page at a different address, and review any later ownership change before replacing an existing route.
+<!-- /builder-help -->
+
+<a id="help-editor"></a>
+<!-- builder-help:editor -->
+## Page editor
+
+Use Blocks to add content, Layers to select nested items, and Design to change appearance. Page settings control the title, address, shared styles and search description. Undo and Redo follow your edits.
+
+Edits autosave. **Draft** remains visible until saving is acknowledged; keep this window open if saving fails. Preview checks the resulting page without publishing it. Device controls show desktop, tablet and phone layouts.
+
+Revisions restore an earlier version as a draft. Shared design can affect other pages, so review it in [Site design](#help-site). When ready, [review publication](#help-releases).
+<!-- /builder-help -->
+
+<a id="help-source"></a>
+<!-- builder-help:source -->
+## Website page editor
+
+Build the website preview when asked, then double-click matched words to type. Select links or images to change them, and move supported sections using their handles. Outline and the canvas share the same edits and undo history.
+
+1. Wait for **Saved** after editing; these are private changes for review.
+2. Choose **Review my changes** and check the Before and After values.
+3. **Apply changes to the folder** writes only the reviewed changes and rebuilds the preview.
+4. **Save to website** sends the applied changes to staging. Check staging before [publishing through Releases](#help-releases).
+
+The **Edit text and links** fallback offers matched fields when direct canvas editing is unavailable. Grey or computed content explains where it is managed. Supported registered components expose their existing design values; arbitrary source layouts are not converted into builder blocks. A failed build leaves edits available. Reconnect an interrupted helper and check the saved state before retrying a write with an unknown outcome.
+<!-- /builder-help -->
+
+<a id="help-people"></a>
+<!-- builder-help:people -->
+## People and access
+
+An owner invites people by email and manages their access to this project. An editor can change content; **Can publish** is a separate permission. Owners can also manage project setup and membership.
+
+An invited person follows their email link to set a password and sign in. Use Resend when a fresh invitation is needed. Check the result after sending; a request accepted by the email service does not prove the recipient has read it.
+
+Removing a member ends their project access. Client and developer views only change the information shown; they never grant extra access.
+<!-- /builder-help -->
+
+<a id="help-helper"></a>
+<!-- builder-help:helper -->
+## Website helper
+
+The hosted helper opens the website folder configured for this project. Your sign-in controls access; nothing needs to run on your computer. Refresh the connection if it stops responding.
+
+For the developer's local path:
+
+1. Open a terminal in the Kaizen folder and run `pnpm dev`; leave it running.
+2. Paste its address into Helper address and choose **Connect helper**.
+3. In the approval window, check the project and folder, then choose **Allow this folder**. Keep that window open while editing.
+
+Reconnect to the same folder to continue. Choose another folder in a separate tab, and restore a folder backup into a new empty folder. Switching helper paths opens a separate tab so open edits stay with their original folder. Saving to the folder and publishing remain separate steps.
+Preview builds run the folder's own scripts. Check unfamiliar code before confirming the build review. Install dependencies first when using a local helper. Preview forms and network calls are disabled; a failed build restores the previous output.
+<!-- /builder-help -->
+
+
+<a id="help-folder"></a>
+<!-- builder-help:folder -->
+## Website folder backups
+
+A folder backup keeps original source, images, settings files and this project's unapplied edits. It restores a website folder; it is different from an editable builder-project backup.
+
+Close page editors before preparing the backup, then review its file list. Installed packages, build output, Git history and private settings are excluded. Limits are 35 MB for a ZIP, 200 MB of unpacked files and 32 MB per file.
+
+Restore into a new folder whose parent already exists. Existing folders are never replaced. With the local helper, restore into the new empty folder you approved; use another builder tab to approve a different folder. Nothing is installed, built or committed by restoring. Reconnect the folder afterwards and review any remaining setup.
+<!-- /builder-help -->
+
+
 ## Private beta and problem reports
 
 The sidebar footer identifies this release as **Private beta**. Open **Settings → Report a problem** to copy a technical report, then share it with Kaizen along with what you were trying to do. **Download report** saves the same JSON when clipboard access is unavailable, and **View report** shows exactly what will be shared. Settings remains available if the project cannot load. The original workspace's website connections continue to be managed by the owner.
@@ -141,7 +350,7 @@ Limits: 500 pages, 20,000 assets, 2,000 saved sections/templates, 100 shared com
 
 ## Export for Claude, Codex or a developer
 
-**Export ZIP** includes all page drafts, resolved shared content/CMS data, React/TypeScript components, responsive CSS, bundled media/fonts, SEO/page data, a static build and developer instructions. Source/design/licence references remain outside executable source. There is no Puck, Supabase/Sanity connection or credential requirement in the generated project.
+**Download website ZIP** includes all page drafts, resolved shared content/CMS data, React/TypeScript components, responsive CSS, bundled media/fonts, SEO/page data, a static build and developer instructions. Source/design/licence references remain outside executable source. There is no Puck, Supabase/Sanity connection or credential requirement in the generated project.
 
 Use Node 22 or later, then `npm install`, `npm run typecheck`, `npm run dev` and `npm run build`. Each page receives static HTML at its URL; the first page also appears at `/`. Interactive blocks use a small runtime while non-interactive pages do not load it. Review external routes and unavailable remote media reported in `HANDOFF.md`. Missing registered/local media aborts the export.
 

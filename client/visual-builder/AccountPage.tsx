@@ -95,10 +95,7 @@ export default function AccountPage() {
   }, [attempt]);
   return (
     <>
-      <Head
-        title="Account"
-        description="Manage your name, sign-in details and access on other devices."
-      />
+      <Head title="Account" help="account" />
       <div className="builder-page-body builder-account">
         {localMode || !cloud ? (
           <Notice>
@@ -212,11 +209,7 @@ function AccountDetails({ user }: { user: User }) {
     );
   return (
     <>
-      <Card
-        title="Your name"
-        ariaLabel="Your name"
-        description="Used to record the changes you save to a website."
-      >
+      <Card title="Your name" ariaLabel="Your name">
         {!accountName(initialName) && (
           <Notice>Add your name here before using Save to website.</Notice>
         )}

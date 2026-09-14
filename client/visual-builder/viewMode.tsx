@@ -228,20 +228,8 @@ export function BuilderViewSettings() {
                 />
                 Show developer details
               </label>
-              <p>
-                Turn this off for a simpler view of your pages and preview. Your
-                permission to publish stays the same.
-              </p>
-              <small>
-                Remembered for this account and website in this browser.
-              </small>
             </>
-          ) : (
-            <p>
-              Your pages and preview use the client view. Publishing follows
-              your project permissions.
-            </p>
-          )}
+          ) : null}
         </>
       )}
       {error && <Notice tone="error">{error}</Notice>}

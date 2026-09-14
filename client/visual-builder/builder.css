@@ -4261,3 +4261,108 @@
   border-radius: 16px;
   background: var(--surface);
 }
+
+/* Contextual help stays beside the current task and returns focus to its trigger. */
+.builder-app .builder-help-link {
+  display: inline;
+  width: auto;
+  height: auto;
+  padding: 0;
+  border: 0;
+  border-radius: 2px;
+  background: transparent;
+  color: var(--primary);
+  font: inherit;
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  white-space: normal;
+}
+.builder-head-description .builder-help-link {
+  margin-left: 8px;
+}
+.builder-help-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1500;
+  background: rgb(17 24 39 / 35%);
+}
+.builder-app.builder-help-drawer {
+  position: fixed;
+  z-index: 1501;
+  inset: 0 0 0 auto;
+  box-sizing: border-box;
+  width: min(520px, 100vw);
+  max-width: 100vw;
+  height: 100dvh;
+  margin: 0;
+  padding: 24px;
+  overflow-y: auto;
+  overflow-wrap: anywhere;
+  background: var(--panel);
+  color: var(--text);
+  box-shadow: -8px 0 40px rgb(0 0 0 / 15%);
+}
+.builder-help-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+}
+.builder-help-header h2 {
+  margin: 0;
+  font-size: 24px;
+  line-height: 32px;
+}
+.builder-help-header p {
+  margin: 8px 0 20px;
+  color: var(--muted);
+}
+.builder-help-content {
+  font-size: 15px;
+  line-height: 1.7;
+}
+.builder-help-content h3 {
+  margin: 24px 0 8px;
+  font-size: 18px;
+  line-height: 1.4;
+}
+.builder-help-content p,
+.builder-help-content ul,
+.builder-help-content ol {
+  margin: 16px 0;
+}
+.builder-help-content ul,
+.builder-help-content ol {
+  padding-left: 24px;
+}
+.builder-help-content li + li {
+  margin-top: 8px;
+}
+.builder-help-content a {
+  color: var(--primary);
+  text-decoration: underline;
+}
+.builder-help-back {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+@media (max-width: 520px) {
+  .builder-app.builder-help-drawer {
+    padding: 20px;
+  }
+}
+
+.builder-editor-description {
+  flex: 0 0 auto;
+  margin: 0;
+  padding: 8px 24px;
+  background: var(--panel);
+  border-bottom: 1px solid var(--border);
+  color: var(--muted);
+  font-size: 13px;
+}
+.builder-editor-description .builder-help-link {
+  margin-left: 8px;
+}

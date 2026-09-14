@@ -134,20 +134,9 @@ export default function RepositoryPanel({
   }
   return (
     <>
-      <Head
-        info={<ProjectName />}
-        title="Export & handoff"
-        description={
-          hosted
-            ? "Download the finished website or work with the website folder managed for this project."
-            : "Download the finished website to host anywhere, or work directly with the website's code folder on this computer."
-        }
-      />
+      <Head info={<ProjectName />} title="Export & handoff" help="repository" />
       <div className="builder-page-body builder-repository">
-        <Card
-          title="Download the website"
-          description="A ZIP with the finished website (upload the dist folder to any host) and its React source. It also includes an editable copy at .kaizen/project.zip so the project can be opened in the builder again later."
-        >
+        <Card title="Download the website">
           <div className="builder-row builder-actions">
             <button
               type="button"
@@ -170,14 +159,7 @@ export default function RepositoryPanel({
         {intro}
         {repositoryEnabled && (
           <>
-            <Card
-              title="Edit the website's code folder"
-              description={
-                hosted
-                  ? "Check this project's website folder to edit its text and links or build a preview. Review changes before applying them."
-                  : "For websites that live in a code folder (a Git repository, usually from GitHub Desktop). Point the builder at the folder to change page text and links, add builder pages, or build a preview. Nothing is installed, committed or published for you. Works with Astro + React sites, Kaizen exports and empty folders."
-              }
-            >
+            <Card title="Edit the website's code folder">
               <form
                 className="builder-inline-form"
                 onSubmit={(event) => {

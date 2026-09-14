@@ -1,3 +1,5 @@
+import { helpTopics, type HelpTopic } from "./helpContent";
+import HelpLink from "./HelpLink";
 import React, { useEffect, useState, type ReactNode } from "react";
 import { Brand } from "./Brand";
 export { Brand } from "./Brand";
@@ -291,12 +293,14 @@ export function Head({
   info,
   title,
   description,
+  help,
   status,
   children,
 }: {
   info?: ReactNode;
   title: ReactNode;
   description?: ReactNode;
+  help?: HelpTopic;
   status?: ReactNode;
   children?: ReactNode;
 }) {
@@ -308,8 +312,16 @@ export function Head({
           <h1 className="builder-head-title">{title}</h1>
           {status}
         </div>
-        {description && (
-          <p className="builder-head-description">{description}</p>
+        {(description || help) && (
+          <p className="builder-head-description">
+            {description || (help && helpTopics[help].description)}
+            {help && (
+              <>
+                {" "}
+                <HelpLink topic={help} />
+              </>
+            )}
+          </p>
         )}
       </div>
       {children && <div className="builder-head-actions">{children}</div>}

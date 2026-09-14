@@ -260,8 +260,24 @@ test("a delayed review cannot apply an older edit after typing continues on the 
       .click();
     await expect.poll(() => reached).toBe(true);
     await heading.dblclick();
+    const newerSaved = page.waitForResponse((response) => {
+      if (
+        response.request().method() !== "POST" ||
+        !response.url().endsWith("/editor-api/builder-repository")
+      )
+        return false;
+      const body = response.request().postDataJSON();
+      return (
+        response.status() === 200 &&
+        body.action === "repository-source-draft-save" &&
+        Object.values(body.edits?.values || {}).includes(
+          "The newer edit must survive",
+        )
+      );
+    });
     await heading.fill("The newer edit must survive");
     await heading.press("Tab");
+    await newerSaved;
     release();
     await expect(page.getByRole("alert")).toContainText("review");
     await expect(page.getByRole("dialog")).toHaveCount(0);

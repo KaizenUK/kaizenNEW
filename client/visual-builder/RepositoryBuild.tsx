@@ -1,3 +1,4 @@
+import HelpLink from "./HelpLink";
 import React, { useEffect, useState } from "react";
 import type { BuildJob, BuildPlan } from "../../scripts/builder-runner";
 import { repositoryConnection } from "./repositoryConnection";
@@ -75,19 +76,9 @@ export default function RepositoryBuild({ root }: { root: string }) {
     <div className="builder-card builder-block builder-repository-build">
       <div className="builder-block-head">
         <h2>Preview the website</h2>
-        <p>
-          Builds the website from the folder and opens a private preview.
-          Nothing goes live, and forms and network calls are switched off in the
-          preview.
-        </p>
+        <HelpLink topic="helper" />
       </div>
-      <p className="builder-hint">
-        {repositoryConnection.mode !== "hosted" &&
-          "Install the folder's dependencies in your terminal first. "}
-        The build runs the folder's own scripts, so check unfamiliar code before
-        running it. The previous build is kept under .kaizen/build-recovery/ and
-        put back if a build fails.
-      </p>
+
       <button
         disabled={busy || running}
         onClick={() =>

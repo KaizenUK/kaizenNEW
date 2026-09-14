@@ -277,15 +277,7 @@ export function PrivatePreviewList({ onClose }: { onClose?: () => void }) {
   void onClose;
   return (
     <>
-      <Head
-        info={<ProjectName />}
-        title="Private previews"
-        description={`Private links show a saved copy of a page to someone before it goes live. Create one from a page's Preview screen. ${
-          localMode
-            ? "Local links only work on this computer."
-            : "Links only work for signed-in editors."
-        }`}
-      >
+      <Head info={<ProjectName />} title="Private previews" help="previews">
         <button type="button" onClick={() => void load()} disabled={busy}>
           Refresh previews
         </button>
@@ -294,7 +286,11 @@ export function PrivatePreviewList({ onClose }: { onClose?: () => void }) {
         {error && <Notice tone="error">{error}</Notice>}
         <Card
           title="Active preview links"
-          description="Revoking a link stops future visits; a copy someone already opened cannot be recalled."
+          description={
+            rows.length
+              ? "Revoking a link stops future visits; a copy someone already opened cannot be recalled."
+              : undefined
+          }
         >
           <ul className="builder-release-list">
             {rows.map((row) => (

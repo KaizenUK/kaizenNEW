@@ -753,9 +753,6 @@ export default function AssetLibrary({
       <div className="builder-library-main">
         <p className="builder-hint">
           {visible.length} {visible.length === 1 ? "asset" : "assets"}
-          {compact
-            ? " · Drag images onto the page, or press Use."
-            : " · Select an asset to see where it is used, replace it or download it."}
         </p>
         {visible.length > 48 && (
           <nav className="builder-asset-pagination" aria-label="Asset pages">

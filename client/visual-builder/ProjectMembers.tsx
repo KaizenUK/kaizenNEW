@@ -1,3 +1,4 @@
+import HelpLink from "./HelpLink";
 import React, { useState } from "react";
 import { projectRequest } from "./projectStorage";
 import { invitationNotice, inviteProjectMember } from "./invitations";
@@ -56,10 +57,7 @@ export default function ProjectMembers({ id }: { id: string }) {
       }}
     >
       <summary>Project access</summary>
-      <p>
-        Invite someone by email and choose what they can do. Permission to
-        publish is separate from their role.
-      </p>
+      <HelpLink topic="people" />
       <button type="button" disabled={busy} onClick={() => void run(load)}>
         Refresh members
       </button>

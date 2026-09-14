@@ -1,3 +1,5 @@
+import { helpTopics } from "./helpContent";
+import HelpLink from "./HelpLink";
 import React, {
   useEffect,
   useMemo,
@@ -445,6 +447,9 @@ export default function SitePageEditor({
           </button>
         </div>
       </header>
+      <p className="builder-editor-description">
+        {helpTopics.source.description} <HelpLink topic="source" />
+      </p>
       <div className="builder-site-notices">
         {disconnected && (
           <Notice
@@ -764,12 +769,7 @@ export default function SitePageEditor({
                         ))}
                       </dl>
                     </>
-                  ) : (
-                    <p>
-                      Build the website preview so you can edit on the page.
-                      Your website stays unchanged.
-                    </p>
-                  )}
+                  ) : null}
                   <button
                     type="button"
                     className="builder-primary"

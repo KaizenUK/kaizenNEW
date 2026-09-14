@@ -52,11 +52,7 @@ export default function ClientSettings({
     });
   return (
     <>
-      <Head
-        info={<ProjectName />}
-        title="Settings"
-        description="Public details used when this website is exported or connected to services. Saving here never publishes anything."
-      />
+      <Head info={<ProjectName />} title="Settings" help="settings" />
       {viewSettings && <div className="builder-page-body">{viewSettings}</div>}
       <form
         className="builder-page-body"
@@ -76,10 +72,7 @@ export default function ClientSettings({
         }}
       >
         <fieldset disabled={busy} className="builder-fieldset">
-          <Card
-            title="Website"
-            description="Used for canonical URLs, the sitemap and the browser tab icon."
-          >
+          <Card title="Website">
             <div className="builder-form">
               <label>
                 Website URL
@@ -92,10 +85,7 @@ export default function ClientSettings({
                   }
                 />
               </label>
-              <p className="builder-hint">
-                The public HTTPS address without a subfolder. Leave it empty and
-                the export skips the sitemap and notes this in the handoff.
-              </p>
+
               <label>
                 Favicon
                 <select
@@ -121,10 +111,7 @@ export default function ClientSettings({
               </label>
             </div>
           </Card>
-          <Card
-            title="Contact forms"
-            description="Where the website sends enquiries from its contact form."
-          >
+          <Card title="Contact forms">
             <div className="builder-form">
               <label>
                 Public form receiver
@@ -136,18 +123,9 @@ export default function ClientSettings({
                   }
                 />
               </label>
-              <p className="builder-hint">
-                The receiver must follow CONTACT-FORMS.md from the export and
-                accept the website's origin. Leave it empty to turn form
-                delivery off. A stored enquiry does not prove an email was
-                delivered. Never enter API keys here.
-              </p>
             </div>
           </Card>
-          <Card
-            title="Content (CMS)"
-            description="Optional connection to published content for listings and linked fields."
-          >
+          <Card title="Content (CMS)">
             <div className="builder-form">
               <label>
                 CMS connection
@@ -191,12 +169,6 @@ export default function ClientSettings({
                       }
                     />
                   </label>
-                  <p className="builder-hint">
-                    Reads published documents from a public dataset using the
-                    Kaizen post, category and author schema. Private datasets
-                    need a server integration. Exports contain a content
-                    snapshot and make no live CMS calls.
-                  </p>
                 </>
               )}
             </div>

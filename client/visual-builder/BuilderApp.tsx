@@ -1,3 +1,5 @@
+import { helpTopics } from "./helpContent";
+import HelpLink from "./HelpLink";
 import React, {
   useCallback,
   useContext,
@@ -511,11 +513,7 @@ function BuilderWorkspace({ inventory }: { inventory?: PageInventory } = {}) {
           </>
         ) : (
           <>
-            <Head
-              info={<ProjectName />}
-              title="Settings"
-              description="Manage this website and get help."
-            />
+            <Head info={<ProjectName />} title="Settings" help="settings" />
             <div className="builder-page-body">
               <BuilderViewSettings />
               <Notice>
@@ -657,11 +655,7 @@ function BuilderWorkspace({ inventory }: { inventory?: PageInventory } = {}) {
         workspace &&
         panel(
           <>
-            <Head
-              info={<ProjectName />}
-              title="Assets"
-              description="Images, icons, fonts and files shared by every page in this project. Import a pack once, then place it from the editor's Assets panel."
-            />
+            <Head info={<ProjectName />} title="Assets" help="assets" />
             <div className="builder-page-body">
               <div className="builder-card builder-assets-card">
                 <Puck
@@ -1433,6 +1427,9 @@ function EditorShell({
           />
         </div>
       </header>
+      <p className="builder-editor-description">
+        {helpTopics.editor.description} <HelpLink topic="editor" />
+      </p>
       <div className="builder-editor-body">
         <aside className="builder-sidebar builder-left">
           <Segmented
@@ -1562,10 +1559,6 @@ function EditorShell({
               <>
                 <div className="builder-panel-heading">
                   <h2>Layers</h2>
-                  <p>
-                    Everything on this page, in order. Select, reorder and nest
-                    blocks here.
-                  </p>
                 </div>
                 <Puck.Outline />
               </>
@@ -1621,11 +1614,6 @@ function EditorShell({
                           selectedItem.type
                         : "Nothing selected"}
                     </h2>
-                    <p>
-                      {selectedItem
-                        ? "Edit this block's content and appearance."
-                        : "Click something on the canvas, or pick it from Layers."}
-                    </p>
                   </div>
                   <div className="builder-inspector-actions">
                     <IconButton

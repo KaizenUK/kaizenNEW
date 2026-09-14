@@ -140,11 +140,7 @@ export default function ClientPublications({
     );
   return (
     <>
-      <Head
-        info={<ProjectName />}
-        title="Releases"
-        description="Publish the saved project to its destination and keep track of every release. Saving drafts, exporting the website and publishing are separate steps."
-      >
+      <Head info={<ProjectName />} title="Releases" help="releases">
         <button type="button" disabled={busy} onClick={() => void refresh()}>
           <RefreshCw size={16} /> Refresh release status
         </button>
@@ -157,16 +153,14 @@ export default function ClientPublications({
           </p>
         )}
         {loaded && !destinations.length && !error && !refreshError && (
-          <Card
-            title="No publishing destination yet"
-            description="A server administrator needs to connect a dedicated staging or production host for this client. Projects can never publish over the Kaizen site. Setup is documented in docs/client-publication.md."
-          />
+          <Card title="No publishing destination yet">
+            <Notice>
+              Ask the website owner to connect a publishing destination.
+            </Notice>
+          </Card>
         )}
         {!!destinations.length && (
-          <Card
-            title="Publish"
-            description="Choose where this website goes live, then review exactly what the release contains."
-          >
+          <Card title="Publish">
             <div className="builder-form">
               <label>
                 Choose destination
@@ -304,10 +298,7 @@ export default function ClientPublications({
         {message && <Notice tone="success">{message}</Notice>}
         {error && <Notice tone="error">{error}</Notice>}
         {refreshError && <Notice tone="error">{refreshError}</Notice>}
-        <Card
-          title="Release history"
-          description="Releases in progress stay visible on every page of the history."
-        >
+        <Card title="Release history">
           <nav
             aria-label="Release history pages"
             className="builder-row builder-history-nav"

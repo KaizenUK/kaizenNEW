@@ -1,3 +1,4 @@
+import HelpLink from "./HelpLink";
 import React, { useEffect, useRef, useState } from "react";
 import { ArrowDown, ArrowUp, Pencil, Search } from "lucide-react";
 import { storage } from "./storage";
@@ -115,9 +116,8 @@ export default function SourcePageEditor({
         </button>
       </div>
       <p className="builder-hint">
-        <code>{route}</code> · Click a line to change it. The design and code
-        stay exactly as they are. When you are done, review your changes and
-        apply them to the folder.
+        Edit matched text and links, then review your changes.{" "}
+        <HelpLink topic="source" />
       </p>
       <div className="builder-row builder-source-status-row">
         {draft.status && (

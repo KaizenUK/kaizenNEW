@@ -1,3 +1,4 @@
+import { clientSourceError } from "./sourceReview";
 import { describe, expect, it } from "vitest";
 import { sourceReviewChanges } from "./sourceReview";
 import type { SourceEdits } from "../../shared/builderSourceEditing";
@@ -136,4 +137,20 @@ describe("plain source review", () => {
     expect(result[0].after).toEqual([literal]);
     expect(result[1].after).toEqual([""]);
   });
+});
+
+it("explains a saved-draft review race without replacing it with a generic failure", () => {
+  expect(
+    clientSourceError("Save the latest editing draft before reviewing it."),
+  ).toBe(
+    "Your newer edits are kept. Wait for Saved, then review your changes again.",
+  );
+  expect(
+    clientSourceError(
+      "Your edits changed while preparing the review. Review them again before applying.",
+    ),
+  ).toContain("review your changes again");
+  expect(
+    clientSourceError("Unexpected private /website/path detail"),
+  ).not.toContain("/website/path");
 });

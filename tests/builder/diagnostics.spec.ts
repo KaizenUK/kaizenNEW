@@ -50,7 +50,13 @@ test("hosted failures report safely without interrupting Settings, and stop at s
   });
   expect(received[0].authorization).toBe("Bearer fixture-private-access-token");
   await page.getByRole("button", { name: "Settings", exact: true }).click();
-  await expect(page.getByText(/Safe error summaries are sent/)).toBeVisible();
+  await page
+    .getByRole("button", { name: "Learn more about Settings", exact: true })
+    .click();
+  await expect(page.getByRole("dialog")).toContainText(
+    "sends safe error summaries to Kaizen automatically",
+  );
+  await page.getByRole("button", { name: "Close help", exact: true }).click();
   await page.evaluate(async () => {
     const { storage } = await import(
       "/client/visual-builder/storage.ts" as string

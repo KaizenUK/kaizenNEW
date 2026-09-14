@@ -1,3 +1,4 @@
+import HelpLink from "./HelpLink";
 import React, { useEffect, useState } from "react";
 import { storage } from "./storage";
 import type { NativeBackupReview } from "../../scripts/builder-native-backup";
@@ -48,18 +49,9 @@ export default function NativeRepositoryBackup({
     >
       <div className="builder-block-head">
         <h2>Back up this folder</h2>
-        <p>
-          A ZIP of the website's code, images and settings files, plus any
-          unapplied edits from this project. It is not a builder project; it
-          restores a folder as it was.
-        </p>
+        <HelpLink topic="folder" />
       </div>
-      <p className="builder-hint">
-        Close any open page editors first. Installed packages, build output, Git
-        history, private settings and known password files are left out; check
-        the file list before downloading. Limits: 35 MB ZIP, 200 MB of files, 32
-        MB per file.
-      </p>
+
       <button
         disabled={busy || !root}
         onClick={() =>
@@ -98,11 +90,7 @@ export default function NativeRepositoryBackup({
             placeholder="Full path to a folder that does not exist yet"
           />
         </label>
-        <p className="builder-hint">
-          The folder above it must already exist, and existing folders are never
-          replaced. Private settings and installed packages are not included,
-          and nothing is installed, built or committed for you.
-        </p>
+
         {approvedRoot && (
           <p className="builder-hint">
             The backup restores into the folder you shared in the helper window.
