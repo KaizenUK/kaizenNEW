@@ -15,6 +15,12 @@ Creating or duplicating a project leaves its deployment destination unconfigured
 
 The original workspace is registered as **Kaizen workspace** in its existing directory. Registration does not move or rewrite its drafts, publications, assets, uploads, previews, submissions or history. `projects.json` is the catalogue; new project stores are under `.kaizen-builder/projects/<id>/`. Duplicates copy registered assets and all workspace history, remapping local asset references. They reset the site URL, form receiver and CMS connection, and do not copy submission records, private preview links or destination configuration. Choose the new client's services explicitly. Archive is reversible and prevents writes.
 
+### Start with a complete website
+
+In a builder project with no pages, choose **Start with a website → Create starter site**. The Small business starter adds Home, About, Services, Contact, Pricing and Landing page in one save, with shared navigation and a footer. Home is also served at `/` when the project is exported or published. Existing design choices, assets and settings are retained; if another window adds a page or changes the design, creation stops and asks you to reopen the starter. An interrupted response can recover the complete saved starter without creating duplicate pages.
+
+Edit shared navigation and footer in **Site design**, replace the sample text and images, configure the form receiver in **Settings**, then preview and publish through **Releases** to your chosen destination. Creating a starter saves drafts; it does not publish them. Existing websites use individual page templates instead.
+
 ## Project capabilities
 
 New, empty projects include the [Start here checklist](visual-builder.md#help-pages) on Pages, with links to the existing design, editing, preview and release flows. That guide explains completion and the per-account, per-project browser preference.

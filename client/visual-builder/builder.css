@@ -847,6 +847,20 @@
   grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
   gap: 20px;
 }
+.builder-app.builder-starter-dialog {
+  width: min(760px, calc(100vw - 32px));
+}
+.builder-starter-summary {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 24px;
+  margin-bottom: 24px;
+}
+.builder-starter-summary ul {
+  padding-left: 20px;
+  line-height: 2;
+}
 .builder-template-card {
   border: 1px solid var(--border);
   border-radius: 20px;

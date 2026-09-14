@@ -13,28 +13,28 @@ The builder’s Learn more links render the marked sections below. These short s
 <!-- builder-help:pages -->
 ## Pages
 
-Open a page from the list to edit it. Choose **Blank page** or **Browse templates**. Preview a layout, then choose **Use template** to create an editable draft.
+Open a page from the list to edit it. Choose **Blank page** or **Browse templates**, preview a layout, then **Use template**. In an empty builder project, **Start with a website** creates six pages with shared navigation and a footer. Replace the samples before publishing.
 
 ### Start here
 
-A new, empty project shows a checklist. Each step opens its screen:
+The new-project checklist links to each step:
 
-1. Name your site: your project name already counts. Rename it in Projects.
-2. Choose a site design: choose Save site draft, including to keep the initial design.
+1. Name your site: rename it in Projects.
+2. Choose a site design: save your design.
 3. Add a page: create and edit a page.
 4. Preview it: open the rendered preview. Changed content needs another preview.
-5. Publish: review and publish through Releases. Only a verified live release completes this step; unpublishing clears it.
+5. Publish: review through Releases. Only a verified live release completes this step; unpublishing clears it.
 
-Dismiss the card or reopen it with Show start here. This browser remembers each account and project's checklist (the local profile for local work). Blocked storage limits it to this visit. Existing websites keep their usual Pages screen.
+Dismiss the card or reopen it with Show start here. This browser remembers each account and project's checklist. Blocked storage limits it to this visit. Existing websites keep their usual Pages screen.
 
 ### Page status
 
-- **Draft** means edits have not yet been saved.
-- **Saved** means edits are kept; they may still need review or deployment.
+- **Draft** means edits have not been saved.
+- **Saved** means edits are kept; they may still need publication.
 - **On staging** means this version has been checked on staging.
 - **Live** means this version has been checked on the live website.
 
-The Saved filter includes new pages and newer saved changes. A page can have private saved changes while its previous version stays live. See [editing website pages](#help-source) or [publishing changes](#help-releases).
+The Saved filter includes new pages and newer saved changes. Previous versions can remain live. See [editing website pages](#help-source) or [publishing changes](#help-releases).
 <!-- /builder-help -->
 
 <a id="help-projects"></a>

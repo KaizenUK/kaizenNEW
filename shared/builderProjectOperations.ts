@@ -11,6 +11,7 @@ import { replaceAssetInDrafts, updateAssetMetadata } from "./builderLibrary.ts";
 import { attachAssetImage } from "./builderImages.ts";
 import { saveConversion } from "./builderConversions.ts";
 import { saveClientSettings } from "./builderSettings.ts";
+import { applyStarterSite } from "./builderStarter.ts";
 
 /** Shared server-side draft transitions. Publication is deliberately a separate release operation. */
 export function applyProjectDraftAction(
@@ -20,6 +21,9 @@ export function applyProjectDraftAction(
   let workspace = clone(original),
     result: any;
   switch (input.action) {
+    case "create-starter":
+      result = workspace = applyStarterSite(workspace, input.plan);
+      break;
     case "settings":
       result = workspace.settings = saveClientSettings(
         workspace.settings,

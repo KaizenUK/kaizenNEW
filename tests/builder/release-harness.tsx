@@ -67,6 +67,7 @@ export async function mountStatusPages(pages: BuilderPage[]) {
     <main>
       <PagesView
         onUseTemplate={async () => {}}
+        onCreateStarter={async () => {}}
         workspace={{ pages, assets: [], saved: [] }}
         localMode={false}
         loading={false}

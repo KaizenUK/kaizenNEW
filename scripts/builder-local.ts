@@ -38,6 +38,7 @@ import {
 import type { Plugin } from "vite";
 import { attachAssetImage, materializeImages } from "../shared/builderImages";
 import { applyRestorePlan } from "../shared/builderBackup";
+import { applyStarterSite } from "../shared/builderStarter";
 import { saveConversion } from "../shared/builderConversions";
 import {
   replaceAssetInDrafts,
@@ -795,6 +796,13 @@ export function builderLocalPlugin(): Plugin {
               );
               await writeWorkspace(workspace);
               return asset;
+            }
+            if (input.action === "create-starter") {
+              if (project.capabilities.hasInventory)
+                throw new Error("Create a starter in a new builder project.");
+              const next = applyStarterSite(workspace, input.plan);
+              await writeWorkspace(next);
+              return next;
             }
             if (input.action === "restore-backup") {
               const next = applyRestorePlan(workspace, input.plan);

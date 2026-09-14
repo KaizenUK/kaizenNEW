@@ -8,6 +8,8 @@ import type {
 import { Head, Notice, Pill, formatWhen } from "./shell";
 import { ProjectName, useActiveProject } from "./activeProject";
 import PageTemplateGallery from "./PageTemplateGallery";
+import StarterSiteDialog from "./StarterSiteDialog";
+import type { StarterPlan } from "../../shared/builderStarter";
 import PageThumbnail from "./PageThumbnail";
 import { useProjectCapabilities } from "./activeProject";
 import { builderStatuses, savedPageStatus } from "./builderStatus";
@@ -53,6 +55,7 @@ export default function PagesView({
   creating,
   onCreate,
   onUseTemplate,
+  onCreateStarter,
   websitePaths,
   onOpen,
   onRetry,
@@ -68,6 +71,7 @@ export default function PagesView({
   creating: boolean;
   onCreate: (template: boolean) => void;
   onUseTemplate: (pageId: string, document: PageDocument) => Promise<void>;
+  onCreateStarter: (plan: StarterPlan) => Promise<void>;
   websitePaths?: string[];
   onOpen: (page: BuilderPage) => void;
   onRetry: () => void;
@@ -198,6 +202,14 @@ export default function PagesView({
                     disabled={creating}
                     onUse={onUseTemplate}
                   />
+                  {!capabilities.hasInventory && pages.length === 0 && (
+                    <StarterSiteDialog
+                      workspace={workspace}
+                      siteName={project?.name || "Your business"}
+                      disabled={creating}
+                      onCreate={onCreateStarter}
+                    />
+                  )}
                 </div>
               </div>
               <Orb className="builder-orb-large" />

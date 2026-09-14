@@ -485,6 +485,8 @@ Deno.serve(async (request) => {
         );
       input.asset = { ...asset, url: projectAssetUrl(target, asset.id) };
     }
+    if (action === "create-starter" && projectCapabilities(project.capabilities).hasInventory)
+      throw new Error("Create a starter in a new builder project.");
     const result = applyProjectDraftAction(workspace, input);
     assertProjectAssetReferences(result.workspace, target);
     check(

@@ -104,6 +104,7 @@ import { cloud, localMode, storage } from "./storage";
 import AssetLibrary, { downloadText } from "./AssetLibrary";
 import { previewHtml as renderPreviewHtml } from "./previewHtml";
 import { HostedMediaProvider } from "./HostedMediaProvider";
+import { saveStarterSite } from "./starterSite";
 import { MediaContext } from "./MediaContext";
 import { isPreviewId, previewLink } from "../../shared/builderPreviews";
 import {
@@ -598,6 +599,17 @@ function BuilderWorkspace({ inventory }: { inventory?: PageInventory } = {}) {
             }
           }}
           onOpen={setActive}
+          onCreateStarter={async (plan) => {
+            const sequence = loadSequence.current;
+            setCreating(true);
+            try {
+              const fresh = await saveStarterSite(storage, plan);
+              if (sequence !== loadSequence.current) return;
+              replaceWorkspace(fresh);
+            } finally {
+              setCreating(false);
+            }
+          }}
           onRetry={() => void reload()}
           sitePages={
             workspace && (

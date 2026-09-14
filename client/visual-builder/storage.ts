@@ -25,6 +25,7 @@ import {
   type UploadControl,
 } from "./resumableUpload";
 import { type RestorePlan } from "../../shared/builderBackup";
+import type { StarterPlan } from "../../shared/builderStarter";
 import { type ConversionDraft } from "../../shared/builderConversions";
 import {
   validateDocument,
@@ -95,6 +96,14 @@ async function readAll(table: string) {
   }
 }
 export const storage = trackStorageErrors({
+  async createStarter(plan: StarterPlan): Promise<Workspace> {
+    if ((await requireActiveProject()).capabilities.hasInventory)
+      throw new Error("Create a starter in a new builder project.");
+    if (await hostedProject())
+      return cloudProjectRequest({ action: "create-starter", plan });
+    if (localMode) return local({ action: "create-starter", plan });
+    throw new Error("Create a starter in a new builder project.");
+  },
   async saveSettings(
     version: number,
     settings: ClientSettings,
