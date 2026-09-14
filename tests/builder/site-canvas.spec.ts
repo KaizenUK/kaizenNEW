@@ -80,7 +80,7 @@ test("M1/M2: website Pages → on-page editing → review → apply → rebuilt 
     for (const width of [1440, 390]) {
       await page.setViewportSize({ width, height: 1000 });
       await page.screenshot({
-        path: `test-results/site-canvas-before-${width}.png`,
+        path: `test-results/site-canvas-before-${test.info().project.name}-${width}.png`,
       });
       if (width === 390) {
         await page
@@ -100,7 +100,7 @@ test("M1/M2: website Pages → on-page editing → review → apply → rebuilt 
         ),
       ).toBe(true);
       await page.screenshot({
-        path: `test-results/site-canvas-${width}.png`,
+        path: `test-results/site-canvas-${test.info().project.name}-${width}.png`,
         fullPage: true,
       });
     }
@@ -147,7 +147,9 @@ test("M1/M2: website Pages → on-page editing → review → apply → rebuilt 
   }
 });
 
-test("M0: an HTTPS parent embeds a cookie-free real helper snapshot", async () => {
+test("M0: the supported local builder embeds a cookie-free real helper snapshot", async ({
+  browserName,
+}) => {
   const { execFile } = await import("node:child_process");
   const { promisify } = await import("node:util");
   const result = await promisify(execFile)(
@@ -156,7 +158,12 @@ test("M0: an HTTPS parent embeds a cookie-free real helper snapshot", async () =
       "node_modules/tsx/dist/cli.mjs",
       "docs/handover/experiments/source-frame-host-check.mjs",
     ],
-    { cwd: process.cwd(), timeout: 45000, maxBuffer: 1024 * 1024 },
+    {
+      cwd: process.cwd(),
+      timeout: 45000,
+      maxBuffer: 1024 * 1024,
+      env: { ...process.env, FRAME_BROWSER: browserName },
+    },
   );
   expect(result.stdout).toContain("bidirectional nonce handshake; no cookies");
 });

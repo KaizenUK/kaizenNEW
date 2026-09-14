@@ -169,42 +169,41 @@ export async function openSiteProject(
         json: rewrite(await response.json()),
       });
     });
-    await page.context().route(`**${prefix}/**`, async (route) => {
-      if (repositoryService?.direct) {
-        await route.continue();
-        return;
-      }
-      const url = new URL(route.request().url());
-      const [port, ...parts] = url.pathname.slice(prefix.length + 1).split("/");
-      if (!ports.has(port))
-        throw new Error(
-          "A fixture preview must come from this project's build response.",
+    if (!repositoryService?.direct)
+      await page.context().route(`**${prefix}/**`, async (route) => {
+        const url = new URL(route.request().url());
+        const [port, ...parts] = url.pathname
+          .slice(prefix.length + 1)
+          .split("/");
+        if (!ports.has(port))
+          throw new Error(
+            "A fixture preview must come from this project's build response.",
+          );
+        const response = await page.request.get(
+          `http://127.0.0.1:${port}/${parts.join("/")}${url.search}`,
+          { maxRedirects: 0 },
         );
-      const response = await page.request.get(
-        `http://127.0.0.1:${port}/${parts.join("/")}${url.search}`,
-        { maxRedirects: 0 },
-      );
-      const headers = {
-        ...response.headers(),
-        "access-control-allow-origin": "*",
-      };
-      delete headers["content-length"];
-      delete headers["content-encoding"];
-      if (headers.location?.startsWith("/"))
-        headers.location = `${prefix}/${port}${headers.location}`;
-      const type = headers["content-type"] || "";
-      let body = await response.body();
-      if (/html|css|javascript/.test(type))
-        body = Buffer.from(
-          body
-            .toString("utf8")
-            .replace(
-              /\/__kaizen-(?:preview|source|source-script)\//g,
-              (match) => `${prefix}/${port}${match}`,
-            ),
-        );
-      await route.fulfill({ status: response.status(), headers, body });
-    });
+        const headers = {
+          ...response.headers(),
+          "access-control-allow-origin": "*",
+        };
+        delete headers["content-length"];
+        delete headers["content-encoding"];
+        if (headers.location?.startsWith("/"))
+          headers.location = `${prefix}/${port}${headers.location}`;
+        const type = headers["content-type"] || "";
+        let body = await response.body();
+        if (/html|css|javascript/.test(type))
+          body = Buffer.from(
+            body
+              .toString("utf8")
+              .replace(
+                /\/__kaizen-(?:preview|source|source-script)\//g,
+                (match) => `${prefix}/${port}${match}`,
+              ),
+          );
+        await route.fulfill({ status: response.status(), headers, body });
+      });
   }
   await page.goto(
     `${repositoryService?.editorOrigin || ""}/builder/?project=${project.id}`,

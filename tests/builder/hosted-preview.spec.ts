@@ -9,6 +9,7 @@ test.use({ ignoreHTTPSErrors: true }); // Trust only the fixture's temporary sel
 test("a real HTTPS hosted editor frames private Astro, React, styles, fonts and images and saves original source", async ({
   page,
   context,
+  browserName,
 }) => {
   const project = await (
     await page.request.post("/__builder-projects", {
@@ -28,10 +29,14 @@ test("a real HTTPS hosted editor frames private Astro, React, styles, fonts and 
   });
   page.on("pageerror", (error) => consoleErrors.push(error.message));
   try {
-    const browserSession = await context.newCDPSession(page);
-    await browserSession.send("Network.setCookieControls", {
-      enableThirdPartyCookieRestriction: true,
-    });
+    // Chromium adds an explicit third-party-cookie restriction. Other engines
+    // exercise the same opaque HTTPS frame under their own cookie policy.
+    if (browserName === "chromium") {
+      const browserSession = await context.newCDPSession(page);
+      await browserSession.send("Network.setCookieControls", {
+        enableThirdPartyCookieRestriction: true,
+      });
+    }
     await openSiteProject(page, project, root, true, {
       origin: fixture.api.helper.origin,
       accessToken: helperToken(),
@@ -112,7 +117,7 @@ test("a real HTTPS hosted editor frames private Astro, React, styles, fonts and 
         ),
       ).toBe(true);
       await page.screenshot({
-        path: `test-results/hosted-https-preview-${width}.png`,
+        path: `test-results/hosted-https-preview-${test.info().project.name}-${width}.png`,
       });
     }
     await page.setViewportSize({ width: 1440, height: 1000 });
@@ -140,6 +145,9 @@ test("a real HTTPS hosted editor frames private Astro, React, styles, fonts and 
     await expect(
       canvas.getByRole("heading", { name: "Edited on the private HTTPS page" }),
     ).toBeVisible({ timeout: 45000 });
+    await expect(
+      canvas.getByRole("button", { name: "Count 0", exact: true }),
+    ).toHaveAttribute("data-hydrated", "true");
     const url = await iframe.getAttribute("src");
     expect(url).toMatch(
       new RegExp(
@@ -222,7 +230,11 @@ test("a real HTTPS hosted editor frames private Astro, React, styles, fonts and 
       httpOnly: true,
       sameSite: "None",
     });
-    expect(frameCookie?.partitionKey).toBeTruthy();
+    // Playwright's Chromium cookie API exposes CHIPS' partition key. Every
+    // engine still proves cookie-authenticated assets and anonymous denial;
+    // the server integration tests assert the Partitioned response attribute.
+    if (browserName === "chromium")
+      expect(frameCookie?.partitionKey).toBeTruthy();
     const anonymous = await context
       .browser()!
       .newContext({ ignoreHTTPSErrors: true });

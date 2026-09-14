@@ -154,14 +154,44 @@ jobs:
           KAIZEN_NGINX_BINARY=nginx pnpm test client/visual-builder/client-publication-database.spec.ts
           node tests/builder/verify-releases.mjs
           node tests/builder/verify-client-releases.mjs "$(cat test-results/astro-integration-fixture-path.txt)" test-results/export-project
-      - run: pnpm test:builder:browser
+      - run: pnpm test:builder:browser --project=chromium
       - name: Exercise the hosted repository transport
-        run: pnpm test:builder:browser tests/builder/hosted-repository.spec.ts tests/builder/site-*.spec.ts
+        run: pnpm test:builder:browser tests/builder/hosted-repository.spec.ts tests/builder/site-*.spec.ts --project=chromium
         env:
           BUILDER_TEST_REPOSITORY_TRANSPORT: "hosted"
       - uses: actions/upload-artifact@v4
         if: failure()
         with:
           name: builder-browser-failure
+          path: test-results/builder-browser-results
+          retention-days: 7
+
+  browser-core:
+    name: Core journeys (${{ matrix.browser }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        browser: [firefox, webkit]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: corepack enable
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm exec playwright install --with-deps ${{ matrix.browser }}
+      - name: Install the isolated publication fixture's server
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y nginx
+      - run: pnpm test:builder:browser --project=${{ matrix.browser }}
+        env:
+          KAIZEN_NGINX_BINARY: nginx
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: builder-browser-failure-${{ matrix.browser }}
           path: test-results/builder-browser-results
           retention-days: 7

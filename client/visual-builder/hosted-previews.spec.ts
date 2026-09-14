@@ -10,6 +10,7 @@ import {
 import { request as httpRequest } from "node:http";
 import { writeFile, readFile } from "node:fs/promises";
 import path from "node:path";
+import { runInNewContext } from "node:vm";
 import {
   hostedHelperFixture,
   helperProject,
@@ -26,6 +27,8 @@ import {
   hostedPreviewHtml,
   hostedPreviewJs,
   hostedPreviewCss,
+  previewBootstrapScript,
+  previewImportScript,
 } from "../../scripts/builder-hosted-preview-content";
 
 const origin = "https://builder.example";
@@ -233,6 +236,38 @@ describe("private hosted snapshot delivery", () => {
     ).toBe(410);
   });
 
+  it("protects the dynamic import loader with the same view cookie and current membership as original assets", async () => {
+    const editor = await session(),
+      view = await frame(editor),
+      other = await frame(editor);
+    const target = view.prefix + "/__kaizen-imports.js";
+    expect(view.html).toContain(
+      `type="module" crossorigin="use-credentials" src="${target}"`,
+    );
+    for (const value of ["", editor, other.cookie])
+      expect(
+        (await get(target, { Cookie: value, Origin: "null" })).status,
+      ).toBe(401);
+    const allowed = await get(target, { Cookie: view.cookie, Origin: "null" });
+    expect(allowed.status).toBe(200);
+    expect(allowed.headers.get("access-control-allow-credentials")).toBe(
+      "true",
+    );
+    expect(await allowed.text()).toBe(previewImportScript);
+    expect(
+      (
+        await get(target, {
+          Cookie: view.cookie,
+          Origin: "https://hostile.example",
+        })
+      ).status,
+    ).toBe(403);
+    api.members.get(helperProject)!.delete(helperOwner);
+    expect(
+      (await get(target, { Cookie: view.cookie, Origin: "null" })).status,
+    ).toBe(403);
+  });
+
   it("rechecks membership, archived state and Auth on every document, bootstrap and asset read", async () => {
     const editor = await session();
     const view = await frame(editor),
@@ -407,6 +442,65 @@ async function frameForSource(target: string, editor: string) {
 
 describe("frozen hosted preview transformations", () => {
   const prefix = "/editor-preview/project/build/private";
+  it("routes computed dynamic imports through the credentialled module without changing classic scope, static imports or import options", () => {
+    const base = origin + prefix + "/nested/script.js";
+    const input = `var shared=1; import './static.js'; import('./chunk.js', {with:{type:'json'}}); import(componentUrl); // import('/comment.js')`;
+    const output = hostedPreviewJs(input, prefix, base);
+    expect(output).toContain("var shared=1; import './static.js';");
+    expect(output).toContain(
+      `globalThis.__kaizenPreviewImports.load.bind(null,${JSON.stringify(base)})('./chunk.js', {with:{type:'json'}})`,
+    );
+    expect(output).toContain(
+      `globalThis.__kaizenPreviewImports.load.bind(null,${JSON.stringify(base)})(componentUrl)`,
+    );
+    expect(output).toContain("// import('/comment.js')");
+  });
+  it("resolves dynamic imports against their original script and retains options, bare specifiers and rejection semantics", async () => {
+    const scope: any = {
+      URL,
+      Uint8Array,
+      TextDecoder,
+      atob,
+      document: {
+        currentScript: {
+          src: origin + prefix + "/__kaizen-session/grant.js",
+          dataset: { kaizenHtml: btoa("<h1>Original</h1>") },
+        },
+        write: vi.fn(),
+      },
+    };
+    runInNewContext(previewBootstrapScript, scope);
+    const imports = scope.__kaizenPreviewImports;
+    const load = vi.fn(async (specifier, options) => ({ specifier, options }));
+    const base = origin + prefix + "/nested/script.js",
+      options = { with: { type: "json" } };
+    const pending = imports.load(base, "./data.json", options);
+    expect(load).not.toHaveBeenCalled();
+    imports.resolve(load);
+    expect(await pending).toEqual({
+      specifier: origin + prefix + "/nested/data.json",
+      options,
+    });
+    for (const [value, expected] of [
+      ["/computed.js", origin + prefix + "/computed.js"],
+      [prefix + "/once.js", origin + prefix + "/once.js"],
+      ["../parent.js", origin + prefix + "/parent.js"],
+      ["package-name", "package-name"],
+      [
+        "https://outside.example/blocked.js",
+        "https://outside.example/blocked.js",
+      ],
+    ])
+      expect((await imports.load(base, value)).specifier).toBe(expected);
+    await expect(
+      imports.load(base, {
+        toString() {
+          throw new Error("specifier failed");
+        },
+      }),
+    ).rejects.toThrow("specifier failed");
+    expect(scope.document.write).toHaveBeenCalledWith("<h1>Original</h1>");
+  });
   it("rebases root module imports and Astro literals while retaining relative imports, comments and external URLs", () => {
     const input = `// import '/comment.js'\nimport('/entry.js'); import('./chunk.js');const astro='/component.js'; const remote='https://cdn.example/file.js'; const text='/'; const label='/about'; const nav={href:'/contact/'};`;
     const output = hostedPreviewJs(input, prefix);

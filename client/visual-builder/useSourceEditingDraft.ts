@@ -12,7 +12,10 @@ export function useSourceEditingDraft(inspection?: SourceInspection) {
   const [values, setValues] = useState<Record<string, string>>({});
   const [orders, setOrders] = useState<Record<string, string[]>>({});
   const [assets, setAssets] = useState<NonNullable<SourceEdits["assets"]>>([]);
-  const [ready, setReady] = useState(false);
+  const [loadedInspection, setLoadedInspection] = useState<SourceInspection>();
+  // A new inspection must not expose the previous draft as ready for one
+  // render before its loading effect runs (for example immediately after Apply).
+  const ready = Boolean(inspection && loadedInspection === inspection);
   const [loadAttempt, setLoadAttempt] = useState(0);
   const [stale, setStale] = useState<SourceEdits>();
   const [error, setError] = useState("");
@@ -37,7 +40,7 @@ export function useSourceEditingDraft(inspection?: SourceInspection) {
   useEffect(() => {
     if (!inspection) return;
     let current = true;
-    setReady(false);
+    setLoadedInspection(undefined);
     setStatus("Reading saved edits…");
     setError("");
     storage
@@ -71,7 +74,7 @@ export function useSourceEditingDraft(inspection?: SourceInspection) {
             JSON.stringify(recovery.edits) !== JSON.stringify(draft.edits)
           ) {
             setStale(recovery.edits);
-            setReady(true);
+            setLoadedInspection(inspection);
             setStatus(
               "A newer helper draft exists. Your browser edits are kept for recovery.",
             );
@@ -97,7 +100,7 @@ export function useSourceEditingDraft(inspection?: SourceInspection) {
             draft.edits ? "Restored your saved edits." : "No changes yet.",
           );
         }
-        setReady(true);
+        setLoadedInspection(inspection);
       })
       .catch((e) => {
         if (current) setError(e.message);

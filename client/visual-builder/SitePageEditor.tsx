@@ -371,7 +371,11 @@ export default function SitePageEditor({
           <IconButton
             label="Back to pages"
             icon={<ArrowLeft size={18} />}
-            disabled={busy || (!draft.ready && changed > 0)}
+            disabled={
+              busy ||
+              (!draft.ready &&
+                (changed > 0 || Boolean(inspection && !draft.error)))
+            }
             onClick={() => {
               if (!inspection || (!draft.ready && !changed)) {
                 onBack();
@@ -841,6 +845,7 @@ export default function SitePageEditor({
               style={{ width: width * zoom, height: Math.max(600, 800 * zoom) }}
             >
               <iframe
+                key={build.frame.url}
                 ref={frameRef}
                 title="Website canvas"
                 src={build.frame.url}

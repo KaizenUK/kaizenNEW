@@ -1,5 +1,6 @@
 import { PGlite } from "@electric-sql/pglite";
 import { readFile } from "node:fs/promises";
+import { createServer, type Server } from "node:http";
 import type { Page } from "./browser-fixture";
 import { createAccountHandler } from "../../supabase/functions/_shared/builderAccounts";
 export const accountOwner = "11111111-1111-4111-8111-111111111111",
@@ -367,13 +368,13 @@ export async function accountFixture(
       );
   }, initial);
   const usedLinks = new Set<string>();
-  await page.route("**/__account-fixture-link/*", async (route) => {
-    const kind = new URL(route.request().url()).pathname.split("/").pop()!;
+  let linkServer: Server | undefined;
+  async function passwordLink(kind: string) {
     if (!["invite", "recovery", "expired"].includes(kind))
       throw new Error("Unknown fixture link");
     const destination = new URL(
       `/builder/?project=${project.id}&view=account&password=setup`,
-      route.request().url(),
+      projectResponse.url(),
     );
     if (kind === "expired" || usedLinks.has(kind)) {
       destination.hash = new URLSearchParams({
@@ -392,11 +393,8 @@ export async function accountFixture(
         expires_in: String(next.expires_in),
       }).toString();
     }
-    await route.fulfill({
-      status: 302,
-      headers: { location: destination.href },
-    });
-  });
+    return destination.href;
+  }
   await page.goto(`/builder/?project=${project.id}&view=account`);
   return {
     db,
@@ -404,7 +402,30 @@ export async function accountFixture(
     project,
     readUser,
     async openPasswordLink(kind: "invite" | "recovery" | "expired") {
-      await page.goto(`/__account-fixture-link/${kind}`);
+      // Exercise a real provider redirect: WebKit cannot fulfill an intercepted
+      // route with 302. No production account, link or email is involved.
+      if (!linkServer) {
+        linkServer = createServer(async (request, response) => {
+          try {
+            const location = await passwordLink(
+              new URL(request.url!, "http://fixture.invalid").pathname.slice(1),
+            );
+            response
+              .writeHead(302, { location, "cache-control": "no-store" })
+              .end();
+          } catch {
+            response.writeHead(400).end("Invalid fixture link");
+          }
+        });
+        await new Promise<void>((resolve, reject) => {
+          linkServer!.once("error", reject);
+          linkServer!.listen(0, "127.0.0.1", resolve);
+        });
+      }
+      const address = linkServer.address();
+      if (!address || typeof address === "string")
+        throw new Error("Fixture link server is unavailable");
+      await page.goto(`http://127.0.0.1:${address.port}/${kind}`);
     },
     async switchAccount(id: string) {
       const next = await session(id);
@@ -417,6 +438,12 @@ export async function accountFixture(
     },
     async dispose() {
       await page.close();
+      if (linkServer) {
+        linkServer.closeAllConnections();
+        await new Promise<void>((resolve) =>
+          linkServer!.close(() => resolve()),
+        );
+      }
       await db.close();
     },
   };

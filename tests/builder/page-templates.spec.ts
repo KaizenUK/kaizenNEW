@@ -122,7 +122,7 @@ test("six templates have real thumbnails and responsive previews, then create se
       )
       .toBeGreaterThan(0);
     await page.screenshot({
-      path: `test-results/launch-templates-gallery-${width}.png`,
+      path: `test-results/launch-templates-gallery-${test.info().project.name}-${width}.png`,
     });
   }
   await page.setViewportSize({ width: 1440, height: 1000 });
@@ -143,7 +143,7 @@ test("six templates have real thumbnails and responsive previews, then create se
       element.scrollTop = 0;
     });
     await page.screenshot({
-      path: `test-results/launch-templates-preview-${width}.png`,
+      path: `test-results/launch-templates-preview-${test.info().project.name}-${width}.png`,
     });
   }
   await page.setViewportSize({ width: 1440, height: 1000 });
@@ -278,7 +278,7 @@ test("the gallery follows the dark theme, keeps keyboard focus and closes withou
       )
       .toBeGreaterThan(0);
     await page.screenshot({
-      path: `test-results/launch-templates-dark-${width}.png`,
+      path: `test-results/launch-templates-dark-${test.info().project.name}-${width}.png`,
     });
   }
   for (let index = 0; index < 24; index++) {

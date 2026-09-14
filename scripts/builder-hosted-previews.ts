@@ -21,6 +21,7 @@ import {
   previewMime,
   previewEnvelope,
   previewBootstrapScript,
+  previewImportScript,
   previewNavigationScript,
 } from "./builder-hosted-preview-content";
 
@@ -347,7 +348,9 @@ export class HostedPreviews {
     let bytes =
       file === "/__kaizen-canvas.js" && view.script
         ? Buffer.from(view.script)
-        : files.get(file);
+        : file === "/__kaizen-imports.js"
+          ? Buffer.from(previewImportScript)
+          : files.get(file);
     if (!bytes)
       throw new HostedHelperError(
         404,
@@ -396,9 +399,16 @@ export class HostedPreviews {
       );
     else if (
       [".js", ".mjs"].includes(extension) &&
-      file !== "/__kaizen-canvas.js"
+      file !== "/__kaizen-canvas.js" &&
+      file !== "/__kaizen-imports.js"
     )
-      bytes = Buffer.from(hostedPreviewJs(bytes.toString("utf8"), view.prefix));
+      bytes = Buffer.from(
+        hostedPreviewJs(
+          bytes.toString("utf8"),
+          view.prefix,
+          this.origin + view.prefix + file,
+        ),
+      );
     // CORS is only for the authenticated opaque frame; the editor-cookie document response has no null-origin CORS grant.
     if (grant && grant.view === view && requestOrigin === "null") {
       response.setHeader("Access-Control-Allow-Origin", "null");

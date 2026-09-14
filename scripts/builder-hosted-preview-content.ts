@@ -92,7 +92,11 @@ function isUrlLiteral(
   );
 }
 /** Rebase asset/import and URL-property literals without changing ordinary visible text such as "/". */
-export function hostedPreviewJs(text: string, prefix: string) {
+export function hostedPreviewJs(
+  text: string,
+  prefix: string,
+  baseUrl?: string,
+) {
   const source = ts.createSourceFile(
     "preview.js",
     text,
@@ -102,6 +106,15 @@ export function hostedPreviewJs(text: string, prefix: string) {
   );
   const edits: { start: number; end: number; value: string }[] = [];
   const visit = (node: ts.Node) => {
+    if (baseUrl && node.kind === ts.SyntaxKind.ImportKeyword) {
+      // Keep classic-script scope and execution order. Only the import itself
+      // runs in a credentialled module, which Firefox and WebKit require.
+      edits.push({
+        start: node.getStart(source),
+        end: node.end,
+        value: `globalThis.__kaizenPreviewImports.load.bind(null,${JSON.stringify(baseUrl).replace(/</g, "\\u003c")})`,
+      });
+    }
     if (ts.isStringLiteral(node) || ts.isNoSubstitutionTemplateLiteral(node)) {
       const value = isUrlLiteral(node)
         ? frameUrl(node.text, prefix)
@@ -235,7 +248,7 @@ export function hostedPreviewHtml(
       },
       ontext(value) {
         const next = inScript
-          ? hostedPreviewJs(value, prefix)
+          ? hostedPreviewJs(value, prefix, baseUrl)
           : inStyle
             ? hostedPreviewCss(value, prefix, file, files)
             : value;
@@ -252,7 +265,7 @@ export function hostedPreviewHtml(
   parser.end(text);
   text = apply(text, edits);
   if (baseUrl) {
-    const base = `<base href="${baseUrl.replace(/&/g, "&amp;").replace(/"/g, "&quot;")}">`;
+    const base = `<base href="${baseUrl.replace(/&/g, "&amp;").replace(/"/g, "&quot;")}"><script type="module" crossorigin="use-credentials" src="${prefix}/__kaizen-imports.js"></script>`;
     text = /<head(?:\s[^>]*)?>/i.test(text)
       ? text.replace(/<head(?:\s[^>]*)?>/i, (match) => match + base)
       : base + text;
@@ -267,7 +280,23 @@ export function hostedPreviewHtml(
 }
 
 // A parser-blocking script installs the opaque frame's partitioned cookie before original assets are discovered.
-export const previewBootstrapScript = `(()=>{const encoded=document.currentScript.dataset.kaizenHtml;const bytes=Uint8Array.from(atob(encoded),c=>c.charCodeAt(0));document.write(new TextDecoder().decode(bytes));})();`;
+export const previewBootstrapScript = `(()=>{
+  const script=document.currentScript;
+  const prefix=new URL(script.src).pathname.split('/__kaizen-session/')[0];
+  let resolve;
+  const ready=new Promise(done=>{resolve=done});
+  globalThis.__kaizenPreviewImports={resolve,async load(base,specifier,options){
+    let value=String(specifier);
+    if(value.startsWith('/')&&!value.startsWith('//')&&value!==prefix&&!value.startsWith(prefix+'/'))value=prefix+value;
+    if(/^(?:\\/|\\.\\.?\\/)/.test(value))value=new URL(value,base).href;
+    return (await ready)(value,options);
+  }};
+  const bytes=Uint8Array.from(atob(script.dataset.kaizenHtml),c=>c.charCodeAt(0));
+  document.write(new TextDecoder().decode(bytes));
+})();`;
+// This virtual asset is subject to the same view cookie and membership checks
+// as every original module. Its native import keeps use-credentials in all engines.
+export const previewImportScript = `globalThis.__kaizenPreviewImports.resolve((specifier,options)=>import(specifier,options));`;
 export const previewEnvelope = (html: string, bootstrap: string) =>
   `<!doctype html><script crossorigin="use-credentials" data-kaizen-html="${Buffer.from(html).toString("base64")}" src="${bootstrap}"></script>`;
 

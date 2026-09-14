@@ -17,6 +17,11 @@ export type ImportJob = {
   createdAt: string;
   entries: ImportEntry[];
 };
+type StoredFile = { bytes: ArrayBuffer; type: string };
+const storeFile = async (file: Blob): Promise<StoredFile> => ({
+  bytes: await file.arrayBuffer(),
+  type: file.type,
+});
 let database: Promise<IDBDatabase> | undefined;
 function openDatabase() {
   return (database ||= new Promise<IDBDatabase>((resolve, reject) => {
@@ -85,10 +90,14 @@ export const importQueue = {
         state: "pending",
       })),
     };
+    // WebKit can reject Blob records even when ordinary IndexedDB writes work.
+    // Prepare portable byte records before opening the atomic transaction;
+    // awaiting blob reads inside it can also let Safari commit too early.
+    const stored = await Promise.all(files.map(({ file }) => storeFile(file)));
     await transaction(["jobs", "files"], "readwrite", (tx) => {
       tx.objectStore("jobs").add(job);
-      files.forEach((file, index) =>
-        tx.objectStore("files").add(file.file, [job.id, index]),
+      stored.forEach((file, index) =>
+        tx.objectStore("files").add(file, [job.id, index]),
       );
     });
     return job;
@@ -99,19 +108,25 @@ export const importQueue = {
     );
   },
   async file(job: ImportJob, index: number): Promise<Blob> {
-    const blob = await transaction<Blob>(["files"], "readonly", (tx) =>
-      tx.objectStore("files").get([job.id, index]),
+    const stored = await transaction<Blob | StoredFile>(
+      ["files"],
+      "readonly",
+      (tx) => tx.objectStore("files").get([job.id, index]),
     );
-    if (!blob)
+    if (!stored)
       throw new Error(
         "The browser no longer has this file. Discard the pending import and select the pack again; completed files will be skipped.",
       );
-    return blob;
+    // Keep recovery packs already saved by earlier versions readable.
+    return stored instanceof Blob
+      ? stored
+      : new Blob([stored.bytes], { type: stored.type });
   },
   async prepared(job: ImportJob, index: number, blob: Blob) {
+    const stored = await storeFile(blob);
     await transaction(["jobs", "files"], "readwrite", (tx) => {
       tx.objectStore("jobs").put(job);
-      tx.objectStore("files").put(blob, [job.id, index]);
+      tx.objectStore("files").put(stored, [job.id, index]);
     });
   },
   async completed(job: ImportJob, index: number) {

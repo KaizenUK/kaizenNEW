@@ -103,11 +103,21 @@ test("interactive blocks work in preview and publication, including keyboard nav
   await expect
     .poll(() => live.locator("video").evaluate((video) => video.currentTime))
     .toBeGreaterThan(0);
+  // Native caption preferences may leave a default track disabled (WebKit).
+  // Select captions before verifying that the published VTT loads and has cues.
+  await live.locator("video").evaluate((video) => {
+    video.textTracks[0].mode = "showing";
+  });
   await expect
     .poll(() =>
       live.locator("video track").evaluate((track) => track.readyState),
     )
     .toBe(2);
+  expect(
+    await live
+      .locator("video")
+      .evaluate((video) => video.textTracks[0].cues?.length),
+  ).toBeGreaterThan(0);
   await expect
     .poll(() => live.evaluate(() => document.documentElement.scrollWidth))
     .toBe(390);
@@ -315,10 +325,13 @@ test("sample ZIP assets drag into nested content and support copy, paste and und
   await page
     .getByRole("button", { name: "Try the sample asset pack", exact: true })
     .click();
-  await expect(page.locator(".builder-import-status")).toContainText(
-    /imported|skipped/i,
-    { timeout: 45_000 },
-  );
+  await expect(page.locator(".builder-import-status"))
+    .toContainText(/imported|skipped/i, { timeout: 45_000 })
+    .catch(async (error) => {
+      throw new Error(
+        `${error.message}\nImport detail: ${await page.locator(".builder-error").allTextContents()}`,
+      );
+    });
   await page
     .getByRole("combobox", { name: "Filter by pack", exact: true })
     .selectOption(packName);
@@ -353,6 +366,15 @@ test("sample ZIP assets drag into nested content and support copy, paste and und
   await page.mouse.move(finish!.x + 15, finish!.y + finish!.height + 6, {
     steps: 12,
   });
+  // Puck debounces entry into a nested drop zone. Release over its visible
+  // insertion target, after the browser has rendered the drag feedback.
+  await expect(
+    frame
+      .locator(
+        ".kb-hero .kb-container [data-puck-line-placeholder], .kb-hero .kb-container [data-dnd-placeholder]",
+      )
+      .first(),
+  ).toBeVisible();
   await page.mouse.up();
   const nestedIcons = frame.locator(".kb-hero .kb-container .kb-icon");
   await expect(nestedIcons).toHaveCount(1);
@@ -367,15 +389,50 @@ test("sample ZIP assets drag into nested content and support copy, paste and und
   await nestedIcons.first().click();
   await page.keyboard.press("Control+d");
   await expect(nestedIcons).toHaveCount(3);
+  await expect
+    .poll(() =>
+      nestedIcons
+        .locator("img")
+        .evaluateAll((images: HTMLImageElement[]) =>
+          images.every(
+            (image) =>
+              image.complete &&
+              image.naturalWidth > 0 &&
+              image.getBoundingClientRect().height > 0,
+          ),
+        ),
+    )
+    .toBe(true);
   const lastId = await nestedIcons.last().getAttribute("data-block-id");
   await nestedIcons.last().scrollIntoViewIfNeeded();
+  await nestedIcons.first().scrollIntoViewIfNeeded();
+  await expect(nestedIcons.first()).toBeInViewport({ ratio: 1 });
+  await expect(nestedIcons.last()).toBeInViewport({ ratio: 1 });
   const from = await nestedIcons.last().boundingBox();
   const to = await nestedIcons.first().boundingBox();
-  await page.mouse.move(from!.x + 10, from!.y + 10);
+  const x = from!.x + from!.width / 2,
+    y = from!.y + from!.height / 2;
+  const targetX = to!.x + to!.width / 2,
+    targetY = to!.y + to!.height / 4;
+  await page.mouse.move(x, y);
   await page.mouse.down();
-  await page.mouse.move(from!.x + 18, from!.y + 18, { steps: 3 });
-  await page.mouse.move(to!.x + 10, to!.y + 1, { steps: 12 });
+  await page.mouse.move(x + 8, y + 8, { steps: 3 });
+  await expect(frame.locator("[data-dnd-dragging]").first()).toBeVisible();
+  await page.mouse.move(targetX, targetY, { steps: 16 });
+  // The sortable placeholder can stay in its original slot until release.
+  // Wait for the actual dragged image to reach the pointer instead.
+  await expect
+    .poll(async () => {
+      const box = await frame
+        .locator("[data-dnd-dragging] .kb-icon")
+        .first()
+        .boundingBox();
+      return box ? Math.abs(box.y + box.height / 2 - targetY) : Infinity;
+    })
+    .toBeLessThan(4);
   await page.mouse.up();
+  // Count the committed blocks after the temporary drag clone disappears.
+  await expect(nestedIcons).toHaveCount(3);
   await expect(nestedIcons.first()).toHaveAttribute("data-block-id", lastId!);
 });
 
@@ -397,12 +454,21 @@ test("rich text supports inline formatting and links in preview", async ({
     exact: true,
   });
   await source.scrollIntoViewIfNeeded();
+  await heading.scrollIntoViewIfNeeded();
+  await expect(heading).toBeInViewport({ ratio: 1 });
   const from = await source.boundingBox();
   const to = await heading.boundingBox();
   await page.mouse.move(from!.x + 10, from!.y + 10);
   await page.mouse.down();
   await page.mouse.move(from!.x + 20, from!.y + 15, { steps: 3 });
   await page.mouse.move(to!.x + 10, to!.y + to!.height + 8, { steps: 12 });
+  await expect(
+    frame
+      .locator(
+        ".kb-hero .kb-container [data-puck-line-placeholder], .kb-hero .kb-container [data-dnd-placeholder]",
+      )
+      .first(),
+  ).toBeVisible();
   await page.mouse.up();
   await expect(frame.locator(".kb-richtext")).toHaveCount(1);
   await frame.locator(".kb-richtext").click();

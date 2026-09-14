@@ -3,17 +3,22 @@ import { siteFixture } from "./site-fixture";
 import { RepositoryRunner } from "../../scripts/builder-runner";
 import { RepositoryCompanion } from "../../scripts/builder-repository";
 import { rm } from "node:fs/promises";
+import { BUILDER_TEST_ORIGIN } from "./ports";
 
-test("M3-T2: HTTPS image previews decode in the local frame without sharing blob URLs", async ({
+test("M3-T2: image previews decode in the local builder frame without sharing blob URLs", async ({
   page,
   context,
+  browserName,
 }) => {
   const fixture = await siteFixture(
     page,
     '<html><body><h1>Image preview</h1><img src="/images/original.svg" srcset="/images/original.svg 1x" alt="Original picture"></body></html>',
   );
   const runner = new RepositoryRunner();
-  const parentOrigin = "https://builder.example";
+  // WebKit's developer path opens the local builder; its public path uses the
+  // separate, authenticated HTTPS hosted-preview journey in every engine.
+  const parentOrigin =
+    browserName === "webkit" ? BUILDER_TEST_ORIGIN : "https://builder.example";
   try {
     const inspection = await new RepositoryCompanion().inspectSourcePage(
       fixture.root,
@@ -43,9 +48,10 @@ test("M3-T2: HTTPS image previews decode in the local frame without sharing blob
     ).toBe(
       `connect-src 'none'; form-action 'none'; frame-ancestors 'self' ${parentOrigin}`,
     );
-    await context.grantPermissions(["local-network-access"], {
-      origin: parentOrigin,
-    });
+    if (browserName === "chromium")
+      await context.grantPermissions(["local-network-access"], {
+        origin: parentOrigin,
+      });
     await page.route(`${parentOrigin}/**`, (route) =>
       route.fulfill({
         contentType: "text/html",
@@ -82,19 +88,17 @@ test("M3-T2: HTTPS image previews decode in the local frame without sharing blob
             : Object.fromEntries(
                 ids.map((id) => [id, { key: "chosen-picture", blob }]),
               );
-          document
-            .querySelector("iframe")!
-            .contentWindow!.postMessage(
-              {
-                type: "kaizen-source-state",
-                nonce,
-                images,
-                values: {},
-                orders: {},
-                locked: false,
-              },
-              origin,
-            );
+          document.querySelector("iframe")!.contentWindow!.postMessage(
+            {
+              type: "kaizen-source-state",
+              nonce,
+              images,
+              values: {},
+              orders: {},
+              locked: false,
+            },
+            origin,
+          );
           return new Promise<void>((resolve) => {
             const received = (event: MessageEvent) => {
               if (
@@ -110,17 +114,15 @@ test("M3-T2: HTTPS image previews decode in the local frame without sharing blob
               resolve();
             };
             window.addEventListener("message", received);
-            document
-              .querySelector("iframe")!
-              .contentWindow!.postMessage(
-                {
-                  type: "kaizen-source-hello",
-                  nonce: new URL(
-                    document.querySelector("iframe")!.src,
-                  ).pathname.split("/")[2],
-                },
-                origin,
-              );
+            document.querySelector("iframe")!.contentWindow!.postMessage(
+              {
+                type: "kaizen-source-hello",
+                nonce: new URL(
+                  document.querySelector("iframe")!.src,
+                ).pathname.split("/")[2],
+              },
+              origin,
+            );
           });
         },
         { nonce, ids, restore, origin: new URL(preview.url).origin },

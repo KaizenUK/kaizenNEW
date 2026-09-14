@@ -274,7 +274,9 @@ test("hosted repository UI edits real local source across origins with consent, 
     editor.getByRole("status", { name: "Rendered source selection" }),
   ).toContainText("ready");
   for (const width of [1440, 390]) {
+    await page.bringToFront();
     await page.setViewportSize({ width, height: 1000 });
+    await selection.bringToFront();
     await selection.setViewportSize({ width, height: 1000 });
     await selection
       .getByRole("heading", { name: "Saved through the hosted editor" })
@@ -288,6 +290,7 @@ test("hosted repository UI edits real local source across origins with consent, 
         () => document.documentElement.scrollWidth <= innerWidth,
       ),
     ).toBe(true);
+    await page.bringToFront();
     await page.screenshot({
       path: `test-results/hosted-companion-${width}.png`,
       fullPage: true,

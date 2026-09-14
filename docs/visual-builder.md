@@ -237,6 +237,14 @@ In the signed-in hosted builder, safe error summaries are also sent automaticall
 
 Repeated failures are limited, and reports are discarded if the account changes while preparing them. Failed delivery is not retried or saved to a browser queue and never blocks editing. A disconnected browser cannot report its own outage until a later distinct failure can reach the service, so the absence of reports is not proof of a healthy service. Helper request failures and failed preview build results use the same safe reporting path; the server-hosted helper itself is part of L1.
 
+## Browser support
+
+Core account, editing, Save, template and import-recovery journeys are checked in Chromium, Firefox and WebKit. Hosted website editing uses the protected HTTPS helper. Rebuilding opens a fresh canvas, including the original page's supported React interactions. Interrupted imports retain portable recovery bytes in this browser; recovery packs saved by earlier versions remain readable.
+
+For the local developer path, Safari/WebKit blocks a hosted HTTPS editor from embedding the helper's HTTP loopback preview. Open **the local builder** at the address below to edit that preview, or use the hosted helper. The connection message explains these choices. Chromium and Firefox also retain their tested local-helper path and its consent requirements.
+
+The automated WebKit checks run on Linux. They do not constitute manual Safari testing on macOS or iOS. The [launch task map](builder-launch-plan.md#l5-t1--core-journeys-in-three-browser-engines-14-september-2026) records the current evidence and remaining manual acceptance. `pnpm test:builder:browser` runs all three engines against isolated fixtures; milestone CI runs the extra engines in separate jobs.
+
 ## Local workspace
 
 Run `pnpm dev` and open the local builder at the printed IPv4 address, normally `http://127.0.0.1:4321/builder/?local=1`. Keep the terminal running. The `local=1` query selects the local workspace even when hosted settings are configured.

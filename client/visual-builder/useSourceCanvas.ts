@@ -152,7 +152,10 @@ export function useSourceCanvas(
     const timeout = setTimeout(
       () =>
         setError(
-          "The page did not connect. Allow access to this computer in your browser, retry, or open the preview in a window.",
+          location.protocol === "https:" &&
+            new URL(frame.url).protocol === "http:"
+            ? "Your browser could not open this computer’s preview here. Open it in the local builder, or use the hosted helper."
+            : "The page did not connect. Retry, or open the preview in a window.",
         ),
       15000,
     );

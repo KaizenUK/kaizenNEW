@@ -213,14 +213,48 @@ test("a hosted project inspects, saves and applies original source through the r
   const project = await response.json();
   const helper = await hostedHelperFixture([project.id]);
   const root = helper.folders.root(project.id);
+  const readReleases: (() => void)[] = [];
+  async function holdNextDraftRead() {
+    let signal!: () => void, release!: () => void;
+    const started = new Promise<void>((resolve) => {
+      signal = resolve;
+    });
+    const resume = new Promise<void>((resolve) => {
+      release = resolve;
+    });
+    readReleases.push(release);
+    let held = false;
+    await page.route("**/editor-api/builder-repository", async (route) => {
+      if (
+        !held &&
+        route.request().postDataJSON()?.action ===
+          "repository-source-draft-read"
+      ) {
+        held = true;
+        signal();
+        await resume;
+      }
+      await route.fallback();
+    });
+    return { started, release };
+  }
   try {
     await openSiteProject(page, project, root, true, {
       origin: helper.helper.origin,
       accessToken: helperToken(),
     });
+    const initialRead = await holdNextDraftRead();
     await page
       .getByRole("button", { name: "Edit existing /", exact: true })
       .click();
+    await initialRead.started;
+    await expect(page.getByLabel("Source editing draft")).toHaveText(
+      "Reading saved edits…",
+    );
+    await expect(
+      page.getByRole("button", { name: "Back to pages", exact: true }),
+    ).toBeDisabled();
+    initialRead.release();
     await page
       .getByRole("searchbox", { name: "Find page content" })
       .fill("Hosted original");
@@ -257,9 +291,18 @@ test("a hosted project inspects, saves and applies original source through the r
     await expect(page.getByRole("dialog")).toContainText(
       "Saved through the hosted service",
     );
+    const appliedRead = await holdNextDraftRead();
     await page
       .getByRole("button", { name: "Apply changes to the folder", exact: true })
       .click();
+    await appliedRead.started;
+    await expect(page.getByLabel("Source editing draft")).toHaveText(
+      "Reading saved edits…",
+    );
+    await expect(
+      page.getByRole("button", { name: "Back to pages", exact: true }),
+    ).toBeDisabled();
+    appliedRead.release();
     await expect
       .poll(() => readFile(path.join(root, "src/pages/index.astro"), "utf8"))
       .toContain("Saved through the hosted service");
@@ -304,6 +347,7 @@ test("a hosted project inspects, saves and applies original source through the r
       page.getByRole("button", { name: "Download my unapplied edits" }),
     ).toBeVisible();
   } finally {
+    readReleases.forEach((release) => release());
     try {
       if (!page.isClosed()) {
         await page.unrouteAll({ behavior: "wait" });
