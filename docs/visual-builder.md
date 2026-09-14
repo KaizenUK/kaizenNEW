@@ -313,6 +313,8 @@ Releases also show progress and exceptions: Queued, Building, Updating website, 
 
 The editor supports nested placement/reordering, a layer tree, parent selection, inline text and rich-text links, undo/redo, duplication and copy/paste. Layout controls include spacing on individual sides, columns and proportions, grid gaps/spans, alignment, sizing, backgrounds/overlays, borders/shadows, typography, image fit/focal points, hover/focus states and responsive visibility/order. Preview widths are 1280, 768 and 390 pixels; CSS breakpoints are 1023 and 639 pixels.
 
+Click inside a rich-text block to type directly on the page. You can select its words, replace them and apply bold or links without leaving the canvas. The canvas and Design field share the saved document; changes remain available after reopening and in preview. Nested container slots retain the active editor while their content changes, preserving keyboard focus throughout typing.
+
 **Site design** manages shared colours, typography and spacing tokens, linked components, headers and footers. Assign shared content to pages explicitly. Instance overrides remain intact when the shared definition changes, and an instance can be detached. Shared changes remain drafts; publication review lists affected page drafts, including any other pending edits on those pages.
 
 Saved sections and page templates are reusable copies. Linked components in Site design remain connected. The desktop workspace is the supported editing interface; mobile preview is for checking the resulting site.

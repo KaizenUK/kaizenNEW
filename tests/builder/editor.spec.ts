@@ -479,13 +479,35 @@ test("rich text supports inline formatting and links in preview", async ({
   await expect(frame.locator(".kb-richtext")).toHaveCount(1);
   await frame.locator(".kb-richtext").click();
   const editor = frame.locator('.kb-richtext [contenteditable="true"]');
-  await editor.fill("Our next chapter");
+  const sidebarEditor = page.locator('.builder-right [contenteditable="true"]');
+  await editor.click();
+  await expect(editor).toBeFocused();
+  const initialText = await editor.innerText();
   await editor.press("Control+a");
+  await expect
+    .poll(() =>
+      editor.evaluate((element) =>
+        element.ownerDocument.getSelection()?.toString().trimEnd(),
+      ),
+    )
+    .toBe(initialText.trimEnd());
+  await editor.pressSequentially("Our next chapter");
+  await expect(editor).toBeFocused();
+  await expect(editor).toHaveText("Our next chapter");
+  // The other editor observes the committed document, not just the canvas DOM.
+  await expect(sidebarEditor).toHaveText("Our next chapter");
+  await editor.press("Control+a");
+  await expect
+    .poll(() =>
+      editor.evaluate((element) =>
+        element.ownerDocument.getSelection()?.toString().trimEnd(),
+      ),
+    )
+    .toBe("Our next chapter");
   await editor.press("Control+b");
   await expect(frame.locator(".kb-richtext strong")).toHaveText(
     "Our next chapter",
   );
-  const sidebarEditor = page.locator('.builder-right [contenteditable="true"]');
   await sidebarEditor.click();
   await sidebarEditor.press("Control+End");
   await sidebarEditor.press("Control+Shift+ArrowLeft");

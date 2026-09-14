@@ -575,7 +575,7 @@ export const builderConfig: Config = {
                   },
                 }
               : data,
-          render: ({ children: Children, ...props }) => (
+          render: ({ children: renderChildren, ...props }) => (
             <VisualBlock
               block={{ type, props } as Block}
               inline={
@@ -586,9 +586,12 @@ export const builderConfig: Config = {
                     : undefined
               }
             >
-              {(isContainer || type === "Registered") && Children && (
-                <Children
-                  style={{
+              {/* Puck creates a new slot function when its content changes.
+                  Invoke it as a render function so nested editors retain focus. */}
+              {(isContainer || type === "Registered") &&
+                renderChildren &&
+                renderChildren({
+                  style: {
                     display: "grid",
                     gridTemplateColumns: "inherit",
                     gap: "inherit",
@@ -597,9 +600,8 @@ export const builderConfig: Config = {
                     alignItems: "inherit",
                     justifyItems: "inherit",
                     gridColumn: "1 / -1",
-                  }}
-                />
-              )}
+                  },
+                })}
             </VisualBlock>
           ),
         },

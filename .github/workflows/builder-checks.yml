@@ -211,12 +211,21 @@ jobs:
       - name: Verify release activation and rollback with Nginx
         run: |
           sudo apt-get update
-          sudo apt-get install -y nginx bubblewrap
+          sudo apt-get install -y nginx bubblewrap apparmor-profiles
           KAIZEN_NGINX_BINARY=nginx pnpm test client/visual-builder/client-publication-database.spec.ts
           node tests/builder/verify-releases.mjs
           node tests/builder/verify-client-releases.mjs "$(cat test-results/astro-integration-fixture-path.txt)" test-results/export-project
       - name: Verify client builds in real Linux namespaces and cgroups
         run: |
+          if [ -f /proc/sys/kernel/apparmor_restrict_unprivileged_userns ] && [ "$(cat /proc/sys/kernel/apparmor_restrict_unprivileged_userns)" = 1 ]; then
+            # Permit only Bubblewrap's namespace setup. Its child profile keeps
+            # capabilities denied, and the host's namespace restriction stays on.
+            sudo install -m 0644 /usr/share/apparmor/extra-profiles/bwrap-userns-restrict /etc/apparmor.d/kaizen-ci-bwrap
+            sudo apparmor_parser -r /etc/apparmor.d/kaizen-ci-bwrap
+            sudo grep -Fx 'bwrap (enforce)' /sys/kernel/security/apparmor/profiles
+            sudo grep -Fx 'unpriv_bwrap (enforce)' /sys/kernel/security/apparmor/profiles
+            test "$(cat /proc/sys/kernel/apparmor_restrict_unprivileged_userns)" = 1
+          fi
           node scripts/prepare-builder-isolation-check.mjs "$RUNNER_TEMP/kaizen-build-isolation-check"
           sudo install -d -m 0755 /var/lib/kaizen-build-isolation-check
           sudo install -m 0644 "$RUNNER_TEMP/kaizen-build-isolation-check/verify.mjs" "$RUNNER_TEMP/kaizen-build-isolation-check/builder-build-payload.py" /var/lib/kaizen-build-isolation-check/
