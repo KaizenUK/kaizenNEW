@@ -304,10 +304,21 @@ test("hosted repository UI edits real local source across origins with consent, 
   );
   await canvas.getByRole("heading").dblclick();
   await canvas.getByRole("heading").fill("Edited inside the hosted canvas");
+  // The frame debounces text messages. Wait for this edit to reach the parent
+  // before accepting Saved, which may still describe the previous draft.
+  await expect(
+    page
+      .locator(".builder-site-field")
+      .filter({ hasText: "Edited inside the hosted canvas" }),
+  ).toBeVisible();
   await expect(page.getByLabel("Source editing draft")).toContainText("Saved");
   await popup.getByRole("button", { name: "Stop sharing this folder" }).click();
   await expect(page.getByRole("alert")).toContainText("Not connected");
   await canvas.getByRole("heading").dblclick();
+  await expect(canvas.getByRole("heading")).toHaveAttribute(
+    "contenteditable",
+    "plaintext-only",
+  );
   await canvas.getByRole("heading").fill("Text kept through reconnect");
   await expect(
     page

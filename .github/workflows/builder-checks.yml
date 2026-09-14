@@ -30,6 +30,7 @@ on:
       - "shared/builderSiteMetadata.ts"
       - "shared/builderWebsiteStatus.ts"
       - "shared/builderProjectOperations.ts"
+      - "shared/builderStarter.ts"
       - "shared/builderRepositorySave.ts"
       - "shared/builderRepositorySettings.ts"
       - "shared/builderRepositoryPublish.ts"

@@ -1,4 +1,9 @@
 import { strToU8, zip } from "fflate";
+import {
+  sampleIllustrations,
+  sampleIllustrationLicence,
+  sampleIllustrationLicencePath,
+} from "./sampleContent";
 import rendererSource from "./Renderer.tsx?raw";
 import richTextSource from "./RichText.tsx?raw";
 import interactiveSource from "./InteractiveBlocks.tsx?raw";
@@ -149,6 +154,12 @@ export async function exportProject(
     collect(page.data.content);
   }
   const replacements = new Map<string, string>();
+  const samples: {
+    source: string;
+    exportedUrl: string;
+    sha256: string;
+    licence: string;
+  }[] = [];
   let total = 0;
   let i = 0;
   async function addBinary(name: string, url: string, content?: Uint8Array) {
@@ -176,12 +187,17 @@ export async function exportProject(
           await crypto.subtle.digest("SHA-256", bytes as BufferSource),
         ),
         (value) => value.toString(16).padStart(2, "0"),
-      )
-        .join("")
-        .slice(0, 16);
-      const name = `${baseName.replace(/(\.[^.]+)?$/, `-${digest}$1`)}`;
+      ).join("");
+      const name = `${baseName.replace(/(\.[^.]+)?$/, `-${digest.slice(0, 16)}$1`)}`;
       await addBinary(`public/assets/${name}`, url, bytes);
       replacements.set(url, `/assets/${name}`);
+      if (sampleIllustrations.some((source) => source === url))
+        samples.push({
+          source: url,
+          exportedUrl: `/assets/${name}`,
+          sha256: digest,
+          licence: sampleIllustrationLicencePath,
+        });
     } catch (error) {
       if (asset || url.startsWith("/"))
         throw new Error(
@@ -214,6 +230,10 @@ export async function exportProject(
   const addText = (name: string, text: string) => {
     files[name] = strToU8(text);
   };
+  if (samples.length) {
+    addText(sampleIllustrationLicencePath, sampleIllustrationLicence);
+    addText("sample-assets.json", JSON.stringify(samples, null, 2));
+  }
   const siteConfig: PublicSiteConfig = {
     siteUrl: settings.siteUrl,
     favicon: favicon ? replacements.get(favicon.url)! : "",
@@ -413,7 +433,7 @@ export async function exportProject(
   );
   addText(
     "HANDOFF.md",
-    `# Kaizen website handoff\n\nThis ZIP is a working React/TypeScript project exported from Kaizen Builder. It contains the latest drafts at export time, not necessarily the live site. No editor, credentials, Supabase connection or uploaded source code is required to run it.\n\n## Run\n\nUse Node 22 or later. Run \`npm install\`, then \`npm run dev\`. Run \`npm run build\` to generate static HTML for every page in \`dist/\`; \`npm run preview\` serves that output. \`npm run typecheck\` checks the project. The first exported page also appears at /.\n\n## Ask Claude or Codex\n\n“Inspect HANDOFF.md, src/pages.json, src/Renderer.tsx and src/page.css. Implement and refine this website using the exported React components and bundled assets. Preserve the page URLs, SEO fields, responsive overrides and copy unless I request a change. Check desktop, tablet and mobile in a browser. Review reference-packs before converting any design/source file into code. Do not execute or import uploaded code automatically. Tell me about missing external assets or links.”\n\n## Structure\n\n- src/pages.json: version 1 page data, URLs, SEO and global page styles.\n- src/Renderer.tsx: shared React components; add reviewed components here.\n- src/page.css: desktop styles, tablet overrides at 1023px, mobile at 639px.\n- public/assets: media and fonts referenced by these pages.\n- reference-packs: supplied licences, source and design files; never executed.\n- asset-manifest.json: original pack names, filenames, folders and hashes.\n\nExisting links (for example /contact/) may point to pages outside this export. Review them before deploying. This archive does not contain the Kaizen editor, authentication or backend. Changes to generated source are a developer handoff; they do not automatically synchronise back to the builder.\n\n## External dependencies\n\n${warnings.length ? warnings.map((w) => "- " + w).join("\n") : "All referenced media and fonts were bundled."}\n\n## Pages\n\n${portable.map((p) => "- /" + p.slug + "/ — " + p.title).join("\n")}\n`,
+    `# Kaizen website handoff\n\nThis ZIP is a working React/TypeScript project exported from Kaizen Builder. It contains the latest drafts at export time, not necessarily the live site. No editor, credentials, Supabase connection or uploaded source code is required to run it.\n\n## Run\n\nUse Node 22 or later. Run \`npm install\`, then \`npm run dev\`. Run \`npm run build\` to generate static HTML for every page in \`dist/\`; \`npm run preview\` serves that output. \`npm run typecheck\` checks the project. The first exported page also appears at /.\n\n## Ask Claude or Codex\n\n“Inspect HANDOFF.md, src/pages.json, src/Renderer.tsx and src/page.css. Implement and refine this website using the exported React components and bundled assets. Preserve the page URLs, SEO fields, responsive overrides and copy unless I request a change. Check desktop, tablet and mobile in a browser. Review reference-packs before converting any design/source file into code. Do not execute or import uploaded code automatically. Tell me about missing external assets or links.”\n\n## Structure\n\n- src/pages.json: version 1 page data, URLs, SEO and global page styles.\n- src/Renderer.tsx: shared React components; add reviewed components here.\n- src/page.css: desktop styles, tablet overrides at 1023px, mobile at 639px.\n- public/assets: media and fonts referenced by these pages.\n- reference-packs: supplied licences, source and design files; never executed.\n- asset-manifest.json: original pack names, filenames, folders and hashes.\n- sample-assets.json, when present: bundled starter illustrations, checksums and their licence under reference-packs.\n\nExisting links (for example /contact/) may point to pages outside this export. Review them before deploying. This archive does not contain the Kaizen editor, authentication or backend. Changes to generated source are a developer handoff; they do not automatically synchronise back to the builder.\n\n## External dependencies\n\n${warnings.length ? warnings.map((w) => "- " + w).join("\n") : "All referenced media and fonts were bundled."}\n\n## Pages\n\n${portable.map((p) => "- /" + p.slug + "/ — " + p.title).join("\n")}\n`,
   );
   addText(".gitignore", "node_modules/\ndist/\n.env\n");
   if (editableWorkspace) {

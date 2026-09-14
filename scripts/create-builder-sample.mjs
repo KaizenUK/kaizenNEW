@@ -1,6 +1,13 @@
 import { readFile, writeFile } from "node:fs/promises";
 import { zipSync, strToU8 } from "fflate";
 // Synthetic SVGs and the site's existing logo exercise a mixed asset pack without third-party UI8 files.
+const starterLicence = await readFile(
+  "client/visual-builder/sample-illustrations-licence.txt",
+);
+await writeFile(
+  "public/builder-samples/LICENCE-Kaizen-illustrations.txt",
+  starterLicence,
+);
 const files = {
   "images/landscape.svg": await readFile(
     "public/builder-samples/landscape.svg",
@@ -26,4 +33,15 @@ const files = {
 await writeFile("public/builder-samples/sample-pack.zip", zipSync(files));
 console.log(
   "Created representative mixed sample pack (8 files, including an OFL font).",
+);
+await writeFile(
+  "public/builder-samples/starter-illustrations.zip",
+  zipSync({
+    "images/landscape.svg": files["images/landscape.svg"],
+    "icons/spark.svg": files["icons/spark.svg"],
+    "licences/LICENCE-Kaizen-illustrations.txt": starterLicence,
+  }),
+);
+console.log(
+  "Created starter illustrations pack (two original SVGs and their licence).",
 );

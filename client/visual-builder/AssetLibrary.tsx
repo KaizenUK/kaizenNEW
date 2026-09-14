@@ -313,13 +313,11 @@ export default function AssetLibrary({
       notify((error as Error).message);
     }
   }
-  async function sample() {
+  async function sample(name = "sample-pack.zip") {
     try {
-      const response = await fetch("/builder-samples/sample-pack.zip");
+      const response = await fetch(`/builder-samples/${name}`);
       if (!response.ok) throw new Error("Sample pack unavailable");
-      await importPack([
-        { path: "sample-pack.zip", file: await response.blob() },
-      ]);
+      await importPack([{ path: name, file: await response.blob() }]);
     } catch (error) {
       notify((error as Error).message);
     }
@@ -502,7 +500,14 @@ export default function AssetLibrary({
             <button
               disabled={busy || !!pendingJob || !queueReady}
               className="builder-text-button"
-              onClick={sample}
+              onClick={() => void sample("starter-illustrations.zip")}
+            >
+              Import starter illustrations
+            </button>
+            <button
+              disabled={busy || !!pendingJob || !queueReady}
+              className="builder-text-button"
+              onClick={() => void sample()}
             >
               Try the sample asset pack
             </button>

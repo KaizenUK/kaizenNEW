@@ -65,7 +65,7 @@ Save changes first, then review publication. Publishing shared design can also p
 
 Import images, icons, fonts or a ZIP pack here, then place them from the editor's Assets panel. The library is shared by pages in this project.
 
-Choose an asset to inspect its preview, source and licence, references and replacement options. Keep the licence or source record with imported material. Code and design files can be saved as references; they need a reviewed implementation before they become usable blocks.
+Choose an asset to inspect its preview, source and licence, references and replacement options. **Import starter illustrations** adds two original SVGs and their licence through the normal pack importer. Keep the licence or source record with imported material. Code and design files can be saved as references; they need a reviewed implementation before they become usable blocks.
 
 An interrupted import can be resumed while this browser still holds its recovery data. Clearing browser storage removes that recovery copy. Review reported errors before reimporting a pack; an existing file may already be available.
 <!-- /builder-help -->
