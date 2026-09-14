@@ -95,3 +95,4 @@ pnpm test       # Run Vitest tests
 - Static `dist/` deployed to VPS web root
 - Optional separate Studio static deploy (`apps/studio/dist`)
 - GitHub Actions CI/CD pipeline (`.github/workflows/deploy.yml`)
+- On the VPS, observe Git as the checkout's service account or with `GIT_OPTIONAL_LOCKS=0` / `git --no-optional-locks`. Root-run `git status` can otherwise refresh `.git/index` as root and break deployment or editing. Mutate the managed checkout as `kaizen-helper` and deployment checkouts as `kaizen-deploy`; preserve Sean's pending source and drafts.
