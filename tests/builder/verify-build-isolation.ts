@@ -1,12 +1,14 @@
 /** Run under a temporary systemd service with delegated cpu/memory/pids and
  * DelegateSubgroup=supervisor. Uses only its own temporary files and accounts. */
 import assert from "node:assert/strict";
-import { randomUUID } from "node:crypto";
+import { createHash, randomUUID } from "node:crypto";
 import {
   mkdtemp,
   mkdir,
   writeFile,
   readFile,
+  readlink,
+  lstat,
   readdir,
   rm,
   cp,
@@ -24,6 +26,41 @@ import {
   runIsolatedBuild,
 } from "../../scripts/builder-build-sandbox";
 import { RepositoryRunner } from "../../scripts/builder-runner";
+
+/** Include existing caches, file bytes, links and metadata; ignore read atimes. */
+async function dependencyFingerprint(root: string): Promise<string> {
+  const hash = createHash("sha256");
+  async function visit(relative: string) {
+    const file = path.join(root, relative);
+    const info = await lstat(file);
+    hash.update(
+      JSON.stringify([relative, info.mode, info.uid, info.gid, info.mtimeMs]),
+    );
+    if (info.isSymbolicLink()) {
+      hash.update(JSON.stringify(["link", await readlink(file)]));
+    } else if (info.isDirectory()) {
+      hash.update("directory");
+      for (const name of (await readdir(file)).sort())
+        await visit(path.join(relative, name));
+    } else {
+      assert.ok(
+        info.isFile(),
+        "Fixture dependencies must contain only files, directories and links",
+      );
+      hash.update(
+        JSON.stringify([
+          "file",
+          info.size,
+          createHash("sha256")
+            .update(await readFile(file))
+            .digest("hex"),
+        ]),
+      );
+    }
+  }
+  await visit("");
+  return hash.digest("hex");
+}
 
 const directory = await mkdtemp(path.join(tmpdir(), "kaizen-build-isolation-"));
 const root = path.join(directory, "checkout");
@@ -318,11 +355,27 @@ try {
     force: false,
     errorOnExist: true,
   });
+  // Provisioned dependencies can already contain caches from an earlier build.
+  // The sandbox may replace/create caches only in its disposable dependency copy.
+  const dependencyRoot = path.join(root, "node_modules");
+  await mkdir(path.join(dependencyRoot, ".vite"), { recursive: true });
+  await writeFile(
+    path.join(dependencyRoot, ".vite/kaizen-existing-cache.txt"),
+    "Existing host cache",
+  );
+  const dependenciesBefore = await dependencyFingerprint(dependencyRoot);
+  await writeFile(
+    path.join(root, "cache-fixture.mjs"),
+    `import assert from 'node:assert/strict';import fs from 'node:fs';
+assert.equal(fs.readFileSync('node_modules/.vite/kaizen-existing-cache.txt','utf8'),'Existing host cache');
+fs.writeFileSync('node_modules/.vite/kaizen-existing-cache.txt','Changed inside the sandbox');
+fs.writeFileSync('node_modules/.vite/kaizen-new-cache.txt','Created inside the sandbox');`,
+  );
   await writeFile(
     path.join(root, "package.json"),
     JSON.stringify({
       type: "module",
-      scripts: { build: "astro build" },
+      scripts: { build: "node cache-fixture.mjs && astro build" },
       dependencies: {
         astro: "7.3.2",
         "@astrojs/react": "6.0.5",
@@ -372,9 +425,10 @@ try {
       ),
     );
     checks++;
-    assert.ok(
-      !(await readdir(path.join(root, "node_modules"))).includes(".vite"),
-      "Build caches must stay in the disposable copy",
+    assert.equal(
+      await dependencyFingerprint(dependencyRoot),
+      dependenciesBefore,
+      "Host dependencies and existing caches must remain unchanged",
     );
     checks++;
   } finally {
