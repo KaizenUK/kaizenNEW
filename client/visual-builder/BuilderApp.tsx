@@ -47,7 +47,13 @@ import {
   type BuilderTheme,
   type BuilderView,
 } from "./shell";
-import { ProjectName, useProjectCapabilities } from "./activeProject";
+import {
+  ProjectName,
+  useActiveProject,
+  useProjectCapabilities,
+} from "./activeProject";
+import FirstRunCard from "./FirstRunCard";
+import { useFirstRun } from "./useFirstRun";
 import PagesView, { pageStatus } from "./PagesView";
 import { editorStatus } from "./builderStatus";
 import ProjectsView, { ProjectIdentity } from "./ProjectsView";
@@ -161,8 +167,13 @@ function ProjectForms({ children }: { children: React.ReactNode }) {
 }
 function BuilderWorkspace({ inventory }: { inventory?: PageInventory } = {}) {
   const capabilities = useProjectCapabilities();
+  const { project } = useActiveProject();
   const [workspace, setWorkspace] = useState<Workspace>();
   const [active, setActive] = useState<BuilderPage>();
+  const [firstRunPreview, setFirstRunPreview] = useState<string>();
+  const [accountId, setAccountId] = useState<string | undefined>(
+    localMode ? "local" : undefined,
+  );
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
   const [email, setEmail] = useState("");
@@ -195,6 +206,13 @@ function BuilderWorkspace({ inventory }: { inventory?: PageInventory } = {}) {
   const workspaceRef = useRef<Workspace>(undefined);
   const loadSequence = useRef(0);
   const authAccount = useRef<string | undefined>(undefined);
+  const checklist = useFirstRun({
+    account: accountId,
+    projectId: activeProjectId,
+    project,
+    workspace,
+    visible: view === "pages" && !active && !sitePage && !editingComponent,
+  });
   useEffect(watchBrowserErrors, []);
   useEffect(() => {
     repositoryConnection.start();
@@ -269,12 +287,14 @@ function BuilderWorkspace({ inventory }: { inventory?: PageInventory } = {}) {
         authAccount.current = session?.user.id;
         loadSequence.current++;
         setActive(undefined);
+        setFirstRunPreview(undefined);
         setEditingComponent(undefined);
         setSitePage(undefined);
         setExistingPath(undefined);
         setWorkspace(undefined);
       }
       setSignedIn(Boolean(session));
+      setAccountId(session?.user.id);
       setSessionEmail(session?.user?.email || "");
       if (failure) {
         setError(authErrorMessage(failure, "check"));
@@ -401,8 +421,11 @@ function BuilderWorkspace({ inventory }: { inventory?: PageInventory } = {}) {
       <LibraryContext.Provider value={workspace.assets}>
         <Editor
           key={active.id}
+          previewOnOpen={firstRunPreview === active.id}
+          onPreviewLoaded={checklist.recordPreview}
           onClientReleases={() => {
             setActive(undefined);
+            setFirstRunPreview(undefined);
             setView("releases");
             void reload();
           }}
@@ -417,6 +440,7 @@ function BuilderWorkspace({ inventory }: { inventory?: PageInventory } = {}) {
           onToggleTheme={toggleTheme}
           onBack={() => {
             setActive(undefined);
+            setFirstRunPreview(undefined);
             void reload();
           }}
         />
@@ -528,6 +552,22 @@ function BuilderWorkspace({ inventory }: { inventory?: PageInventory } = {}) {
         ))}
       {current === "pages" && (
         <PagesView
+          firstRun={
+            <FirstRunCard
+              checklist={checklist}
+              creating={creating}
+              onStep={(step) => {
+                if (step === "name") navigate("projects");
+                else if (step === "design") navigate("site");
+                else if (step === "page") void create(false);
+                else if (step === "publish") navigate("releases");
+                else if (checklist.previewPage) {
+                  setFirstRunPreview(checklist.previewPage.id);
+                  setActive(checklist.previewPage);
+                }
+              }}
+            />
+          }
           workspace={workspace}
           localMode={localMode}
           email={signedIn && !localMode ? sessionEmail : undefined}
@@ -754,6 +794,10 @@ function EditorInner({
   onSaved,
   onBack,
   onClientReleases = () => {},
+  previewOnOpen = false,
+  onPreviewLoaded = undefined as
+    | ((id: string, document: PageDocument, workspace: Workspace) => void)
+    | undefined,
   saveOverride = undefined,
   isComponent = false,
   theme = "light" as BuilderTheme,
@@ -932,6 +976,8 @@ function EditorInner({
             }}
           >
             <EditorShell
+              previewOnOpen={previewOnOpen}
+              onPreviewLoaded={onPreviewLoaded}
               isComponent={isComponent}
               theme={theme}
               onToggleTheme={onToggleTheme}
@@ -973,6 +1019,8 @@ function EditorInner({
 type RightTab = "design" | "page" | "styles" | "revisions";
 type LeftTab = "blocks" | "assets" | "layers";
 function EditorShell({
+  previewOnOpen,
+  onPreviewLoaded,
   isComponent,
   theme,
   onToggleTheme,
@@ -1025,7 +1073,7 @@ function EditorShell({
   );
   const [tab, setTab] = useState<LeftTab>("blocks");
   const [rightTab, setRightTab] = useState<RightTab>("design");
-  const [preview, setPreview] = useState(false);
+  const [preview, setPreview] = useState(Boolean(previewOnOpen));
   const [exporting, setExporting] = useState(false);
   const [clipboard, setClipboard] = useState<Block[]>();
   const [savedName, setSavedName] = useState("");
@@ -2019,6 +2067,10 @@ function EditorShell({
               title="Published page preview"
               sandbox="allow-same-origin allow-popups allow-scripts allow-forms"
               srcDoc={previewHtml}
+              onLoad={() => {
+                if (resolvedPreview)
+                  onPreviewLoaded?.(page.id, document, workspace);
+              }}
               style={{
                 width: typeof width === "number" ? width : "100%",
                 maxWidth: "100%",

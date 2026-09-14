@@ -39,6 +39,11 @@ test("Unity publishes a frozen client project, preserves newer drafts, rolls bac
       data: { action: "create", name: "Published client fixture" },
     })
   ).json();
+  // Enroll while this project is new; publication completion must follow the real worker below.
+  await page.goto(`/builder/?project=${project.id}`);
+  await expect(
+    page.getByRole("region", { name: "Start here", exact: true }),
+  ).toBeVisible();
   const other = await (
     await page.request.post("/__builder-projects", {
       headers,
@@ -250,6 +255,20 @@ test("Unity publishes a frozen client project, preserves newer drafts, rolls bac
     await expect(firstRow.getByRole("status")).toContainText("Live", {
       timeout: 60000,
     });
+    await page.getByRole("button", { name: "Pages", exact: true }).click();
+    await expect(
+      page
+        .getByRole("region", { name: "Start here", exact: true })
+        .locator('[data-step="publish"]'),
+    ).toHaveAttribute("data-complete", "true");
+    await page
+      .getByRole("button", {
+        name: /^Releases(?: \d+ pages with changes to publish)?$/,
+      })
+      .click();
+    await page
+      .getByLabel("Choose destination")
+      .selectOption(client.destinationId);
     let workspace = await (
       await page.request.get(`/__builder-local?project=${project.id}`)
     ).json();
@@ -540,6 +559,12 @@ test("Unity publishes a frozen client project, preserves newer drafts, rolls bac
       });
     }
     await website.close();
+    await page.getByRole("button", { name: "Pages", exact: true }).click();
+    await expect(
+      page
+        .getByRole("region", { name: "Start here", exact: true })
+        .locator('[data-step="publish"]'),
+    ).toHaveAttribute("data-complete", "false");
   } finally {
     await nginx(["-s", "quit"]);
     for (let i = 0; !exited && i < 100; i++)

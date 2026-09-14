@@ -17,6 +17,8 @@ The original workspace is registered as **Kaizen workspace** in its existing dir
 
 ## Project capabilities
 
+New, empty projects include the [Start here checklist](visual-builder.md#help-pages) on Pages, with links to the existing design, editing, preview and release flows. That guide explains completion and the per-account, per-project browser preference.
+
 Project behaviour comes from `builder_projects.capabilities` (hosted) or each catalogue entry's `capabilities` (local). `hasInventory` enables the supplied existing-page inventory and reserves its original routes; `legacyWorkspace` selects the preserved original workspace, storage API and deployment-managed services; `publishPath` selects `github` or `worker` in Releases. These are operator configuration, not member permissions. The existing owner/editor and separate publish grants remain enforced by the server.
 
 New, copied, imported and helper-linked projects start with `{ "hasInventory": false, "legacyWorkspace": false, "publishPath": "worker" }`, and no deployment destination. Only the original workspace is migrated to `{ "hasInventory": true, "legacyWorkspace": true, "publishPath": "github" }`. The GitHub worker still represents one preserved workspace: a database constraint permits only one legacy project and requires GitHub routing to match it. Arbitrary additional GitHub destinations are not enabled by flipping a switch. A project ID is still used as its stable storage address and for migration registration; product screens no longer infer these capabilities from that ID.

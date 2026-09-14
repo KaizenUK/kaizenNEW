@@ -44,6 +44,7 @@ export function pageStatus(
 }
 
 export default function PagesView({
+  firstRun,
   sitePages,
   workspace,
   localMode,
@@ -56,6 +57,7 @@ export default function PagesView({
   onRetry,
   login,
 }: {
+  firstRun?: ReactNode;
   sitePages?: React.ReactNode;
   workspace?: Workspace;
   localMode: boolean;
@@ -170,6 +172,7 @@ export default function PagesView({
         {login}
         {workspace && (
           <>
+            {firstRun}
             <section className="builder-banner" aria-label="Add a page">
               <div className="builder-banner-text">
                 <h2>Add a page</h2>

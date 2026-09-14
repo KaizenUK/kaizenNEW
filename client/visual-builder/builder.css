@@ -803,6 +803,64 @@
 }
 
 /* ---------- Pages screen ---------- */
+.builder-first-run {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  padding: 24px;
+}
+.builder-first-run header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+.builder-app .builder-first-run h2 {
+  font-size: 22px;
+  margin: 0 0 4px;
+}
+.builder-first-run header span {
+  color: var(--muted);
+}
+.builder-first-run ol {
+  list-style: none;
+  padding: 0;
+  margin: 16px 0 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
+  gap: 8px 24px;
+}
+.builder-first-run li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+.builder-first-run li > span {
+  display: flex;
+  color: var(--muted);
+}
+.builder-first-run li[data-complete="true"] > span {
+  color: var(--primary);
+}
+.builder-app .builder-first-run li button {
+  flex: 1;
+  min-width: 0;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  text-align: left;
+  padding: 8px;
+}
+.builder-first-run button svg {
+  flex-shrink: 0;
+}
+.builder-first-run-restore {
+  align-self: flex-start;
+}
+
 .builder-banner {
   position: relative;
   overflow: hidden;

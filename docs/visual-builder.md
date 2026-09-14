@@ -15,6 +15,20 @@ The builder’s Learn more links render the marked sections below. These short s
 
 Open a page from the list to edit it. Choose **Blank page** or **Use starter template** to add one; review its title and page address before publishing.
 
+### Start here
+
+A new, empty project shows a checklist. Each step opens its screen:
+
+1. Name your site: your project name already counts. Rename it in Projects.
+2. Choose a site design: choose Save site draft, including to keep the initial design.
+3. Add a page: create and edit a page.
+4. Preview it: open the rendered preview. Changed content needs another preview.
+5. Publish: review and publish through Releases. Only a verified live release completes this step; unpublishing clears it.
+
+Dismiss the card or reopen it with Show start here. This browser remembers each account and project's checklist (the local profile for local work). Blocked storage limits it to this visit. Existing websites keep their usual Pages screen.
+
+### Page status
+
 - **Draft** means edits have not yet been saved.
 - **Saved** means edits are kept; they may still need review or deployment.
 - **On staging** means this version has been checked on staging.
