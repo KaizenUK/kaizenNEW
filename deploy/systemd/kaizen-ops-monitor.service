@@ -1,0 +1,22 @@
+[Unit]
+Description=Check Kaizen services and queue confirmed operational alerts
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=oneshot
+Environment=PYTHONDONTWRITEBYTECODE=1
+ExecStart=/usr/bin/python3 /opt/kaizen-ops/monitor.py /etc/kaizen-ops/monitor.json run
+TimeoutStartSec=10min
+UMask=0077
+PrivateTmp=true
+ProtectHome=true
+ProtectSystem=full
+NoNewPrivileges=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+LockPersonality=true
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6
+StandardOutput=journal
+StandardError=journal

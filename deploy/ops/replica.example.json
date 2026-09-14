@@ -1,0 +1,14 @@
+{
+  "version": 1,
+  "stateDirectory": "/home/backup-operator/.local/state/kaizen/backup-replica",
+  "repository": "/home/backup-operator/.local/share/kaizen-backups/restic",
+  "passwordFile": "/home/backup-operator/.config/kaizen/replica-restic-password",
+  "sourcePasswordFile": "/home/backup-operator/.config/kaizen/ops-restic-password",
+  "restic": "/usr/bin/restic",
+  "source": {
+    "sshAlias": "kaizen-vps",
+    "repository": "/var/backups/kaizen/restic",
+    "receiptFile": "/var/lib/kaizen-ops/last-backup.json",
+    "reportToSource": true
+  }
+}

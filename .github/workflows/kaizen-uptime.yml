@@ -1,0 +1,23 @@
+name: Kaizen public uptime
+
+on:
+  schedule:
+    - cron: "*/10 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  public-uptime:
+    name: Public release (${{ matrix.origin }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    strategy:
+      fail-fast: false
+      matrix:
+        origin: ["https://kaizenweb.co.uk", "https://client-demo.kaizenweb.co.uk"]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify public HTTPS, release marker and home page
+        run: python3 scripts/ops/check_public.py "${{ matrix.origin }}"

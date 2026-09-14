@@ -1,0 +1,7 @@
+{
+  "version": 1,
+  "stateDirectory": "/private/kaizen-recovery-state",
+  "repository": "/private/kaizen-replica",
+  "passwordFile": "/private/kaizen-replica-password",
+  "restic": "/usr/bin/restic"
+}

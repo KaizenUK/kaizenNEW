@@ -58,6 +58,10 @@ on:
       - "scripts/builder-build-*.py"
       - "scripts/prepare-builder-isolation-check.mjs"
       - "scripts/check-new-secrets.py"
+      - "scripts/ops/**"
+      - "tests/ops/**"
+      - "deploy/ops/**"
+      - "docs/builder-backups.md"
       - "scripts/builder-account-delete.ts"
       - "scripts/builder-client-publisher.ts"
       - "scripts/builder-client-worker.ts"
@@ -103,6 +107,7 @@ on:
       - "package.json"
       - "pnpm-lock.yaml"
       - ".github/workflows/builder-checks.yml"
+      - ".github/workflows/kaizen-uptime.yml"
       - ".github/workflows/deploy.yml"
   workflow_dispatch:
 
@@ -110,6 +115,28 @@ permissions:
   contents: read
 
 jobs:
+  operations:
+    name: Encrypted backups and isolated PostgreSQL recovery
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install backup and native recovery tools
+        run: |
+          sudo install -d /usr/share/postgresql-common/pgdg
+          curl --fail --silent --show-error --location https://www.postgresql.org/media/keys/ACCC4CF8.asc -o /tmp/kaizen-pgdg.asc
+          sudo install -m 0644 /tmp/kaizen-pgdg.asc /usr/share/postgresql-common/pgdg/apt.postgresql.org.asc
+          echo 'deb [signed-by=/usr/share/postgresql-common/pgdg/apt.postgresql.org.asc] https://apt.postgresql.org/pub/repos/apt noble-pgdg main' | sudo tee /etc/apt/sources.list.d/kaizen-pgdg.list
+          sudo apt-get update
+          sudo apt-get install -y restic rsync postgresql-17 nginx
+      - name: Verify temporary encrypted backups, replicas and database recovery
+        run: python3 -m unittest discover -s tests/ops -p 'test_*.py' -v
+        env:
+          KAIZEN_PG_BIN: /usr/lib/postgresql/17/bin
+          KAIZEN_NGINX_BINARY: nginx
   builder:
     runs-on: ubuntu-latest
     timeout-minutes: 20

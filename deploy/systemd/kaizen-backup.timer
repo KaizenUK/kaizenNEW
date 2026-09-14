@@ -1,0 +1,11 @@
+[Unit]
+Description=Check whether a Kaizen backup is due
+
+[Timer]
+OnCalendar=hourly
+RandomizedDelaySec=5min
+Persistent=true
+Unit=kaizen-backup.service
+
+[Install]
+WantedBy=timers.target

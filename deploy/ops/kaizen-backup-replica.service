@@ -1,0 +1,15 @@
+# Install in the receiving operator's user systemd directory. The runtime is
+# copied outside the development checkout before enabling this unit.
+[Unit]
+Description=Copy a verified Kaizen backup to independent encrypted storage
+
+[Service]
+Type=oneshot
+Environment=PYTHONDONTWRITEBYTECODE=1
+ExecStart=/usr/bin/python3 %h/.local/share/kaizen-ops/replicate.py %h/.config/kaizen/backup-replica.json capture
+TimeoutStartSec=2h
+UMask=0077
+Nice=10
+NoNewPrivileges=true
+StandardOutput=journal
+StandardError=journal

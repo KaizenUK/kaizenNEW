@@ -1,0 +1,10 @@
+[Unit]
+Description=Observe Kaizen uptime, failures and backup freshness
+
+[Timer]
+OnBootSec=2min
+OnUnitInactiveSec=2min
+Unit=kaizen-ops-monitor.service
+
+[Install]
+WantedBy=timers.target
