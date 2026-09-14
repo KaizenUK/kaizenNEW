@@ -63,6 +63,7 @@
     "@astrojs/check": "0.9.10",
     "@astrojs/compiler": "4.0.0",
     "@astrojs/react": "6.0.5",
+    "@axe-core/playwright": "4.13.0",
     "@electric-sql/pglite": "^0.5.8",
     "@playwright/test": "^1.63.0",
     "@portabletext/block-tools": "^5.1.0",
@@ -185,7 +186,8 @@
       "yaml@>=2 <2.8.3": "^2.8.3"
     },
     "patchedDependencies": {
-      "@puckeditor/core@0.23.0": "patches/@puckeditor__core@0.23.0.patch"
+      "@puckeditor/core@0.23.0": "patches/@puckeditor__core@0.23.0.patch",
+      "@dnd-kit/dom@0.4.0": "patches/@dnd-kit__dom@0.4.0.patch"
     }
   },
   "packageManager": "pnpm@10.32.1+sha512.a706938f0e89ac1456b6563eab4edf1d1faf3368d1191fc5c59790e96dc918e4456ab2e67d613de1043d2e8c81f87303e6b40d4ffeca9df15ef1ad567348f2be"

@@ -1,0 +1,32 @@
+diff --git a/index.cjs b/index.cjs
+index ecf154afbaf3655e1bcea4f8cfe84fd2a5a5339e..70ac032894d151b3bb0be2fab027ba39f3794172 100644
+--- a/index.cjs
++++ b/index.cjs
+@@ -263,7 +263,10 @@ var Accessibility = class extends abstract.Plugin {
+               () => activator.setAttribute("aria-describedby", descriptionId)
+             );
+           }
+-          for (const key of ["aria-pressed", "aria-grabbed"]) {
++          // A draggable group may contain interactive page content. Only
++          // button activators support the pressed state; keep drag announcements.
++          const buttonRole = activator.getAttribute("role") === "button" || activator.tagName.toLowerCase() === "button";
++          for (const key of buttonRole ? ["aria-pressed", "aria-grabbed"] : ["aria-grabbed"]) {
+             const value = String(draggable.isDragging);
+             if (activator.getAttribute(key) !== value) {
+               mutations.add(() => activator.setAttribute(key, value));
+diff --git a/index.js b/index.js
+index c117434e9a906972227557de0dd4332526e0bc14..f33ade586df7caeda9ad64813aea7031ed26f906 100644
+--- a/index.js
++++ b/index.js
+@@ -262,7 +262,10 @@ var Accessibility = class extends Plugin {
+               () => activator.setAttribute("aria-describedby", descriptionId)
+             );
+           }
+-          for (const key of ["aria-pressed", "aria-grabbed"]) {
++          // A draggable group may contain interactive page content. Only
++          // button activators support the pressed state; keep drag announcements.
++          const buttonRole = activator.getAttribute("role") === "button" || activator.tagName.toLowerCase() === "button";
++          for (const key of buttonRole ? ["aria-pressed", "aria-grabbed"] : ["aria-grabbed"]) {
+             const value = String(draggable.isDragging);
+             if (activator.getAttribute(key) !== value) {
+               mutations.add(() => activator.setAttribute(key, value));

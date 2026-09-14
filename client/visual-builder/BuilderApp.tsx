@@ -78,6 +78,7 @@ import {
 import ClientPublications from "./ClientPublications";
 import { activeProjectId, clearProjectCache } from "./projectStorage";
 import PublishDialog from "./PublishDialog";
+import EditorDialog, { EditorDialogTitle } from "./EditorDialog";
 import BlockPalette from "./BlockPalette";
 import {
   clone,
@@ -1112,6 +1113,9 @@ function EditorShell({
   const [clipboard, setClipboard] = useState<Block[]>();
   const [savedName, setSavedName] = useState("");
   const [publishOpen, setPublishOpen] = useState(false);
+  const previewButton = useRef<HTMLButtonElement>(null);
+  const publishButton = useRef<HTMLButtonElement>(null);
+  const previewReturn = useRef<HTMLButtonElement>(null);
   const add = (blocks: Block[]) =>
     dispatch({
       type: "set",
@@ -1429,6 +1433,7 @@ function EditorShell({
             className="builder-secondary"
             title="Preview the page"
             aria-label="Preview"
+            ref={previewButton}
             onClick={() => setPreview(true)}
           >
             <Eye size={16} /> <span>Preview</span>
@@ -1488,6 +1493,7 @@ function EditorShell({
           )}
           {!isComponent && (
             <button
+              ref={publishButton}
               disabled={busy}
               className="builder-primary"
               onClick={() =>
@@ -2064,6 +2070,7 @@ function EditorShell({
           page={page}
           workspace={workspace}
           busy={busy}
+          returnFocus={publishButton}
           onCancel={() => setPublishOpen(false)}
           onPublish={() => {
             setPublishOpen(false);
@@ -2084,16 +2091,21 @@ function EditorShell({
         </div>
       )}
       {preview && (
-        <div
+        <EditorDialog
           className="builder-preview-modal"
-          role="dialog"
-          aria-modal="true"
-          aria-label="Page preview"
+          onClose={() => setPreview(false)}
+          returnFocus={previewButton}
+          initialFocus={previewReturn}
         >
           <header>
-            <strong>Preview · {document.title}</strong>
+            <EditorDialogTitle>
+              <span className="builder-sr">Page preview</span>
+              <span aria-hidden="true">Preview · {document.title}</span>
+            </EditorDialogTitle>
             <span>{width}px</span>
-            <button onClick={() => setPreview(false)}>Return to editor</button>
+            <button ref={previewReturn} onClick={() => setPreview(false)}>
+              Return to editor
+            </button>
           </header>
           <PrivatePreviewControls document={resolvedPreview} />
           <div>
@@ -2111,7 +2123,7 @@ function EditorShell({
               }}
             />
           </div>
-        </div>
+        </EditorDialog>
       )}
     </>
   );

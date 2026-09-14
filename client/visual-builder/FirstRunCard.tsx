@@ -52,7 +52,10 @@ export default function FirstRunCard({
                 data-step={step.id}
                 data-complete={step.complete}
               >
-                <span aria-label={step.complete ? "Complete" : "To do"}>
+                <span
+                  role="img"
+                  aria-label={step.complete ? "Complete" : "To do"}
+                >
                   {step.complete ? (
                     <Check size={18} aria-hidden="true" />
                   ) : (

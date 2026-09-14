@@ -268,7 +268,7 @@ test("image crop, focal point and hover styles render in the page preview", asyn
 }) => {
   const frame = await createPage(page);
   await frame
-    .getByRole("img", { name: "Abstract green hills and a yellow sun" })
+    .getByRole("group", { name: "Image block", exact: true })
     .click();
   await page.getByText("Image crop & focal point", { exact: true }).click();
   await page
@@ -378,7 +378,11 @@ test("sample ZIP assets drag into nested content and support copy, paste and und
   await page.mouse.up();
   const nestedIcons = frame.locator(".kb-hero .kb-container .kb-icon");
   await expect(nestedIcons).toHaveCount(1);
-  await nestedIcons.locator("img").click();
+  // Images are rendered inside a movable group, which receives selection clicks.
+  const nestedIconBlocks = nestedIcons.locator(
+    'xpath=ancestor::*[@data-puck-component][1]',
+  );
+  await nestedIconBlocks.click();
   await page.keyboard.press("Control+c");
   await page.keyboard.press("Control+v");
   await expect(nestedIcons).toHaveCount(2);
@@ -386,7 +390,7 @@ test("sample ZIP assets drag into nested content and support copy, paste and und
   await expect(nestedIcons).toHaveCount(1);
   await page.getByRole("button", { name: "Redo", exact: true }).click();
   await expect(nestedIcons).toHaveCount(2);
-  await nestedIcons.first().click();
+  await nestedIconBlocks.first().click();
   await page.keyboard.press("Control+d");
   await expect(nestedIcons).toHaveCount(3);
   await expect
@@ -420,16 +424,19 @@ test("sample ZIP assets drag into nested content and support copy, paste and und
   await expect(frame.locator("[data-dnd-dragging]").first()).toBeVisible();
   await page.mouse.move(targetX, targetY, { steps: 16 });
   // The sortable placeholder can stay in its original slot until release.
-  // Wait for the actual dragged image to reach the pointer instead.
+  // Check the dragged image reaches the destination; its centre may snap to
+  // the destination's centre instead of retaining the pointer's exact offset.
   await expect
     .poll(async () => {
       const box = await frame
         .locator("[data-dnd-dragging] .kb-icon")
         .first()
         .boundingBox();
-      return box ? Math.abs(box.y + box.height / 2 - targetY) : Infinity;
+      if (!box) return false;
+      const centre = box.y + box.height / 2;
+      return centre >= to!.y && centre <= to!.y + to!.height;
     })
-    .toBeLessThan(4);
+    .toBe(true);
   await page.mouse.up();
   // Count the committed blocks after the temporary drag clone disappears.
   await expect(nestedIcons).toHaveCount(3);

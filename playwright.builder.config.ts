@@ -8,6 +8,7 @@ import {
 
 // Core journeys run in all three engines; Chromium retains the complete suite.
 const coreJourneys = [
+  "accessibility",
   "auth",
   "account",
   "projects",

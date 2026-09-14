@@ -47,8 +47,11 @@ overrides:
   yaml@>=2 <2.8.3: ^2.8.3
 
 patchedDependencies:
+  '@dnd-kit/dom@0.4.0':
+    hash: 82152e4e36dc1e8216e408d19a2fc11fc81d7e06640a94bf3c1d7ee80e01aeb9
+    path: patches/@dnd-kit__dom@0.4.0.patch
   '@puckeditor/core@0.23.0':
-    hash: 4705c1a79099f4e2b8e033e2865ed4a6040ac22e54489da1d7d6830ab17f9ed0
+    hash: 4e994dfdf6180ecfafa78cde1f862ad8dee5e6a5cfb2c6b7afb1ec15dca61d52
     path: patches/@puckeditor__core@0.23.0.patch
 
 importers:
@@ -66,7 +69,7 @@ importers:
         version: 4.0.2
       '@puckeditor/core':
         specifier: 0.23.0
-        version: 0.23.0(patch_hash=4705c1a79099f4e2b8e033e2865ed4a6040ac22e54489da1d7d6830ab17f9ed0)(@floating-ui/dom@1.7.6)(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(immer@11.1.4)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(use-sync-external-store@1.6.0(react@19.2.4))
+        version: 0.23.0(patch_hash=4e994dfdf6180ecfafa78cde1f862ad8dee5e6a5cfb2c6b7afb1ec15dca61d52)(@floating-ui/dom@1.7.6)(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(immer@11.1.4)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(use-sync-external-store@1.6.0(react@19.2.4))
       '@sanity/assist':
         specifier: ^5.0.4
         version: 5.0.4(@emotion/is-prop-valid@1.4.0)(@sanity/mutator@5.13.0(@types/react@19.2.14))(react-dom@19.2.4(react@19.2.4))(react-is@19.2.4)(react@19.2.4)(sanity@5.13.0(@emotion/is-prop-valid@1.4.0)(@noble/hashes@2.0.1)(@types/node@25.3.3)(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(babel-plugin-react-compiler@1.0.0)(immer@11.1.4)(jiti@2.7.0)(lightningcss@1.33.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(styled-components@6.3.11(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(terser@5.46.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.9.0))(styled-components@6.3.11(react-dom@19.2.4(react@19.2.4))(react@19.2.4))
@@ -158,6 +161,9 @@ importers:
       '@astrojs/react':
         specifier: 6.0.5
         version: 6.0.5(@types/node@25.3.3)(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(esbuild@0.28.1)(jiti@2.7.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(terser@5.46.0)(tsx@4.21.0)(yaml@2.9.0)
+      '@axe-core/playwright':
+        specifier: 4.13.0
+        version: 4.13.0(playwright-core@1.63.0)
       '@electric-sql/pglite':
         specifier: ^0.5.8
         version: 0.5.8
@@ -584,6 +590,11 @@ packages:
   '@aws-lite/ssm@0.2.5':
     resolution: {integrity: sha512-1B8mZ79ySqlTEfSQ87KZ0XkmTOKQFMO3lUYUGUtwNTUncJINr6nhRWEjk128oBWwEQnpJ7NfpDPjdfg1ICe3xw==}
     engines: {node: '>=16'}
+
+  '@axe-core/playwright@4.13.0':
+    resolution: {integrity: sha512-6YLx+kxXu5GJceG4ozFg+33a2EMTdjYwWGloJ3sb9Kta5pp+ZNS53uxGVog5JetIY8s++P5UrtX+cri+u0VAVg==}
+    peerDependencies:
+      playwright-core: '>= 1.0.0'
 
   '@babel/code-frame@7.29.0':
     resolution: {integrity: sha512-9NhCeYjq9+3uxgdtp20LSiJXJvN0FeCtNGpJxuMFZ1Kv3cWUNb6DOhJwUvcVCzKGR66cw4njwM6hrJLqgOwbcw==}
@@ -4319,6 +4330,10 @@ packages:
 
   aws4@1.13.2:
     resolution: {integrity: sha512-lHe62zvbTB5eEABUVi/AwVh0ZKY9rMMDhmm+eeyuuUQbQ3+J+fONVQOZyj+DdrvD4BY33uYniyRJ4UJIaSKAfw==}
+
+  axe-core@4.13.0:
+    resolution: {integrity: sha512-UzGt8zg7Ny8djbYMhxl2zuEevVa7r2gJjYY5Lwr1xM7+XU2nd6CkIWFTVcCIbAP63vSz71NaVyyuSk9lHKcy0A==}
+    engines: {node: '>=4'}
 
   axios@1.20.0:
     resolution: {integrity: sha512-r8aOh8j9cGKpgQAqpzrUHnSIc6a59Y3Xf/cv8sy1DrHCkZHzQGEuoq1tARk6qSyDdtQGSDgpb9kFlruzPvrgwg==}
@@ -9028,6 +9043,11 @@ snapshots:
 
   '@aws-lite/ssm@0.2.5': {}
 
+  '@axe-core/playwright@4.13.0(playwright-core@1.63.0)':
+    dependencies:
+      axe-core: 4.13.0
+      playwright-core: 1.63.0
+
   '@babel/code-frame@7.29.0':
     dependencies:
       '@babel/helper-validator-identifier': 7.28.5
@@ -10053,7 +10073,7 @@ snapshots:
       react-dom: 19.2.4(react@19.2.4)
       tslib: 2.8.1
 
-  '@dnd-kit/dom@0.4.0':
+  '@dnd-kit/dom@0.4.0(patch_hash=82152e4e36dc1e8216e408d19a2fc11fc81d7e06640a94bf3c1d7ee80e01aeb9)':
     dependencies:
       '@dnd-kit/abstract': 0.4.0
       '@dnd-kit/collision': 0.4.0
@@ -10081,7 +10101,7 @@ snapshots:
   '@dnd-kit/react@0.4.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4)':
     dependencies:
       '@dnd-kit/abstract': 0.4.0
-      '@dnd-kit/dom': 0.4.0
+      '@dnd-kit/dom': 0.4.0(patch_hash=82152e4e36dc1e8216e408d19a2fc11fc81d7e06640a94bf3c1d7ee80e01aeb9)
       '@dnd-kit/state': 0.4.0
       react: 19.2.4
       react-dom: 19.2.4(react@19.2.4)
@@ -10964,10 +10984,10 @@ snapshots:
 
   '@preact/signals-core@1.14.4': {}
 
-  '@puckeditor/core@0.23.0(patch_hash=4705c1a79099f4e2b8e033e2865ed4a6040ac22e54489da1d7d6830ab17f9ed0)(@floating-ui/dom@1.7.6)(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(immer@11.1.4)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(use-sync-external-store@1.6.0(react@19.2.4))':
+  '@puckeditor/core@0.23.0(patch_hash=4e994dfdf6180ecfafa78cde1f862ad8dee5e6a5cfb2c6b7afb1ec15dca61d52)(@floating-ui/dom@1.7.6)(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(immer@11.1.4)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(use-sync-external-store@1.6.0(react@19.2.4))':
     dependencies:
       '@dnd-kit/abstract': 0.4.0
-      '@dnd-kit/dom': 0.4.0
+      '@dnd-kit/dom': 0.4.0(patch_hash=82152e4e36dc1e8216e408d19a2fc11fc81d7e06640a94bf3c1d7ee80e01aeb9)
       '@dnd-kit/geometry': 0.4.0
       '@dnd-kit/helpers': 0.4.0
       '@dnd-kit/react': 0.4.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
@@ -13436,6 +13456,8 @@ snapshots:
       postcss-value-parser: 4.2.0
 
   aws4@1.13.2: {}
+
+  axe-core@4.13.0: {}
 
   axios@1.20.0:
     dependencies:

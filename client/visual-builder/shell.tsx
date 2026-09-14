@@ -282,8 +282,13 @@ export function Shell({
 }) {
   return (
     <div className="builder-app builder-shell" data-theme={theme}>
+      <a className="builder-skip-link" href="#builder-main">
+        Skip to page content
+      </a>
       {sidebar}
-      <div className="builder-main">{children}</div>
+      <main className="builder-main" id="builder-main" tabIndex={-1}>
+        {children}
+      </main>
     </div>
   );
 }

@@ -123,6 +123,7 @@ export default function SitePageEditor({
   const surface = useRef<HTMLDivElement>(null),
     [available, setAvailable] = useState(900);
   const returnFocus = useRef<HTMLElement | null>(null);
+  const reviewTrigger = useRef<HTMLButtonElement>(null);
   const selected =
     inspection?.fields.filter((f) => canvas.ids.includes(f.id)) || [];
   const changed =
@@ -445,6 +446,7 @@ export default function SitePageEditor({
             type="button"
             className="builder-primary"
             disabled={locked || !changed || disconnected}
+            ref={reviewTrigger}
             onClick={() => void review()}
           >
             Review my changes
@@ -1159,6 +1161,10 @@ export default function SitePageEditor({
         <Dialog.Portal>
           <Dialog.Overlay className="builder-modal-overlay" />
           <Dialog.Content
+            onCloseAutoFocus={(event) => {
+              event.preventDefault();
+              reviewTrigger.current?.focus();
+            }}
             className="builder-app builder-modal builder-site-review"
             data-theme={theme}
           >
