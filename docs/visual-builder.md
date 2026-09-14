@@ -245,6 +245,12 @@ For the local developer path, Safari/WebKit blocks a hosted HTTPS editor from em
 
 The automated WebKit checks run on Linux. They do not constitute manual Safari testing on macOS or iOS. The [launch task map](builder-launch-plan.md#l5-t1--core-journeys-in-three-browser-engines-14-september-2026) records the current evidence and remaining manual acceptance. `pnpm test:builder:browser` runs all three engines against isolated fixtures; milestone CI runs the extra engines in separate jobs.
 
+## Loading the editors
+
+Pages opens without downloading either editor. The page editor, website editor, standalone asset library and website-folder tools load when opened. If a download is slow, **Back to pages** returns to the saved workspace. If it fails, **Reload** starts a fresh page load so the download can be tried again; returning to Pages preserves the saved page. The existing autosave, review and publish actions continue to control edits after the editor opens.
+
+The reproducible production comparison lives in `scripts/measure-builder-performance.mjs`. It accepts two isolated `dist` directories and an output JSON path. Build each snapshot with `BUILDER_LOCAL_BUILD=1`, `BUILDER_LOCAL_DIRECTORY` pointing to an empty temporary fixture, `VITE_BUILDER_CLOUD=1`, `VITE_SUPABASE_URL=https://performance-fixture.supabase.test` and `VITE_SUPABASE_ANON_KEY=fixture-public-key`. These artifacts must never be deployed. The runner uses a temporary HTTPS server, fixture provider replies and fresh Chromium contexts; it rejects unexpected external requests and early editor downloads. The [launch task log](builder-launch-plan.md#l5-t3--on-demand-editor-loading-and-production-measurements-14-september-2026) records measurements and hardware limits. A CPU/network proxy does not replace the remaining physical mid-range laptop check.
+
 ## Keyboard and accessibility
 
 Use **Tab** and **Shift+Tab** to move between controls. The first link on workspace screens, **Skip to page content**, moves past the sidebar. **Enter** opens the selected page or activates a button.

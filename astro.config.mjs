@@ -129,6 +129,8 @@ export default defineConfig({
 
     optimizeDeps: {
       include: [
+        // Prepare the lazy editor before first use; late optimization can reload a local editing session.
+        "@puckeditor/core",
         "sanity",
         "sanity/presentation",
         "@sanity/assist",

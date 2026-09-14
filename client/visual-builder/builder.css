@@ -4589,6 +4589,16 @@
   background: var(--panel);
   color: var(--primary-text);
 }
+
+.builder-feature-loading {
+  min-height: 100dvh;
+  padding: 48px;
+}
+
+.builder-feature-loading > .builder-card {
+  max-width: 720px;
+  margin: 0 auto;
+}
 .builder-skip-link:focus {
   transform: none;
 }

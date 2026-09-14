@@ -267,9 +267,7 @@ test("image crop, focal point and hover styles render in the page preview", asyn
   page,
 }) => {
   const frame = await createPage(page);
-  await frame
-    .getByRole("group", { name: "Image block", exact: true })
-    .click();
+  await frame.getByRole("group", { name: "Image block", exact: true }).click();
   await page.getByText("Image crop & focal point", { exact: true }).click();
   await page
     .getByRole("combobox", { name: "desktop Image ratio", exact: true })
@@ -380,7 +378,7 @@ test("sample ZIP assets drag into nested content and support copy, paste and und
   await expect(nestedIcons).toHaveCount(1);
   // Images are rendered inside a movable group, which receives selection clicks.
   const nestedIconBlocks = nestedIcons.locator(
-    'xpath=ancestor::*[@data-puck-component][1]',
+    "xpath=ancestor::*[@data-puck-component][1]",
   );
   await nestedIconBlocks.click();
   await page.keyboard.press("Control+c");
@@ -410,8 +408,9 @@ test("sample ZIP assets drag into nested content and support copy, paste and und
   const lastId = await nestedIcons.last().getAttribute("data-block-id");
   await nestedIcons.last().scrollIntoViewIfNeeded();
   await nestedIcons.first().scrollIntoViewIfNeeded();
-  await expect(nestedIcons.first()).toBeInViewport({ ratio: 1 });
-  await expect(nestedIcons.last()).toBeInViewport({ ratio: 1 });
+  // IntersectionObserver ratios can round just below one at fractional pixels.
+  await expect(nestedIcons.first()).toBeInViewport({ ratio: 0.99 });
+  await expect(nestedIcons.last()).toBeInViewport({ ratio: 0.99 });
   const from = await nestedIcons.last().boundingBox();
   const to = await nestedIcons.first().boundingBox();
   const x = from!.x + from!.width / 2,

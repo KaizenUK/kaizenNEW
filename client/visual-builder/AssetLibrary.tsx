@@ -1,3 +1,4 @@
+import { downloadText } from "./downloadText";
 import React, {
   useDeferredValue,
   useEffect,
@@ -44,14 +45,6 @@ import { storage } from "./storage";
 import { MediaContext } from "./MediaContext";
 import { useContext } from "react";
 import { importQueue, withImportLock, type ImportJob } from "./importQueue";
-export function downloadText(name: string, value: string) {
-  const url = URL.createObjectURL(new Blob([value], { type: "text/plain" }));
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = name;
-  a.click();
-  setTimeout(() => URL.revokeObjectURL(url), 1000);
-}
 export default function AssetLibrary({
   assets,
   workspace,

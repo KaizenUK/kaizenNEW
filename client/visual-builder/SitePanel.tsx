@@ -9,7 +9,7 @@ import {
 import { initialSiteDesign, siteAffectedPages } from "../../shared/builderSite";
 import { starterBlocks } from "./starters";
 import { storage } from "./storage";
-import { downloadText } from "./AssetLibrary";
+import { downloadText } from "./downloadText";
 import { Card, Head, Notice, Pill } from "./shell";
 import { ProjectName, useProjectCapabilities } from "./activeProject";
 

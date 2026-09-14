@@ -1,0 +1,573 @@
+{
+  "measuredAt": "2026-09-14T14:58:21.770Z",
+  "browser": "153.0.8010.12",
+  "machine": {
+    "cpu": "Intel(R) Core(TM) Ultra 7 258V",
+    "logicalCpus": 8,
+    "memoryMiB": 31593
+  },
+  "settings": {
+    "cpuSlowdown": 4,
+    "latencyMs": 40,
+    "downloadBitsPerSecond": 10000000,
+    "uploadBitsPerSecond": 1000000,
+    "runsPerBuild": 5
+  },
+  "limits": "Fourfold CPU slowdown and a shaped local network are a reproducible proxy, not a measurement on a physical mid-range laptop. Empty signed-in project, fixture provider replies, local gzip HTTPS static server with a temporary test certificate, external fonts stubbed. First useful paint is two animation frames after a visible enabled Blank page control and project name appear. Five fresh contexts per build, cache disabled, alternating order. FCP includes Astro's opening message and is not readiness.",
+  "summaries": {
+    "before": {
+      "medianUsefulPaintMs": 1292.3999999910593,
+      "medianScriptTransferBytes": 574052,
+      "largestChunks": [
+        {
+          "file": "_astro/BuilderApp.Do0drO8_.js",
+          "bytes": 1358937,
+          "gzip": 389511
+        },
+        {
+          "file": "_astro/jspdf.es.min.6cAAU-A7.js",
+          "bytes": 392503,
+          "gzip": 125336
+        },
+        {
+          "file": "_astro/dist.ChHB2Rjp.js",
+          "bytes": 282986,
+          "gzip": 85447
+        },
+        {
+          "file": "_astro/supabase.p5A7BH0c.js",
+          "bytes": 215643,
+          "gzip": 55045
+        },
+        {
+          "file": "_astro/html2canvas.lW11i-O-.js",
+          "bytes": 199494,
+          "gzip": 46560
+        },
+        {
+          "file": "_astro/client.Be3kcd1y.js",
+          "bytes": 180670,
+          "gzip": 56514
+        },
+        {
+          "file": "_astro/index.es.BqX1Tb84.js",
+          "bytes": 151099,
+          "gzip": 48426
+        },
+        {
+          "file": "_astro/proxy.DQsHTY1y.js",
+          "bytes": 121760,
+          "gzip": 40163
+        },
+        {
+          "file": "_astro/chunk-K2LNXU54.DciRzuIO.js",
+          "bytes": 104359,
+          "gzip": 35915
+        },
+        {
+          "file": "_astro/SectionWrapper.CPgiqTMb.js",
+          "bytes": 97483,
+          "gzip": 31013
+        },
+        {
+          "file": "_astro/chunk-2CNEFIQP.QEHbI38U.js",
+          "bytes": 66267,
+          "gzip": 24205
+        },
+        {
+          "file": "_astro/purify.es.BbpS7FRY.js",
+          "bytes": 27009,
+          "gzip": 10698
+        },
+        {
+          "file": "_astro/utils.jN-zF8_7.js",
+          "bytes": 26638,
+          "gzip": 8468
+        },
+        {
+          "file": "_astro/NavShell.4xWpwFnS.js",
+          "bytes": 24349,
+          "gzip": 6712
+        },
+        {
+          "file": "_astro/SpeedScanner.CRYmeuze.js",
+          "bytes": 22548,
+          "gzip": 8153
+        }
+      ]
+    },
+    "after": {
+      "medianUsefulPaintMs": 926.6000000089407,
+      "medianScriptTransferBytes": 340710,
+      "largestChunks": [
+        {
+          "file": "_astro/AssetLibrary.5QqLiJpY.js",
+          "bytes": 504575,
+          "gzip": 135419
+        },
+        {
+          "file": "_astro/jspdf.es.min.6cAAU-A7.js",
+          "bytes": 392503,
+          "gzip": 125336
+        },
+        {
+          "file": "_astro/dist.ChHB2Rjp.js",
+          "bytes": 282986,
+          "gzip": 85447
+        },
+        {
+          "file": "_astro/PrivatePreviews.BYwXaJOp.js",
+          "bytes": 217824,
+          "gzip": 64396
+        },
+        {
+          "file": "_astro/supabase.p5A7BH0c.js",
+          "bytes": 215643,
+          "gzip": 55045
+        },
+        {
+          "file": "_astro/html2canvas.lW11i-O-.js",
+          "bytes": 199494,
+          "gzip": 46560
+        },
+        {
+          "file": "_astro/client.Be3kcd1y.js",
+          "bytes": 180670,
+          "gzip": 56514
+        },
+        {
+          "file": "_astro/assets.C_ydOcN9.js",
+          "bytes": 158252,
+          "gzip": 48545
+        },
+        {
+          "file": "_astro/index.es.BqX1Tb84.js",
+          "bytes": 151099,
+          "gzip": 48426
+        },
+        {
+          "file": "_astro/exportProject.CKn-6TmJ.js",
+          "bytes": 137831,
+          "gzip": 38054
+        },
+        {
+          "file": "_astro/proxy.DQsHTY1y.js",
+          "bytes": 121760,
+          "gzip": 40163
+        },
+        {
+          "file": "_astro/BuilderApp.YFbl2ns2.js",
+          "bytes": 115933,
+          "gzip": 31786
+        },
+        {
+          "file": "_astro/SectionWrapper.CPgiqTMb.js",
+          "bytes": 97483,
+          "gzip": 31013
+        },
+        {
+          "file": "_astro/chunk-K2LNXU54.CluEu3Za.js",
+          "bytes": 85093,
+          "gzip": 29484
+        },
+        {
+          "file": "_astro/downloadText.DMrU4zT4.js",
+          "bytes": 83430,
+          "gzip": 33860
+        }
+      ]
+    }
+  },
+  "results": [
+    {
+      "build": "before",
+      "run": 1,
+      "expectedFixtureErrors": [
+        "Failed to load resource: the server responded with a status of 503 (Service Unavailable)"
+      ],
+      "usefulPaintMs": 1301.4000000059605,
+      "firstContentfulPaintMs": 196,
+      "scriptTransferBytes": 574052,
+      "scripts": [
+        "/_astro/BuilderApp.Do0drO8_.js",
+        "/_astro/client.Be3kcd1y.js",
+        "/_astro/rolldown-runtime.C0FnF6B9.js",
+        "/_astro/react-dom.DLJaPGyq.js",
+        "/_astro/react.g9ENZcn2.js",
+        "/_astro/createLucideIcon.1T2UG7Mu.js",
+        "/_astro/arrow-right.BX-PG_b6.js",
+        "/_astro/sparkles.BZFGkVVM.js",
+        "/_astro/circle-alert.BxN_7R64.js",
+        "/_astro/chevron-down.CpdEYF_5.js",
+        "/_astro/x.D4-UlOaF.js",
+        "/_astro/jsx-runtime.BH9nBM82.js",
+        "/_astro/preload-helper.B3nfOi5I.js",
+        "/_astro/dist.FG531kww.js",
+        "/_astro/chunk-K2LNXU54.DciRzuIO.js",
+        "/_astro/chunk-Y2EFNT5P.C-wXPhxe.js",
+        "/_astro/chunk-H635BA2V.BYUgdDZq.js",
+        "/_astro/chunk-67Y7M4OJ.WcP4UuLe.js",
+        "/_astro/chunk-4P4VZS4P.DmPH4fb5.js",
+        "/_astro/chunk-NJTGWYYH.nPfr5_CL.js",
+        "/_astro/chunk-GNR2HNTB.BC4iD99J.js",
+        "/_astro/index.module.DnrcZbt1.js",
+        "/_astro/builder.DmUIfhHL.js",
+        "/_astro/supabase.p5A7BH0c.js",
+        "/_astro/browser.DBhiw48S.js",
+        "/_astro/purify.es.BbpS7FRY.js",
+        "/_astro/tslib.es6.BgElsgfY.js"
+      ]
+    },
+    {
+      "build": "after",
+      "run": 1,
+      "expectedFixtureErrors": [
+        "Failed to load resource: the server responded with a status of 503 (Service Unavailable)"
+      ],
+      "usefulPaintMs": 955.6000000089407,
+      "firstContentfulPaintMs": 184,
+      "scriptTransferBytes": 340710,
+      "scripts": [
+        "/_astro/BuilderApp.YFbl2ns2.js",
+        "/_astro/client.Be3kcd1y.js",
+        "/_astro/rolldown-runtime.C0FnF6B9.js",
+        "/_astro/react.g9ENZcn2.js",
+        "/_astro/createLucideIcon.1T2UG7Mu.js",
+        "/_astro/ProjectsView.CDCs2m1v.js",
+        "/_astro/assets.C_ydOcN9.js",
+        "/_astro/arrow-right.BX-PG_b6.js",
+        "/_astro/sparkles.BZFGkVVM.js",
+        "/_astro/check.CPvAN0Z9.js",
+        "/_astro/PrivatePreviews.BYwXaJOp.js",
+        "/_astro/x.D4-UlOaF.js",
+        "/_astro/downloadText.DMrU4zT4.js",
+        "/_astro/jsx-runtime.BH9nBM82.js",
+        "/_astro/preload-helper.B3nfOi5I.js",
+        "/_astro/builder.DP05fG5F.js",
+        "/_astro/builderStatus.Bxwgod6V.js",
+        "/_astro/viewMode.vHssb3QM.js",
+        "/_astro/projectBackup.GpXcSl4C.js",
+        "/_astro/useWebsiteStatus.CdKxqhVw.js",
+        "/_astro/supabase.p5A7BH0c.js",
+        "/_astro/react-dom.DLJaPGyq.js",
+        "/_astro/browser.DBhiw48S.js",
+        "/_astro/tslib.es6.BgElsgfY.js",
+        "/_astro/dist.FG531kww.js",
+        "/_astro/es2015.cgmSLWSI.js",
+        "/_astro/purify.es.BbpS7FRY.js"
+      ]
+    },
+    {
+      "build": "after",
+      "run": 2,
+      "expectedFixtureErrors": [
+        "Failed to load resource: the server responded with a status of 503 (Service Unavailable)"
+      ],
+      "usefulPaintMs": 908.6000000089407,
+      "firstContentfulPaintMs": 184,
+      "scriptTransferBytes": 340710,
+      "scripts": [
+        "/_astro/BuilderApp.YFbl2ns2.js",
+        "/_astro/client.Be3kcd1y.js",
+        "/_astro/rolldown-runtime.C0FnF6B9.js",
+        "/_astro/react.g9ENZcn2.js",
+        "/_astro/createLucideIcon.1T2UG7Mu.js",
+        "/_astro/ProjectsView.CDCs2m1v.js",
+        "/_astro/assets.C_ydOcN9.js",
+        "/_astro/arrow-right.BX-PG_b6.js",
+        "/_astro/sparkles.BZFGkVVM.js",
+        "/_astro/check.CPvAN0Z9.js",
+        "/_astro/x.D4-UlOaF.js",
+        "/_astro/downloadText.DMrU4zT4.js",
+        "/_astro/PrivatePreviews.BYwXaJOp.js",
+        "/_astro/jsx-runtime.BH9nBM82.js",
+        "/_astro/preload-helper.B3nfOi5I.js",
+        "/_astro/builder.DP05fG5F.js",
+        "/_astro/supabase.p5A7BH0c.js",
+        "/_astro/projectBackup.GpXcSl4C.js",
+        "/_astro/builderStatus.Bxwgod6V.js",
+        "/_astro/viewMode.vHssb3QM.js",
+        "/_astro/useWebsiteStatus.CdKxqhVw.js",
+        "/_astro/react-dom.DLJaPGyq.js",
+        "/_astro/dist.FG531kww.js",
+        "/_astro/es2015.cgmSLWSI.js",
+        "/_astro/browser.DBhiw48S.js",
+        "/_astro/purify.es.BbpS7FRY.js",
+        "/_astro/tslib.es6.BgElsgfY.js"
+      ]
+    },
+    {
+      "build": "before",
+      "run": 2,
+      "expectedFixtureErrors": [
+        "Failed to load resource: the server responded with a status of 503 (Service Unavailable)"
+      ],
+      "usefulPaintMs": 1256.2000000029802,
+      "firstContentfulPaintMs": 176,
+      "scriptTransferBytes": 574052,
+      "scripts": [
+        "/_astro/BuilderApp.Do0drO8_.js",
+        "/_astro/client.Be3kcd1y.js",
+        "/_astro/rolldown-runtime.C0FnF6B9.js",
+        "/_astro/react.g9ENZcn2.js",
+        "/_astro/react-dom.DLJaPGyq.js",
+        "/_astro/createLucideIcon.1T2UG7Mu.js",
+        "/_astro/arrow-right.BX-PG_b6.js",
+        "/_astro/sparkles.BZFGkVVM.js",
+        "/_astro/circle-alert.BxN_7R64.js",
+        "/_astro/chevron-down.CpdEYF_5.js",
+        "/_astro/x.D4-UlOaF.js",
+        "/_astro/jsx-runtime.BH9nBM82.js",
+        "/_astro/preload-helper.B3nfOi5I.js",
+        "/_astro/dist.FG531kww.js",
+        "/_astro/chunk-Y2EFNT5P.C-wXPhxe.js",
+        "/_astro/chunk-K2LNXU54.DciRzuIO.js",
+        "/_astro/chunk-H635BA2V.BYUgdDZq.js",
+        "/_astro/chunk-67Y7M4OJ.WcP4UuLe.js",
+        "/_astro/chunk-4P4VZS4P.DmPH4fb5.js",
+        "/_astro/chunk-NJTGWYYH.nPfr5_CL.js",
+        "/_astro/chunk-GNR2HNTB.BC4iD99J.js",
+        "/_astro/index.module.DnrcZbt1.js",
+        "/_astro/builder.DmUIfhHL.js",
+        "/_astro/supabase.p5A7BH0c.js",
+        "/_astro/browser.DBhiw48S.js",
+        "/_astro/purify.es.BbpS7FRY.js",
+        "/_astro/tslib.es6.BgElsgfY.js"
+      ]
+    },
+    {
+      "build": "before",
+      "run": 3,
+      "expectedFixtureErrors": [
+        "Failed to load resource: the server responded with a status of 503 (Service Unavailable)"
+      ],
+      "usefulPaintMs": 1292.3999999910593,
+      "firstContentfulPaintMs": 180,
+      "scriptTransferBytes": 574052,
+      "scripts": [
+        "/_astro/BuilderApp.Do0drO8_.js",
+        "/_astro/client.Be3kcd1y.js",
+        "/_astro/rolldown-runtime.C0FnF6B9.js",
+        "/_astro/react.g9ENZcn2.js",
+        "/_astro/react-dom.DLJaPGyq.js",
+        "/_astro/createLucideIcon.1T2UG7Mu.js",
+        "/_astro/arrow-right.BX-PG_b6.js",
+        "/_astro/sparkles.BZFGkVVM.js",
+        "/_astro/circle-alert.BxN_7R64.js",
+        "/_astro/x.D4-UlOaF.js",
+        "/_astro/chevron-down.CpdEYF_5.js",
+        "/_astro/jsx-runtime.BH9nBM82.js",
+        "/_astro/preload-helper.B3nfOi5I.js",
+        "/_astro/dist.FG531kww.js",
+        "/_astro/chunk-Y2EFNT5P.C-wXPhxe.js",
+        "/_astro/chunk-K2LNXU54.DciRzuIO.js",
+        "/_astro/chunk-H635BA2V.BYUgdDZq.js",
+        "/_astro/chunk-67Y7M4OJ.WcP4UuLe.js",
+        "/_astro/chunk-4P4VZS4P.DmPH4fb5.js",
+        "/_astro/chunk-NJTGWYYH.nPfr5_CL.js",
+        "/_astro/chunk-GNR2HNTB.BC4iD99J.js",
+        "/_astro/index.module.DnrcZbt1.js",
+        "/_astro/builder.DmUIfhHL.js",
+        "/_astro/browser.DBhiw48S.js",
+        "/_astro/supabase.p5A7BH0c.js",
+        "/_astro/purify.es.BbpS7FRY.js",
+        "/_astro/tslib.es6.BgElsgfY.js"
+      ]
+    },
+    {
+      "build": "after",
+      "run": 3,
+      "expectedFixtureErrors": [
+        "Failed to load resource: the server responded with a status of 503 (Service Unavailable)"
+      ],
+      "usefulPaintMs": 926.6000000089407,
+      "firstContentfulPaintMs": 192,
+      "scriptTransferBytes": 340710,
+      "scripts": [
+        "/_astro/BuilderApp.YFbl2ns2.js",
+        "/_astro/client.Be3kcd1y.js",
+        "/_astro/rolldown-runtime.C0FnF6B9.js",
+        "/_astro/react.g9ENZcn2.js",
+        "/_astro/createLucideIcon.1T2UG7Mu.js",
+        "/_astro/ProjectsView.CDCs2m1v.js",
+        "/_astro/arrow-right.BX-PG_b6.js",
+        "/_astro/sparkles.BZFGkVVM.js",
+        "/_astro/check.CPvAN0Z9.js",
+        "/_astro/assets.C_ydOcN9.js",
+        "/_astro/downloadText.DMrU4zT4.js",
+        "/_astro/x.D4-UlOaF.js",
+        "/_astro/jsx-runtime.BH9nBM82.js",
+        "/_astro/preload-helper.B3nfOi5I.js",
+        "/_astro/builder.DP05fG5F.js",
+        "/_astro/PrivatePreviews.BYwXaJOp.js",
+        "/_astro/projectBackup.GpXcSl4C.js",
+        "/_astro/supabase.p5A7BH0c.js",
+        "/_astro/builderStatus.Bxwgod6V.js",
+        "/_astro/viewMode.vHssb3QM.js",
+        "/_astro/useWebsiteStatus.CdKxqhVw.js",
+        "/_astro/react-dom.DLJaPGyq.js",
+        "/_astro/dist.FG531kww.js",
+        "/_astro/es2015.cgmSLWSI.js",
+        "/_astro/browser.DBhiw48S.js",
+        "/_astro/purify.es.BbpS7FRY.js",
+        "/_astro/tslib.es6.BgElsgfY.js"
+      ]
+    },
+    {
+      "build": "after",
+      "run": 4,
+      "expectedFixtureErrors": [
+        "Failed to load resource: the server responded with a status of 503 (Service Unavailable)"
+      ],
+      "usefulPaintMs": 926.3000000119209,
+      "firstContentfulPaintMs": 188,
+      "scriptTransferBytes": 340710,
+      "scripts": [
+        "/_astro/BuilderApp.YFbl2ns2.js",
+        "/_astro/client.Be3kcd1y.js",
+        "/_astro/rolldown-runtime.C0FnF6B9.js",
+        "/_astro/react.g9ENZcn2.js",
+        "/_astro/createLucideIcon.1T2UG7Mu.js",
+        "/_astro/ProjectsView.CDCs2m1v.js",
+        "/_astro/assets.C_ydOcN9.js",
+        "/_astro/arrow-right.BX-PG_b6.js",
+        "/_astro/sparkles.BZFGkVVM.js",
+        "/_astro/check.CPvAN0Z9.js",
+        "/_astro/downloadText.DMrU4zT4.js",
+        "/_astro/PrivatePreviews.BYwXaJOp.js",
+        "/_astro/x.D4-UlOaF.js",
+        "/_astro/jsx-runtime.BH9nBM82.js",
+        "/_astro/preload-helper.B3nfOi5I.js",
+        "/_astro/builder.DP05fG5F.js",
+        "/_astro/supabase.p5A7BH0c.js",
+        "/_astro/projectBackup.GpXcSl4C.js",
+        "/_astro/builderStatus.Bxwgod6V.js",
+        "/_astro/viewMode.vHssb3QM.js",
+        "/_astro/useWebsiteStatus.CdKxqhVw.js",
+        "/_astro/react-dom.DLJaPGyq.js",
+        "/_astro/tslib.es6.BgElsgfY.js",
+        "/_astro/browser.DBhiw48S.js",
+        "/_astro/dist.FG531kww.js",
+        "/_astro/es2015.cgmSLWSI.js",
+        "/_astro/purify.es.BbpS7FRY.js"
+      ]
+    },
+    {
+      "build": "before",
+      "run": 4,
+      "expectedFixtureErrors": [
+        "Failed to load resource: the server responded with a status of 503 (Service Unavailable)"
+      ],
+      "usefulPaintMs": 1254.7000000029802,
+      "firstContentfulPaintMs": 188,
+      "scriptTransferBytes": 574052,
+      "scripts": [
+        "/_astro/BuilderApp.Do0drO8_.js",
+        "/_astro/client.Be3kcd1y.js",
+        "/_astro/rolldown-runtime.C0FnF6B9.js",
+        "/_astro/react.g9ENZcn2.js",
+        "/_astro/react-dom.DLJaPGyq.js",
+        "/_astro/createLucideIcon.1T2UG7Mu.js",
+        "/_astro/arrow-right.BX-PG_b6.js",
+        "/_astro/sparkles.BZFGkVVM.js",
+        "/_astro/circle-alert.BxN_7R64.js",
+        "/_astro/chevron-down.CpdEYF_5.js",
+        "/_astro/jsx-runtime.BH9nBM82.js",
+        "/_astro/x.D4-UlOaF.js",
+        "/_astro/preload-helper.B3nfOi5I.js",
+        "/_astro/dist.FG531kww.js",
+        "/_astro/chunk-K2LNXU54.DciRzuIO.js",
+        "/_astro/chunk-Y2EFNT5P.C-wXPhxe.js",
+        "/_astro/chunk-H635BA2V.BYUgdDZq.js",
+        "/_astro/chunk-67Y7M4OJ.WcP4UuLe.js",
+        "/_astro/chunk-4P4VZS4P.DmPH4fb5.js",
+        "/_astro/chunk-NJTGWYYH.nPfr5_CL.js",
+        "/_astro/chunk-GNR2HNTB.BC4iD99J.js",
+        "/_astro/index.module.DnrcZbt1.js",
+        "/_astro/builder.DmUIfhHL.js",
+        "/_astro/supabase.p5A7BH0c.js",
+        "/_astro/browser.DBhiw48S.js",
+        "/_astro/purify.es.BbpS7FRY.js",
+        "/_astro/tslib.es6.BgElsgfY.js"
+      ]
+    },
+    {
+      "build": "before",
+      "run": 5,
+      "expectedFixtureErrors": [
+        "Failed to load resource: the server responded with a status of 503 (Service Unavailable)"
+      ],
+      "usefulPaintMs": 1296.0999999940395,
+      "firstContentfulPaintMs": 188,
+      "scriptTransferBytes": 574052,
+      "scripts": [
+        "/_astro/BuilderApp.Do0drO8_.js",
+        "/_astro/client.Be3kcd1y.js",
+        "/_astro/rolldown-runtime.C0FnF6B9.js",
+        "/_astro/react.g9ENZcn2.js",
+        "/_astro/react-dom.DLJaPGyq.js",
+        "/_astro/createLucideIcon.1T2UG7Mu.js",
+        "/_astro/arrow-right.BX-PG_b6.js",
+        "/_astro/sparkles.BZFGkVVM.js",
+        "/_astro/circle-alert.BxN_7R64.js",
+        "/_astro/chevron-down.CpdEYF_5.js",
+        "/_astro/x.D4-UlOaF.js",
+        "/_astro/jsx-runtime.BH9nBM82.js",
+        "/_astro/preload-helper.B3nfOi5I.js",
+        "/_astro/dist.FG531kww.js",
+        "/_astro/chunk-Y2EFNT5P.C-wXPhxe.js",
+        "/_astro/chunk-K2LNXU54.DciRzuIO.js",
+        "/_astro/chunk-H635BA2V.BYUgdDZq.js",
+        "/_astro/chunk-67Y7M4OJ.WcP4UuLe.js",
+        "/_astro/chunk-4P4VZS4P.DmPH4fb5.js",
+        "/_astro/chunk-NJTGWYYH.nPfr5_CL.js",
+        "/_astro/chunk-GNR2HNTB.BC4iD99J.js",
+        "/_astro/builder.DmUIfhHL.js",
+        "/_astro/index.module.DnrcZbt1.js",
+        "/_astro/supabase.p5A7BH0c.js",
+        "/_astro/browser.DBhiw48S.js",
+        "/_astro/purify.es.BbpS7FRY.js",
+        "/_astro/tslib.es6.BgElsgfY.js"
+      ]
+    },
+    {
+      "build": "after",
+      "run": 5,
+      "expectedFixtureErrors": [
+        "Failed to load resource: the server responded with a status of 503 (Service Unavailable)"
+      ],
+      "usefulPaintMs": 937.7999999970198,
+      "firstContentfulPaintMs": 180,
+      "scriptTransferBytes": 340710,
+      "scripts": [
+        "/_astro/BuilderApp.YFbl2ns2.js",
+        "/_astro/client.Be3kcd1y.js",
+        "/_astro/rolldown-runtime.C0FnF6B9.js",
+        "/_astro/react.g9ENZcn2.js",
+        "/_astro/createLucideIcon.1T2UG7Mu.js",
+        "/_astro/ProjectsView.CDCs2m1v.js",
+        "/_astro/arrow-right.BX-PG_b6.js",
+        "/_astro/assets.C_ydOcN9.js",
+        "/_astro/sparkles.BZFGkVVM.js",
+        "/_astro/check.CPvAN0Z9.js",
+        "/_astro/PrivatePreviews.BYwXaJOp.js",
+        "/_astro/downloadText.DMrU4zT4.js",
+        "/_astro/x.D4-UlOaF.js",
+        "/_astro/jsx-runtime.BH9nBM82.js",
+        "/_astro/preload-helper.B3nfOi5I.js",
+        "/_astro/builder.DP05fG5F.js",
+        "/_astro/supabase.p5A7BH0c.js",
+        "/_astro/projectBackup.GpXcSl4C.js",
+        "/_astro/builderStatus.Bxwgod6V.js",
+        "/_astro/useWebsiteStatus.CdKxqhVw.js",
+        "/_astro/viewMode.vHssb3QM.js",
+        "/_astro/react-dom.DLJaPGyq.js",
+        "/_astro/dist.FG531kww.js",
+        "/_astro/es2015.cgmSLWSI.js",
+        "/_astro/browser.DBhiw48S.js",
+        "/_astro/purify.es.BbpS7FRY.js",
+        "/_astro/tslib.es6.BgElsgfY.js"
+      ]
+    }
+  ]
+}

@@ -14,6 +14,7 @@ const coreJourneys = [
   "projects",
   "editor",
   "first-run",
+  "feature-loading",
   "page-templates",
   "starter-site",
   "site-canvas",

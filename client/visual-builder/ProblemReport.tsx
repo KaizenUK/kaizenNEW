@@ -4,7 +4,7 @@ import { repositoryConnection } from "./repositoryConnection";
 import { diagnosticPage, lastDiagnosticError } from "./diagnostics";
 import { activeProjectId } from "./projectStorage";
 import { localMode } from "./storage";
-import { downloadText } from "./AssetLibrary";
+import { downloadText } from "./downloadText";
 import { Card, Notice } from "./shell";
 
 export default function ProblemReport() {
