@@ -1,14 +1,13 @@
 import React, { useMemo, useState, type ReactNode } from "react";
-import {
-  ArrowRight,
-  LayoutTemplate,
-  Plus,
-  Search,
-  Sparkles,
-} from "lucide-react";
-import type { BuilderPage, Workspace } from "../../shared/visualBuilder";
+import { ArrowRight, LayoutTemplate, Plus, Search } from "lucide-react";
+import type {
+  BuilderPage,
+  PageDocument,
+  Workspace,
+} from "../../shared/visualBuilder";
 import { Head, Notice, Pill, formatWhen } from "./shell";
-import { ProjectName } from "./activeProject";
+import { ProjectName, useActiveProject } from "./activeProject";
+import PageTemplateGallery from "./PageTemplateGallery";
 import PageThumbnail from "./PageThumbnail";
 import { useProjectCapabilities } from "./activeProject";
 import { builderStatuses, savedPageStatus } from "./builderStatus";
@@ -53,6 +52,8 @@ export default function PagesView({
   error,
   creating,
   onCreate,
+  onUseTemplate,
+  websitePaths,
   onOpen,
   onRetry,
   login,
@@ -66,11 +67,14 @@ export default function PagesView({
   error: string;
   creating: boolean;
   onCreate: (template: boolean) => void;
+  onUseTemplate: (pageId: string, document: PageDocument) => Promise<void>;
+  websitePaths?: string[];
   onOpen: (page: BuilderPage) => void;
   onRetry: () => void;
   login?: ReactNode;
 }) {
   const capabilities = useProjectCapabilities();
+  const { project } = useActiveProject();
   const localPreview = localMode && capabilities.publishPath === "github";
   const [filter, setFilter] = useState<Filter>("all");
   const [sort, setSort] = useState<Sort>("updated");
@@ -186,14 +190,14 @@ export default function PagesView({
                   >
                     <Plus size={18} /> Blank page
                   </button>
-                  <button
-                    type="button"
-                    className="builder-banner-secondary"
+                  <PageTemplateGallery
+                    workspace={workspace}
+                    siteName={project?.name}
+                    reserveExisting={capabilities.hasInventory}
+                    websitePaths={websitePaths}
                     disabled={creating}
-                    onClick={() => onCreate(true)}
-                  >
-                    <Sparkles size={18} /> Use starter template
-                  </button>
+                    onUse={onUseTemplate}
+                  />
                 </div>
               </div>
               <Orb className="builder-orb-large" />
@@ -289,9 +293,7 @@ export default function PagesView({
                 <div className="builder-empty-pages">
                   <LayoutTemplate size={28} aria-hidden="true" />
                   <strong>No pages yet</strong>
-                  <span>
-                    Add a blank page or use the starter template above.
-                  </span>
+                  <span>Add a blank page or browse the templates above.</span>
                 </div>
               )}
               {pages.length > 0 && !visible.length && (

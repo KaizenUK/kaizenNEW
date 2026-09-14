@@ -13,7 +13,7 @@ The builder’s Learn more links render the marked sections below. These short s
 <!-- builder-help:pages -->
 ## Pages
 
-Open a page from the list to edit it. Choose **Blank page** or **Use starter template** to add one; review its title and page address before publishing.
+Open a page from the list to edit it. Choose **Blank page** or **Browse templates**. Preview a layout, then choose **Use template** to create an editable draft.
 
 ### Start here
 

@@ -127,7 +127,11 @@ test("interactive blocks work in preview and publication, including keyboard nav
 async function createPage(page: Page) {
   await page.goto("/builder/");
   await page
-    .getByRole("button", { name: "Use starter template", exact: true })
+    .getByRole("button", { name: "Browse templates", exact: true })
+    .click();
+  await page
+    .getByRole("article", { name: "Home template", exact: true })
+    .getByRole("button", { name: "Use template", exact: true })
     .click();
   await expect(page.locator("#preview-frame")).toBeVisible();
   return page.frameLocator("#preview-frame");
@@ -195,10 +199,9 @@ test("responsive styles survive autosave, reopening, preview and local publicati
   await expect(frame.locator(".kb-hero")).toHaveCSS("padding-bottom", "57px");
   await page.keyboard.press("Control+Shift+z");
   await expect(frame.locator(".kb-hero")).toHaveCSS("padding-bottom", "20px");
-  await expect(page.locator(".builder-save-status")).toContainText(
-    "Saved",
-    { timeout: 20_000 },
-  );
+  await expect(page.locator(".builder-save-status")).toContainText("Saved", {
+    timeout: 20_000,
+  });
   const slug = (
     await page.locator(".builder-canvas-toolbar .builder-hint").innerText()
   ).trim();
@@ -240,13 +243,11 @@ test("responsive styles survive autosave, reopening, preview and local publicati
   await page.getByRole("button", { name: "Revisions", exact: true }).click();
   await page
     .locator(".builder-revision")
-    .filter({ hasText: "Created page" })
+    .filter({ hasText: "Created Home from a template" })
     .getByRole("button", { name: "Restore as draft" })
     .click();
   await expect(frame.locator(".kb-hero")).toHaveCSS("padding-left", "48px");
-  await expect(page.locator(".builder-save-status")).toContainText(
-    "Saved",
-  );
+  await expect(page.locator(".builder-save-status")).toContainText("Saved");
   await live.setViewportSize({ width: 1280, height: 900 });
   await live.reload();
   await expect(live.locator(".kb-hero")).toHaveCSS("padding-left", "100px");
@@ -437,9 +438,7 @@ test("rich text supports inline formatting and links in preview", async ({
     "/contact/",
   );
   await expect(frame.locator(".kb-richtext a")).toHaveText("chapter");
-  await expect(page.locator(".builder-save-status")).toContainText(
-    "Saved",
-  );
+  await expect(page.locator(".builder-save-status")).toContainText("Saved");
   const slug = (
     await page.locator(".builder-canvas-toolbar .builder-hint").innerText()
   ).trim();

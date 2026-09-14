@@ -135,7 +135,11 @@ export function resolveSiteDocument(
   document: PageDocument,
   design?: SiteDesign | null,
 ): PageDocument {
-  if (!usesSite(document)) return clone(document);
+  if (!usesSite(document)) {
+    const result = clone(document);
+    delete result.site;
+    return result;
+  }
   if (!design)
     throw new Error(
       "Publish your site design before publishing a page that uses shared content.",

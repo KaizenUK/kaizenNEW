@@ -19,6 +19,7 @@ import {
 } from "../../shared/builderSite";
 import { newDocument, starterBlocks } from "./starters";
 import PublishedPage from "./Renderer";
+import { validatePreviewDocument } from "../../shared/builderPreviews";
 
 function fixture(): Workspace {
   const design = initialSiteDesign();
@@ -49,6 +50,19 @@ const versions = (workspace: Workspace) =>
   Object.fromEntries(workspace.pages.map((page) => [page.id, page.version]));
 
 describe("shared site design", () => {
+  it.each([{ useTheme: false }, {}])(
+    "removes inactive site metadata before preview or publication without changing the saved page (%j)",
+    (site) => {
+      const document = newDocument("Independent page", "independent");
+      document.site = site;
+      const original = clone(document);
+      const resolved = resolveSiteDocument(document);
+      expect(resolved.site).toBeUndefined();
+      expect(validatePreviewDocument(resolved)).toEqual(resolved);
+      expect(assertPageSitePublished(document)).toEqual(resolved);
+      expect(document).toEqual(original);
+    },
+  );
   it("updates three linked pages and preserves explicit and empty instance overrides", () => {
     const workspace = fixture();
     const text = workspace.site.draft.components[1].blocks[0].props.children[0];

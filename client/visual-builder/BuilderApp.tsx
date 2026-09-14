@@ -53,6 +53,7 @@ import {
   useProjectCapabilities,
 } from "./activeProject";
 import FirstRunCard from "./FirstRunCard";
+import { saveTemplatePage } from "./templateCreation";
 import { useFirstRun } from "./useFirstRun";
 import PagesView, { pageStatus } from "./PagesView";
 import { editorStatus } from "./builderStatus";
@@ -575,6 +576,27 @@ function BuilderWorkspace({ inventory }: { inventory?: PageInventory } = {}) {
           error={error}
           creating={creating}
           onCreate={(template) => void create(template)}
+          websitePaths={
+            capabilities.hasInventory
+              ? inventory?.pages.map((page) => page.path)
+              : undefined
+          }
+          onUseTemplate={async (id, document) => {
+            const sequence = loadSequence.current;
+            setCreating(true);
+            try {
+              const page = await saveTemplatePage(storage, id, document);
+              const fresh = await storage.load();
+              if (sequence !== loadSequence.current) return;
+              replaceWorkspace(fresh);
+              setFirstRunPreview(undefined);
+              setActive(
+                fresh.pages.find((item) => item.id === page.id) || page,
+              );
+            } finally {
+              setCreating(false);
+            }
+          }}
           onOpen={setActive}
           onRetry={() => void reload()}
           sitePages={
