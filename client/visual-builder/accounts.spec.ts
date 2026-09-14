@@ -39,8 +39,20 @@ function fixture() {
       error: null,
     };
   });
+  const limitRpc = vi.fn(
+    async (_name: string, _args: Record<string, unknown>) => ({
+      data: { allowed: true, retryAfter: 0 },
+      error: null as { code?: string; status?: number } | null,
+    }),
+  );
   const handler = createAccountHandler({
-    service: { auth: { getUser, admin: { deleteUser } }, rpc },
+    service: {
+      auth: { getUser, admin: { deleteUser } },
+      rpc: (name, args) =>
+        name === "builder_consume_function_limit"
+          ? limitRpc(name, args)
+          : rpc(name, args),
+    },
     headers: () => new Headers(),
     originAllowed: (r) =>
       [null, "https://builder.example.test"].includes(r.headers.get("origin")),
@@ -66,7 +78,7 @@ function fixture() {
           : { body: options.raw ?? JSON.stringify(body) }),
       }),
     );
-  return { state, getUser, deleteUser, rpc, send };
+  return { state, getUser, deleteUser, rpc, limitRpc, send };
 }
 it("requests and reads only the verified caller's account, ignoring caller-supplied identities", async () => {
   const f = fixture();
@@ -262,4 +274,54 @@ it("refuses malformed prepared identities and hides upstream failures", async ()
   expect(await (await f.send()).text()).not.toContain(
     "private upstream detail",
   );
+});
+
+it("stops at global limits before Auth and at verified-user limits before account changes", async () => {
+  const global = fixture();
+  global.limitRpc.mockResolvedValueOnce({
+    data: { allowed: false, retryAfter: 23 },
+    error: null,
+  });
+  expect((await global.send()).status).toBe(429);
+  expect(global.getUser).not.toHaveBeenCalled();
+  expect(global.rpc).not.toHaveBeenCalled();
+  const user = fixture();
+  user.limitRpc.mockResolvedValueOnce({
+    data: { allowed: true, retryAfter: 0 },
+    error: null,
+  });
+  user.limitRpc.mockResolvedValueOnce({
+    data: { allowed: false, retryAfter: 9 },
+    error: null,
+  });
+  expect(
+    (
+      await user.send({
+        action: "request",
+        confirmation: "DELETE MY ACCOUNT",
+        actor: person,
+      })
+    ).status,
+  ).toBe(429);
+  expect(user.limitRpc.mock.calls.map((call) => call[1].actor_id)).toEqual([
+    null,
+    owner,
+  ]);
+  expect(user.rpc).not.toHaveBeenCalled();
+  expect(user.deleteUser).not.toHaveBeenCalled();
+});
+it("a failed request-limit check cannot delete an account", async () => {
+  const f = fixture();
+  f.limitRpc.mockRejectedValueOnce(new Error("fixture limiter outage"));
+  expect(
+    (
+      await f.send({
+        action: "finish",
+        requestId,
+        confirmation: "CONFIRM DELETION",
+      })
+    ).status,
+  ).toBe(503);
+  expect(f.getUser).not.toHaveBeenCalled();
+  expect(f.deleteUser).not.toHaveBeenCalled();
 });

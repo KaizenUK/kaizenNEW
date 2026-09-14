@@ -2,7 +2,15 @@
 import { spawn, type ChildProcess } from "node:child_process";
 import { createHash, randomUUID, randomBytes } from "node:crypto";
 import { createServer, type Server } from "node:http";
-import { lstat, readFile, readdir, mkdir, rename } from "node:fs/promises";
+import {
+  lstat,
+  readFile,
+  readdir,
+  mkdir,
+  rename,
+  writeFile,
+} from "node:fs/promises";
+import type { SandboxBuild, SandboxCommand } from "./builder-build-sandbox";
 import path from "node:path";
 import { inspectRepository } from "./builder-repository";
 import type { SourceInspection } from "../shared/builderSourceEditing";
@@ -49,6 +57,7 @@ type Running = {
   selection?: { nonce: string; path: string; script: string };
   frames?: Map<string, { path: string; script: string; origin: string }>;
   child?: ChildProcess;
+  buildAbort?: AbortController;
   server?: Server;
   done?: Promise<void>;
   cancel?: string;
@@ -261,6 +270,10 @@ export class RepositoryRunner {
       ) => Promise<() => Promise<void>>;
       beforeBuild?: (job: BuildJob, fingerprint: string) => Promise<void>;
       afterBuild?: (job: BuildJob) => Promise<void>;
+      isolatedBuild?: {
+        command: () => Promise<SandboxCommand>;
+        run: (input: SandboxBuild) => Promise<Map<string, Buffer>>;
+      };
     } = {},
   ) {}
   async prepare(root: string, projectId: string): Promise<BuildPlan> {
@@ -279,7 +292,8 @@ export class RepositoryRunner {
       throw new Error(
         "Add a build script to package.json before using the companion.",
       );
-    const command = await packageCommand();
+    const command = await (this.options.isolatedBuild?.command() ??
+      packageCommand());
     if ((await sourceFingerprint(root)) !== fingerprint)
       throw new Error(
         "Repository files changed during the command review. Review the build again.",
@@ -456,6 +470,7 @@ export class RepositoryRunner {
     const running = this.require(id, projectId);
     if (running.value.status === "building") {
       running.cancel = "Build cancelled.";
+      running.buildAbort?.abort(new Error(running.cancel));
       if (running.child) await stopChild(running.child);
       await running.done;
     }
@@ -493,6 +508,7 @@ export class RepositoryRunner {
       recorded = true;
       stopStorageWatch = await this.options.watchStorage?.(async (error) => {
         running.cancel = error.message;
+        running.buildAbort?.abort(error);
         if (running.child) await stopChild(running.child);
       });
       const output = await realDirectory(job.root, "dist");
@@ -504,37 +520,74 @@ export class RepositoryRunner {
       }
       prepared = true;
       if (running.cancel) throw new Error(running.cancel);
-      const code = await new Promise<number | null>((resolve, reject) => {
-        // No input is interpolated into a shell command. The reviewed package manager runs its normal lifecycle scripts.
-        const child = spawn(process.execPath, [command.cli, "run", "build"], {
-          cwd: job.root,
-          windowsHide: true,
-          detached: process.platform !== "win32",
-          stdio: ["ignore", "pipe", "pipe"],
-          env: {
-            ...(this.options.environment || process.env),
-            FORCE_COLOR: "0",
-            CI: "1",
-          },
-        });
-        running.child = child;
+      let code: number | null;
+      if (this.options.isolatedBuild) {
+        const controller = new AbortController();
+        running.buildAbort = controller;
         const timeout = setTimeout(() => {
           running.cancel = "Build exceeded the five-minute time limit.";
-          void stopChild(child).catch((error) =>
-            log(`\nUnable to stop build: ${error.message}`),
-          );
+          controller.abort(new Error(running.cancel));
         }, this.timeoutMs);
-        child.stdout?.on("data", log);
-        child.stderr?.on("data", log);
-        child.once("error", (error) => {
+        try {
+          const files = await this.options.isolatedBuild.run({
+            id: job.id,
+            root: job.root,
+            command,
+            signal: controller.signal,
+            log,
+          });
+          if (running.cancel) throw new Error(running.cancel);
+          await mkdir(output);
+          for (const [name, bytes] of files) {
+            if (running.cancel) throw new Error(running.cancel);
+            const relative = name.slice(1);
+            const parent = path.posix.dirname(relative);
+            if (parent !== ".")
+              await mkdir(await realDirectory(job.root, `dist/${parent}`), {
+                recursive: true,
+              });
+            await writeFile(path.join(output, relative), bytes, {
+              flag: "wx",
+              mode: 0o600,
+            });
+          }
+          code = 0;
+        } finally {
           clearTimeout(timeout);
-          reject(error);
+          running.buildAbort = undefined;
+        }
+      } else
+        code = await new Promise<number | null>((resolve, reject) => {
+          // No input is interpolated into a shell command. The reviewed package manager runs its normal lifecycle scripts.
+          const child = spawn(process.execPath, [command.cli, "run", "build"], {
+            cwd: job.root,
+            windowsHide: true,
+            detached: process.platform !== "win32",
+            stdio: ["ignore", "pipe", "pipe"],
+            env: {
+              ...(this.options.environment || process.env),
+              FORCE_COLOR: "0",
+              CI: "1",
+            },
+          });
+          running.child = child;
+          const timeout = setTimeout(() => {
+            running.cancel = "Build exceeded the five-minute time limit.";
+            void stopChild(child).catch((error) =>
+              log(`\nUnable to stop build: ${error.message}`),
+            );
+          }, this.timeoutMs);
+          child.stdout?.on("data", log);
+          child.stderr?.on("data", log);
+          child.once("error", (error) => {
+            clearTimeout(timeout);
+            reject(error);
+          });
+          child.once("close", (code) => {
+            clearTimeout(timeout);
+            resolve(code);
+          });
         });
-        child.once("close", (code) => {
-          clearTimeout(timeout);
-          resolve(code);
-        });
-      });
       running.child = undefined;
       const stopWatch = stopStorageWatch;
       stopStorageWatch = undefined;
@@ -810,6 +863,7 @@ export class RepositoryRunner {
         this.closePreview(running);
         if (running.value.status === "building") {
           running.cancel = "Companion stopped.";
+          running.buildAbort?.abort(new Error(running.cancel));
           if (running.child) await stopChild(running.child);
           await running.done;
         }

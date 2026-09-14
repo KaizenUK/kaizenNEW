@@ -49,9 +49,15 @@ on:
       - "supabase/functions/_shared/githubPublication.ts"
       - "supabase/functions/_shared/clientDiagnostics.ts"
       - "supabase/functions/_shared/editorAuth.ts"
+      - "supabase/functions/_shared/functionLimits.ts"
+      - "supabase/functions/_shared/requestBody.ts"
       - "public/builder-samples/**"
       - "scripts/builder-local.ts"
       - "scripts/builder-hosted-*.ts"
+      - "scripts/builder-build-*.ts"
+      - "scripts/builder-build-*.py"
+      - "scripts/prepare-builder-isolation-check.mjs"
+      - "scripts/check-new-secrets.py"
       - "scripts/builder-account-delete.ts"
       - "scripts/builder-client-publisher.ts"
       - "scripts/builder-client-worker.ts"
@@ -90,6 +96,7 @@ on:
       - "src/lib/builderPageInventory.ts"
       - "patches/**"
       - "tests/builder/**"
+      - "tests/functions/**"
       - "playwright.builder.config.ts"
       - "vitest.config.ts"
       - "astro.config.mjs"
@@ -108,15 +115,36 @@ jobs:
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Install the pinned secret checker
+        run: |
+          python3 scripts/check-new-secrets.py --install "$RUNNER_TEMP/kaizen-gitleaks"
+          echo "GITLEAKS_BINARY=$RUNNER_TEMP/kaizen-gitleaks/gitleaks" >> "$GITHUB_ENV"
+      - name: Check only new credentials and private files
+        env:
+          SECURITY_BASE: ${{ github.event.pull_request.base.sha }}
+        run: |
+          security_base="${SECURITY_BASE:-$(git rev-parse HEAD^)}"
+          python3 tests/deploy/new-secrets.py
+          python3 scripts/check-new-secrets.py "$security_base"
       - uses: actions/setup-node@v4
         with:
           node-version: 22
       - run: corepack enable
       - run: pnpm install --frozen-lockfile
+      - name: Audit dependencies (fail on high or critical advisories)
+        run: |
+          pnpm audit --audit-level high
+          pnpm --dir apps/studio audit --audit-level high
       - uses: denoland/setup-deno@v2
         with:
           deno-version: v2.x
-      - run: deno check --config supabase/functions/builder-projects/deno.json supabase/functions/builder-projects/index.ts supabase/functions/builder-publish/index.ts supabase/functions/builder-contact/index.ts supabase/functions/builder-content/index.ts supabase/functions/builder-invite/index.ts supabase/functions/builder-account/index.ts
+      - run: deno check --lock="$RUNNER_TEMP/builder-functions.lock" --config supabase/functions/builder-projects/deno.json supabase/functions/builder-projects/index.ts supabase/functions/builder-publish/index.ts supabase/functions/builder-contact/index.ts supabase/functions/builder-content/index.ts supabase/functions/builder-invite/index.ts supabase/functions/builder-account/index.ts
+      - name: Audit the actual function dependency graph
+        run: deno audit --lock="$RUNNER_TEMP/builder-functions.lock" --level high
+      - name: Check actual function request boundaries with fixture responses
+        run: deno test --lock="$RUNNER_TEMP/builder-functions.lock" --config supabase/functions/builder-projects/deno.json --allow-read --allow-env tests/functions/
       - run: pnpm typecheck
       - name: Keep server credentials out of the Studio build
         run: |
@@ -150,10 +178,28 @@ jobs:
       - name: Verify release activation and rollback with Nginx
         run: |
           sudo apt-get update
-          sudo apt-get install -y nginx
+          sudo apt-get install -y nginx bubblewrap
           KAIZEN_NGINX_BINARY=nginx pnpm test client/visual-builder/client-publication-database.spec.ts
           node tests/builder/verify-releases.mjs
           node tests/builder/verify-client-releases.mjs "$(cat test-results/astro-integration-fixture-path.txt)" test-results/export-project
+      - name: Verify client builds in real Linux namespaces and cgroups
+        run: |
+          node scripts/prepare-builder-isolation-check.mjs "$RUNNER_TEMP/kaizen-build-isolation-check"
+          sudo install -d -m 0755 /var/lib/kaizen-build-isolation-check
+          sudo install -m 0644 "$RUNNER_TEMP/kaizen-build-isolation-check/verify.mjs" "$RUNNER_TEMP/kaizen-build-isolation-check/builder-build-payload.py" /var/lib/kaizen-build-isolation-check/
+          astro_fixture="$(cat test-results/astro-integration-fixture-path.txt)"
+          sudo cp -a "$astro_fixture/node_modules" /var/lib/kaizen-build-isolation-check/dependencies
+          isolation_manager="$(node -p 'require("node:path").join(require("node:path").dirname(require("node:path").dirname(process.execPath)),"lib/node_modules/npm/bin/npm-cli.js")')"
+          sudo systemd-run --unit=kaizen-build-isolation-check --wait --pipe --collect \
+            -p User="$(id -un)" -p NoNewPrivileges=yes -p PrivateTmp=yes -p PrivateDevices=yes \
+            -p ProtectSystem=strict -p ProtectHome=yes -p ProtectKernelTunables=no \
+            -p ProtectKernelModules=yes -p ProtectControlGroups=yes -p RestrictSUIDSGID=yes \
+            -p LockPersonality=yes -p CapabilityBoundingSet= -p Delegate="cpu memory pids" \
+            -p DelegateSubgroup=supervisor \
+            -p ReadWritePaths=/sys/fs/cgroup/system.slice/kaizen-build-isolation-check.service \
+            --setenv=KAIZEN_SANDBOX_MANAGER="$isolation_manager" \
+            --setenv=KAIZEN_SANDBOX_DEPENDENCIES=/var/lib/kaizen-build-isolation-check/dependencies \
+            "$(command -v node)" /var/lib/kaizen-build-isolation-check/verify.mjs
       - run: pnpm test:builder:browser --project=chromium
       - name: Exercise the hosted repository transport
         run: pnpm test:builder:browser tests/builder/hosted-repository.spec.ts tests/builder/site-*.spec.ts --project=chromium

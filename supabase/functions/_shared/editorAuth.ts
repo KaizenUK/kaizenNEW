@@ -101,7 +101,7 @@ export function getCorsHeaders(request: Request): Headers {
 
   headers.set(
     "Access-Control-Allow-Headers",
-    "content-type, authorization, x-forwarded-proto",
+    "content-type, authorization, apikey, x-client-info, x-forwarded-proto",
   );
   headers.set("Access-Control-Allow-Methods", "GET,POST,OPTIONS");
   headers.set("Cache-Control", "no-store");

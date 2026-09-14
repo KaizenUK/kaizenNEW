@@ -30,8 +30,20 @@ function fixture() {
     data: name === "builder_prepare_invitation" ? record : (true as any),
     error: null as any,
   }));
+  const limitRpc = vi.fn(
+    async (_name: string, _args: Record<string, unknown>) => ({
+      data: { allowed: true, retryAfter: 0 },
+      error: null as { code?: string; status?: number } | null,
+    }),
+  );
   const handler = createInvitationHandler({
-    service: { auth: { getUser, admin: { inviteUserByEmail: invite } }, rpc },
+    service: {
+      auth: { getUser, admin: { inviteUserByEmail: invite } },
+      rpc: (name, args) =>
+        name === "builder_consume_function_limit"
+          ? limitRpc(name, args)
+          : rpc(name, args),
+    },
     redirectOrigin: "https://builder.example.test",
     headers: () => new Headers(),
     originAllowed: (req) =>
@@ -61,7 +73,7 @@ function fixture() {
           : { body: options.raw ?? JSON.stringify(body) }),
       }),
     );
-  return { record, getUser, invite, rpc, request };
+  return { record, getUser, invite, rpc, limitRpc, request };
 }
 describe("owner invitation endpoint", () => {
   it("authenticates first, fixes redirect/metadata and creates only the returned email identity", async () => {
@@ -282,4 +294,31 @@ describe("owner invitation endpoint", () => {
     ).toBe(415);
     expect(f.rpc).not.toHaveBeenCalled();
   });
+});
+
+it("limits invitation attempts before Auth or sending email using only the verified owner", async () => {
+  const global = fixture();
+  global.limitRpc.mockResolvedValueOnce({
+    data: { allowed: false, retryAfter: 15 },
+    error: null,
+  });
+  expect((await global.request()).status).toBe(429);
+  expect(global.getUser).not.toHaveBeenCalled();
+  expect(global.invite).not.toHaveBeenCalled();
+  const user = fixture();
+  user.limitRpc.mockResolvedValueOnce({
+    data: { allowed: true, retryAfter: 0 },
+    error: null,
+  });
+  user.limitRpc.mockResolvedValueOnce({
+    data: { allowed: false, retryAfter: 8 },
+    error: null,
+  });
+  expect((await user.request({ ...input, actor: member })).status).toBe(429);
+  expect(user.limitRpc.mock.calls.map((call) => call[1].actor_id)).toEqual([
+    null,
+    owner,
+  ]);
+  expect(user.rpc).not.toHaveBeenCalled();
+  expect(user.invite).not.toHaveBeenCalled();
 });

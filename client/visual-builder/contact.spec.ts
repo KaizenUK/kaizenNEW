@@ -90,4 +90,34 @@ describe("builder contact receiver", () => {
     expect(limited.status).toBe(429);
     expect(limited.headers.get("retry-after")).toBe("600");
   });
+  it("applies the public request limit before reading or saving a message", async () => {
+    const submit = vi.fn();
+    const beforeRead = vi.fn(async (headers: Headers) => {
+      const limited = new Headers(headers);
+      limited.set("Retry-After", "17");
+      return new Response("Too many requests", {
+        status: 429,
+        headers: limited,
+      });
+    });
+    const input = request(record());
+    const result = await handleContactRequest(input, {
+      allowedOrigins: ["https://example.org"],
+      submit,
+      beforeRead,
+    });
+    expect(result.status).toBe(429);
+    expect(result.headers.get("retry-after")).toBe("17");
+    expect(result.headers.get("access-control-allow-origin")).toBe(
+      "https://example.org",
+    );
+    expect(input.bodyUsed).toBe(false);
+    expect(submit).not.toHaveBeenCalled();
+    await handleContactRequest(request(record(), "https://unapproved.test"), {
+      allowedOrigins: ["https://example.org"],
+      submit,
+      beforeRead,
+    });
+    expect(beforeRead).toHaveBeenCalledTimes(1);
+  });
 });

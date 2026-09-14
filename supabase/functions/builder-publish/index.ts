@@ -1,3 +1,5 @@
+import { checkFunctionLimit } from "../_shared/functionLimits.ts";
+import { readJsonObject, RequestBodyError } from "../_shared/requestBody.ts";
 import { createClient } from "npm:@supabase/supabase-js@2.98.0";
 import { getCorsHeaders, isOriginAllowed } from "../_shared/editorAuth.ts";
 import type { Workspace } from "../../../shared/visualBuilder.ts";
@@ -19,23 +21,45 @@ Deno.serve(async (request) => {
   if (request.method !== "POST")
     return json(405, { error: "Method not allowed" });
   const url = Deno.env.get("SUPABASE_URL")!;
-  const token = request.headers
-    .get("Authorization")
-    ?.replace(/^Bearer\s+/i, "");
+  const token = /^Bearer ([^\s]{1,8192})$/i.exec(
+    request.headers.get("Authorization") || "",
+  )?.[1];
   if (!token) return json(401, { error: "Please sign in" });
   const service = createClient(url, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
+  const globalLimit = await checkFunctionLimit(
+    service,
+    "builder-publish",
+    headers,
+  );
+  if (globalLimit) return globalLimit;
   const { data: auth, error: authError } = await service.auth.getUser(token);
   if (authError || !auth.user)
     return json(401, { error: "Your session expired. Please sign in again." });
+  const userLimit = await checkFunctionLimit(
+    service,
+    "builder-publish",
+    headers,
+    auth.user.id,
+  );
+  if (userLimit) return userLimit;
   let body;
   try {
-    body = await request.json();
+    body = await readJsonObject(request, 64 * 1024);
     await requireGithubPublication(service, body?.projectId, auth.user.id);
   } catch (error) {
-    return json(error instanceof PublicationAccessError ? error.status : 400, {
-      error:
-        error instanceof Error ? error.message : "Invalid publication request.",
-    });
+    return json(
+      error instanceof PublicationAccessError ||
+        error instanceof RequestBodyError
+        ? error.status
+        : 400,
+      {
+        error:
+          error instanceof PublicationAccessError ||
+          error instanceof RequestBodyError
+            ? error.message
+            : "Invalid publication request.",
+      },
+    );
   }
   const githubToken = Deno.env.get("GITHUB_DEPLOY_TOKEN");
   const repo = Deno.env.get("GITHUB_DEPLOY_REPO");
@@ -73,9 +97,12 @@ Deno.serve(async (request) => {
       return json(400, { error: "Invalid release request ID" });
     const action = body.action || "page";
     if (
-      !["page", "site", "unpublish", "rollback", "retry", "redirects"].includes(
-        action,
-      )
+      action !== "page" &&
+      action !== "site" &&
+      action !== "unpublish" &&
+      action !== "rollback" &&
+      action !== "retry" &&
+      action !== "redirects"
     )
       return json(400, { error: "Unsupported publication action" });
     let release;
@@ -97,7 +124,11 @@ Deno.serve(async (request) => {
         action: data.request.action,
       };
     } else if (action === "redirects") {
-      if (!Number.isInteger(body.version) || body.version < 0)
+      if (
+        typeof body.version !== "number" ||
+        !Number.isSafeInteger(body.version) ||
+        body.version < 0
+      )
         return json(400, { error: "Invalid redirect version" });
       const { data, error } = await service.rpc(
         "builder_queue_routes_release",
@@ -151,14 +182,25 @@ Deno.serve(async (request) => {
         site: siteResult.data?.payload,
         routes: routesResult.data?.payload,
       };
-      if (!Number.isInteger(body.version) || body.version < 0)
+      if (
+        typeof body.version !== "number" ||
+        !Number.isSafeInteger(body.version) ||
+        body.version < 0
+      )
         return json(400, { error: "Invalid publication version" });
       if (action === "site") {
+        const pageVersions = body.pageVersions;
         if (
           workspace.site?.version !== body.version ||
-          !body.pageVersions ||
-          Object.keys(body.pageVersions).length !== pages.length ||
-          pages.some((page) => body.pageVersions[page.id] !== page.version)
+          !pageVersions ||
+          typeof pageVersions !== "object" ||
+          Array.isArray(pageVersions) ||
+          Object.keys(pageVersions).length !== pages.length ||
+          pages.some(
+            (page) =>
+              (pageVersions as Record<string, unknown>)[page.id] !==
+              page.version,
+          )
         )
           return json(409, {
             error:
@@ -171,7 +213,11 @@ Deno.serve(async (request) => {
             error: "Save the latest draft before publishing.",
           });
       }
-      const input = prepareReleaseRequest(workspace, action, body.id);
+      const input = prepareReleaseRequest(
+        workspace,
+        action,
+        action === "site" ? undefined : (body.id as string),
+      );
       const { data, error } = await service.rpc("builder_queue_release", {
         request_id: requestId,
         editor_id: auth.user.id,

@@ -1,3 +1,4 @@
+import { checkFunctionLimit } from "./functionLimits.ts";
 import { validProjectId } from "../../../shared/builderProjects.ts";
 
 type Result<T> = { data: T; error: { code?: string; status?: number } | null };
@@ -107,6 +108,12 @@ export function createInvitationHandler(options: {
     if (!/^Bearer [^\s]{1,8192}$/i.test(authorization))
       return json(401, { error: "Sign in to manage invitations." });
     const token = authorization.slice(7);
+    const globalLimit = await checkFunctionLimit(
+      options.service,
+      "builder-invite",
+      headers,
+    );
+    if (globalLimit) return globalLimit;
     let emailAttempted = false;
     try {
       const { service } = options;
@@ -126,6 +133,13 @@ export function createInvitationHandler(options: {
         return result.data.user!;
       }
       const actor = await authenticate();
+      const userLimit = await checkFunctionLimit(
+        options.service,
+        "builder-invite",
+        headers,
+        actor.id,
+      );
+      if (userLimit) return userLimit;
       if (
         !/^application\/json(?:;|$)/i.test(
           request.headers.get("content-type") || "",

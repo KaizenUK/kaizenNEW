@@ -1,3 +1,4 @@
+import { checkFunctionLimit } from "./functionLimits.ts";
 import { validProjectId } from "../../../shared/builderProjects.ts";
 type Result<T> = { data: T; error: { code?: string; status?: number } | null };
 type Service = {
@@ -76,12 +77,25 @@ export function createAccountHandler(options: {
     )?.[1];
     if (!token || token.length > 8192)
       return json(401, { error: "Sign in to manage your account." });
+    const globalLimit = await checkFunctionLimit(
+      options.service,
+      "builder-account",
+      headers,
+    );
+    if (globalLimit) return globalLimit;
     let processing = false;
     try {
       const auth = await options.service.auth.getUser(token);
       const actor = auth.data.user?.id;
       if (auth.error || !uuid(actor))
         return json(401, { error: "Your sign-in expired. Sign in again." });
+      const userLimit = await checkFunctionLimit(
+        options.service,
+        "builder-account",
+        headers,
+        actor,
+      );
+      if (userLimit) return userLimit;
       if (
         !/^application\/json(?:\s*;|$)/i.test(
           request.headers.get("Content-Type") || "",

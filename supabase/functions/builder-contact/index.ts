@@ -1,3 +1,4 @@
+import { checkFunctionLimit } from "../_shared/functionLimits.ts";
 import { createClient } from "npm:@supabase/supabase-js@2.98.0";
 import {
   ContactError,
@@ -37,6 +38,8 @@ async function hash(value: string) {
 Deno.serve((request) =>
   handleContactRequest(request, {
     allowedOrigins,
+    beforeRead: (headers) =>
+      checkFunctionLimit(service, "builder-contact", headers),
     async submit(id, record) {
       const { error } = await service.rpc("builder_submit_contact", {
         request_id: id,

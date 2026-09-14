@@ -75,6 +75,7 @@ export async function handleContactRequest(
   request: Request,
   options: {
     allowedOrigins: string[];
+    beforeRead?: (headers: Headers) => Promise<Response | undefined>;
     submit: (id: string, record: ContactRecord) => Promise<void>;
   },
 ): Promise<Response> {
@@ -104,6 +105,8 @@ export async function handleContactRequest(
       .startsWith("application/json")
   )
     return json(415, { error: "Unsupported form request." });
+  const limited = await options.beforeRead?.(headers);
+  if (limited) return limited;
   try {
     const reader = request.body?.getReader();
     if (!reader) throw new ContactError("The form is empty.");

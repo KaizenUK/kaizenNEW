@@ -44,6 +44,7 @@ export async function accountFixture(
     "202609120001_builder_project_capabilities.sql",
     "202609130001_builder_invitations.sql",
     "202609130002_builder_accounts.sql",
+    "202609140001_builder_function_limits.sql",
   ])
     await db.exec(await readFile(`supabase/migrations/${file}`, "utf8"));
   await db.query(
@@ -143,6 +144,16 @@ export async function accountFixture(
         },
       },
       rpc: async (name, args) => {
+        if (name === "builder_consume_function_limit")
+          return {
+            data: (
+              await db.query<{ result: any }>(
+                "select public.builder_consume_function_limit($1,$2) as result",
+                [args.target_function, args.actor_id],
+              )
+            ).rows[0].result,
+            error: null,
+          };
         if (
           !/^builder_account_deletion_(request|cancel|state|prepare|complete)$/.test(
             name,

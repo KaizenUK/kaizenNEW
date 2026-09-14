@@ -31,6 +31,10 @@ import { SourceDrafts } from "./builder-source-drafts";
 import { NativeRepositoryBackups } from "./builder-native-backup";
 import { hostedDiskLimits } from "./builder-hosted-disk";
 import { HostedBuildRecovery } from "./builder-hosted-build-recovery";
+import {
+  isolatedBuildCommand,
+  runIsolatedBuild,
+} from "./builder-build-sandbox";
 
 const endpoint = "/editor-api/builder-repository";
 const maxBody = 52 * 1024 * 1024;
@@ -114,6 +118,8 @@ export class HostedHelperService {
   private publishing: HostedWebsitePublishing;
   private buildRecovery: HostedBuildRecovery;
   readonly previews?: HostedPreviews;
+  private trustedBuildProjects: Set<string>;
+  private buildManager?: string;
   constructor(
     readonly folders: HostedWebsiteFolders,
     readonly access: HostedRepositoryAccess,
@@ -121,8 +127,15 @@ export class HostedHelperService {
       editorOrigin?: string;
       saveReleases?: HostedSaveReleases;
       publicationFetch?: typeof fetch;
+      /** Operator-only trust exception for its own existing website. */
+      trustedBuildProjects?: readonly string[];
+      buildManager?: string;
     },
   ) {
+    if (options?.trustedBuildProjects?.some((id) => !validProjectId(id)))
+      throw new Error("Invalid trusted build project configuration.");
+    this.trustedBuildProjects = new Set(options?.trustedBuildProjects ?? []);
+    this.buildManager = options?.buildManager;
     this.saves = new HostedWebsiteSaves(folders, options?.saveReleases);
     this.buildRecovery = new HostedBuildRecovery(folders);
     this.settings = new HostedRepositorySettings(folders);
@@ -259,6 +272,15 @@ export class HostedHelperService {
             beforeBuild: (job, fingerprint) =>
               this.buildRecovery.begin(job, fingerprint),
             afterBuild: (job) => this.buildRecovery.finish(job),
+            ...(!this.trustedBuildProjects.has(projectId)
+              ? {
+                  isolatedBuild: {
+                    command: () =>
+                      isolatedBuildCommand(this.buildManager || ""),
+                    run: runIsolatedBuild,
+                  },
+                }
+              : {}),
           }),
         );
         this.projects.set(projectId, operations);
@@ -868,6 +890,13 @@ async function main() {
   const helper = await startHostedHelper({
     service: new HostedHelperService(folders, access, {
       editorOrigin: process.env.BUILDER_HOSTED_EDITOR_ORIGIN || "",
+      trustedBuildProjects: (
+        process.env.BUILDER_HOSTED_TRUSTED_BUILD_PROJECTS || ""
+      )
+        .split(",")
+        .map((value) => value.trim())
+        .filter(Boolean),
+      buildManager: process.env.BUILDER_HOSTED_SANDBOX_PACKAGE_MANAGER,
       saveReleases: new HostedSaveReleases({
         githubToken: process.env.BUILDER_HOSTED_GITHUB_READ_TOKEN,
       }),

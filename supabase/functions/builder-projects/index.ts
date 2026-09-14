@@ -1,3 +1,4 @@
+import { checkFunctionLimit } from "../_shared/functionLimits.ts";
 import { createClient } from "npm:@supabase/supabase-js@2.98.0";
 import { recordClientDiagnostic } from "../_shared/clientDiagnostics.ts";
 import { getCorsHeaders, isOriginAllowed } from "../_shared/editorAuth.ts";
@@ -57,9 +58,9 @@ Deno.serve(async (request) => {
     return json(403, { error: "Forbidden origin" });
   if (request.method !== "POST")
     return json(405, { error: "Method not allowed" });
-  const token = request.headers
-    .get("Authorization")
-    ?.replace(/^Bearer\s+/i, "");
+  const token = /^Bearer ([^\s]{1,8192})$/i.exec(
+    request.headers.get("Authorization") || "",
+  )?.[1];
   if (!token) return json(401, { error: "Sign in to open this project." });
   const url = Deno.env.get("SUPABASE_URL")!;
   const service = createClient(
@@ -67,9 +68,22 @@ Deno.serve(async (request) => {
     Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
     { auth: { persistSession: false } },
   );
+  const globalLimit = await checkFunctionLimit(
+    service,
+    "builder-projects",
+    headers,
+  );
+  if (globalLimit) return globalLimit;
   const { data: auth, error: authError } = await service.auth.getUser(token);
   if (authError || !auth.user)
     return json(401, { error: "Your session expired. Sign in again." });
+  const userLimit = await checkFunctionLimit(
+    service,
+    "builder-projects",
+    headers,
+    auth.user.id,
+  );
+  if (userLimit) return userLimit;
   const user = createClient(url, Deno.env.get("SUPABASE_ANON_KEY")!, {
     global: { headers: { Authorization: `Bearer ${token}` } },
     auth: { persistSession: false },
@@ -485,7 +499,10 @@ Deno.serve(async (request) => {
         );
       input.asset = { ...asset, url: projectAssetUrl(target, asset.id) };
     }
-    if (action === "create-starter" && projectCapabilities(project.capabilities).hasInventory)
+    if (
+      action === "create-starter" &&
+      projectCapabilities(project.capabilities).hasInventory
+    )
       throw new Error("Create a starter in a new builder project.");
     const result = applyProjectDraftAction(workspace, input);
     assertProjectAssetReferences(result.workspace, target);

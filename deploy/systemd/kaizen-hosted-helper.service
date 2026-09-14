@@ -25,7 +25,14 @@ PrivateDevices=true
 ProtectSystem=strict
 ProtectHome=true
 ReadWritePaths=/var/lib/kaizen-helper/work /etc/kaizen-helper/credentials
-ProtectKernelTunables=true
+Delegate=cpu memory pids
+DelegateSubgroup=supervisor
+# Keep the host cgroup tree read-only except this service's delegated subtree.
+ReadWritePaths=/sys/fs/cgroup/system.slice/kaizen-hosted-helper.service
+# An overmounted host /proc/sys prevents an unprivileged namespace from
+# mounting its own procfs. Client builds get a fresh, entirely read-only /proc;
+# the supervisor retains an empty capability set and its unprivileged UID.
+ProtectKernelTunables=false
 ProtectKernelModules=true
 ProtectControlGroups=true
 RestrictSUIDSGID=true

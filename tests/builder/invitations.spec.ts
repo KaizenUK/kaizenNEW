@@ -39,6 +39,8 @@ async function invitationFixture(page: Page) {
         },
       },
       rpc: async (name, args) => {
+        if (name === "builder_consume_function_limit")
+          return { data: { allowed: true, retryAfter: 0 }, error: null };
         if (name === "builder_prepare_invitation")
           return {
             data: {

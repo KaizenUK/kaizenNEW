@@ -88,6 +88,37 @@ const stop = (api: Fixture, job: any) =>
   });
 
 describe("hosted build jobs", () => {
+  it("refuses an unconfigured client sandbox without accepting a caller's trust override", async () => {
+    const api = await hostedHelperFixture(
+      [helperProject],
+      hostedBuildScript,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      {},
+    );
+    fixtures.push(api);
+    expect(
+      (
+        await api.send({
+          action: "repository-connect",
+          projectId: helperProject,
+        })
+      ).status,
+    ).toBe(200);
+    const result = await api.send({
+      action: "repository-build-review",
+      projectId: helperProject,
+      trustedBuildProjects: [helperProject],
+      buildManager: process.env.npm_execpath,
+    });
+    expect(result.status).toBe(409);
+    expect(result.body.error).toContain("isolated build is unavailable");
+    expect(await buildCount(api, helperProject)).toBe(0);
+  });
   it("keeps a cancellation during asynchronous startup pending until the child and recovery have finished", async () => {
     let unlockStart!: () => void, finishChild!: () => void;
     const starting = new Promise<void>((resolve) => {

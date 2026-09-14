@@ -35,6 +35,7 @@ export async function hostedHelperFixture(
   setup?: "empty" | "approved",
   publishing?: { target: RepositoryPublishTarget; fetch: typeof fetch },
   diskLimits?: HostedDiskLimits,
+  buildIsolation?: { manager?: string },
 ) {
   const directory = await mkdtemp(path.join(tmpdir(), "kaizen-hosted-helper-"));
   const seed = path.join(directory, "seed"),
@@ -215,6 +216,11 @@ const child=spawn(operation.split(' ')[0],[${JSON.stringify(remote)}],{stdio:'in
       diskLimits,
     );
     const service = new HostedHelperService(folders, access, {
+      // These operator-owned scripts deliberately coordinate with the test
+      // harness outside the checkout. Real untrusted builds have separate
+      // namespace/cgroup tests and never receive this trust exception.
+      trustedBuildProjects: buildIsolation ? [] : projectIds,
+      buildManager: buildIsolation?.manager,
       ...(previewOrigin ? { editorOrigin: previewOrigin } : {}),
       ...(saving?.releases ? { saveReleases: saving.releases } : {}),
       ...(publishing ? { publicationFetch: publishing.fetch } : {}),
