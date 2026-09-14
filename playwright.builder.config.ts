@@ -16,6 +16,7 @@ const coreJourneys = [
   "editor",
   "first-run",
   "feature-loading",
+  "fixture-routes",
   "page-templates",
   "starter-site",
   "site-canvas",

@@ -1,3 +1,4 @@
+import { closeFixturePage } from "./fixture-routes";
 import { test, expect, drainRepositoryRoutes } from "./browser-fixture";
 import { hostedPreviewFixture } from "./hosted-preview-fixture";
 import { openSiteProject } from "./hosted-repository-fixture";
@@ -154,10 +155,8 @@ test("an owner sets up a real hosted folder with a one-time public key, then edi
   } finally {
     drainRepositoryRoutes.delete(page);
     try {
-      if (!page.isClosed()) {
-        await page.unrouteAll({ behavior: "wait" });
-        await context.unrouteAll({ behavior: "wait" });
-      }
+      await closeFixturePage(page);
+      await context.unrouteAll({ behavior: "wait" });
     } finally {
       await fixture.close();
     }

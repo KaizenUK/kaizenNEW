@@ -1,3 +1,4 @@
+import { closeFixturePage } from "./fixture-routes";
 import { test as base, type Page } from "@playwright/test";
 import { mkdtemp } from "node:fs/promises";
 import { tmpdir } from "node:os";
@@ -41,7 +42,7 @@ export const test = builderTest.extend<{ repositoryRoutes: void }>({
     async ({ page }, use) => {
       await use();
       if (drainRepositoryRoutes.has(page)) {
-        await page.unrouteAll({ behavior: "wait" });
+        await closeFixturePage(page);
         await page.context().unrouteAll({ behavior: "wait" });
       }
     },

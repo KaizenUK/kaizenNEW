@@ -1,3 +1,4 @@
+import { closeFixturePage, fixtureRoute } from "./fixture-routes";
 import { PGlite } from "@electric-sql/pglite";
 import { readFile } from "node:fs/promises";
 import { createServer, type Server } from "node:http";
@@ -17,6 +18,7 @@ export async function accountFixture(
     signedOut?: boolean;
     invited?: boolean;
     initialAccount?: string;
+    initialView?: "account" | "pages";
     needsLegalAcceptance?: boolean;
   } = {},
 ) {
@@ -205,25 +207,28 @@ export async function accountFixture(
       },
     },
   });
-  await page.route("**/client/visual-builder/builderMode.ts*", (route) =>
-    route.fulfill({
-      contentType: "application/javascript",
-      body: "export const builderCloudEnabled=true;export const localBuilderRequested=false;",
-    }),
+  await fixtureRoute(
+    page,
+    "**/client/visual-builder/builderMode.ts*",
+    (route) =>
+      route.fulfill({
+        contentType: "application/javascript",
+        body: "export const builderCloudEnabled=true;export const localBuilderRequested=false;",
+      }),
   );
-  await page.route("**/client/lib/supabaseConfig.ts*", (route) =>
+  await fixtureRoute(page, "**/client/lib/supabaseConfig.ts*", (route) =>
     route.fulfill({
       contentType: "application/javascript",
       body: `export const supabaseUrl=${JSON.stringify(authOrigin)};export const supabaseKey='fixture-public-key';`,
     }),
   );
-  await page.route("**/editor-api/builder-repository", (route) =>
+  await fixtureRoute(page, "**/editor-api/builder-repository", (route) =>
     route.fulfill({
       status: 503,
       json: { error: "This fixture website has no repository connected." },
     }),
   );
-  await page.route(`${authOrigin}/**`, async (route) => {
+  await fixtureRoute(page, `${authOrigin}/**`, async (route) => {
     const request = route.request(),
       url = new URL(request.url());
     const cors = {
@@ -432,7 +437,9 @@ export async function accountFixture(
     }
     return destination.href;
   }
-  await page.goto(`/builder/?project=${project.id}&view=account`);
+  await page.goto(
+    `/builder/?project=${project.id}${options.initialView === "pages" ? "" : "&view=account"}`,
+  );
   return {
     db,
     state,
@@ -474,7 +481,7 @@ export async function accountFixture(
       }, next);
     },
     async dispose() {
-      await page.close();
+      await closeFixturePage(page);
       if (linkServer) {
         linkServer.closeAllConnections();
         await new Promise<void>((resolve) =>

@@ -1,3 +1,4 @@
+import { fixtureRoute } from "./fixture-routes";
 import { drainRepositoryRoutes, expect, type Page } from "./browser-fixture";
 import { BUILDER_TEST_ORIGIN } from "./ports";
 import { BUILDER_LEGAL } from "../../shared/builderLegal";
@@ -20,6 +21,7 @@ export async function openSiteProject(
     accessToken: string;
     direct?: boolean;
     editorOrigin?: string;
+    beforeRequest?: (input: Record<string, unknown>) => Promise<void>;
   },
 ) {
   const hosted = hostedRepositoryTests || hostedWorkspace;
@@ -37,27 +39,33 @@ export async function openSiteProject(
       expires_at: Math.floor(Date.now() / 1000) + 3600,
     };
     if (hostedWorkspace)
-      await page.route("**/client/visual-builder/builderMode.ts*", (route) =>
-        route.fulfill({
-          contentType: "application/javascript",
-          body: "export const builderCloudEnabled=true;export const localBuilderRequested=false;",
-        }),
+      await fixtureRoute(
+        page,
+        "**/client/visual-builder/builderMode.ts*",
+        (route) =>
+          route.fulfill({
+            contentType: "application/javascript",
+            body: "export const builderCloudEnabled=true;export const localBuilderRequested=false;",
+          }),
       );
     else
-      await page.route("**/client/visual-builder/repositoryMode.ts*", (route) =>
-        route.fulfill({
-          contentType: "application/javascript",
-          body: "export const repositoryMode='hosted';",
-        }),
+      await fixtureRoute(
+        page,
+        "**/client/visual-builder/repositoryMode.ts*",
+        (route) =>
+          route.fulfill({
+            contentType: "application/javascript",
+            body: "export const repositoryMode='hosted';",
+          }),
       );
-    await page.route("**/client/lib/supabase.ts*", (route) =>
+    await fixtureRoute(page, "**/client/lib/supabase.ts*", (route) =>
       route.fulfill({
         contentType: "application/javascript",
         body: `let session=${JSON.stringify(session)};const listeners=new Set();const client={auth:{initialize:async()=>({error:null}),getSession:async()=>({data:{session}}),refreshSession:async()=>({data:{session}}),signOut:async()=>{session=null;for(const fn of listeners)fn('SIGNED_OUT',null);return {error:null}},onAuthStateChange:callback=>{listeners.add(callback);return {data:{subscription:{unsubscribe:()=>listeners.delete(callback)}}}}},functions:{invoke:async(name,options)=>{if(name==='builder-account'){if(options.body.action!=='legal-state')throw new Error('Unexpected account mutation in hosted repository fixture');return {data:{legal:${JSON.stringify({ ...BUILDER_LEGAL, acceptedAt: "2026-09-14T00:00:00Z" })}},error:null};}const response=await fetch('/__fixture-projects',{method:'POST',headers:{'Content-Type':'application/json',...options.headers},body:JSON.stringify(options.body)});return {data:await response.json(),error:response.ok?null:{message:'Fixture project request failed'}};}}};export const getSupabaseClient=()=>client;export const createIsolatedSupabaseClient=()=>{throw new Error('Account changes are outside this fixture');};`,
       }),
     );
     if (hostedWorkspace)
-      await page.route("**/__fixture-projects", async (route) => {
+      await fixtureRoute(page, "**/__fixture-projects", async (route) => {
         const input = route.request().postDataJSON();
         if (input.action === "record-error") {
           await route.fulfill({ json: { recorded: false } });
@@ -105,106 +113,116 @@ export async function openSiteProject(
         );
       return value;
     };
-    await page.route("**/editor-api/builder-repository", async (route) => {
-      if (repositoryService?.direct) {
-        await route.continue();
-        return;
-      }
-      const input = route.request().postDataJSON();
-      expect(route.request().headers().authorization).toBe(
-        `Bearer ${session.access_token}`,
-      );
-      expect(input.projectId).toBe(project.id);
-      if (repositoryService) {
-        const response = await page.request.post(
-          `${repositoryService.origin}/editor-api/builder-repository`,
-          {
-            headers: {
-              Authorization: `Bearer ${session.access_token}`,
-              Origin: "https://builder.example",
+    await fixtureRoute(
+      page,
+      "**/editor-api/builder-repository",
+      async (route) => {
+        if (repositoryService?.direct) {
+          await route.continue();
+          return;
+        }
+        const input = route.request().postDataJSON();
+        expect(route.request().headers().authorization).toBe(
+          `Bearer ${session.access_token}`,
+        );
+        expect(input.projectId).toBe(project.id);
+        if (repositoryService) {
+          await repositoryService.beforeRequest?.(input);
+          const response = await page.request.post(
+            `${repositoryService.origin}/editor-api/builder-repository`,
+            {
+              headers: {
+                Authorization: `Bearer ${session.access_token}`,
+                Origin: "https://builder.example",
+              },
+              data: input,
             },
+          );
+          await route.fulfill({
+            status: response.status(),
+            json: await response.json(),
+          });
+          return;
+        }
+        if (input.action === "repository-connect") {
+          await route.fulfill({
+            json: {
+              projectId: project.id,
+              root,
+              expiresAt: session.expires_at * 1000,
+            },
+          });
+          return;
+        }
+        if (input.action === "repository-website-status") {
+          await route.fulfill({
+            json: {
+              state: "saved",
+              head: "a".repeat(40),
+              draftRoutes: [],
+              detail: "Saved in the fixture website folder.",
+              checkedAt: new Date().toISOString(),
+            },
+          });
+          return;
+        }
+        if (input.action === "repository-inspect-current") {
+          input.action = "repository-inspect";
+          input.root = root;
+        }
+        const response = await page.request.post(
+          `/__builder-local?project=${project.id}`,
+          {
+            headers: { "X-Kaizen-Builder": "1", Origin: BUILDER_TEST_ORIGIN },
             data: input,
           },
         );
         await route.fulfill({
           status: response.status(),
-          json: await response.json(),
+          json: rewrite(await response.json()),
         });
-        return;
-      }
-      if (input.action === "repository-connect") {
-        await route.fulfill({
-          json: {
-            projectId: project.id,
-            root,
-            expiresAt: session.expires_at * 1000,
-          },
-        });
-        return;
-      }
-      if (input.action === "repository-website-status") {
-        await route.fulfill({
-          json: {
-            state: "saved",
-            head: "a".repeat(40),
-            draftRoutes: [],
-            detail: "Saved in the fixture website folder.",
-            checkedAt: new Date().toISOString(),
-          },
-        });
-        return;
-      }
-      if (input.action === "repository-inspect-current") {
-        input.action = "repository-inspect";
-        input.root = root;
-      }
-      const response = await page.request.post(
-        `/__builder-local?project=${project.id}`,
-        {
-          headers: { "X-Kaizen-Builder": "1", Origin: BUILDER_TEST_ORIGIN },
-          data: input,
-        },
-      );
-      await route.fulfill({
-        status: response.status(),
-        json: rewrite(await response.json()),
-      });
-    });
+      },
+    );
     if (!repositoryService?.direct)
-      await page.context().route(`**${prefix}/**`, async (route) => {
-        const url = new URL(route.request().url());
-        const [port, ...parts] = url.pathname
-          .slice(prefix.length + 1)
-          .split("/");
-        if (!ports.has(port))
-          throw new Error(
-            "A fixture preview must come from this project's build response.",
+      await fixtureRoute(
+        page,
+        `**${prefix}/**`,
+        async (route) => {
+          const url = new URL(route.request().url());
+          const [port, ...parts] = url.pathname
+            .slice(prefix.length + 1)
+            .split("/");
+          if (!ports.has(port))
+            throw new Error(
+              "A fixture preview must come from this project's build response.",
+            );
+          const response = await page.request.get(
+            `http://127.0.0.1:${port}/${parts.join("/")}${url.search}`,
+            { maxRedirects: 0 },
           );
-        const response = await page.request.get(
-          `http://127.0.0.1:${port}/${parts.join("/")}${url.search}`,
-          { maxRedirects: 0 },
-        );
-        const headers = {
-          ...response.headers(),
-          "access-control-allow-origin": "*",
-        };
-        delete headers["content-length"];
-        delete headers["content-encoding"];
-        if (headers.location?.startsWith("/"))
-          headers.location = `${prefix}/${port}${headers.location}`;
-        const type = headers["content-type"] || "";
-        let body = await response.body();
-        if (/html|css|javascript/.test(type))
-          body = Buffer.from(
-            body
-              .toString("utf8")
-              .replace(
-                /\/__kaizen-(?:preview|source|source-script)\//g,
-                (match) => `${prefix}/${port}${match}`,
-              ),
-          );
-        await route.fulfill({ status: response.status(), headers, body });
-      });
+          const headers = {
+            ...response.headers(),
+            "access-control-allow-origin": "*",
+          };
+          delete headers["content-length"];
+          delete headers["content-encoding"];
+          if (headers.location?.startsWith("/"))
+            headers.location = `${prefix}/${port}${headers.location}`;
+          const type = headers["content-type"] || "";
+          let body = await response.body();
+          if (/html|css|javascript/.test(type))
+            body = Buffer.from(
+              body
+                .toString("utf8")
+                .replace(
+                  /\/__kaizen-(?:preview|source|source-script)\//g,
+                  (match) => `${prefix}/${port}${match}`,
+                ),
+            );
+          await route.fulfill({ status: response.status(), headers, body });
+        },
+        { context: true },
+      );
   }
   await page.goto(
     `${repositoryService?.editorOrigin || ""}/builder/?project=${project.id}`,

@@ -148,11 +148,9 @@ test("a new project links each first-run step to real saved work and remembers p
 test("first-run dismissal follows the signed-in account and project", async ({
   page,
 }) => {
-  const fixture = await accountFixture(page);
+  const fixture = await accountFixture(page, { initialView: "pages" });
   try {
-    // Start from the Pages URL. Changing identity remounts the legal gate and
-    // workspace, so the Account fixture's deep link must not choose the screen.
-    await page.goto(`/builder/?project=${fixture.project.id}`);
+    // An identity change remounts the legal gate/workspace at this Pages URL.
     await expect(card(page)).toBeVisible();
     await card(page)
       .getByRole("button", { name: "Dismiss start here" })

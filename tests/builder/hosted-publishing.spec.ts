@@ -1,3 +1,4 @@
+import { closeFixturePage } from "./fixture-routes";
 import { test, expect, drainRepositoryRoutes } from "./browser-fixture";
 import { hostedPreviewFixture } from "./hosted-preview-fixture";
 import { openSiteProject } from "./hosted-repository-fixture";
@@ -196,14 +197,12 @@ test("a publisher saves an existing page to staging and explicitly publishes tha
         ),
       ).toBe(true);
       if (width === 1440) {
-        const row = existing
-          .locator("li")
-          .filter({
-            has: page.getByRole("button", {
-              name: "Edit existing /",
-              exact: true,
-            }),
-          });
+        const row = existing.locator("li").filter({
+          has: page.getByRole("button", {
+            name: "Edit existing /",
+            exact: true,
+          }),
+        });
         const title = await row.locator("strong").boundingBox();
         const edit = await row.getByRole("button").boundingBox();
         expect(Math.abs(title!.y - edit!.y)).toBeLessThan(edit!.height);
@@ -237,10 +236,8 @@ test("a publisher saves an existing page to staging and explicitly publishes tha
   } finally {
     drainRepositoryRoutes.delete(page);
     try {
-      if (!page.isClosed()) {
-        await page.unrouteAll({ behavior: "wait" });
-        await context.unrouteAll({ behavior: "wait" });
-      }
+      await closeFixturePage(page);
+      await context.unrouteAll({ behavior: "wait" });
     } finally {
       await fixture.close();
     }

@@ -1,3 +1,4 @@
+import { closeFixturePage, fixtureRoute } from "./fixture-routes";
 import { test, expect, drainRepositoryRoutes } from "./browser-fixture";
 import { hostedPreviewFixture } from "./hosted-preview-fixture";
 import { openSiteProject } from "./hosted-repository-fixture";
@@ -170,7 +171,8 @@ for (const view of ["developer", "client"] as const) {
       expect(await remoteHead()).toBe(base);
       // Exercise the disconnect a real proxy can report while the helper stops.
       // Recovery must work after reconnecting, regardless of which read was in flight.
-      await page.route(
+      await fixtureRoute(
+        page,
         "**/editor-api/builder-repository",
         (route) =>
           route.fulfill({
@@ -308,10 +310,8 @@ for (const view of ["developer", "client"] as const) {
     } finally {
       drainRepositoryRoutes.delete(page);
       try {
-        if (!page.isClosed()) {
-          await page.unrouteAll({ behavior: "wait" });
-          await context.unrouteAll({ behavior: "wait" });
-        }
+        await closeFixturePage(page);
+        await context.unrouteAll({ behavior: "wait" });
       } finally {
         await fixture.close();
       }
@@ -385,20 +385,25 @@ test("an interrupted commit survives helper restart and shows an operator check 
         direct: true,
         editorOrigin: fixture.origin,
       });
-      await page.route("**/editor-api/builder-repository", async (route) => {
-        if (
-          holdInspection &&
-          route.request().postDataJSON()?.action === "repository-source-inspect"
-        )
-          await inspectionReady;
-        if (
-          holdDraft &&
-          route.request().postDataJSON()?.action ===
-            "repository-source-draft-read"
-        )
-          await draftReady;
-        await route.fallback();
-      });
+      await fixtureRoute(
+        page,
+        "**/editor-api/builder-repository",
+        async (route) => {
+          if (
+            holdInspection &&
+            route.request().postDataJSON()?.action ===
+              "repository-source-inspect"
+          )
+            await inspectionReady;
+          if (
+            holdDraft &&
+            route.request().postDataJSON()?.action ===
+              "repository-source-draft-read"
+          )
+            await draftReady;
+          await route.fallback();
+        },
+      );
       await page
         .getByRole("button", { name: "Edit existing /", exact: true })
         .click();
@@ -499,10 +504,8 @@ test("an interrupted commit survives helper restart and shows an operator check 
     HostedReceiptStore.prototype.write = originalWrite;
     drainRepositoryRoutes.delete(page);
     try {
-      if (!page.isClosed()) {
-        await page.unrouteAll({ behavior: "wait" });
-        await context.unrouteAll({ behavior: "wait" });
-      }
+      await closeFixturePage(page);
+      await context.unrouteAll({ behavior: "wait" });
     } finally {
       await fixture.close();
     }

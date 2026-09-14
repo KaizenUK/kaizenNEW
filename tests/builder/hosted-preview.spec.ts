@@ -1,3 +1,4 @@
+import { closeFixturePage } from "./fixture-routes";
 import { test, expect, drainRepositoryRoutes } from "./browser-fixture";
 import { hostedPreviewFixture } from "./hosted-preview-fixture";
 import { openSiteProject } from "./hosted-repository-fixture";
@@ -260,10 +261,8 @@ test("a real HTTPS hosted editor frames private Astro, React, styles, fonts and 
   } finally {
     drainRepositoryRoutes.delete(page);
     try {
-      if (!page.isClosed()) {
-        await page.unrouteAll({ behavior: "wait" });
-        await context.unrouteAll({ behavior: "wait" });
-      }
+      await closeFixturePage(page);
+      await context.unrouteAll({ behavior: "wait" });
     } finally {
       await fixture.close();
     }

@@ -1,3 +1,4 @@
+import { closeFixturePage } from "./fixture-routes";
 import { test, expect } from "./browser-fixture";
 import { readFile } from "node:fs/promises";
 import path from "node:path";
@@ -192,10 +193,7 @@ test("the hosted editor follows queued builds, keeps drafts, shows failures and 
     );
   } finally {
     try {
-      if (!page.isClosed()) {
-        await page.unrouteAll({ behavior: "wait" });
-        await page.context().unrouteAll({ behavior: "wait" });
-      }
+      await closeFixturePage(page);
     } finally {
       await helper.close();
     }
@@ -214,6 +212,7 @@ test("a hosted project inspects, saves and applies original source through the r
   const helper = await hostedHelperFixture([project.id]);
   const root = helper.folders.root(project.id);
   const readReleases: (() => void)[] = [];
+  let beforeDraftRead: (() => Promise<void>) | undefined;
   async function holdNextDraftRead() {
     let signal!: () => void, release!: () => void;
     const started = new Promise<void>((resolve) => {
@@ -223,25 +222,23 @@ test("a hosted project inspects, saves and applies original source through the r
       release = resolve;
     });
     readReleases.push(release);
-    let held = false;
-    await page.route("**/editor-api/builder-repository", async (route) => {
-      if (
-        !held &&
-        route.request().postDataJSON()?.action ===
-          "repository-source-draft-read"
-      ) {
-        held = true;
-        signal();
-        await resume;
-      }
-      await route.fallback();
-    });
+    // Delay one request inside the existing transport, without stacking route
+    // fallback handlers that compete when a request is cancelled or drained.
+    beforeDraftRead = async () => {
+      beforeDraftRead = undefined;
+      signal();
+      await resume;
+    };
     return { started, release };
   }
   try {
     await openSiteProject(page, project, root, true, {
       origin: helper.helper.origin,
       accessToken: helperToken(),
+      beforeRequest: async (input) => {
+        if (input.action === "repository-source-draft-read")
+          await beforeDraftRead?.();
+      },
     });
     const initialRead = await holdNextDraftRead();
     await page
@@ -349,10 +346,7 @@ test("a hosted project inspects, saves and applies original source through the r
   } finally {
     readReleases.forEach((release) => release());
     try {
-      if (!page.isClosed()) {
-        await page.unrouteAll({ behavior: "wait" });
-        await page.context().unrouteAll({ behavior: "wait" });
-      }
+      await closeFixturePage(page);
     } finally {
       await helper.close();
     }

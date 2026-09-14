@@ -222,7 +222,14 @@ jobs:
           sudo install -m 0644 "$RUNNER_TEMP/kaizen-build-isolation-check/verify.mjs" "$RUNNER_TEMP/kaizen-build-isolation-check/builder-build-payload.py" /var/lib/kaizen-build-isolation-check/
           astro_fixture="$(cat test-results/astro-integration-fixture-path.txt)"
           sudo cp -a "$astro_fixture/node_modules" /var/lib/kaizen-build-isolation-check/dependencies
-          isolation_manager="$(node -p 'require("node:path").join(require("node:path").dirname(require("node:path").dirname(process.execPath)),"lib/node_modules/npm/bin/npm-cli.js")')"
+          isolation_node_root="$(node -p 'require("node:path").dirname(require("node:path").dirname(process.execPath))')"
+          stat -Lc 'Runner npm ownership: uid=%u gid=%g mode=%a' "$isolation_node_root/lib/node_modules/npm/bin/npm-cli.js"
+          # The hosted tool cache need not meet the production owner/mode policy.
+          # Give this fixture its own immutable copy; keep the guard unchanged.
+          sudo cp -a "$isolation_node_root" /var/lib/kaizen-build-isolation-check/node
+          sudo chown -R root:root /var/lib/kaizen-build-isolation-check/node
+          sudo chmod -R go-w /var/lib/kaizen-build-isolation-check/node
+          isolation_manager=/var/lib/kaizen-build-isolation-check/node/lib/node_modules/npm/bin/npm-cli.js
           sudo systemd-run --unit=kaizen-build-isolation-check --wait --pipe --collect \
             -p User="$(id -un)" -p NoNewPrivileges=yes -p PrivateTmp=yes -p PrivateDevices=yes \
             -p ProtectSystem=strict -p ProtectHome=yes -p ProtectKernelTunables=no \
@@ -232,7 +239,7 @@ jobs:
             -p ReadWritePaths=/sys/fs/cgroup/system.slice/kaizen-build-isolation-check.service \
             --setenv=KAIZEN_SANDBOX_MANAGER="$isolation_manager" \
             --setenv=KAIZEN_SANDBOX_DEPENDENCIES=/var/lib/kaizen-build-isolation-check/dependencies \
-            "$(command -v node)" /var/lib/kaizen-build-isolation-check/verify.mjs
+            /var/lib/kaizen-build-isolation-check/node/bin/node /var/lib/kaizen-build-isolation-check/verify.mjs
       - run: pnpm test:builder:browser --project=chromium
       - name: Exercise the hosted repository transport
         run: pnpm test:builder:browser tests/builder/hosted-repository.spec.ts tests/builder/site-*.spec.ts --project=chromium
