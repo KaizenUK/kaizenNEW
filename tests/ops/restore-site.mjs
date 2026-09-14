@@ -60,19 +60,28 @@ if (action === "create") {
       catch (error) { if (attempt === 30 || !running) throw error; await new Promise(resolve => setTimeout(resolve, 100)); }
     }
     const adapters = { validateConfig: () => nginx(["-t"]), reload: () => nginx(["-s", "reload"]) };
+    // New workers can pass activation's verification while an old worker still
+    // drains an accepted connection. Retry only the full byte/identity observation,
+    // just as the release regression fixture does; never replay a mutation.
+    const expectLive = async manifest => {
+      for (let attempt = 0; ; attempt++) {
+        try { return await checkLive(origin, manifest); }
+        catch (error) { if (attempt === 5 || !running) throw error; await new Promise(resolve => setTimeout(resolve, 100)); }
+      }
+    };
     const fetchPage = (route, options = {}) => fetch(origin + route, { ...options, headers: { Connection: "close" } });
     assert.match(await (await fetchPage("/campaign/")).text(), /Campaign original/);
     for (const route of ["/.git/config", "/operator-settings", "/working-copy"]) assert.equal((await fetchPage(route)).status, 404);
     const next = await activateRelease({ store, id: "next", origin }, adapters);
     assert.equal(next.status, "live");
-    await checkLive(origin, await verifyRelease(store, "next"));
+    await expectLive(await verifyRelease(store, "next"));
     const redirect = await fetchPage("/old-url/?fixture=retained", { redirect: "manual" });
     assert.equal(redirect.status, 301);
     assert.ok(redirect.headers.get("location").endsWith("/campaign/?fixture=retained"));
     assert.equal((await fetchPage("/_astro/original.hash.js")).status, 200);
     const rollback = await activateRelease({ store, id: "original", origin }, adapters);
     assert.equal(rollback.status, "live");
-    await checkLive(origin, original);
+    await expectLive(original);
     assert.equal((await fetchPage("/_astro/next.hash.js")).status, 200);
     console.log(JSON.stringify({ restored: true, sourceUnavailable: true, checked: observed.checked,
       activation: next.status, rollback: rollback.status, privatePathsDenied: true }));

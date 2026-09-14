@@ -1,4 +1,5 @@
 import { test, expect } from "./browser-fixture";
+import { BUILDER_LEGAL } from "../../shared/builderLegal";
 import { readFile } from "node:fs/promises";
 
 test("hosted failures report safely without interrupting Settings, and stop at sign-out", async ({
@@ -23,6 +24,7 @@ test("hosted failures report safely without interrupting Settings, and stop at s
       window.fixtureSignOut=()=>{session=null;for(const fn of callbacks)fn('SIGNED_OUT',null)};
       const client={auth:{initialize:async()=>({error:null}),getSession:async()=>({data:{session},error:null}),onAuthStateChange:fn=>{callbacks.add(fn);return {data:{subscription:{unsubscribe:()=>callbacks.delete(fn)}}}},signOut:async()=>window.fixtureSignOut()},
       functions:{invoke:async(name,options)=>{
+        if(name==='builder-account') {if(options.body.action!=='legal-state')throw new Error('Unexpected account mutation in diagnostics fixture');return {data:{legal:${JSON.stringify({ ...BUILDER_LEGAL, acceptedAt: "2026-09-14T00:00:00Z" })}},error:null};}
         const action=options.body.action;
         if(action==='list') return {data:[{id:'${project}',name:'Beta fixture',archived:false,version:1,capabilities:{hasInventory:false,legacyWorkspace:false,publishPath:'worker'},access:{role:'owner',canPublish:true},destination:{kind:'unconfigured',label:'Not connected'}}],error:null};
         if(action==='record-error') {const response=await fetch('/__fixture-error-sink',{method:'POST',headers:{'Content-Type':'application/json',...options.headers},body:JSON.stringify(options.body),signal:options.signal});return {data:await response.json(),error:response.ok?null:{message:'Network report unavailable'}};}

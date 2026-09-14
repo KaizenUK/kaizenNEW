@@ -1,5 +1,6 @@
 import { test, expect, type Page } from "./browser-fixture";
 import { createInvitationHandler } from "../../supabase/functions/_shared/builderInvitations";
+import { BUILDER_LEGAL } from "../../shared/builderLegal";
 const owner = "11111111-1111-4111-8111-111111111111",
   person = "22222222-2222-4222-8222-222222222222";
 const project = "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa";
@@ -100,6 +101,18 @@ async function invitationFixture(page: Page) {
     const request = route.request(),
       input = request.postDataJSON(),
       name = request.url().split("/").pop();
+    if (name === "builder-account") {
+      if (input.action !== "legal-state")
+        throw new Error("Unexpected account mutation in invitation fixture");
+      // These fixture identities already accepted this version. Dedicated legal
+      // journeys exercise first acceptance and its real PostgreSQL record.
+      await route.fulfill({
+        json: {
+          legal: { ...BUILDER_LEGAL, acceptedAt: "2026-09-14T00:00:00Z" },
+        },
+      });
+      return;
+    }
     if (name === "builder-invite") {
       const response = await handler(
         new Request(request.url(), {

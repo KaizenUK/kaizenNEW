@@ -150,7 +150,9 @@ test("first-run dismissal follows the signed-in account and project", async ({
 }) => {
   const fixture = await accountFixture(page);
   try {
-    await pages(page);
+    // Start from the Pages URL. Changing identity remounts the legal gate and
+    // workspace, so the Account fixture's deep link must not choose the screen.
+    await page.goto(`/builder/?project=${fixture.project.id}`);
     await expect(card(page)).toBeVisible();
     await card(page)
       .getByRole("button", { name: "Dismiss start here" })
