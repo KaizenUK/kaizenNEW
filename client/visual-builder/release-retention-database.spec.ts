@@ -1,7 +1,15 @@
 import { beforeAll, afterAll, beforeEach, afterEach, expect, it } from "vitest";
 import { PGlite } from "@electric-sql/pglite";
-import { readFile, readdir } from "node:fs/promises";
+import { lstat, mkdtemp, readFile, readdir, rm } from "node:fs/promises";
 import { randomUUID } from "node:crypto";
+import os from "node:os";
+import path from "node:path";
+import { maintainClientReleases } from "../../scripts/builder-client-release-maintenance";
+import {
+  fakeClientWorker,
+  retirementAdapters,
+  retirementClientStore,
+} from "./releaseRetirementFixture";
 
 let db: PGlite;
 const actor = "22222222-2222-4222-8222-222222222222";
@@ -784,4 +792,106 @@ it("preserves a claim that wins cancellation and denies cancellation to browser 
   expect((await rpc("builder_release_retention_cancel", args)).phase).toBe(
     "removed",
   );
+});
+
+it("the client worker retires through the actual SQL fence only after rollback references and database grace clear", async () => {
+  const root = await mkdtemp(
+    path.join(os.tmpdir(), "kaizen-client-retention-sql-"),
+  );
+  try {
+    const site = await retirementClientStore(root, {
+      projectId: project,
+      destinationId: destination,
+      origin: `https://${destination}.example`,
+    });
+    const service = {
+      rpc: async (name: string, input: Record<string, unknown>) => {
+        const entries = Object.entries(input);
+        return (
+          await query(
+            `select ${name}(${entries.map(([key], i) => `${key}=>$${i + 1}`).join(",")}) as value`,
+            entries.map(([, value]) =>
+              value && typeof value === "object"
+                ? JSON.stringify(value)
+                : value,
+            ),
+          )
+        )[0].value;
+      },
+    };
+    const later = Date.now() + 120 * 86400000;
+    const run = () =>
+      maintainClientReleases(
+        {
+          environment: {
+            BUILDER_RELEASE_RETENTION_ENABLED: "1",
+            BUILDER_RELEASE_KEEP_COUNT: "2",
+          },
+          destination: site.destination,
+          workerId: "retention-worker",
+          connection: service,
+          clientWorker: fakeClientWorker(site.destination, "retention-worker"),
+        },
+        { ...retirementAdapters, now: () => later },
+      );
+    const old = await clientJob("c1");
+    const review = randomUUID();
+    await rpc("builder_client_review", [
+      review,
+      project,
+      actor,
+      destination,
+      0,
+      1,
+      "rollback",
+      null,
+      old,
+    ]);
+    expect(await run()).toEqual({ phase: "idle" });
+    await query(
+      "update builder_client_reviews set expires_at=clock_timestamp()-interval '1 second' where id=$1",
+      [review],
+    );
+    // Local age is satisfied, but the database's own grace refuses the claim;
+    // the attempt is cancelled by generation and its files remain.
+    expect(await run()).toMatchObject({ phase: "abandoned", artifactId: "c1" });
+    await lstat(path.join(site.store, "releases/c1/release.json"));
+    await mature("c1");
+    expect(await run()).toMatchObject({
+      phase: "removed",
+      artifactId: "c1",
+      recovered: false,
+    });
+    // Direct table reads stay private to the service role; inspect as the fixture owner.
+    const [row] = (
+      await db.query<any>(
+        "select phase,worker_id,attempt_generation,completed_at from builder_release_retirements where project_id=$1 and scope=$2 and artifact_id='c1'",
+        [project, scope],
+      )
+    ).rows;
+    expect(row).toMatchObject({
+      phase: "removed",
+      worker_id: "retention-worker",
+      attempt_generation: 1,
+    });
+    expect(row.completed_at).not.toBeNull();
+    await expect(
+      lstat(path.join(site.store, "releases/c1")),
+    ).rejects.toMatchObject({ code: "ENOENT" });
+    await expect(
+      rpc("builder_client_review", [
+        randomUUID(),
+        project,
+        actor,
+        destination,
+        0,
+        1,
+        "rollback",
+        null,
+        old,
+      ]),
+    ).rejects.toThrow(/no longer retained/);
+  } finally {
+    await rm(root, { recursive: true, force: true });
+  }
 });

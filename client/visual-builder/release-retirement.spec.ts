@@ -32,9 +32,22 @@ import {
   activateRelease,
   checkLive,
   initialiseStore,
+  listReleases,
   stageRelease,
   verifyRelease,
 } from "../../scripts/kaizen-releases.mjs";
+import { clientPublicationAction } from "../../scripts/client-publication.mjs";
+import {
+  clientRetirementWorker,
+  maintainClientReleases,
+  processStart,
+} from "../../scripts/builder-client-release-maintenance";
+import { maintainClientDestinations } from "../../scripts/builder-client-worker";
+import {
+  fakeClientWorker,
+  retirementClientStore,
+  retirementDatabase,
+} from "./releaseRetirementFixture";
 
 async function workerFixture() {
   const f = await fixture();
@@ -845,4 +858,461 @@ it("refuses a changed native producer configuration before resuming its saved at
   await expect(f.run()).rejects.toThrow(/reconciliation/);
   expect(f.calls).toHaveLength(calls);
   expect(await f.saved()).toEqual(pending);
+});
+
+async function clientFixture() {
+  const root = await mkdtemp(
+    path.join(os.tmpdir(), "kaizen-client-retirement-"),
+  );
+  roots.push(root);
+  const site = await retirementClientStore(root);
+  const now = Date.now() + 120 * day;
+  const database = retirementDatabase(path.join(root, "database.json"), now, {
+    [site.scope]: site.store,
+  });
+  const enabled = {
+    BUILDER_RELEASE_RETENTION_ENABLED: "1",
+    BUILDER_RELEASE_KEEP_COUNT: "2",
+  };
+  const maintain = (
+    clientWorker: any = fakeClientWorker(site.destination, "client-fixture"),
+    {
+      environment = enabled as NodeJS.ProcessEnv,
+      destination = site.destination,
+      adapters = {} as any,
+    } = {},
+  ) =>
+    maintainClientReleases(
+      {
+        environment,
+        destination,
+        workerId: "client-fixture",
+        connection: database,
+        clientWorker,
+      },
+      { ...quiet, now: () => now, ...adapters },
+    );
+  const saved = async () => {
+    const state = new ReleaseRetirementState(site.store);
+    await state.loadBinding();
+    return state.attempt();
+  };
+  return { root, ...site, now, database, enabled, maintain, saved };
+}
+function loseFinishOnce(database: ReturnType<typeof retirementDatabase>) {
+  let lost = false;
+  database.hook = async (action, _input, normal) => {
+    const result = await normal();
+    if (action === "finish" && !lost) {
+      lost = true;
+      throw new Error("finish reply lost");
+    }
+    return result;
+  };
+}
+const sortedReleases = async (store: string) =>
+  (await readdir(path.join(store, "releases"))).sort();
+
+it("retires a client release under the client worker's own process identity, never native protection", async () => {
+  const f = await clientFixture();
+  const worker = fakeClientWorker(f.destination, "client-fixture");
+  expect(await f.maintain(worker)).toMatchObject({
+    phase: "removed",
+    artifactId: "c1",
+    recovered: false,
+  });
+  expect(await sortedReleases(f.store)).toEqual(["c0", "c2", "c3"]);
+  expect((await listReleases(f.store)).selectedReleaseId).toBe("c3");
+  expect(
+    await readFile(path.join(f.store, "immutable/assets/shared.css"), "utf8"),
+  ).toContain("navy");
+  expect((await f.database.row(f.scope, "c1")).phase).toBe("removed");
+  expect(worker.retained).toBe(false);
+  const common = {
+    store: f.store,
+    origin: f.client.origin,
+    projectId: f.client.projectId,
+    scope: f.scope,
+    workerId: "client-fixture",
+    connection: f.database,
+  };
+  const native = await fixture();
+  await expect(
+    retireRelease({
+      ...common,
+      clientWorker: worker,
+      nativeFiles: native.options.nativeFiles,
+      controller: native.options.controller,
+    }),
+  ).rejects.toThrow(/needs reconciliation/);
+  await expect(
+    retireRelease({ ...native.options, clientWorker: worker }),
+  ).rejects.toThrow(/needs reconciliation/);
+  await expect(
+    retireRelease({
+      ...common,
+      clientWorker: fakeClientWorker(f.destination, "another-worker"),
+    }),
+  ).rejects.toThrow(/needs reconciliation/);
+  await expect(
+    f.maintain(
+      fakeClientWorker(
+        { ...f.destination, origin: "https://changed.fixture.example" },
+        "client-fixture",
+      ),
+    ),
+  ).rejects.toThrow(/configured client destination/);
+  expect(await f.saved()).toBeNull();
+});
+
+it("finishes an interrupted client retirement only after its recorded process stopped, even with new cleanup disabled", async () => {
+  const f = await clientFixture();
+  loseFinishOnce(f.database);
+  const first = fakeClientWorker(f.destination, "client-fixture");
+  await expect(f.maintain(first)).rejects.toThrow("finish reply lost");
+  expect(first.retained).toBe(true);
+  const attempt = await f.saved();
+  expect(attempt.owner).toEqual({ worker: first.identity });
+  const running = fakeClientWorker(f.destination, "client-fixture", {
+    stopped: false,
+    startTime: 2,
+  });
+  await expect(f.maintain(running)).rejects.toThrow(/needs reconciliation/);
+  expect(running.retained).toBe(true);
+  expect(await f.saved()).toEqual(attempt);
+  const disabled = {
+    BUILDER_RELEASE_RETENTION_ENABLED: "0",
+    BUILDER_RELEASE_KEEP_COUNT: "2",
+  };
+  const next = fakeClientWorker(f.destination, "client-fixture", {
+    startTime: 3,
+  });
+  expect(await f.maintain(next, { environment: disabled })).toMatchObject({
+    phase: "removed",
+    artifactId: "c1",
+    recovered: true,
+  });
+  expect(await f.saved()).toBeNull();
+  expect(await f.maintain(next, { environment: disabled })).toEqual({
+    phase: "disabled",
+  });
+  await expect(
+    stageRelease({
+      store: f.store,
+      source: f.source,
+      client: f.client,
+      id: "c1",
+    }),
+  ).rejects.toThrow(/retired/);
+});
+
+it("preserves a publication-owned activation lock and refuses a reassigned store before resuming", async () => {
+  const f = await clientFixture();
+  loseFinishOnce(f.database);
+  await expect(f.maintain()).rejects.toThrow("finish reply lost");
+  const lock = path.join(f.store, ".activation-lock");
+  await mkdir(lock);
+  const owner = JSON.stringify({
+    pid: 2147480000,
+    host: os.hostname(),
+    jobId: randomUUID(),
+    token: randomUUID(),
+  });
+  await writeFile(path.join(lock, "owner.json"), owner);
+  await expect(
+    f.maintain(
+      fakeClientWorker(f.destination, "client-fixture", { startTime: 2 }),
+    ),
+  ).rejects.toThrow(/belongs to another operation/);
+  expect(await readFile(path.join(lock, "owner.json"), "utf8")).toBe(owner);
+  await rm(lock, { recursive: true });
+  const moved = { ...f.destination, origin: "https://moved.fixture.example" };
+  await expect(
+    f.maintain(fakeClientWorker(moved, "client-fixture", { startTime: 2 }), {
+      destination: moved,
+    }),
+  ).rejects.toThrow(/cannot reassign/);
+  expect(
+    await f.maintain(
+      fakeClientWorker(f.destination, "client-fixture", { startTime: 3 }),
+    ),
+  ).toMatchObject({ phase: "removed", recovered: true });
+});
+
+it("refuses direct client activation of pending or retired releases, lists around a partial target and rolls back under capacity pressure", async () => {
+  const f = await clientFixture();
+  f.database.hook = async (action, _input, normal) => {
+    const result = await normal();
+    if (action === "claim") throw new Error("claim reply lost");
+    return result;
+  };
+  await expect(f.maintain()).rejects.toThrow("claim reply lost");
+  expect((await f.saved()).artifactId).toBe("c1");
+  await verifyRelease(f.store, "c1");
+  await expect(
+    clientPublicationAction(f.destination, "rollback", { id: "c1" }, quiet),
+  ).rejects.toThrow(/being removed/);
+  await expect(
+    clientPublicationAction(
+      f.destination,
+      "reconcile",
+      { id: "c3", restoreId: "c1" },
+      quiet,
+    ),
+  ).rejects.toThrow(/being removed/);
+  expect((await listReleases(f.store)).selectedReleaseId).toBe("c3");
+  f.database.hook = undefined;
+  await expect(
+    f.maintain(
+      fakeClientWorker(f.destination, "client-fixture", { startTime: 2 }),
+      {
+        adapters: {
+          afterRemove: async (relative: string) => {
+            if (relative === "release.json")
+              throw new Error("interrupted after the manifest");
+          },
+        },
+      },
+    ),
+  ).rejects.toThrow("interrupted after the manifest");
+  const listed = await listReleases(f.store);
+  expect(listed.selectedReleaseId).toBe("c3");
+  expect(listed.releases.map((item) => item.id).sort()).toEqual([
+    "c0",
+    "c2",
+    "c3",
+  ]);
+  expect(
+    await f.maintain(
+      fakeClientWorker(f.destination, "client-fixture", { startTime: 3 }),
+    ),
+  ).toMatchObject({ phase: "removed", recovered: true });
+  await expect(
+    clientPublicationAction(f.destination, "rollback", { id: "c1" }, quiet),
+  ).rejects.toThrow(/no longer retained/);
+  const limits = {
+    BUILDER_RELEASE_STORAGE_MAX_BYTES:
+      process.env.BUILDER_RELEASE_STORAGE_MAX_BYTES,
+    BUILDER_RELEASE_IMMUTABLE_MAX_BYTES:
+      process.env.BUILDER_RELEASE_IMMUTABLE_MAX_BYTES,
+  };
+  process.env.BUILDER_RELEASE_STORAGE_MAX_BYTES = "1";
+  process.env.BUILDER_RELEASE_IMMUTABLE_MAX_BYTES = "1";
+  try {
+    await writeFile(path.join(f.source, "index.html"), "<h1>New work</h1>");
+    await expect(
+      stageRelease({
+        store: f.store,
+        source: f.source,
+        client: f.client,
+        id: "c4",
+      }),
+    ).rejects.toThrow();
+    await clientPublicationAction(
+      f.destination,
+      "rollback",
+      { id: "c2" },
+      quiet,
+    );
+  } finally {
+    for (const [key, value] of Object.entries(limits))
+      if (value === undefined) delete process.env[key];
+      else process.env[key] = value;
+  }
+  expect((await listReleases(f.store)).selectedReleaseId).toBe("c2");
+  expect(await sortedReleases(f.store)).toEqual(["c0", "c2", "c3"]);
+});
+
+it("proves a stopped client worker from boot and kernel start identity, not from its PID alone", async () => {
+  const destination = {
+    projectId: randomUUID(),
+    destinationId: randomUUID(),
+    environment: "production",
+    origin: "https://identity.fixture.example",
+    label: "Identity fixture",
+    store: "/nonexistent/kaizen-identity-store",
+  };
+  const worker = await clientRetirementWorker({
+    workerId: "client-fixture",
+    destination,
+  });
+  expect(worker.identity).toMatchObject({
+    kind: "client",
+    processId: process.pid,
+    host: os.hostname(),
+  });
+  const child = spawn("sleep", ["30"], { stdio: "ignore" });
+  children.push(child);
+  await once(child, "spawn");
+  const started = await processStart(child.pid!);
+  const previous = {
+    ...worker.identity,
+    processId: child.pid!,
+    startTime: started!.startTime,
+  };
+  expect(await worker.stopped(previous)).toBe(false);
+  expect(
+    await worker.stopped({ ...previous, startTime: started!.startTime + 1 }),
+  ).toBe(true);
+  expect(await worker.stopped({ ...previous, host: "another-host" })).toBe(
+    false,
+  );
+  expect(await worker.stopped({ ...previous, bootId: randomUUID() })).toBe(
+    true,
+  );
+  const exited = once(child, "exit");
+  child.kill("SIGKILL");
+  await exited;
+  expect(await worker.stopped(previous)).toBe(true);
+});
+
+it("recovers a client retirement killed while holding the destination lock, using real process identity", async () => {
+  const f = await clientFixture();
+  const config = path.join(f.root, "child.json");
+  await writeFile(
+    config,
+    JSON.stringify({
+      databaseFile: path.join(f.root, "database.json"),
+      now: f.now,
+      scope: f.scope,
+      destination: f.destination,
+      workerId: "client-fixture",
+      environment: f.enabled,
+      killAfter: "release.json",
+    }),
+  );
+  const child = spawn(
+    process.execPath,
+    [
+      "--import",
+      "tsx",
+      path.resolve("tests/builder/client-retirement-child.ts"),
+      config,
+    ],
+    { stdio: ["ignore", "ignore", "pipe"] },
+  );
+  children.push(child);
+  let stderr = "";
+  child.stderr!.on("data", (chunk) => (stderr += chunk));
+  const [code, signal] = await once(child, "exit");
+  expect({ code, signal, stderr }).toMatchObject({ signal: "SIGKILL" });
+  const lock = JSON.parse(
+    await readFile(path.join(f.store, ".activation-lock/owner.json"), "utf8"),
+  );
+  expect(lock.pid).toBe(child.pid);
+  expect((await f.saved()).owner.worker).toMatchObject({
+    kind: "client",
+    processId: child.pid,
+  });
+  expect(
+    (await listReleases(f.store)).releases.map((item) => item.id).sort(),
+  ).toEqual(["c0", "c2", "c3"]);
+  expect(
+    await f.maintain(
+      await clientRetirementWorker({
+        workerId: "client-fixture",
+        destination: f.destination,
+      }),
+    ),
+  ).toMatchObject({ phase: "removed", artifactId: "c1", recovered: true });
+  for (const name of [".activation-lock", ".activation-lock.recovery"])
+    await expect(lstat(path.join(f.store, name))).rejects.toMatchObject({
+      code: "ENOENT",
+    });
+  expect((await f.database.row(f.scope, "c1")).phase).toBe("removed");
+  expect((await listReleases(f.store)).selectedReleaseId).toBe("c3");
+  await verifyRelease(f.store, "c2");
+});
+
+it("finishes owned client attempts before publications and retires at most one release per scheduled invocation", async () => {
+  const root = await mkdtemp(
+    path.join(os.tmpdir(), "kaizen-client-maintenance-"),
+  );
+  roots.push(root);
+  const a = await retirementClientStore(root, {
+      origin: "https://first-client.fixture.example",
+    }),
+    b = await retirementClientStore(root, {
+      origin: "https://second-client.fixture.example",
+    });
+  const registry = path.join(root, "destinations.json");
+  await writeFile(
+    registry,
+    JSON.stringify({
+      schemaVersion: 1,
+      destinations: [a.destination, b.destination],
+    }),
+  );
+  const now = Date.now() + 120 * day;
+  const database = retirementDatabase(path.join(root, "database.json"), now, {
+    [a.scope]: a.store,
+    [b.scope]: b.store,
+  });
+  let clock = Date.now();
+  const services = {
+    client: {
+      getClient: async () => {
+        throw new Error("No publication job expected");
+      },
+      rpc: database.rpc,
+    },
+    workerId: "client-fixture",
+    registry,
+    workDirectory: path.join(root, "private-work"),
+    adapters: { ...quiet, now: () => now },
+    environment: {
+      BUILDER_RELEASE_RETENTION_ENABLED: "1",
+      BUILDER_RELEASE_KEEP_COUNT: "2",
+      BUILDER_RELEASE_MAINTENANCE_INTERVAL_MINUTES: "60",
+    },
+    now: () => clock,
+    retirementWorker: async ({ destination }: any) =>
+      fakeClientWorker(destination, "client-fixture"),
+  };
+  const idle = [
+    { destinationId: a.client.destinationId, phase: "disabled" },
+    { destinationId: b.client.destinationId, phase: "disabled" },
+  ];
+  expect(
+    await maintainClientDestinations(services, { newWork: false }),
+  ).toEqual(idle);
+  await expect(
+    lstat(path.join(services.workDirectory, "release-maintenance.json")),
+  ).rejects.toMatchObject({ code: "ENOENT" });
+  expect(await maintainClientDestinations(services)).toEqual([
+    expect.objectContaining({
+      destinationId: a.client.destinationId,
+      phase: "removed",
+      artifactId: "c1",
+    }),
+    { destinationId: b.client.destinationId, phase: "disabled" },
+  ]);
+  expect(await maintainClientDestinations(services)).toEqual(idle);
+  clock += 61 * 60000;
+  const lock = path.join(a.store, ".activation-lock");
+  await mkdir(lock);
+  await writeFile(
+    path.join(lock, "owner.json"),
+    JSON.stringify({
+      pid: 2147480000,
+      host: os.hostname(),
+      token: randomUUID(),
+    }),
+  );
+  expect(await maintainClientDestinations(services)).toEqual([
+    expect.objectContaining({
+      destinationId: a.client.destinationId,
+      phase: "needs-reconciliation",
+      error: expect.stringMatching(/Another release activation owns the lock/),
+    }),
+    expect.objectContaining({
+      destinationId: b.client.destinationId,
+      phase: "removed",
+      artifactId: "c1",
+    }),
+  ]);
+  expect(await readFile(path.join(lock, "owner.json"), "utf8")).toContain(
+    "2147480000",
+  );
+  expect(await sortedReleases(b.store)).toEqual(["c0", "c2", "c3"]);
 });

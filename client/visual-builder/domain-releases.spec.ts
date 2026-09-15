@@ -33,9 +33,16 @@ import {
   checkLive,
   initialiseStore,
   nginxConfig,
+  listReleases,
   stageRelease,
   verifyRelease,
 } from "../../scripts/kaizen-releases.mjs";
+import { maintainClientReleases } from "../../scripts/builder-client-release-maintenance";
+import {
+  fakeClientWorker,
+  retirementAdapters,
+  retirementDatabase,
+} from "./releaseRetirementFixture";
 
 const roots: string[] = [];
 const children: ChildProcess[] = [];
@@ -771,3 +778,62 @@ it.runIf(Boolean(process.env.KAIZEN_NGINX_BINARY))(
   },
   30000,
 );
+
+it("keeps verifying and routing a client alias while an interrupted retirement has removed an older manifest", async () => {
+  const f = await fixture(),
+    old = await existing(f);
+  const destination = old.destination!;
+  const client = {
+    projectId: destination.projectId,
+    destinationId: destination.destinationId,
+    environment: "production",
+    origin: destination.origin,
+  };
+  for (const id of ["older-0", "older-1", "older-2"]) {
+    await writeFile(path.join(old.source, "index.html"), `<h1>${id}</h1>`);
+    await stageRelease({ source: old.source, store: old.store, client, id });
+  }
+  const scope = `client:${client.destinationId}`,
+    now = Date.now() + 120 * 86400000;
+  const database = retirementDatabase(
+    path.join(f.root, "retirement.json"),
+    now,
+    {
+      [scope]: old.store,
+    },
+  );
+  await expect(
+    maintainClientReleases(
+      {
+        environment: {
+          BUILDER_RELEASE_RETENTION_ENABLED: "1",
+          BUILDER_RELEASE_KEEP_COUNT: "2",
+        },
+        destination,
+        workerId: "domain-fixture",
+        connection: database,
+        clientWorker: fakeClientWorker(destination, "domain-fixture"),
+      },
+      {
+        ...retirementAdapters,
+        now: () => now,
+        afterRemove: async (relative: string) => {
+          if (relative === "release.json")
+            throw new Error("interrupted after the manifest");
+        },
+      },
+    ),
+  ).rejects.toThrow("interrupted after the manifest");
+  await expect(
+    lstat(path.join(old.store, "releases/older-0/release.json")),
+  ).rejects.toMatchObject({ code: "ENOENT" });
+  expect(
+    (await listReleases(old.store)).releases.map((item) => item.id).sort(),
+  ).toEqual(["older-1", "older-2", "published-one"]);
+  const prepared = await f.releases.prepare(old.item, old.manifest.id, guard);
+  expect(prepared.manifest).toEqual(old.manifest);
+  await f.releases.route(old.item, true, old.manifest.id, guard);
+  expect(await readFile(f.config.nginxFile, "utf8")).toContain(
+    `include "${old.store}/active.conf"`,
+  );
+});

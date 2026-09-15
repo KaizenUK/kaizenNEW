@@ -1,6 +1,6 @@
 # Claude handover — consolidated main
 
-Sean paused implementation and requested that all pending branch work be committed into `main` on 15 September 2026. This is the current handover and overrides older instructions to use a dirty launch worktree or defer the T4 commit. **Implementation stays paused until resumed.** This consolidation does not complete T4 or authorize treating L6 as deployed.
+Sean paused implementation and requested that all pending branch work be committed into `main` on 15 September 2026. This is the current handover and overrides older instructions to use a dirty launch worktree or defer the T4 commit. **Sean resumed implementation with Claude later on 15 September; D2d.2 is verified and uncommitted.** This consolidation does not complete T4 or authorize treating L6 as deployed.
 
 ## Open this checkout
 
@@ -16,7 +16,7 @@ Merge resolutions keep the newer hosted save/publish path, client/developer sepa
 
 ## Resume point
 
-**A–C, D0–D1, D2a–c and D2d.1 are implemented and verified in fixtures.** Resume at **D2d.2 — client/domain/retry and direct-call coverage**, then D2d.3 history, D2d.4 caller proof, D2e–f, D3–D5 and E–H. D2d.2 has only been inspected; no client/domain integration was changed after the pause.
+**A–C, D0–D1, D2a–c and D2d.1–2 are implemented and verified in fixtures.** Resume at **D2d.3 — history availability and user actions**, then D2d.4 caller proof, D2e–f, D3–D5 and E–H. D2d.2 (client/domain/retry/direct-call coverage) is in the working tree on main and not yet committed; see [the client caller guide](../builder-quotas.md#client-release-maintenance-caller).
 
 L0–L5 are recorded as deployed. **L6 and all unfinished T4 work remain undeployed.** The recorded production revision is `48823c6f04d49073eb1eb20be7bacc92556032cb`. New migrations, runtimes, services/timers and the matching frontend require the coordinated rollout in F–G. In particular, install the fixed native deployment launcher before using its modified workflow. Do not deploy this checkpoint just because it is on main.
 

@@ -2,7 +2,9 @@
 import {
   mkdir,
   lstat,
+  readFile,
   realpath,
+  rename,
   writeFile,
   unlink,
   rmdir,
@@ -25,6 +27,11 @@ import { assertProjectAssetReferences } from "../shared/builderProjectOperations
 import type { ClientPublicationSnapshot } from "../shared/builderClientPublication";
 import { verifyRelease } from "./kaizen-releases.mjs";
 import { inspectProcessLock, withRecoveryLock } from "./release-recovery.mjs";
+import {
+  clientRetirementWorker,
+  maintainClientReleases,
+} from "./builder-client-release-maintenance";
+import type { ClientRetirementWorker } from "./builder-release-retention";
 
 const uuid = (id: string) =>
   /^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/.test(
@@ -539,6 +546,113 @@ export async function recoverClientPublication(
   );
 }
 
+/** Runs after queued jobs in the same service invocation, so systemd never
+ * lets retirement hold a destination lock while this worker publishes to it.
+ * Owned attempts are finished every invocation; new retirement is rate-limited
+ * and removes at most one release per invocation. */
+export async function maintainClientDestinations(
+  services: Pick<
+    WorkerServices,
+    "client" | "workerId" | "registry" | "workDirectory" | "adapters"
+  > & {
+    environment?: NodeJS.ProcessEnv;
+    now?: () => number;
+    retirementWorker?: (input: {
+      workerId: string;
+      destination: any;
+    }) => Promise<ClientRetirementWorker>;
+  },
+  { newWork = true } = {},
+) {
+  const env = services.environment || process.env;
+  const interval = env.BUILDER_RELEASE_MAINTENANCE_INTERVAL_MINUTES ?? "60";
+  if (
+    !/^[1-9][0-9]{0,4}$/.test(interval) ||
+    Number(interval) > 10080 ||
+    ![undefined, "0", "1"].includes(env.BUILDER_RELEASE_RETENTION_ENABLED)
+  )
+    throw new Error(
+      "Configure release retention as 0 or 1 and its maintenance interval as 1–10080 minutes.",
+    );
+  const destinations = await readClientDestinations(services.registry);
+  let due = false;
+  if (env.BUILDER_RELEASE_RETENTION_ENABLED === "1" && newWork) {
+    await validateWorkDirectory(services.workDirectory, destinations);
+    await mkdir(services.workDirectory, { recursive: true, mode: 0o700 });
+    if ((await lstat(services.workDirectory)).isSymbolicLink())
+      throw new Error("Client worker storage must not be linked.");
+    // A schedule marker only: it grants no ownership or deletion authority.
+    const marker = path.join(
+      services.workDirectory,
+      "release-maintenance.json",
+    );
+    const now = (services.now || Date.now)();
+    const info = await lstat(marker).catch((error) => {
+      if (error.code === "ENOENT") return null;
+      throw error;
+    });
+    if (info && (!info.isFile() || info.size > 1024))
+      throw new Error("The release maintenance schedule file is unsafe.");
+    let last = 0;
+    try {
+      if (info)
+        last = Date.parse(JSON.parse(await readFile(marker, "utf8")).startedAt);
+    } catch {
+      last = 0;
+    }
+    due = !(last <= now && now - last < Number(interval) * 60000);
+    if (due) {
+      // Written first, so a crashing retirement cannot retry in a tight loop.
+      const temporary = `${marker}.${randomUUID()}.tmp`;
+      await writeFile(
+        temporary,
+        JSON.stringify({
+          schemaVersion: 1,
+          startedAt: new Date(now).toISOString(),
+        }),
+        { flag: "wx", mode: 0o600 },
+      );
+      await rename(temporary, marker);
+    }
+  }
+  const results: Record<string, unknown>[] = [];
+  let retired = false;
+  for (const destination of destinations) {
+    const store = await lstat(destination.store).catch((error) => {
+      if (error.code === "ENOENT") return null;
+      throw error;
+    });
+    if (!store) continue;
+    try {
+      const clientWorker = await (
+        services.retirementWorker || clientRetirementWorker
+      )({ workerId: services.workerId, destination });
+      const result = await maintainClientReleases(
+        {
+          environment: env,
+          destination,
+          workerId: services.workerId,
+          connection: services.client,
+          clientWorker,
+          recoverOnly: !due || retired,
+        },
+        services.adapters,
+      );
+      if (result.phase === "removed" && !(result as any).recovered)
+        retired = true;
+      results.push({ destinationId: destination.destinationId, ...result });
+    } catch (error) {
+      // One destination needing reconciliation must not stop the others.
+      results.push({
+        destinationId: destination.destinationId,
+        phase: "needs-reconciliation",
+        error: error.message,
+      });
+    }
+  }
+  return results;
+}
+
 export async function createClientCompiler() {
   const { createServer } = await import("vite");
   const server = await createServer({
@@ -639,77 +753,97 @@ async function cli() {
     throw new Error(
       "Use --provision <destination UUID>, --once, one job UUID, or --recover <job UUID> [--restore-previous].",
     );
+  const scheduled = !args[0] || args[0] === "--once";
+  const maintain = async (newWork: boolean) => {
+    for (const result of await maintainClientDestinations(
+      { client, workerId, registry, workDirectory },
+      { newWork },
+    )) {
+      if (result.error) {
+        process.stderr.write(JSON.stringify(result) + "\n");
+        process.exitCode = 1;
+      } else if (result.phase !== "disabled")
+        process.stdout.write(JSON.stringify(result) + "\n");
+    }
+  };
+  // A killed retirement can hold a destination's activation lock. Finish owned
+  // attempts first so queued publications do not fail on that stale lock.
+  if (scheduled) await maintain(false);
   const jobs =
     args[0] && args[0] !== "--once"
       ? [{ id: args[0] }]
       : await client.queuedClients(workerId);
-  if (!jobs.length) return;
-  // Vite loads only the trusted checkout renderer; uploaded source is never imported.
-  const compiler = await createClientCompiler();
-  try {
-    for (const job of jobs) {
-      try {
-        const result = await runClientPublication(job.id, {
-          client,
-          workerId,
-          registry,
-          workDirectory,
-          samplesRoot: path.resolve("public/builder-samples"),
-          compile: compiler.compile,
-          registeredAsset: async (projectId, assetId) => {
-            if (!uuid(projectId) || !uuid(assetId))
-              throw new Error("Invalid private asset reference.");
-            const response = await fetch(
-              new URL(
-                `/storage/v1/object/builder-project-files/${projectId}/${assetId}`,
-                url,
-              ),
-              {
-                headers: { apikey: key, Authorization: `Bearer ${key}` },
-                redirect: "error",
-                signal: AbortSignal.timeout(30000),
-              },
-            );
-            if (!response.ok || !response.body)
-              throw new Error(
-                "Private client media could not be retrieved by the worker.",
+  if (jobs.length) await runQueuedJobs(jobs);
+  // Publication always precedes new retained-release maintenance.
+  if (scheduled) await maintain(true);
+  async function runQueuedJobs(jobs: { id: string }[]) {
+    // Vite loads only the trusted checkout renderer; uploaded source is never imported.
+    const compiler = await createClientCompiler();
+    try {
+      for (const job of jobs) {
+        try {
+          const result = await runClientPublication(job.id, {
+            client,
+            workerId,
+            registry,
+            workDirectory,
+            samplesRoot: path.resolve("public/builder-samples"),
+            compile: compiler.compile,
+            registeredAsset: async (projectId, assetId) => {
+              if (!uuid(projectId) || !uuid(assetId))
+                throw new Error("Invalid private asset reference.");
+              const response = await fetch(
+                new URL(
+                  `/storage/v1/object/builder-project-files/${projectId}/${assetId}`,
+                  url,
+                ),
+                {
+                  headers: { apikey: key, Authorization: `Bearer ${key}` },
+                  redirect: "error",
+                  signal: AbortSignal.timeout(30000),
+                },
               );
-            const reader = response.body.getReader(),
-              chunks: Uint8Array[] = [];
-            let size = 0;
-            try {
-              for (;;) {
-                const part = await reader.read();
-                if (part.done) break;
-                size += part.value.length;
-                if (size > 32 * 1024 * 1024)
-                  throw new Error(
-                    "Published media must be smaller than 32 MB.",
-                  );
-                chunks.push(part.value);
+              if (!response.ok || !response.body)
+                throw new Error(
+                  "Private client media could not be retrieved by the worker.",
+                );
+              const reader = response.body.getReader(),
+                chunks: Uint8Array[] = [];
+              let size = 0;
+              try {
+                for (;;) {
+                  const part = await reader.read();
+                  if (part.done) break;
+                  size += part.value.length;
+                  if (size > 32 * 1024 * 1024)
+                    throw new Error(
+                      "Published media must be smaller than 32 MB.",
+                    );
+                  chunks.push(part.value);
+                }
+              } finally {
+                await reader.cancel().catch(() => {});
               }
-            } finally {
-              await reader.cancel().catch(() => {});
-            }
-            const bytes = new Uint8Array(size);
-            let offset = 0;
-            for (const chunk of chunks) {
-              bytes.set(chunk, offset);
-              offset += chunk.length;
-            }
-            return bytes;
-          },
-        });
-        process.stdout.write(JSON.stringify(result) + "\n");
-      } catch (error) {
-        process.stderr.write(
-          JSON.stringify({ id: job.id, error: error.message }) + "\n",
-        );
-        process.exitCode = 1;
+              const bytes = new Uint8Array(size);
+              let offset = 0;
+              for (const chunk of chunks) {
+                bytes.set(chunk, offset);
+                offset += chunk.length;
+              }
+              return bytes;
+            },
+          });
+          process.stdout.write(JSON.stringify(result) + "\n");
+        } catch (error) {
+          process.stderr.write(
+            JSON.stringify({ id: job.id, error: error.message }) + "\n",
+          );
+          process.exitCode = 1;
+        }
       }
+    } finally {
+      await compiler.close();
     }
-  } finally {
-    await compiler.close();
   }
 }
 if (

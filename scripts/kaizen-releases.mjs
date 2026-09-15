@@ -20,7 +20,10 @@ import { execFile } from "node:child_process";
 import { promisify } from "node:util";
 import { pathToFileURL } from "node:url";
 import { withRecoveryLock } from "./release-recovery.mjs";
-import { assertReleaseIdNotRetired } from "./release-retirement-state.mjs";
+import {
+  assertReleaseIdNotRetired,
+  unfinishedRetirement,
+} from "./release-retirement-state.mjs";
 import {
   checkReleaseStorage,
   copyReleaseFile,
@@ -983,6 +986,9 @@ export async function activateRelease(
     throw error;
   }
   return withLock(root, async () => {
+    // Direct CLI and worker activation/rollback share this refusal; retirement
+    // may have partly removed a release whose manifest still verifies.
+    await assertReleaseIdNotRetired(root, id, "activate");
     const previous = await currentConfig(root);
     if (!previous)
       throw new Error(
@@ -1090,6 +1096,10 @@ export async function reconcileRelease(
         throw new Error(
           "Selected configuration changed before recovery. Inspect the destination again.",
         );
+      // Only a newly selected restoration target is checked: the selected
+      // release is always protected, and retirement recovery reconciles it.
+      if (restoreId)
+        await assertReleaseIdNotRetired(root, restoreId, "activate");
       // Verify the artifact to be served against the store's fixed identity.
       // A corrupt candidate must not prevent restoring an intact previous site.
       const manifest = await verifyRelease(root, restoreId || id);
@@ -1164,9 +1174,13 @@ export async function reconcileRelease(
 export async function listReleases(store) {
   const root = await storeRoot(store),
     current = await currentConfig(root);
+  // Domain and publication checks list stores without the activation lock. A
+  // killed retirement's target is no longer retained and may lack its manifest.
+  const retiring = await unfinishedRetirement(root);
   const releases = [];
   for (const name of await readdir(path.join(root, "releases"))) {
     releaseId(name);
+    if (name === retiring && name !== current?.id) continue;
     const manifest = JSON.parse(
       await readFile(path.join(root, "releases", name, "release.json"), "utf8"),
     );

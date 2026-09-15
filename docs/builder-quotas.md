@@ -408,3 +408,32 @@ New retirement requires `BUILDER_RELEASE_RETENTION_ENABLED=1`; the default is of
 Eight new worker cases prove idle maintenance, operation lifetime, lost finish replies with cleanup disabled, deferred-child refusal, foreign-lock preservation, recovery ordering, nonmutating metadata-pair inspection and configured-worker checks. A separate checkout case proves recovery needs no new SHA while deployment still does. `l6-t4-retirement-worker-combined1.log` passes 257 cases across fifteen affected files with real Nginx and zero skips; `l6-t4-retirement-worker-launcher1.log` passes six launcher cases. Final `l6-t4-retirement-worker-types2.log` reports 463 files, zero errors/warnings and 199 hints; native and fixture bundles pass Node syntax checks.
 
 `l6-t4-retirement-worker-vps1.log` proves the actual maintenance caller under a disposable systemd service and outer flock. Two invocations are killed after partial removal while real detached descendants exist. The final invocation recovers the journal/checkout, proves those descendants stopped, resumes the same attempt with new cleanup disabled, completes accounting, preserves the selected site and immutable visitor bytes, and restores the retained rollback. All generated service/cgroup/files are removed. Its database/HTTP receipts remain simulated; no production service/provider/migration changed. Existing database and actual Nginx proof remains separately recorded. D2d.2 client/domain/retry coverage, D2d.3 history, D2d.4 combined caller checks and D2e pre-intent/immutable/abandoned-state retention remain outstanding.
+
+## Client release maintenance caller
+
+Client destinations are published only by the client worker (`kaizen-client-worker.service`, a oneshot timer unit without a delegated process group). It has no native operation journal, so client retirement does not borrow native protection. A client-scope attempt records a **client worker identity** instead: worker ID, a SHA-256 of the configured destination (project, destination, environment, origin and store; the label is display text), host, PID, boot ID and kernel start time. A later invocation adopts the attempt only with the same configured identity, and only after that exact process is proven gone on this host: a different boot, no process with that PID, a different start time for the PID, or a zombie. A process recorded on another host is never treated as stopped. Retirement starts no child processes, so the process boundary covers its work. Repository scopes still require the native operation and systemd controller, and each scope refuses the other owner type.
+
+`maintainClientDestinations` in `scripts/builder-client-worker.ts` runs inside the same scheduled `--once` invocation as publication, so systemd never runs it concurrently with that worker's jobs. The order is:
+
+1. Finish any owned attempt for every configured destination. The existing `reconcile` action verifies the selected release and clears the killed retirement's own stale activation lock first.
+2. Run queued publications.
+3. Consider new retirement.
+
+New retirement requires `BUILDER_RELEASE_RETENTION_ENABLED=1` (default off), runs at most every `BUILDER_RELEASE_MAINTENANCE_INTERVAL_MINUTES` (default 60; the private schedule marker grants no authority) and removes at most one release per invocation. An owned attempt still finishes after retention is turned off. A destination that needs reconciliation is reported and its files are preserved while other destinations continue; examples are a publication-owned activation lock, a changed destination configuration or an unproven previous process. Explicit single-job runs and `--recover` perform no maintenance.
+
+Direct callers are covered in the release engine itself. `activateRelease`, used for activation, rollback and unpublication by the client/native CLIs and workers, refuses a release with an unfinished retirement ("This release is being removed") or a permanent fence ("This release is no longer retained"). `reconcileRelease` checks a newly selected restoration target. Staging keeps its existing stricter refusal. `listReleases` omits an unselected unfinished retirement target, so client pre-claim checks and domain verification no longer fail on its intentionally partial manifest. The domain worker only reads the selection and verifies the selected artifact; its stores are ordinary client destinations or the native store, retired by their own callers. Local `ClientPublisher` stores have no service RPC and are never retired, but receive the same staging and activation refusals. Repository output for client native projects stays with the native release worker's configured scope. No-write client claim retries were already fenced by active-job protection in migration 019, so no SQL changed.
+
+Nine new cases cover:
+
+- client identity, with native protection refused for client scopes;
+- a lost completion finished only after stopped-process proof, with new cleanup disabled;
+- preservation of a publication-owned lock, and refusal of a reassigned store;
+- direct rollback and restoration refused for pending and retired releases;
+- listing around a partial manifest;
+- retained rollback succeeding under a 1-byte capacity limit while new staging is refused;
+- the actual `/proc` identity proof, including PID reuse;
+- a real child process killed with `SIGKILL` while holding the destination lock, then recovered;
+- scheduled one-per-invocation, interval and per-destination isolation.
+
+A separate case runs the client caller against the actual migration 019 in PGlite with real files: rollback-review protection, database grace cancellation, completion and later rollback refusal. Another verifies that a client alias can still be prepared and routed during a partial retirement. `l6-t4-client-retirement-combined1.log` passes 266 cases across fifteen affected files with actual Nginx and zero skips; `l6-t4-client-retirement-types1.log` reports 465 files, zero errors/warnings and 200 hints. Native release and domain worker bundles pass Node syntax checks, and the client worker CLI still refuses missing configuration. The killed-child case uses a real process, lock and files with a file-backed RPC double. No disposable systemd run of the client unit has been performed yet; D2d.4 records any installed-unit evidence. Nothing is installed or deployed.
+

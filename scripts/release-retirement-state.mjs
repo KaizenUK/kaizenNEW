@@ -140,8 +140,46 @@ function validateBinding(value, root, base) {
   if (value.fingerprint !== fingerprint) throw fail();
   return value;
 }
-function validateOwner(value) {
-  if (!exactKeys(value, ["operation", "controller"])) throw fail();
+// Client destinations are produced only by the client publication worker. It
+// has no native journal, so its executor is a boot/start-time process identity.
+function validateOwner(value, binding) {
+  if (exactKeys(value, ["worker"])) {
+    const worker = value.worker;
+    if (
+      !exactKeys(worker, [
+        "kind",
+        "workerId",
+        "configuration",
+        "projectId",
+        "processId",
+        "host",
+        "bootId",
+        "startTime",
+      ]) ||
+      worker.kind !== "client" ||
+      !hash.test(worker.configuration) ||
+      !/^[a-zA-Z0-9_-]{1,100}$/.test(worker.workerId || "") ||
+      !uuid.test(worker.projectId || "") ||
+      !Number.isSafeInteger(worker.processId) ||
+      worker.processId < 1 ||
+      worker.processId > 2147483647 ||
+      !/^[a-zA-Z0-9_.-]{1,253}$/.test(worker.host || "") ||
+      !uuid.test(worker.bootId || "") ||
+      !Number.isSafeInteger(worker.startTime) ||
+      worker.startTime < 0 ||
+      !binding.scope.startsWith("client:") ||
+      worker.workerId !== binding.workerId ||
+      worker.projectId !== binding.projectId
+    )
+      throw fail();
+    return;
+  }
+  if (
+    !exactKeys(value, ["operation", "controller"]) ||
+    binding.scope.startsWith("client:") ||
+    value.operation?.projectId !== binding.projectId
+  )
+    throw fail();
   const op = value.operation,
     controller = value.controller;
   if (
@@ -169,6 +207,27 @@ function validateOwner(value) {
     !/^[a-f0-9]{32}$/.test(controller.invocationId || "")
   )
     throw fail();
+}
+export function retirementOwnerProcess(owner) {
+  const executor = owner?.worker || owner?.operation;
+  if (!executor) throw fail();
+  return { host: executor.host, processId: executor.processId };
+}
+/** A later executor may adopt an attempt only with the same configured identity. */
+export function sameRetirementConfiguration(next, previous) {
+  if (next?.worker || previous?.worker)
+    return (
+      !!next?.worker &&
+      !!previous?.worker &&
+      ["kind", "workerId", "configuration", "projectId", "host"].every(
+        (key) => next.worker[key] === previous.worker[key],
+      )
+    );
+  return (
+    ["workerId", "configuration", "projectId", "host"].every(
+      (key) => next?.operation?.[key] === previous?.operation?.[key],
+    ) && next.controller?.unit === previous.controller?.unit
+  );
 }
 function validateEntry(value) {
   if (
@@ -241,8 +300,7 @@ function validateAttempt(value, binding) {
     value.entries.length > 20000
   )
     throw fail();
-  validateOwner(value.owner);
-  if (value.owner.operation.projectId !== binding.projectId) throw fail();
+  validateOwner(value.owner, binding);
   const entries = new Map();
   let bytes = 0;
   for (const entry of value.entries) {
@@ -601,10 +659,8 @@ export class ReleaseRetirementState {
   async begin(attempt) {
     if (!this.binding) throw fail();
     validateAttempt(attempt, this.binding);
-    if (
-      attempt.owner.operation.host !== hostname() ||
-      attempt.owner.operation.processId !== process.pid
-    )
+    const executor = retirementOwnerProcess(attempt.owner);
+    if (executor.host !== hostname() || executor.processId !== process.pid)
       throw fail();
     const previous = await this.attempt();
     if (!previous && (await this.isFenced(attempt.artifactId))) throw fail();
@@ -627,13 +683,11 @@ export class ReleaseRetirementState {
     // recovery cannot rely only on the original creator's stopped process.
     const replacement = { ...attempt, owner };
     validateAttempt(replacement, this.binding);
+    const executor = retirementOwnerProcess(owner);
     if (
-      owner.operation.processId !== process.pid ||
-      owner.operation.host !== hostname() ||
-      !["workerId", "configuration", "projectId", "host"].every(
-        (key) => owner.operation[key] === attempt.owner.operation[key],
-      ) ||
-      owner.controller.unit !== attempt.owner.controller.unit
+      executor.processId !== process.pid ||
+      executor.host !== hostname() ||
+      !sameRetirementConfiguration(owner, attempt.owner)
     )
       throw fail();
     const file = path.join(this.directory, "attempt.json"),
@@ -762,25 +816,58 @@ export class ReleaseRetirementState {
   }
 }
 
-/** Direct CLI staging must honor durable retirement even after files vanish.
- * This is read-only: damaged/partial records refuse staging until recovery. */
-export async function assertReleaseIdNotRetired(store, artifactId) {
-  if (!idPattern.test(artifactId)) throw fail();
+/** Read-only: the artifact an unfinished retirement may have partly removed.
+ * Listings omit it instead of failing on its intentionally partial files. */
+export async function unfinishedRetirement(store) {
   const state = new ReleaseRetirementState(store);
-  if (!(await state.loadBinding())) return;
-  if (await state.isFenced(artifactId))
-    throw new Error(
-      "This release ID has been retired. Stage a new release ID.",
-    );
+  if (!(await state.loadBinding())) return null;
   const saved = await state.read(
     path.join(state.directory, "attempt.json"),
     maximumAttempt,
+    true,
+  );
+  return saved ? validateAttempt(saved.value, state.binding).artifactId : null;
+}
+
+/** Direct CLI staging and activation must honor durable retirement even after
+ * files vanish. This is read-only: an exact first-publication pair is read
+ * without repair, and other damaged records refuse until recovery. */
+export async function assertReleaseIdNotRetired(
+  store,
+  artifactId,
+  use = "stage",
+) {
+  if (!idPattern.test(artifactId)) throw fail();
+  const state = new ReleaseRetirementState(store);
+  if (!(await state.loadBinding())) return;
+  // Staging keeps refusing an interrupted first publication until recovery;
+  // activation only reads that exact complete pair.
+  const tolerant = use !== "stage";
+  const fence = await state.read(
+    path.join(state.retired, `${artifactId}.json`),
+    2048,
+    tolerant,
+  );
+  if (fence) {
+    validateTombstone(fence.value, state.binding, artifactId);
+    throw new Error(
+      use === "stage"
+        ? "This release ID has been retired. Stage a new release ID."
+        : "This release is no longer retained. Choose another release.",
+    );
+  }
+  const saved = await state.read(
+    path.join(state.directory, "attempt.json"),
+    maximumAttempt,
+    tolerant,
   );
   if (
     saved &&
     validateAttempt(saved.value, state.binding).artifactId === artifactId
   )
     throw new Error(
-      "This release ID has an unfinished retirement. Reconcile it before staging.",
+      use === "stage"
+        ? "This release ID has an unfinished retirement. Reconcile it before staging."
+        : "This release is being removed. Choose another release.",
     );
 }

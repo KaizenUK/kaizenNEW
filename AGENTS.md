@@ -1,6 +1,6 @@
 # Kaizen
 
-**Current main handover — 15 September:** Sean paused implementation and authorized committing all pending work into `main`. Read [the consolidated Claude handover](docs/handover/claude-main-handover.md) first. Use `/home/sean/Documents/GitHub/kaizenNEW` on `main`; source from the earlier launch worktree is now committed here. Resume at D2d.2 only when implementation is resumed. Older instructions about uncommitted T4 or a required launch-worktree-only continuation are superseded.
+**Current main handover — 15 September:** Sean paused implementation and authorized committing all pending work into `main`. Read [the consolidated Claude handover](docs/handover/claude-main-handover.md) first. Use `/home/sean/Documents/GitHub/kaizenNEW` on `main`; source from the earlier launch worktree is now committed here. Implementation resumed with Claude on 15 September; D2d.2 is verified (uncommitted) and D2d.3 is next. Older instructions about uncommitted T4 or a required launch-worktree-only continuation are superseded.
 
 ## Paused builder work / Linux handover
 
@@ -8,7 +8,7 @@ For continuation of the multi-project visual builder, read `HANDOVER.md` first. 
 
 For the current unfinished L6-T4 work and a Claude takeover, read `docs/handover/l6-t4-claude-tasks.md` after `HANDOVER.md`. It identifies the latest proof and ordered continuation tasks; older next-step paragraphs are historical.
 
-The current D2 implementation is broken into six checkpoints in `docs/handover/l6-t4-release-retirement-tasks.md`. D2a–c are verified in fixtures, including actual release removal and recovery after two service kills. D2d.1 native worker/idle maintenance is also verified; continue D2d.2 client/domain/retry coverage, then history availability. Native integration is prepared but uninstalled; preserve its generation cancellation, last-executor ownership, store/native locks and serving/rollback checks.
+The current D2 implementation is broken into six checkpoints in `docs/handover/l6-t4-release-retirement-tasks.md`. D2a–c are verified in fixtures, including actual release removal and recovery after two service kills. D2d.1 native worker/idle maintenance and D2d.2 client/domain/retry/direct-call coverage are also verified; continue D2d.3 history availability. Native integration is prepared but uninstalled; preserve its generation cancellation, last-executor ownership, store/native locks and serving/rollback checks.
 
 A production-ready Astro static application with React islands, Sanity CMS, TypeScript, Vitest, and modern tooling.
 
