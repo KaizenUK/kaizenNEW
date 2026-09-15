@@ -140,7 +140,7 @@ async function packageCommand(): Promise<Command> {
     if (name === "npm-cli.js") return { cli, manager: "npm" };
   }
   throw new Error(
-    "Start the companion with pnpm dev or install Node with npm to run builds.",
+    "The helper cannot find pnpm or npm, so it cannot build the website. Start the helper with pnpm dev, or install Node with npm, then try again.",
   );
 }
 const mime: Record<string, string> = {

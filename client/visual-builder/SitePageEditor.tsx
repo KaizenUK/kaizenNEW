@@ -38,6 +38,7 @@ import { useSourceSelection } from "./useSourceSelection";
 import type { SitePage } from "./SitePages";
 import type { RepositoryGitStatus } from "../../scripts/builder-repository-git";
 import AssetLibrary from "./AssetLibrary";
+import { fieldKindLabel, fieldSourceLabel, groupTitle } from "./sourceLabels";
 
 export default function SitePageEditor({
   page,
@@ -92,7 +93,8 @@ export default function SitePageEditor({
   );
   const popup = useSourceSelection(inspection);
   const surface = useRef<HTMLDivElement>(null),
-    [available, setAvailable] = useState(900);
+    [available, setAvailable] = useState(900),
+    [availableHeight, setAvailableHeight] = useState(800);
   const returnFocus = useRef<HTMLElement | null>(null);
   const selected =
     inspection?.fields.filter((f) => canvas.ids.includes(f.id)) || [];
@@ -156,6 +158,21 @@ export default function SitePageEditor({
     if (connection.status === "connected" && draft.ready && draft.error)
       void draft.retry().catch(() => {});
   }, [connection.status, connection.expiresAt]);
+  // After "Apply", the applied notice waits for the rebuild it triggers and then settles.
+  const rebuild = useRef<"idle" | "waiting" | "building">("idle");
+  useEffect(() => {
+    if (rebuild.current === "waiting" && build.busy)
+      rebuild.current = "building";
+    else if (rebuild.current === "building" && !build.busy) {
+      rebuild.current = "idle";
+      if (build.job?.status === "succeeded")
+        setNotice("Changes applied to the folder. The preview shows them now.");
+      else if (build.error)
+        setNotice(
+          "Changes applied to the folder, but the preview did not rebuild.",
+        );
+    }
+  }, [build.busy, build.job?.status, build.error]);
   useEffect(() => {
     let live = true;
     void Promise.all(
@@ -200,9 +217,10 @@ export default function SitePageEditor({
     let animation = 0;
     const observer = new ResizeObserver((entries) => {
       cancelAnimationFrame(animation);
-      animation = requestAnimationFrame(() =>
-        setAvailable(Math.max(200, entries[0].contentRect.width)),
-      );
+      animation = requestAnimationFrame(() => {
+        setAvailable(Math.max(200, entries[0].contentRect.width));
+        setAvailableHeight(Math.max(320, entries[0].contentRect.height));
+      });
     });
     observer.observe(surface.current);
     return () => {
@@ -268,6 +286,7 @@ export default function SitePageEditor({
       setAppliedPlan(result.planId);
       setPlan(undefined);
       setReviewOpen(false);
+      rebuild.current = "waiting";
       setNotice("Changes applied to the folder. Building the updated preview…");
       const next = await storage.repository({
         action: "repository-source-inspect",
@@ -420,7 +439,22 @@ export default function SitePageEditor({
             {error || draft.error}
           </Notice>
         )}
-        {notice && <p role="status">{notice}</p>}
+        {notice && (
+          <Notice
+            tone={
+              /applied|committed|replaced|saved/i.test(notice)
+                ? "success"
+                : "info"
+            }
+            action={
+              <button type="button" onClick={() => setNotice("")}>
+                Dismiss
+              </button>
+            }
+          >
+            {notice}
+          </Notice>
+        )}
         {draft.stale && (
           <Notice tone="error">
             The website's files changed. Your earlier edits are kept.{" "}
@@ -460,18 +494,17 @@ export default function SitePageEditor({
       </nav>
       <div className="builder-site-layout" data-panel={mobilePanel}>
         <aside className="builder-site-outline">
-          <div className="builder-site-tabs">
-            {["outline", "assets", "sections"].map((id) => (
-              <button
-                type="button"
-                key={id}
-                aria-pressed={tab === id}
-                onClick={() => setTab(id)}
-              >
-                {id[0].toUpperCase() + id.slice(1)}
-              </button>
-            ))}
-          </div>
+          <Segmented
+            className="builder-site-segmented"
+            ariaLabel="Sidebar panels"
+            value={tab}
+            onChange={setTab}
+            items={[
+              { id: "outline", label: "Outline" },
+              { id: "assets", label: "Assets" },
+              { id: "sections", label: "Sections" },
+            ]}
+          />
           {tab === "outline" && (
             <>
               <label className="builder-site-search">
@@ -511,7 +544,7 @@ export default function SitePageEditor({
                     <button
                       type="button"
                       key={field.id}
-                      className="builder-site-field"
+                      className={`builder-site-field${draft.values[field.id] !== undefined ? " is-edited" : ""}`}
                       data-source-field={field.id}
                       style={
                         virtual
@@ -540,8 +573,10 @@ export default function SitePageEditor({
                       }}
                     >
                       <small>
-                        {field.label}{" "}
-                        {draft.values[field.id] !== undefined ? "· Edited" : ""}
+                        {fieldKindLabel(field)}
+                        {draft.values[field.id] !== undefined
+                          ? " · Edited"
+                          : ""}
                       </small>
                       <span>{draft.values[field.id] ?? field.value}</span>
                     </button>
@@ -554,7 +589,7 @@ export default function SitePageEditor({
             <div className="builder-site-panel-content">
               {inspection?.groups.map((group) => (
                 <section key={group.id}>
-                  <h3>{group.label}</h3>
+                  <h3>{groupTitle(group)}</h3>
                   {(draft.orders[group.id] || group.items.map((i) => i.id)).map(
                     (id, index, array) => (
                       <div className="builder-site-section" key={id}>
@@ -589,7 +624,9 @@ export default function SitePageEditor({
                 </section>
               ))}
               {!inspection?.groups.length && (
-                <p>This page has no safely reorderable sections.</p>
+                <p className="builder-hint">
+                  Nothing on this page can be reordered safely.
+                </p>
               )}
             </div>
           )}
@@ -669,6 +706,10 @@ export default function SitePageEditor({
                       </React.Fragment>
                     ))}
                   </dl>
+                  <p className="builder-hint">
+                    Runs the website's own build on this computer so you can
+                    edit on the page. Nothing goes live.
+                  </p>
                   <button
                     type="button"
                     className="builder-primary"
@@ -712,7 +753,10 @@ export default function SitePageEditor({
           {build.frame && (
             <div
               className="builder-site-frame-wrap"
-              style={{ width: width * zoom, height: Math.max(600, 800 * zoom) }}
+              style={{
+                width: width * zoom,
+                height: Math.max(420, availableHeight - 48),
+              }}
             >
               <iframe
                 ref={frameRef}
@@ -724,7 +768,7 @@ export default function SitePageEditor({
                 onLoad={canvas.hello}
                 style={{
                   width,
-                  height: Math.max(800, 600 / zoom),
+                  height: Math.max(420, availableHeight - 48) / zoom,
                   transform: `scale(${zoom})`,
                   transformOrigin: "top left",
                 }}
@@ -753,18 +797,16 @@ export default function SitePageEditor({
           )}
         </main>
         <aside className="builder-site-selected">
-          <div className="builder-site-tabs">
-            {["selected", "page"].map((id) => (
-              <button
-                type="button"
-                key={id}
-                aria-pressed={rightTab === id}
-                onClick={() => setRightTab(id)}
-              >
-                {id === "selected" ? "Selected" : "Page"}
-              </button>
-            ))}
-          </div>
+          <Segmented
+            className="builder-site-segmented"
+            ariaLabel="Inspector panels"
+            value={rightTab}
+            onChange={setRightTab}
+            items={[
+              { id: "selected", label: "Selected" },
+              { id: "page", label: "Page" },
+            ]}
+          />
           <div className="builder-site-panel-content">
             {rightTab === "selected" && (
               <>
@@ -794,17 +836,17 @@ export default function SitePageEditor({
                 )}
                 {selected.map((field) => (
                   <section key={field.id} className="builder-site-field-editor">
-                    <h3>
-                      {field.kind === "link"
-                        ? "Address"
-                        : field.kind === "image"
-                          ? "Image"
-                          : field.label}
-                    </h3>
+                    <h3>{fieldKindLabel(field)}</h3>
                     <label>
                       {field.design
                         ? `${field.design.property} · ${field.design.device}`
-                        : `Current ${field.kind === "link" ? "address" : "text"}`}
+                        : field.kind === "link"
+                          ? "Current address"
+                          : field.kind === "image"
+                            ? "Image file"
+                            : /^alt$/i.test(field.label)
+                              ? "Current description"
+                              : "Current text"}
                       {field.design ? (
                         <input
                           aria-label={`${field.file} ${field.label} line ${field.line}`}
@@ -873,10 +915,12 @@ export default function SitePageEditor({
                     </details>
                     <h4>Where it comes from</h4>
                     <p className="builder-hint">
-                      {field.file} · line {field.line}
+                      {fieldSourceLabel(field)} · {field.file}
                     </p>
                     {field.file !== page.route && (
-                      <p>Shared with other pages</p>
+                      <p className="builder-hint">
+                        Shared: changing this updates every page that uses it.
+                      </p>
                     )}
                     {field.kind === "image" &&
                       !/srcset/i.test(field.attribute || "") && (
@@ -896,8 +940,8 @@ export default function SitePageEditor({
                   !canvas.registration &&
                   !selected.some((f) => f.registration) && (
                     <p className="builder-hint">
-                      This component keeps its design. Layout controls require a
-                      registered component.
+                      Only text, links and images can change here. The design
+                      stays as it is.
                     </p>
                   )}
                 {canvas.reason &&
@@ -938,11 +982,19 @@ export default function SitePageEditor({
         </aside>
       </div>
       <footer className="builder-site-footer">
-        <span title={page.route}>
-          {page.path} · <span className="builder-hint">{page.route}</span> ·{" "}
-          {changed} unapplied {changed === 1 ? "change" : "changes"}
-          {git?.isRepository &&
-            ` · Branch ${git.branch} · ${git.files.length} files changed since the last commit`}
+        <span className="builder-site-footer-meta" title={page.route}>
+          <strong>{page.path}</strong>
+          <span className="builder-hint">{page.route}</span>
+          <span>
+            {changed} unapplied {changed === 1 ? "change" : "changes"}
+          </span>
+          {git?.isRepository && (
+            <span>
+              Branch {git.branch} · {git.files.length}{" "}
+              {git.files.length === 1 ? "file" : "files"} changed since the last
+              commit
+            </span>
+          )}
         </span>
         {changed > 0 && (
           <button type="button" onClick={draft.download}>
@@ -976,10 +1028,15 @@ export default function SitePageEditor({
               <input
                 value={commitMessage}
                 onChange={(e) => setCommitMessage(e.target.value)}
+                placeholder="Say what you changed"
                 maxLength={2000}
               />
             </label>
-            <button type="submit" disabled={busy || disconnected}>
+            <button
+              type="submit"
+              className="builder-primary"
+              disabled={busy || disconnected}
+            >
               Commit these changes
             </button>
           </form>
@@ -992,24 +1049,74 @@ export default function SitePageEditor({
             className="builder-app builder-modal builder-site-review"
             data-theme={theme}
           >
-            <Dialog.Title>Review my changes</Dialog.Title>
-            <Dialog.Description>
-              These changes will be applied to the website folder.
-            </Dialog.Description>
             <Dialog.Close
-              className="builder-icon-button"
+              className="builder-icon-button builder-modal-close"
               aria-label="Close review"
             >
               <X size={18} />
             </Dialog.Close>
+            <Dialog.Title className="builder-modal-title">
+              Review my changes
+            </Dialog.Title>
+            <Dialog.Description className="builder-modal-lede">
+              These files change in the website folder. Nothing is committed or
+              published yet.
+            </Dialog.Description>
             {plan?.changes
               .filter((c) => c.action !== "unchanged")
-              .map((change) => (
-                <details key={change.file}>
+              .map((change, index) => (
+                <details key={change.file} open={index === 0}>
                   <summary>
-                    {change.action} · {change.file}
+                    {change.action === "update"
+                      ? "Update"
+                      : change.action === "create"
+                        ? "Add"
+                        : change.action === "delete"
+                          ? "Remove"
+                          : change.action}{" "}
+                    {change.file}
                   </summary>
-                  {change.preview && <pre>{change.preview}</pre>}
+                  {(() => {
+                    const edits =
+                      inspection?.fields.filter(
+                        (f) =>
+                          f.file === change.file &&
+                          draft.values[f.id] !== undefined &&
+                          draft.values[f.id] !== f.value,
+                      ) || [];
+                    const reordered =
+                      inspection?.groups.filter(
+                        (g) => g.file === change.file && draft.orders[g.id],
+                      ) || [];
+                    if (!edits.length && !reordered.length) return null;
+                    return (
+                      <ul className="builder-review-edits">
+                        {edits.map((f) => (
+                          <li key={f.id}>
+                            <strong>{fieldKindLabel(f)}</strong>
+                            <del>{f.value || "(empty)"}</del>
+                            <ins>{draft.values[f.id] || "(empty)"}</ins>
+                          </li>
+                        ))}
+                        {reordered.map((g) => (
+                          <li key={g.id}>
+                            <strong>{groupTitle(g)}</strong>
+                            <span>Put in a new order</span>
+                          </li>
+                        ))}
+                      </ul>
+                    );
+                  })()}
+                  {change.preview && (
+                    <details className="builder-review-file">
+                      <summary>
+                        {change.action === "create"
+                          ? "File details"
+                          : "Show the whole file"}
+                      </summary>
+                      <pre>{change.preview}</pre>
+                    </details>
+                  )}
                   {change.conflict && (
                     <Notice tone="error">{change.conflict}</Notice>
                   )}

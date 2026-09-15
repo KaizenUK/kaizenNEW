@@ -1,5 +1,9 @@
 # Kaizen Web — Project Guidelines
 
+## Current launch implementation handover
+
+The unfinished launch work is in **`/home/sean/Documents/GitHub/kaizen-launch`**, branch `codex/builder-launch`. Read [its current Claude handover](../kaizen-launch/docs/handover/l6-t4-claude-tasks.md) and `HANDOVER.md` in that worktree before continuing. Its modified and untracked L6-T4 implementation is not in this checkout or GitHub. Preserve both worktrees and Sean's existing changes; continue from the linked checklist's current checkpoint.
+
 ## Content Principles (from guidance/Viral_Content_Guide.pdf)
 
 All website copy should follow the SUCCESS model:

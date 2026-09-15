@@ -26,11 +26,13 @@ export default function SitePages({
   onOpen,
   onConnect,
   onOpenBuilder,
+  onCount,
 }: {
   onOpenBuilder: (path: string) => boolean;
   inventory?: PageInventory;
   onOpen: (page: SitePage) => void;
   onConnect: () => void;
+  onCount?: (count: number) => void;
 }) {
   const connection = useSyncExternalStore(
     companionConnection.subscribe,
@@ -86,8 +88,21 @@ export default function SitePages({
       .filter((r) =>
         `${r.title} ${r.path}`.toLowerCase().includes(query.toLowerCase()),
       ) || [];
+  const total =
+    model?.routes.filter(
+      (r) =>
+        /\.(astro|tsx|jsx)$/.test(r.file) &&
+        !r.file.startsWith("src/pages/builder/"),
+    ).length || 0;
+  useEffect(() => {
+    if (model) onCount?.(total);
+  }, [model, total]);
   return (
-    <Card title="Pages from the website's code" ariaLabel="Website pages">
+    <Card
+      title="Pages from the website's code"
+      description="Edit their text, links and images on the page itself. Their design stays in the code."
+      ariaLabel="Website pages"
+    >
       {!localMode && connection.status !== "connected" && (
         <p>
           Connect the helper to open pages from a website folder.{" "}
@@ -157,12 +172,14 @@ export default function SitePages({
                     });
                   }}
                 >
-                  Edit
+                  Edit page
                 </button>
               </li>
             ))}
           </ul>
-          {!rows.length && <p>No website pages found.</p>}
+          {!rows.length && (
+            <p className="builder-empty">No website pages found.</p>
+          )}
         </>
       )}
       {error && <Notice tone="error">{error}</Notice>}

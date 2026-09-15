@@ -1,8 +1,10 @@
 # Kaizen
 
+**Current launch continuation:** unfinished L6-T4 code lives in `/home/sean/Documents/GitHub/kaizen-launch`, branch `codex/builder-launch`. Read [the current Claude handover](../kaizen-launch/docs/handover/l6-t4-claude-tasks.md) and that worktree's `HANDOVER.md` before resuming. Preserve modified/untracked files in both worktrees; this original checkout does not contain the current launch implementation.
+
 ## Paused builder work / Linux handover
 
-For continuation of the multi-project visual builder, read `HANDOVER.md` first. It records the 11 September 2026 user-requested pause for a Windows wipe, production state, private-data restoration, and Claude's visual/UX brief. The critical unfinished requirement is genuine WYSIWYG editing of existing sites; source-content fields and a separate selector are not completion. Resume implementation when Sean asks after migrating. The ordered task map for that work is `docs/existing-site-visual-editing-plan.md`. `KAIZEN-PRIVATE-MIGRATION*` files are private and must never be committed or published.
+For continuation of the multi-project visual builder, read `HANDOVER.md` first. It records the 11 September 2026 user-requested pause for a Windows wipe, production state, private-data restoration, and Claude's visual/UX brief. The critical unfinished requirement is genuine WYSIWYG editing of existing sites; source-content fields and a separate selector are not completion. Resume implementation when Sean asks after migrating. The ordered task map for that work is `docs/existing-site-visual-editing-plan.md`. That work shipped on 12 September 2026; the next ordered task map, from private beta to public product, is `docs/builder-launch-plan.md` with its one-page brief in `docs/handover/codex-launch-brief.md`. `KAIZEN-PRIVATE-MIGRATION*` files are private and must never be committed or published.
 
 A production-ready Astro static application with React islands, Sanity CMS, TypeScript, Vitest, and modern tooling.
 
@@ -77,6 +79,7 @@ export const GET: APIRoute = async ({ url }) => {
 ```
 
 Path aliases:
+
 - `@/*` - Client folder
 - `@shared/*` - Shared folder
 

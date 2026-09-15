@@ -1,5 +1,7 @@
 # Kaizen builder — Windows to Linux handover
 
+**Current launch continuation:** use `/home/sean/Documents/GitHub/kaizen-launch`, branch `codex/builder-launch`, and read [its Claude handover](../kaizen-launch/docs/handover/l6-t4-claude-tasks.md) before the historical notes below. That worktree holds the modified/untracked L6-T4 implementation and current checkpoint; it is not recoverable from this original checkout or GitHub alone. Preserve all existing work in both checkouts.
+
 Prepared 11 September 2026 at Sean's request; resumed on Linux on 12 September. **Read the Linux continuation below for current implementation and acceptance status.**
 
 This file is the starting point for Codex, Claude and Sean. It supersedes older “remaining work” statements in the chronological progress log. Read [the original request](docs/handover/original-request.txt), [Linux restoration](docs/handover/linux-restore.md), and [Claude's visual/UX brief](docs/handover/claude-ux-brief.md).
@@ -13,6 +15,8 @@ Sean successfully logged in and connected his local checkout. His hands-on feedb
 Do not narrow the goal to building new sites or content-only editing. Preserve original code and interactions; make unsupported/dynamic elements explicit rather than pretending arbitrary React/Astro can round-trip automatically. Design the actual end-user workflow with Claude before investing further in scattered controls.
 
 ## Linux continuation — 12 September 2026
+
+**Next phase:** the builder goes from a one-person private beta on the Kaizen site to clients and then the public. The ordered task map is [docs/builder-launch-plan.md](docs/builder-launch-plan.md); Codex starts from [the launch brief](docs/handover/codex-launch-brief.md).
 
 **Latest acceptance:** Sean confirmed that, from the live builder connected to `/home/sean/Documents/GitHub/kaizenNEW`, he opened the page, clicked **Build**, waited, and the project appeared. This clears the reported hosted-preview blocker. He waived Firefox/Safari checks and asked that any future Retry failure be handled as a bug fix rather than delaying this task. Retry was not needed in his successful first-build journey. See [the acceptance update](docs/existing-site-visual-editing-plan.md#user-confirmed-hosted-preview--12-september-2026).
 
@@ -30,18 +34,18 @@ The historical pause-state sections below describe 11 September, not current imp
 
 ## State at the pause
 
-| Area | Authoritative state |
-| --- | --- |
-| Repository | `https://github.com/KaizenUK/kaizenNEW`, branch `main`. This handover and all completed code are being pushed to GitHub. |
-| Last deployed application code | `e05783d74e6bcba8cc083969c183eaba5ac4f48e` — fixes default local companion startup. |
-| Live main release | `gh-34633894917-1`; [CI run 34633894917](https://github.com/KaizenUK/kaizenNEW/actions/runs/34633894917) passed, including served-output verification and database finalization. |
-| Code newer than production | `1486788` adds publication delivery warnings and strengthened tests. **Committed and verified locally; not deployed to the website or Supabase function.** The handover push uses `[skip ci]` so backing up work does not publish it. |
-| Hosted builder | <https://kaizenweb.co.uk/builder/>. Password protected. Open signup disabled. Sean has signed in successfully. |
-| Sean's login | `sean@kaizenweb.co.uk`. Sean chose his password; none is recorded here. |
-| Acceptance client | <https://client-demo.kaizenweb.co.uk>. Separate destination on the existing VPS, expressly authorised by Sean. |
-| Current client artifact | `300d7710-69c9-46fe-82ed-5e940997d80d`; freshly verified against the public server with 11 checks. This supersedes older artifact IDs in the operations history. |
-| Main unresolved functionality | Existing-site WYSIWYG editing and the visual/UX redesign. |
-| Workstation | Windows checkout was `C:\Users\seanm\Documents\GitHub\kaizenNEW`. No Linux workstation acceptance has been performed. |
+| Area                           | Authoritative state                                                                                                                                                                                                                   |
+| ------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Repository                     | `https://github.com/KaizenUK/kaizenNEW`, branch `main`. This handover and all completed code are being pushed to GitHub.                                                                                                              |
+| Last deployed application code | `e05783d74e6bcba8cc083969c183eaba5ac4f48e` — fixes default local companion startup.                                                                                                                                                   |
+| Live main release              | `gh-34633894917-1`; [CI run 34633894917](https://github.com/KaizenUK/kaizenNEW/actions/runs/34633894917) passed, including served-output verification and database finalization.                                                      |
+| Code newer than production     | `1486788` adds publication delivery warnings and strengthened tests. **Committed and verified locally; not deployed to the website or Supabase function.** The handover push uses `[skip ci]` so backing up work does not publish it. |
+| Hosted builder                 | <https://kaizenweb.co.uk/builder/>. Password protected. Open signup disabled. Sean has signed in successfully.                                                                                                                        |
+| Sean's login                   | `sean@kaizenweb.co.uk`. Sean chose his password; none is recorded here.                                                                                                                                                               |
+| Acceptance client              | <https://client-demo.kaizenweb.co.uk>. Separate destination on the existing VPS, expressly authorised by Sean.                                                                                                                        |
+| Current client artifact        | `300d7710-69c9-46fe-82ed-5e940997d80d`; freshly verified against the public server with 11 checks. This supersedes older artifact IDs in the operations history.                                                                      |
+| Main unresolved functionality  | Existing-site WYSIWYG editing and the visual/UX redesign.                                                                                                                                                                             |
+| Workstation                    | Windows checkout was `C:\Users\seanm\Documents\GitHub\kaizenNEW`. No Linux workstation acceptance has been performed.                                                                                                                 |
 
 Sean authorises direct production/main deployment, not a staging deployment; staging capability remains part of the product. He authorises dependency upgrades, including majors. He selected his **local GitHub Desktop checkout**, not a managed VPS repository, for existing-site editing. No new permission question is needed for those choices. Never commit private credentials.
 
@@ -112,35 +116,35 @@ Sean authorises direct production/main deployment, not a staging deployment; sta
 
 ## Verification at the pause
 
-| Evidence | Result and scope |
-| --- | --- |
-| Latest full unit/integration suite | 204 passed, 1 optional Nginx skip, 41 files, 69.87 seconds. Includes unreleased delivery-warning changes. |
-| Latest full Unity browser suite | 31 passed, 2 optional skips, 4.2 minutes. Before delivery-warning changes; includes companion, source editing and native backup. Optional skips are real external asset packs and local Nginx publication. |
-| Affected browser follow-up | Client history/publication warning review at mobile width and repository handoff: 2 passed in 26.3 seconds after warning changes. |
-| Type check | 310 files, 0 errors, 0 warnings, 171 hints; TypeScript succeeded. |
-| Edge check | Deno check of `supabase/functions/builder-projects/index.ts` passed after warning changes. |
-| Production build | Last deployed `e05783d` CI passed full site/Studio build, served-output checks and finalization. No production build/deploy of `1486788` is claimed. |
-| Independent exports | Astro 7.3.2 and standalone React/Vite 8.3.0 fixtures installed/built outside the repo; desktop/mobile navigation, keyboard menu, links, console/private-source checks and zero-audit snapshots were verified during dependency work. |
-| Hosted security | Real production unrelated-account API/database/Storage denial, immutable media, owner/editor/publish distinction and revocation passed. |
-| Actual companion | Signed-in production editor consent, local source inspection/save/reopen/apply/build/selection/disconnect passed on isolated source; normal port 4321 startup was then separately verified and confirmed by Sean. This proves the implemented content-editing flow, not the missing WYSIWYG flow. |
-| Current client output | Artifact `300d7710-69c9-46fe-82ed-5e940997d80d` passed 11 checks; those byte checks do not prove every authored link has a destination. `/contact/` is a separately observed 404. |
+| Evidence                           | Result and scope                                                                                                                                                                                                                                                                                  |
+| ---------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Latest full unit/integration suite | 204 passed, 1 optional Nginx skip, 41 files, 69.87 seconds. Includes unreleased delivery-warning changes.                                                                                                                                                                                         |
+| Latest full Unity browser suite    | 31 passed, 2 optional skips, 4.2 minutes. Before delivery-warning changes; includes companion, source editing and native backup. Optional skips are real external asset packs and local Nginx publication.                                                                                        |
+| Affected browser follow-up         | Client history/publication warning review at mobile width and repository handoff: 2 passed in 26.3 seconds after warning changes.                                                                                                                                                                 |
+| Type check                         | 310 files, 0 errors, 0 warnings, 171 hints; TypeScript succeeded.                                                                                                                                                                                                                                 |
+| Edge check                         | Deno check of `supabase/functions/builder-projects/index.ts` passed after warning changes.                                                                                                                                                                                                        |
+| Production build                   | Last deployed `e05783d` CI passed full site/Studio build, served-output checks and finalization. No production build/deploy of `1486788` is claimed.                                                                                                                                              |
+| Independent exports                | Astro 7.3.2 and standalone React/Vite 8.3.0 fixtures installed/built outside the repo; desktop/mobile navigation, keyboard menu, links, console/private-source checks and zero-audit snapshots were verified during dependency work.                                                              |
+| Hosted security                    | Real production unrelated-account API/database/Storage denial, immutable media, owner/editor/publish distinction and revocation passed.                                                                                                                                                           |
+| Actual companion                   | Signed-in production editor consent, local source inspection/save/reopen/apply/build/selection/disconnect passed on isolated source; normal port 4321 startup was then separately verified and confirmed by Sean. This proves the implemented content-editing flow, not the missing WYSIWYG flow. |
+| Current client output              | Artifact `300d7710-69c9-46fe-82ed-5e940997d80d` passed 11 checks; those byte checks do not prove every authored link has a destination. `/contact/` is a separately observed 404.                                                                                                                 |
 
 Tests used isolated directories and sample assets. Personal `.kaizen-builder` was not used as a test workspace. Ignored `test-results/` and OS-temp fixture folders will not survive a wipe unless separately copied; durable results and reproduction commands are recorded here. Do not treat old test log prose as proof of future changes.
 
 ## Source map for the next developer
 
-| Work | Files |
-| --- | --- |
-| Editor, shell and appearance | `client/visual-builder/BuilderApp.tsx`, `shell.tsx`, `builder.css`, `PagesView.tsx`, `ProjectsView.tsx` |
-| Native content UI and drafts | `SourcePageEditor.tsx`, `useSourceEditingDraft.ts`, `useSourceSelection.ts`, `shared/builderSourceEditing.ts` |
-| Source inspection/patching | `scripts/builder-source-editing.ts`, `builder-repository.ts`, `builder-source-drafts.ts`, `builder-native-backup.ts` |
-| Local builds/preview transport | `scripts/builder-runner.ts`, `builder-source-preview.ts`, `client/visual-builder/RepositoryBuild.tsx` |
-| Hosted/local pairing | `HostedRepository.tsx`, `CompanionWindow.tsx`, `companionConnection.ts`, `scripts/builder-companion.ts`, `builder-local.ts`, `shared/builderCompanion.ts` |
-| Project state/auth/media | `storage.ts`, `projectStorage.ts`, `cloudProjects.ts`, `scripts/builder-projects.ts`, `supabase/functions/builder-projects/` |
-| Export and registered components | `exportProject.ts`, `Renderer.tsx`, `RegisteredBlocks.tsx`, `shared/builderRegistry.ts` |
-| Client publishing | `ClientPublications.tsx`, `scripts/builder-client-publisher.ts`, `builder-client-worker.ts`, `client-publication.mjs`, `supabase/functions/_shared/clientPublication.ts` |
-| New shared delivery checks | `shared/builderDelivery.ts`, `client/visual-builder/delivery.spec.ts` |
-| Browser coverage | `tests/builder/`; base config `playwright.builder.config.ts`, Windows/local variant `playwright.builder.local.config.ts` |
+| Work                             | Files                                                                                                                                                                    |
+| -------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Editor, shell and appearance     | `client/visual-builder/BuilderApp.tsx`, `shell.tsx`, `builder.css`, `PagesView.tsx`, `ProjectsView.tsx`                                                                  |
+| Native content UI and drafts     | `SourcePageEditor.tsx`, `useSourceEditingDraft.ts`, `useSourceSelection.ts`, `shared/builderSourceEditing.ts`                                                            |
+| Source inspection/patching       | `scripts/builder-source-editing.ts`, `builder-repository.ts`, `builder-source-drafts.ts`, `builder-native-backup.ts`                                                     |
+| Local builds/preview transport   | `scripts/builder-runner.ts`, `builder-source-preview.ts`, `client/visual-builder/RepositoryBuild.tsx`                                                                    |
+| Hosted/local pairing             | `HostedRepository.tsx`, `CompanionWindow.tsx`, `companionConnection.ts`, `scripts/builder-companion.ts`, `builder-local.ts`, `shared/builderCompanion.ts`                |
+| Project state/auth/media         | `storage.ts`, `projectStorage.ts`, `cloudProjects.ts`, `scripts/builder-projects.ts`, `supabase/functions/builder-projects/`                                             |
+| Export and registered components | `exportProject.ts`, `Renderer.tsx`, `RegisteredBlocks.tsx`, `shared/builderRegistry.ts`                                                                                  |
+| Client publishing                | `ClientPublications.tsx`, `scripts/builder-client-publisher.ts`, `builder-client-worker.ts`, `client-publication.mjs`, `supabase/functions/_shared/clientPublication.ts` |
+| New shared delivery checks       | `shared/builderDelivery.ts`, `client/visual-builder/delivery.spec.ts`                                                                                                    |
+| Browser coverage                 | `tests/builder/`; base config `playwright.builder.config.ts`, Windows/local variant `playwright.builder.local.config.ts`                                                 |
 
 Unqualified frontend filenames in this table are under `client/visual-builder/`.
 

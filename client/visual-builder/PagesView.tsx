@@ -44,6 +44,7 @@ export function pageStatus(page: BuilderPage): {
 
 export default function PagesView({
   sitePages,
+  sitePagesFirst = false,
   workspace,
   localMode,
   email,
@@ -56,6 +57,7 @@ export default function PagesView({
   login,
 }: {
   sitePages?: React.ReactNode;
+  sitePagesFirst?: boolean;
   workspace?: Workspace;
   localMode: boolean;
   email?: string;
@@ -290,7 +292,14 @@ export default function PagesView({
             </section>
           </>
         )}
-        {sitePages}
+        {sitePages && (
+          <div
+            className="builder-site-pages-slot"
+            style={sitePagesFirst ? { order: -1 } : undefined}
+          >
+            {sitePages}
+          </div>
+        )}
       </div>
     </>
   );

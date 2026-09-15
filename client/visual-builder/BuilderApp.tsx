@@ -156,6 +156,7 @@ function BuilderWorkspace({ inventory }: { inventory?: PageInventory } = {}) {
   );
   const [editingComponent, setEditingComponent] = useState<string>();
   const [sitePage, setSitePage] = useState<SitePage>();
+  const [siteCount, setSiteCount] = useState(0);
   const workspaceRef = useRef<Workspace>(undefined);
   const loadSequence = useRef(0);
   const authAccount = useRef<string | undefined>(undefined);
@@ -440,10 +441,12 @@ function BuilderWorkspace({ inventory }: { inventory?: PageInventory } = {}) {
           onCreate={(template) => void create(template)}
           onOpen={setActive}
           onRetry={() => void reload()}
+          sitePagesFirst={siteCount > 0}
           sitePages={
             workspace && (
               <SitePages
                 inventory={activeProjectId === "kaizen" ? inventory : undefined}
+                onCount={setSiteCount}
                 onOpen={setSitePage}
                 onOpenBuilder={(path) => {
                   const existing = workspace.pages.find(

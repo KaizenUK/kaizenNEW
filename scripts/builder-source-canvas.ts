@@ -31,15 +31,17 @@ export function canvasScript(
   let active, selected, hovered, dragging, timer, locked = true;
   const outline = document.createElement('div');
   outline.setAttribute('data-kaizen-overlay','');
-  outline.style.cssText='position:fixed;pointer-events:none;border:2px solid #00a879;z-index:2147483646;display:none;box-sizing:border-box';
+  outline.style.cssText='position:fixed;pointer-events:none;border:2px solid #6c5dd3;border-radius:3px;z-index:2147483646;display:none;box-sizing:border-box';
   const hint = document.createElement('div');
-  hint.style.cssText='position:fixed;pointer-events:none;background:#18332d;color:white;font:13px system-ui;padding:6px 10px;border-radius:4px;z-index:2147483647;display:none;max-width:320px';
+  hint.style.cssText='position:fixed;pointer-events:none;background:#1b1d21;color:white;font:13px/1.4 Inter,system-ui,sans-serif;padding:6px 10px;border-radius:8px;z-index:2147483647;display:none;max-width:320px;box-shadow:0 6px 20px rgba(0,0,0,.25)';
   const handles = document.createElement('div');
   handles.setAttribute('data-kaizen-overlay','');
-  handles.style.cssText='position:fixed;display:none;z-index:2147483647;background:white;color:#173f32;border:1px solid #00a879;padding:4px;border-radius:4px;font:14px system-ui';
+  handles.style.cssText='position:fixed;display:none;align-items:center;gap:2px;z-index:2147483647;background:white;color:#1b1d21;border:1px solid #6c5dd3;padding:2px 4px 2px 8px;border-radius:8px;font:12px/1 Inter,system-ui,sans-serif;box-shadow:0 4px 14px rgba(0,0,0,.18)';
+  const moveLabel=document.createElement('span'); moveLabel.textContent='Move'; moveLabel.style.cssText='margin-right:4px;color:#6f7181'; handles.append(moveLabel);
   for (const [label,by] of [['Move section up',-1],['Move section down',1]]) {
     const button=document.createElement('button'); button.textContent=by<0?'↑':'↓'; button.setAttribute('aria-label',label);
-    button.style.cssText='font:inherit;padding:4px 10px;cursor:pointer';
+    button.style.cssText='font:inherit;padding:5px 8px;cursor:pointer;border:0;background:transparent;border-radius:6px;color:#1b1d21';
+    button.addEventListener('mouseenter',()=>button.style.background='#eeebfb'); button.addEventListener('mouseleave',()=>button.style.background='transparent');
     button.addEventListener('click',()=>{ if(!hovered?.group || locked) return; const {group,id}=hovered.group; const model=groupBindings.get(group); const order=[...model.order]; const index=order.indexOf(id), to=index+by; if(to<0 || to>=order.length) return; [order[index],order[to]]=[order[to],order[index]]; reorder(group,order); send('order',{id:group,order}); });
     handles.append(button);
   }
@@ -127,10 +129,10 @@ export function canvasScript(
   function highlight(picked) {
     if(!picked) return; hovered=picked;
     const rect=picked.element.getBoundingClientRect(), editable=picked.ids.length>0;
-    Object.assign(outline.style,{display:'block',left:rect.left+'px',top:rect.top+'px',width:rect.width+'px',height:rect.height+'px',borderColor:editable?'#00a879':'#92999e'});
+    Object.assign(outline.style,{display:'block',left:rect.left+'px',top:rect.top+'px',width:rect.width+'px',height:rect.height+'px',borderColor:editable?'#6c5dd3':'#9a9cad',borderStyle:editable?'solid':'dashed'});
     hint.textContent=editable?'Double-click or press Enter to edit':managedReason;
     Object.assign(hint.style,{display:editable?'none':'block',left:Math.max(4,Math.min(rect.left,innerWidth-324))+'px',top:Math.max(4,rect.top-40)+'px'});
-    handles.style.display=picked.group&&!locked?'block':'none';
+    handles.style.display=picked.group&&!locked?'flex':'none';
     if(picked.group) {const section=groupBindings.get(picked.group.group).items.get(picked.group.id).getBoundingClientRect();Object.assign(handles.style,{left:Math.max(4,Math.min(innerWidth-88,section.right-80))+'px',top:Math.max(4,section.top-32)+'px'});}
   }
   function changeValue(id,value) {

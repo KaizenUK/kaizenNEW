@@ -4,7 +4,7 @@ import react from "@vitejs/plugin-react";
 export default defineConfig({
   base: "/studio/",
   plugins: [react()],
-  envPrefix: ["VITE_", "SANITY_", "PUBLIC_"],
+  envPrefix: ["VITE_", "SANITY_STUDIO_", "PUBLIC_"],
   define: {
     "process.env": {},
     "process.platform": '"browser"',

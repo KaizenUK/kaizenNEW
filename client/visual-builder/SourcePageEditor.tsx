@@ -9,19 +9,11 @@ import type { RepositoryPlan } from "../../scripts/builder-repository";
 import { useSourceEditingDraft } from "./useSourceEditingDraft";
 import { useSourceSelection } from "./useSourceSelection";
 import { Notice, Pill } from "./shell";
+import { fieldKindLabel as kindLabel } from "./sourceLabels";
 
 /* The page's words shown as a content outline: read it like a page, click a line to change it. */
 
 const OPEN_ALL_UP_TO = 6;
-function kindLabel(field: SourceField): string {
-  if (field.kind === "link") return "Link";
-  if (field.kind === "image") return "Image";
-  if (/^h[1-6]$|^(title|heading|headline)$/i.test(field.label))
-    return "Heading";
-  if (/^alt$/i.test(field.label)) return "Image description";
-  if (/^(button|cta|label)$/i.test(field.label)) return "Button";
-  return "Text";
-}
 const fileName = (file: string) => file.split("/").pop() || file;
 
 export default function SourcePageEditor({
