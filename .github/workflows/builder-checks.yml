@@ -47,6 +47,12 @@ on:
       - "supabase/functions/builder-account/**"
       - "supabase/functions/builder-billing/**"
       - "supabase/functions/builder-billing-webhook/**"
+      - "supabase/functions/builder-report/**"
+      - "shared/builderAbuseReport.ts"
+      - "scripts/builder-abuse-operator.ts"
+      - "scripts/storage-admission.mjs"
+      - "scripts/process-identity.mjs"
+      - "scripts/release-*.mjs"
       - "supabase/functions/_shared/builderAccounts.ts"
       - "supabase/functions/_shared/builderPrivacy.ts"
       - "supabase/functions/_shared/builderInvitations.ts"
@@ -175,7 +181,7 @@ jobs:
       - uses: denoland/setup-deno@v2
         with:
           deno-version: v2.x
-      - run: deno check --lock="$RUNNER_TEMP/builder-functions.lock" --config supabase/functions/builder-projects/deno.json supabase/functions/builder-projects/index.ts supabase/functions/builder-publish/index.ts supabase/functions/builder-contact/index.ts supabase/functions/builder-content/index.ts supabase/functions/builder-invite/index.ts supabase/functions/builder-account/index.ts supabase/functions/builder-billing/index.ts supabase/functions/builder-billing-webhook/index.ts
+      - run: deno check --lock="$RUNNER_TEMP/builder-functions.lock" --config supabase/functions/builder-projects/deno.json supabase/functions/builder-projects/index.ts supabase/functions/builder-publish/index.ts supabase/functions/builder-contact/index.ts supabase/functions/builder-content/index.ts supabase/functions/builder-invite/index.ts supabase/functions/builder-account/index.ts supabase/functions/builder-billing/index.ts supabase/functions/builder-billing-webhook/index.ts supabase/functions/builder-report/index.ts
       - name: Audit the actual function dependency graph
         run: deno audit --lock="$RUNNER_TEMP/builder-functions.lock" --level high
       - name: Check actual function request boundaries with fixture responses

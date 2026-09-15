@@ -111,6 +111,26 @@ class DeploymentLauncherTest(unittest.TestCase):
             with self.subTest(key=key), self.assertRaises(ValueError):
                 launcher.configuration(config)
 
+    def test_one_unprivileged_shared_group_joins_deployments_to_common_admission(self):
+        config = launcher.configuration(self.config)
+        args = launcher.command(config, launcher.request(self.args), 'kaizen-deploy')
+        self.assertIn('--property=SupplementaryGroups=kaizen-storage', args)
+        # Without the optional group, deployments keep per-service monitoring.
+        without = copy.deepcopy(self.config)
+        del without['storageGroup']
+        plain = launcher.command(launcher.configuration(without), launcher.request(self.args), 'kaizen-deploy')
+        self.assertNotIn('SupplementaryGroups', ' '.join(plain))
+        for value in ['root', 'sudo', 'kaizen-deploy', 'Kaizen Storage', '', 'kaizen storage',
+                      'kaizen-storage\nUser=root', True, ['kaizen-storage']]:
+            config = copy.deepcopy(self.config)
+            config['storageGroup'] = value
+            with self.subTest(value=value), self.assertRaises(ValueError):
+                launcher.configuration(config)
+        config = copy.deepcopy(self.config)
+        config['unexpected'] = 'value'
+        with self.assertRaises(ValueError):
+            launcher.configuration(config)
+
     def test_runtime_files_cannot_be_links_or_live_in_caller_writable_directories(self):
         with tempfile.TemporaryDirectory(prefix='kaizen-launcher-test-') as directory:
             root = Path(directory)

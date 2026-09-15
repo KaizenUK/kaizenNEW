@@ -70,15 +70,41 @@ Each step is verified before the next. None enables automatic cleanup until the 
 
 1. **Recovery point.** Record the live revisions, run `kaizen-backup.service` once and verify its receipt, and confirm the Supabase backup status. **Rollback:** restore from that point.
 2. **Database.** Apply the modified `202609120001` capabilities migration check, then `202609150001` through `202609150021` in order, each in its own transaction, and verify the migration ledger. **Rollback:** migrations are forward-only; a failed migration rolls back on its own, and a later problem is restored from step 1.
-3. **Edge functions.** Deploy all functions listed above together, then set `BUILDER_REPORT_ORIGINS` and the billing and signup settings. **Rollback:** redeploy the L5 versions from `48823c6`.
-4. **Shared storage admission.** Create group `kaizen-storage`, then `/var/lib/kaizen-storage-admission` (root:kaizen-storage, mode 2770). Add `SupplementaryGroups=kaizen-storage` to the helper, client worker, deployment and upload units, and set `KAIZEN_STORAGE_ADMISSION_DIRECTORY` in their environments. **Rollback:** unset the variable; behaviour returns to per-service monitoring.
+3. **Edge functions.** Deploy all functions listed above together, then set `BUILDER_REPORT_ORIGINS` and the billing and signup settings. `builder-billing`, `builder-billing-webhook` and `builder-report` are new to the live project; the other six replace recorded L5 versions. `builder-report` needs no key of its own: its reporter hashes are keyed with the existing service role key. **Rollback:** redeploy the L5 versions from `48823c6`, and delete the three new functions.
+4. **Shared storage admission.** Create group `kaizen-storage`, then `/var/lib/kaizen-storage-admission` (root:kaizen-storage, mode 2770). Add `SupplementaryGroups=kaizen-storage` through a drop-in for the helper, client worker and upload units, and give `kaizen-helper`, `kaizen-builder`, `kaizen-upload` and `kaizen-deploy` membership. Deployments receive the group from the launcher's own `storageGroup` field instead of a unit file. Set `KAIZEN_STORAGE_ADMISSION_DIRECTORY` in every one of those environments, including `/etc/kaizen/production.env` and `staging.env`, which the release worker loads. **Rollback:** unset the variable; behaviour returns to per-service monitoring.
 5. **Upload service.** Create the `kaizen-upload` account, `/var/lib/kaizen-uploads` and `/opt/kaizen-upload-worker` (the bundle from `scripts/build-upload-worker.mjs`), plus `/etc/kaizen/upload-worker.env` (0600). Install `kaizen-upload-worker.service`, add the Apache/DirectAdmin proxy route to `127.0.0.1:4336`, verify, then enable. **Rollback:** disable the unit and remove the proxy route.
-6. **Native deployment runtime.** Install `/opt/kaizen-native-release` (the worker bundle and preflight), `/etc/kaizen/native-deploy.json`, `/usr/local/sbin/kaizen-public-deploy` (from `scripts/ops/run_public_deployment.py`, root 0755), and the sudoers entry (checked with `visudo -c`). Create `/var/lib/kaizen-native/{production,staging}` (kaizen-deploy, 0700) and add `BUILDER_NATIVE_*` with `BUILDER_RELEASE_RETENTION_ENABLED=0` to both deployment environments. Run the launcher in `--mode preflight` for both branches. **Rollback:** remove the sudoers entry; deployments stay blocked exactly as today.
+6. **Native deployment runtime.** Install `/opt/kaizen-native-release` (the worker bundle and preflight), `/etc/kaizen/native-deploy.json` (including `"storageGroup": "kaizen-storage"`), `/usr/local/sbin/kaizen-public-deploy` (from `scripts/ops/run_public_deployment.py`, root 0755), and the sudoers entry (checked with `visudo -c`). Create `/var/lib/kaizen-native/{production,staging}` (kaizen-deploy, 0700) and add `BUILDER_NATIVE_*` with `BUILDER_RELEASE_RETENTION_ENABLED=0` to both deployment environments. Run the launcher in `--mode preflight` for both branches. **Rollback:** remove the sudoers entry; deployments stay blocked exactly as today.
 7. **Helper.** Add `BUILDER_NATIVE_WORKER_ID` and `BUILDER_NATIVE_CONFIGURATION`, then restart, preserving Sean's pending About edit, drafts and recovery files as in earlier rollouts. **Rollback:** remove both variables and restart.
 8. **Client worker.** Add the retention settings (`BUILDER_RELEASE_RETENTION_ENABLED=0`) and the admission settings to `/etc/kaizen/client-worker.env`, and update `/opt/kaizen-builder` to the release revision. **Rollback:** restore the previous checkout.
 9. **Milestone CI and frontend.** Push the release revision without `[skip ci]` so `builder-checks` and the deployment workflow run. Deploy staging first through the installed launcher, then production. Verify the origin checks, the release head and publication history. **Rollback:** the launcher's recorded rollback to the previous retained release.
 10. **Scheduled workers.** Enable `kaizen-domain-worker.timer`; public domain acceptance needs Cloudflare access (human). Install `kaizen-native-maintenance@{main,stage}` and `kaizen-native-cleanup` with the inventory above, keeping both timers disabled. Run each once manually and confirm it reports disabled or idle.
 11. **Turn on retention.** Only after staging publication, rollback, history availability and upload/copy checks pass: set `BUILDER_RELEASE_RETENTION_ENABLED=1` for the deployments and client worker, then enable the maintenance and native cleanup timers. **Rollback:** set it back to `0`; any owned attempt still finishes safely.
+
+## How public requests already reach the server
+
+The DirectAdmin Apache vhost for `www.kaizenweb.co.uk` is the single public entrance, and it already routes by path:
+
+| Public path | Destination |
+| --- | --- |
+| `/editor-api/` | `https://kbqraygsegcclzhsmpvz.functions.supabase.co/` (Edge functions, so the new report function answers at `/editor-api/builder-report`) |
+| `/editor-api/builder-repository`, `/editor-preview/` | the hosted helper on `127.0.0.1:4334` |
+| `/cms/`, `/.well-known/acme-challenge/` | served locally, never proxied |
+| `/` | production Nginx on `127.0.0.1:8091` |
+
+- **Step 5 adds one sibling rule:** `/editor-uploads/` to `127.0.0.1:4336`, with its matching `ProxyPassReverse`, placed with the other path rules ahead of `/`. Nothing else in the vhost changes, and `stage.kaizenweb.co.uk`, `client-demo.kaizenweb.co.uk` and the client sites keep their own vhosts.
+- **Step 3 report origins:** set `BUILDER_REPORT_ORIGINS` to the public site origins that may submit reports (`https://kaizenweb.co.uk,https://www.kaizenweb.co.uk`), since the function checks the browser's origin before accepting anything.
+- **Runtime already present:** `/opt/kaizen-runtime/node-v22.23.2-immutable`, which the upload unit's `ExecStart` expects.
+
+## Recovery point recorded (step 1)
+
+- **Live before L6:** production release `gh-34909251359-1`, staging `gh-34909251210-1`, client-demo `300d7710-69c9-46fe-82ed-5e940997d80d`; migration ledger latest `202609140005`; GitHub `main`/`stage` at `afb9d3a`; two builder projects; no pending hosted or client jobs.
+- **Forced capture:** `status verified`, snapshot `a75e485a4591b4fcc863e767f80b28293f917eef939b324ec8b8fafe181ec322`, 18,126 files across 43 sources, including the configured Supabase capture.
+- **Recorded L5 function bodies:** the six live `builder-*` functions were saved before any deployment.
+- **`202609120001`** differs from the applied version only by a removed trailing blank line, so it is not reapplied.
+
+## Brief refusals between steps 2 and 5
+
+[`202609150013`](../supabase/migrations/202609150013_builder_storage_cutover.sql) removes direct browser writes to the builder buckets, and every upload then has to reserve its allowance through the upload worker. Between applying the migrations and installing that worker with the new frontend, editor media uploads are refused with a clear message; saved work, drafts and published websites are unaffected. Keep steps 2, 3, 5 and 9 together, and avoid uploading during the window.
 
 ## Evidence so far
 

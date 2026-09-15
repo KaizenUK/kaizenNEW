@@ -47,9 +47,16 @@ def absolute(value):
 
 
 def configuration(value):
-    if not isinstance(value, dict) or set(value) != {'schemaVersion', 'user', 'node', 'worker', 'preflight', 'targets'} or type(value['schemaVersion']) is not int or value['schemaVersion'] != 1:
+    required = {'schemaVersion', 'user', 'node', 'worker', 'preflight', 'targets'}
+    if not isinstance(value, dict) or not required <= set(value) or set(value) - required - {'storageGroup'} or type(value['schemaVersion']) is not int or value['schemaVersion'] != 1:
         fail('Invalid installed configuration.')
     if value['user'] != 'kaizen-deploy': fail('The deployment account must be kaizen-deploy.')
+    # One optional shared group lets deployments reserve space in the common
+    # admission directory. It never selects a user, path or command.
+    if 'storageGroup' in value:
+        group = value['storageGroup']
+        if not isinstance(group, str) or not re.fullmatch(r'[a-z][a-z0-9-]{0,31}', group) or group in {'root', 'sudo', 'wheel', 'shadow', 'adm', 'kaizen-deploy'}:
+            fail('Use one unprivileged shared storage group.')
     for key in ['node', 'worker', 'preflight']: absolute(value[key])
     targets = value['targets']
     if not isinstance(targets, dict) or set(targets) != {'main', 'stage'}: fail('Configure both deployment destinations.')
@@ -115,6 +122,7 @@ def command(config, item, group):
         'ProtectControlGroups':'yes',
         'ReadWritePaths':'/sys/fs/cgroup/system.slice/'+unit,
     }
+    if config.get('storageGroup'): properties['SupplementaryGroups']=config['storageGroup']
     # Nginx verification/reload uses the account's existing two sudo commands.
     # Do not grant arbitrary systemd-run or root execution to the caller.
     args=['/usr/bin/systemd-run','--unit='+unit,'--wait','--pipe','--collect']

@@ -462,3 +462,8 @@ entrypoint = "./functions/builder-billing/index.ts"
 # The raw body is authenticated with the Stripe endpoint signature.
 verify_jwt = false
 entrypoint = "./functions/builder-billing-webhook/index.ts"
+
+[functions.builder-report]
+# Public abuse reports: origin checks, request limits and a keyed reporter hash replace login.
+verify_jwt = false
+entrypoint = "./functions/builder-report/index.ts"

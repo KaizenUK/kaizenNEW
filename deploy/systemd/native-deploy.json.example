@@ -1,6 +1,7 @@
 {
   "schemaVersion": 1,
   "user": "kaizen-deploy",
+  "storageGroup": "kaizen-storage",
   "node": "/opt/kaizen-runtime/node-v22.23.2-immutable/bin/node",
   "worker": "/opt/kaizen-native-release/worker.mjs",
   "preflight": "/opt/kaizen-native-release/preflight-public-deploy.sh",

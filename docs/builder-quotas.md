@@ -578,6 +578,8 @@ Hosted leftovers are reclaimed in `HostedBuildRecovery.begin`, after output prun
 | Upload spool | None of its own (bounded by spool limits) | Accepts a transfer only if free space minus others' reservations covers it |
 | Individual hosted saves and uploads (`check`) | None | Free space minus others' reservations |
 
+**Deployment membership:** the deployment worker runs through the root launcher, so it takes the shared group from one optional `storageGroup` field in `/etc/kaizen/native-deploy.json`, validated as an unprivileged group name and passed as `SupplementaryGroups`. Requests never choose it. Its admission directory comes from the release environment file the worker loads.
+
 **Unset admission:** without `KAIZEN_STORAGE_ADMISSION_DIRECTORY`, behaviour is unchanged: per-producer monitoring only.
 
 **What stays monitored rather than hard:**

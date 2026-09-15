@@ -40,7 +40,7 @@ export async function accountFixture(
     create schema auth; create table auth.users(id uuid primary key,email text,raw_user_meta_data jsonb default '{}',email_confirmed_at timestamptz,deleted_at timestamptz);
     create function auth.uid() returns uuid language sql as $$ select nullif(current_setting('request.jwt.claim.sub',true),'')::uuid $$;
     create schema storage; create table storage.buckets(id text primary key,name text,public boolean,file_size_limit bigint,allowed_mime_types text[]);
-    create table storage.objects(id uuid primary key default gen_random_uuid(),bucket_id text,name text,owner uuid references auth.users(id)); alter table storage.objects enable row level security;
+    create table storage.objects(id uuid primary key default gen_random_uuid(),bucket_id text,name text,owner uuid references auth.users(id),metadata jsonb default '{"size": 0}',version text default 'fixture-version'); alter table storage.objects enable row level security;
     grant usage on schema public,auth,storage to anon,authenticated,service_role;
     create table public.contact_form_submissions(name text,last_name text,email text,phone text,website text,message text,marketing_consent boolean,consent_to_gdpr boolean,source_page text,user_agent text);
     insert into auth.users(id,email,email_confirmed_at,raw_user_meta_data) values
@@ -55,22 +55,26 @@ export async function accountFixture(
     "202609150006_builder_repository_outputs.sql",
     "202609150007_builder_billing_recovery.sql",
   ];
+  // Scheduled retention needs pg_cron, which PGlite does not provide.
   const skipped = new Set([
     "202609120003_builder_error_retention.sql",
     "202609140002_builder_function_limit_retention.sql",
     "202609140005_builder_privacy_retention.sql",
     "202609150008_builder_billing_retention.sql",
-    ...billingMigrations,
-    "202609150009_builder_domains.sql",
   ]);
-  for (const file of (await readdir("supabase/migrations")).sort()) {
-    if (
-      !/^\d+_(?:visual_builder|builder_.*)\.sql$/.test(file) ||
-      skipped.has(file)
-    )
-      continue;
+  const builderMigrations = (await readdir("supabase/migrations"))
+    .sort()
+    .filter(
+      (file) =>
+        /^\d+_(?:visual_builder|builder_.*)\.sql$/.test(file) &&
+        !skipped.has(file),
+    );
+  // Billing and every later migration run after the fixture accounts exist.
+  const laterMigrations = builderMigrations.filter(
+    (file) => file >= billingMigrations[0],
+  );
+  for (const file of builderMigrations.filter((file) => file < billingMigrations[0]))
     await db.exec(await readFile(`supabase/migrations/${file}`, "utf8"));
-  }
   if (!options.needsLegalAcceptance)
     await db.exec(
       "insert into builder_legal_acceptances(user_id,version) select id,'2026-09-14' from auth.users",
@@ -84,12 +88,12 @@ export async function accountFixture(
     [project.id, beta, accountOwner, accountPerson, accountOtherOwner],
   );
   await db.query(
-    "insert into storage.objects(bucket_id,name,owner) values('builder-project-files',$1,$2)",
+    "insert into storage.objects(bucket_id,name,owner,metadata) values('builder-project-files',$1,$2,'{\"size\":40,\"eTag\":\"fixture\"}')",
     [`${project.id}/fixture-image`, accountPerson],
   );
   // Existing owners receive the same migration backfill as production. New
   // fixture signups and invited editors retain normal Free account behavior.
-  for (const file of [...billingMigrations, "202609150009_builder_domains.sql"])
+  for (const file of laterMigrations)
     await db.exec(await readFile(`supabase/migrations/${file}`, "utf8"));
   const state = {
     domainRequests: [] as {
@@ -632,7 +636,23 @@ export async function accountFixture(
           actor,
           projectId: input.projectId,
           input,
-          service: {},
+          service: {
+            rpc: async (name: string, args: any) => {
+              if (name !== "builder_project_suspension_state")
+                throw new Error("Unexpected suspension RPC");
+              try {
+                const data = (
+                  await db.query<any>(
+                    "select builder_project_suspension_state($1,$2) as value",
+                    [args.target, args.actor],
+                  )
+                ).rows[0].value;
+                return { data, error: null };
+              } catch (error: any) {
+                return { data: null, error: { message: error.message } };
+              }
+            },
+          },
           user: {
             rpc: async (name, args) => {
               if (name !== "builder_client_history")
