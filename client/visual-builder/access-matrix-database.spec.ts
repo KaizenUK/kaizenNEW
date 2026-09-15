@@ -19,6 +19,16 @@ const privateTables = [
   "builder_legal_acceptances",
   "builder_privacy_requests",
   "builder_account_initializations",
+  "builder_plans",
+  "builder_billing_accounts",
+  "builder_subscriptions",
+  "builder_billing_events",
+  "builder_billing_checkouts",
+  "builder_project_billing",
+  "builder_billing_months",
+  "builder_publication_allowances",
+  "builder_repository_publications",
+  "builder_repository_output_jobs",
 ];
 const legacyTables = [
   "builder_pages",
@@ -108,6 +118,7 @@ describe("complete builder table access matrix", () => {
       "202609120003_builder_error_retention.sql",
       "202609140002_builder_function_limit_retention.sql",
       "202609140005_builder_privacy_retention.sql",
+      "202609150008_builder_billing_retention.sql",
     ]);
     for (const file of (await readdir("supabase/migrations")).sort()) {
       if (!/^\d+_(?:visual_builder|builder_.*)\.sql$/.test(file)) continue;
@@ -124,18 +135,25 @@ describe("complete builder table access matrix", () => {
       insert into builder_project_workspaces(project_id) values('kaizen'),('${alpha}'),('${beta}') on conflict do nothing;
       insert into builder_pages(id,payload) values('${page}','{"draft":{"slug":"/published-canary/"},"private":"unpublished draft canary"}');
       insert into builder_publications(id,slug,document) values('${page}','/published-canary/','{"title":"Public snapshot canary"}');
-      insert into builder_assets(id,hash,payload) values('${page}','canary','{"id":"${page}","hash":"canary","private":"asset source canary"}');
+      insert into builder_assets(id,hash,payload) values('${page}','canary','{"id":"${page}","hash":"canary","size":10,"private":"asset source canary"}');
       insert into builder_saved(id,payload) values('${page}','{"private":"saved block canary"}');
       insert into builder_site(id,payload) values('site','{"draft":{"canary":"private site draft"}}') on conflict(id) do update set payload=excluded.payload;
       update builder_routes set payload='{"draft":[{"canary":"private redirect draft"}],"published":[{"source":"/public-old/","destination":"/public-new/","status":301}]}' where id='site';
       insert into builder_contact_requests values(gen_random_uuid(),'contact canary','email hash canary',now());
-      insert into builder_releases(id,requested_by,request,snapshot,baseline,status) values('${page}','${ids.legacy}','{"private":"release canary"}','{}','{}','live');
+      insert into builder_releases(id,requested_by,request,snapshot,baseline,status) values('${page}','${ids.legacy}','{"private":"release canary"}','{"schemaVersion":1,"pages":[],"site":null}','{}','live');
       update builder_release_head set release_id='${page}' where id='site';
       insert into builder_previews(id,created_by,document,duration_hours,expires_at) values('${page}','${ids.legacy}','{"private":"preview canary"}',1,now()+interval '1 hour');
       insert into builder_account_deletions(user_id,request_id,status) values('${ids.editor}','${page}','pending');
       insert into builder_account_deletion_projects(request_id,project_id) values('${page}','${alpha}');
       insert into builder_function_limits values('builder-publish','${ids.owner}',now(),1);
       insert into builder_legal_acceptances(user_id,version) values('${ids.owner}','2026-09-14');
+      insert into builder_billing_accounts(user_id,customer_id) values('${ids.owner}','cus_canary') on conflict(user_id) do update set customer_id=excluded.customer_id;
+      insert into builder_subscriptions(id,user_id,status,plan_id,price_id,period_end,cancel_at_period_end) values('sub_canary','${ids.owner}','active','plus','price_canary',now()+interval '1 month',false);
+      insert into builder_billing_events(id,user_id,customer_id,kind) values('evt_canary','${ids.owner}','cus_canary','customer.subscription.updated');
+      insert into builder_billing_checkouts(user_id,plan_id,price_id,session_id,state) values('${ids.owner}','plus','price_canary','cs_test_canary','open');
+      insert into builder_repository_publications(id,project_id,requested_by,repository_binding,commit_hash,base_hash,phase,staging_artifact)
+        values('${page}','${alpha}','${ids.owner}',repeat('a',64),repeat('b',40),repeat('c',40),'live','fixture-staged');
+      insert into builder_repository_output_jobs(id,project_id,channel,artifact_id,commit_hash,measurement,phase) values('${page}','${alpha}','staging','canary-output',repeat('b',40),'${JSON.stringify({ bytes: 10, pages: 1, sourceBytes: 20, sourceRevision: "a".repeat(64), manifestSha256: "d".repeat(64) })}','live');
       insert into builder_privacy_requests(id,user_id,project_id,requester_name,requester_email,kind,details) values('${page}','${ids.editor}','${alpha}','Privacy canary','privacy@example.test','export','Private request canary');
     `);
     for (const [project, actor] of [

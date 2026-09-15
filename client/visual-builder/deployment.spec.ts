@@ -10,7 +10,12 @@ import {
   symlink,
 } from "node:fs/promises";
 import path from "node:path";
-import { runBuilderRelease } from "../../scripts/builder-release-worker.mjs";
+import {
+  runBuilderRelease,
+  runRepositoryRelease,
+  reconcileBuilderRelease,
+} from "../../scripts/builder-release-worker.mjs";
+import { reconcileRepositoryOutput } from "../../scripts/builder-repository-output.mjs";
 import {
   stageRelease,
   initialiseStore,
@@ -84,6 +89,7 @@ async function fixture(edgeScripts = false) {
     source: old,
     store,
     id: "old-release",
+    commit: "c".repeat(40),
   });
   await stageRelease({ source: next, store, id: "new-release" });
   await initialiseStore({ store, id: original.id });
@@ -402,14 +408,20 @@ describe("retained website releases", () => {
   });
   for (const outcome of [
     "success",
+    "unpublish",
     "rejected",
     "lost-ack",
     "uncertain",
+    "uncertain-restore",
+    "usage-uncertain",
   ] as const) {
     it(`coordinates file activation with database promotion: ${outcome}`, async () => {
       const f = await fixture(),
+        billing = outputBillingBoundary(),
         id = crypto.randomUUID(),
         owner = crypto.randomUUID();
+      if (outcome === "usage-uncertain") billing.faults.settle = true;
+      if (outcome === "unpublish") billing.faults.quota = true;
       const job: any = {
         id,
         status: "queued",
@@ -417,6 +429,7 @@ describe("retained website releases", () => {
         previous_release_id: null,
         artifact_id: null,
         snapshot: { schemaVersion: 1, pages: [], site: null },
+        request: { action: outcome === "unpublish" ? "unpublish" : "page" },
       };
       let loseReads = false;
       const phases: string[] = [];
@@ -426,10 +439,38 @@ describe("retained website releases", () => {
           return structuredClone(job);
         },
         rpc: async (name: string, body: any) => {
+          if (name.startsWith("builder_repository_output_"))
+            return billing.client.rpc(name, body);
           if (name === "builder_claim_release") {
             job.status = "building";
+            job.worker_id = body.owner_id;
             job.artifact_id = body.artifact;
             return structuredClone(job);
+          }
+          if (name === "builder_release_recovery_begin") {
+            expect(body.expected_owner).toBe(job.worker_id);
+            expect(body.baseline_artifact).toBe("old-release");
+            job.worker_id = body.recovery_owner;
+            job.recovery_artifact = body.desired_artifact;
+            return structuredClone(job);
+          }
+          if (name === "builder_release_recovery_finish") {
+            expect(body.recovery_owner).toBe(job.worker_id);
+            expect(body.proof.artifactId).toBe(job.recovery_artifact);
+            await billing.client.rpc("builder_repository_output_settle", {
+              ...billing.rows.get(body.usage_id).input,
+              outcome: "live",
+            });
+            job.status =
+              job.recovery_artifact === job.artifact_id
+                ? "live"
+                : "rolled_back";
+            return {
+              id,
+              status: job.status,
+              artifactId: job.recovery_artifact,
+              usageId: body.usage_id,
+            };
           }
           if (name !== "builder_advance_release")
             throw new Error("Unexpected RPC");
@@ -442,7 +483,7 @@ describe("retained website releases", () => {
             expect(body.proof.checkedResponses).toBe(8);
             if (outcome === "rejected")
               throw new Error("Database refused promotion");
-            if (outcome === "uncertain") {
+            if (outcome.startsWith("uncertain")) {
               loseReads = true;
               throw new Error("Acknowledgement unavailable");
             }
@@ -462,7 +503,10 @@ describe("retained website releases", () => {
           requestId: id,
           ownerId: owner,
           artifactId: "coordinated-release",
+          commit: "b".repeat(40),
           source: f.next,
+          sourceRoot: f.next,
+          billing: { projectId: "kaizen", channel: "production" },
           build: async (snapshotFile: string) =>
             expect(JSON.parse(await readFile(snapshotFile, "utf8"))).toEqual(
               job.snapshot,
@@ -479,9 +523,11 @@ describe("retained website releases", () => {
         expect(await (await fetch(`${f.origin}/campaign/`)).text()).toContain(
           "CMS snapshot old",
         );
-      } else if (outcome === "uncertain") {
+      } else if (outcome.includes("uncertain")) {
         await expect(run).rejects.toThrow("acknowledgement is uncertain");
-        expect(job.status).toBe("verifying");
+        expect(job.status).toBe(
+          outcome.startsWith("uncertain") ? "verifying" : "live",
+        );
         expect((await listReleases(f.store)).transactions[0].status).toBe(
           "recovery_required",
         );
@@ -491,6 +537,48 @@ describe("retained website releases", () => {
       } else {
         expect((await run).status).toBe("live");
         expect(phases).toEqual(["activating", "verifying", "live"]);
+      }
+      expect(billing.rows.get(id).phase).toBe(
+        outcome === "rejected"
+          ? "failed"
+          : outcome.includes("uncertain")
+            ? "reserved"
+            : "live",
+      );
+      if (outcome === "unpublish")
+        expect(
+          billing.calls.find(
+            (call) => call.name === "builder_repository_output_begin",
+          )!.body.recovery,
+        ).toBe(true);
+      if (outcome.includes("uncertain")) {
+        loseReads = false;
+        billing.faults.settle = false;
+        const restore = outcome === "uncertain-restore";
+        await reconcileBuilderRelease(
+          {
+            client,
+            requestId: id,
+            projectId: "kaizen",
+            channel: "production",
+            store: f.store,
+            origin: f.origin,
+            artifactId: "coordinated-release",
+            restoreId: restore ? "old-release" : undefined,
+            sourceRoot: f.next,
+          },
+          f.adapters,
+        );
+        const desired = restore ? "old-release" : "coordinated-release";
+        expect(job.status).toBe(restore ? "rolled_back" : "live");
+        expect((await listReleases(f.store)).selectedReleaseId).toBe(desired);
+        await checkLive(f.origin, await verifyRelease(f.store, desired));
+        expect(
+          [...billing.rows.values()]
+            .filter((row) => row.phase === "live")
+            .map((row) => row.input.artifact),
+        ).toEqual([desired]);
+        expect(billing.rows.get(id).phase).toBe("failed");
       }
     }, 15_000);
   }
@@ -659,5 +747,264 @@ describe("retained website releases", () => {
         await readFile(path.join(f.store, "transactions", files[0]), "utf8"),
       ).status,
     ).toBe("recovery_required");
+  });
+});
+
+function outputBillingBoundary() {
+  const calls: { name: string; body: any }[] = [],
+    rows = new Map<string, any>();
+  const faults = { quota: false, lostBegin: false, settle: false };
+  const client = {
+    rpc: async (name: string, body: any) => {
+      calls.push({ name, body: structuredClone(body) });
+      if (name === "builder_repository_output_read") {
+        const found = [...rows.values()]
+          .reverse()
+          .find((row) => row.input.artifact === body.artifact);
+        return found
+          ? {
+              id: found.input.request_id,
+              phase: found.phase,
+              commit: found.input.source_commit,
+              measurement: found.input.sample,
+            }
+          : null;
+      }
+      if (name === "builder_repository_output_begin") {
+        if (faults.quota && !body.recovery)
+          throw new Error("This website exceeds its current plan.");
+        if (body.recovery)
+          for (const row of rows.values())
+            if (
+              row.phase === "reserved" &&
+              row.input.target === body.target &&
+              row.input.output_channel === body.output_channel
+            )
+              row.phase = "held";
+        rows.set(body.request_id, {
+          input: structuredClone(body),
+          phase: "reserved",
+        });
+        if (faults.lostBegin)
+          throw new Error("Fixture reserve acknowledgement lost.");
+        return { id: body.request_id, phase: "reserved" };
+      }
+      if (name === "builder_repository_output_settle") {
+        if (faults.settle)
+          throw new Error("Fixture billing service unavailable.");
+        if (body.outcome === "live")
+          for (const row of rows.values())
+            if (
+              row.phase === "held" &&
+              row.input.target === body.target &&
+              row.input.output_channel === body.output_channel
+            )
+              row.phase = "failed";
+        rows.set(body.request_id, {
+          input: structuredClone(body),
+          phase: body.outcome,
+        });
+        return { id: body.request_id, phase: body.outcome };
+      }
+      throw new Error("Unexpected billing operation");
+    },
+  };
+  return { client, calls, rows, faults };
+}
+
+describe("repository deployment output accounting", () => {
+  it.each(["measured", "missing source", "mismatched record"])(
+    "restores a retained artifact from before output accounting: %s",
+    async (outcome) => {
+      const f = await fixture(),
+        billing = outputBillingBoundary();
+      await activateRelease(
+        { store: f.store, id: "new-release", origin: f.origin },
+        f.adapters,
+      );
+      if (outcome === "mismatched record")
+        billing.rows.set(crypto.randomUUID(), {
+          input: {
+            artifact: "old-release",
+            source_commit: "c".repeat(40),
+            sample: { manifestSha256: "0".repeat(64) },
+          },
+          phase: "live",
+        });
+      const run = reconcileRepositoryOutput(
+        {
+          client: billing.client,
+          projectId: "kaizen",
+          channel: "production",
+          store: f.store,
+          origin: f.origin,
+          artifactId: "new-release",
+          restoreId: "old-release",
+          sourceRoot: outcome === "missing source" ? undefined : f.next,
+        },
+        f.adapters,
+      );
+      if (outcome !== "measured") {
+        await expect(run).rejects.toThrow(
+          outcome === "missing source"
+            ? /source directory/
+            : /does not match its recorded usage/,
+        );
+        expect((await listReleases(f.store)).selectedReleaseId).toBe(
+          "new-release",
+        );
+        expect(billing.calls.map((call) => call.name)).toEqual([
+          "builder_repository_output_read",
+        ]);
+        return;
+      }
+      await expect(run).resolves.toMatchObject({ status: "reconciled" });
+      const begin = billing.calls.find(
+        (call) => call.name === "builder_repository_output_begin",
+      )!.body;
+      expect(begin).toMatchObject({
+        artifact: "old-release",
+        source_commit: "c".repeat(40),
+        recovery: true,
+        sample: { pages: 4 },
+      });
+      expect(begin.sample.sourceBytes).toBeGreaterThan(0);
+      expect(billing.rows.get(begin.request_id).phase).toBe("live");
+      expect((await listReleases(f.store)).selectedReleaseId).toBe(
+        "old-release",
+      );
+      await checkLive(f.origin, await verifyRelease(f.store, "old-release"));
+    },
+  );
+  it.each([
+    "success",
+    "quota",
+    "lost reservation",
+    "reload failure",
+    "lost live acknowledgement",
+  ])("accounts for the actual retained artifact across %s", async (outcome) => {
+    const f = await fixture(),
+      billing = outputBillingBoundary(),
+      artifactId = "billing-new-release";
+    if (outcome === "quota") billing.faults.quota = true;
+    if (outcome === "lost reservation") billing.faults.lostBegin = true;
+    if (outcome === "reload failure") f.rejectReload();
+    if (outcome === "lost live acknowledgement") billing.faults.settle = true;
+    const options = {
+      client: billing.client,
+      store: f.store,
+      origin: f.origin,
+      artifactId,
+      commit: "b".repeat(40),
+      source: f.next,
+      sourceRoot: f.next,
+      build: async () => {},
+      billing: { projectId: "kaizen", channel: "staging" },
+    };
+    const run = runRepositoryRelease(options, {
+      activate: (input: any, hooks: any) =>
+        activateRelease(input, { ...f.adapters, ...hooks }),
+    });
+    if (outcome === "success")
+      await expect(run).resolves.toMatchObject({ status: "live" });
+    else
+      await expect(run).rejects.toThrow(
+        outcome === "lost live acknowledgement"
+          ? /usage acknowledgement is uncertain/
+          : /activation failed/,
+      );
+    const begin = billing.calls.find(
+      (call) => call.name === "builder_repository_output_begin",
+    )!.body;
+    const manifest = await verifyRelease(f.store, artifactId);
+    expect(begin).toMatchObject({
+      target: "kaizen",
+      output_channel: "staging",
+      artifact: artifactId,
+      source_commit: "b".repeat(40),
+      sample: { pages: 4 },
+    });
+    expect(begin.sample.bytes).toBe(
+      manifest.files.reduce((sum: number, file: any) => sum + file.size, 0),
+    );
+    expect(begin.sample.manifestSha256).toBe(
+      createHash("sha256").update(JSON.stringify(manifest)).digest("hex"),
+    );
+    expect(begin.sample.sourceBytes).toBeGreaterThan(0);
+    if (outcome === "lost live acknowledgement") {
+      expect((await listReleases(f.store)).selectedReleaseId).toBe(artifactId);
+      expect(billing.rows.get(begin.request_id).phase).toBe("reserved");
+      billing.faults.settle = false;
+      await reconcileRepositoryOutput(
+        {
+          client: billing.client,
+          projectId: "kaizen",
+          channel: "staging",
+          store: f.store,
+          origin: f.origin,
+          artifactId,
+        },
+        f.adapters,
+      );
+      expect(billing.rows.get(begin.request_id).phase).toBe("failed");
+      expect(
+        [...billing.rows.values()].filter((row) => row.phase === "live"),
+      ).toHaveLength(1);
+      await checkLive(f.origin, manifest);
+    } else if (outcome === "success") {
+      expect(billing.rows.get(begin.request_id).phase).toBe("live");
+      await checkLive(f.origin, manifest);
+    } else {
+      expect(billing.rows.get(begin.request_id).phase).toBe("failed");
+      expect((await listReleases(f.store)).selectedReleaseId).toBe(
+        "old-release",
+      );
+      await checkLive(f.origin, await verifyRelease(f.store, "old-release"));
+    }
+  });
+  it("refuses invalid fixed billing configuration before queueing a Builder deployment", async () => {
+    let called = false;
+    const client = {
+      rpc: async () => {
+        called = true;
+        throw new Error("Must not queue");
+      },
+    };
+    await expect(
+      runBuilderRelease({
+        client,
+        billing: { projectId: "", channel: "production" },
+      }),
+    ).rejects.toThrow(/fixed website/);
+    expect(called).toBe(false);
+  });
+  it("refuses output whose source changed during the build without switching the website", async () => {
+    const f = await fixture(),
+      billing = outputBillingBoundary();
+    await expect(
+      runRepositoryRelease(
+        {
+          client: billing.client,
+          store: f.store,
+          origin: f.origin,
+          artifactId: "billing-new-release",
+          commit: "b".repeat(40),
+          source: f.next,
+          sourceRoot: f.next,
+          build: async () =>
+            writeFile(
+              path.join(f.next, "index.html"),
+              "Changed source during build",
+            ),
+          billing: { projectId: "kaizen", channel: "staging" },
+        },
+        {
+          activate: (input: any, hooks: any) =>
+            activateRelease(input, { ...f.adapters, ...hooks }),
+        },
+      ),
+    ).rejects.toThrow(/source changed/);
+    expect(billing.calls).toEqual([]);
+    expect((await listReleases(f.store)).selectedReleaseId).toBe("old-release");
   });
 });

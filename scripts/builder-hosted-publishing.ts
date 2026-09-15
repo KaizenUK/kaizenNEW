@@ -11,11 +11,18 @@ import { HostedSaveReleases } from "./builder-hosted-save-release";
 import { repositoryGitStatus } from "./builder-repository-git";
 import type { RepositoryPublishStatus } from "../shared/builderRepositoryPublish";
 import { HostedReceiptStore, receiptError } from "./builder-hosted-receipts";
+import type { HostedRepositoryBilling } from "./builder-hosted-billing";
+import {
+  isRepositoryBillingState,
+  type RepositoryBillingState,
+} from "../shared/builderRepositoryBilling";
 
 type Entry = {
   actorId: string;
   binding: string;
   status: RepositoryPublishStatus;
+  billing?: RepositoryBillingState;
+  billingPushStarted?: boolean;
 };
 const conflict = (message: string) => new HostedHelperError(409, message);
 
@@ -41,8 +48,19 @@ function publicationReceipts(data: unknown, projectId: string): Entry[] {
       !accountId(item.actorId) ||
       !/^[a-f0-9]{64}$/.test(item.binding || "") ||
       Object.keys(item).some(
-        (key) => !["actorId", "binding", "status"].includes(key),
+        (key) =>
+          ![
+            "actorId",
+            "binding",
+            "status",
+            "billing",
+            "billingPushStarted",
+          ].includes(key),
       ) ||
+      (item.billing !== undefined &&
+        (!isRepositoryBillingState(item.billing) ||
+          typeof item.billingPushStarted !== "boolean")) ||
+      (item.billingPushStarted !== undefined && !item.billing) ||
       !status ||
       !["reviewed", "uncertain", "sent"].includes(status.phase) ||
       !text(status.message) ||
@@ -102,6 +120,7 @@ export class HostedWebsitePublishing {
     private folders: HostedWebsiteFolders,
     private releases = new HostedSaveReleases(),
     private request: typeof fetch = fetch,
+    private billing?: HostedRepositoryBilling,
   ) {
     this.records = new HostedReceiptStore(
       folders,
@@ -148,7 +167,9 @@ export class HostedWebsitePublishing {
       [...this.entries.values()].some(
         (entry) =>
           entry.status.review.projectId === id &&
-          entry.status.phase === "uncertain",
+          (entry.status.phase === "uncertain" ||
+            entry.billing?.phase === "reserved" ||
+            entry.billing?.phase === "sent"),
       )
     )
       throw conflict(
@@ -279,7 +300,51 @@ export class HostedWebsitePublishing {
     }
     return entry;
   }
-  async status(id: string, actor: RepositoryActor, reviewId?: unknown) {
+  private billingIdentity(entry: Entry) {
+    const review = entry.status.review;
+    return {
+      projectId: review.projectId,
+      reviewId: review.id,
+      binding: entry.binding,
+      commit: review.commit,
+      base: review.productionBase,
+      stagingArtifact: review.stagingReleaseId,
+    };
+  }
+  private async settleBilling(entry: Entry, token: string) {
+    if (!this.billing || !entry.billing) return;
+    const status = entry.status;
+    const outcome =
+      status.phase === "reviewed" && !entry.billingPushStarted
+        ? "failed"
+        : status.delivery === "reported"
+          ? "live"
+          : status.phase === "sent" &&
+              status.release?.state === "failed" &&
+              status.delivery === "waiting"
+            ? "failed"
+            : status.phase === "sent"
+              ? "sent"
+              : undefined;
+    if (
+      outcome &&
+      outcome !== entry.billing.phase &&
+      entry.billing.phase !== "live" &&
+      !(entry.billing.phase === "failed" && outcome === "sent")
+    )
+      entry.billing = await this.billing.settle(
+        token,
+        this.billingIdentity(entry),
+        entry.billing,
+        outcome,
+      );
+  }
+  async status(
+    id: string,
+    actor: RepositoryActor,
+    reviewId?: unknown,
+    token = "",
+  ) {
     this.folders.productionTarget(id);
     const entry = this.entry(id, actor, reviewId);
     if (!entry) return null;
@@ -320,6 +385,14 @@ export class HostedWebsitePublishing {
         status.delivery = "unavailable";
       }
     }
+    const billingPendingMessage =
+      "Publication billing still needs to be confirmed. Your saved revision is kept. Refresh publication status before publishing again.";
+    try {
+      await this.settleBilling(entry, token);
+      if (status.error === billingPendingMessage) delete status.error;
+    } catch {
+      status.error = billingPendingMessage;
+    }
     await this.persist(id);
     return structuredClone(status);
   }
@@ -328,6 +401,7 @@ export class HostedWebsitePublishing {
     actor: RepositoryActor,
     reviewId: unknown,
     authorize: () => Promise<void>,
+    token = "",
   ) {
     this.folders.productionTarget(id);
     if (typeof reviewId !== "string")
@@ -385,6 +459,28 @@ export class HostedWebsitePublishing {
         review.productionBase,
         async () => {
           await authorize();
+          if (this.billing) {
+            const attempt = entry.billing
+              ? entry.billing.attempt +
+                (entry.billing.phase === "failed" ? 1 : 0)
+              : 1;
+            // Persist intent before a possibly lost reserve response. A failed
+            // pre-push attempt can be closed without guessing a Git outcome.
+            entry.billing = { attempt, phase: "reserved" };
+            entry.billingPushStarted = false;
+            await this.persist(id);
+            entry.billing = await this.billing.reserve(
+              token,
+              this.billingIdentity(entry),
+              attempt,
+            );
+            if (entry.billing.phase !== "reserved")
+              throw conflict(
+                "Refresh this publication before retrying its billing allowance.",
+              );
+            entry.billingPushStarted = true;
+            await this.persist(id);
+          }
           attempted = true;
         },
       );
@@ -393,9 +489,15 @@ export class HostedWebsitePublishing {
         "The reviewed revision was sent to the production branch. Follow deployment and check the live website.";
     } catch (error) {
       if (!attempted) {
+        if (entry.billing) entry.billingPushStarted = false;
         entry.status.phase = "reviewed";
         entry.status.message =
           "Publication did not start. Review the current website and your access before trying again.";
+        try {
+          await this.settleBilling(entry, token);
+        } catch {
+          /* Keep the reservation and reconcile on the next status read. */
+        }
         await this.persist(id);
         throw error;
       }
@@ -403,6 +505,6 @@ export class HostedWebsitePublishing {
         "The production push was rejected or its acknowledgement was lost. Check publication state before an explicit retry. Your staging revision is kept.";
     }
     await this.persist(id);
-    return this.status(id, actor, review.id);
+    return this.status(id, actor, review.id, token);
   }
 }

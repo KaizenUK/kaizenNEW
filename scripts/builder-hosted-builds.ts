@@ -18,6 +18,12 @@ type Adapters = {
   folders: HostedWebsiteFolders;
   authorize: (token: string, projectId: string) => Promise<void>;
   runner: (projectId: string) => RepositoryRunner;
+  beforePreview?: (
+    token: string,
+    plan: BuildPlan,
+    files: ReadonlyMap<string, Buffer>,
+    fingerprint: string,
+  ) => Promise<void>;
 };
 const active = (job: BuildJob) =>
   job.status === "queued" || job.status === "building";
@@ -232,6 +238,7 @@ export class HostedBuildQueue {
         if (entry.cancelRequested || this.closed) return;
         await this.adapters.authorize(entry.token!, projectId);
         if (entry.cancelRequested || this.closed) return;
+        const token = entry.token!;
         delete entry.token;
         await this.adapters.folders.check(projectId);
         release = await this.adapters.folders.claimBuild(
@@ -239,7 +246,21 @@ export class HostedBuildQueue {
           entry.value.id,
         );
         if (entry.cancelRequested || this.closed) return;
-        const started = await runner.start(entry.plan.id, projectId);
+        const started = await runner.start(
+          entry.plan.id,
+          projectId,
+          this.adapters.beforePreview
+            ? async (files, fingerprint) => {
+                await this.adapters.authorize(token, projectId);
+                await this.adapters.beforePreview!(
+                  token,
+                  entry.plan,
+                  files,
+                  fingerprint,
+                );
+              }
+            : undefined,
+        );
         entry.runnerId = started.id;
         entry.value = {
           ...started,

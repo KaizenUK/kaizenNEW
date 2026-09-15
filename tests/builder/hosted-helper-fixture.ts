@@ -8,6 +8,7 @@ import type { RepositorySaveTarget } from "../../shared/builderRepositorySave";
 import type { RepositoryPublishTarget } from "../../shared/builderRepositoryPublish";
 import type { HostedSaveReleases } from "../../scripts/builder-hosted-save-release";
 import type { HostedDiskLimits } from "../../scripts/builder-hosted-disk";
+import type { HostedRepositoryBilling } from "../../scripts/builder-hosted-billing";
 import { HostedWebsiteFolders } from "../../scripts/builder-hosted-folders";
 import {
   HostedHelperService,
@@ -33,7 +34,11 @@ export async function hostedHelperFixture(
   setupSeed?: (seed: string) => Promise<void>,
   saving?: { target: RepositorySaveTarget; releases?: HostedSaveReleases },
   setup?: "empty" | "approved",
-  publishing?: { target: RepositoryPublishTarget; fetch: typeof fetch },
+  publishing?: {
+    target: RepositoryPublishTarget;
+    fetch: typeof fetch;
+    billing?: HostedRepositoryBilling;
+  },
   diskLimits?: HostedDiskLimits,
   buildIsolation?: { manager?: string },
 ) {
@@ -223,7 +228,9 @@ const child=spawn(operation.split(' ')[0],[${JSON.stringify(remote)}],{stdio:'in
       buildManager: buildIsolation?.manager,
       ...(previewOrigin ? { editorOrigin: previewOrigin } : {}),
       ...(saving?.releases ? { saveReleases: saving.releases } : {}),
-      ...(publishing ? { publicationFetch: publishing.fetch } : {}),
+      ...(publishing
+        ? { publicationFetch: publishing.fetch, billing: publishing.billing }
+        : {}),
     });
     const helper = await startHostedHelper({
       service,

@@ -13,7 +13,9 @@ export type BuilderFunction =
   | "builder-invite"
   | "builder-publish"
   | "builder-content"
-  | "builder-contact";
+  | "builder-contact"
+  | "builder-billing"
+  | "builder-billing-webhook";
 
 /** Call before expensive authentication/work with no actor, then again with
  * the verified Auth user. Global limits also bound rotating invalid tokens.

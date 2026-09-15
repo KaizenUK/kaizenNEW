@@ -13,6 +13,9 @@ import {
 import type { SandboxBuild, SandboxCommand } from "./builder-build-sandbox";
 import path from "node:path";
 import { inspectRepository } from "./builder-repository";
+import { measureRepositorySource } from "./builder-repository-usage.mjs";
+const digest = (data: Uint8Array | string) =>
+  createHash("sha256").update(data).digest("hex");
 import type { SourceInspection } from "../shared/builderSourceEditing";
 import { frameCss, frameHtml } from "./builder-source-frame";
 import {
@@ -63,19 +66,6 @@ type Running = {
   cancel?: string;
   timer?: NodeJS.Timeout;
 };
-const ignored = new Set([
-  "node_modules",
-  ".git",
-  ".kaizen-builder",
-  ".sanity",
-  ".astro",
-  ".vite",
-  "dist",
-  "coverage",
-  "test-results",
-]);
-const digest = (data: Uint8Array | string) =>
-  createHash("sha256").update(data).digest("hex");
 async function exists(file: string) {
   try {
     return await lstat(file);
@@ -95,37 +85,7 @@ async function realDirectory(root: string, relative: string) {
   return current;
 }
 async function sourceFingerprint(root: string) {
-  const hash = createHash("sha256");
-  let count = 0,
-    size = 0;
-  async function walk(folder: string) {
-    for (const entry of (
-      await readdir(path.join(root, folder), { withFileTypes: true })
-    ).sort((a, b) => a.name.localeCompare(b.name))) {
-      const name = folder ? `${folder}/${entry.name}` : entry.name;
-      if (ignored.has(entry.name) || name === ".kaizen/build-recovery")
-        continue;
-      if (++count > 10000)
-        throw new Error("Build review supports up to 10,000 source files.");
-      if (entry.isSymbolicLink())
-        throw new Error(`Build review does not follow source links: ${name}`);
-      if (entry.isDirectory()) await walk(name);
-      else {
-        const stat = await lstat(path.join(root, name));
-        size += stat.size;
-        if (!stat.isFile() || size > 200 * 1024 * 1024)
-          throw new Error(
-            "Build review supports up to 200 MB of regular source files.",
-          );
-        hash
-          .update(name)
-          .update("\0")
-          .update(digest(await readFile(path.join(root, name))));
-      }
-    }
-  }
-  await walk("");
-  return hash.digest("hex");
+  return (await measureRepositorySource(root)).revision;
 }
 async function packageCommand(): Promise<Command> {
   const inherited = process.env.npm_execpath;
@@ -317,7 +277,14 @@ export class RepositoryRunner {
     this.plans.set(value.id, { value, command });
     return structuredClone(value);
   }
-  async start(planId: string, projectId: string): Promise<BuildJob> {
+  async start(
+    planId: string,
+    projectId: string,
+    beforePreview?: (
+      files: ReadonlyMap<string, Buffer>,
+      fingerprint: string,
+    ) => Promise<void>,
+  ): Promise<BuildJob> {
     const plan = this.plans.get(planId);
     if (
       this.closed ||
@@ -367,9 +334,12 @@ export class RepositoryRunner {
         },
       };
       this.jobs.set(id, running);
-      running.done = this.execute(running, plan.command, fingerprint).finally(
-        () => this.locks.delete(key),
-      );
+      running.done = this.execute(
+        running,
+        plan.command,
+        fingerprint,
+        beforePreview,
+      ).finally(() => this.locks.delete(key));
       return structuredClone(running.value);
     } catch (error) {
       this.locks.delete(key);
@@ -492,6 +462,10 @@ export class RepositoryRunner {
     running: Running,
     command: Command,
     fingerprint: string,
+    beforePreview?: (
+      files: ReadonlyMap<string, Buffer>,
+      fingerprint: string,
+    ) => Promise<void>,
   ) {
     const job = running.value;
     let previous = false,
@@ -607,6 +581,7 @@ export class RepositoryRunner {
           "Build completed without dist/index.html. Only static sites using dist/ are supported.",
         );
       const files = await snapshot(builtOutput);
+      await beforePreview?.(files, fingerprint);
       running.files = files;
       running.fingerprint = fingerprint;
       if (running.cancel || this.closed)

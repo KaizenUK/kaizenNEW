@@ -82,6 +82,7 @@ describe("hosted helper operations", () => {
           ),
           BUILDER_HOSTED_SUPABASE_URL: "https://fixture.supabase.invalid",
           BUILDER_HOSTED_SUPABASE_ANON_KEY: "fixture-public-anon-key",
+          BUILDER_HOSTED_BILLING_KEY: "ab".repeat(32),
           BUILDER_HOSTED_PORT: String(port),
           BUILDER_HOSTED_EDITOR_ORIGIN: "https://builder.example",
           ALLOWED_STUDIO_ORIGINS: "https://builder.example",

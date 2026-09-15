@@ -1,6 +1,6 @@
 import { closeFixturePage, fixtureRoute } from "./fixture-routes";
 import { PGlite } from "@electric-sql/pglite";
-import { readFile } from "node:fs/promises";
+import { readFile, readdir } from "node:fs/promises";
 import { createServer, type Server } from "node:http";
 import type { Page } from "./browser-fixture";
 import { bootstrapAccount } from "../../supabase/functions/_shared/builderSignup";
@@ -23,6 +23,7 @@ export async function accountFixture(
     initialAccount?: string;
     initialView?: "account" | "pages";
     needsLegalAcceptance?: boolean;
+    billing?: boolean;
   } = {},
 ) {
   const projectResponse = await page.request.post("/__builder-projects", {
@@ -38,23 +39,34 @@ export async function accountFixture(
     create schema storage; create table storage.buckets(id text primary key,name text,public boolean,file_size_limit bigint,allowed_mime_types text[]);
     create table storage.objects(id uuid primary key default gen_random_uuid(),bucket_id text,name text,owner uuid references auth.users(id)); alter table storage.objects enable row level security;
     grant usage on schema public,auth,storage to anon,authenticated,service_role;
+    create table public.contact_form_submissions(name text,last_name text,email text,phone text,website text,message text,marketing_consent boolean,consent_to_gdpr boolean,source_page text,user_agent text);
     insert into auth.users(id,email,email_confirmed_at,raw_user_meta_data) values
     ('${accountOwner}','owner@example.test',now(),'{"full_name":"Garden owner"}'),
     ('${accountPerson}','alex@example.test',now(),'{}'),
     ('${accountOtherOwner}','other-owner@example.test',now(),'{"full_name":"Second owner"}');`);
-  for (const file of [
-    "202609100001_visual_builder.sql",
-    "202609100002_builder_site_design.sql",
-    "202609100008_builder_releases.sql",
-    "202609110001_builder_projects.sql",
-    "202609120001_builder_project_capabilities.sql",
-    "202609130001_builder_invitations.sql",
-    "202609130002_builder_accounts.sql",
-    "202609140001_builder_function_limits.sql",
-    "202609140004_builder_legal_privacy.sql",
-    "202609150001_builder_signup.sql",
-  ])
+  const billingMigrations = [
+    "202609150002_builder_billing.sql",
+    "202609150003_builder_plan_limits.sql",
+    "202609150004_builder_repository_billing.sql",
+    "202609150005_builder_repository_usage.sql",
+    "202609150006_builder_repository_outputs.sql",
+    "202609150007_builder_billing_recovery.sql",
+  ];
+  const skipped = new Set([
+    "202609120003_builder_error_retention.sql",
+    "202609140002_builder_function_limit_retention.sql",
+    "202609140005_builder_privacy_retention.sql",
+    "202609150008_builder_billing_retention.sql",
+    ...billingMigrations,
+  ]);
+  for (const file of (await readdir("supabase/migrations")).sort()) {
+    if (
+      !/^\d+_(?:visual_builder|builder_.*)\.sql$/.test(file) ||
+      skipped.has(file)
+    )
+      continue;
     await db.exec(await readFile(`supabase/migrations/${file}`, "utf8"));
+  }
   if (!options.needsLegalAcceptance)
     await db.exec(
       "insert into builder_legal_acceptances(user_id,version) select id,'2026-09-14' from auth.users",
@@ -71,7 +83,15 @@ export async function accountFixture(
     "insert into storage.objects(bucket_id,name,owner) values('builder-project-files',$1,$2)",
     [`${project.id}/fixture-image`, accountPerson],
   );
+  // Existing owners receive the same migration backfill as production. New
+  // fixture signups and invited editors retain normal Free account behavior.
+  for (const file of billingMigrations)
+    await db.exec(await readFile(`supabase/migrations/${file}`, "utf8"));
   const state = {
+    billingRequests: [] as { actor: string; action: string; plan?: string }[],
+    billingAvailable: !!options.billing,
+    loseCheckoutResponse: false,
+    checkoutSessions: [] as string[],
     signupRequests: [] as {
       email: string;
       name: string;
@@ -417,8 +437,144 @@ export async function accountFixture(
       });
       return;
     }
+    if (url.pathname === "/functions/v1/builder-billing") {
+      const input = request.postDataJSON();
+      state.billingRequests.push({
+        actor,
+        action: input.action,
+        ...(input.plan ? { plan: input.plan } : {}),
+      });
+      const prices = [
+        {
+          planId: "plus",
+          amount: 1900,
+          currency: "gbp",
+          interval: "month",
+          taxBehavior: "exclusive",
+        },
+        {
+          planId: "agency",
+          amount: 5900,
+          currency: "gbp",
+          interval: "month",
+          taxBehavior: "exclusive",
+        },
+      ];
+      try {
+        await db.query("select builder_billing_account($1)", [actor]);
+        if (
+          ["checkout", "portal", "close-checkout"].includes(input.action) &&
+          !state.billingAvailable
+        ) {
+          await reply({ error: "Paid plans are not available yet." }, 503);
+          return;
+        }
+        if (input.action === "checkout") {
+          if (!["plus", "agency"].includes(input.plan))
+            throw new Error("Choose an available plan");
+          // Synthetic provider observations feed the actual durable database
+          // transitions. The separate Edge suite verifies real SDK/signatures.
+          await db.query("select builder_billing_bind_customer($1,$2)", [
+            actor,
+            `cus_${actor.replaceAll("-", "")}`,
+          ]);
+          await db.query(
+            "update builder_billing_accounts set verified_at=clock_timestamp() where user_id=$1",
+            [actor],
+          );
+          const attempt = (
+            await db.query<any>(
+              "select builder_billing_checkout_begin($1,$2,$3) as result",
+              [actor, input.plan, `price_${input.plan}`],
+            )
+          ).rows[0].result;
+          const sessionId = `cs_test_${attempt.id.replaceAll("-", "")}`;
+          await db.query(
+            "select builder_billing_checkout_record($1,$2,$3,'open')",
+            [actor, attempt.id, sessionId],
+          );
+          state.checkoutSessions.push(sessionId);
+          if (state.loseCheckoutResponse) {
+            state.loseCheckoutResponse = false;
+            await reply(
+              {
+                error:
+                  "The earlier request may have completed. Refresh billing before trying again.",
+              },
+              503,
+            );
+            return;
+          }
+          await reply({
+            url: `https://checkout.stripe.com/c/pay/${sessionId}`,
+          });
+          return;
+        }
+        if (input.action === "portal") {
+          await reply({ url: "https://billing.stripe.com/p/session/fixture" });
+          return;
+        }
+        if (input.action === "close-checkout") {
+          const attempt = (
+            await db.query<any>(
+              "select builder_billing_pending_checkout($1) as result",
+              [actor],
+            )
+          ).rows[0].result;
+          if (attempt)
+            await db.query(
+              "select builder_billing_checkout_record($1,$2,$3,'expired')",
+              [actor, attempt.id, attempt.session_id],
+            );
+        }
+        if (input.action === "refresh")
+          await db.query(
+            "update builder_billing_accounts set verified_at=clock_timestamp() where user_id=$1",
+            [actor],
+          );
+        const result = (
+          await db.query<any>("select builder_billing_summary($1) as result", [
+            actor,
+          ])
+        ).rows[0].result;
+        await reply({
+          ...result,
+          available: state.billingAvailable,
+          prices: state.billingAvailable ? prices : [],
+        });
+      } catch (error) {
+        await reply({ error: error.message }, 409);
+      }
+      return;
+    }
     if (url.pathname === "/functions/v1/builder-projects") {
       const input = request.postDataJSON();
+      if (
+        input.action === "project-billing" ||
+        input.action === "take-billing"
+      ) {
+        try {
+          if (input.action === "take-billing") {
+            if (input.confirm !== true)
+              throw new Error("Confirm using your own plan");
+            await db.query("select builder_take_project_billing($1,$2)", [
+              input.projectId,
+              actor,
+            ]);
+          }
+          await reply(
+            (
+              await db.query<any>(
+                "select builder_project_billing_summary($1,$2) as result",
+                [input.projectId, actor],
+              )
+            ).rows[0].result,
+          );
+        } catch (error) {
+          await reply({ error: error.message }, 409);
+        }
+        return;
+      }
       if (input.action === "bootstrap") {
         state.bootstrapActors.push(actor);
         const response = await bootstrapAccount(

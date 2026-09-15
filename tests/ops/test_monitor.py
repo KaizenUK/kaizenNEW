@@ -138,6 +138,25 @@ class MonitorTests(unittest.TestCase):
         with self.assertRaises(ops.BackupError):
             ops.http(url, b'{}')
 
+    def test_billing_monitor_requires_recent_cleanup_success_and_reports_only_counts(self):
+        token = self.root / 'billing-token'
+        token.write_text('never-issued-fixture-token')
+        token.chmod(0o600)
+        check = {'kind': 'billing', 'projectRef': 'a' * 20, 'managementTokenFile': str(token)}
+        healthy = {'unprocessedEvents': 0, 'outputRecovery': 0, 'originalRecovery': 0, 'retentionFailures': 0}
+        for fields, expected in [(healthy, True), ({**healthy, 'retentionFailures': 1}, False),
+                                 ({**healthy, 'outputRecovery': 1}, False), ({**healthy, 'unprocessedEvents': 1}, False)]:
+            with patch.object(ops, 'http', return_value=json.dumps([{'health': fields}]).encode()) as request:
+                result = ops.observe(check)
+            self.assertEqual(result[0], expected)
+            payload = json.loads(request.call_args.args[1])
+            self.assertTrue(payload['read_only'])
+            self.assertEqual(payload['query'], ops.BILLING_COUNTS)
+            self.assertNotIn('never-issued', str(result))
+        for invalid in [{}, {**healthy, 'retentionFailures': False}, {**healthy, 'outputRecovery': -1}]:
+            with patch.object(ops, 'http', return_value=json.dumps([{'health': invalid}]).encode()):
+                self.assertFalse(ops.observe(check)[0])
+
     def test_replica_receiver_rejects_old_bad_or_future_receipts(self):
         stamp = datetime.now(timezone.utc) - timedelta(minutes=1)
         item = {'version': 1, 'status': 'verified', 'snapshot': 'a' * 64, 'sourceSnapshot': 'b' * 64,

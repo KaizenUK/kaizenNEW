@@ -452,3 +452,13 @@ entrypoint = "./functions/builder-invite/index.ts"
 # Auth verifies the caller; service-only RPCs coordinate owner-approved deletion.
 verify_jwt = false
 entrypoint = "./functions/builder-account/index.ts"
+
+[functions.builder-billing]
+# Auth is verified before private billing RPCs or Stripe requests.
+verify_jwt = false
+entrypoint = "./functions/builder-billing/index.ts"
+
+[functions.builder-billing-webhook]
+# The raw body is authenticated with the Stripe endpoint signature.
+verify_jwt = false
+entrypoint = "./functions/builder-billing-webhook/index.ts"

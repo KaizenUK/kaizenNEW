@@ -1,3 +1,4 @@
+import { measureRepositorySource } from "./builder-repository-usage.mjs";
 /** Local-only companion. Inspects and writes reviewed generated files; never runs Git writes or package scripts. */
 import {
   readFile,
@@ -803,6 +804,7 @@ export class RepositoryCompanion {
     beforeMutation?: (
       changes: AppliedFileChange[],
       additionalBytes: number,
+      sourceUsage: { bytes: number; projectedBytes: number; revision: string },
     ) => Promise<void>,
   ) {
     const entry = this.plans.get(id);
@@ -850,6 +852,15 @@ export class RepositoryCompanion {
             (entry.files[change.file]?.byteLength || 0) +
             8192,
           4 * 1024 * 1024,
+        ),
+        await measureRepositorySource(
+          root,
+          new Map(
+            changed.map((change) => [
+              change.file,
+              change.action === "delete" ? null : entry.files[change.file],
+            ]),
+          ),
         ),
       );
       for (const change of changed) {
@@ -920,6 +931,9 @@ export class RepositoryCompanion {
         }
       }
       this.plans.delete(id);
+      // Admission failures happened before a source mutation. Preserve their
+      // typed quota/unavailable status so the caller can explain the recovery.
+      if (!applied.length) throw error;
       throw new Error(
         `${(error as Error).message}${recoveryErrors.length ? ` Recovery copies are in .kaizen/recovery/${id}; review ${recoveryErrors.join(", ")}.` : " Applied changes were reverted."}`,
       );

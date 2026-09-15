@@ -9,6 +9,13 @@ import {
   chmod,
 } from "node:fs/promises";
 import path from "node:path";
+import { createHmac } from "node:crypto";
+import { HostedRepositoryBilling } from "../../scripts/builder-hosted-billing";
+import type {
+  RepositoryBillingInput,
+  RepositoryUsageState,
+  RepositoryUsageInput,
+} from "../../shared/builderRepositoryBilling";
 import {
   hostedHelperFixture,
   helperProject,
@@ -39,7 +46,10 @@ const production = {
   branch: "main",
   url: "https://production.fixture.invalid",
 };
-async function fixture() {
+async function fixture(
+  billing?: HostedRepositoryBilling,
+  buildScript?: string,
+) {
   const deployed = {
     stage: "",
     main: "",
@@ -49,13 +59,14 @@ async function fixture() {
   const requests: { url: string; options?: RequestInit }[] = [];
   const api = await hostedHelperFixture(
     undefined,
-    undefined,
+    buildScript,
     undefined,
     undefined,
     { target: staging },
     undefined,
     {
       target: production,
+      billing,
       fetch: async (url: string | URL | Request, options?: RequestInit) => {
         requests.push({ url: String(url), options });
         const stage = new URL(String(url)).origin === staging.url;
@@ -125,8 +136,8 @@ const status = (api: Fixture, reviewId?: string) =>
     ...(reviewId ? { reviewId } : {}),
   });
 const main = (api: Fixture) => api.git(api.remote, ["rev-parse", "main"]);
-async function ready() {
-  const data = await fixture();
+async function ready(billing?: HostedRepositoryBilling) {
+  const data = await fixture(billing);
   data.deployed.stage = await saved(data.api);
   return data;
 }
@@ -135,6 +146,189 @@ const receiptFile = (api: Fixture) =>
     api.folders.projectDirectory(helperProject),
     "publication-receipts.json",
   );
+
+function billingFixture() {
+  const secret = "ab".repeat(32),
+    calls: RepositoryBillingInput[] = [];
+  const faults = {
+    quota: false,
+    lostReserve: false,
+    settlement: false,
+    sourceQuota: false,
+    lostUsage: false,
+  };
+  const usage: RepositoryUsageState = { version: 0, measurements: {} };
+  const usageCalls: RepositoryUsageInput[] = [];
+  const billing = new HostedRepositoryBilling({
+    url: "https://billing.fixture.test/",
+    anonKey: "fixture-public",
+    secret,
+    fetch: async (url, init) => {
+      expect(String(url)).toBe(
+        "https://billing.fixture.test/functions/v1/builder-billing",
+      );
+      const headers = new Headers(init?.headers),
+        body = JSON.parse(String(init?.body));
+      const token = headers.get("authorization")!.slice(7);
+      expect(headers.get("x-kaizen-helper-signature")).toBe(
+        createHmac("sha256", Buffer.from(secret, "hex"))
+          .update(JSON.stringify(body) + "\n" + token)
+          .digest("hex"),
+      );
+      expect(body).not.toHaveProperty("actor");
+      if (body.action === "repository-usage-read") return Response.json(usage);
+      if (body.action === "repository-usage-write") {
+        usageCalls.push(body);
+        if (body.version !== usage.version)
+          return Response.json(
+            { error: "Website storage changed." },
+            { status: 409 },
+          );
+        if (faults.sourceQuota && body.operation === "reserve")
+          return Response.json(
+            { error: "This website exceeds its storage plan." },
+            { status: 429 },
+          );
+        if (body.channel === "preview" && body.sample.pages > 5)
+          return Response.json(
+            { error: "This website exceeds its page plan." },
+            { status: 429 },
+          );
+        usage.version++;
+        usage.measurements[body.channel] = body.sample;
+        if (faults.lostUsage && body.operation === "reserve") {
+          faults.lostUsage = false;
+          throw new Error("Fixture storage acknowledgement lost");
+        }
+        return Response.json(usage);
+      }
+      calls.push(body);
+      if (body.action === "repository-reserve" && faults.quota)
+        return Response.json(
+          { error: "The monthly publishing limit is reached." },
+          { status: 429 },
+        );
+      if (body.action === "repository-reserve" && faults.lostReserve) {
+        faults.lostReserve = false;
+        throw new Error("Fixture reserve acknowledgement lost");
+      }
+      if (body.action === "repository-settle" && faults.settlement)
+        throw new Error("Fixture settlement unavailable");
+      return Response.json({
+        attempt: body.attempt,
+        phase: body.action === "repository-reserve" ? "reserved" : body.outcome,
+      });
+    },
+  });
+  return { billing, calls, faults, secret, usage, usageCalls };
+}
+
+describe("repository publication billing", () => {
+  it.each(["quota", "lostReserve"] as const)(
+    "%s denial happens before Git and an explicit retry advances the fenced attempt",
+    async (fault) => {
+      const ledger = billingFixture(),
+        { api, deployed, base } = await ready(ledger.billing);
+      const inspected = await review(api);
+      ledger.faults[fault] = true;
+      const denied = await publish(api, inspected.body.review.id);
+      expect(denied.status).toBe(fault === "quota" ? 429 : 503);
+      expect(await main(api)).toBe(base);
+      expect(ledger.calls.map((c) => [c.action, c.attempt, c.outcome])).toEqual(
+        [
+          ["repository-reserve", 1, undefined],
+          ["repository-settle", 1, "failed"],
+        ],
+      );
+      ledger.faults[fault] = false;
+      expect((await publish(api, inspected.body.review.id)).body.phase).toBe(
+        "sent",
+      );
+      expect(await main(api)).toBe(deployed.stage);
+      expect(
+        ledger.calls
+          .filter((c) => c.action === "repository-reserve")
+          .map((c) => c.attempt),
+      ).toEqual([1, 2]);
+      const receipt = await readFile(receiptFile(api), "utf8");
+      expect(receipt).not.toContain(ledger.secret);
+      expect(JSON.parse(receipt).data[0]).toMatchObject({
+        billing: { attempt: 2, phase: "sent" },
+        billingPushStarted: true,
+      });
+    },
+  );
+  it("retains the allowance across a rejected or uncertain Git push and reuses it after restart", async () => {
+    const ledger = billingFixture(),
+      { api, deployed, base } = await ready(ledger.billing);
+    const inspected = await review(api),
+      hook = path.join(api.remote, "hooks/pre-receive");
+    await writeFile(hook, "#!/bin/sh\nexit 1\n", { mode: 0o700 });
+    expect((await publish(api, inspected.body.review.id)).body.phase).toBe(
+      "reviewed",
+    );
+    expect(await main(api)).toBe(base);
+    expect(ledger.calls.map((c) => c.action)).toEqual(["repository-reserve"]);
+    await api.restart();
+    expect((await status(api)).body.phase).toBe("reviewed");
+    expect(ledger.calls).toHaveLength(1);
+    await rm(hook);
+    const original = api.folders.pushPublication.bind(api.folders);
+    vi.spyOn(api.folders, "pushPublication").mockImplementationOnce(
+      async (...args) => {
+        await original(...args);
+        vi.spyOn(api.folders, "productionHead").mockRejectedValue(
+          new Error("Fixture observation unavailable"),
+        );
+        throw new Error("Fixture lost Git acknowledgement");
+      },
+    );
+    expect((await publish(api, inspected.body.review.id)).body.phase).toBe(
+      "uncertain",
+    );
+    expect(
+      ledger.calls
+        .filter((c) => c.action === "repository-reserve")
+        .map((c) => c.attempt),
+    ).toEqual([1, 1]);
+    expect(ledger.calls.some((c) => c.outcome === "failed")).toBe(false);
+    await api.restart();
+    const nextPush = vi.spyOn(api.folders, "pushPublication");
+    expect((await status(api)).body.phase).toBe("sent");
+    deployed.main = deployed.stage;
+    expect((await status(api)).body.delivery).toBe("reported");
+    await status(api);
+    expect(ledger.calls.filter((c) => c.outcome === "live")).toHaveLength(1);
+    expect(nextPush).not.toHaveBeenCalled();
+  });
+  it("keeps successful Git delivery separate from unavailable billing, then reconciles without pushing again", async () => {
+    const ledger = billingFixture(),
+      { api, deployed } = await ready(ledger.billing);
+    const inspected = await review(api);
+    ledger.faults.settlement = true;
+    const result = await publish(api, inspected.body.review.id);
+    expect(result.status).toBe(200);
+    expect(result.body.phase).toBe("sent");
+    expect(result.body.error).toContain("billing still needs");
+    expect(await main(api)).toBe(deployed.stage);
+    expect((await review(api)).status).toBe(409);
+    ledger.faults.settlement = false;
+    deployed.main = deployed.stage;
+    await api.restart();
+    const push = vi.spyOn(api.folders, "pushPublication");
+    const checked = await status(api);
+    expect(checked.body.delivery).toBe("reported");
+    expect(checked.body.error).toBeUndefined();
+    expect(push).not.toHaveBeenCalled();
+    expect(
+      JSON.parse(await readFile(receiptFile(api), "utf8")).data[0].billing
+        .phase,
+    ).toBe("live");
+    expect(
+      await api.folders.buildEnvironment(helperProject),
+    ).not.toHaveProperty("BUILDER_HOSTED_BILLING_KEY");
+  });
+});
 
 describe("reviewed production publication", () => {
   it("promotes the exact staged commit without creating a commit or switching the checkout and separately reports production delivery", async () => {
@@ -742,4 +936,111 @@ describe("publication delivery observations", () => {
       "main",
     ]);
   });
+});
+
+it.each(["quota", "lost response"])(
+  "keeps original source after a storage %s and requires a fresh explicit apply",
+  async (failure) => {
+    const ledger = billingFixture();
+    const { api } = await fixture(ledger.billing);
+    const inspected = (
+      await api.send({
+        action: "repository-source-inspect",
+        route: "src/pages/index.astro",
+      })
+    ).body;
+    const file = path.join(inspected.root, "src/pages/index.astro");
+    const original = await readFile(file, "utf8");
+    const heading = inspected.fields.find(
+      (field: { value: string }) => field.value === "Hosted original",
+    );
+    const prepare = () =>
+      api.send({
+        action: "repository-source-prepare",
+        edits: {
+          inspection: inspected,
+          values: {
+            [heading.id]: "A larger heading reserved against the website plan",
+          },
+          orders: {},
+        },
+      });
+    const plan = await prepare();
+    expect(plan.status).toBe(200);
+    if (failure === "quota") ledger.faults.sourceQuota = true;
+    else ledger.faults.lostUsage = true;
+    const result = await api.send({
+      action: "repository-apply",
+      planId: plan.body.id,
+    });
+    expect(result.status).toBe(failure === "quota" ? 429 : 503);
+    expect(await readFile(file, "utf8")).toBe(original);
+    expect(
+      (await api.send({ action: "repository-apply", planId: plan.body.id }))
+        .status,
+    ).toBe(409);
+    ledger.faults.sourceQuota = false;
+    const fresh = await prepare();
+    expect(
+      (await api.send({ action: "repository-apply", planId: fresh.body.id }))
+        .status,
+    ).toBe(200);
+    expect(await readFile(file, "utf8")).toContain("A larger heading reserved");
+    expect(
+      ledger.usageCalls.filter((call) => call.operation === "reserve"),
+    ).toHaveLength(2);
+  },
+);
+
+it("meters generated hosted output before making the build available and permits a smaller explicit rebuild", async () => {
+  const script = (pages: number) =>
+    `import {mkdir,writeFile} from 'node:fs/promises'; await mkdir('dist',{recursive:true}); for(let i=0;i<${pages};i++) await writeFile('dist/'+(i?'page'+i:'index')+'.html','<h1>Generated</h1>');`;
+  const ledger = billingFixture(),
+    { api } = await fixture(ledger.billing, script(6));
+  expect((await api.send({ action: "repository-connect" })).status).toBe(200);
+  async function build() {
+    const plan = await api.send({ action: "repository-build-review" });
+    expect(plan.status).toBe(200);
+    const start = await api.send({
+      action: "repository-build-start",
+      planId: plan.body.id,
+    });
+    expect(start.status).toBe(200);
+    let result: any;
+    await expect
+      .poll(
+        async () => {
+          result = await api.send({
+            action: "repository-build-status",
+            jobId: start.body.id,
+          });
+          return result.body.status;
+        },
+        { timeout: 15000 },
+      )
+      .toMatch(/failed|succeeded/);
+    return result.body;
+  }
+  const denied = await build();
+  expect(denied.status).toBe("failed");
+  expect(denied.error).toContain("page plan");
+  expect(ledger.usage.measurements.preview).toBeUndefined();
+  await expect(
+    lstat(path.join(api.folders.root(helperProject), "dist")),
+  ).rejects.toThrow(/ENOENT/);
+  await writeFile(
+    path.join(api.folders.root(helperProject), "fixture-build.mjs"),
+    script(5),
+  );
+  const admitted = await build();
+  expect(admitted.status).toBe("succeeded");
+  expect(ledger.usage.measurements.preview).toMatchObject({
+    pages: 5,
+    bytes: 90,
+  });
+  expect(
+    ledger.usageCalls
+      .filter((call) => call.channel === "preview")
+      .map((call) => call.sample?.pages),
+  ).toEqual([6, 5]);
 });

@@ -184,6 +184,13 @@ export default function AccountDeletion({
           Request removal of your login and access to all your websites. Website
           content, uploaded files and release history stay with the websites.
         </p>
+        <p>
+          Before deletion, another owner must take over billing for each website
+          that uses your plan, from Website plan and usage in Settings. Close
+          any unfinished Checkout and end your subscriptions in Plan and
+          billing. A subscription set to cancel stays active until its end date.
+          Refresh billing after it ends, then continue your deletion request.
+        </p>
         {error && <Notice tone="error">{error}</Notice>}
         {notice && <Notice>{notice}</Notice>}
         <button

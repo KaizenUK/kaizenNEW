@@ -660,8 +660,12 @@ describe("durable Save to website recovery", () => {
           this,
           id,
           projectId,
-          async (changes: AppliedFileChange[], additionalBytes: number) => {
-            await beforeMutation?.(changes, additionalBytes);
+          async (
+            changes: AppliedFileChange[],
+            additionalBytes: number,
+            sourceUsage,
+          ) => {
+            await beforeMutation?.(changes, additionalBytes, sourceUsage);
             throw new Error("Fixture interruption before file mutation");
           },
         );

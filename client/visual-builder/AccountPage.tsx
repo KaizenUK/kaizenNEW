@@ -11,6 +11,7 @@ import {
 } from "./accountAuth";
 import AccountDeletion from "./AccountDeletion";
 import PrivacyRequests from "./PrivacyRequests";
+import BillingPanel from "./BillingPanel";
 
 export default function AccountPage() {
   const [account, setAccount] = useState<{
@@ -361,6 +362,7 @@ function AccountDetails({ user }: { user: User }) {
           Sign out of other sessions
         </button>
       </Card>
+      <BillingPanel key={`billing:${user.id}`} accountId={user.id} />
       <PrivacyRequests key={user.id} accountId={user.id} />
       <AccountDeletion accountId={user.id} onDeleted={() => setRemoved(true)} />
     </>

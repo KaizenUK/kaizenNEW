@@ -8,10 +8,10 @@ export class RequestBodyError extends Error {
 }
 
 /** Count actual streamed bytes: Content-Length alone is not a body limit. */
-export async function readJsonObject(
+export async function readRawJsonBody(
   request: Request,
   maximumBytes: number,
-): Promise<Record<string, unknown>> {
+): Promise<string> {
   if (
     request.headers
       .get("content-type")
@@ -55,16 +55,27 @@ export async function readJsonObject(
       bytes.set(chunk, offset);
       offset += chunk.byteLength;
     }
-    const value = JSON.parse(
-      new TextDecoder("utf-8", { fatal: true }).decode(bytes),
-    );
-    if (!value || typeof value !== "object" || Array.isArray(value))
-      throw new RequestBodyError(400, "A JSON object is required.");
-    return value;
+    return new TextDecoder("utf-8", { fatal: true }).decode(bytes);
   } catch (error) {
     if (error instanceof RequestBodyError) throw error;
     throw new RequestBodyError(400, "This request contains invalid JSON.");
   } finally {
     reader.releaseLock();
   }
+}
+
+export async function readJsonObject(
+  request: Request,
+  maximumBytes: number,
+): Promise<Record<string, unknown>> {
+  const raw = await readRawJsonBody(request, maximumBytes);
+  let value: unknown;
+  try {
+    value = JSON.parse(raw);
+  } catch {
+    throw new RequestBodyError(400, "This request contains invalid JSON.");
+  }
+  if (!value || typeof value !== "object" || Array.isArray(value))
+    throw new RequestBodyError(400, "A JSON object is required.");
+  return value as Record<string, unknown>;
 }

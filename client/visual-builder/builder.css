@@ -4450,6 +4450,21 @@
 .builder-account .builder-form {
   margin-top: 16px;
 }
+.builder-billing > button {
+  margin: 8px 12px 8px 0;
+}
+.builder-billing-plans {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
+  gap: 16px;
+  margin-top: 20px;
+}
+.builder-billing-plans > section {
+  min-width: 0;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 20px;
+}
 .builder-account-reviews {
   list-style: none;
   padding: 0;

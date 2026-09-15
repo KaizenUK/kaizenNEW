@@ -27,6 +27,7 @@ import { HostedRepositorySettings } from "./builder-hosted-settings";
 import { repositorySetupActions } from "../shared/builderRepositorySettings";
 import { repositoryPublishActions } from "../shared/builderRepositoryPublish";
 import { HostedWebsitePublishing } from "./builder-hosted-publishing";
+import { HostedRepositoryBilling } from "./builder-hosted-billing";
 import { SourceDrafts } from "./builder-source-drafts";
 import { NativeRepositoryBackups } from "./builder-native-backup";
 import { hostedDiskLimits } from "./builder-hosted-disk";
@@ -117,6 +118,7 @@ export class HostedHelperService {
   private settings: HostedRepositorySettings;
   private publishing: HostedWebsitePublishing;
   private buildRecovery: HostedBuildRecovery;
+  private billing?: HostedRepositoryBilling;
   readonly previews?: HostedPreviews;
   private trustedBuildProjects: Set<string>;
   private buildManager?: string;
@@ -127,6 +129,7 @@ export class HostedHelperService {
       editorOrigin?: string;
       saveReleases?: HostedSaveReleases;
       publicationFetch?: typeof fetch;
+      billing?: HostedRepositoryBilling;
       /** Operator-only trust exception for its own existing website. */
       trustedBuildProjects?: readonly string[];
       buildManager?: string;
@@ -136,6 +139,7 @@ export class HostedHelperService {
       throw new Error("Invalid trusted build project configuration.");
     this.trustedBuildProjects = new Set(options?.trustedBuildProjects ?? []);
     this.buildManager = options?.buildManager;
+    this.billing = options?.billing;
     this.saves = new HostedWebsiteSaves(folders, options?.saveReleases);
     this.buildRecovery = new HostedBuildRecovery(folders);
     this.settings = new HostedRepositorySettings(folders);
@@ -143,6 +147,7 @@ export class HostedHelperService {
       folders,
       options?.saveReleases,
       options?.publicationFetch,
+      options?.billing,
     );
     this.builds = new HostedBuildQueue({
       folders,
@@ -151,6 +156,16 @@ export class HostedHelperService {
         await access.requireProject(token, actor, projectId);
       },
       runner: (projectId) => this.projects.get(projectId)!.runner,
+      beforePreview: options?.billing
+        ? (token, plan, files, fingerprint) =>
+            options.billing!.output(
+              token,
+              plan.projectId,
+              plan.root,
+              fingerprint,
+              files,
+            )
+        : undefined,
     });
     if (options?.editorOrigin !== undefined)
       this.previews = new HostedPreviews(
@@ -387,10 +402,11 @@ export class HostedHelperService {
               "publish",
             );
           },
+          token,
         );
       }
       case "repository-publish-status":
-        return this.publishing.status(projectId, actor, input.reviewId);
+        return this.publishing.status(projectId, actor, input.reviewId, token);
       case "repository-inspect-current":
       case "repository-inspect":
         return inspectRepository(root);
@@ -477,8 +493,9 @@ export class HostedHelperService {
         const result = await operations.repositories.apply(
           input.planId,
           projectId,
-          async (changes, additionalBytes) => {
+          async (changes, additionalBytes, sourceUsage) => {
             await this.folders.disk.check(projectId, additionalBytes);
+            await this.billing?.source(token, projectId, sourceUsage);
             return this.saves.begin(
               projectId,
               actor,
@@ -897,6 +914,11 @@ async function main() {
         .map((value) => value.trim())
         .filter(Boolean),
       buildManager: process.env.BUILDER_HOSTED_SANDBOX_PACKAGE_MANAGER,
+      billing: new HostedRepositoryBilling({
+        url: process.env.BUILDER_HOSTED_SUPABASE_URL || "",
+        anonKey: process.env.BUILDER_HOSTED_SUPABASE_ANON_KEY || "",
+        secret: process.env.BUILDER_HOSTED_BILLING_KEY || "",
+      }),
       saveReleases: new HostedSaveReleases({
         githubToken: process.env.BUILDER_HOSTED_GITHUB_READ_TOKEN,
       }),

@@ -29,6 +29,16 @@ ERROR_COUNTS = """select json_build_object(
  'stalledPublications',(select count(*) from public.builder_client_jobs where phase in ('queued','building','activating','verifying') and updated_at < now()-interval '30 minutes')
 ) as health"""
 
+BILLING_COUNTS = """select json_build_object(
+ 'unprocessedEvents',(select count(*) from public.builder_billing_events where processed_at is null and received_at < now()-interval '30 minutes'),
+ 'outputRecovery',(select count(*) from public.builder_repository_output_jobs where phase='held' or (phase='reserved' and updated_at < now()-interval '30 minutes')),
+ 'originalRecovery',(select count(*) from public.builder_releases where status='recovery_required'),
+ 'retentionFailures',(case when exists(select 1 from cron.job j where j.jobname='builder-billing-retention' and j.active
+   and j.schedule='17 4 * * *' and j.command='select public.builder_prune_billing_events()'
+   and (select d.status='succeeded' and d.end_time > now()-interval '48 hours' from cron.job_run_details d where d.jobid=j.jobid order by d.runid desc limit 1))
+   then 0 else 1 end)
+) as health"""
+
 
 def age_seconds(value):
     stamp = datetime.fromisoformat(value.replace('Z', '+00:00'))
@@ -102,15 +112,20 @@ def database(check):
     if not re.fullmatch(r'[a-z]{20}', ref):
         raise BackupError('Invalid monitored database reference.')
     token = private_file(check['managementTokenFile']).read_text().strip()
+    billing = check.get('kind') == 'billing'
     result = json.loads(http('https://api.supabase.com/v1/projects/' + ref + '/database/query',
-        json.dumps({'query': ERROR_COUNTS, 'read_only': True}).encode(),
+        json.dumps({'query': BILLING_COUNTS if billing else ERROR_COUNTS, 'read_only': True}).encode(),
         {'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json'},
         accepted_statuses=(200, 201)))
     values = result[0]['health']
-    keys = ['clientErrors', 'failedPublications', 'recoveryRequired', 'stalledPublications']
+    keys = (['unprocessedEvents', 'outputRecovery', 'originalRecovery', 'retentionFailures'] if billing else
+            ['clientErrors', 'failedPublications', 'recoveryRequired', 'stalledPublications'])
     if set(values) != set(keys) or any(type(values[key]) is not int or values[key] < 0 for key in keys):
         raise BackupError('Invalid hosted error observation.')
     healthy = not any(values.values())
+    if billing:
+        return healthy, ('Billing processing and scheduled cleanup are healthy.' if healthy else
+            'Unprocessed billing observations: {unprocessedEvents}; output recovery: {outputRecovery}; publication recovery: {originalRecovery}; scheduled cleanup failures: {retentionFailures}.'.format(**values))
     return healthy, ('No recent recorded errors or stalled publications.' if healthy else
         'Recorded client errors: {clientErrors}; failed publications: {failedPublications}; recovery required: {recoveryRequired}; stalled publications: {stalledPublications}.'.format(**values))
 
@@ -124,7 +139,7 @@ def observe(check):
             return release(check)
         if kind == 'receipt':
             return receipt(check)
-        if kind == 'database':
+        if kind in ('database', 'billing'):
             return database(check)
         if kind == 'helper':
             value = json.loads(http(check['url']))

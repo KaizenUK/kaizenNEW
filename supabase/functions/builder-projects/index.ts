@@ -196,6 +196,29 @@ Deno.serve(async (request) => {
       );
     if (!project || !membership)
       return json(403, { error: "Project membership required." });
+    if (action === "project-billing" || action === "take-billing") {
+      if (action === "take-billing") {
+        if (membership.role !== "owner" || input.confirm !== true)
+          return json(403, {
+            error: "A website owner must confirm using their own plan.",
+          });
+        check(
+          await service.rpc("builder_take_project_billing", {
+            target,
+            actor: auth.user.id,
+          }),
+        );
+      }
+      return json(
+        200,
+        check(
+          await service.rpc("builder_project_billing_summary", {
+            target,
+            actor: auth.user.id,
+          }),
+        ),
+      );
+    }
     if (action === "rename" || action === "archive") {
       check(
         await user.rpc("builder_update_project", {

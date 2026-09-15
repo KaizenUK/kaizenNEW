@@ -22,6 +22,7 @@
     { "id": "vps-backup-age", "kind": "receipt", "path": "/var/lib/kaizen-ops/last-backup.json", "maxAgeSeconds": 129600 },
     { "id": "off-server-backup-age", "kind": "receipt", "path": "/var/lib/kaizen-ops/last-replica.json", "dateField": "sourceCompletedAt", "maxAgeSeconds": 129600 },
     { "id": "disk-reserve", "kind": "disk", "path": "/var/lib/kaizen-ops", "minFreeBytes": 16106127360, "minFreeFraction": 0.1 },
-    { "id": "hosted-errors", "kind": "database", "projectRef": "yourprojectreference", "managementTokenFile": "/etc/kaizen-ops/supabase-access-token" }
+    { "id": "hosted-errors", "kind": "database", "projectRef": "yourprojectreference", "managementTokenFile": "/etc/kaizen-ops/supabase-access-token" },
+    { "id": "billing-processing", "kind": "billing", "projectRef": "yourprojectreference", "managementTokenFile": "/etc/kaizen-ops/supabase-access-token" }
   ]
 }

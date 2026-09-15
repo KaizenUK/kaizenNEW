@@ -28,6 +28,7 @@ import { BuilderViewProvider, BuilderViewSettings } from "./viewMode";
 import { repositoryConnection } from "./repositoryConnection";
 import ClientSettings from "./ClientSettings";
 import RepositorySettings from "./RepositorySettings";
+import ProjectBillingPanel from "./ProjectBillingPanel";
 import ProblemReport from "./ProblemReport";
 import { startErrorReporting } from "./errorReporting";
 import {
@@ -499,6 +500,13 @@ function BuilderWorkspace({ inventory }: { inventory?: PageInventory } = {}) {
               <ProblemReport />
             </ClientSettings>
             <div className="builder-page-body">
+              {!localMode && accountId && (
+                <ProjectBillingPanel
+                  key={`${accountId}:${activeProjectId}`}
+                  accountId={accountId}
+                  projectId={activeProjectId}
+                />
+              )}
               <RepositorySettings />
             </div>
           </>
@@ -507,6 +515,13 @@ function BuilderWorkspace({ inventory }: { inventory?: PageInventory } = {}) {
             <Head info={<ProjectName />} title="Settings" help="settings" />
             <div className="builder-page-body">
               <BuilderViewSettings />
+              {!localMode && accountId && workspace && (
+                <ProjectBillingPanel
+                  key={`${accountId}:${activeProjectId}`}
+                  accountId={accountId}
+                  projectId={activeProjectId}
+                />
+              )}
               <Notice>
                 {workspace
                   ? "Website connections are managed by the site owner."

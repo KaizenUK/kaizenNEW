@@ -12,6 +12,7 @@ const coreJourneys = [
   "auth",
   "signup",
   "account",
+  "billing",
   "legal-privacy",
   "projects",
   "editor",
