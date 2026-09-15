@@ -1,4 +1,5 @@
 import { checkFunctionLimit } from "../_shared/functionLimits.ts";
+import { bootstrapAccount } from "../_shared/builderSignup.ts";
 import { createClient } from "npm:@supabase/supabase-js@2.98.0";
 import { recordClientDiagnostic } from "../_shared/clientDiagnostics.ts";
 import { getCorsHeaders, isOriginAllowed } from "../_shared/editorAuth.ts";
@@ -111,6 +112,10 @@ Deno.serve(async (request) => {
     }
     const input = JSON.parse(new TextDecoder().decode(bytes));
     const action = input.action || "list";
+    if (action === "bootstrap") {
+      const result = await bootstrapAccount(service, auth.user.id);
+      return json(result.status, result.body);
+    }
     async function list() {
       const rows = check(await user.from("builder_projects").select("*"));
       const memberships = check(

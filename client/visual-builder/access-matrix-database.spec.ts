@@ -18,6 +18,7 @@ const privateTables = [
   "builder_legal_versions",
   "builder_legal_acceptances",
   "builder_privacy_requests",
+  "builder_account_initializations",
 ];
 const legacyTables = [
   "builder_pages",

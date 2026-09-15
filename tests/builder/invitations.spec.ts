@@ -113,6 +113,10 @@ async function invitationFixture(page: Page) {
       });
       return;
     }
+    if (name === "builder-projects" && input.action === "bootstrap") {
+      await route.fulfill({ json: { created: false, projectId: null } });
+      return;
+    }
     if (name === "builder-invite") {
       const response = await handler(
         new Request(request.url(), {

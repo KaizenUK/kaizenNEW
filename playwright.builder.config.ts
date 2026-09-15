@@ -10,6 +10,7 @@ import {
 const coreJourneys = [
   "accessibility",
   "auth",
+  "signup",
   "account",
   "legal-privacy",
   "projects",

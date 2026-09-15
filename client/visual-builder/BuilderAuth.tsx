@@ -18,6 +18,8 @@ import {
 import { AccountChangeError, changeAccount } from "./accountAuth";
 import { accountEmail, accountName } from "../../shared/builderAccount";
 import BuilderLegalGate, { BuilderLegalLinks } from "./BuilderLegalGate";
+import BuilderFirstProjectGate from "./BuilderFirstProjectGate";
+import BuilderSignup from "./BuilderSignup";
 
 /** Authentication gates mounting the workspace; project access is enforced by RLS/API. */
 export default function BuilderAuth({ children }: { children: ReactNode }) {
@@ -43,6 +45,7 @@ export default function BuilderAuth({ children }: { children: ReactNode }) {
   const [reset, setReset] = useState(false);
   const [error, setError] = useState("");
   const [notice, setNotice] = useState("");
+  const [signup, setSignup] = useState<"create" | "confirm" | undefined>();
   const live = useRef(false),
     operation = useRef(0),
     working = useRef(false);
@@ -75,6 +78,7 @@ export default function BuilderAuth({ children }: { children: ReactNode }) {
         setError("");
         setNotice("");
         setSettingAccount(undefined);
+        setSignup(undefined);
       }
       latest = next;
       setSession(next);
@@ -180,8 +184,27 @@ export default function BuilderAuth({ children }: { children: ReactNode }) {
   if (ready && session && !setup && !linkProblem)
     return (
       <BuilderLegalGate key={session.user.id} accountId={session.user.id}>
-        {children}
+        <BuilderFirstProjectGate
+          key={session.user.id}
+          accountId={session.user.id}
+        >
+          {children}
+        </BuilderFirstProjectGate>
       </BuilderLegalGate>
+    );
+  if (ready && !session && signup)
+    return (
+      <BuilderSignup
+        initialEmail={email}
+        confirmationOnly={signup === "confirm"}
+        onBack={() => {
+          setSignup(undefined);
+          setError("");
+          setNotice("");
+          setPassword("");
+          setReset(false);
+        }}
+      />
     );
   const invitedSetup =
     setup && session?.user.user_metadata?.builder_password_set === false;
@@ -322,7 +345,7 @@ export default function BuilderAuth({ children }: { children: ReactNode }) {
                   : `Choose a password for ${session?.user.email}.`
                 : reset
                   ? "Enter your account email to request a new password link."
-                  : "Use your invited editor account to access your projects."}
+                  : "Sign in to access your projects, or create an account to start a website."}
             </p>
             {linkProblem && <p role="alert">{linkProblem}</p>}
             {!setup && (
@@ -412,6 +435,30 @@ export default function BuilderAuth({ children }: { children: ReactNode }) {
                   : linkProblem
                     ? "Request a new password reset link"
                     : "Forgot password?"}
+              </button>
+            )}
+            {!setup && (
+              <button
+                type="button"
+                disabled={busy}
+                onClick={() => {
+                  setSignup("create");
+                  setPassword("");
+                }}
+              >
+                Create an account
+              </button>
+            )}
+            {!setup && (
+              <button
+                type="button"
+                disabled={busy}
+                onClick={() => {
+                  setSignup("confirm");
+                  setPassword("");
+                }}
+              >
+                Confirm your email
               </button>
             )}
             {setup && (

@@ -61,7 +61,11 @@ beforeEach(() => {
   mock.session = null;
   // Existing auth scenarios use an account that already accepted this version.
   mock.invoke.mockReset().mockResolvedValue({
-    data: { legal: { ...BUILDER_LEGAL, acceptedAt: "2026-09-14T00:00:00Z" } },
+    data: {
+      created: false,
+      projectId: "kaizen",
+      legal: { ...BUILDER_LEGAL, acceptedAt: "2026-09-14T00:00:00Z" },
+    },
     error: null,
   });
   mock.recovery = undefined;

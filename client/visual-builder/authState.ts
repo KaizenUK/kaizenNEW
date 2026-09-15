@@ -5,7 +5,14 @@ export const missingAuthLink =
   "This page needs a fresh invitation or reset link to set a password. If you already set one, sign in. Otherwise request a new password reset link.";
 export function authErrorMessage(
   error: unknown,
-  action: "check" | "signin" | "reset" | "setup" | "signout" = "signin",
+  action:
+    | "check"
+    | "signin"
+    | "reset"
+    | "setup"
+    | "signout"
+    | "signup"
+    | "confirm" = "signin",
 ) {
   const value =
     error && typeof error === "object"
@@ -21,7 +28,7 @@ export function authErrorMessage(
     invalid_credentials:
       "That email address and password did not match. Check them, or reset your password.",
     email_not_confirmed:
-      "Your email is not confirmed yet. Open your latest invitation email to finish setup, or ask the website owner to resend it.",
+      "Your email is not confirmed yet. Open your latest confirmation or invitation email, or choose Confirm your email to request a new link. For an invitation, you can also ask the website owner to resend it.",
     invite_not_found: unavailableAuthLink,
     otp_expired:
       "This link is invalid or has expired. A link already used will not work again. Sign in with your password, or request a new password reset link.",
@@ -70,6 +77,10 @@ export function authErrorMessage(
       "The password change could not be confirmed. Keep this page open and check your connection before trying again.",
     signout:
       "Sign-out could not be confirmed. Check your connection and try again.",
+    signup:
+      "The account request could not be confirmed. It may have sent an email; check your inbox before trying again.",
+    confirm:
+      "The confirmation request could not be confirmed. It may have sent an email; check your inbox before requesting another link.",
   }[action];
 }
 export function passwordResetRedirect(href: string) {

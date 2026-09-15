@@ -139,7 +139,7 @@ test("incorrect passwords and unfinished email confirmation have clear next step
     f.state.loginError = "email_not_confirmed";
     await page.getByRole("button", { name: "Sign in", exact: true }).click();
     await expect(page.getByRole("alert")).toContainText(
-      "Open your latest invitation email",
+      "Open your latest confirmation or invitation email",
     );
     f.state.loginError = undefined;
     await page

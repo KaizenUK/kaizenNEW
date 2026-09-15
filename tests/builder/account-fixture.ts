@@ -3,10 +3,12 @@ import { PGlite } from "@electric-sql/pglite";
 import { readFile } from "node:fs/promises";
 import { createServer, type Server } from "node:http";
 import type { Page } from "./browser-fixture";
+import { bootstrapAccount } from "../../supabase/functions/_shared/builderSignup";
 import { createAccountHandler } from "../../supabase/functions/_shared/builderAccounts";
 export const accountOwner = "11111111-1111-4111-8111-111111111111",
   accountPerson = "22222222-2222-4222-8222-222222222222",
   accountOtherOwner = "33333333-3333-4333-8333-333333333333";
+export const accountNew = "44444444-4444-4444-8444-444444444444";
 const beta = "bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb";
 const authOrigin = "https://account-fixture.supabase.test";
 
@@ -16,6 +18,7 @@ export async function accountFixture(
   page: Page,
   options: {
     signedOut?: boolean;
+    signup?: boolean;
     invited?: boolean;
     initialAccount?: string;
     initialView?: "account" | "pages";
@@ -49,6 +52,7 @@ export async function accountFixture(
     "202609130002_builder_accounts.sql",
     "202609140001_builder_function_limits.sql",
     "202609140004_builder_legal_privacy.sql",
+    "202609150001_builder_signup.sql",
   ])
     await db.exec(await readFile(`supabase/migrations/${file}`, "utf8"));
   if (!options.needsLegalAcceptance)
@@ -68,6 +72,16 @@ export async function accountFixture(
     [`${project.id}/fixture-image`, accountPerson],
   );
   const state = {
+    signupRequests: [] as {
+      email: string;
+      name: string;
+      redirectTo: string | null;
+    }[],
+    confirmations: [] as { email: string; redirectTo: string | null }[],
+    bootstrapActors: [] as string[],
+    signupFailure: false,
+    confirmationFailure: false,
+    bootstrapFailureAfterCommit: false,
     deletions: [] as string[],
     updates: [] as { actor: string; body: any }[],
     codes: [] as string[],
@@ -95,6 +109,7 @@ export async function accountFixture(
           aud: "authenticated",
           role: "authenticated",
           email: row.email,
+          email_confirmed_at: row.email_confirmed_at,
           new_email: state.pendingEmail.get(id),
           user_metadata: row.raw_user_meta_data,
           app_metadata: {},
@@ -248,6 +263,52 @@ export async function accountFixture(
       request.headers().authorization?.replace(/^Bearer /, "") || "";
     const actor = tokens.get(bearer),
       user = actor ? await readUser(actor) : null;
+    if (url.pathname === "/auth/v1/signup") {
+      const body = request.postDataJSON();
+      state.signupRequests.push({
+        email: body.email,
+        name: body.data?.full_name,
+        redirectTo: url.searchParams.get("redirect_to"),
+      });
+      if (!options.signup)
+        throw new Error("Unexpected signup outside its fixture");
+      if (!(await readUser(accountNew))) {
+        await db.query(
+          "insert into auth.users(id,email,raw_user_meta_data) values($1,$2,$3)",
+          [accountNew, body.email, JSON.stringify(body.data)],
+        );
+        state.password = body.password;
+      }
+      await reply(
+        state.signupFailure
+          ? {
+              code: "unexpected_failure",
+              message: "Private fixture signup detail",
+            }
+          : await readUser(accountNew),
+        state.signupFailure ? 503 : 200,
+      );
+      return;
+    }
+    if (url.pathname === "/auth/v1/resend") {
+      const body = request.postDataJSON();
+      if (body.type !== "signup")
+        throw new Error("Unexpected confirmation type");
+      state.confirmations.push({
+        email: body.email,
+        redirectTo: url.searchParams.get("redirect_to"),
+      });
+      await reply(
+        state.confirmationFailure
+          ? {
+              code: "over_email_send_rate_limit",
+              message: "Private fixture resend detail",
+            }
+          : {},
+        state.confirmationFailure ? 429 : 200,
+      );
+      return;
+    }
     if (url.pathname === "/auth/v1/recover") {
       state.resets.push({
         email: request.postDataJSON().email,
@@ -269,16 +330,20 @@ export async function accountFixture(
       url.searchParams.get("grant_type") === "password"
     ) {
       const body = request.postDataJSON();
-      const person = await readUser(accountPerson);
+      const loginActor = options.signup ? accountNew : accountPerson;
+      const person = await readUser(loginActor);
       const code =
         state.loginError ||
+        (person && !person.email_confirmed_at
+          ? "email_not_confirmed"
+          : undefined) ||
         (body.email !== person?.email || body.password !== state.password
           ? "invalid_credentials"
           : undefined);
       await reply(
         code
           ? { code, message: "Private fixture sign-in detail" }
-          : await session(accountPerson),
+          : await session(loginActor),
         code ? 400 : 200,
       );
       return;
@@ -354,6 +419,42 @@ export async function accountFixture(
     }
     if (url.pathname === "/functions/v1/builder-projects") {
       const input = request.postDataJSON();
+      if (input.action === "bootstrap") {
+        state.bootstrapActors.push(actor);
+        const response = await bootstrapAccount(
+          {
+            rpc: async (name, args) => {
+              if (name !== "builder_bootstrap_account")
+                throw new Error("Unexpected bootstrap RPC");
+              try {
+                return {
+                  data: (
+                    await db.query<any>(
+                      "select builder_bootstrap_account($1) as result",
+                      [args.actor],
+                    )
+                  ).rows[0].result,
+                  error: null,
+                };
+              } catch (failure) {
+                return { data: null, error: { code: failure.code } };
+              }
+            },
+          },
+          actor,
+        );
+        if (state.bootstrapFailureAfterCommit && response.status === 200) {
+          state.bootstrapFailureAfterCommit = false;
+          await reply(
+            {
+              error:
+                "Your first project could not be confirmed. Retry to check its status.",
+            },
+            503,
+          );
+        } else await reply(response.body, response.status);
+        return;
+      }
       if (input.action === "list") {
         const rows = (
           await db.query<any>(
@@ -397,9 +498,10 @@ export async function accountFixture(
       "update auth.users set raw_user_meta_data=raw_user_meta_data||'{\"builder_password_set\":false}'::jsonb where id=$1",
       [accountPerson],
     );
-  const initial = options.signedOut
-    ? null
-    : await session(options.initialAccount || accountPerson);
+  const initial =
+    options.signedOut || options.signup
+      ? null
+      : await session(options.initialAccount || accountPerson);
   await page.addInitScript((value) => {
     if (sessionStorage.getItem("account-fixture-seeded")) return;
     sessionStorage.setItem("account-fixture-seeded", "1");
@@ -412,10 +514,12 @@ export async function accountFixture(
   const usedLinks = new Set<string>();
   let linkServer: Server | undefined;
   async function passwordLink(kind: string) {
-    if (!["invite", "recovery", "expired"].includes(kind))
+    if (!["invite", "recovery", "expired", "signup"].includes(kind))
       throw new Error("Unknown fixture link");
     const destination = new URL(
-      `/builder/?project=${project.id}&view=account&password=setup`,
+      kind === "signup"
+        ? "/builder/"
+        : `/builder/?project=${project.id}&view=account&password=setup`,
       projectResponse.url(),
     );
     if (kind === "expired" || usedLinks.has(kind)) {
@@ -426,7 +530,14 @@ export async function accountFixture(
       }).toString();
     } else {
       usedLinks.add(kind);
-      const next = await session(accountPerson);
+      if (kind === "signup")
+        await db.query(
+          "update auth.users set email_confirmed_at=now() where id=$1",
+          [accountNew],
+        );
+      const next = await session(
+        kind === "signup" ? accountNew : accountPerson,
+      );
       destination.hash = new URLSearchParams({
         type: kind,
         access_token: next.access_token,
@@ -438,14 +549,16 @@ export async function accountFixture(
     return destination.href;
   }
   await page.goto(
-    `/builder/?project=${project.id}${options.initialView === "pages" ? "" : "&view=account"}`,
+    options.signup
+      ? "/builder/"
+      : `/builder/?project=${project.id}${options.initialView === "pages" ? "" : "&view=account"}`,
   );
   return {
     db,
     state,
     project,
     readUser,
-    async openPasswordLink(kind: "invite" | "recovery" | "expired") {
+    async openPasswordLink(kind: "invite" | "recovery" | "expired" | "signup") {
       // Exercise a real provider redirect: WebKit cannot fulfill an intercepted
       // route with 302. No production account, link or email is involved.
       if (!linkServer) {
