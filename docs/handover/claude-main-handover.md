@@ -16,7 +16,7 @@ Merge resolutions keep the newer hosted save/publish path, client/developer sepa
 
 ## Resume point
 
-**A–C, D0–D3 are implemented and verified in fixtures.** Resume at **D4 — shared admission and inventory** in [the Claude checklist](l6-t4-claude-tasks.md), then D5 and E–H. The complete suite passes 1,519 cases and the actual PostgreSQL fixture passes 26 contention groups.
+**A–D are implemented and verified in fixtures.** Resume at **E — publication abuse controls and data-preserving suspension** in [the Claude checklist](l6-t4-claude-tasks.md), then F–H. The complete suite passes 1,524 cases and the actual PostgreSQL fixture passes 26 contention groups. Nothing from T4 is installed or deployed.
 
 L0–L5 are recorded as deployed. **L6 and all unfinished T4 work remain undeployed.** The recorded production revision is `48823c6f04d49073eb1eb20be7bacc92556032cb`. New migrations, runtimes, services/timers and the matching frontend require the coordinated rollout in F–G. In particular, install the fixed native deployment launcher before using its modified workflow. Do not deploy this checkpoint just because it is on main.
 

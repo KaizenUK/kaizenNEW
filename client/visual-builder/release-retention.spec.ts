@@ -571,7 +571,16 @@ it.runIf(Boolean(process.env.KAIZEN_NGINX_BINARY))(
         },
       },
     );
-    await checkLive(origin, await verifyRelease(f.store, "r0"));
+    // A graceful reload can briefly leave the previous worker answering.
+    const restored = await verifyRelease(f.store, "r0");
+    await expect
+      .poll(() =>
+        checkLive(origin, restored).then(
+          () => true,
+          () => false,
+        ),
+      )
+      .toBe(true);
     expect((await readdir(path.join(f.store, "releases"))).length).toBe(8);
   },
   30000,

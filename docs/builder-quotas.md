@@ -558,3 +558,51 @@ Hosted leftovers are reclaimed in `HostedBuildRecovery.begin`, after output prun
 **Remaining limits (D4):** each allowance is sampled per producer, so a hosted build, a native deployment and a release activation sharing one filesystem each check the free-space floor independently. D4 decides whether shared reservation or hard admission is required.
 
 **Proof:** a hosted build recovery case reclaims sandbox, clone and temp leftovers, preserves a linked leftover and operator files, refuses a second start while a build runs, and reclaims after completion. A client destination case proves unpublication leaves no temp source. `l6-t4-d3-tests1.log`: complete `pnpm test` with actual Nginx, 1,519 cases across 122 files, zero skips. `l6-t4-d3-types1.log`: 466 files, zero errors/warnings, 201 hints. Nothing is installed or deployed.
+
+## Shared storage admission and native inventory coverage
+
+**Problem D4 closes:** each producer used to sample free space and apply its own floor. A hosted build, a native deployment, a release copy and an upload sharing one filesystem could therefore each spend the same headroom.
+
+**Shared admission** (`scripts/storage-admission.mjs`) is enabled by setting `KAIZEN_STORAGE_ADMISSION_DIRECTORY` to the same directory for every service on a filesystem. That directory must be group-owned by a shared group, mode 2770, with each unit granted `SupplementaryGroups`. How it works:
+
+- **Reservations:** each producer publishes the growth it may spend as its own atomically renamed reservation file, owned by its exact process identity (host, PID, boot ID, kernel start time).
+- **Admission:** the producer then re-sums every live reservation on that filesystem and withdraws its own if free space minus all reservations would cross the floor. Two concurrent producers see each other and cannot both spend the same headroom; at worst both back off and retry later.
+- **Stale reservations:** anyone removes a reservation only when its owner is proven gone on this host. A reservation from another host is kept and counted. A malformed, linked or wrongly owned record refuses admission rather than being discounted.
+- **No shared lock:** no reservation depends on a lock, so a killed service cannot leave one behind.
+
+| Producer | Reservation | Enforcement |
+| --- | --- | --- |
+| Hosted helper commands and builds (`HostedDiskGuard.watch`/`run`) | Remaining project allowance, capped by `KAIZEN_STORAGE_RESERVATION_MAX_BYTES` (4 GiB) and by what is currently shareable | Sampled every interval; work that grows past its reservation, or an allowance/free check that fails after subtracting others' reservations, is stopped |
+| Native deployment (`nativeDiskGuard`) | Same, over checkout plus private state | Same |
+| Release staging and immutable installs | The exact copy size, never capped | Refused before copying; released when staging or installation ends |
+| Upload spool | None of its own (bounded by spool limits) | Accepts a transfer only if free space minus others' reservations covers it |
+| Individual hosted saves and uploads (`check`) | None | Free space minus others' reservations |
+
+**Unset admission:** without `KAIZEN_STORAGE_ADMISSION_DIRECTORY`, behaviour is unchanged: per-producer monitoring only.
+
+**What stays monitored rather than hard:**
+
+- Growth is still observed by sampling, so a command can briefly exceed its reservation between samples.
+- Reservations double-count bytes already written while they are held, which is conservative.
+- Any process in the shared group could forge or remove records, which affects admission only, never data.
+- No filesystem quota is configured.
+
+**Native inventory coverage:** the configured native cleanup roots (checkouts, all-account drafts, retained release stores including `requests/`, and deployment candidates) remain complete for native scopes. Every file removed by later D work was checked:
+
+- D2e store reclamation and native request cleanup run inside native maintenance's native operation.
+- D3 hosted leftovers are reclaimed at build start, which is itself a native producer operation.
+- Client worker reclamation touches client scopes, which ordinary database-reference cleanup protects rather than the native inventory.
+
+A producer beginning or ending still invalidates earlier clearance, and a changed root configuration changes the inventory fingerprint. Removing files can only reduce references, so no clearance becomes unsafe. Installed-server reconciliation of the real root list remains an F task.
+
+**Proof** (`storage-admission.spec.ts`):
+
+- shared headroom can't be double-spent, including under concurrent reservation;
+- open-ended reservations take only what is shareable, while fixed copy sizes are never capped;
+- a stopped owner's reservation is removed while another host's is kept;
+- malformed or world-writable state is refused, and unset or invalid configuration is handled;
+- a hosted command that outgrows its reservation is stopped and its reservation released;
+- checks subtract others' reservations;
+- release staging releases its reservation and is refused before copying when shared space is gone.
+
+`l6-t4-d4-tests2.log`: complete `pnpm test` with actual Nginx, 1,524 cases across 123 files, zero skips; `l6-t4-d4-types1.log`: 467 files, zero errors/warnings, 201 hints. The first complete run (`l6-t4-d4-tests1.log`) and one standalone rerun hit the graceful-reload race in the retention spec's real-Nginx case (a single read right after reload reached the draining worker); that read now polls and passed three standalone reruns and the full rerun. Nothing is installed or deployed.

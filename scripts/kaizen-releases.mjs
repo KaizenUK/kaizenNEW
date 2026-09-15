@@ -30,6 +30,7 @@ import {
   hashReleaseFile,
   readReleaseFile,
   releaseStorageLimits,
+  reserveReleaseStorage,
 } from "./release-storage.mjs";
 import {
   canonicalRedirectPath,
@@ -463,13 +464,18 @@ export async function stageRelease({
     // Reserve source bytes, generated manifest/check lists, redirects and
     // directory entries before copying. Actual copies cannot exceed the source
     // observation. The operation lock prevents a second same-store spender.
-    await checkReleaseStorage(root, storageLimits, {
-      bytes:
-        sourceBytes +
-        names.length * 16 * 1024 +
-        directories.size * 8 * 1024 +
-        2 * 1024 ** 2,
-    });
+    const stagingBytes =
+      sourceBytes +
+      names.length * 16 * 1024 +
+      directories.size * 8 * 1024 +
+      2 * 1024 ** 2;
+    await checkReleaseStorage(root, storageLimits, { bytes: stagingBytes });
+    // Hold the copy size against other producers until the release is staged.
+    const reservation = await reserveReleaseStorage(
+      root,
+      storageLimits,
+      stagingBytes,
+    );
     await mkdir(temporary);
     await mkdir(path.join(temporary, "site"));
     await chmod(temporary, 0o755);
@@ -575,7 +581,9 @@ export async function stageRelease({
         { flag: "wx", mode: 0o644 },
       );
       await assertClientStore(root, client);
-      await checkReleaseStorage(root, storageLimits);
+      await checkReleaseStorage(root, storageLimits, {
+        reservationId: reservation?.id,
+      });
       await renameComplete(temporary, final);
       report({
         status: "staged",
@@ -587,6 +595,8 @@ export async function stageRelease({
     } catch (error) {
       await safeRemoveStaging(root, temporary);
       throw error;
+    } finally {
+      await reservation?.release();
     }
   }
 }
@@ -741,33 +751,44 @@ async function installImmutableAssets(root, manifest, storageLimits) {
       immutableBytes: bytes,
     });
   }
-  for (const file of additions) {
-    const target = path.join(root, "immutable", file.path);
-    await safeDirectory(root, `immutable/${path.posix.dirname(file.path)}`);
-    const temporary = `${target}.${randomUUID()}.tmp`;
-    try {
-      const source = path.join(
+  const reservation = additions.length
+    ? await reserveReleaseStorage(
         root,
-        "releases",
-        manifest.id,
-        "site",
-        file.path,
-      );
-      const info = await lstat(source);
-      if (info.size !== file.size)
-        throw new Error(
-          "The retained release changed before asset installation.",
+        storageLimits,
+        additions.reduce((sum, file) => sum + file.size, 0),
+      )
+    : null;
+  try {
+    for (const file of additions) {
+      const target = path.join(root, "immutable", file.path);
+      await safeDirectory(root, `immutable/${path.posix.dirname(file.path)}`);
+      const temporary = `${target}.${randomUUID()}.tmp`;
+      try {
+        const source = path.join(
+          root,
+          "releases",
+          manifest.id,
+          "site",
+          file.path,
         );
-      await copyReleaseFile(source, temporary, info);
-      await chmod(temporary, 0o644);
-      if ((await hashFile(temporary)) !== file.sha256)
-        throw new Error(
-          `Immutable asset copy failed its checksum: ${file.path}`,
-        );
-      await renameComplete(temporary, target);
-    } finally {
-      await unlink(temporary).catch(() => {});
+        const info = await lstat(source);
+        if (info.size !== file.size)
+          throw new Error(
+            "The retained release changed before asset installation.",
+          );
+        await copyReleaseFile(source, temporary, info);
+        await chmod(temporary, 0o644);
+        if ((await hashFile(temporary)) !== file.sha256)
+          throw new Error(
+            `Immutable asset copy failed its checksum: ${file.path}`,
+          );
+        await renameComplete(temporary, target);
+      } finally {
+        await unlink(temporary).catch(() => {});
+      }
     }
+  } finally {
+    await reservation?.release();
   }
 }
 async function withLock(root, work) {

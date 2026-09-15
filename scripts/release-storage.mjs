@@ -4,6 +4,7 @@ import { constants } from "node:fs";
 import { createHash } from "node:crypto";
 import { lstat, open, opendir, realpath, statfs } from "node:fs/promises";
 import path from "node:path";
+import { StorageAdmission } from "./storage-admission.mjs";
 
 const GiB = 1024 ** 3;
 export const defaultReleaseStorageLimits = Object.freeze({
@@ -81,6 +82,26 @@ export async function measureReleaseStorage(root) {
   const disk = await statfs(root, { bigint: true });
   return { bytes, immutableBytes, freeBytes: disk.bavail * disk.bsize };
 }
+/** Reserve a known copy size against other producers sharing the filesystem.
+ * Returns null when shared admission is not configured. */
+export async function reserveReleaseStorage(
+  root,
+  limits,
+  bytes,
+  environment = process.env,
+) {
+  const admission = await StorageAdmission.fromEnvironment(
+    "release-store",
+    environment,
+  );
+  return admission
+    ? admission.reserve(root, {
+        minimum: bytes,
+        maximum: bytes,
+        floor: validate(limits).freeBytes,
+      })
+    : null;
+}
 export async function checkReleaseStorage(
   root,
   limits = releaseStorageLimits(),
@@ -97,6 +118,9 @@ export async function checkReleaseStorage(
   )
     throw configuration();
   const sample = await measureReleaseStorage(root);
+  const admission = await StorageAdmission.fromEnvironment("release-store");
+  if (admission)
+    sample.freeBytes -= await admission.reserved(root, reserve.reservationId);
   if (sample.bytes + bytes > limits.storeBytes)
     throw new Error(
       "The release store has reached its storage limit. Existing releases are preserved.",

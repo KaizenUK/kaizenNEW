@@ -2,7 +2,6 @@
  * same service invocation. Never treats a partially removed release as a
  * publication target, and never borrows native-operation protection. */
 import { createHash } from "node:crypto";
-import { readFile } from "node:fs/promises";
 import { hostname } from "node:os";
 import path from "node:path";
 import {
@@ -16,6 +15,7 @@ import { releaseRetentionPolicy } from "./release-retention.mjs";
 import { inspectProcessLock } from "./release-recovery.mjs";
 import { readReleaseSelection } from "./kaizen-releases.mjs";
 import { clientPublicationAction } from "./client-publication.mjs";
+import { currentBoot, processStart } from "./process-identity.mjs";
 
 type Destination = {
   projectId: string;
@@ -61,30 +61,7 @@ export function clientDestinationConfiguration(destination: Destination) {
     .digest("hex");
 }
 
-/** Boot ID plus kernel start time identifies one process, even after PID reuse. */
-export async function processStart(pid: number) {
-  if (!Number.isSafeInteger(pid) || pid < 1) throw unavailable();
-  let text: string;
-  try {
-    text = await readFile(`/proc/${pid}/stat`, "utf8");
-  } catch (error) {
-    if (error.code === "ENOENT" || error.code === "ESRCH") return null;
-    throw error;
-  }
-  const fields = text.slice(text.lastIndexOf(")") + 2).split(" ");
-  const startTime = Number(fields[19]);
-  if (!fields[0] || !Number.isSafeInteger(startTime) || startTime < 0)
-    throw unavailable();
-  return { state: fields[0], startTime };
-}
-async function currentBoot() {
-  const value = (
-    await readFile("/proc/sys/kernel/random/boot_id", "utf8")
-  ).trim();
-  if (!/^[a-f0-9]{8}(-[a-f0-9]{4}){3}-[a-f0-9]{12}$/.test(value))
-    throw unavailable();
-  return value;
-}
+export { processStart };
 
 export async function clientRetirementWorker(input: {
   workerId: string;

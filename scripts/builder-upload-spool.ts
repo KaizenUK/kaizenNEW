@@ -3,6 +3,7 @@ import { FileStore } from "@tus/file-store";
 import { Upload } from "@tus/server";
 import { constants } from "node:fs";
 import { lstat, open, readdir, rename, statfs, unlink } from "node:fs/promises";
+import { StorageAdmission } from "./storage-admission.mjs";
 import { createHash, randomUUID } from "node:crypto";
 import path from "node:path";
 import os from "node:os";
@@ -98,6 +99,7 @@ export function uploadAttemptStopped(attempt: UploadAttempt) {
 export class UploadSpool {
   readonly store: FileStore;
   private readonly limits: Readonly<UploadSpoolLimits>;
+  private admission?: Promise<StorageAdmission | null>;
   private readonly active = new Set<string>();
   private constructor(
     readonly directory: string,
@@ -231,8 +233,12 @@ export class UploadSpool {
           "Temporary upload storage is full. Finish or cancel a pending import before starting another.",
         );
       const disk = await statfs(this.directory, { bigint: true });
+      // Other producers' reserved headroom on this filesystem is not free here.
+      this.admission ??= StorageAdmission.fromEnvironment("upload-spool");
+      const shared = await this.admission;
+      const others = shared ? await shared.reserved(this.directory) : 0n;
       if (
-        disk.bavail * disk.bsize <
+        disk.bavail * disk.bsize - others <
         BigInt(
           (removalOnly ? 0 : this.limits.freeBytes + outstanding) +
             additionalBytes +

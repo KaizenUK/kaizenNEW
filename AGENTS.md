@@ -1,6 +1,6 @@
 # Kaizen
 
-**Current main handover — 15 September:** Sean paused implementation and authorized committing all pending work into `main`. Read [the consolidated Claude handover](docs/handover/claude-main-handover.md) first. Use `/home/sean/Documents/GitHub/kaizenNEW` on `main`; source from the earlier launch worktree is now committed here. Implementation resumed with Claude on 15 September; D2 and D3 are complete and committed, and D4 is next. Older instructions about uncommitted T4 or a required launch-worktree-only continuation are superseded.
+**Current main handover — 15 September:** Sean paused implementation and authorized committing all pending work into `main`. Read [the consolidated Claude handover](docs/handover/claude-main-handover.md) first. Use `/home/sean/Documents/GitHub/kaizenNEW` on `main`; source from the earlier launch worktree is now committed here. Implementation resumed with Claude on 15 September; A–D are complete and committed, and E is next. Older instructions about uncommitted T4 or a required launch-worktree-only continuation are superseded.
 
 ## Paused builder work / Linux handover
 
@@ -8,7 +8,7 @@ For continuation of the multi-project visual builder, read `HANDOVER.md` first. 
 
 For the current unfinished L6-T4 work and a Claude takeover, read `docs/handover/l6-t4-claude-tasks.md` after `HANDOVER.md`. It identifies the latest proof and ordered continuation tasks; older next-step paragraphs are historical.
 
-The current D2 implementation is broken into six checkpoints in `docs/handover/l6-t4-release-retirement-tasks.md`. D2a–c are verified in fixtures, including actual release removal and recovery after two service kills. D2d (native and client callers, direct-call guards, history availability and the combined caller checkpoint) is also verified; D2e generated-state retention and D2f integrated proof are verified; D3 generated directories are verified; continue D4. Native integration is prepared but uninstalled; preserve its generation cancellation, last-executor ownership, store/native locks and serving/rollback checks.
+The current D2 implementation is broken into six checkpoints in `docs/handover/l6-t4-release-retirement-tasks.md`. D2a–c are verified in fixtures, including actual release removal and recovery after two service kills. D2d (native and client callers, direct-call guards, history availability and the combined caller checkpoint) is also verified; D2e generated-state retention and D2f integrated proof are verified; D3 generated directories, D4 shared admission and the D5 checkpoint are verified; continue E. Native integration is prepared but uninstalled; preserve its generation cancellation, last-executor ownership, store/native locks and serving/rollback checks.
 
 A production-ready Astro static application with React islands, Sanity CMS, TypeScript, Vitest, and modern tooling.
 

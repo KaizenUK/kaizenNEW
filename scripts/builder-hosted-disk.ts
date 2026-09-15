@@ -4,6 +4,7 @@ import path from "node:path";
 import { promisify } from "node:util";
 import { validProjectId } from "../shared/builderProjects";
 import { HostedHelperError } from "./builder-hosted-auth";
+import { StorageAdmission } from "./storage-admission.mjs";
 
 const exec = promisify(execFile);
 const GiB = 1024 ** 3;
@@ -56,10 +57,13 @@ function validateLimits(value: HostedDiskLimits) {
 export class HostedDiskGuard {
   readonly limits: Readonly<HostedDiskLimits>;
   private retainedRoots?: readonly string[];
+  private admitted?: Promise<StorageAdmission | null>;
   constructor(
     private directory: string,
     limits: HostedDiskLimits = defaultHostedDiskLimits,
     retainedRoots?: readonly string[],
+    private admission: () => Promise<StorageAdmission | null> = () =>
+      StorageAdmission.fromEnvironment("website-storage"),
   ) {
     validateLimits(limits);
     if (!path.isAbsolute(directory) || path.resolve(directory) !== directory)
@@ -150,10 +154,33 @@ export class HostedDiskGuard {
       throw unavailable();
     }
   }
-  async check(projectId: string, reserveBytes = 0) {
+  /** Shared admission, when configured, for services on this filesystem. */
+  private shared() {
+    this.admitted ??= this.admission().catch(() => {
+      this.admitted = undefined;
+      throw unavailable();
+    });
+    return this.admitted;
+  }
+  private get target() {
+    return this.retainedRoots?.[0] || this.directory;
+  }
+  async check(
+    projectId: string,
+    reserveBytes = 0,
+    reservation?: { id: string } | null,
+  ) {
     if (!Number.isSafeInteger(reserveBytes) || reserveBytes < 0)
       throw unavailable();
-    const sample = await this.sample(projectId);
+    const measured = await this.sample(projectId);
+    const admission = await this.shared();
+    // Headroom other producers reserved is not available to this one.
+    const others = admission
+      ? await admission.reserved(this.target, reservation?.id).catch(() => {
+          throw unavailable();
+        })
+      : 0n;
+    const sample = { ...measured, freeBytes: measured.freeBytes - others };
     if (sample.bytes + reserveBytes > this.limits.projectBytes)
       throw new HostedHelperError(
         409,
@@ -171,14 +198,37 @@ export class HostedDiskGuard {
     projectId: string,
     stop: (error: HostedHelperError) => Promise<void>,
   ) {
-    await this.check(projectId);
+    const baseline = await this.check(projectId);
+    const admission = await this.shared();
+    // Reserve this work's remaining allowance, capped and limited to what is
+    // shareable now; the work is stopped if it grows past that reservation.
+    const reservation = admission
+      ? await admission
+          .reserve(this.target, {
+            minimum: 0,
+            maximum: Math.max(0, this.limits.projectBytes - baseline.bytes),
+            floor: this.limits.freeBytes,
+          })
+          .catch((error: { admissionRefused?: boolean; message?: string }) => {
+            throw error?.admissionRefused
+              ? new HostedHelperError(409, error.message!)
+              : unavailable();
+          })
+      : null;
+    const within = async () => {
+      const current = await this.check(projectId, 0, reservation);
+      if (reservation && current.bytes - baseline.bytes > reservation.bytes)
+        throw new HostedHelperError(
+          409,
+          "This work needed more disk space than it could reserve alongside other work. Existing files are kept. Try again after other work finishes.",
+        );
+    };
     let pending: Promise<void> | undefined;
     let failure: HostedHelperError | undefined;
     let closed = false;
     const timer = setInterval(() => {
       if (closed || pending || failure) return;
-      pending = this.check(projectId)
-        .then(() => {})
+      pending = within()
         .catch(async (error) => {
           failure = error instanceof HostedHelperError ? error : unavailable();
           await stop(failure);
@@ -194,9 +244,13 @@ export class HostedDiskGuard {
     return async () => {
       closed = true;
       clearInterval(timer);
-      await pending;
-      if (failure) throw failure;
-      await this.check(projectId);
+      try {
+        await pending;
+        if (failure) throw failure;
+        await within();
+      } finally {
+        await reservation?.release().catch(() => {});
+      }
     };
   }
   async run<T>(projectId: string, work: (signal: AbortSignal) => Promise<T>) {
@@ -241,5 +295,6 @@ export function nativeDiskGuard(
       BUILDER_HOSTED_DISK_CHECK_MS: env.BUILDER_NATIVE_DISK_CHECK_MS,
     }),
     [root, state],
+    () => StorageAdmission.fromEnvironment("native-deployment", env),
   );
 }
