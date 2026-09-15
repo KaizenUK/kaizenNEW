@@ -138,7 +138,10 @@ export class HostedDiskGuard {
           ],
           {
             timeout: 10_000,
-            maxBuffer: 4096,
+            // Only the first stdout line is read, but a tree being written by a
+            // package manager makes du report many vanished files on stderr.
+            // Keep that bounded without turning a normal race into a refusal.
+            maxBuffer: 1024 * 1024,
             env: { PATH: process.env.PATH, LANG: "C", LC_ALL: "C" },
           },
         );
