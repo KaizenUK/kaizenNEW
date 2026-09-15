@@ -4,6 +4,7 @@ import {
   lstat,
   realpath,
   mkdtemp,
+  rm,
   writeFile,
 } from "node:fs/promises";
 import path from "node:path";
@@ -195,13 +196,18 @@ export async function clientPublicationAction(
       path.join(temporary, "index.html"),
       '<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noindex, nofollow"><title>Website unavailable</title></head><body><main><h1>This website is temporarily unavailable</h1></main></body></html>',
     );
-    await stageRelease({
-      store,
-      client,
-      source: temporary,
-      id: options.id,
-      report,
-    });
+    try {
+      await stageRelease({
+        store,
+        client,
+        source: temporary,
+        id: options.id,
+        report,
+      });
+    } finally {
+      // The staged copy is retained; the holding-page source is not.
+      await rm(temporary, { recursive: true, force: true });
+    }
     return activateRelease(
       { store, id: options.id, origin: client.origin, report },
       adapters,

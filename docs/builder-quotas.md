@@ -529,3 +529,32 @@ Both run only when `BUILDER_RELEASE_RETENTION_ENABLED=1` and new work is allowed
 - the actual Nginx case: an abandoned immutable file and staging directory are reclaimed during retirement, while Nginx keeps serving the selected release and its shared assets and restores the retained rollback.
 
 `l6-t4-generated-retention-combined1.log` passes 296 cases across eighteen affected files with actual Nginx and zero skips; `l6-t4-generated-retention-types1.log` reports 466 files, zero errors/warnings and 200 hints; native release and domain worker bundles pass Node syntax checks. A retirement case that rewrote `active.conf` by substring could corrupt a random fixture path containing `r3`; it now replaces whole words. Nothing is installed or deployed.
+
+## Generated directory coverage
+
+D3 closes the remaining generated-directory gaps and records one rule for every generated scope. "Charged" means the scope is inside a measured allowance; unknown files inside a charged root stay charged and are never deleted automatically.
+
+| Scope | Location | Owner and lock | Accounting | Admission and retention |
+| --- | --- | --- | --- | --- |
+| Hosted checkout and installed dependencies | `projects/<id>/checkout` (including `node_modules`) | Helper project lock | Hosted project allowance (8 GiB, 2 GiB free floor), sampled during commands | Retained: needed to build. Replaced only by source/dependency changes |
+| Hosted build home and npm/XDG caches | `projects/<id>/build-home` | Project lock during trusted builds | Hosted project allowance | Retained and charged; an over-limit project refuses new builds with an operator message |
+| Hosted build temp | `projects/<id>/build-temp` | Build lock | Hosted project allowance | **New:** entries are reclaimed when the next build starts (no build can be running then) |
+| Isolated build input copy | `projects/<id>/.build-isolation-XXXXXX` | Sandbox run inside the build | Hosted project allowance | Removed after each build; **new:** a copy left by a killed helper is reclaimed at the next build start |
+| Interrupted repository clone | `projects/<id>/.clone-<uuid>` | Project lock during setup | Hosted project allowance | Removed after clone; **new:** a leftover is reclaimed at the next build start |
+| Previous and failed build output | `checkout/.kaizen/build-recovery/<job>/{previous-dist,failed-dist}` | Durable build receipts | Hosted project allowance | Existing retention keeps the two newest finished builds; unrecognized, running or recovery-required output stays |
+| Previews | Served from the current or recovery output above | Build receipts | Included above | No separate copy; a preview closes when its output changes or expires |
+| Native checkout, dependencies and candidates | Deployment checkout and native state | Deployment lock and native operation | Native allowance (checkout + state) | Candidates reclaimed only with recorded ownership (D0) |
+| Native pnpm store and cache | `state/dependencies`, `state/cache/pnpm` | Deployment lock | Native allowance | Pruned above 2 GiB or under pressure (D1) |
+| Native XDG data and home | `state/data`, `state` | Deployment lock | Native allowance | Retained and charged; small tool data |
+| Release stores, immutable files, staging, journals | Release store | Store activation lock | Release capacity (8 GiB / 4 GiB immutable / 2 GiB free) | D2 retirement and D2e generated-state retention |
+| Native build request snapshots | `store/requests` | Deployment lock | Release capacity | Finished releases past visitor grace (D2e) |
+| Client worker job directories | Worker private directory | Client worker unit | Worker directory (not in a store) | Finished jobs past visitor grace (D2e) |
+| Client unpublication holding page | System temp | Worker process | Transient | **New:** removed immediately after staging (previously left behind) |
+| Client worker Vite cache | `node_modules/.vite-client-worker` in the trusted checkout | Worker | Not measured; bounded by disabled dependency discovery | Retained with the installed application |
+| Upload spool | Private spool | Upload service | Upload reservations | Existing verified cleanup |
+
+Hosted leftovers are reclaimed in `HostedBuildRecovery.begin`, after output pruning and after a durable running build receipt has already been refused. That refusal is the stopped-work proof: sandbox copies, clone temps and build temp files can only belong to a running build. Removal uses the D2e identity-checked remover. A linked, mounted, foreign or changed leftover is skipped instead of blocking the build, and it remains charged.
+
+**Remaining limits (D4):** each allowance is sampled per producer, so a hosted build, a native deployment and a release activation sharing one filesystem each check the free-space floor independently. D4 decides whether shared reservation or hard admission is required.
+
+**Proof:** a hosted build recovery case reclaims sandbox, clone and temp leftovers, preserves a linked leftover and operator files, refuses a second start while a build runs, and reclaims after completion. A client destination case proves unpublication leaves no temp source. `l6-t4-d3-tests1.log`: complete `pnpm test` with actual Nginx, 1,519 cases across 122 files, zero skips. `l6-t4-d3-types1.log`: 466 files, zero errors/warnings, 201 hints. Nothing is installed or deployed.

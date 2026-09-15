@@ -1,5 +1,12 @@
 import { describe, it, expect } from "vitest";
-import { mkdtemp, mkdir, readFile, writeFile, cp } from "node:fs/promises";
+import {
+  mkdtemp,
+  mkdir,
+  readFile,
+  readdir,
+  writeFile,
+  cp,
+} from "node:fs/promises";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import { randomUUID } from "node:crypto";
@@ -152,6 +159,34 @@ describe("client publication identity", () => {
     await expect(stageRelease({ ...other, id: "private" })).rejects.toThrow(
       "private source",
     );
+  });
+  it("removes the temporary holding-page source after staging an unpublication", async () => {
+    const f = await fixture();
+    await bindClientStore(f);
+    await stageRelease({ ...f, id: "live" });
+    await initialiseStore({ store: f.store, id: "live" });
+    const temporary = await mkdtemp(path.join(f.root, "tmp-"));
+    const original = process.env.TMPDIR;
+    process.env.TMPDIR = temporary;
+    try {
+      await clientPublicationAction(
+        { ...f.client, label: "Client", store: f.store },
+        "unpublish",
+        { id: "offline" },
+        {
+          validateConfig: async () => {},
+          reload: async () => {},
+          checkLive: async () => {},
+        },
+      );
+    } finally {
+      if (original === undefined) delete process.env.TMPDIR;
+      else process.env.TMPDIR = original;
+    }
+    expect(await readdir(temporary)).toEqual([]);
+    expect(
+      (await verifyRelease(f.store, "offline")).files.map((file) => file.path),
+    ).toContain("index.html");
   });
   it("requires all public files in the verified manifest, including CSS and media", async () => {
     const f = await fixture();

@@ -8,6 +8,10 @@ import {
 } from "./builder-hosted-folders";
 import { HostedReceiptStore, receiptError } from "./builder-hosted-receipts";
 import type { BuildJob } from "./builder-runner";
+import {
+  inventoryGeneratedTree,
+  removeGeneratedEntries,
+} from "./release-generated-files.mjs";
 
 type BuildReceipt = {
   id: string;
@@ -212,6 +216,40 @@ export class HostedBuildRecovery {
       this.observed.set(projectId, records);
     }
   }
+  /** Called at build start, after a running receipt has been refused: no
+   * sandbox copy, clone or build temp file can belong to live work. Linked,
+   * mounted, foreign or changed leftovers stay in place and remain charged. */
+  private async reclaimAbandoned(projectId: string) {
+    const project = this.folders.projectDirectory(projectId);
+    const list = (directory: string) =>
+      readdir(directory).catch((error) => {
+        if (error.code === "ENOENT") return [] as string[];
+        throw error;
+      });
+    const targets = [
+      ...(await list(project)).filter(
+        (name) =>
+          /^\.build-isolation-[A-Za-z0-9]{6}$/.test(name) ||
+          /^\.clone-[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/.test(
+            name,
+          ),
+      ),
+      ...(await list(path.join(project, "build-temp"))).map(
+        (name) => `build-temp/${name}`,
+      ),
+    ];
+    for (const relative of targets.sort().slice(0, 1000)) {
+      try {
+        await removeGeneratedEntries(
+          project,
+          await inventoryGeneratedTree(project, relative),
+        );
+      } catch (error) {
+        if (!(error as { generatedRefusal?: boolean })?.generatedRefusal)
+          throw error;
+      }
+    }
+  }
   async begin(job: BuildJob, fingerprint: string) {
     await this.folders.locked(job.projectId, async () => {
       await this.refresh(job.projectId);
@@ -230,6 +268,7 @@ export class HostedBuildRecovery {
       // Retention runs before capacity admission, so old generated output can free space.
       // A pruning receipt is resumable, but never replays a build or restores source.
       await this.prune(job.projectId);
+      await this.reclaimAbandoned(job.projectId);
       const records = this.observed.get(job.projectId)!;
       if (
         records.length >= 24 ||

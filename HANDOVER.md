@@ -1,6 +1,6 @@
 # Kaizen builder — Windows to Linux handover
 
-**Current consolidation — 15 September:** Sean paused implementation and requested all pending work on `main` for Claude. Read [the consolidated main handover](docs/handover/claude-main-handover.md). Use `/home/sean/Documents/GitHub/kaizenNEW` on `main`. The editor polish and launch implementation are committed together; older references below to uncommitted T4 or launch-only files are historical. Implementation resumed with Claude: D2 is complete and committed; D3 is next. L5 remains live; L6 is undeployed.
+**Current consolidation — 15 September:** Sean paused implementation and requested all pending work on `main` for Claude. Read [the consolidated main handover](docs/handover/claude-main-handover.md). Use `/home/sean/Documents/GitHub/kaizenNEW` on `main`. The editor polish and launch implementation are committed together; older references below to uncommitted T4 or launch-only files are historical. Implementation resumed with Claude: D2 and D3 are complete and committed; D4 is next. L5 remains live; L6 is undeployed.
 
 Prepared 11 September 2026 at Sean's request; resumed on Linux on 12 September. **Read the Linux continuation below for current implementation and acceptance status.**
 

@@ -403,3 +403,51 @@ describe("durable hosted build recovery", () => {
       ).toBe("Keep");
   });
 });
+
+it("reclaims abandoned sandbox copies, clone temps and build temp files only when no build is running", async () => {
+  const { api, root, recovery } = await fixture();
+  const project = api.folders.projectDirectory(helperProject);
+  const isolation = path.join(project, ".build-isolation-AbC123");
+  await mkdir(path.join(isolation, "input/src"), { recursive: true });
+  await writeFile(path.join(isolation, "input/src/index.astro"), "copy");
+  const clone = path.join(project, `.clone-${randomUUID()}`);
+  await mkdir(path.join(clone, ".git"), { recursive: true });
+  await writeFile(path.join(clone, ".git/HEAD"), "ref: refs/heads/main");
+  await mkdir(path.join(project, "build-temp/tool-cache"), { recursive: true });
+  await writeFile(path.join(project, "build-temp/tool-cache/file"), "tmp");
+  const linked = path.join(project, ".build-isolation-Linked");
+  await mkdir(linked);
+  await writeFile(path.join(project, "operator-note.txt"), "keep");
+  await symlink(
+    path.join(project, "operator-note.txt"),
+    path.join(linked, "link"),
+  );
+
+  const running = job(root);
+  await recovery.begin(running, "a".repeat(64));
+  for (const gone of [
+    isolation,
+    clone,
+    path.join(project, "build-temp/tool-cache"),
+  ])
+    await expect(lstat(gone)).rejects.toMatchObject({ code: "ENOENT" });
+  await lstat(path.join(project, "build-temp"));
+  expect(await readFile(path.join(project, "operator-note.txt"), "utf8")).toBe(
+    "keep",
+  );
+  await lstat(path.join(linked, "link"));
+
+  // Another start is refused while this build runs, so it cannot reclaim.
+  const busy = path.join(project, ".build-isolation-Busy01");
+  await mkdir(busy);
+  await expect(recovery.begin(job(root), "a".repeat(64))).rejects.toThrow(
+    /operator check/,
+  );
+  await lstat(busy);
+  running.status = "succeeded";
+  running.finishedAt = new Date().toISOString();
+  await recovery.finish(running);
+  await recovery.begin(job(root), "a".repeat(64));
+  await expect(lstat(busy)).rejects.toMatchObject({ code: "ENOENT" });
+  await lstat(path.join(linked, "link"));
+});

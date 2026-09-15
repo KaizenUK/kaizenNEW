@@ -32,8 +32,11 @@ const keys = [
 ];
 const directoryKeys = ["dev", "ino", "uid", "gid", "mode"];
 export const generatedFailure = (reason) =>
-  new Error(
-    `Generated release state could not be reclaimed safely: ${reason}. Existing files are preserved.`,
+  Object.assign(
+    new Error(
+      `Generated state could not be reclaimed safely: ${reason}. Existing files are preserved.`,
+    ),
+    { generatedRefusal: true },
   );
 const snapshot = (info) =>
   Object.fromEntries(keys.map((key) => [key, info[key]]));
