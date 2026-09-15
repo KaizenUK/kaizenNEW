@@ -56,7 +56,8 @@ export const helpTopics = {
   },
   existing: {
     title: "Existing site pages",
-    description: "Find pages from the original website and open their editor.",
+    description:
+      "Find pages from the original website and open their editor. Its existing design is preserved.",
   },
   editor: {
     title: "Page editor",

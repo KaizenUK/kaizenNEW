@@ -112,7 +112,6 @@ export default function SitePages({
   return (
     <Card
       title={developer ? "Pages from the website's code" : "Website pages"}
-      description="Edit text, links and images on the page itself. The existing design is preserved."
       ariaLabel="Website pages"
     >
       {connection.status !== "connected" && (
