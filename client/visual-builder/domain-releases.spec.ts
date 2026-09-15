@@ -751,9 +751,10 @@ it.runIf(Boolean(process.env.KAIZEN_NGINX_BINARY))(
       },
     );
     expect(published.status).toBe("live");
-    expect((await get(port, item.hostname, "/")).body).toContain(
-      "Owner chose to publish",
-    );
+    // A graceful reload can briefly leave an old Nginx worker answering.
+    await expect
+      .poll(async () => (await get(port, item.hostname, "/")).body)
+      .toContain("Owner chose to publish");
     await expect(
       releases.prepare(item, "owner-publication", guard),
     ).resolves.toMatchObject({ artifactId: "owner-publication" });

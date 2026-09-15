@@ -1,6 +1,6 @@
 # Claude handover — consolidated main
 
-Sean paused implementation and requested that all pending branch work be committed into `main` on 15 September 2026. This is the current handover and overrides older instructions to use a dirty launch worktree or defer the T4 commit. **Sean resumed implementation with Claude later on 15 September. D2d.2 is committed (`2ad9ccf`); D2d.3 is verified and uncommitted.** This consolidation does not complete T4 or authorize treating L6 as deployed.
+Sean paused implementation and requested that all pending branch work be committed into `main` on 15 September 2026. This is the current handover and overrides older instructions to use a dirty launch worktree or defer the T4 commit. **Sean resumed implementation with Claude later on 15 September. D2d is complete and committed (`2ad9ccf`, `b13e69a` and the D2d.4 checkpoint).** This consolidation does not complete T4 or authorize treating L6 as deployed.
 
 ## Open this checkout
 
@@ -16,7 +16,7 @@ Merge resolutions keep the newer hosted save/publish path, client/developer sepa
 
 ## Resume point
 
-**A–C, D0–D1, D2a–c and D2d.1–3 are implemented and verified in fixtures.** Resume at **D2d.4 — caller integration checkpoint**, then D2e–f, D3–D5 and E–H. D2d.2 is committed as `2ad9ccf` ([client caller guide](../builder-quotas.md#client-release-maintenance-caller)); D2d.3 is in the working tree on main and not yet committed ([availability guide](../builder-quotas.md#release-history-availability)).
+**A–C, D0–D1 and D2a–d are implemented and verified in fixtures.** Resume at **D2e — immutable and abandoned generated-state retention**, then D2f, D3–D5 and E–H. See [caller coverage and installation order](../builder-quotas.md#release-retirement-caller-coverage-and-installation-order).
 
 L0–L5 are recorded as deployed. **L6 and all unfinished T4 work remain undeployed.** The recorded production revision is `48823c6f04d49073eb1eb20be7bacc92556032cb`. New migrations, runtimes, services/timers and the matching frontend require the coordinated rollout in F–G. In particular, install the fixed native deployment launcher before using its modified workflow. Do not deploy this checkpoint just because it is on main.
 

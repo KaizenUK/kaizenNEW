@@ -462,3 +462,36 @@ New proof:
 
 `l6-t4-release-history-combined2.log` passes 290 cases across eighteen affected files with actual Nginx and zero skips. An earlier identical run, `combined1`, had one real-Nginx domain assertion read the previous page immediately after a graceful reload; that file then passed 29/29 standalone and the full rerun passed, and no D2d.3 change touches that path. `l6-t4-release-history-browser1.log` passes both affected browser journeys; `l6-t4-release-history-types1.log` reports 466 files, zero errors/warnings and 200 hints; `l6-t4-release-history-edge1.log` passes the Deno check of both functions and the full Edge suite (10 tests, 68 steps). Nothing is installed or deployed.
 
+## Release retirement caller coverage and installation order
+
+D2d is complete in fixtures. Every configured caller that can stage, activate, restore or list retained releases is covered:
+
+| Caller | Stores | Retires? | Owner and stopped-work proof | Refusals it receives |
+| --- | --- | --- | --- | --- |
+| Native deployment worker and `kaizen-native-maintenance@` (D2d.1) | Kaizen and native repository `repository:staging` / `repository:production` | Yes, one per invocation | Native operation journal plus systemd invocation boundary, under the deployment `build.lock` | Staging/activation of pending or retired IDs; listing omits a partial target |
+| Hosted client worker `kaizen-client-worker` (D2d.2) | Configured client destinations, including domain primary stores | Yes, one per invocation, rate-limited | Client worker boot/start-time process identity; same unit serializes with its publications | Same, plus finish-owned-attempts before publication |
+| Domain worker (D2d.2) | Reads client and native stores | No | Not applicable | Listing omits a partial target, so verification and routing continue |
+| Local `ClientPublisher` and direct CLIs (D2d.2) | Local destinations; any store passed to the release CLI | No | Not applicable | Staging, activation, rollback and restoration refuse pending or retired IDs |
+| Release history (D2d.3) | Hosted client, native and local history | No | Not applicable | Restore actions hidden for removing/removed releases; stale requests refused by the SQL fence |
+
+**Installation order (F–G):**
+
+1. Apply migrations 019 then 020.
+2. Deploy the matching `builder-projects` Edge function and frontend. Older frontends ignore `availability`.
+3. Install the fixed deployment launcher before the modified deployment workflow. Then install the native worker bundle and the `kaizen-native-maintenance@` units, which stay disabled until inventory is reconciled.
+4. Update the client worker checkout and `/etc/kaizen/client-worker.env` with `BUILDER_RELEASE_RETENTION_ENABLED=0`.
+5. Verify serving, rollback and history on staging.
+6. Only then set `BUILDER_RELEASE_RETENTION_ENABLED=1` per worker and enable the maintenance timers.
+
+**Recovery order after a crash:**
+
+1. Prove the recorded executor stopped: native systemd invocation, or client process identity.
+2. Recover native journal and checkout state, where applicable.
+3. Reconcile the selected release and the killed operation's own activation lock through `reconcileRelease`.
+4. Resume the owned attempt inside the ordinary retention session.
+
+A foreign or publication-owned lock, a changed store assignment, or an unproven stopped process preserves every file and is reported for operator reconciliation. Turning retention off never strands an owned attempt.
+
+**Remaining limits:** RPC replies in the service fixtures are simulated; actual PostgreSQL contention (D2c) and actual Nginx proof are separate. The client stopped-work proof is host-local. Pre-intent metadata, abandoned staging/requests/transactions and immutable-asset retention are D2e. Nothing is installed or deployed.
+
+`l6-t4-caller-checkpoint-combined1.log` passes 290 cases across eighteen affected files with actual Nginx and zero skips, including the hardened reload assertion; `l6-t4-caller-checkpoint-types1.log` reports 466 files, zero errors/warnings and 200 hints; native release and domain worker bundles pass Node syntax checks; six launcher cases pass. `l6-t4-client-retirement-service3.log` kills a transient user-systemd client retirement service (verified MainPID, `KillMode=control-group`) while it holds the destination lock after removing the target manifest, with a detached descendant; a new service invocation proves the old process and descendant stopped, recovers with new cleanup disabled, completes removal and preserves the selected site and rollback. The first two service runs failed in the driver, not the product: the host rejected `systemctl kill --kill-whom=main`, and the held Node process exited early because an unresolved promise does not keep the event loop alive.
