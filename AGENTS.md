@@ -1,6 +1,6 @@
 # Kaizen
 
-**Current main handover — 15 September:** Sean paused implementation and authorized committing all pending work into `main`. Read [the consolidated Claude handover](docs/handover/claude-main-handover.md) first. Use `/home/sean/Documents/GitHub/kaizenNEW` on `main`; source from the earlier launch worktree is now committed here. Implementation resumed with Claude on 15 September; A–E are complete and committed, and F is next. Older instructions about uncommitted T4 or a required launch-worktree-only continuation are superseded.
+**Current main handover — 15 September:** Sean paused implementation and authorized committing all pending work into `main`. Read [the consolidated Claude handover](docs/handover/claude-main-handover.md) first. Use `/home/sean/Documents/GitHub/kaizenNEW` on `main`; source from the earlier launch worktree is now committed here. Implementation resumed with Claude on 15 September; A–E are complete and committed, and F is in progress. **Deployment is currently blocked, safely:** GitHub `main` and `stage` (`afb9d3a`) call a deployment launcher that is not yet installed on the VPS. The next content update, builder publish or push fails before activation, and the live L5 websites stay unchanged. Do not restore the L5 workflow on `main`; see [the installation plan](docs/builder-t4-installation.md#deployment-is-currently-blocked-safely). Older instructions about uncommitted T4 or a required launch-worktree-only continuation are superseded.
 
 ## Paused builder work / Linux handover
 

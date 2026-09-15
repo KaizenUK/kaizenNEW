@@ -16,7 +16,7 @@ Merge resolutions keep the newer hosted save/publish path, client/developer sepa
 
 ## Resume point
 
-**A–E are implemented and verified in fixtures.** Resume at **F — installation and complete T4 integration proof** in [the Claude checklist](l6-t4-claude-tasks.md), then G and H. The complete suite passes 1,534 cases. Nothing from T4 is installed or deployed.
+**A–E are implemented and verified in fixtures.** Resume at **F — installation and complete T4 integration proof** in [the Claude checklist](l6-t4-claude-tasks.md), then G and H. The complete suite passes 1,534 cases. Nothing from T4 is installed or deployed. F has begun: see [the installation plan](../builder-t4-installation.md). **Deployment is currently blocked, safely:** GitHub `main` and `stage` (`afb9d3a`) call a deployment launcher that is not yet installed on the VPS. The next content update, builder publish or push fails before activation, and the live L5 websites stay unchanged. Do not restore the L5 workflow on `main`; see [the installation plan](../builder-t4-installation.md#deployment-is-currently-blocked-safely).
 
 L0–L5 are recorded as deployed. **L6 and all unfinished T4 work remain undeployed.** The recorded production revision is `48823c6f04d49073eb1eb20be7bacc92556032cb`. New migrations, runtimes, services/timers and the matching frontend require the coordinated rollout in F–G. In particular, install the fixed native deployment launcher before using its modified workflow. Do not deploy this checkpoint just because it is on main.
 

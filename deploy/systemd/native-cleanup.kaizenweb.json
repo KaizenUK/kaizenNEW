@@ -1,0 +1,57 @@
+{
+  "version": 1,
+  "workerId": "kaizen-native-cleanup",
+  "projects": ["kaizen"],
+  "producers": [
+    { "workerId": "kaizen-native-helper", "projectIds": ["kaizen"] },
+    { "workerId": "kaizen-production-release", "projectIds": ["kaizen"] },
+    { "workerId": "kaizen-staging-release", "projectIds": ["kaizen"] }
+  ],
+  "roots": [
+    {
+      "kind": "repository",
+      "path": "/srv/kaizen/production",
+      "projectIds": ["kaizen"]
+    },
+    {
+      "kind": "repository",
+      "path": "/srv/kaizen/staging",
+      "projectIds": ["kaizen"]
+    },
+    {
+      "kind": "repository",
+      "path": "/var/lib/kaizen-helper/work/projects/kaizen/checkout",
+      "projectIds": ["kaizen"]
+    },
+    {
+      "kind": "tree",
+      "path": "/var/lib/kaizen-helper/work/projects/kaizen/drafts",
+      "projectIds": ["kaizen"]
+    },
+    {
+      "kind": "tree",
+      "path": "/var/lib/kaizen/production",
+      "projectIds": ["kaizen"]
+    },
+    {
+      "kind": "tree",
+      "path": "/var/lib/kaizen/staging",
+      "projectIds": ["kaizen"]
+    },
+    {
+      "kind": "tree",
+      "path": "/var/lib/kaizen/legacy-baseline-source",
+      "projectIds": ["kaizen"]
+    },
+    {
+      "kind": "repository-collection",
+      "path": "/var/lib/kaizen-native/production/candidates",
+      "projectIds": ["kaizen"]
+    },
+    {
+      "kind": "repository-collection",
+      "path": "/var/lib/kaizen-native/staging/candidates",
+      "projectIds": ["kaizen"]
+    }
+  ]
+}

@@ -5,7 +5,7 @@
 
 ## Current launch implementation handover
 
-Read `HANDOVER.md`, then [the Claude continuation tasks](docs/handover/l6-t4-claude-tasks.md) before changing builder code. Use the consolidated `main` checkout identified above; preserve private local state. The current resume point is **F — installation and complete T4 integration proof** in [the Claude continuation tasks](docs/handover/l6-t4-claude-tasks.md). The launch brief and task map linked there govern this work; older pause/next-step notes are historical. Keep the handover current after each verified checkpoint.
+Read `HANDOVER.md`, then [the Claude continuation tasks](docs/handover/l6-t4-claude-tasks.md) before changing builder code. Use the consolidated `main` checkout identified above; preserve private local state. The current resume point is **F — installation and complete T4 integration proof** (see `docs/builder-t4-installation.md`; deployment is safely blocked until the coordinated rollout installs the launcher) in [the Claude continuation tasks](docs/handover/l6-t4-claude-tasks.md). The launch brief and task map linked there govern this work; older pause/next-step notes are historical. Keep the handover current after each verified checkpoint.
 
 ## Content Principles (from guidance/Viral_Content_Guide.pdf)
 
