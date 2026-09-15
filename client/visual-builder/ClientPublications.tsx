@@ -31,6 +31,9 @@ export default function ClientPublications({
   onChanged: () => void;
   onConnectDomain?: () => void;
 }) {
+  const [suspension, setSuspension] = useState<{
+    state: "suspended" | "taken_down";
+  } | null>(null);
   const [destinations, setDestinations] = useState<ClientDestination[]>([]),
     [jobs, setJobs] = useState<ClientPublicationJob[]>([]);
   const [selected, setSelected] = useState(""),
@@ -59,6 +62,7 @@ export default function ClientPublications({
       });
       if (!mounted.current || cursor.current !== before) return;
       setDestinations(data.destinations);
+      setSuspension(data.suspension || null);
       setJobs([
         ...new Map<string, ClientPublicationJob>(
           [...(data.currentJobs || []), ...data.jobs].map((job) => [
@@ -159,6 +163,13 @@ export default function ClientPublications({
       </Head>
       <div className="builder-page-body">
         <RepositoryPublish />
+        {suspension && (
+          <Notice tone="error">
+            {suspension.state === "taken_down"
+              ? "This website has been taken offline while Kaizen reviews a report about it. Your pages, drafts and files are kept. Publishing and restoring earlier releases are paused until the review is resolved. Contact Kaizen support for help."
+              : "Publishing is paused for this website while Kaizen reviews a report about it. The current website stays online, and your pages, drafts and files are kept. Contact Kaizen support for help."}
+          </Notice>
+        )}
         {!loaded && (
           <p role="status" className="builder-hint">
             Loading destinations and release history…
@@ -215,7 +226,13 @@ export default function ClientPublications({
               <button
                 type="button"
                 className="builder-primary"
-                disabled={busy || !loaded || !destination || pending(selected)}
+                disabled={
+                  busy ||
+                  !loaded ||
+                  !destination ||
+                  pending(selected) ||
+                  Boolean(suspension)
+                }
                 onClick={() => void run(() => prepare("publish"))}
               >
                 Review saved project for publication
@@ -428,7 +445,9 @@ export default function ClientPublications({
                       <button
                         type="button"
                         disabled={
-                          busy || pending(job.destination.destinationId)
+                          busy ||
+                          pending(job.destination.destinationId) ||
+                          Boolean(suspension)
                         }
                         onClick={() => void run(() => prepare("rollback", job))}
                       >

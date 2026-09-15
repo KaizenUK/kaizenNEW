@@ -44,6 +44,7 @@ const projectRecord = (row: any, member: any) => ({
   capabilities: projectCapabilities(row.capabilities),
   access: { role: member.role, canPublish: member.can_publish },
   ...(row.copy ? { copy: row.copy } : {}),
+  ...(row.suspension ? { suspension: row.suspension } : {}),
 });
 
 Deno.serve(async (request) => {
@@ -137,11 +138,21 @@ Deno.serve(async (request) => {
           actor: auth.user!.id,
         }),
       );
+      const suspensions = check(
+        await service.rpc("builder_project_suspension_summaries", {
+          actor: auth.user!.id,
+        }),
+      );
       return rows.map((row: any) =>
         projectRecord(
           {
             ...row,
             copy: copies.find((copy: any) => copy.projectId === row.id),
+            suspension: (({ projectId: _id, ...state }) => state)(
+              suspensions.find((item: any) => item.projectId === row.id) || {
+                projectId: null,
+              },
+            ),
             ...(destinations.some(
               (d: any) => d.project_id === row.id && d.enabled,
             )

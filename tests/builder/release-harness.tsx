@@ -37,6 +37,10 @@ export function mountReleasePanel(rows: ReleaseStatus[], draft: BuilderPage) {
 /** Controlled release metadata rendered by the real client panel. */
 export async function mountClientReleaseStatuses(
   jobs: import("../../shared/builderClientPublication").ClientPublicationJob[],
+  suspension: {
+    state: "suspended" | "taken_down";
+    since: string;
+  } | null = null,
 ) {
   const { default: ClientPublications } =
     await import("../../client/visual-builder/ClientPublications");
@@ -46,6 +50,7 @@ export async function mountClientReleaseStatuses(
       .filter((job) => job.active)
       .map((job) => job.destination),
     nextCursor: null,
+    suspension,
   });
   const root = document.createElement("div");
   root.className = "builder-app builder-dashboard";

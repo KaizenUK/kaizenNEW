@@ -40,6 +40,9 @@ const privateTables = [
   "builder_native_asset_state",
   "builder_native_asset_scopes",
   "builder_native_asset_operations",
+  "builder_project_suspensions",
+  "builder_abuse_reports",
+  "builder_abuse_actions",
 ];
 const legacyTables = [
   "builder_pages",
@@ -155,6 +158,9 @@ describe("complete builder table access matrix", () => {
       insert into builder_asset_cleanup(project_id,asset_id,worker_id) values('kaizen','${page}','private-asset-worker');
       insert into builder_release_retirements(project_id,scope,artifact_id,worker_id,store_fingerprint,manifest_sha256,bytes)
         values('kaizen','repository:production','private-retained-artifact','private-release-worker',repeat('a',64),repeat('b',64),10);
+      insert into builder_abuse_reports(id,fingerprint,reporter,project_id,origin,category,details,contact) values(gen_random_uuid(),repeat('a',64),repeat('b',64),'${alpha}','https://abuse-canary.example.test','phishing','private abuse report canary','private-reporter@example.test');
+      insert into builder_projects(id,name) values('dddddddd-dddd-4ddd-8ddd-dddddddddddd','Suspension canary');insert into builder_project_suspensions(project_id,state,reason,operator) values('dddddddd-dddd-4ddd-8ddd-dddddddddddd','suspended','private suspension canary','matrix-operator');
+      insert into builder_abuse_actions(project_id,action,reason,operator) values('dddddddd-dddd-4ddd-8ddd-dddddddddddd','suspend','private abuse action canary','matrix-operator');
       insert into builder_native_asset_operations(id,worker_id,configuration,project_id,process_id,host,instance_id,phase,completed_at)
         values('${page}','private-native-worker',repeat('a',64),'kaizen',123,'fixture-host','${page}','complete',now());
       insert into builder_asset_discovery(project_id,asset_id,bucket_id,object_name,bytes,object_version,object_etag,worker_id)

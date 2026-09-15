@@ -253,6 +253,8 @@ Deno.test(
           assert.equal(body.target, copy.project_id);
           return Response.json(state());
         }
+        if (name === "builder_project_suspension_summaries")
+          return Response.json([]);
         if (name === "builder_project_copy_summaries")
           return Response.json(
             copy?.status === "pending"

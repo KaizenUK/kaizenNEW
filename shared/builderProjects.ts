@@ -52,6 +52,8 @@ export type BuilderProject = {
     label: string;
   };
   access?: { role: "owner" | "editor"; canPublish: boolean };
+  /** Publishing is paused by an operator review; content is kept. */
+  suspension?: { state: "suspended" | "taken_down"; since: string };
   copy?: {
     pending: boolean;
     cancelling?: boolean;

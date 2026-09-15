@@ -99,7 +99,14 @@ export async function clientPublicationAction({
         configured.find((d: any) => d.id === row.destination_id && d.enabled)
           ?.active_job_id,
       );
+    const suspension = check(
+      await service.rpc("builder_project_suspension_state", {
+        target: projectId,
+        actor,
+      }),
+    );
     return {
+      suspension: suspension || null,
       destinations: configured
         .filter((row: any) => row.enabled)
         .map(clientDestination),

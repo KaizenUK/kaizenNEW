@@ -608,7 +608,8 @@ it("pages release history without gaps across equal timestamps and concurrent in
         error: null,
       }),
     },
-    service: {},
+    // This fixture predates suspension; the service reports none.
+    service: { rpc: async () => ({ data: null, error: null }) },
     projectId: f.projectId,
     actor: owner,
     input: { action: "client-release-list" },
