@@ -138,13 +138,25 @@ export class HostedDiskGuard {
           ],
           {
             timeout: 10_000,
-            // Only the first stdout line is read, but a tree being written by a
-            // package manager makes du report many vanished files on stderr.
-            // Keep that bounded without turning a normal race into a refusal.
+            // A tree being written by a package manager reports every file that
+            // disappeared while it was walked. Keep that bounded instead of
+            // turning an ordinary race into a refusal.
             maxBuffer: 1024 * 1024,
             env: { PATH: process.env.PATH, LANG: "C", LC_ALL: "C" },
           },
-        );
+        ).catch((error: { stdout?: unknown; stderr?: unknown }) => {
+          // Those vanished files also make du exit non-zero although it still
+          // reports the total it measured. Accept only that fixed English
+          // wording, so an unreadable directory still refuses the measurement.
+          const stderr = typeof error.stderr === "string" ? error.stderr : "";
+          const vanished = stderr
+            .split("\n")
+            .filter(Boolean)
+            .every((line) => /: No such file or directory$/.test(line));
+          if (typeof error.stdout === "string" && stderr && vanished)
+            return { stdout: error.stdout, stderr };
+          throw error;
+        });
         const match = /^(\d+)\t/.exec(result.stdout);
         if (!match) throw unavailable();
         bytes += Number(match[1]);

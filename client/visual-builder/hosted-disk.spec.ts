@@ -102,30 +102,42 @@ describe("hosted storage bounds", () => {
     await mkdir(state, { recursive: true });
     const bin = path.join(root, "measure-bin");
     await mkdir(bin);
-    // A real du reports every file that disappeared while it walked the tree.
-    // That warning stream must not become a storage refusal.
-    await writeFile(
-      path.join(bin, "du"),
-      [
-        "#!/bin/sh",
-        "index=0",
-        "while [ $index -lt 400 ]; do",
-        '  echo "du: cannot access \'/vanished/dependency-$index/file\': No such file or directory" >&2',
-        "  index=$((index + 1))",
-        "done",
-        'printf "%s\t%s\n" 4096 "$6"',
-        "",
-      ].join("\n"),
-      { mode: 0o755 },
-    );
+    const env = {
+      BUILDER_NATIVE_STORAGE_MAX_BYTES: String(limits.projectBytes),
+      BUILDER_NATIVE_MIN_FREE_BYTES: "0",
+      BUILDER_NATIVE_DISK_CHECK_MS: "100",
+    };
+    const measure = async (warning: string, status: number) =>
+      writeFile(
+        path.join(bin, "du"),
+        [
+          "#!/bin/sh",
+          "index=0",
+          "while [ $index -lt 400 ]; do",
+          `  echo "${warning}" >&2`,
+          "  index=$((index + 1))",
+          "done",
+          'printf "%s\t%s\n" 4096 "$6"',
+          `exit ${status}`,
+          "",
+        ].join("\n"),
+        { mode: 0o755 },
+      );
     vi.stubEnv("PATH", `${bin}${path.delimiter}${process.env.PATH}`);
+    // A real measurement reports every file the package manager removed while
+    // it walked the tree, and exits non-zero even though its total is complete.
+    await measure(
+      "du: cannot access '/dependencies/package-$index/file': No such file or directory",
+      1,
+    );
     await expect(
-      nativeDiskGuard(project, state, {
-        BUILDER_NATIVE_STORAGE_MAX_BYTES: String(limits.projectBytes),
-        BUILDER_NATIVE_MIN_FREE_BYTES: "0",
-        BUILDER_NATIVE_DISK_CHECK_MS: "100",
-      }).check("kaizen"),
+      nativeDiskGuard(project, state, env).check("kaizen"),
     ).resolves.toMatchObject({ bytes: 8192 });
+    // An unreadable directory is not a vanished file: that total is incomplete.
+    await measure("du: cannot read directory '/retained/private': Permission denied", 1);
+    await expect(
+      nativeDiskGuard(project, state, env).check("kaizen"),
+    ).rejects.toThrow("could not check website storage");
   });
 
   it("counts native checkout and worker dependencies together and remeasures after a restart", async () => {
