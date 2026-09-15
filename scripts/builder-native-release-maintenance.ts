@@ -1,6 +1,12 @@
 /** Called inside the configured deployment service's outer lock and native
  * operation. Never treats a partially removed release as a publication target. */
+import { lstat, opendir } from "node:fs/promises";
 import path from "node:path";
+import {
+  generatedAge,
+  inventoryGeneratedTree,
+  removeGeneratedEntries,
+} from "./release-generated-files.mjs";
 import {
   assertRetirementOperation,
   assertRetirementRecovery,
@@ -20,6 +26,7 @@ type Input = {
   controller: NativeOperationController;
   connection: {
     rpc: (name: string, input: Record<string, unknown>) => Promise<any>;
+    get?: (id: string) => Promise<any>;
   };
   recoverOnly?: boolean;
 };
@@ -109,5 +116,67 @@ export async function maintainNativeReleases(
   }
   // Turning off new retirement must still finish the exact previously owned
   // operation; otherwise a partially deleted release would remain stranded.
-  return retireRelease(options, adapters);
+  const newWork =
+    !input.recoverOnly && env.BUILDER_RELEASE_RETENTION_ENABLED === "1";
+  const result = await retireRelease(options, {
+    ...adapters,
+    reclaimGenerated: newWork,
+  });
+  if (!newWork || typeof input.connection.get !== "function") return result;
+  const requests = await reclaimNativeRequests(
+    options.store,
+    input.connection.get,
+    (adapters.now || Date.now)(),
+    options.retention,
+  );
+  return requests.removed ? { ...result, requests } : result;
+}
+
+/** Build inputs written under the deployment lock this invocation holds. Only
+ * a finished database release, past visitor grace, gives up its snapshot. */
+export async function reclaimNativeRequests(
+  store: string,
+  get: (id: string) => Promise<any>,
+  now: number,
+  policy: { visitorGraceDays: number },
+) {
+  const directory = path.join(store, "requests"),
+    summary = { removed: 0, bytes: 0 };
+  if (
+    !(await lstat(directory).catch((error) => {
+      if (error.code === "ENOENT") return null;
+      throw error;
+    }))
+  )
+    return summary;
+  const names: string[] = [];
+  for await (const entry of await opendir(directory)) {
+    if (names.length >= 10000) break;
+    names.push(entry.name);
+  }
+  for (const name of names.sort()) {
+    if (summary.removed >= 1000) break;
+    const match =
+      /^([a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12})\.json$/.exec(
+        name,
+      );
+    if (!match) continue;
+    const [file] = await inventoryGeneratedTree(store, `requests/${name}`);
+    if (
+      file.type !== "file" ||
+      generatedAge(file.identity, now) < policy.visitorGraceDays * 86400000
+    )
+      continue;
+    let release;
+    try {
+      release = await get(match[1]);
+    } catch {
+      continue; // An unavailable or missing record keeps the snapshot.
+    }
+    if (!["live", "failed", "rolled_back"].includes(release?.status)) continue;
+    const removed = await removeGeneratedEntries(store, [file]);
+    summary.removed += removed.removed;
+    summary.bytes += removed.bytes;
+  }
+  return summary;
 }

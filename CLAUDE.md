@@ -1,11 +1,11 @@
 # Kaizen Web — Project Guidelines
 
-**Current main handover — 15 September:** Sean paused implementation and authorized committing all pending work into `main`. Read [the consolidated Claude handover](docs/handover/claude-main-handover.md) first. Use `/home/sean/Documents/GitHub/kaizenNEW` on `main`; source from the earlier launch worktree is now committed here. Implementation resumed with Claude on 15 September; D2d is complete and committed, and D2e is next. Older instructions about uncommitted T4 or a required launch-worktree-only continuation are superseded.
+**Current main handover — 15 September:** Sean paused implementation and authorized committing all pending work into `main`. Read [the consolidated Claude handover](docs/handover/claude-main-handover.md) first. Use `/home/sean/Documents/GitHub/kaizenNEW` on `main`; source from the earlier launch worktree is now committed here. Implementation resumed with Claude on 15 September; D2a–e are complete and committed, and D2f is next. Older instructions about uncommitted T4 or a required launch-worktree-only continuation are superseded.
 
 
 ## Current launch implementation handover
 
-Read `HANDOVER.md`, then [the Claude continuation tasks](docs/handover/l6-t4-claude-tasks.md) before changing builder code. Use the consolidated `main` checkout identified above; preserve private local state. The current resume point is **D2e — immutable and abandoned generated-state retention** in [the detailed release-retirement checkpoints](docs/handover/l6-t4-release-retirement-tasks.md). The launch brief and task map linked there govern this work; older pause/next-step notes are historical. Keep the handover current after each verified checkpoint.
+Read `HANDOVER.md`, then [the Claude continuation tasks](docs/handover/l6-t4-claude-tasks.md) before changing builder code. Use the consolidated `main` checkout identified above; preserve private local state. The current resume point is **D2f — integrated D2 proof** in [the detailed release-retirement checkpoints](docs/handover/l6-t4-release-retirement-tasks.md). The launch brief and task map linked there govern this work; older pause/next-step notes are historical. Keep the handover current after each verified checkpoint.
 
 ## Content Principles (from guidance/Viral_Content_Guide.pdf)
 

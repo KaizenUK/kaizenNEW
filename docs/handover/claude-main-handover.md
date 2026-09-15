@@ -16,7 +16,7 @@ Merge resolutions keep the newer hosted save/publish path, client/developer sepa
 
 ## Resume point
 
-**A–C, D0–D1 and D2a–d are implemented and verified in fixtures.** Resume at **D2e — immutable and abandoned generated-state retention**, then D2f, D3–D5 and E–H. See [caller coverage and installation order](../builder-quotas.md#release-retirement-caller-coverage-and-installation-order).
+**A–C, D0–D1 and D2a–e are implemented and verified in fixtures.** Resume at **D2f — integrated D2 proof**, then D3–D5 and E–H. See [caller coverage](../builder-quotas.md#release-retirement-caller-coverage-and-installation-order) and [generated state retention](../builder-quotas.md#generated-release-state-retention).
 
 L0–L5 are recorded as deployed. **L6 and all unfinished T4 work remain undeployed.** The recorded production revision is `48823c6f04d49073eb1eb20be7bacc92556032cb`. New migrations, runtimes, services/timers and the matching frontend require the coordinated rollout in F–G. In particular, install the fixed native deployment launcher before using its modified workflow. Do not deploy this checkpoint just because it is on main.
 

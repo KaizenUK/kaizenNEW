@@ -495,3 +495,37 @@ A foreign or publication-owned lock, a changed store assignment, or an unproven 
 **Remaining limits:** RPC replies in the service fixtures are simulated; actual PostgreSQL contention (D2c) and actual Nginx proof are separate. The client stopped-work proof is host-local. Pre-intent metadata, abandoned staging/requests/transactions and immutable-asset retention are D2e. Nothing is installed or deployed.
 
 `l6-t4-caller-checkpoint-combined1.log` passes 290 cases across eighteen affected files with actual Nginx and zero skips, including the hardened reload assertion; `l6-t4-caller-checkpoint-types1.log` reports 466 files, zero errors/warnings and 200 hints; native release and domain worker bundles pass Node syntax checks; six launcher cases pass. `l6-t4-client-retirement-service3.log` kills a transient user-systemd client retirement service (verified MainPID, `KillMode=control-group`) while it holds the destination lock after removing the target manifest, with a detached descendant; a new service invocation proves the old process and descendant stopped, recovers with new cleanup disabled, completes removal and preserves the selected site and rollback. The first two service runs failed in the driver, not the product: the host rejected `systemctl kill --kill-whom=main`, and the held Node process exited early because an unresolved promise does not keep the event loop alive.
+
+## Generated release state retention
+
+D2e reclaims generated release state only when its abandonment is proven. Unknown files are left in place and stay charged.
+
+**Inside a store's activation lock** (`reclaimGenerated`), which every writer of this state holds, so a leftover entry cannot belong to a live process:
+
+- **Abandoned staging directories** (`.staging-<id>-<uuid>`), removed immediately.
+- **Unpublished retirement records** (`.write-<uuid>.tmp` with a single name). Two-name records are interrupted publications that their owner repairs.
+- **Immutable visitor files** under `immutable/_astro/` (and `immutable/assets/` for client stores), plus interrupted install temps. They go only when no retained manifest references them, including manifests proposed for retirement, and they are older than the larger of the minimum release age and visitor grace (30 days by default).
+- **Finished activation journals** older than that floor whose named releases are all gone. A journal naming any retained release stays, because it can protect that release's rollback or recovery.
+
+Nothing is reclaimed while a retirement attempt is unfinished. Its partial manifest no longer lists the immutable files it may still need.
+
+**Under the worker's own lock, with database proof:**
+
+- **Native build inputs** (`store/requests/<release>.json`) are removed by native maintenance under the deployment lock. They go only when the database release is `live`, `failed` or `rolled_back` and the file is past visitor grace. An unreadable record keeps the file.
+- **Client job directories** (`<work>/<destination>/<job>/`: snapshot, backup and compiled copy) are removed by the client worker during scheduled maintenance. They go only when the database job is final, no worker or recovery lock remains, and visitor grace has passed.
+
+Both run only when `BUILDER_RELEASE_RETENTION_ENABLED=1` and new work is allowed. Recovery-only invocations never reclaim.
+
+**Removal rules:** removal inventories each target first, then removes deepest entries first. Each entry's identity is rechecked immediately before `unlink`/`rmdir`. Links, mounts, foreign owners, world-writable paths, changed files and directories that gained entries refuse and preserve everything. Each run removes at most 20,000 entries (1,000 requests or job directories); the rest waits for the next run. A missing entry on the next run is the earlier interrupted removal, so restart simply finishes. There is no database accounting to acknowledge: capacity is always the actual measured bytes.
+
+**Proof:**
+
+- staging, records, orphaned journals and old unreferenced immutable files are removed while referenced, recent and unknown files survive, followed by rollback;
+- linked staging refusal;
+- no reclamation during an unfinished attempt, then recovery plus reclamation;
+- native requests removed only for finished releases, and never in recovery-only mode;
+- client job directories kept when running, unfinished or unreadable;
+- an interrupted staging removal finishing on the next locked run;
+- the actual Nginx case: an abandoned immutable file and staging directory are reclaimed during retirement, while Nginx keeps serving the selected release and its shared assets and restores the retained rollback.
+
+`l6-t4-generated-retention-combined1.log` passes 296 cases across eighteen affected files with actual Nginx and zero skips; `l6-t4-generated-retention-types1.log` reports 466 files, zero errors/warnings and 200 hints; native release and domain worker bundles pass Node syntax checks. A retirement case that rewrote `active.conf` by substring could corrupt a random fixture path containing `r3`; it now replaces whole words. Nothing is installed or deployed.

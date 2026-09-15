@@ -660,3 +660,167 @@ it("refuses a mismatched client assignment before a held-lock callback can write
     code: "ENOENT",
   });
 });
+
+async function reclaim(f: Awaited<ReturnType<typeof fixture>>, now: number) {
+  return withReleaseRetentionStore(
+    f.options,
+    async (session: any) => {
+      await new ReleaseRetirementState(f.store).bind(session);
+      return session.reclaimGenerated();
+    },
+    { now: () => now, checkLive: quiet.checkLive },
+  );
+}
+
+it("reclaims abandoned staging, unpublished records, orphaned journals and old unreferenced immutable files only", async () => {
+  const f = await fixture(true),
+    actual = Date.now();
+  const staging = `.staging-r9-${randomUUID()}`;
+  await mkdir(path.join(f.store, staging, "site/nested"), { recursive: true });
+  await writeFile(path.join(f.store, staging, "site/nested/partial.html"), "x");
+  await writeFile(path.join(f.store, "private-operator-file"), "canary");
+  await mkdir(path.join(f.store, ".retirement"), { mode: 0o700 });
+  const finishedJournal = async (days: number, releaseId: string) => {
+    const id = randomUUID(),
+      at = new Date(actual - days * day).toISOString();
+    await writeFile(
+      path.join(f.store, "transactions", `${id}.json`),
+      JSON.stringify({
+        schemaVersion: 1,
+        id,
+        releaseId,
+        startedAt: at,
+        updatedAt: at,
+        status: "live",
+      }),
+    );
+    return id;
+  };
+  // Both journals name releases that no longer exist; only age separates them.
+  const old = await finishedJournal(60, "gone-1"),
+    recent = await finishedJournal(10, "gone-2");
+  const journalFile = (id: string) =>
+    path.join(f.store, "transactions", `${id}.json`);
+  const immutable = path.join(f.store, "immutable");
+  await writeFile(path.join(immutable, "_astro/orphan.js"), "old chunk");
+  await writeFile(
+    path.join(immutable, `_astro/shared.js.${randomUUID()}.tmp`),
+    "partial copy",
+  );
+  await writeFile(path.join(immutable, "assets/orphan.svg"), "<svg/>");
+  await mkdir(path.join(immutable, "operator"));
+  await writeFile(path.join(immutable, "operator/unknown.txt"), "unknown");
+  const shared = await readFile(
+    path.join(immutable, "_astro/shared.js"),
+    "utf8",
+  );
+
+  // The actual clock: staging and the old orphaned journal are abandoned now,
+  // but new unreferenced visitor assets and the recent journal are in grace.
+  expect(await reclaim(f, actual)).toMatchObject({
+    staging: 1,
+    journals: 1,
+    immutable: 0,
+  });
+  await writeFile(
+    path.join(f.store, ".retirement", `.write-${randomUUID()}.tmp`),
+    "{}",
+    { mode: 0o600 },
+  );
+  expect(await reclaim(f, actual)).toMatchObject({ records: 1, immutable: 0 });
+  await expect(lstat(path.join(f.store, staging))).rejects.toMatchObject({
+    code: "ENOENT",
+  });
+  await expect(lstat(journalFile(old))).rejects.toMatchObject({
+    code: "ENOENT",
+  });
+  await lstat(journalFile(recent));
+  await lstat(path.join(immutable, "_astro/orphan.js"));
+
+  expect(await reclaim(f, f.now)).toMatchObject({ immutable: 3, journals: 1 });
+  for (const name of ["_astro/orphan.js", "assets/orphan.svg"])
+    await expect(lstat(path.join(immutable, name))).rejects.toMatchObject({
+      code: "ENOENT",
+    });
+  await expect(lstat(journalFile(recent))).rejects.toMatchObject({
+    code: "ENOENT",
+  });
+  expect(
+    (await readdir(path.join(immutable, "_astro"))).some((name) =>
+      name.endsWith(".tmp"),
+    ),
+  ).toBe(false);
+  expect(await readFile(path.join(immutable, "_astro/shared.js"), "utf8")).toBe(
+    shared,
+  );
+  expect(
+    await readFile(path.join(immutable, "assets/shared.svg"), "utf8"),
+  ).toContain("svg");
+  expect(
+    await readFile(path.join(immutable, "operator/unknown.txt"), "utf8"),
+  ).toBe("unknown");
+  expect(
+    await readFile(path.join(f.store, "private-operator-file"), "utf8"),
+  ).toBe("canary");
+  expect((await readdir(path.join(f.store, "releases"))).length).toBe(8);
+  await verifyRelease(f.store, "r7");
+  await activateRelease(
+    { store: f.store, id: "r0", origin: f.client!.origin },
+    quiet,
+  );
+  expect(await reclaim(f, f.now)).toMatchObject({ removedEntries: 0 });
+});
+
+it("refuses to reclaim a linked or changed generated path and preserves every byte", async () => {
+  const f = await fixture();
+  const staging = `.staging-r9-${randomUUID()}`;
+  await mkdir(path.join(f.store, staging));
+  await writeFile(path.join(f.root, "outside.txt"), "outside");
+  await link(
+    path.join(f.root, "outside.txt"),
+    path.join(f.store, staging, "linked"),
+  );
+  await mkdir(path.join(f.store, ".retirement"), { mode: 0o700 });
+  await expect(reclaim(f, f.now)).rejects.toThrow(/linked/);
+  expect(await readFile(path.join(f.store, staging, "linked"), "utf8")).toBe(
+    "outside",
+  );
+  expect(await readFile(path.join(f.root, "outside.txt"), "utf8")).toBe(
+    "outside",
+  );
+});
+
+it("finishes an interrupted generated-state removal on the next locked run", async () => {
+  const f = await fixture();
+  const staging = `.staging-r9-${randomUUID()}`;
+  await mkdir(path.join(f.store, staging, "site"), { recursive: true });
+  for (const name of ["a.html", "b.html", "c.html"])
+    await writeFile(path.join(f.store, staging, "site", name), name);
+  await mkdir(path.join(f.store, ".retirement"), { mode: 0o700 });
+  let removed = 0;
+  await expect(
+    withReleaseRetentionStore(
+      f.options,
+      async (session: any) => {
+        await new ReleaseRetirementState(f.store).bind(session);
+        return session.reclaimGenerated({
+          afterRemove: async () => {
+            if (++removed === 2) throw new Error("service stopped");
+          },
+        });
+      },
+      { now: () => f.now, checkLive: quiet.checkLive },
+    ),
+  ).rejects.toThrow("service stopped");
+  expect((await readdir(path.join(f.store, staging, "site"))).length).toBe(1);
+  expect(await reclaim(f, f.now)).toMatchObject({ staging: 1 });
+  await expect(lstat(path.join(f.store, staging))).rejects.toMatchObject({
+    code: "ENOENT",
+  });
+  await lstat(path.join(f.store, ".activation-lock")).then(
+    () => {
+      throw new Error("The store lock was left behind.");
+    },
+    (error) => expect(error.code).toBe("ENOENT"),
+  );
+});

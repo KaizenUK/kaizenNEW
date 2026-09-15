@@ -201,5 +201,9 @@ export async function maintainClientReleases(
   }
   // Turning off new retirement must still finish the exact previously owned
   // attempt; otherwise a partially deleted release would remain stranded.
-  return retireRelease(options, adapters);
+  return retireRelease(options, {
+    ...adapters,
+    reclaimGenerated:
+      !input.recoverOnly && env.BUILDER_RELEASE_RETENTION_ENABLED === "1",
+  });
 }

@@ -57,6 +57,8 @@ type Adapters = {
   now?: () => number;
   checkLive?: (origin: string, manifest: any) => Promise<void>;
   afterRemove?: (relative: string) => Promise<void>;
+  /** Also reclaim abandoned staging, records, immutable files and journals. */
+  reclaimGenerated?: boolean;
 };
 const problem = () =>
   new Error(
@@ -193,6 +195,11 @@ export async function retireRelease(options: Options, adapters: Adapters = {}) {
       options,
       async (session) => {
         const state = new ReleaseRetirementState(options.store);
+        const withGenerated = async (result: Record<string, unknown>) => {
+          if (!adapters.reclaimGenerated) return result;
+          const generated = await session.reclaimGenerated();
+          return generated?.removedEntries ? { ...result, generated } : result;
+        };
         await state.bind(session);
         let attempt = await state.attempt();
         const recovered = !!attempt;
@@ -208,7 +215,9 @@ export async function retireRelease(options: Options, adapters: Adapters = {}) {
             (item) => Date.parse(item.receipt.eligible_at) <= now,
           );
           if (!candidate)
-            return { phase: plan.candidates.length ? "waiting" : "idle" };
+            return withGenerated({
+              phase: plan.candidates.length ? "waiting" : "idle",
+            });
           attempt = {
             version: 1,
             token: randomUUID(),
@@ -299,12 +308,12 @@ export async function retireRelease(options: Options, adapters: Adapters = {}) {
         await guard();
         await state.forget(attempt, receipt);
         hasIntent = false;
-        return {
+        return withGenerated({
           phase: "removed",
           artifactId: attempt.artifactId,
           bytes: attempt.bytes,
           recovered,
-        };
+        });
       },
       adapters,
     );

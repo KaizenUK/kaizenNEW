@@ -6,7 +6,7 @@ Checkpoint prepared 15 September 2026. This expands D2 in [the Claude takeover c
 
 - **Verified:** D2 capacity and D2a–c, including actual release removal and restart recovery. The coordinator is `scripts/builder-release-retention.ts`; its helpers are `scripts/release-retirement-state.mjs`, `scripts/release-retirement-files.mjs` and the held-lock inspector.
 - **Latest proof:** `l6-t4-retirement-coordinator-combined3.log` passes 453 cases across seventeen files with actual Nginx and zero skips. `l6-t4-retirement-coordinator-pg1.log` passes 26 real contention groups, including both cancellation/claim orders. `l6-t4-retirement-coordinator-vps1.log` proves two actual service kills, detached-child cleanup, last-executor ownership, missing-manifest recovery, completion and retained rollback. Types/bundles pass; exact final logs and handles are in the private checkpoint.
-- **Start D2e:** D2d is complete in fixtures: native worker/idle maintenance (D2d.1), client/domain/retry/direct-call coverage (D2d.2, `2ad9ccf`), history availability (D2d.3, `b13e69a`) and the combined caller checkpoint (D2d.4). Continue immutable and abandoned generated-state retention. The code is connected to the native worker but remains uninstalled. D2e immutable/abandoned cleanup and D2f combined proof remain afterward, then D3–H.
+- **Start D2f:** D2a–e are verified in fixtures, including caller integration (D2d) and generated-state retention (D2e). Continue the integrated D2 proof, including the actual PostgreSQL contention fixture. The code is connected to the native worker but remains uninstalled. D2e immutable/abandoned cleanup and D2f combined proof remain afterward, then D3–H.
 - No production migration/service/provider/frontend deployment occurred. All tests used disposable state. T4 is now committed for handover on main, but remains unfinished and undeployed; L5 stays live.
 
 ## D2a — Correct and prove the database fence
@@ -103,19 +103,19 @@ D2d.1–4 are verified in fixtures and committed on main. Continue at D2e. Compl
 
 ## D2e — Finish immutable and abandoned generated-state retention
 
-**State: next. Depends on D2c–d (complete).**
+**State: verified in fixtures; see [generated state retention](../builder-quotas.md#generated-release-state-retention). `l6-t4-generated-retention-combined1.log` passes 296 cases across eighteen affected files with actual Nginx and zero skips; `l6-t4-generated-retention-types1.log` reports 466 files, zero errors/warnings and 200 hints; native release and domain worker bundles pass Node syntax checks. A retirement case that rewrote `active.conf` by substring could corrupt a random fixture path containing `r3`; it now replaces whole words.**
 
 Files: shared retirement module, [release store](../../scripts/kaizen-releases.mjs), [release recovery](../../scripts/release-recovery.mjs), [storage accounting](../../scripts/release-storage.mjs) and the focused retention tests.
 
-- [ ] Reclaim immutable files only after checking every retained manifest and the documented visitor grace. Incomplete manifests keep the files protected.
-- [ ] Reclaim abandoned staging directories and old requests/transactions only with durable ownership and terminal/stopped-work proof. Preserve recovery receipts needed by incomplete work.
-- [ ] Keep enumeration/removal bounded, refuse linked/mounted/foreign targets, and retain unknown files in actual-byte accounting. Reconcile partial cleanup and lost acknowledgement on restart.
+- [x] Reclaim immutable files only after checking every retained manifest and the documented visitor grace. Incomplete manifests keep the files protected.
+- [x] Reclaim abandoned staging directories and old requests/transactions only with durable ownership and terminal/stopped-work proof. Preserve recovery receipts needed by incomplete work.
+- [x] Keep enumeration/removal bounded, refuse linked/mounted/foreign targets, and retain unknown files in actual-byte accounting. Reconcile partial cleanup and lost acknowledgement on restart.
 
 **Done when:** fixtures prove shared immutable files survive while any retained release needs them; visitor grace is honored; known abandoned data is reclaimed; unknown/active/recoverable data survives. Actual Nginx still serves the active release and can restore the protected rollback afterward.
 
 ## D2f — Integrated proof and handover update
 
-**Depends on D2a–e.**
+**State: next. Depends on D2a–e (verified).**
 
 Files: all D2 modules/tests, [takeover checklist](l6-t4-claude-tasks.md), [quota guide](../builder-quotas.md), [task map](../builder-launch-plan.md), [HANDOVER](../../HANDOVER.md).
 

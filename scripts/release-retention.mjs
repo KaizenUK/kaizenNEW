@@ -19,6 +19,15 @@ import {
 } from "./release-storage.mjs";
 import { ReleaseRetirementState } from "./release-retirement-state.mjs";
 export { validateReleaseMounts } from "./release-storage.mjs";
+import {
+  generatedAge,
+  generatedLimits,
+  inventoryGeneratedTree,
+  removeGeneratedEntries,
+} from "./release-generated-files.mjs";
+
+const stagingPattern =
+  /^\.staging-[a-zA-Z0-9][a-zA-Z0-9_-]{0,95}-[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/;
 
 const day = 86400000;
 const idPattern = /^[a-zA-Z0-9][a-zA-Z0-9_-]{0,95}$/;
@@ -574,6 +583,17 @@ export async function withReleaseRetentionStore(
           path: relative,
           references,
         })),
+        releaseIds: releases.map((item) => item.id),
+        journals: journals.map((item) => ({
+          id: item.id,
+          status: item.status,
+          lastUse: item.lastUse,
+          releaseIds: [
+            item.releaseId,
+            item.previousReleaseId,
+            item.previousSelectedReleaseId,
+          ].filter(Boolean),
+        })),
         ignoredEntries: rootEntries.filter(
           (name) =>
             ![
@@ -778,6 +798,126 @@ export async function withReleaseRetentionStore(
       await guard();
       return guard;
     };
+    // Generated state whose every writer holds this lock, so a leftover entry is
+    // abandoned. Nothing is reclaimed while a retirement attempt is unfinished:
+    // its partial manifest no longer lists immutable files it may still need.
+    const reclaimGenerated = async (adapters = {}) => {
+      assertOpen();
+      const saved = await new ReleaseRetirementState(store).peek();
+      if (saved?.attempt) return null;
+      const plan = await inspect();
+      lastPlan = null;
+      lastCandidates = new Map();
+      const floor =
+        Math.max(selectedPolicy.minAgeDays, selectedPolicy.visitorGraceDays) *
+        day;
+      const scan = { entries: generatedLimits.scanEntries },
+        targets = [];
+      const add = (category, entries) => targets.push({ category, entries });
+      for (const name of plan.ignoredEntries)
+        if (stagingPattern.test(name))
+          add("staging", await inventoryGeneratedTree(store, name, scan));
+      if (saved)
+        for (const directory of [".retirement", ".retirement/retired"])
+          for (const name of await names(path.join(store, directory))) {
+            if (!/^\.write-[a-f0-9-]{36}\.tmp$/.test(name)) continue;
+            const info = await lstat(path.join(store, directory, name));
+            // A two-name record is an interrupted publication its owner repairs.
+            if (!info.isFile() || info.nlink !== 1) continue;
+            add(
+              "records",
+              await inventoryGeneratedTree(store, `${directory}/${name}`, scan),
+            );
+          }
+      const referenced = new Set(
+        plan.immutableReferences.map((item) => item.path),
+      );
+      const client = Boolean(
+        await lstat(path.join(store, "client-destination.json")).catch(
+          () => null,
+        ),
+      );
+      for (const entry of await inventoryGeneratedTree(
+        store,
+        "immutable",
+        scan,
+      )) {
+        const relative = entry.path.slice("immutable/".length);
+        if (
+          entry.type !== "file" ||
+          !(
+            relative.startsWith("_astro/") ||
+            (client && relative.startsWith("assets/"))
+          )
+        )
+          continue;
+        const interrupted =
+          /\.[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\.tmp$/.test(
+            relative,
+          );
+        // Visitors with an older page open keep their assets for the grace.
+        if (
+          (interrupted || !referenced.has(relative)) &&
+          generatedAge(entry.identity, now) >= floor
+        )
+          add("immutable", [entry]);
+      }
+      // Journals protect retained releases only; once every release a
+      // finished journal names is gone, it is no longer a recovery receipt.
+      const present = new Set(plan.releaseIds);
+      for (const item of plan.journals)
+        if (
+          terminal.has(item.status) &&
+          now - item.lastUse >= floor &&
+          item.releaseIds.every((id) => !present.has(id))
+        )
+          add(
+            "journals",
+            await inventoryGeneratedTree(
+              store,
+              `transactions/${item.id}.json`,
+              scan,
+            ),
+          );
+      const summary = {
+        staging: 0,
+        records: 0,
+        immutable: 0,
+        journals: 0,
+        removedEntries: 0,
+        bytes: 0,
+      };
+      const guard = async () => {
+        assertOpen();
+        const root = await lstat(store);
+        if (
+          (await realpath(store)) !== store ||
+          !["dev", "ino", "uid", "gid", "mode"].every(
+            (key) => root[key] === base[key],
+          )
+        )
+          throw unavailable("the store changed during reclamation");
+      };
+      for (const target of targets) {
+        if (
+          summary.removedEntries &&
+          summary.removedEntries + target.entries.length >
+            generatedLimits.removeEntries
+        )
+          break;
+        const result = await removeGeneratedEntries(
+          store,
+          target.entries,
+          guard,
+          adapters,
+        );
+        summary[target.category]++;
+        summary.removedEntries += result.removed;
+        summary.bytes += result.bytes;
+      }
+      lastSnapshots = null;
+      return summary;
+    };
     try {
       return await work(
         Object.freeze({
@@ -792,6 +932,7 @@ export async function withReleaseRetentionStore(
           capture,
           assertUnchanged,
           guardRecovery,
+          reclaimGenerated,
         }),
       );
     } finally {

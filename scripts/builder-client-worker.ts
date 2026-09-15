@@ -2,6 +2,7 @@
 import {
   mkdir,
   lstat,
+  opendir,
   readFile,
   realpath,
   rename,
@@ -32,6 +33,12 @@ import {
   maintainClientReleases,
 } from "./builder-client-release-maintenance";
 import type { ClientRetirementWorker } from "./builder-release-retention";
+import { releaseRetentionPolicy } from "./release-retention.mjs";
+import {
+  generatedAge,
+  inventoryGeneratedTree,
+  removeGeneratedEntries,
+} from "./release-generated-files.mjs";
 
 const uuid = (id: string) =>
   /^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/.test(
@@ -650,7 +657,78 @@ export async function maintainClientDestinations(
       });
     }
   }
+  if (due) {
+    const jobs = await reclaimClientJobDirectories(
+      services,
+      destinations,
+      env,
+      (services.now || Date.now)(),
+    );
+    if (jobs.removed) results.push({ phase: "job-directories", ...jobs });
+  }
   return results;
+}
+
+/** Private per-job build directories. A job gives up its snapshot, backup and
+ * compiled copy only when its database phase is final, no worker or recovery
+ * lock remains, and visitor grace has passed. */
+async function reclaimClientJobDirectories(
+  services: Pick<WorkerServices, "client" | "workDirectory">,
+  destinations: any[],
+  env: NodeJS.ProcessEnv,
+  now: number,
+) {
+  const summary = { removed: 0, bytes: 0 },
+    base = services.workDirectory;
+  const grace = releaseRetentionPolicy(env).visitorGraceDays * 86400000;
+  for (const destination of destinations) {
+    const folder = path.join(base, destination.destinationId);
+    const info = await lstat(folder).catch((error) => {
+      if (error.code === "ENOENT") return null;
+      throw error;
+    });
+    if (!info) continue;
+    if (!info.isDirectory() || info.isSymbolicLink())
+      throw new Error("Client request storage must not be linked.");
+    const names: string[] = [];
+    for await (const entry of await opendir(folder)) {
+      if (names.length >= 10000) break;
+      names.push(entry.name);
+    }
+    for (const name of names.sort()) {
+      if (summary.removed >= 1000 || !uuid(name)) continue;
+      const relative = `${destination.destinationId}/${name}`,
+        top = await lstat(path.join(base, relative));
+      if (
+        !top.isDirectory() ||
+        top.isSymbolicLink() ||
+        generatedAge(top, now) < grace
+      )
+        continue;
+      let job;
+      try {
+        job = await services.client.getClient(name);
+      } catch {
+        continue; // An unavailable record keeps the private files.
+      }
+      if (
+        job?.id !== name ||
+        !["live", "failed", "rolled_back"].includes(job.phase)
+      )
+        continue;
+      const entries = await inventoryGeneratedTree(base, relative);
+      if (
+        entries.some((entry) =>
+          entry.path.split("/").some((part) => part.startsWith(".worker-lock")),
+        )
+      )
+        continue;
+      const removed = await removeGeneratedEntries(base, entries);
+      summary.removed++;
+      summary.bytes += removed.bytes;
+    }
+  }
+  return summary;
 }
 
 export async function createClientCompiler() {

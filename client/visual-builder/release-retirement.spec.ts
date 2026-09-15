@@ -22,12 +22,16 @@ import {
   nativeReleaseAction,
   runNativeReleaseTask,
 } from "../../scripts/builder-native-release";
-import { maintainNativeReleases } from "../../scripts/builder-native-release-maintenance";
+import {
+  maintainNativeReleases,
+  reclaimNativeRequests,
+} from "../../scripts/builder-native-release-maintenance";
 import {
   NativeFileProtection,
   NativeOperationJournal,
 } from "../../scripts/builder-native-operations";
 import { ReleaseRetirementState } from "../../scripts/release-retirement-state.mjs";
+import { withReleaseRetentionStore } from "../../scripts/release-retention.mjs";
 import {
   activateRelease,
   checkLive,
@@ -683,7 +687,8 @@ it("rechecks actual serving and recovery controls after a claim, refusing a newl
     if (action === "claim")
       await writeFile(
         path.join(f.store, "active.conf"),
-        original.replace(/r3/g, "r1"),
+        // Whole words only: the random fixture path may contain "r3".
+        original.replace(/\br3\b/g, "r1"),
       );
     return result;
   });
@@ -785,10 +790,20 @@ it.runIf(Boolean(process.env.KAIZEN_NGINX_BINARY))(
         await new Promise((resolve) => setTimeout(resolve, 20));
       }
     }
-    expect(await f.run({ checkLive })).toMatchObject({
+    await writeFile(
+      path.join(f.store, "immutable/_astro/abandoned-chunk.js"),
+      "no retained release references this",
+    );
+    const staging = `.staging-r9-${randomUUID()}`;
+    await mkdir(path.join(f.store, staging, "site"), { recursive: true });
+    expect(await f.run({ checkLive, reclaimGenerated: true })).toMatchObject({
       phase: "removed",
       artifactId: "r1",
+      generated: { staging: 1, immutable: 1 },
     });
+    await expect(
+      lstat(path.join(f.store, "immutable/_astro/abandoned-chunk.js")),
+    ).rejects.toMatchObject({ code: "ENOENT" });
     await checkLive(f.options.origin, await verifyRelease(f.store, "r3"));
     await activateRelease(
       { store: f.store, id: "r0", origin: f.options.origin },
@@ -1315,4 +1330,157 @@ it("finishes owned client attempts before publications and retires at most one r
     "2147480000",
   );
   expect(await sortedReleases(b.store)).toEqual(["c0", "c2", "c3"]);
+});
+
+it("keeps every generated file while a retirement attempt is unfinished", async () => {
+  const f = await fixture();
+  f.hook(async (action, _input, normal) => {
+    const result = await normal();
+    if (action === "claim") throw new Error("claim reply lost");
+    return result;
+  });
+  await expect(f.run()).rejects.toThrow("claim reply lost");
+  await writeFile(path.join(f.store, "immutable/_astro/abandoned.js"), "old");
+  const staging = `.staging-r9-${randomUUID()}`;
+  await mkdir(path.join(f.store, staging));
+  expect(
+    await withReleaseRetentionStore(
+      f.options,
+      (session: any) => session.reclaimGenerated(),
+      { now: () => f.now, checkLive: quiet.checkLive },
+    ),
+  ).toBeNull();
+  await lstat(path.join(f.store, "immutable/_astro/abandoned.js"));
+  await lstat(path.join(f.store, staging));
+  f.hook(undefined);
+  f.restart();
+  expect(await f.run({ reclaimGenerated: true })).toMatchObject({
+    phase: "removed",
+    recovered: true,
+    generated: { staging: 1, immutable: 1 },
+  });
+});
+
+it("reclaims native build requests only for finished database releases past visitor grace", async () => {
+  const f = await workerFixture();
+  const directory = path.join(f.store, "requests");
+  await mkdir(directory, { mode: 0o700 });
+  const finished = randomUUID(),
+    building = randomUUID(),
+    unknown = randomUUID();
+  for (const id of [finished, building, unknown])
+    await writeFile(path.join(directory, `${id}.json`), "{}", { mode: 0o600 });
+  await writeFile(path.join(directory, "operator-note.txt"), "keep", {
+    mode: 0o600,
+  });
+  const rows: Record<string, any> = {
+    [finished]: { id: finished, status: "live" },
+    [building]: { id: building, status: "building" },
+  };
+  const connection = {
+    ...f.options.connection,
+    get: async (id: string) => {
+      if (!rows[id]) throw new Error("Release record unavailable");
+      return rows[id];
+    },
+  };
+  const input = {
+    environment: f.env,
+    nativeFiles: f.options.nativeFiles,
+    controller: f.options.controller,
+    connection,
+  };
+  expect(
+    await maintainNativeReleases(
+      { ...input, recoverOnly: true },
+      { ...quiet, now: () => f.now },
+    ),
+  ).toEqual({ phase: "disabled" });
+  expect((await readdir(directory)).length).toBe(4);
+  expect(
+    await reclaimNativeRequests(f.store, connection.get, Date.now(), {
+      visitorGraceDays: 7,
+    }),
+  ).toEqual({ removed: 0, bytes: 0 });
+  expect(
+    await maintainNativeReleases(input, { ...quiet, now: () => f.now }),
+  ).toMatchObject({ phase: "removed", requests: { removed: 1 } });
+  expect((await readdir(directory)).sort()).toEqual(
+    [`${building}.json`, `${unknown}.json`, "operator-note.txt"].sort(),
+  );
+});
+
+it("reclaims finished client job directories but keeps running, unfinished and unreadable jobs", async () => {
+  const root = await mkdtemp(path.join(os.tmpdir(), "kaizen-client-jobs-"));
+  roots.push(root);
+  const site = await retirementClientStore(root);
+  const registry = path.join(root, "destinations.json");
+  await writeFile(
+    registry,
+    JSON.stringify({ schemaVersion: 1, destinations: [site.destination] }),
+  );
+  const now = Date.now() + 120 * day;
+  const database = retirementDatabase(path.join(root, "database.json"), now, {
+    [site.scope]: site.store,
+  });
+  const workDirectory = path.join(root, "private-work");
+  const jobs = {
+    finished: randomUUID(),
+    running: randomUUID(),
+    queued: randomUUID(),
+    unreadable: randomUUID(),
+  };
+  for (const id of Object.values(jobs)) {
+    const job = path.join(workDirectory, site.client.destinationId, id);
+    await mkdir(path.join(job, `site-${randomUUID()}`), { recursive: true });
+    await writeFile(path.join(job, `${randomUUID()}.snapshot.json`), "{}");
+    await writeFile(path.join(job, `site-x.html`), "<h1>copy</h1>");
+  }
+  await mkdir(
+    path.join(
+      workDirectory,
+      site.client.destinationId,
+      jobs.running,
+      ".worker-lock",
+    ),
+  );
+  const phases: Record<string, string> = {
+    [jobs.finished]: "live",
+    [jobs.running]: "failed",
+    [jobs.queued]: "queued",
+  };
+  const services = {
+    client: {
+      getClient: async (id: string) => {
+        if (!phases[id]) throw new Error("Job record unavailable");
+        return { id, phase: phases[id] };
+      },
+      rpc: database.rpc,
+    },
+    workerId: "client-fixture",
+    registry,
+    workDirectory,
+    adapters: { ...quiet, now: () => now },
+    environment: {
+      BUILDER_RELEASE_RETENTION_ENABLED: "1",
+      BUILDER_RELEASE_KEEP_COUNT: "2",
+    },
+    now: () => Date.now() + 8 * day,
+    retirementWorker: async ({ destination }: any) =>
+      fakeClientWorker(destination, "client-fixture"),
+  };
+  const staging = `.staging-c9-${randomUUID()}`;
+  await mkdir(path.join(site.store, staging));
+  const results = await maintainClientDestinations(services);
+  expect(results).toEqual([
+    expect.objectContaining({
+      destinationId: site.client.destinationId,
+      phase: "removed",
+      generated: expect.objectContaining({ staging: 1 }),
+    }),
+    expect.objectContaining({ phase: "job-directories", removed: 1 }),
+  ]);
+  expect(
+    (await readdir(path.join(workDirectory, site.client.destinationId))).sort(),
+  ).toEqual([jobs.running, jobs.queued, jobs.unreadable].sort());
 });
