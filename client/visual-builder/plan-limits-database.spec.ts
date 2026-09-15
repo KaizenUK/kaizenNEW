@@ -97,13 +97,49 @@ const inspect = async (actor = alice, target = project) =>
       [target, actor],
     )
   )[0].data;
+// These billing fixtures represent pre-existing library files; the dedicated
+// upload suite verifies how new file identities and receipts are created.
+async function libraryAsset(target: string, bytes: number) {
+  const id = crypto.randomUUID();
+  const asset = {
+    id,
+    size: bytes,
+    hash: "a".repeat(64),
+    mime: "application/octet-stream",
+    kind: "other",
+    url:
+      target === "kaizen"
+        ? `private:${id}`
+        : `/builder-project-media/${target}/${id}`,
+  };
+  await db.query(
+    "insert into builder_asset_files(project_id,asset_id,bytes,sha256,mime,asset_kind,bucket_id,object_name,file_url,status) values($1,$2,$3,$4,$5,$6,$7,$8,$9,'legacy')",
+    [
+      target,
+      id,
+      bytes,
+      asset.hash,
+      asset.mime,
+      asset.kind,
+      target === "kaizen" ? "builder-source" : "builder-project-files",
+      target === "kaizen" ? id : `${target}/${id}`,
+      asset.url,
+    ],
+  );
+  return asset;
+}
 const save = async (pages: number, bytes = 0, target = project) => {
+  const assets = [];
+  for (let remaining = bytes; remaining > 0; remaining -= 50 * 1024 ** 2)
+    assets.push(
+      await libraryAsset(target, Math.min(remaining, 50 * 1024 ** 2)),
+    );
   const workspace = {
     pages: Array.from({ length: pages }, (_, i) => ({
       id: `page-${i}`,
       draft: { title: `Page ${i}` },
     })),
-    assets: bytes ? [{ id: "asset-fixture", size: bytes }] : [],
+    assets,
     saved: [],
   };
   return as(
@@ -375,14 +411,15 @@ it("rechecks the reviewed snapshot and current plan before activation, and block
 });
 it("tracks the original site's actual page and asset tables rather than its compatibility workspace", async () => {
   const page = crypto.randomUUID(),
-    asset = crypto.randomUUID();
+    file = await libraryAsset("kaizen", 100),
+    asset = file.id;
   await db.query(
     'insert into builder_pages(id,payload) values($1,\'{"draft":{"slug":"fixture-page"}}\')',
     [page],
   );
   await db.query(
-    "insert into builder_assets(id,hash,payload) values($1,'fixture','{\"size\":100}')",
-    [asset],
+    "insert into builder_assets(id,hash,payload) values($1,$2,$3)",
+    [asset, file.hash, file],
   );
   expect(await inspect(beta, "kaizen")).toMatchObject({
     pages: 1,
@@ -1359,10 +1396,11 @@ it("refuses changed recovery ownership, arbitrary artifacts, and rollback of an 
 });
 
 it("checks the original site's frozen page set and preserves over-limit original drafts/assets after downgrade", async () => {
-  const asset = crypto.randomUUID();
+  const file = await libraryAsset("kaizen", 200),
+    asset = file.id;
   await db.query(
-    "insert into builder_assets(id,hash,payload) values($1,'legacy-limit','{\"size\":200}')",
-    [asset],
+    "insert into builder_assets(id,hash,payload) values($1,$2,$3)",
+    [asset, file.hash, file],
   );
   await db.exec(
     "update builder_plans set storage_bytes=100,pages_per_project=1 where id='beta'",
@@ -1372,13 +1410,15 @@ it("checks the original site's frozen page set and preserves over-limit original
     [asset],
   );
   // Exercise the actual table trigger, retaining the surrounding fixture transaction.
+  const extra = await libraryAsset("kaizen", 1);
   await db.exec("savepoint legacy_growth");
   try {
     await expect(
-      db.query(
-        "insert into builder_assets(id,hash,payload) values($1,'extra-asset','{\"size\":1}')",
-        [crypto.randomUUID()],
-      ),
+      db.query("insert into builder_assets(id,hash,payload) values($1,$2,$3)", [
+        extra.id,
+        extra.hash,
+        extra,
+      ]),
     ).rejects.toThrow(/storage limit/);
   } finally {
     await db.exec(

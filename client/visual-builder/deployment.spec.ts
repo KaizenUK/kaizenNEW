@@ -1,6 +1,12 @@
 import { afterEach, describe, expect, it } from "vitest";
 import { createServer, type Server } from "node:http";
 import { createHash } from "node:crypto";
+import { execFile } from "node:child_process";
+import { promisify } from "node:util";
+import { gzipSync } from "node:zlib";
+import { NativeOperationJournal } from "../../scripts/builder-native-operations";
+import { nativeWorkerConnection } from "../../scripts/builder-native-worker";
+import { SandboxCleanupError } from "../../scripts/builder-build-sandbox";
 import {
   mkdtemp,
   mkdir,
@@ -8,6 +14,7 @@ import {
   writeFile,
   rm,
   symlink,
+  readdir,
 } from "node:fs/promises";
 import path from "node:path";
 import {
@@ -40,7 +47,10 @@ afterEach(async () => {
     await rm(directory, { recursive: true, force: true });
   }
 });
-async function fixture(edgeScripts = false) {
+async function fixture(
+  edgeScripts = false,
+  beforeStage?: (old: string, next: string) => Promise<void>,
+) {
   await mkdir(temporaryRoot, { recursive: true });
   const root = await mkdtemp(path.join(temporaryRoot, "case-"));
   directories.push(root);
@@ -85,6 +95,7 @@ async function fixture(edgeScripts = false) {
   }
   await build(old, "old");
   await build(next, "new");
+  await beforeStage?.(old, next);
   const original = await stageRelease({
     source: old,
     store,
@@ -694,6 +705,9 @@ describe("retained website releases", () => {
         f.adapters,
       ),
     ).rejects.toThrow(/owns the lock/);
+    // Staging now shares this lock. Finish the synthetic lock case before
+    // independently checking malformed source and retained-artifact guards.
+    await rm(path.join(f.store, ".activation-lock"), { recursive: true });
     const candidate = path.join(
       f.store,
       "releases/new-release/site/campaign/index.html",
@@ -1006,5 +1020,378 @@ describe("repository deployment output accounting", () => {
     ).rejects.toThrow(/source changed/);
     expect(billing.calls).toEqual([]);
     expect((await listReleases(f.store)).selectedReleaseId).toBe("old-release");
+  });
+});
+
+async function nativeReleaseFixture(
+  beforeStage?: (old: string, next: string) => Promise<void>,
+) {
+  const f = await fixture(false, beforeStage);
+  const billing = outputBillingBoundary();
+  const directory = path.join(f.root, "native-journal");
+  const sourceRoot = path.join(f.root, "source");
+  await mkdir(sourceRoot);
+  await writeFile(path.join(sourceRoot, "index.html"), "Fixture source");
+  const git = promisify(execFile);
+  const environment = {
+    ...process.env,
+    GIT_CONFIG_GLOBAL: "/dev/null",
+    GIT_CONFIG_NOSYSTEM: "1",
+  };
+  for (const args of [
+    ["init"],
+    ["add", "."],
+    [
+      "-c",
+      "user.name=Fixture",
+      "-c",
+      "user.email=fixture@example.invalid",
+      "commit",
+      "-m",
+      "Fixture source",
+    ],
+  ])
+    await git("git", args, { cwd: sourceRoot, env: environment });
+  const active = new Set<string>();
+  const identities = new Map<string, any>();
+  let assets: { projectId: string; assetId: string; url: string | null }[] = [];
+  let finish: (() => Promise<void>) | undefined;
+  const client = {
+    rpc: async (name: string, args: any): Promise<any> => {
+      if (!name.startsWith("builder_native_operation_"))
+        return billing.client.rpc(name, args);
+      if (name === "builder_native_operation_assets") {
+        expect(active.has(args.request_id)).toBe(true);
+        return { id: args.request_id, assets, cursor: null };
+      }
+      const identity = {
+        id: args.request_id,
+        workerId: args.worker,
+        configuration: args.fingerprint,
+        projectId: args.target,
+        processId: args.process_id,
+        host: args.host,
+        instanceId: args.instance,
+      };
+      if (identities.has(identity.id))
+        expect(identity).toEqual(identities.get(identity.id));
+      else identities.set(identity.id, identity);
+      if (name === "builder_native_operation_begin") {
+        expect(args.actor).toBe(null);
+        active.add(identity.id);
+      } else {
+        expect(name).toBe("builder_native_operation_end");
+        expect(args.actor).toBeUndefined();
+        await finish?.();
+        active.delete(identity.id);
+      }
+      return {
+        ...identity,
+        phase: active.has(identity.id) ? "active" : "complete",
+      };
+    },
+  };
+  const native = new NativeOperationJournal({
+    directory,
+    workerId: "fixture-native-release",
+    configuration: "b".repeat(64),
+    connection: nativeWorkerConnection(client),
+  });
+  const options = {
+    client,
+    native,
+    store: f.store,
+    origin: f.origin,
+    sourceRoot,
+    source: f.next,
+    artifactId: "native-new-release",
+    commit: "b".repeat(40),
+    billing: { projectId: "kaizen", channel: "staging" },
+    build: async () => {},
+  };
+  const adapters = {
+    activate: (input: any, hooks: any) =>
+      activateRelease(input, { ...f.adapters, ...hooks }),
+  };
+  return {
+    ...f,
+    billing,
+    native,
+    directory,
+    active,
+    client,
+    sourceRoot,
+    options,
+    releaseAdapters: adapters,
+    retire: (url: string) => {
+      assets = [{ projectId: "kaizen", assetId: crypto.randomUUID(), url }];
+    },
+    onEnd: (callback?: () => Promise<void>) => {
+      finish = callback;
+    },
+  };
+}
+
+describe("native release file protection", () => {
+  const url = "https://files.example.invalid/retired image.png";
+  it("holds the actual release operation through HTTP verification, accounting and delayed completion", async () => {
+    const f = await nativeReleaseFixture();
+    let entered!: () => void, release!: () => void;
+    const ending = new Promise<void>((resolve) => (entered = resolve));
+    const gate = new Promise<void>((resolve) => (release = resolve));
+    f.onEnd(async () => {
+      entered();
+      await gate;
+    });
+    let settled = false;
+    const work = runRepositoryRelease(f.options, f.releaseAdapters).finally(
+      () => {
+        settled = true;
+      },
+    );
+    try {
+      await ending;
+      expect(settled).toBe(false);
+      expect(f.active.size).toBe(1);
+      expect(await f.readConfig()).toContain("native-new-release");
+      await checkLive(
+        f.origin,
+        await verifyRelease(f.store, "native-new-release"),
+      );
+      expect(
+        [...f.billing.rows.values()].some((row) => row.phase === "live"),
+      ).toBe(true);
+    } finally {
+      release();
+    }
+    await expect(work).resolves.toMatchObject({ status: "live" });
+    expect(f.active.size).toBe(0);
+    expect(await readdir(f.directory)).toEqual([]);
+  });
+  it("rejects retired references in generated compressed bytes before retaining or activating output", async () => {
+    const f = await nativeReleaseFixture();
+    f.retire(url);
+    const before = await f.readConfig();
+    await expect(
+      runRepositoryRelease(
+        {
+          ...f.options,
+          build: async () => {
+            await writeFile(
+              path.join(f.next, "extra.html.gz"),
+              gzipSync(`<img src="${url}">`),
+            );
+          },
+        },
+        f.releaseAdapters,
+      ),
+    ).rejects.toThrow("being removed");
+    expect(await f.readConfig()).toBe(before);
+    await expect(
+      readFile(path.join(f.store, "releases/native-new-release/release.json")),
+    ).rejects.toMatchObject({ code: "ENOENT" });
+    expect(f.active.size).toBe(0);
+    await checkLive(f.origin, await verifyRelease(f.store, "old-release"));
+  });
+  it("rechecks the retained artifact before immutable assets or the serving include can change", async () => {
+    const f = await nativeReleaseFixture();
+    f.retire(url);
+    const before = await f.readConfig();
+    await expect(
+      runRepositoryRelease(f.options, {
+        ...f.releaseAdapters,
+        stage: async (input: any) => {
+          await writeFile(path.join(f.next, "late.html"), `<img src="${url}">`);
+          return stageRelease(input);
+        },
+      }),
+    ).rejects.toThrow("being removed");
+    expect(await f.readConfig()).toBe(before);
+    await expect(
+      readFile(path.join(f.store, "immutable/_astro/new.hash.js")),
+    ).rejects.toMatchObject({ code: "ENOENT" });
+    expect(f.active.size).toBe(0);
+  });
+  it("refuses restoration of a valid older artifact containing a retired reference", async () => {
+    const f = await nativeReleaseFixture(async (old) =>
+      writeFile(path.join(old, "old-image.html"), `<img src="${url}">`),
+    );
+    await activateRelease(
+      { store: f.store, id: "new-release", origin: f.origin },
+      f.adapters,
+    );
+    f.retire(url);
+    const before = await f.readConfig();
+    await expect(
+      reconcileRepositoryOutput(
+        {
+          native: f.native,
+          client: f.client,
+          projectId: "kaizen",
+          channel: "production",
+          store: f.store,
+          origin: f.origin,
+          artifactId: "new-release",
+          restoreId: "old-release",
+          sourceRoot: f.sourceRoot,
+        },
+        f.adapters,
+      ),
+    ).rejects.toThrow("being removed");
+    expect(await f.readConfig()).toBe(before);
+    expect(f.billing.calls).toEqual([]);
+    expect(f.active.size).toBe(0);
+    await checkLive(f.origin, await verifyRelease(f.store, "new-release"));
+  });
+  it("retains the operation when the build controller cannot confirm child cleanup", async () => {
+    const f = await nativeReleaseFixture();
+    await expect(
+      runRepositoryRelease(
+        {
+          ...f.options,
+          build: async () => {
+            throw new SandboxCleanupError();
+          },
+        },
+        f.releaseAdapters,
+      ),
+    ).rejects.toThrow("reconciliation");
+    expect(f.active.size).toBe(1);
+    const [file] = await readdir(f.directory);
+    expect(
+      JSON.parse(await readFile(path.join(f.directory, file), "utf8"))
+        .localPhase,
+    ).toBe("intent");
+    expect(await f.native.recover()).toEqual({ completed: 0, deferred: 1 });
+    expect(await f.readConfig()).toContain("old-release");
+  });
+
+  it("refuses a Builder rollback containing a retired reference without rebuilding or switching", async () => {
+    const f = await nativeReleaseFixture(async (old) =>
+      writeFile(path.join(old, "old-image.html"), `<img src="${url}">`),
+    );
+    await activateRelease(
+      { store: f.store, id: "new-release", origin: f.origin },
+      f.adapters,
+    );
+    f.retire(url);
+    const before = await f.readConfig(),
+      id = crypto.randomUUID();
+    let built = false;
+    const job: any = {
+      id,
+      status: "queued",
+      rollback_of: crypto.randomUUID(),
+      previous_release_id: null,
+      artifact_id: "old-release",
+    };
+    const client = {
+      get: async () => structuredClone(job),
+      rpc: async (name: string, args: any) => {
+        if (name === "builder_claim_release") {
+          job.status = "building";
+          return structuredClone(job);
+        }
+        if (name === "builder_advance_release") {
+          job.status = args.phase;
+          return {};
+        }
+        return f.client.rpc(name, args);
+      },
+    };
+    await expect(
+      runBuilderRelease(
+        {
+          ...f.options,
+          requestId: id,
+          client,
+          billing: { projectId: "kaizen", channel: "production" },
+          build: async () => {
+            built = true;
+          },
+        },
+        f.releaseAdapters,
+      ),
+    ).rejects.toThrow("being removed");
+    expect(built).toBe(false);
+    expect(await f.readConfig()).toBe(before);
+    expect(f.active.size).toBe(0);
+    expect(job.status).toBe("failed");
+    await checkLive(f.origin, await verifyRelease(f.store, "new-release"));
+  });
+  it("reconciles lost native completion without rebuilding or reactivating the successful release", async () => {
+    const f = await nativeReleaseFixture();
+    let builds = 0;
+    f.onEnd(async () => {
+      throw Error("Fixture end unavailable");
+    });
+    await expect(
+      runRepositoryRelease(
+        {
+          ...f.options,
+          build: async () => {
+            builds++;
+          },
+        },
+        f.releaseAdapters,
+      ),
+    ).rejects.toThrow("end unavailable");
+    const before = await listReleases(f.store);
+    expect(before.selectedReleaseId).toBe("native-new-release");
+    expect(f.active.size).toBe(1);
+    f.onEnd();
+    expect(await f.native.recover()).toEqual({ completed: 1, deferred: 0 });
+    expect(builds).toBe(1);
+    expect((await listReleases(f.store)).transactions).toEqual(
+      before.transactions,
+    );
+  });
+  it("refuses a retired snapshot before the Builder worker persists it or starts a build", async () => {
+    const f = await nativeReleaseFixture();
+    f.retire(url);
+    const id = crypto.randomUUID();
+    let built = false;
+    const job: any = {
+      id,
+      status: "queued",
+      rollback_of: null,
+      previous_release_id: null,
+      snapshot: { url },
+    };
+    const client = {
+      get: async () => structuredClone(job),
+      rpc: async (name: string, args: any) => {
+        if (name === "builder_claim_release") {
+          job.status = "building";
+          job.artifact_id = args.artifact;
+          return structuredClone(job);
+        }
+        if (name === "builder_advance_release") {
+          job.status = args.phase;
+          return {};
+        }
+        return f.client.rpc(name, args);
+      },
+    };
+    await expect(
+      runBuilderRelease(
+        {
+          ...f.options,
+          requestId: id,
+          client,
+          billing: { projectId: "kaizen", channel: "production" },
+          build: async () => {
+            built = true;
+          },
+        },
+        f.releaseAdapters,
+      ),
+    ).rejects.toThrow("being removed");
+    expect(built).toBe(false);
+    await expect(
+      readFile(path.join(f.store, "requests", `${id}.json`)),
+    ).rejects.toMatchObject({ code: "ENOENT" });
+    expect(job.status).toBe("failed");
+    expect(f.active.size).toBe(0);
   });
 });

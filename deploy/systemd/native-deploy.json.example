@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "user": "kaizen-deploy",
+  "node": "/opt/kaizen-runtime/node-v22.23.2-immutable/bin/node",
+  "worker": "/opt/kaizen-native-release/worker.mjs",
+  "preflight": "/opt/kaizen-native-release/preflight-public-deploy.sh",
+  "targets": {
+    "main": {
+      "appDirectory": "/srv/kaizen/production",
+      "releaseStore": "/var/lib/kaizen/production",
+      "stateDirectory": "/var/lib/kaizen-native/production",
+      "environmentFile": "/etc/kaizen/production.env",
+      "domain": "kaizenweb.co.uk",
+      "repository": "https://github.com/KaizenUK/kaizenNEW.git",
+      "projectId": "kaizen",
+      "workerId": "kaizen-production-release",
+      "cloud": true
+    },
+    "stage": {
+      "appDirectory": "/srv/kaizen/staging",
+      "releaseStore": "/var/lib/kaizen/staging",
+      "stateDirectory": "/var/lib/kaizen-native/staging",
+      "environmentFile": "/etc/kaizen/staging.env",
+      "domain": "stage.kaizenweb.co.uk",
+      "repository": "https://github.com/KaizenUK/kaizenNEW.git",
+      "projectId": "kaizen",
+      "workerId": "kaizen-staging-release",
+      "cloud": false
+    }
+  }
+}

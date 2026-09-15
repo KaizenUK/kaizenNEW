@@ -9,6 +9,8 @@ import type { RepositoryPublishTarget } from "../../shared/builderRepositoryPubl
 import type { HostedSaveReleases } from "../../scripts/builder-hosted-save-release";
 import type { HostedDiskLimits } from "../../scripts/builder-hosted-disk";
 import type { HostedRepositoryBilling } from "../../scripts/builder-hosted-billing";
+import type { NativeOperationJournal } from "../../scripts/builder-native-operations";
+import type { ControlledBuild } from "../../scripts/builder-controlled-build";
 import { HostedWebsiteFolders } from "../../scripts/builder-hosted-folders";
 import {
   HostedHelperService,
@@ -41,6 +43,8 @@ export async function hostedHelperFixture(
   },
   diskLimits?: HostedDiskLimits,
   buildIsolation?: { manager?: string },
+  native?: NativeOperationJournal,
+  controlledBuild?: (input: ControlledBuild) => Promise<number | null>,
 ) {
   const directory = await mkdtemp(path.join(tmpdir(), "kaizen-hosted-helper-"));
   const seed = path.join(directory, "seed"),
@@ -226,6 +230,8 @@ const child=spawn(operation.split(' ')[0],[${JSON.stringify(remote)}],{stdio:'in
       // namespace/cgroup tests and never receive this trust exception.
       trustedBuildProjects: buildIsolation ? [] : projectIds,
       buildManager: buildIsolation?.manager,
+      native,
+      controlledBuild,
       ...(previewOrigin ? { editorOrigin: previewOrigin } : {}),
       ...(saving?.releases ? { saveReleases: saving.releases } : {}),
       ...(publishing

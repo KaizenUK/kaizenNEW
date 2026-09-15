@@ -1,5 +1,13 @@
 import { HostedHelperError } from "./builder-hosted-auth";
 import {
+  isNativeOperationInput,
+  isNativeAssetPage,
+  matchesNativeOperation,
+  type NativeOperationInput,
+  type NativeOperationReceipt,
+  type NativeAssetPage,
+} from "../shared/builderNativeOperations";
+import {
   measureRepositorySource,
   measureRepositoryOutput,
 } from "./builder-repository-usage.mjs";
@@ -47,8 +55,13 @@ export class HostedRepositoryBilling {
   }
   private async request(
     token: string,
-    input: RepositoryBillingInput | RepositoryUsageInput,
-  ): Promise<RepositoryBillingState | RepositoryUsageState> {
+    input: RepositoryBillingInput | RepositoryUsageInput | NativeOperationInput,
+  ): Promise<
+    | RepositoryBillingState
+    | RepositoryUsageState
+    | NativeOperationReceipt
+    | NativeAssetPage
+  > {
     if (!token)
       throw new HostedHelperError(
         401,
@@ -57,9 +70,11 @@ export class HostedRepositoryBilling {
     const unknown = () =>
       new HostedHelperError(
         503,
-        "attempt" in input
-          ? "Publication billing could not be confirmed. Check publication status before retrying; an allowance may already be reserved."
-          : "Website storage could not be confirmed. Refresh before retrying; the earlier request may have completed.",
+        input.action.startsWith("native-operation-")
+          ? "A website operation could not be confirmed. Existing files remain protected until it is reconciled."
+          : "attempt" in input
+            ? "Publication billing could not be confirmed. Check publication status before retrying; an allowance may already be reserved."
+            : "Website storage could not be confirmed. Refresh before retrying; the earlier request may have completed.",
       );
     let response: Response;
     try {
@@ -105,8 +120,11 @@ export class HostedRepositoryBilling {
         message,
       );
     }
-    const valid =
-      "attempt" in input
+    const valid = isNativeOperationInput(input)
+      ? input.action === "native-operation-assets"
+        ? isNativeAssetPage(result, input.id)
+        : matchesNativeOperation(result, input)
+      : "attempt" in input
         ? isRepositoryBillingState(result) && result.attempt === input.attempt
         : isRepositoryUsageState(result) &&
           (input.action !== "repository-usage-write" ||
@@ -119,6 +137,18 @@ export class HostedRepositoryBilling {
                 input.sample?.pages));
     if (!valid) throw unknown();
     return result as RepositoryBillingState | RepositoryUsageState;
+  }
+  nativeOperation(token: string, input: NativeOperationInput) {
+    if (!isNativeOperationInput(input))
+      throw new HostedHelperError(400, "Invalid native website operation.");
+    // Recovery is authenticated by the helper signature and the exact durable
+    // process identity. It must not depend on an expired user's bearer token.
+    return this.request(
+      input.action === "native-operation-end"
+        ? "native-operation-recovery"
+        : token,
+      input,
+    );
   }
   readUsage(token: string, projectId: string) {
     return this.request(token, {

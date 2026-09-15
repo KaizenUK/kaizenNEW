@@ -292,10 +292,20 @@ export default function AssetLibrary({
   }
   async function discardImport() {
     if (!pendingJob || busy) return;
+    setBusy(true);
     try {
       await withImportLock(pendingJob.scope, async () => {
         const current = await importQueue.load(pendingJob.scope);
-        if (current) await importQueue.discard(current);
+        if (current) {
+          for (const entry of current.entries) {
+            if (
+              entry.uploadUrl &&
+              !["uploaded", "duplicate"].includes(entry.state)
+            )
+              await storage.cancelUpload(entry.uploadUrl, current.scope);
+          }
+          await importQueue.discard(current);
+        }
         setPendingJob(undefined);
         setErrors([]);
         setStatus(
@@ -304,6 +314,8 @@ export default function AssetLibrary({
       });
     } catch (error) {
       notify((error as Error).message);
+    } finally {
+      setBusy(false);
     }
   }
   async function sample(name = "sample-pack.zip") {

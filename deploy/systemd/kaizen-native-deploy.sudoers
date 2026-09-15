@@ -1,0 +1,2 @@
+# The launcher validates public request fields against root-owned fixed targets.
+kaizen-deploy ALL=(root) NOPASSWD: /usr/local/sbin/kaizen-public-deploy

@@ -4,6 +4,10 @@
 
 For continuation of the multi-project visual builder, read `HANDOVER.md` first. It records the 11 September 2026 user-requested pause for a Windows wipe, production state, private-data restoration, and Claude's visual/UX brief. The critical unfinished requirement is genuine WYSIWYG editing of existing sites; source-content fields and a separate selector are not completion. Resume implementation when Sean asks after migrating. The ordered task map for that work is `docs/existing-site-visual-editing-plan.md`. The next ordered task map is `docs/builder-launch-plan.md`, with its goal brief in `docs/handover/codex-launch-brief.md`. Sean has provisionally accepted the private beta gate and authorized continuation through L0–L6. Follow the later autonomy instructions in the brief; diagnose and fix failed tests without stalling. `KAIZEN-PRIVATE-MIGRATION*` files are private and must never be committed or published.
 
+For the current unfinished L6-T4 work and a Claude takeover, read `docs/handover/l6-t4-claude-tasks.md` after `HANDOVER.md`. It identifies the launch worktree, uncommitted files, latest proof and ordered continuation tasks; older next-step paragraphs are historical.
+
+The current D2 implementation is broken into six checkpoints in `docs/handover/l6-t4-release-retirement-tasks.md`. D2a–c are verified in fixtures, including actual release removal and recovery after two service kills. D2d.1 native worker/idle maintenance is also verified; continue D2d.2 client/domain/retry coverage, then history availability. Native integration is prepared but uninstalled; preserve its generation cancellation, last-executor ownership, store/native locks and serving/rollback checks.
+
 A production-ready Astro static application with React islands, Sanity CMS, TypeScript, Vitest, and modern tooling.
 
 API endpoints should only be created when strictly necessary, for example to encapsulate logic that must live on the server, such as private key handling or certain DB operations.

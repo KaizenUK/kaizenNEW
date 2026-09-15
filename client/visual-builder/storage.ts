@@ -11,6 +11,7 @@ import {
   requireActiveProject,
 } from "./projectStorage";
 import { repositoryConnection } from "./repositoryConnection";
+import { hostedUploadContext } from "./hostedUploads";
 import { trackStorageErrors } from "./diagnostics";
 import {
   validateClientSettings,
@@ -579,7 +580,12 @@ export const storage = trackStorageErrors({
     control.signal?.throwIfAborted();
     if (await hostedProject())
       return uploadProjectFile(asset, blob, progress, control);
-    if (control.scope && (await storage.uploadScope()) !== control.scope)
+    const connection = localMode ? null : await hostedUploadContext();
+    if (
+      control.scope &&
+      (connection ? connection.scope : await storage.uploadScope()) !==
+        control.scope
+    )
       throw new Error(
         "The signed-in upload workspace changed. Sign in with the original account to resume.",
       );
@@ -596,27 +602,12 @@ export const storage = trackStorageErrors({
           : `private:${asset.id}`,
     };
     const register = async () => {
-      const response = await cloud
-        .from("builder_assets")
-        .insert({ id: uploaded.id, hash: uploaded.hash, payload: uploaded });
-      if (response.error) {
-        const existing = unwrap(
-          await cloud
-            .from("builder_assets")
-            .select("payload")
-            .eq("id", asset.id)
-            .maybeSingle(),
-        )?.payload as Asset | undefined;
-        if (
-          !existing ||
-          existing.hash !== asset.hash ||
-          existing.path !== asset.path ||
-          existing.pack !== asset.pack
-        )
-          throw new Error(response.error.message);
-        return existing;
-      }
-      return uploaded;
+      await connection!.current();
+      return cloudProjectRequest(
+        { action: "register-asset", asset: uploaded },
+        false,
+        connection!,
+      );
     };
     if (control.recover) {
       const existing: Asset | undefined = localMode
@@ -634,6 +625,7 @@ export const storage = trackStorageErrors({
               .eq("id", asset.id)
               .maybeSingle(),
           )?.payload;
+      if (connection) await connection.current();
       if (existing) {
         if (
           existing.hash !== asset.hash ||
@@ -647,99 +639,49 @@ export const storage = trackStorageErrors({
       if (!localMode) {
         const object = await cloud.storage.from(bucket).info(asset.id);
         if (object.data) {
-          // Recover a completed object whose database acknowledgement was lost.
-          const response = await fetch(await storage.download(uploaded), {
-            signal: control.signal,
-          });
-          if (!response.ok)
-            throw new Error(
-              "The completed upload could not be verified. Sign in and retry.",
-            );
-          const bytes = await response.arrayBuffer();
-          const hash = Array.from(
-            new Uint8Array(await crypto.subtle.digest("SHA-256", bytes)),
-          )
-            .map((value) => value.toString(16).padStart(2, "0"))
-            .join("");
-          if (hash !== asset.hash || bytes.byteLength !== asset.size)
-            throw new Error(
-              "The existing upload does not match this file. Discard the pending import and select it again.",
-            );
+          // Existing provider bytes are verified by the server before adoption.
+          await connection!.adopt(asset, control.signal);
           const result = await register();
           progress(100);
           return result;
         }
       }
     }
+    if (connection) {
+      await connection.upload(asset, blob, progress, control);
+      return register();
+    }
     if (blob.size < UPLOAD_CHUNK_SIZE)
       return storage.uploadStandard(asset, blob, progress, control);
-    const base = new URL(
-      localMode ? location.origin : import.meta.env.VITE_SUPABASE_URL,
-    );
-    if (!localMode && /^[\w-]+\.supabase\.co$/.test(base.hostname))
-      base.hostname = base.hostname.replace(
-        ".supabase.co",
-        ".storage.supabase.co",
-      );
-    const endpoint = new URL(
-      localMode ? "/__builder-upload" : "/storage/v1/upload/resumable",
-      base,
-    ).href;
+    const endpoint = new URL("/__builder-upload", location.origin).href;
     const uploadUrl = await resumableUpload(blob, {
       ...control,
       endpoint,
       progress,
-      metadata: localMode
-        ? { asset: JSON.stringify(asset) }
-        : {
-            bucketName: bucket,
-            objectName: asset.id,
-            contentType: asset.mime,
-            cacheControl: "31536000",
-            metadata: JSON.stringify({ hash: asset.hash }),
-          },
-      headers: async () => {
-        if (localMode)
-          return {
-            "X-Kaizen-Builder": "1",
-            "X-Kaizen-Project": activeProjectId,
-          };
-        const { data, error } = await cloud.auth.getSession();
-        if (error || !data.session)
-          throw new Error("Sign in again to resume this upload.");
-        if (
-          control.scope &&
-          control.scope !==
-            `${new URL(import.meta.env.VITE_SUPABASE_URL).origin}:${data.session.user.id}`
-        )
-          throw new Error(
-            "The signed-in account changed. Pause and sign in with the original account.",
-          );
-        return { authorization: `Bearer ${data.session.access_token}` };
-      },
+      metadata: { asset: JSON.stringify(asset) },
+      headers: async () => ({
+        "X-Kaizen-Builder": "1",
+        "X-Kaizen-Project": activeProjectId,
+      }),
     });
-    if (localMode) {
-      const response = await fetch(
-        projectUrl("/__builder-local?action=finish-upload"),
-        {
-          method: "POST",
-          headers: {
-            "X-Kaizen-Builder": "1",
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ uploadUrl, asset }),
-          signal: control.signal,
+    const response = await fetch(
+      projectUrl("/__builder-local?action=finish-upload"),
+      {
+        method: "POST",
+        headers: {
+          "X-Kaizen-Builder": "1",
+          "Content-Type": "application/json",
         },
+        body: JSON.stringify({ uploadUrl, asset }),
+        signal: control.signal,
+      },
+    );
+    const result = await response.json();
+    if (!response.ok)
+      throw new Error(
+        result.error || "The upload could not be registered. Resume to retry.",
       );
-      const result = await response.json();
-      if (!response.ok)
-        throw new Error(
-          result.error ||
-            "The upload could not be registered. Resume to retry.",
-        );
-      return result;
-    }
-    return register();
+    return result;
   },
   async uploadStandard(
     asset: Asset,
@@ -747,27 +689,13 @@ export const storage = trackStorageErrors({
     progress: (percent: number) => void,
     control: UploadControl = {},
   ): Promise<Asset> {
-    if (await hostedProject())
-      return uploadProjectFile(asset, blob, progress, control);
-    let uploadUrl: string;
-    let headers: Record<string, string>;
-    if (localMode) {
-      uploadUrl = projectUrl("/__builder-local?action=upload");
-      headers = {
-        "X-Kaizen-Builder": "1",
-        "X-Asset-Metadata": encodeURIComponent(JSON.stringify(asset)),
-        "Content-Type": asset.mime,
-      };
-    } else {
-      const bucket = ["image", "icon", "font"].includes(asset.kind)
-        ? "builder-media"
-        : "builder-source";
-      const signed = unwrap(
-        await cloud.storage.from(bucket).createSignedUploadUrl(asset.id),
-      );
-      uploadUrl = signed.signedUrl;
-      headers = { "Content-Type": asset.mime };
-    }
+    if (!localMode) return storage.uploadFile(asset, blob, progress, control);
+    const uploadUrl = projectUrl("/__builder-local?action=upload");
+    const headers = {
+      "X-Kaizen-Builder": "1",
+      "X-Asset-Metadata": encodeURIComponent(JSON.stringify(asset)),
+      "Content-Type": asset.mime,
+    };
     const response = await new Promise<string>((resolve, reject) => {
       const xhr = new XMLHttpRequest();
       const abort = () => {
@@ -777,7 +705,7 @@ export const storage = trackStorageErrors({
       control.signal?.throwIfAborted();
       control.signal?.addEventListener("abort", abort, { once: true });
       xhr.onloadend = () => control.signal?.removeEventListener("abort", abort);
-      xhr.open(localMode ? "POST" : "PUT", uploadUrl);
+      xhr.open("POST", uploadUrl);
       Object.entries(headers).forEach(([k, v]) => xhr.setRequestHeader(k, v));
       xhr.upload.onprogress = (event) => {
         if (event.lengthComputable)
@@ -798,21 +726,11 @@ export const storage = trackStorageErrors({
             );
       xhr.send(blob);
     });
-    if (localMode) return JSON.parse(response);
-    const publicMedia = ["image", "icon", "font"].includes(asset.kind);
-    const result = {
-      ...asset,
-      url: publicMedia
-        ? cloud.storage.from("builder-media").getPublicUrl(asset.id).data
-            .publicUrl
-        : `private:${asset.id}`,
-    };
-    unwrap(
-      await cloud
-        .from("builder_assets")
-        .insert({ id: result.id, hash: result.hash, payload: result }),
-    );
-    return result;
+    return JSON.parse(response);
+  },
+  async cancelUpload(uploadUrl: string, scope: string) {
+    if (localMode) return;
+    await (await hostedUploadContext()).cancel(uploadUrl, scope);
   },
   async updateAsset(asset: Asset): Promise<Asset> {
     if (await hostedProject())

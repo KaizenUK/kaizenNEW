@@ -805,6 +805,7 @@ export class RepositoryCompanion {
       changes: AppliedFileChange[],
       additionalBytes: number,
       sourceUsage: { bytes: number; projectedBytes: number; revision: string },
+      replacements: ReadonlyMap<string, Uint8Array | null>,
     ) => Promise<void>,
   ) {
     const entry = this.plans.get(id);
@@ -835,6 +836,12 @@ export class RepositoryCompanion {
           );
         originals.set(change.file, current);
       }
+      const replacements = new Map(
+        changed.map((change) => [
+          change.file,
+          change.action === "delete" ? null : entry.files[change.file],
+        ]),
+      );
       // Retain a recovery copy before the first mutation. It is outside served output.
       await beforeMutation?.(
         changed.map(({ file, action, before, after }) => ({
@@ -853,15 +860,8 @@ export class RepositoryCompanion {
             8192,
           4 * 1024 * 1024,
         ),
-        await measureRepositorySource(
-          root,
-          new Map(
-            changed.map((change) => [
-              change.file,
-              change.action === "delete" ? null : entry.files[change.file],
-            ]),
-          ),
-        ),
+        await measureRepositorySource(root, replacements),
+        replacements,
       );
       for (const change of changed) {
         const original = originals.get(change.file);

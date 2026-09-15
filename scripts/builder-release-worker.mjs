@@ -5,6 +5,10 @@ import { fileURLToPath } from "node:url";
 import { spawn } from "node:child_process";
 import { config as loadEnv } from "dotenv";
 import {
+  withNativeRelease,
+  assertNativeRelease,
+} from "./builder-native-release-guard.mjs";
+import {
   RepositoryOutputAccounting,
   assertRepositoryOutputTarget,
   reconcileRepositoryOutput,
@@ -124,6 +128,12 @@ export function releaseEvidence(manifest) {
 
 /** One worker owns build -> file activation -> verified database promotion. Adapters exercise the real protocol in tests. */
 export async function runBuilderRelease(options, adapters = {}) {
+  if (options.native)
+    return withNativeRelease(
+      options,
+      options.billing?.projectId || "kaizen",
+      (input) => runBuilderRelease(input, adapters),
+    );
   const { client, store, origin, artifactId, commit = "", build } = options;
   if (options.billing) {
     assertRepositoryOutputTarget(options.billing);
@@ -183,6 +193,8 @@ export async function runBuilderRelease(options, adapters = {}) {
     });
   let attemptedSwitch = false;
   try {
+    if (options.sourceRoot)
+      await options.nativeFiles?.assertRepository(options.sourceRoot);
     accounting = options.billing
       ? new RepositoryOutputAccounting(client, {
           ...options.billing,
@@ -202,15 +214,26 @@ export async function runBuilderRelease(options, adapters = {}) {
       const directory = path.join(store, "requests");
       await mkdir(directory, { recursive: true, mode: 0o700 });
       const snapshotFile = path.join(directory, `${id}.json`);
+      options.nativeFiles?.assertBytes(
+        Buffer.from(JSON.stringify(claimed.snapshot)),
+        "snapshot.json",
+      );
       // Exclusive creation catches accidental job re-use rather than replacing an uncertain build input.
       await writeFile(snapshotFile, JSON.stringify(claimed.snapshot), {
         flag: "wx",
         mode: 0o600,
       });
       await build(snapshotFile);
+      if (options.sourceRoot)
+        await options.nativeFiles?.assertRepository(options.sourceRoot);
+      await options.nativeFiles?.assertTree(options.source);
       await stage({ store, id: artifact, source: options.source, commit });
     }
     const hooks = {
+      async beforePrepare(manifest, old) {
+        await assertNativeRelease(options, manifest);
+        await assertNativeRelease(options, old);
+      },
       async beforeSwitch(manifest, old) {
         if (claimed.previous_release_id) {
           const previous = await client.get(claimed.previous_release_id);
@@ -304,6 +327,10 @@ export async function runBuilderRelease(options, adapters = {}) {
 }
 
 export async function runRepositoryRelease(options, adapters = {}) {
+  if (options.native)
+    return withNativeRelease(options, options.billing?.projectId, (input) =>
+      runRepositoryRelease(input, adapters),
+    );
   const {
     client,
     store,
@@ -330,12 +357,19 @@ export async function runRepositoryRelease(options, adapters = {}) {
     list = adapters.list || listReleases,
     health = adapters.health || checkLive;
   try {
+    if (sourceRoot) await options.nativeFiles?.assertRepository(sourceRoot);
     await accounting.prepareSource();
     await build(undefined);
+    if (sourceRoot) await options.nativeFiles?.assertRepository(sourceRoot);
+    await options.nativeFiles?.assertTree(source);
     await stage({ store, id: artifactId, source, commit });
     await activate(
       { store, id: artifactId, origin },
       {
+        async beforePrepare(manifest, old) {
+          await assertNativeRelease(options, manifest);
+          await assertNativeRelease(options, old);
+        },
         beforeSwitch: (manifest) => accounting.begin(manifest),
         finalize: () => accounting.live(),
       },
@@ -356,6 +390,10 @@ export async function runRepositoryRelease(options, adapters = {}) {
 }
 
 export async function reconcileBuilderRelease(options, adapters = {}) {
+  if (options.native)
+    return withNativeRelease(options, options.projectId, (input) =>
+      reconcileBuilderRelease(input, adapters),
+    );
   const { client, requestId, projectId, channel, artifactId, store } = options;
   if (!uuid(requestId) || projectId !== "kaizen" || channel !== "production")
     throw new Error(
@@ -434,7 +472,7 @@ export async function reconcileBuilderRelease(options, adapters = {}) {
   );
 }
 
-async function cli() {
+export function loadReleaseEnvironment() {
   if (process.env.BUILDER_RELEASE_ENV_FILE) {
     if (!path.isAbsolute(process.env.BUILDER_RELEASE_ENV_FILE))
       throw new Error(
@@ -450,29 +488,51 @@ async function cli() {
       );
   }
   loadEnv({ path: path.resolve(".env"), quiet: true });
-  const env = process.env;
+  return process.env;
+}
+
+export async function runReleaseWorker(env, argv = [], adapters = {}) {
+  if (
+    argv.length > 1 ||
+    argv.some((arg) => !["--reconcile", "--reconcile-usage"].includes(arg))
+  )
+    throw new Error(
+      "Use the installed native worker for deployment maintenance.",
+    );
+  if (
+    (env.BUILDER_NATIVE_WORKER_ID || env.BUILDER_NATIVE_CONFIGURATION) &&
+    !adapters.native &&
+    !adapters.nativeFiles
+  )
+    throw new Error(
+      "Use the installed native release worker for this deployment.",
+    );
   const store = env.KAIZEN_RELEASE_STORE,
     origin = `https://${env.KAIZEN_PUBLIC_DOMAIN}`;
   if (!store || !path.isAbsolute(store))
     throw new Error("Set the absolute release store directory");
-  const build = (snapshotFile) =>
-    new Promise((resolve, reject) => {
-      const child = spawn("corepack", ["pnpm", "run", "build"], {
-        stdio: "inherit",
-        windowsHide: true,
-        env: { ...env, BUILDER_RELEASE_SNAPSHOT_FILE: snapshotFile || "" },
-      });
-      child.once("error", reject);
-      child.once("exit", (code) =>
-        code === 0
-          ? resolve()
-          : reject(new Error(`Static build failed with exit code ${code}.`)),
-      );
+  const build =
+    adapters.build ||
+    ((snapshotFile) =>
+      new Promise((resolve, reject) => {
+        const child = spawn("corepack", ["pnpm", "run", "build"], {
+          stdio: "inherit",
+          windowsHide: true,
+          env: { ...env, BUILDER_RELEASE_SNAPSHOT_FILE: snapshotFile || "" },
+        });
+        child.once("error", reject);
+        child.once("exit", (code) =>
+          code === 0
+            ? resolve()
+            : reject(new Error(`Static build failed with exit code ${code}.`)),
+        );
+      }));
+  const client =
+    adapters.client ||
+    createReleaseClient({
+      url: env.VITE_SUPABASE_URL || "",
+      key: env.BUILDER_RELEASE_SERVICE_ROLE_KEY,
     });
-  const client = createReleaseClient({
-    url: env.VITE_SUPABASE_URL || "",
-    key: env.BUILDER_RELEASE_SERVICE_ROLE_KEY,
-  });
   const billing = {
     projectId: env.BUILDER_RELEASE_PROJECT_ID || "",
     channel:
@@ -483,15 +543,14 @@ async function cli() {
           : "",
   };
   assertRepositoryOutputTarget(billing);
-  if (
-    process.argv.includes("--reconcile") ||
-    process.argv.includes("--reconcile-usage")
-  ) {
+  if (argv.includes("--reconcile") || argv.includes("--reconcile-usage")) {
     const recover =
       env.VITE_BUILDER_CLOUD === "1"
         ? reconcileBuilderRelease
         : reconcileRepositoryOutput;
     const result = await recover({
+      native: adapters.native,
+      nativeFiles: adapters.nativeFiles,
       client,
       ...billing,
       requestId: env.KAIZEN_BUILDER_REQUEST_ID,
@@ -510,6 +569,8 @@ async function cli() {
         "This deployment is not configured for the cloud builder workspace.",
       );
     const result = await runRepositoryRelease({
+      native: adapters.native,
+      nativeFiles: adapters.nativeFiles,
       client,
       store,
       origin,
@@ -524,6 +585,8 @@ async function cli() {
     return;
   }
   const result = await runBuilderRelease({
+    native: adapters.native,
+    nativeFiles: adapters.nativeFiles,
     client,
     store,
     origin,
@@ -541,7 +604,12 @@ if (
   process.argv[1] &&
   path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)
 )
-  cli().catch((error) => {
-    console.error(error.message);
-    process.exitCode = 1;
-  });
+  Promise.resolve()
+    .then(() => {
+      const env = loadReleaseEnvironment();
+      return runReleaseWorker(env, process.argv.slice(2));
+    })
+    .catch((error) => {
+      console.error(error.message);
+      process.exitCode = 1;
+    });

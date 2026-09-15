@@ -28,10 +28,19 @@ import { repositorySetupActions } from "../shared/builderRepositorySettings";
 import { repositoryPublishActions } from "../shared/builderRepositoryPublish";
 import { HostedWebsitePublishing } from "./builder-hosted-publishing";
 import { HostedRepositoryBilling } from "./builder-hosted-billing";
+import {
+  NativeOperationJournal,
+  type NativeFileProtection,
+} from "./builder-native-operations";
 import { SourceDrafts } from "./builder-source-drafts";
 import { NativeRepositoryBackups } from "./builder-native-backup";
 import { hostedDiskLimits } from "./builder-hosted-disk";
 import { HostedBuildRecovery } from "./builder-hosted-build-recovery";
+import { nativeServiceController } from "./builder-native-controller";
+import {
+  runControlledBuild,
+  type ControlledBuild,
+} from "./builder-controlled-build";
 import {
   isolatedBuildCommand,
   runIsolatedBuild,
@@ -119,9 +128,13 @@ export class HostedHelperService {
   private publishing: HostedWebsitePublishing;
   private buildRecovery: HostedBuildRecovery;
   private billing?: HostedRepositoryBilling;
+  private native?: NativeOperationJournal;
+  private nativeTimer?: ReturnType<typeof setInterval>;
+  private nativeRecovery?: Promise<void>;
   readonly previews?: HostedPreviews;
   private trustedBuildProjects: Set<string>;
   private buildManager?: string;
+  private controlledBuild?: (input: ControlledBuild) => Promise<number | null>;
   constructor(
     readonly folders: HostedWebsiteFolders,
     readonly access: HostedRepositoryAccess,
@@ -130,16 +143,20 @@ export class HostedHelperService {
       saveReleases?: HostedSaveReleases;
       publicationFetch?: typeof fetch;
       billing?: HostedRepositoryBilling;
+      native?: NativeOperationJournal;
       /** Operator-only trust exception for its own existing website. */
       trustedBuildProjects?: readonly string[];
       buildManager?: string;
+      controlledBuild?: (input: ControlledBuild) => Promise<number | null>;
     },
   ) {
     if (options?.trustedBuildProjects?.some((id) => !validProjectId(id)))
       throw new Error("Invalid trusted build project configuration.");
     this.trustedBuildProjects = new Set(options?.trustedBuildProjects ?? []);
     this.buildManager = options?.buildManager;
+    this.controlledBuild = options?.controlledBuild;
     this.billing = options?.billing;
+    this.native = options?.native;
     this.saves = new HostedWebsiteSaves(folders, options?.saveReleases);
     this.buildRecovery = new HostedBuildRecovery(folders);
     this.settings = new HostedRepositorySettings(folders);
@@ -151,6 +168,7 @@ export class HostedHelperService {
     );
     this.builds = new HostedBuildQueue({
       folders,
+      native: options?.native,
       authorize: async (token, projectId) => {
         const actor = await access.verify(token);
         await access.requireProject(token, actor, projectId);
@@ -173,6 +191,20 @@ export class HostedHelperService {
         access,
         this.builds,
       );
+    if (this.native) {
+      this.nativeTimer = setInterval(() => {
+        if (this.closed || this.nativeRecovery) return;
+        this.nativeRecovery = this.native!.recover()
+          .then(
+            () => {},
+            () => {},
+          )
+          .finally(() => {
+            this.nativeRecovery = undefined;
+          });
+      }, 30_000);
+      this.nativeTimer.unref();
+    }
   }
   async request(
     token: string,
@@ -228,110 +260,141 @@ export class HostedHelperService {
         403,
         "This operation belongs to another website folder. Reopen the intended project.",
       );
-    return this.folders.locked(projectId, async () => {
-      if (this.closed)
-        throw new HostedHelperError(
-          503,
-          "The hosted helper is restarting. Reconnect shortly.",
-        );
-      await this.access.requireProject(token, actor, projectId);
-      if (setup)
-        await this.access.requireProject(token, actor, projectId, "owner");
-      if (publishing)
-        await this.access.requireProject(token, actor, projectId, "publish");
-      await this.publishing.refresh(projectId);
-      await this.saves.refresh(projectId);
-      await this.buildRecovery.refresh(projectId);
-      if (
-        [
-          "repository-settings-save",
-          "repository-settings-key",
-          "repository-settings-connect",
-          "repository-fetch",
-          "repository-apply",
-          "repository-save",
-          "repository-publish-review",
-          "repository-publish",
-          "repository-build-review",
-          "repository-build-start",
-          "repository-native-backup-review",
-        ].includes(input.action)
+    // Polling/cancellation uses the build's already-active producer. It must
+    // remain available when the native coordination service is unavailable.
+    if (
+      ["repository-build-status", "repository-build-stop"].includes(
+        input.action,
       )
-        this.buildRecovery.assertCanOperate(projectId);
-      if (await this.settings.refresh(projectId))
-        await this.invalidateProject(projectId);
-      if (setup) {
-        switch (input.action) {
-          case "repository-settings-read":
-            return this.settings.read(projectId);
-          case "repository-settings-save":
-            return this.settings.save(
-              projectId,
-              input.version,
-              input.repository,
-              () => this.invalidateProject(projectId),
-            );
-          case "repository-settings-key":
-            return this.settings.createKey(projectId, input.version);
-          case "repository-settings-connect":
-            return this.settings.connect(projectId, input.version);
-        }
-      }
-      await this.folders.ensure(projectId);
-      let operations = this.projects.get(projectId);
-      if (!operations) {
-        operations = new ProjectOperations(
-          new RepositoryRunner(undefined, undefined, {
-            environment: await this.folders.buildEnvironment(projectId),
-            watchStorage: (stop) => this.folders.disk.watch(projectId, stop),
-            beforeBuild: (job, fingerprint) =>
-              this.buildRecovery.begin(job, fingerprint),
-            afterBuild: (job) => this.buildRecovery.finish(job),
-            ...(!this.trustedBuildProjects.has(projectId)
-              ? {
-                  isolatedBuild: {
-                    command: () =>
-                      isolatedBuildCommand(this.buildManager || ""),
-                    run: runIsolatedBuild,
-                  },
-                }
-              : {}),
-          }),
+    ) {
+      const operations = this.projects.get(projectId);
+      if (!operations)
+        throw new HostedHelperError(
+          410,
+          "This build is not available. Review a new build if the helper restarted.",
         );
-        this.projects.set(projectId, operations);
-      }
-      await this.saves.recover(projectId, operations.repositories);
-      try {
+      const cookie =
+        preview && this.previews?.issue(preview.cookie, actor, token);
+      const value = await this.perform(input, actor, root, operations, token);
+      if (cookie) preview!.grant(cookie);
+      return value;
+    }
+    const work = (protection?: NativeFileProtection) =>
+      this.folders.locked(projectId, async () => {
+        if (this.closed)
+          throw new HostedHelperError(
+            503,
+            "The hosted helper is restarting. Reconnect shortly.",
+          );
+        await this.access.requireProject(token, actor, projectId);
+        if (setup)
+          await this.access.requireProject(token, actor, projectId, "owner");
+        if (publishing)
+          await this.access.requireProject(token, actor, projectId, "publish");
+        await this.publishing.refresh(projectId);
+        await this.saves.refresh(projectId);
+        await this.buildRecovery.refresh(projectId);
         if (
           [
-            "repository-apply",
+            "repository-settings-save",
+            "repository-settings-key",
+            "repository-settings-connect",
             "repository-fetch",
+            "repository-apply",
+            "repository-save",
+            "repository-publish-review",
+            "repository-publish",
+            "repository-build-review",
+            "repository-build-start",
             "repository-native-backup-review",
           ].includes(input.action)
         )
-          await this.folders.assertNotBuilding(projectId);
-        // Reserve session capacity before a write, so a quota failure cannot hide an applied operation.
-        const cookie =
-          preview && this.previews?.issue(preview.cookie, actor, token);
-        const value = await this.perform(input, actor, root, operations, token);
-        if (cookie) preview!.grant(cookie);
-        return value;
-      } catch (error) {
-        if (error instanceof HostedHelperError) throw error;
-        // Expected source conflicts keep the existing helper wording. Filesystem/Git/JSON internals do not.
-        if (
-          error instanceof Error &&
-          error.constructor === Error &&
-          !error["code"] &&
-          !error["stderr"]
-        )
-          throw new HostedHelperError(409, error.message.slice(0, 2000));
-        throw new HostedHelperError(
-          500,
-          "The website operation could not finish. Your files are kept; ask the operator to inspect the helper.",
-        );
-      }
-    });
+          this.buildRecovery.assertCanOperate(projectId);
+        if (await this.settings.refresh(projectId))
+          await this.invalidateProject(projectId);
+        if (setup) {
+          switch (input.action) {
+            case "repository-settings-read":
+              return this.settings.read(projectId);
+            case "repository-settings-save":
+              protection?.assertBytes(
+                Buffer.from(JSON.stringify(input.repository) || "null"),
+              );
+              return this.settings.save(
+                projectId,
+                input.version,
+                input.repository,
+                () => this.invalidateProject(projectId),
+              );
+            case "repository-settings-key":
+              return this.settings.createKey(projectId, input.version);
+            case "repository-settings-connect":
+              return this.settings.connect(projectId, input.version);
+          }
+        }
+        await this.folders.ensure(projectId);
+        let operations = this.projects.get(projectId);
+        if (!operations) {
+          operations = new ProjectOperations(
+            new RepositoryRunner(undefined, undefined, {
+              environment: await this.folders.buildEnvironment(projectId),
+              watchStorage: (stop) => this.folders.disk.watch(projectId, stop),
+              beforeBuild: (job, fingerprint) =>
+                this.buildRecovery.begin(job, fingerprint),
+              afterBuild: (job) => this.buildRecovery.finish(job),
+              ...(!this.trustedBuildProjects.has(projectId)
+                ? {
+                    isolatedBuild: {
+                      command: () =>
+                        isolatedBuildCommand(this.buildManager || ""),
+                      run: runIsolatedBuild,
+                    },
+                  }
+                : { controlledBuild: this.controlledBuild }),
+            }),
+          );
+          this.projects.set(projectId, operations);
+        }
+        await this.saves.recover(projectId, operations.repositories);
+        try {
+          if (
+            [
+              "repository-apply",
+              "repository-fetch",
+              "repository-native-backup-review",
+            ].includes(input.action)
+          )
+            await this.folders.assertNotBuilding(projectId);
+          // Reserve session capacity before a write, so a quota failure cannot hide an applied operation.
+          const cookie =
+            preview && this.previews?.issue(preview.cookie, actor, token);
+          const value = await this.perform(
+            input,
+            actor,
+            root,
+            operations,
+            token,
+            protection,
+          );
+          if (cookie) preview!.grant(cookie);
+          return value;
+        } catch (error) {
+          if (error instanceof HostedHelperError) throw error;
+          // Expected source conflicts keep the existing helper wording. Filesystem/Git/JSON internals do not.
+          if (
+            error instanceof Error &&
+            error.constructor === Error &&
+            !error["code"] &&
+            !error["stderr"]
+          )
+            throw new HostedHelperError(409, error.message.slice(0, 2000));
+          throw new HostedHelperError(
+            500,
+            "The website operation could not finish. Your files are kept; ask the operator to inspect the helper.",
+          );
+        }
+      });
+    return this.native ? this.native.run(token, projectId, work) : work();
   }
   private async invalidateProject(projectId: string) {
     this.builds.assertIdle(projectId);
@@ -350,6 +413,7 @@ export class HostedHelperService {
     root: string,
     operations: ProjectOperations,
     token: string,
+    protection?: NativeFileProtection,
   ) {
     const projectId = input.projectId;
     const drafts = () =>
@@ -427,6 +491,9 @@ export class HostedHelperService {
           (await (await drafts()).list(root)).map((draft) => draft.route),
         );
       case "repository-source-draft-save":
+        protection?.assertBytes(
+          Buffer.from(JSON.stringify(input.edits) || "null"),
+        );
         await this.folders.disk.check(
           projectId,
           Buffer.byteLength(JSON.stringify(input.edits) || "") + 64 * 1024,
@@ -493,7 +560,9 @@ export class HostedHelperService {
         const result = await operations.repositories.apply(
           input.planId,
           projectId,
-          async (changes, additionalBytes, sourceUsage) => {
+          async (changes, additionalBytes, sourceUsage, replacements) => {
+            for (const [name, bytes] of replacements)
+              if (bytes) protection?.assertBytes(bytes, name);
             await this.folders.disk.check(projectId, additionalBytes);
             await this.billing?.source(token, projectId, sourceUsage);
             return this.saves.begin(
@@ -633,9 +702,11 @@ export class HostedHelperService {
   close() {
     if (this.stopping) return this.stopping;
     this.closed = true;
+    if (this.nativeTimer) clearInterval(this.nativeTimer);
     this.previews?.close();
     this.stopping = (async () => {
       await this.builds.close();
+      await this.nativeRecovery;
       await this.folders.idle();
       await Promise.all(
         [...this.projects.values()].map((project) => project.runner.close()),
@@ -904,6 +975,26 @@ async function main() {
   });
   const port = Number(process.env.BUILDER_HOSTED_PORT || 4334);
   if (!Number.isInteger(port) || port < 1 || port > 65535) throw new Error();
+  const billing = new HostedRepositoryBilling({
+    url: process.env.BUILDER_HOSTED_SUPABASE_URL || "",
+    anonKey: process.env.BUILDER_HOSTED_SUPABASE_ANON_KEY || "",
+    secret: process.env.BUILDER_HOSTED_BILLING_KEY || "",
+  });
+  const nativeWorker = process.env.BUILDER_NATIVE_WORKER_ID || "";
+  const nativeConfiguration = process.env.BUILDER_NATIVE_CONFIGURATION || "";
+  const native =
+    nativeWorker || nativeConfiguration
+      ? new NativeOperationJournal({
+          directory: path.join(folders.directory, "native-operations"),
+          workerId: nativeWorker,
+          configuration: nativeConfiguration,
+          connection: billing,
+          controller: await nativeServiceController(),
+        })
+      : undefined;
+  // Old service invocations can recover after systemd's complete process stop.
+  // Same-invocation and unstamped legacy intents retain their protection.
+  await native?.recover();
   const helper = await startHostedHelper({
     service: new HostedHelperService(folders, access, {
       editorOrigin: process.env.BUILDER_HOSTED_EDITOR_ORIGIN || "",
@@ -914,11 +1005,9 @@ async function main() {
         .map((value) => value.trim())
         .filter(Boolean),
       buildManager: process.env.BUILDER_HOSTED_SANDBOX_PACKAGE_MANAGER,
-      billing: new HostedRepositoryBilling({
-        url: process.env.BUILDER_HOSTED_SUPABASE_URL || "",
-        anonKey: process.env.BUILDER_HOSTED_SUPABASE_ANON_KEY || "",
-        secret: process.env.BUILDER_HOSTED_BILLING_KEY || "",
-      }),
+      controlledBuild: runControlledBuild,
+      billing,
+      native,
       saveReleases: new HostedSaveReleases({
         githubToken: process.env.BUILDER_HOSTED_GITHUB_READ_TOKEN,
       }),

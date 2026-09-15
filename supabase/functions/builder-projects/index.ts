@@ -1,10 +1,11 @@
 import { checkFunctionLimit } from "../_shared/functionLimits.ts";
 import { bootstrapAccount } from "../_shared/builderSignup.ts";
 import { domainProjectAction } from "../_shared/builderDomains.ts";
+import { runProjectCopy } from "../_shared/builderProjectCopies.ts";
+import { registerVerifiedAsset } from "../_shared/builderRegisterAssets.ts";
 import { createClient } from "npm:@supabase/supabase-js@2.98.0";
 import { recordClientDiagnostic } from "../_shared/clientDiagnostics.ts";
 import { getCorsHeaders, isOriginAllowed } from "../_shared/editorAuth.ts";
-import { disconnectedSettings } from "../../../shared/builderSettings.ts";
 import { fetchContentCatalogue } from "../../../shared/builderContent.ts";
 import {
   validProjectId,
@@ -21,7 +22,7 @@ import {
   previewSummary,
   isPreviewId,
 } from "../../../shared/builderPreviews.ts";
-import type { Asset, Workspace } from "../../../shared/visualBuilder.ts";
+import type { Workspace } from "../../../shared/visualBuilder.ts";
 import {
   clientDestinationFields,
   clientPublicationAction,
@@ -42,6 +43,7 @@ const projectRecord = (row: any, member: any) => ({
   destination: row.destination,
   capabilities: projectCapabilities(row.capabilities),
   access: { role: member.role, canPublish: member.can_publish },
+  ...(row.copy ? { copy: row.copy } : {}),
 });
 
 Deno.serve(async (request) => {
@@ -130,10 +132,16 @@ Deno.serve(async (request) => {
           .from("builder_client_destinations")
           .select(clientDestinationFields),
       );
+      const copies = check(
+        await service.rpc("builder_project_copy_summaries", {
+          actor: auth.user!.id,
+        }),
+      );
       return rows.map((row: any) =>
         projectRecord(
           {
             ...row,
+            copy: copies.find((copy: any) => copy.projectId === row.id),
             ...(destinations.some(
               (d: any) => d.project_id === row.id && d.enabled,
             )
@@ -167,6 +175,28 @@ Deno.serve(async (request) => {
     const target = input.projectId || input.id;
     if (typeof target !== "string" || !validProjectId(target))
       return json(400, { error: "Invalid project ID." });
+    if (action === "duplicate-cancel") {
+      if (
+        input.confirm !== true ||
+        !Number.isInteger(input.version) ||
+        input.version < 1
+      )
+        return json(400, {
+          error: "Confirm cancellation of this unfinished copy.",
+        });
+      // The private routine checks current ownership itself. After verified
+      // purge, its small request receipt makes a lost-response retry idempotent.
+      return json(
+        200,
+        check(
+          await service.rpc("builder_project_copy_cancel", {
+            target,
+            actor: auth.user.id,
+            expected_version: input.version,
+          }),
+        ),
+      );
+    }
     if (action === "record-error") {
       const result = await recordClientDiagnostic(
         service,
@@ -176,7 +206,7 @@ Deno.serve(async (request) => {
       );
       return json(result.status, result.body);
     }
-    // Every operation, including reads/download registration/previews, starts with
+    // Other operations, including reads/download registration/previews, start with
     // an actual RLS-backed membership lookup using the verified user's JWT.
     const membership = check(
       await user
@@ -274,110 +304,32 @@ Deno.serve(async (request) => {
       );
       return json(200, { ok: true });
     }
-    if (action === "duplicate") {
-      const source: Workspace = projectCapabilities(project.capabilities)
-        .legacyWorkspace
-        ? check(await user.rpc("builder_backup_workspace"))
-        : check(
-            await user
-              .from("builder_project_workspaces")
-              .select("payload")
-              .eq("project_id", target)
-              .single(),
-          ).payload;
-      const id = check(
-        await user.rpc("builder_create_project", {
-          project_name: projectName(input.name),
+    if (action === "duplicate" || action === "duplicate-resume") {
+      const id = await runProjectCopy({
+        service,
+        user,
+        actor: auth.user.id,
+        token,
+        project,
+        input,
+        origin: Deno.env.get("BUILDER_UPLOAD_ORIGIN"),
+      });
+      return json(
+        200,
+        (await list()).find((p: any) => p.id === id),
+      );
+    }
+    if (action === "register-asset") {
+      return json(
+        200,
+        await registerVerifiedAsset({
+          service,
+          actor: auth.user.id,
+          projectId: target,
+          asset: input.asset,
+          storageUrl: url,
         }),
       );
-      const copied: string[] = [];
-      try {
-        const replacements = new Map<string, string>();
-        for (const asset of source.assets) {
-          if (!isPreviewId(asset.id))
-            throw new Error("Invalid source asset ID.");
-          const sourceBucket = projectCapabilities(project.capabilities)
-            .legacyWorkspace
-            ? ["image", "icon", "font"].includes(asset.kind)
-              ? "builder-media"
-              : "builder-source"
-            : "builder-project-files";
-          const file = check(
-            await user.storage
-              .from(sourceBucket)
-              .download(
-                projectCapabilities(project.capabilities).legacyWorkspace
-                  ? asset.id
-                  : `${target}/${asset.id}`,
-              ),
-          );
-          const buffer = await file.arrayBuffer();
-          const digest = Array.from(
-            new Uint8Array(await crypto.subtle.digest("SHA-256", buffer)),
-            (n) => n.toString(16).padStart(2, "0"),
-          ).join("");
-          if (digest !== asset.hash || buffer.byteLength !== asset.size)
-            throw new Error(`Source checksum failed: ${asset.name}`);
-          const destination = `${id}/${asset.id}`;
-          check(
-            await user.storage
-              .from("builder-project-files")
-              .upload(destination, buffer, {
-                contentType: asset.mime,
-                upsert: false,
-              }),
-          );
-          copied.push(destination);
-          replacements.set(asset.url, projectAssetUrl(id, asset.id));
-        }
-        const rewrite = (value: any): any =>
-          typeof value === "string"
-            ? replacements.get(value) || value
-            : Array.isArray(value)
-              ? value.map(rewrite)
-              : value && typeof value === "object"
-                ? Object.fromEntries(
-                    Object.entries(value).map(([key, item]) => [
-                      key,
-                      rewrite(item),
-                    ]),
-                  )
-                : value;
-        const workspace = rewrite(source);
-        if (workspace.settings)
-          workspace.settings = disconnectedSettings(workspace.settings);
-        assertProjectAssetReferences(workspace, id);
-        check(
-          await service.rpc("builder_commit_project_workspace", {
-            target: id,
-            actor: auth.user.id,
-            expected_version: 0,
-            workspace,
-          }),
-        );
-        return json(
-          200,
-          (await list()).find((p: any) => p.id === id),
-        );
-      } catch (error) {
-        const current = await service
-          .from("builder_project_workspaces")
-          .select("version")
-          .eq("project_id", id)
-          .maybeSingle();
-        if (current.data?.version === 0) {
-          if (copied.length)
-            await service.storage.from("builder-project-files").remove(copied);
-          await service
-            .from("builder_projects")
-            .delete()
-            .eq("id", id)
-            .eq("version", 1);
-        }
-        throw new Error(
-          `Project copy failed: ${(error as Error).message}. The source project is unchanged.`,
-        );
-      }
     }
     if (projectCapabilities(project.capabilities).legacyWorkspace)
       return json(409, {
@@ -523,33 +475,6 @@ Deno.serve(async (request) => {
         }),
       );
       return json(200, saved ? previewSummary(saved) : null);
-    }
-    if (action === "register-asset") {
-      const asset = input.asset as Asset;
-      if (
-        !asset ||
-        !isPreviewId(asset.id) ||
-        !/^[a-f0-9]{64}$/.test(asset.hash) ||
-        !Number.isInteger(asset.size) ||
-        asset.size < 1 ||
-        asset.size > 50 * 1024 * 1024
-      )
-        throw new Error("Invalid asset metadata.");
-      const file = check(
-        await user.storage
-          .from("builder-project-files")
-          .download(`${target}/${asset.id}`),
-      );
-      const buffer = await file.arrayBuffer();
-      const digest = Array.from(
-        new Uint8Array(await crypto.subtle.digest("SHA-256", buffer)),
-        (n) => n.toString(16).padStart(2, "0"),
-      ).join("");
-      if (buffer.byteLength !== asset.size || digest !== asset.hash)
-        throw new Error(
-          "The uploaded file does not match its size/checksum. Resume the original import.",
-        );
-      input.asset = { ...asset, url: projectAssetUrl(target, asset.id) };
     }
     if (
       action === "create-starter" &&

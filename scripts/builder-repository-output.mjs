@@ -2,6 +2,10 @@ import { createHash, randomUUID } from "node:crypto";
 import path from "node:path";
 import { measureRepositorySource } from "./builder-repository-usage.mjs";
 import { reconcileRelease } from "./kaizen-releases.mjs";
+import {
+  withNativeRelease,
+  assertNativeRelease,
+} from "./builder-native-release-guard.mjs";
 
 const digest = (value) =>
   createHash("sha256").update(JSON.stringify(value)).digest("hex");
@@ -146,6 +150,10 @@ export class RepositoryOutputAccounting {
 /** Reuses the filesystem's stopped-process recovery lock and real live checks.
  * Restoring an older artifact retains uncertain candidates until verification. */
 export async function reconcileRepositoryOutput(options, adapters = {}) {
+  if (options.native)
+    return withNativeRelease(options, options.projectId, (input) =>
+      reconcileRepositoryOutput(input, adapters),
+    );
   const {
     client,
     projectId,
@@ -163,6 +171,7 @@ export async function reconcileRepositoryOutput(options, adapters = {}) {
     {
       ...adapters,
       async beforeReconcile(manifest) {
+        await assertNativeRelease(options, manifest);
         await options.beforeReserve?.(manifest);
         const record = await client.rpc("builder_repository_output_read", {
           target: projectId,

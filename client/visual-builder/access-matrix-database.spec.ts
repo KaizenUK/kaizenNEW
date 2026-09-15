@@ -29,7 +29,17 @@ const privateTables = [
   "builder_publication_allowances",
   "builder_repository_publications",
   "builder_repository_output_jobs",
+  "builder_release_retirements",
   "builder_domains",
+  "builder_uploads",
+  "builder_project_copies",
+  "builder_project_copy_cancellations",
+  "builder_asset_files",
+  "builder_asset_cleanup",
+  "builder_asset_discovery",
+  "builder_native_asset_state",
+  "builder_native_asset_scopes",
+  "builder_native_asset_operations",
 ];
 const legacyTables = [
   "builder_pages",
@@ -136,7 +146,22 @@ describe("complete builder table access matrix", () => {
       insert into builder_project_workspaces(project_id) values('kaizen'),('${alpha}'),('${beta}') on conflict do nothing;
       insert into builder_pages(id,payload) values('${page}','{"draft":{"slug":"/published-canary/"},"private":"unpublished draft canary"}');
       insert into builder_publications(id,slug,document) values('${page}','/published-canary/','{"title":"Public snapshot canary"}');
-      insert into builder_assets(id,hash,payload) values('${page}','canary','{"id":"${page}","hash":"canary","size":10,"private":"asset source canary"}');
+      -- A preserved library identity is an explicit legacy fixture, not a
+      -- fabricated verified upload. The access matrix tests its private row too.
+      insert into builder_asset_files(project_id,asset_id,bytes,sha256,mime,asset_kind,bucket_id,object_name,file_url,status)
+        values('kaizen','${page}',10,repeat('a',64),'text/plain','other','builder-source','${page}','private:${page}','legacy');
+      insert into builder_assets(id,hash,payload) values('${page}',repeat('a',64),jsonb_build_object('id','${page}','hash',repeat('a',64),'size',10,'mime','text/plain','kind','other','url','private:${page}','private','asset source canary'));
+      insert into builder_asset_cleanup(project_id,asset_id,worker_id) values('kaizen','${page}','private-asset-worker');
+      insert into builder_release_retirements(project_id,scope,artifact_id,worker_id,store_fingerprint,manifest_sha256,bytes)
+        values('kaizen','repository:production','private-retained-artifact','private-release-worker',repeat('a',64),repeat('b',64),10);
+      insert into builder_native_asset_operations(id,worker_id,configuration,project_id,process_id,host,instance_id,phase,completed_at)
+        values('${page}','private-native-worker',repeat('a',64),'kaizen',123,'fixture-host','${page}','complete',now());
+      insert into builder_asset_discovery(project_id,asset_id,bucket_id,object_name,bytes,object_version,object_etag,worker_id)
+        values('${alpha}','${page}','builder-project-files','${alpha}/private-discovery-canary',10,'private-version','private-etag','private-asset-worker');
+      insert into builder_uploads(id,project_id,asset_id,actor_id,worker_id,bucket_id,object_name,bytes,sha256,mime,asset_kind)
+        values('${page}','${alpha}','${page}','${ids.owner}','private-upload-worker','builder-project-files','${alpha}/${page}',10,repeat('a',64),'text/plain','other');
+      insert into builder_project_copies(project_id,source_project_id,actor_id,source_legacy,requested_name,workspace,status)
+        values('${alpha}','${beta}','${ids.owner}',false,'Private completed copy','{}','complete');
       insert into builder_saved(id,payload) values('${page}','{"private":"saved block canary"}');
       insert into builder_site(id,payload) values('site','{"draft":{"canary":"private site draft"}}') on conflict(id) do update set payload=excluded.payload;
       update builder_routes set payload='{"draft":[{"canary":"private redirect draft"}],"published":[{"source":"/public-old/","destination":"/public-new/","status":301}]}' where id='site';
@@ -146,6 +171,8 @@ describe("complete builder table access matrix", () => {
       insert into builder_previews(id,created_by,document,duration_hours,expires_at) values('${page}','${ids.legacy}','{"private":"preview canary"}',1,now()+interval '1 hour');
       insert into builder_account_deletions(user_id,request_id,status) values('${ids.editor}','${page}','pending');
       insert into builder_account_deletion_projects(request_id,project_id) values('${page}','${alpha}');
+      insert into builder_project_copy_cancellations(project_id,requested_by,original_actor,phase,completed_at)
+        values('dddddddd-dddd-4ddd-8ddd-dddddddddddd','${ids.owner}','${ids.owner}','complete',now());
       insert into builder_function_limits values('builder-publish','${ids.owner}',now(),1);
       insert into builder_legal_acceptances(user_id,version) values('${ids.owner}','2026-09-14');
       insert into builder_billing_accounts(user_id,customer_id) values('${ids.owner}','cus_canary') on conflict(user_id) do update set customer_id=excluded.customer_id;
@@ -518,7 +545,7 @@ describe("complete builder table access matrix", () => {
       as("authenticated", ids.legacy, () =>
         db.exec("update builder_assets set payload='{}'"),
       ),
-    ).rejects.toThrow(/row-level security/);
+    ).rejects.toThrow("Invalid library file identity");
     for (const actor of [ids.owner, ids.stranger]) {
       await as("authenticated", actor, async () => {
         for (const table of ["builder_assets", "builder_saved"])

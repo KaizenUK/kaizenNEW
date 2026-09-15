@@ -8,6 +8,7 @@ import {
   truncate,
   writeFile,
   lstat,
+  link,
 } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import path from "node:path";
@@ -15,7 +16,9 @@ import {
   HostedDiskGuard,
   hostedDiskLimits,
   defaultHostedDiskLimits,
+  nativeDiskGuard,
 } from "../../scripts/builder-hosted-disk";
+import { SandboxCleanupError } from "../../scripts/builder-build-sandbox";
 import {
   hostedHelperFixture,
   helperProject,
@@ -93,6 +96,73 @@ async function start(api: Awaited<ReturnType<typeof hostedHelperFixture>>) {
 }
 
 describe("hosted storage bounds", () => {
+  it("counts native checkout and worker dependencies together and remeasures after a restart", async () => {
+    const { root, project } = await directory();
+    const state = path.join(root, "native-state");
+    await mkdir(path.join(state, "dependencies"), { recursive: true });
+    const source = path.join(project, "page.txt");
+    await writeFile(source, "Preserved source");
+    const cache = path.join(state, "dependencies", "package.bin");
+    await writeFile(cache, "");
+    await truncate(cache, 600 * 1024);
+    const env = {
+      BUILDER_NATIVE_STORAGE_MAX_BYTES: String(limits.projectBytes),
+      BUILDER_NATIVE_MIN_FREE_BYTES: "0",
+      BUILDER_NATIVE_DISK_CHECK_MS: "100",
+    };
+    await expect(
+      nativeDiskGuard(project, state, env).check("kaizen"),
+    ).resolves.toMatchObject({ bytes: expect.any(Number) });
+    await mkdir(path.join(project, "node_modules"));
+    await link(cache, path.join(project, "node_modules", "package.bin"));
+    // A pnpm hard link can later be replaced by a copy; both retained paths
+    // consume the operational allowance even before that materialization.
+    await expect(
+      nativeDiskGuard(project, state, env).check("kaizen"),
+    ).rejects.toThrow("storage limit");
+    expect(await readFile(source, "utf8")).toBe("Preserved source");
+    await rm(path.join(project, "node_modules"), { recursive: true });
+    await expect(
+      nativeDiskGuard(project, state, env).check("kaizen"),
+    ).resolves.toMatchObject({ bytes: expect.any(Number) });
+    expect(() =>
+      nativeDiskGuard(project, state, {
+        BUILDER_NATIVE_STORAGE_MAX_BYTES: "Infinity",
+      }),
+    ).toThrow();
+    expect(() => nativeDiskGuard(project, project, env)).toThrow();
+    expect(() => nativeDiskGuard(root, state, env)).toThrow();
+    expect(() => nativeDiskGuard(path.parse(root).root, state, env)).toThrow();
+    await rm(state, { recursive: true });
+    await expect(
+      nativeDiskGuard(project, state, env).check("kaizen"),
+    ).rejects.toThrow("could not check");
+    await symlink(path.join(root, "projects"), state);
+    await expect(
+      nativeDiskGuard(project, state, env).check("kaizen"),
+    ).rejects.toThrow("could not check");
+  });
+
+  it("preserves uncertain process-cleanup evidence when storage cancellation also fails", async () => {
+    const { project, disk } = await directory();
+    const failure = new SandboxCleanupError();
+    await expect(
+      disk.run(helperProject, async (signal) => {
+        await writeFile(
+          path.join(project, "growing-output"),
+          Buffer.alloc(2 * 1024 * 1024),
+        );
+        await new Promise<void>((resolve) =>
+          signal.addEventListener("abort", () => resolve(), { once: true }),
+        );
+        throw failure;
+      }),
+    ).rejects.toBe(failure);
+    expect((await lstat(path.join(project, "growing-output"))).size).toBe(
+      2 * 1024 * 1024,
+    );
+  });
+
   it("accepts explicit bounded operator settings and rejects malformed or unbounded values", () => {
     expect(hostedDiskLimits({})).toEqual(defaultHostedDiskLimits);
     expect(

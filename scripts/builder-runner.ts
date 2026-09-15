@@ -10,8 +10,13 @@ import {
   rename,
   writeFile,
 } from "node:fs/promises";
-import type { SandboxBuild, SandboxCommand } from "./builder-build-sandbox";
+import {
+  SandboxCleanupError,
+  type SandboxBuild,
+  type SandboxCommand,
+} from "./builder-build-sandbox";
 import path from "node:path";
+import type { ControlledBuild } from "./builder-controlled-build";
 import { inspectRepository } from "./builder-repository";
 import { measureRepositorySource } from "./builder-repository-usage.mjs";
 const digest = (data: Uint8Array | string) =>
@@ -230,6 +235,7 @@ export class RepositoryRunner {
       ) => Promise<() => Promise<void>>;
       beforeBuild?: (job: BuildJob, fingerprint: string) => Promise<void>;
       afterBuild?: (job: BuildJob) => Promise<void>;
+      controlledBuild?: (input: ControlledBuild) => Promise<number | null>;
       isolatedBuild?: {
         command: () => Promise<SandboxCommand>;
         run: (input: SandboxBuild) => Promise<Map<string, Buffer>>;
@@ -530,6 +536,26 @@ export class RepositoryRunner {
           clearTimeout(timeout);
           running.buildAbort = undefined;
         }
+      } else if (this.options.controlledBuild) {
+        const controller = new AbortController();
+        running.buildAbort = controller;
+        const timeout = setTimeout(() => {
+          running.cancel = "Build exceeded the five-minute time limit.";
+          controller.abort(new Error(running.cancel));
+        }, this.timeoutMs);
+        try {
+          code = await this.options.controlledBuild({
+            id: job.id,
+            root: job.root,
+            command,
+            signal: controller.signal,
+            log,
+            environment: this.options.environment || process.env,
+          });
+        } finally {
+          clearTimeout(timeout);
+          running.buildAbort = undefined;
+        }
       } else
         code = await new Promise<number | null>((resolve, reject) => {
           // No input is interpolated into a shell command. The reviewed package manager runs its normal lifecycle scripts.
@@ -792,10 +818,18 @@ export class RepositoryRunner {
       );
     } catch (error) {
       this.closePreview(running);
+      const cleanupUncertain = error instanceof SandboxCleanupError;
+      if (cleanupUncertain) job.recoveryRequired = true;
       const terminalStatus = running.cancel ? "cancelled" : "failed";
       job.error = error.message;
-      log("\nRecovering build output before finishing this job…\n");
-      if (prepared)
+      log(
+        cleanupUncertain
+          ? "\nPreserving build output until process cleanup is confirmed…\n"
+          : "\nRecovering build output before finishing this job…\n",
+      );
+      if (cleanupUncertain)
+        job.error += ` Output is preserved in the website folder and ${job.recoveryDirectory} until all build processes have stopped.`;
+      if (prepared && !cleanupUncertain)
         try {
           const output = await realDirectory(job.root, "dist");
           if (await exists(output))

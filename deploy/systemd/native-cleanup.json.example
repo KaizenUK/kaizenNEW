@@ -1,0 +1,42 @@
+{
+  "version": 1,
+  "workerId": "kaizen-native-cleanup",
+  "projects": ["kaizen"],
+  "producers": [
+    { "workerId": "kaizen-native-helper", "projectIds": ["kaizen"] },
+    { "workerId": "kaizen-native-production", "projectIds": ["kaizen"] },
+    { "workerId": "kaizen-native-stage", "projectIds": ["kaizen"] }
+  ],
+  "roots": [
+    {
+      "kind": "repository",
+      "path": "/srv/replace-with-helper-checkout",
+      "projectIds": ["kaizen"]
+    },
+    {
+      "kind": "repository",
+      "path": "/srv/replace-with-production-checkout",
+      "projectIds": ["kaizen"]
+    },
+    {
+      "kind": "repository",
+      "path": "/srv/replace-with-stage-checkout",
+      "projectIds": ["kaizen"]
+    },
+    {
+      "kind": "tree",
+      "path": "/var/lib/replace-with-all-account-drafts",
+      "projectIds": ["kaizen"]
+    },
+    {
+      "kind": "tree",
+      "path": "/var/lib/replace-with-retained-releases",
+      "projectIds": ["kaizen"]
+    },
+    {
+      "kind": "repository-collection",
+      "path": "/var/lib/replace-with-deployment-candidates",
+      "projectIds": ["kaizen"]
+    }
+  ]
+}

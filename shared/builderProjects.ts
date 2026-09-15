@@ -52,6 +52,13 @@ export type BuilderProject = {
     label: string;
   };
   access?: { role: "owner" | "editor"; canPublish: boolean };
+  copy?: {
+    pending: boolean;
+    cancelling?: boolean;
+    canResume: boolean;
+    files: number;
+    copied: number;
+  };
 };
 export function validProjectId(id: string): boolean {
   return (

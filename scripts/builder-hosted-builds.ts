@@ -2,6 +2,10 @@ import { randomUUID } from "node:crypto";
 import { HostedHelperError, type RepositoryActor } from "./builder-hosted-auth";
 import type { HostedWebsiteFolders } from "./builder-hosted-folders";
 import type { RepositoryRunner, BuildJob, BuildPlan } from "./builder-runner";
+import type {
+  NativeFileProtection,
+  NativeOperationJournal,
+} from "./builder-native-operations";
 
 const logLimit = 100_000;
 type Entry = {
@@ -18,6 +22,7 @@ type Adapters = {
   folders: HostedWebsiteFolders;
   authorize: (token: string, projectId: string) => Promise<void>;
   runner: (projectId: string) => RepositoryRunner;
+  native?: NativeOperationJournal;
   beforePreview?: (
     token: string,
     plan: BuildPlan,
@@ -232,45 +237,67 @@ export class HostedBuildQueue {
     const projectId = entry.value.projectId;
     let release: (() => Promise<void>) | undefined;
     let result: BuildJob | undefined;
+    const token = entry.token!;
+    delete entry.token;
+    const run = async (protection?: NativeFileProtection) => {
+      try {
+        const runner = this.adapters.runner(projectId);
+        await this.adapters.folders.locked(projectId, async () => {
+          if (entry.cancelRequested || this.closed) return;
+          await this.adapters.authorize(token, projectId);
+          if (entry.cancelRequested || this.closed) return;
+          await this.adapters.folders.check(projectId);
+          release = await this.adapters.folders.claimBuild(
+            projectId,
+            entry.value.id,
+          );
+          if (entry.cancelRequested || this.closed) return;
+          const started = await runner.start(
+            entry.plan.id,
+            projectId,
+            this.adapters.beforePreview || protection
+              ? async (files, fingerprint) => {
+                  await this.adapters.authorize(token, projectId);
+                  for (const [name, bytes] of files)
+                    protection?.assertBytes(bytes, name);
+                  await this.adapters.beforePreview?.(
+                    token,
+                    entry.plan,
+                    files,
+                    fingerprint,
+                  );
+                }
+              : undefined,
+          );
+          entry.runnerId = started.id;
+          entry.value = {
+            ...started,
+            id: entry.value.id,
+            queuedAt: entry.value.queuedAt,
+            status: "building",
+          };
+          if (entry.cancelRequested || this.closed) void this.stop(entry);
+        });
+        if (entry.runnerId)
+          result = await runner.wait(entry.runnerId, projectId);
+        if (result?.recoveryRequired) protection?.retainOperation();
+      } finally {
+        try {
+          await release?.();
+        } catch {
+          result = {
+            ...(result || entry.value),
+            status: "failed",
+            error:
+              "The build lock could not be released safely. Ask the operator to inspect the website folder.",
+          };
+        }
+      }
+    };
     try {
-      const runner = this.adapters.runner(projectId);
-      await this.adapters.folders.locked(projectId, async () => {
-        if (entry.cancelRequested || this.closed) return;
-        await this.adapters.authorize(entry.token!, projectId);
-        if (entry.cancelRequested || this.closed) return;
-        const token = entry.token!;
-        delete entry.token;
-        await this.adapters.folders.check(projectId);
-        release = await this.adapters.folders.claimBuild(
-          projectId,
-          entry.value.id,
-        );
-        if (entry.cancelRequested || this.closed) return;
-        const started = await runner.start(
-          entry.plan.id,
-          projectId,
-          this.adapters.beforePreview
-            ? async (files, fingerprint) => {
-                await this.adapters.authorize(token, projectId);
-                await this.adapters.beforePreview!(
-                  token,
-                  entry.plan,
-                  files,
-                  fingerprint,
-                );
-              }
-            : undefined,
-        );
-        entry.runnerId = started.id;
-        entry.value = {
-          ...started,
-          id: entry.value.id,
-          queuedAt: entry.value.queuedAt,
-          status: "building",
-        };
-        if (entry.cancelRequested || this.closed) void this.stop(entry);
-      });
-      if (entry.runnerId) result = await runner.wait(entry.runnerId, projectId);
+      if (this.adapters.native)
+        await this.adapters.native.run(token, projectId, run);
+      else await run();
     } catch (error) {
       const message =
         error instanceof HostedHelperError
@@ -281,22 +308,14 @@ export class HostedBuildQueue {
             ? error.message.slice(0, 2000)
             : "The build could not start. Review the command again or ask the operator to check the helper.";
       result = {
-        ...entry.value,
+        ...(result || entry.value),
         status: "failed",
         error: message,
-        log: (entry.value.log + message + "\n").slice(-logLimit),
+        log: ((result?.log || entry.value.log) + message + "\n").slice(
+          -logLimit,
+        ),
       };
     } finally {
-      try {
-        await release?.();
-      } catch {
-        result = {
-          ...(result || entry.value),
-          status: "failed",
-          error:
-            "The build lock could not be released safely. Ask the operator to inspect the website folder.",
-        };
-      }
       if (result) {
         entry.value = {
           ...result,

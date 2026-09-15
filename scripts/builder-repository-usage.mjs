@@ -22,8 +22,13 @@ const excluded = (name) =>
  * dependencies/output/recovery have independent operational retention limits.
  * @param {string} root
  * @param {ReadonlyMap<string, Uint8Array | null>} replacements
+ * @param {{onBytes?: (file: string, bytes: Uint8Array, final: boolean) => void}} observers
  */
-export async function measureRepositorySource(root, replacements = new Map()) {
+export async function measureRepositorySource(
+  root,
+  replacements = new Map(),
+  observers = {},
+) {
   if ((await realpath(root)) !== path.resolve(root))
     throw new Error("Website usage needs a real source directory.");
   const hash = createHash("sha256");
@@ -74,6 +79,7 @@ export async function measureRepositorySource(root, replacements = new Map()) {
                 "Website source changed during its storage check.",
               );
             contents.update(buffer.subarray(0, bytesRead));
+            observers.onBytes?.(name, buffer.subarray(0, bytesRead), false);
           }
           const after = await file.stat();
           if (
@@ -83,6 +89,7 @@ export async function measureRepositorySource(root, replacements = new Map()) {
           )
             throw new Error("Website source changed during its storage check.");
           bytes += read;
+          observers.onBytes?.(name, new Uint8Array(), true);
           sizes.set(name, read);
           hash.update(name).update("\0").update(contents.digest("hex"));
         } finally {

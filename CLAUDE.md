@@ -1,5 +1,9 @@
 # Kaizen Web — Project Guidelines
 
+## Current launch implementation handover
+
+Read `HANDOVER.md`, then [the Claude continuation tasks](docs/handover/l6-t4-claude-tasks.md) before changing builder code. Work in `/home/sean/Documents/GitHub/kaizen-launch` on `codex/builder-launch`; preserve every modified and untracked file. The current resume point is **D2d.2 — client/domain/retry and direct-call coverage** in [the detailed release-retirement checkpoints](docs/handover/l6-t4-release-retirement-tasks.md). The launch brief and task map linked there govern this work; older pause/next-step notes are historical. Keep the handover current after each verified checkpoint.
+
 ## Content Principles (from guidance/Viral_Content_Guide.pdf)
 
 All website copy should follow the SUCCESS model:

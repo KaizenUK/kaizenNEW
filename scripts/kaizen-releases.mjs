@@ -1,4 +1,4 @@
-import { constants, createReadStream } from "node:fs";
+import { constants } from "node:fs";
 import {
   mkdir,
   readdir,
@@ -7,7 +7,6 @@ import {
   writeFile,
   open,
   rename,
-  copyFile,
   realpath,
   unlink,
   rmdir,
@@ -21,6 +20,14 @@ import { execFile } from "node:child_process";
 import { promisify } from "node:util";
 import { pathToFileURL } from "node:url";
 import { withRecoveryLock } from "./release-recovery.mjs";
+import { assertReleaseIdNotRetired } from "./release-retirement-state.mjs";
+import {
+  checkReleaseStorage,
+  copyReleaseFile,
+  hashReleaseFile,
+  readReleaseFile,
+  releaseStorageLimits,
+} from "./release-storage.mjs";
 import {
   canonicalRedirectPath,
   technicalRoute,
@@ -81,7 +88,9 @@ async function clientBinding(root) {
   if (!stat) return null;
   if (!stat.isFile() || stat.isSymbolicLink())
     throw new Error("The client destination binding must be a regular file.");
-  return validateClientDestination(JSON.parse(await readFile(file, "utf8")));
+  return validateClientDestination(
+    JSON.parse((await readReleaseFile(file, stat, 16384)).toString()),
+  );
 }
 const sameClient = (a, b) =>
   JSON.stringify(a && validateClientDestination(a)) ===
@@ -206,6 +215,7 @@ function safeRelative(name) {
   if (
     typeof name !== "string" ||
     !name ||
+    Buffer.byteLength(name) > 1024 ||
     path.isAbsolute(name) ||
     /[\\\x00-\x1f]/.test(name) ||
     name.split("/").some((part) => !part || part === "." || part === "..")
@@ -214,9 +224,7 @@ function safeRelative(name) {
   return name;
 }
 async function hashFile(file) {
-  const hash = createHash("sha256");
-  for await (const bytes of createReadStream(file)) hash.update(bytes);
-  return hash.digest("hex");
+  return hashReleaseFile(file);
 }
 async function storeRoot(value) {
   const requested = path.resolve(value || "");
@@ -234,16 +242,23 @@ async function storeRoot(value) {
     await safeDirectory(root, name);
   return root;
 }
-async function safeDirectory(root, relative) {
+async function safeDirectory(root, relative, create = true) {
   let current = root;
   for (const part of safeRelative(relative).split("/")) {
     current = path.join(current, part);
-    let created = true;
-    await mkdir(current).catch((error) => {
-      if (error.code !== "EEXIST") throw error;
-      created = false;
+    let created = false;
+    if (create) {
+      created = true;
+      await mkdir(current).catch((error) => {
+        if (error.code !== "EEXIST") throw error;
+        created = false;
+      });
+    }
+    const stat = await lstat(current).catch((error) => {
+      if (!create && error.code === "ENOENT") return null;
+      throw error;
     });
-    const stat = await lstat(current);
+    if (!stat) return null;
     if (!stat.isDirectory() || stat.isSymbolicLink())
       throw new Error(
         `Release directory is not an ordinary directory: ${current}`,
@@ -252,16 +267,26 @@ async function safeDirectory(root, relative) {
   }
   return current;
 }
-async function filesIn(root, relative = "") {
+async function filesIn(
+  root,
+  relative = "",
+  inventory = { entries: 0 },
+  depth = 0,
+) {
+  if (depth > 128)
+    throw new Error("Release files exceed the directory-depth limit.");
   const result = [];
   for (const entry of await readdir(path.join(root, relative), {
     withFileTypes: true,
   })) {
+    if (++inventory.entries > 20000)
+      throw new Error("Release files exceed the bounded inventory limit.");
     const name = relative ? `${relative}/${entry.name}` : entry.name;
     safeRelative(name);
     if (entry.isSymbolicLink())
       throw new Error(`Release files cannot contain symbolic links: ${name}`);
-    if (entry.isDirectory()) result.push(...(await filesIn(root, name)));
+    if (entry.isDirectory())
+      result.push(...(await filesIn(root, name, inventory, depth + 1)));
     else if (entry.isFile()) result.push(name);
     else throw new Error(`Unsupported release file: ${name}`);
   }
@@ -322,7 +347,7 @@ async function currentConfig(root) {
   if (!stat) return null;
   if (!stat.isFile() || stat.isSymbolicLink())
     throw new Error("The active release include must be a regular file.");
-  const text = await readFile(file, "utf8"),
+  const text = (await readReleaseFile(file, stat, 16384)).toString(),
     id = text.match(/^# Kaizen managed release: ([\w-]+)\n/)?.[1];
   if (
     !id ||
@@ -341,181 +366,225 @@ export async function stageRelease({
   client = null,
   redirectRules = null,
   report = (_event) => {},
+  storageLimits = releaseStorageLimits(),
 }) {
   releaseId(id);
   if (commit && !/^[a-f0-9]{40,64}$/i.test(commit))
     throw new Error("Invalid source commit.");
   const root = await storeRoot(store),
     input = await realpath(path.resolve(source));
-  if (client) client = validateClientDestination(client);
-  await assertClientStore(root, client);
-  if (root === input || inside(input, root) || inside(root, input))
-    throw new Error(
-      "Build output and release store must be separate directories.",
-    );
-  const names = await filesIn(input);
-  if (redirectRules !== null)
-    redirectRules = validateBuilderRedirects(
-      redirectRules,
-      names
-        .filter((name) => name === "index.html" || name.endsWith("/index.html"))
-        .map((name) =>
-          name === "index.html" ? "/" : `/${name.slice(0, -10)}`,
-        ),
-    );
-  if (
-    !names.includes("index.html") ||
-    (!client && !names.includes("builder/index.html"))
-  )
-    throw new Error(
-      client
-        ? "A client build must contain index.html."
-        : "The public build must contain the home page and builder entry page.",
-    );
-  if (
-    names.some((name) =>
-      /(^|\/)(\.env(?:\..*)?|\.git|\.kaizen-builder|test-results|workspace\.json|node_modules|__builder-local|__builder-upload)(\/|$)/.test(
-        name,
-      ),
-    )
-  )
-    throw new Error("The build contains local workspace or server-only files.");
-  if (client) {
+  return withLock(root, () => stageUnderLock());
+  async function stageUnderLock() {
+    await assertReleaseIdNotRetired(root, id);
+    if (client) client = validateClientDestination(client);
+    await assertClientStore(root, client);
+    if (root === input || inside(input, root) || inside(root, input))
+      throw new Error(
+        "Build output and release store must be separate directories.",
+      );
+    const names = await filesIn(input);
+    if (names.length > 10000)
+      throw new Error("Releases support at most 10,000 files.");
+    const admitted = new Map();
+    const directories = new Set();
+    let sourceBytes = 0;
+    for (const name of names) {
+      const info = await lstat(path.join(input, name));
+      sourceBytes += info.size;
+      if (
+        !info.isFile() ||
+        info.isSymbolicLink() ||
+        info.size > 32 * 1024 ** 2 ||
+        sourceBytes > 200 * 1024 ** 2
+      )
+        throw new Error("Releases support 32 MB per file and 200 MB total.");
+      admitted.set(name, info);
+      const parts = name.split("/");
+      for (let count = 1; count < parts.length; count++)
+        directories.add(parts.slice(0, count).join("/"));
+    }
+    if (redirectRules !== null)
+      redirectRules = validateBuilderRedirects(
+        redirectRules,
+        names
+          .filter(
+            (name) => name === "index.html" || name.endsWith("/index.html"),
+          )
+          .map((name) =>
+            name === "index.html" ? "/" : `/${name.slice(0, -10)}`,
+          ),
+      );
     if (
-      names.length > 10000 ||
-      names.some(
-        (name) =>
-          /(^|\/)(\.kaizen|reference-packs|src|scripts|package\.json|package-lock\.json|pnpm-lock\.yaml)(\/|$)/.test(
-            name,
-          ) ||
-          name.endsWith(".map") ||
-          name
-            .split("/")
-            .some((part) => part.startsWith(".") && part !== ".well-known"),
+      !names.includes("index.html") ||
+      (!client && !names.includes("builder/index.html"))
+    )
+      throw new Error(
+        client
+          ? "A client build must contain index.html."
+          : "The public build must contain the home page and builder entry page.",
+      );
+    if (
+      names.some((name) =>
+        /(^|\/)(\.env(?:\..*)?|\.git|\.kaizen-builder|test-results|workspace\.json|node_modules|__builder-local|__builder-upload)(\/|$)/.test(
+          name,
+        ),
       )
     )
       throw new Error(
-        "Client publication contains private source/backup files or exceeds 10,000 files.",
+        "The build contains local workspace or server-only files.",
       );
-    let bytes = 0;
-    for (const name of names) {
-      const stat = await lstat(path.join(input, name));
-      bytes += stat.size;
-      if (stat.size > 32 * 1024 * 1024 || bytes > 200 * 1024 * 1024)
+    if (client) {
+      if (
+        names.length > 10000 ||
+        names.some(
+          (name) =>
+            /(^|\/)(\.kaizen|reference-packs|src|scripts|package\.json|package-lock\.json|pnpm-lock\.yaml)(\/|$)/.test(
+              name,
+            ) ||
+            name.endsWith(".map") ||
+            name
+              .split("/")
+              .some((part) => part.startsWith(".") && part !== ".well-known"),
+        )
+      )
         throw new Error(
-          "Client releases support 32 MB per file and 200 MB total.",
+          "Client publication contains private source/backup files or exceeds 10,000 files.",
         );
     }
-  }
-  const final = path.join(root, "releases", id),
-    temporary = path.join(root, `.staging-${id}-${randomUUID()}`);
-  if (await lstat(final).catch(() => null))
-    throw new Error(
-      "That release ID already exists. Retained releases are immutable.",
-    );
-  await mkdir(temporary);
-  await mkdir(path.join(temporary, "site"));
-  await chmod(temporary, 0o755);
-  await chmod(path.join(temporary, "site"), 0o755);
-  try {
-    report({ status: "staging", releaseId: id });
-    for (const name of names) {
-      if (
-        name === MARKER ||
-        // Apache/PHP control files belong to the source export, never Nginx's
-        // public artifact. Nginx correctly denies serving these dotfiles.
-        [".htaccess", ".user.ini"].includes(path.posix.basename(name)) ||
-        ["redirects.generated.conf", "redirects.generated.json"].includes(name)
-      )
-        continue;
-      await safeDirectory(
-        temporary,
-        `site/${path.posix.dirname(name) === "." ? "" : path.posix.dirname(name)}`.replace(
-          /\/$/,
-          "",
-        ),
+    const final = path.join(root, "releases", id),
+      temporary = path.join(root, `.staging-${id}-${randomUUID()}`);
+    if (await lstat(final).catch(() => null))
+      throw new Error(
+        "That release ID already exists. Retained releases are immutable.",
       );
-      await copyFile(
-        path.join(input, name),
-        path.join(temporary, "site", name),
-        constants.COPYFILE_EXCL,
+    // Reserve source bytes, generated manifest/check lists, redirects and
+    // directory entries before copying. Actual copies cannot exceed the source
+    // observation. The operation lock prevents a second same-store spender.
+    await checkReleaseStorage(root, storageLimits, {
+      bytes:
+        sourceBytes +
+        names.length * 16 * 1024 +
+        directories.size * 8 * 1024 +
+        2 * 1024 ** 2,
+    });
+    await mkdir(temporary);
+    await mkdir(path.join(temporary, "site"));
+    await chmod(temporary, 0o755);
+    await chmod(path.join(temporary, "site"), 0o755);
+    try {
+      report({ status: "staging", releaseId: id });
+      for (const name of names) {
+        if (
+          name === MARKER ||
+          // Apache/PHP control files belong to the source export, never Nginx's
+          // public artifact. Nginx correctly denies serving these dotfiles.
+          [".htaccess", ".user.ini"].includes(path.posix.basename(name)) ||
+          ["redirects.generated.conf", "redirects.generated.json"].includes(
+            name,
+          )
+        )
+          continue;
+        await safeDirectory(
+          temporary,
+          `site/${path.posix.dirname(name) === "." ? "" : path.posix.dirname(name)}`.replace(
+            /\/$/,
+            "",
+          ),
+        );
+        await copyReleaseFile(
+          path.join(input, name),
+          path.join(temporary, "site", name),
+          admitted.get(name),
+        );
+        await chmod(path.join(temporary, "site", name), 0o644);
+      }
+      await safeDirectory(temporary, "site/.well-known");
+      const createdAt = new Date().toISOString();
+      await writeFile(
+        path.join(temporary, "site", MARKER),
+        JSON.stringify({
+          schemaVersion: client ? 2 : 1,
+          releaseId: id,
+          createdAt,
+          commit,
+          responseIdentity: "release-id-v1",
+          ...(client ? { client } : {}),
+        }),
+        { flag: "wx", mode: 0o644 },
       );
-      await chmod(path.join(temporary, "site", name), 0o644);
-    }
-    await safeDirectory(temporary, "site/.well-known");
-    const createdAt = new Date().toISOString();
-    await writeFile(
-      path.join(temporary, "site", MARKER),
-      JSON.stringify({
-        schemaVersion: client ? 2 : 1,
-        releaseId: id,
-        createdAt,
-        commit,
+      const redirects =
+        redirectRules !== null
+          ? Buffer.from(builderNginxRules(redirectRules).join("\n") + "\n")
+          : names.includes("redirects.generated.conf")
+            ? await readReleaseFile(
+                path.join(input, "redirects.generated.conf"),
+                admitted.get("redirects.generated.conf"),
+                1024 ** 2,
+              )
+            : Buffer.from("# No redirects in this release.\n");
+      await writeFile(path.join(temporary, "redirects.conf"), redirects, {
+        flag: "wx",
+        mode: 0o644,
+      });
+      const files = [];
+      for (const name of await filesIn(path.join(temporary, "site"))) {
+        const file = path.join(temporary, "site", name),
+          stat = await lstat(file);
+        files.push({
+          path: name,
+          size: stat.size,
+          sha256: await hashFile(file),
+        });
+      }
+      const redirectMetadata =
+        redirectRules !== null
+          ? { schemaVersion: 1, checks: builderRedirectChecks(redirectRules) }
+          : names.includes("redirects.generated.json")
+            ? JSON.parse(
+                (
+                  await readReleaseFile(
+                    path.join(input, "redirects.generated.json"),
+                    admitted.get("redirects.generated.json"),
+                    1024 ** 2,
+                  )
+                ).toString(),
+              )
+            : { schemaVersion: 1, checks: [] };
+      if (redirectMetadata.schemaVersion !== 1)
+        throw new Error("Invalid redirect metadata version.");
+      const manifest = {
+        // Version 3 adds complete served-file verification for native Kaizen sites.
+        // Retained version 1 releases keep their original checks for rollback.
+        schemaVersion: client ? 2 : 3,
         responseIdentity: "release-id-v1",
         ...(client ? { client } : {}),
-      }),
-      { flag: "wx", mode: 0o644 },
-    );
-    const redirects =
-      redirectRules !== null
-        ? Buffer.from(builderNginxRules(redirectRules).join("\n") + "\n")
-        : names.includes("redirects.generated.conf")
-          ? await readFile(path.join(input, "redirects.generated.conf"))
-          : Buffer.from("# No redirects in this release.\n");
-    await writeFile(path.join(temporary, "redirects.conf"), redirects, {
-      flag: "wx",
-      mode: 0o644,
-    });
-    const files = [];
-    for (const name of await filesIn(path.join(temporary, "site"))) {
-      const file = path.join(temporary, "site", name),
-        stat = await lstat(file);
-      files.push({ path: name, size: stat.size, sha256: await hashFile(file) });
+        id,
+        createdAt,
+        commit,
+        files,
+        checks: publicFileChecks(files),
+        redirectHash: digest(redirects),
+        redirectChecks: validateRedirectChecks(redirectMetadata.checks),
+      };
+      await writeFile(
+        path.join(temporary, "release.json"),
+        JSON.stringify(manifest, null, 2),
+        { flag: "wx", mode: 0o644 },
+      );
+      await assertClientStore(root, client);
+      await checkReleaseStorage(root, storageLimits);
+      await renameComplete(temporary, final);
+      report({
+        status: "staged",
+        releaseId: id,
+        files: files.length,
+        bytes: files.reduce((sum, file) => sum + file.size, 0),
+      });
+      return manifest;
+    } catch (error) {
+      await safeRemoveStaging(root, temporary);
+      throw error;
     }
-    const redirectMetadata =
-      redirectRules !== null
-        ? { schemaVersion: 1, checks: builderRedirectChecks(redirectRules) }
-        : names.includes("redirects.generated.json")
-          ? JSON.parse(
-              await readFile(
-                path.join(input, "redirects.generated.json"),
-                "utf8",
-              ),
-            )
-          : { schemaVersion: 1, checks: [] };
-    if (redirectMetadata.schemaVersion !== 1)
-      throw new Error("Invalid redirect metadata version.");
-    const manifest = {
-      // Version 3 adds complete served-file verification for native Kaizen sites.
-      // Retained version 1 releases keep their original checks for rollback.
-      schemaVersion: client ? 2 : 3,
-      responseIdentity: "release-id-v1",
-      ...(client ? { client } : {}),
-      id,
-      createdAt,
-      commit,
-      files,
-      checks: publicFileChecks(files),
-      redirectHash: digest(redirects),
-      redirectChecks: validateRedirectChecks(redirectMetadata.checks),
-    };
-    await writeFile(
-      path.join(temporary, "release.json"),
-      JSON.stringify(manifest, null, 2),
-      { flag: "wx", mode: 0o644 },
-    );
-    await assertClientStore(root, client);
-    await renameComplete(temporary, final);
-    report({
-      status: "staged",
-      releaseId: id,
-      files: files.length,
-      bytes: files.reduce((sum, file) => sum + file.size, 0),
-    });
-    return manifest;
-  } catch (error) {
-    await safeRemoveStaging(root, temporary);
-    throw error;
   }
 }
 export async function verifyRelease(store, id) {
@@ -528,7 +597,13 @@ export async function verifyRelease(store, id) {
   )
     throw new Error("A retained release cannot be a symbolic link.");
   const manifest = JSON.parse(
-    await readFile(path.join(directory, "release.json"), "utf8"),
+    (
+      await readReleaseFile(
+        path.join(directory, "release.json"),
+        await lstat(path.join(directory, "release.json")),
+        64 * 1024 ** 2,
+      )
+    ).toString(),
   );
   if (
     ![1, 2, 3].includes(manifest.schemaVersion) ||
@@ -557,12 +632,23 @@ export async function verifyRelease(store, id) {
       throw new Error(`Retained release checksum failed: ${file.path}`);
   }
   if (
-    digest(await readFile(path.join(directory, "redirects.conf"))) !==
-    manifest.redirectHash
+    digest(
+      await readReleaseFile(
+        path.join(directory, "redirects.conf"),
+        await lstat(path.join(directory, "redirects.conf")),
+        1024 ** 2,
+      ),
+    ) !== manifest.redirectHash
   )
     throw new Error("Retained redirect configuration changed.");
   const marker = JSON.parse(
-    await readFile(path.join(directory, "site", MARKER), "utf8"),
+    (
+      await readReleaseFile(
+        path.join(directory, "site", MARKER),
+        await lstat(path.join(directory, "site", MARKER)),
+        16384,
+      )
+    ).toString(),
   );
   if (
     marker.releaseId !== id ||
@@ -606,14 +692,19 @@ export async function verifyRelease(store, id) {
     throw new Error("The release is missing required health checks.");
   return manifest;
 }
-async function installImmutableAssets(root, manifest) {
+async function installImmutableAssets(root, manifest, storageLimits) {
+  const additions = [];
   for (const file of manifest.files.filter(
     (file) =>
       file.path.startsWith("_astro/") ||
       (manifest.client && file.path.startsWith("assets/")),
   )) {
     const target = path.join(root, "immutable", file.path);
-    await safeDirectory(root, `immutable/${path.posix.dirname(file.path)}`);
+    await safeDirectory(
+      root,
+      `immutable/${path.posix.dirname(file.path)}`,
+      false,
+    );
     const existing = await lstat(target).catch((error) => {
       if (error.code === "ENOENT") return null;
       throw error;
@@ -629,13 +720,42 @@ async function installImmutableAssets(root, manifest) {
         );
       continue;
     }
+    additions.push(file);
+  }
+  if (additions.length) {
+    const directories = new Set();
+    for (const file of additions) {
+      const parts = file.path.split("/");
+      for (let count = 1; count < parts.length; count++)
+        directories.add(parts.slice(0, count).join("/"));
+    }
+    const bytes =
+      additions.reduce((sum, file) => sum + file.size, 0) +
+      additions.length * 16 * 1024 +
+      directories.size * 8 * 1024;
+    await checkReleaseStorage(root, storageLimits, {
+      bytes,
+      immutableBytes: bytes,
+    });
+  }
+  for (const file of additions) {
+    const target = path.join(root, "immutable", file.path);
+    await safeDirectory(root, `immutable/${path.posix.dirname(file.path)}`);
     const temporary = `${target}.${randomUUID()}.tmp`;
     try {
-      await copyFile(
-        path.join(root, "releases", manifest.id, "site", file.path),
-        temporary,
-        constants.COPYFILE_EXCL,
+      const source = path.join(
+        root,
+        "releases",
+        manifest.id,
+        "site",
+        file.path,
       );
+      const info = await lstat(source);
+      if (info.size !== file.size)
+        throw new Error(
+          "The retained release changed before asset installation.",
+        );
+      await copyReleaseFile(source, temporary, info);
       await chmod(temporary, 0o644);
       if ((await hashFile(temporary)) !== file.sha256)
         throw new Error(
@@ -672,13 +792,23 @@ async function withLock(root, work) {
     await rmdir(directory);
   }
 }
-export async function initialiseStore({ store, id }) {
+// Retention joins the same lock as staging/activation. Its caller validates an
+// existing canonical store first; inventory must never create/adopt a store.
+export {
+  withLock as withReleaseStoreLock,
+  currentConfig as readReleaseSelection,
+};
+export async function initialiseStore({
+  store,
+  id,
+  storageLimits = releaseStorageLimits(),
+}) {
   const root = await storeRoot(store);
   return withLock(root, async () => {
     if (await currentConfig(root))
       throw new Error("This release store is already initialised.");
     const manifest = await verifyRelease(root, id);
-    await installImmutableAssets(root, manifest);
+    await installImmutableAssets(root, manifest, storageLimits);
     await atomicWrite(
       path.join(root, "active.conf"),
       nginxConfig(root, id, Boolean(manifest.client)),
@@ -816,7 +946,13 @@ export async function checkLive(
   };
 }
 export async function activateRelease(
-  { store, id, origin, report = (_event) => {} },
+  {
+    store,
+    id,
+    origin,
+    report = (_event) => {},
+    storageLimits = releaseStorageLimits(),
+  },
   adapters = {},
 ) {
   const root = await storeRoot(store);
@@ -862,7 +998,8 @@ export async function activateRelease(
     // Require the complete baseline proof before any mutation, with the same
     // bounded observation used for activation and restoration.
     await observe(old);
-    await installImmutableAssets(root, manifest);
+    await adapters.beforePrepare?.(manifest, old);
+    await installImmutableAssets(root, manifest, storageLimits);
     const next = nginxConfig(root, id, Boolean(manifest.client)),
       file = path.join(root, "active.conf"),
       transaction = {

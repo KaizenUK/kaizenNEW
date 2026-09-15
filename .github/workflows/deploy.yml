@@ -103,12 +103,11 @@ jobs:
             test -n "$KAIZEN_APP_DIR" || { echo "Missing VPS_APP_DIR for the selected target" >&2; exit 1; }
             test -n "$KAIZEN_RELEASE_STORE" || { echo "Missing VPS_RELEASES_DIR for the selected target" >&2; exit 1; }
             export PATH="${KAIZEN_NODE_BIN:+$KAIZEN_NODE_BIN:}$PATH"
-            cd "$KAIZEN_APP_DIR"
-            git fetch origin main
-            git show "$KAIZEN_DEPLOY_SHA:scripts/preflight-public-deploy.sh" | bash
-            if [ "$KAIZEN_PREFLIGHT_ONLY" = true ]; then exit 0; fi
-            git show "$KAIZEN_DEPLOY_SHA:scripts/deploy-public-release.sh" > "$KAIZEN_RELEASE_STORE/deploy-$KAIZEN_RELEASE_ID.sh"
-            bash "$KAIZEN_RELEASE_STORE/deploy-$KAIZEN_RELEASE_ID.sh"
+            mode=deploy
+            if [ "$KAIZEN_PREFLIGHT_ONLY" = true ]; then mode=preflight; fi
+            sudo -n /usr/local/sbin/kaizen-public-deploy \
+              --branch main --sha "$KAIZEN_DEPLOY_SHA" --release "$KAIZEN_RELEASE_ID" \
+              --request "${KAIZEN_BUILDER_REQUEST_ID:-}" --build-number "${VITE_BUILD_NUMBER:-}" --mode "$mode"
 
       - name: Activate staging public release
         if: steps.target.outputs.branch == 'stage'
@@ -139,12 +138,11 @@ jobs:
             test -n "$KAIZEN_APP_DIR" || { echo "Missing VPS_APP_DIR for the selected target" >&2; exit 1; }
             test -n "$KAIZEN_RELEASE_STORE" || { echo "Missing VPS_RELEASES_DIR for the selected target" >&2; exit 1; }
             export PATH="${KAIZEN_NODE_BIN:+$KAIZEN_NODE_BIN:}$PATH"
-            cd "$KAIZEN_APP_DIR"
-            git fetch origin stage
-            git show "$KAIZEN_DEPLOY_SHA:scripts/preflight-public-deploy.sh" | bash
-            if [ "$KAIZEN_PREFLIGHT_ONLY" = true ]; then exit 0; fi
-            git show "$KAIZEN_DEPLOY_SHA:scripts/deploy-public-release.sh" > "$KAIZEN_RELEASE_STORE/deploy-$KAIZEN_RELEASE_ID.sh"
-            bash "$KAIZEN_RELEASE_STORE/deploy-$KAIZEN_RELEASE_ID.sh"
+            mode=deploy
+            if [ "$KAIZEN_PREFLIGHT_ONLY" = true ]; then mode=preflight; fi
+            sudo -n /usr/local/sbin/kaizen-public-deploy \
+              --branch stage --sha "$KAIZEN_DEPLOY_SHA" --release "$KAIZEN_RELEASE_ID" \
+              --request "${KAIZEN_BUILDER_REQUEST_ID:-}" --build-number "${VITE_BUILD_NUMBER:-}" --mode "$mode"
 
       - name: Copy retained main Studio build to its separate host
         if: steps.target.outputs.branch == 'main' && github.event.client_payload.action != 'rollback' && inputs.preflight_only != true

@@ -1,5 +1,6 @@
 import type { SupabaseClient } from "npm:@supabase/supabase-js@2.98.0";
 import { checkFunctionLimit } from "./functionLimits.ts";
+import { nativeOperationRequest } from "./builderNativeOperations.ts";
 import {
   helperSignatureHeader,
   helperSignatureKey,
@@ -290,6 +291,19 @@ export function createBillingHandler(deps: Dependencies) {
         headers,
       );
       if (globalLimit) return globalLimit;
+      const input = await readJsonObject(request, 4096);
+      if (input.action === "native-operation-end")
+        return response(
+          headers,
+          200,
+          await nativeOperationRequest({
+            service: deps.service,
+            request,
+            input,
+            token,
+            secret: deps.env("BUILDER_HOSTED_BILLING_KEY") || "",
+          }),
+        );
       const { data, error } = await deps.service.auth.getUser(token);
       if (error || !data.user?.email || !data.user.email_confirmed_at)
         return response(headers, 401, {
@@ -303,7 +317,22 @@ export function createBillingHandler(deps: Dependencies) {
         actor,
       );
       if (userLimit) return userLimit;
-      const input = await readJsonObject(request, 4096);
+      if (
+        typeof input.action === "string" &&
+        input.action.startsWith("native-operation-")
+      )
+        return response(
+          headers,
+          200,
+          await nativeOperationRequest({
+            service: deps.service,
+            request,
+            input,
+            token,
+            actor,
+            secret: deps.env("BUILDER_HOSTED_BILLING_KEY") || "",
+          }),
+        );
       if (
         input.action === "repository-reserve" ||
         input.action === "repository-settle" ||

@@ -1,0 +1,39 @@
+[Unit]
+Description=Kaizen retained native file cleanup
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=oneshot
+User=root
+Group=root
+WorkingDirectory=/opt/kaizen-native-cleanup
+Environment=NODE_ENV=production
+Environment=PATH=/usr/bin:/bin
+EnvironmentFile=/etc/kaizen/native-cleanup.env
+StateDirectory=kaizen-native-cleanup
+StateDirectoryMode=0700
+ExecStart=/usr/bin/flock --nonblock --no-fork /var/lib/kaizen-native-cleanup/service.lock /opt/kaizen-runtime/node-v22.23.2-immutable/bin/node /opt/kaizen-native-cleanup/worker.mjs
+TimeoutStartSec=30min
+TimeoutStopSec=150s
+KillMode=control-group
+SendSIGKILL=yes
+UMask=0077
+NoNewPrivileges=true
+PrivateTmp=true
+PrivateDevices=true
+ProtectSystem=strict
+ProtectHome=read-only
+ReadWritePaths=/var/lib/kaizen-native-cleanup
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+RestrictSUIDSGID=true
+LockPersonality=true
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6
+CapabilityBoundingSet=CAP_DAC_READ_SEARCH
+TasksMax=64
+MemoryMax=1G
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=kaizen-native-cleanup

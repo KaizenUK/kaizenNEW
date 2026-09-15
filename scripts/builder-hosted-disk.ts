@@ -55,43 +55,79 @@ function validateLimits(value: HostedDiskLimits) {
 /** Operational bounds for trusted hosted builds, not an isolation boundary or hard filesystem quota. */
 export class HostedDiskGuard {
   readonly limits: Readonly<HostedDiskLimits>;
+  private retainedRoots?: readonly string[];
   constructor(
     private directory: string,
     limits: HostedDiskLimits = defaultHostedDiskLimits,
+    retainedRoots?: readonly string[],
   ) {
     validateLimits(limits);
     if (!path.isAbsolute(directory) || path.resolve(directory) !== directory)
       throw unavailable();
     this.limits = Object.freeze({ ...limits });
+    if (retainedRoots) {
+      if (
+        !retainedRoots.length ||
+        retainedRoots.length > 8 ||
+        retainedRoots.some(
+          (root, index) =>
+            !path.isAbsolute(root) ||
+            path.resolve(root) !== root ||
+            retainedRoots.some(
+              (other, otherIndex) =>
+                index !== otherIndex &&
+                (root === other ||
+                  root.startsWith(
+                    other.endsWith(path.sep) ? other : other + path.sep,
+                  )),
+            ),
+        )
+      )
+        throw unavailable();
+      this.retainedRoots = Object.freeze([...retainedRoots]);
+    }
   }
   async sample(projectId: string) {
     if (!validProjectId(projectId)) throw unavailable();
-    const project = path.join(this.directory, "projects", projectId);
     try {
       // The service validates private parents before work. Recheck their resolved
       // identity here so measurement cannot silently follow a replaced root.
       if ((await realpath(this.directory)) !== this.directory)
         throw unavailable();
-      const info = await lstat(project).catch((error) => {
-        if (error.code === "ENOENT") return null;
-        throw error;
-      });
       let bytes = 0;
-      if (info) {
+      let freeBytes: bigint | undefined;
+      const roots = this.retainedRoots || [
+        path.join(this.directory, "projects", projectId),
+      ];
+      for (const project of roots) {
+        const info = await lstat(project).catch((error) => {
+          // A new helper project may not exist yet. Installed native roots
+          // must exist: a missing retained root is not evidence of zero usage.
+          if (error.code === "ENOENT" && !this.retainedRoots) return null;
+          throw error;
+        });
+        const disk = await statfs(info ? project : this.directory, {
+          bigint: true,
+        });
+        const free = disk.bavail * disk.bsize;
+        if (freeBytes === undefined || free < freeBytes) freeBytes = free;
+        if (!info) continue;
         if (
           !info.isDirectory() ||
           info.isSymbolicLink() ||
           (await realpath(project)) !== project
         )
           throw unavailable();
-        // GNU du does not follow symlinks and stays on this filesystem. Count
-        // apparent bytes too, so sparse build output cannot evade the limit.
+        // Count every retained root, including ignored files, dependencies,
+        // caches, candidate history and recovery records. Never follow links.
+        // Count hard links at each path, conservatively retaining capacity for
+        // a later copy-on-write replacement by the package manager.
         const result = await exec(
           "du",
           [
             "--summarize",
             "--bytes",
-            "--one-file-system",
+            "--count-links",
             "--no-dereference",
             "--",
             project,
@@ -104,12 +140,11 @@ export class HostedDiskGuard {
         );
         const match = /^(\d+)\t/.exec(result.stdout);
         if (!match) throw unavailable();
-        bytes = Number(match[1]);
+        bytes += Number(match[1]);
         if (!Number.isSafeInteger(bytes)) throw unavailable();
       }
-      const disk = await statfs(this.directory, { bigint: true });
-      const free = disk.bavail * disk.bsize;
-      return { bytes, freeBytes: free };
+      if (freeBytes === undefined) throw unavailable();
+      return { bytes, freeBytes };
     } catch {
       // Never expose du stderr, filesystem names, or private environment data.
       throw unavailable();
@@ -179,7 +214,32 @@ export class HostedDiskGuard {
       await stop().catch((checkError) => {
         failure ??= checkError;
       });
+      // A storage refusal must never hide uncertain process cleanup. Native
+      // callers use this marker to keep their operation and recovery files.
+      if (
+        (error as { nativeRecoveryRequired?: boolean })?.nativeRecoveryRequired
+      )
+        throw error;
       throw failure || error;
     }
   }
+}
+
+/** The fixed native service owns its checkout and private worker state under
+ * one deployment lock. Re-measure both after restarts; do not trust a stored
+ * byte counter or leave the package-manager store outside the allowance. */
+export function nativeDiskGuard(
+  root: string,
+  state: string,
+  env: NodeJS.ProcessEnv,
+) {
+  return new HostedDiskGuard(
+    state,
+    hostedDiskLimits({
+      BUILDER_HOSTED_PROJECT_MAX_BYTES: env.BUILDER_NATIVE_STORAGE_MAX_BYTES,
+      BUILDER_HOSTED_MIN_FREE_BYTES: env.BUILDER_NATIVE_MIN_FREE_BYTES,
+      BUILDER_HOSTED_DISK_CHECK_MS: env.BUILDER_NATIVE_DISK_CHECK_MS,
+    }),
+    [root, state],
+  );
 }

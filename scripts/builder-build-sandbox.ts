@@ -19,6 +19,15 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 export type SandboxCommand = { cli: string; manager: "pnpm" | "npm" };
+export class SandboxCleanupError extends Error {
+  readonly nativeRecoveryRequired = true;
+  constructor() {
+    super(
+      "The build has processes awaiting cleanup. Ask the operator to check its cgroup.",
+    );
+    this.name = "SandboxCleanupError";
+  }
+}
 export type SandboxBuild = {
   id: string;
   root: string;
@@ -152,7 +161,7 @@ async function dependencies(root: string, signal: AbortSignal) {
   return folder;
 }
 
-async function createBuildGroup(id: string, limits: BuildLimits) {
+export async function createBuildGroup(id: string, limits: BuildLimits) {
   if (process.platform !== "linux" || !/^[a-f0-9-]{36}$/.test(id)) throw fail();
   if (
     !Number.isInteger(limits.memoryBytes) ||
@@ -332,7 +341,7 @@ class OutputReader {
 
 // This wrapper is trusted and executes before the client's namespaces exist.
 // It joins the configured cgroup before any package-manager/client code runs.
-const enterGroup =
+export const enterBuildGroup =
   "import os,sys; open(sys.argv[1]+'/cgroup.procs','w').write(str(os.getpid())); os.execv(sys.argv[2],sys.argv[2:])";
 
 export async function isolatedBuildCommand(
@@ -479,7 +488,7 @@ export async function runIsolatedBuild(
     const code = await new Promise<number | null>((resolve, reject) => {
       child = spawn(
         "/usr/bin/python3",
-        ["-I", "-c", enterGroup, group.path, "/usr/bin/bwrap", ...args],
+        ["-I", "-c", enterBuildGroup, group.path, "/usr/bin/bwrap", ...args],
         {
           cwd: temporary,
           env: { PATH: "/usr/bin:/bin", LANG: "C.UTF-8" },
@@ -516,7 +525,11 @@ export async function runIsolatedBuild(
     return output.finish();
   } finally {
     input.signal.removeEventListener("abort", stop);
-    await group.dispose();
+    try {
+      await group.dispose();
+    } catch {
+      throw new SandboxCleanupError();
+    }
     if (temporary) await rm(temporary, { recursive: true, force: true });
   }
 }

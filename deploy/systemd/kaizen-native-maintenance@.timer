@@ -1,0 +1,11 @@
+[Unit]
+Description=Run Kaizen native release maintenance (%i)
+
+[Timer]
+OnBootSec=15min
+OnUnitInactiveSec=1h
+RandomizedDelaySec=5min
+Unit=kaizen-native-maintenance@%i.service
+
+[Install]
+WantedBy=timers.target

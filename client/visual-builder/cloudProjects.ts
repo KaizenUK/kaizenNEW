@@ -1,6 +1,7 @@
 import { getSupabaseClient } from "../lib/supabase";
 import { activeProjectId, requireActiveProject } from "./projectStorage";
-import { resumableUpload, type UploadControl } from "./resumableUpload";
+import { type UploadControl } from "./resumableUpload";
+import { hostedUploadContext } from "./hostedUploads";
 import type { Asset } from "../../shared/visualBuilder";
 
 import { builderCloudEnabled } from "./builderMode";
@@ -178,10 +179,19 @@ async function present<T>(value: T): Promise<T> {
 export async function cloudProjectRequest(
   input: Record<string, unknown>,
   raw = false,
+  expected?: { projectId: string; accountId: string },
 ): Promise<any> {
   const client = getSupabaseClient();
   if (!client) throw new Error("The hosted builder is not configured.");
   const session = await accountSession();
+  if (
+    expected &&
+    (expected.projectId !== activeProjectId ||
+      expected.accountId !== session.user.id)
+  )
+    throw new Error(
+      "The upload belongs to another account or website. Resume it in its original workspace.",
+    );
   const { data, error } = await client.functions.invoke("builder-projects", {
     headers: { Authorization: `Bearer ${session.access_token}` },
     body: canonicalProjectData({ ...input, projectId: activeProjectId }),
@@ -213,14 +223,18 @@ export async function uploadProjectFile(
   control: UploadControl,
 ): Promise<Asset> {
   const client = getSupabaseClient()!;
-  const scope = await cloudProjectScope();
-  if (control.scope && control.scope !== scope)
+  const connection = await hostedUploadContext();
+  if (control.scope && control.scope !== connection.scope)
     throw new Error("This upload belongs to another account or project.");
   if (control.recover) {
-    const existing = await cloudProjectRequest({
-      action: "asset-read",
-      assetId: asset.id,
-    });
+    const existing = await cloudProjectRequest(
+      {
+        action: "asset-read",
+        assetId: asset.id,
+      },
+      false,
+      connection,
+    );
     if (existing) {
       if (
         existing.hash !== asset.hash ||
@@ -233,37 +247,20 @@ export async function uploadProjectFile(
     }
     const object = await client.storage
       .from("builder-project-files")
-      .info(`${activeProjectId}/${asset.id}`);
-    if (object.data)
-      return cloudProjectRequest({ action: "register-asset", asset });
+      .info(`${connection.projectId}/${asset.id}`);
+    if (object.data) {
+      await connection.adopt(asset, control.signal);
+      return cloudProjectRequest(
+        { action: "register-asset", asset },
+        false,
+        connection,
+      );
+    }
   }
-  const base = new URL(import.meta.env.VITE_SUPABASE_URL);
-  if (/^[\w-]+\.supabase\.co$/.test(base.hostname))
-    base.hostname = base.hostname.replace(
-      ".supabase.co",
-      ".storage.supabase.co",
-    );
-  await resumableUpload(blob, {
-    ...control,
-    progress,
-    endpoint: new URL("/storage/v1/upload/resumable", base).href,
-    metadata: {
-      bucketName: "builder-project-files",
-      objectName: `${activeProjectId}/${asset.id}`,
-      contentType: asset.mime,
-      cacheControl: "3600",
-      metadata: JSON.stringify({ hash: asset.hash }),
-    },
-    headers: async () => {
-      if ((await cloudProjectScope()) !== scope)
-        throw new Error(
-          "The signed-in account changed. Resume with the original account.",
-        );
-      const { data, error } = await client.auth.getSession();
-      if (error || !data.session)
-        throw new Error("Sign in again to resume this upload.");
-      return { authorization: `Bearer ${data.session.access_token}` };
-    },
-  });
-  return cloudProjectRequest({ action: "register-asset", asset });
+  await connection.upload(asset, blob, progress, control);
+  return cloudProjectRequest(
+    { action: "register-asset", asset },
+    false,
+    connection,
+  );
 }
