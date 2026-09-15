@@ -1,0 +1,17 @@
+import { createClient } from "npm:@supabase/supabase-js@2.98.0";
+import { createAccountHandler } from "../_shared/builderAccounts.ts";
+import { getCorsHeaders, isOriginAllowed } from "../_shared/editorAuth.ts";
+const service = createClient(
+  Deno.env.get("SUPABASE_URL")!,
+  Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
+  {
+    auth: { persistSession: false, autoRefreshToken: false },
+  },
+);
+Deno.serve(
+  createAccountHandler({
+    service,
+    headers: getCorsHeaders,
+    originAllowed: isOriginAllowed,
+  }),
+);

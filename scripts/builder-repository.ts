@@ -1,3 +1,4 @@
+import { measureRepositorySource } from "./builder-repository-usage.mjs";
 /** Local-only companion. Inspects and writes reviewed generated files; never runs Git writes or package scripts. */
 import {
   readFile,
@@ -14,6 +15,8 @@ import { createHash, randomUUID } from "node:crypto";
 import {
   repositoryGitStatus,
   commitRepositoryFiles,
+  type RepositoryCommitOptions,
+  type RepositoryGitCommand,
 } from "./builder-repository-git";
 import { unzipSync, strFromU8 } from "fflate";
 import {
@@ -70,6 +73,11 @@ export type FileChange = {
   conflict?: string;
   preview?: string;
 };
+/** Private recovery metadata: paths and hashes, never source content. */
+export type AppliedFileChange = Pick<
+  FileChange,
+  "file" | "action" | "before" | "after"
+>;
 export type RepositoryPlan = {
   id: string;
   root: string;
@@ -276,10 +284,61 @@ export class RepositoryCompanion {
       committing: boolean;
     }
   >();
-  async gitStatus(root: string) {
-    return repositoryGitStatus(await repositoryRoot(root));
+  async gitStatus(root: string, git?: RepositoryGitCommand) {
+    return repositoryGitStatus(await repositoryRoot(root), git);
   }
-  async commit(id: string, projectId: string, message: string) {
+  async appliedState(root: string, changes: AppliedFileChange[]) {
+    root = await repositoryRoot(root);
+    if (!changes.length || changes.length > 20000)
+      throw new Error("Invalid applied file record.");
+    const seen = new Set<string>();
+    let before = true,
+      after = true;
+    for (const change of changes) {
+      validRelative(change.file);
+      if (
+        seen.has(change.file) ||
+        !["create", "update", "delete"].includes(change.action) ||
+        ![change.before, change.after].every(
+          (value) =>
+            value === null ||
+            (typeof value === "string" && /^[a-f0-9]{64}$/.test(value)),
+        ) ||
+        change.before === change.after
+      )
+        throw new Error("Invalid applied file record.");
+      seen.add(change.file);
+      const content = await bytes(root, change.file),
+        current = content ? hash(content) : null;
+      before &&= current === change.before;
+      after &&= current === change.after;
+    }
+    return after ? "after" : before ? "before" : "changed";
+  }
+  /** Host-only recovery; ordinary local requests still require their in-memory applied plan. */
+  async restoreApplied(
+    id: string,
+    projectId: string,
+    root: string,
+    changes: AppliedFileChange[],
+  ) {
+    if ((await this.appliedState(root, changes)) !== "after")
+      throw new Error(
+        "Changed since apply. Ask the owner to reconcile these edits before saving.",
+      );
+    this.appliedPlans.set(id, {
+      root: await repositoryRoot(root),
+      projectId,
+      changes: structuredClone(changes),
+      committing: false,
+    });
+  }
+  async commit(
+    id: string,
+    projectId: string,
+    message: string,
+    options?: RepositoryCommitOptions,
+  ) {
     const applied = this.appliedPlans.get(id);
     if (!applied || applied.projectId !== projectId)
       throw new Error(
@@ -290,17 +349,30 @@ export class RepositoryCompanion {
     applied.committing = true;
     try {
       const root = await repositoryRoot(applied.root);
+      let additionalBytes = 4 * 1024 * 1024;
       for (const change of applied.changes) {
         const content = await bytes(root, change.file);
         if ((content ? hash(content) : null) !== change.after)
           throw new Error(
-            `Changed since apply: ${change.file}. Review these edits in GitHub Desktop before committing.`,
+            options?.git
+              ? `Changed since apply: ${change.file}. Ask the owner to reconcile these edits before saving.`
+              : `Changed since apply: ${change.file}. Review these edits in GitHub Desktop before committing.`,
           );
+        additionalBytes += (content?.byteLength || 0) * 2 + 8192;
       }
       const result = await commitRepositoryFiles(
         root,
         applied.changes.map((c) => c.file),
         message,
+        options?.reserveStorage
+          ? {
+              ...options,
+              beforeMutation: async () => {
+                await options.reserveStorage!(additionalBytes);
+                await options.beforeMutation?.();
+              },
+            }
+          : options,
       );
       this.appliedPlans.delete(id);
       return result;
@@ -726,7 +798,16 @@ export class RepositoryCompanion {
     this.plans.set(plan.id, { plan, files, applying: false });
     return plan;
   }
-  async apply(id: string, projectId: string) {
+  async apply(
+    id: string,
+    projectId: string,
+    beforeMutation?: (
+      changes: AppliedFileChange[],
+      additionalBytes: number,
+      sourceUsage: { bytes: number; projectedBytes: number; revision: string },
+      replacements: ReadonlyMap<string, Uint8Array | null>,
+    ) => Promise<void>,
+  ) {
     const entry = this.plans.get(id);
     if (
       !entry ||
@@ -755,7 +836,33 @@ export class RepositoryCompanion {
           );
         originals.set(change.file, current);
       }
+      const replacements = new Map(
+        changed.map((change) => [
+          change.file,
+          change.action === "delete" ? null : entry.files[change.file],
+        ]),
+      );
       // Retain a recovery copy before the first mutation. It is outside served output.
+      await beforeMutation?.(
+        changed.map(({ file, action, before, after }) => ({
+          file,
+          action,
+          before,
+          after,
+        })),
+        // Reserve both recovery copies and replacement temporaries, plus the
+        // bounded receipt and directory overhead. The caller cannot supply this size.
+        changed.reduce(
+          (size, change) =>
+            size +
+            (originals.get(change.file)?.byteLength || 0) +
+            (entry.files[change.file]?.byteLength || 0) +
+            8192,
+          4 * 1024 * 1024,
+        ),
+        await measureRepositorySource(root, replacements),
+        replacements,
+      );
       for (const change of changed) {
         const original = originals.get(change.file);
         if (original) {
@@ -824,6 +931,9 @@ export class RepositoryCompanion {
         }
       }
       this.plans.delete(id);
+      // Admission failures happened before a source mutation. Preserve their
+      // typed quota/unavailable status so the caller can explain the recovery.
+      if (!applied.length) throw error;
       throw new Error(
         `${(error as Error).message}${recoveryErrors.length ? ` Recovery copies are in .kaizen/recovery/${id}; review ${recoveryErrors.join(", ")}.` : " Applied changes were reverted."}`,
       );

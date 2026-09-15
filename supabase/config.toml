@@ -442,3 +442,23 @@ verify_jwt = false
 # The handler verifies the JWT with auth.getUser, then uses RLS-backed membership.
 verify_jwt = false
 entrypoint = "./functions/builder-projects/index.ts"
+
+[functions.builder-invite]
+# The handler verifies Auth before the owner-only invitation RPCs or admin email API.
+verify_jwt = false
+entrypoint = "./functions/builder-invite/index.ts"
+
+[functions.builder-account]
+# Auth verifies the caller; service-only RPCs coordinate owner-approved deletion.
+verify_jwt = false
+entrypoint = "./functions/builder-account/index.ts"
+
+[functions.builder-billing]
+# Auth is verified before private billing RPCs or Stripe requests.
+verify_jwt = false
+entrypoint = "./functions/builder-billing/index.ts"
+
+[functions.builder-billing-webhook]
+# The raw body is authenticated with the Stripe endpoint signature.
+verify_jwt = false
+entrypoint = "./functions/builder-billing-webhook/index.ts"

@@ -1,5 +1,9 @@
+import { helpTopics } from "./helpContent";
+import HelpLink from "./HelpLink";
 import React, {
   useEffect,
+  useMemo,
+  useCallback,
   useRef,
   useState,
   useSyncExternalStore,
@@ -21,7 +25,7 @@ import { sourceAssetPath } from "../../shared/builderSourceEditing";
 import type { RepositoryPlan } from "../../scripts/builder-repository";
 import type { PageInventory } from "../../shared/builderPageInventory";
 import type { Workspace } from "../../shared/visualBuilder";
-import { storage, localMode } from "./storage";
+import { storage } from "./storage";
 import {
   Brand,
   IconButton,
@@ -30,7 +34,7 @@ import {
   type BuilderTheme,
 } from "./shell";
 import { ProjectIdentity } from "./ProjectsView";
-import { companionConnection } from "./companionConnection";
+import { repositoryConnection } from "./repositoryConnection";
 import { useSourceEditingDraft } from "./useSourceEditingDraft";
 import { useSourceCanvas, type SourceImagePreview } from "./useSourceCanvas";
 import { useSiteBuild } from "./useSiteBuild";
@@ -39,6 +43,16 @@ import type { SitePage } from "./SitePages";
 import type { RepositoryGitStatus } from "../../scripts/builder-repository-git";
 import AssetLibrary from "./AssetLibrary";
 import { fieldKindLabel, fieldSourceLabel, groupTitle } from "./sourceLabels";
+import RepositorySave from "./RepositorySave";
+import { useWebsiteStatus } from "./useWebsiteStatus";
+import { builderStatuses, websitePageStatus } from "./builderStatus";
+import { useBuilderViewMode } from "./viewMode";
+import {
+  clientSourceError,
+  sourceFieldLabel,
+  sourceReviewChanges,
+  type SourceReviewChange,
+} from "./sourceReview";
 
 export default function SitePageEditor({
   page,
@@ -57,6 +71,7 @@ export default function SitePageEditor({
   onToggleTheme: () => void;
   inventory?: PageInventory;
 }) {
+  const developer = useBuilderViewMode().mode === "developer";
   const [inspection, setInspection] = useState<SourceInspection>(),
     [error, setError] = useState(""),
     [notice, setNotice] = useState("");
@@ -72,16 +87,30 @@ export default function SitePageEditor({
     [tick, setTick] = useState(Date.now());
   const [git, setGit] = useState<RepositoryGitStatus>(),
     [appliedPlan, setAppliedPlan] = useState<string>(),
+    [savedCommit, setSavedCommit] = useState<string>(),
     [commitMessage, setCommitMessage] = useState(`Update text on ${page.path}`);
   const [imagePreviews, setImagePreviews] = useState<
     Record<string, SourceImagePreview>
   >({});
   const connection = useSyncExternalStore(
-    companionConnection.subscribe,
-    companionConnection.snapshot,
-    companionConnection.snapshot,
+    repositoryConnection.subscribe,
+    repositoryConnection.snapshot,
+    repositoryConnection.snapshot,
   );
   const draft = useSourceEditingDraft(inspection);
+  const editKey = JSON.stringify([
+    inspection,
+    draft.values,
+    draft.orders,
+    draft.assets,
+  ]);
+  const currentEditKey = useRef(editKey);
+  currentEditKey.current = editKey;
+  const [reviewed, setReviewed] = useState<{
+    planId: string;
+    editKey: string;
+    changes: SourceReviewChange[];
+  }>();
   const build = useSiteBuild(inspection);
   const frameRef = useRef<HTMLIFrameElement>(null);
   const canvas = useSourceCanvas(
@@ -96,12 +125,40 @@ export default function SitePageEditor({
     [available, setAvailable] = useState(900),
     [availableHeight, setAvailableHeight] = useState(800);
   const returnFocus = useRef<HTMLElement | null>(null);
+  const reviewTrigger = useRef<HTMLButtonElement>(null);
   const selected =
     inspection?.fields.filter((f) => canvas.ids.includes(f.id)) || [];
   const changed =
     Object.keys(draft.values).length + Object.keys(draft.orders).length;
+  const [websiteRefresh, setWebsiteRefresh] = useState(0);
+  const websiteKey = useMemo(
+    () => ({ inspection, appliedPlan, savedCommit, websiteRefresh }),
+    [inspection, appliedPlan, savedCommit, websiteRefresh],
+  );
+  const website = useWebsiteStatus(websiteKey);
+  const websiteChanged = useCallback(
+    () => setWebsiteRefresh((value) => value + 1),
+    [],
+  );
+  const pageState =
+    draft.stale || draft.error || !draft.saved
+      ? {
+          ...builderStatuses.draft,
+          detail: draft.stale
+            ? "Earlier edits need recovery."
+            : draft.error
+              ? "Edits could not be saved. Keep this window open and try saving again."
+              : "Saving your edits…",
+        }
+      : changed || draft.assets.length
+        ? {
+            ...builderStatuses.saved,
+            detail: "Your edits are saved for review.",
+          }
+        : websitePageStatus(website, page.route);
+  const draftLabel = draft.ready ? pageState.label : "Reading saved edits…";
   const locked = busy || !draft.ready || Boolean(draft.stale);
-  const disconnected = !localMode && connection.status !== "connected";
+  const disconnected = connection.status !== "connected";
   const expiring =
     connection.expiresAt && connection.expiresAt - tick < 10 * 60 * 1000;
   const filtered =
@@ -153,7 +210,7 @@ export default function SitePageEditor({
     return () => {
       live = false;
     };
-  }, [page.root, inspection, appliedPlan]);
+  }, [page.root, inspection, appliedPlan, savedCommit]);
   useEffect(() => {
     if (connection.status === "connected" && draft.ready && draft.error)
       void draft.retry().catch(() => {});
@@ -229,10 +286,19 @@ export default function SitePageEditor({
     };
   }, []);
   async function review() {
+    if (!inspection) return;
     setBusy(true);
     setError("");
     try {
+      const edits = structuredClone({
+        inspection,
+        values: draft.values,
+        orders: draft.orders,
+        ...(draft.assets.length ? { assets: draft.assets } : {}),
+      });
+      const changes = sourceReviewChanges(edits, workspace.assets);
       await draft.flush();
+      const draftVersion = draft.version.current;
       const media = await Promise.all(
         draft.assets.map(async (replacement) => {
           const asset = workspace.assets.find(
@@ -255,18 +321,22 @@ export default function SitePageEditor({
           return { assetId: asset.id, name: asset.name, base64 };
         }),
       );
+      if (currentEditKey.current !== editKey)
+        throw new Error(
+          "Your edits changed while preparing the review. Review them again before applying.",
+        );
       const next = await storage.repository({
         action: "repository-source-prepare",
-        edits: {
-          inspection,
-          values: draft.values,
-          orders: draft.orders,
-          ...(draft.assets.length ? { assets: draft.assets } : {}),
-        },
+        edits,
         media,
-        draftVersion: draft.version.current,
+        draftVersion,
       });
+      if (currentEditKey.current !== editKey)
+        throw new Error(
+          "Your edits changed while preparing the review. Review them again before applying.",
+        );
       setPlan(next);
+      setReviewed({ planId: next.id, editKey, changes });
       setReviewOpen(true);
     } catch (e) {
       setError(e.message);
@@ -276,6 +346,15 @@ export default function SitePageEditor({
   }
   async function apply() {
     if (!plan) return;
+    if (
+      reviewed?.planId !== plan.id ||
+      reviewed.editKey !== currentEditKey.current
+    ) {
+      setError(
+        "Your edits changed after this review. Close it and review your changes again.",
+      );
+      return;
+    }
     setBusy(true);
     setError("");
     try {
@@ -312,6 +391,11 @@ export default function SitePageEditor({
           <IconButton
             label="Back to pages"
             icon={<ArrowLeft size={18} />}
+            disabled={
+              busy ||
+              (!draft.ready &&
+                (changed > 0 || Boolean(inspection && !draft.error)))
+            }
             onClick={() => {
               if (!inspection || (!draft.ready && !changed)) {
                 onBack();
@@ -330,10 +414,9 @@ export default function SitePageEditor({
             className="builder-save-status"
             role="status"
             aria-label="Source editing draft"
+            title={draft.ready ? pageState.detail : undefined}
           >
-            {draft.status.startsWith("Edits saved")
-              ? "Edits saved on this computer."
-              : draft.status || "Reading the page…"}
+            {draftLabel}
           </span>
         </div>
         <div className="builder-editor-center builder-canvas-toolbar">
@@ -382,12 +465,16 @@ export default function SitePageEditor({
             type="button"
             className="builder-primary"
             disabled={locked || !changed || disconnected}
+            ref={reviewTrigger}
             onClick={() => void review()}
           >
             Review my changes
           </button>
         </div>
       </header>
+      <p className="builder-editor-description">
+        {helpTopics.source.description} <HelpLink topic="source" />
+      </p>
       <div className="builder-site-notices">
         {disconnected && (
           <Notice
@@ -397,7 +484,9 @@ export default function SitePageEditor({
                 type="button"
                 onClick={() => {
                   try {
-                    companionConnection.reconnect();
+                    void repositoryConnection
+                      .reconnect()
+                      .catch((e) => setError(e.message));
                   } catch (e) {
                     setError(e.message);
                   }
@@ -415,7 +504,11 @@ export default function SitePageEditor({
             action={
               <button
                 type="button"
-                onClick={() => companionConnection.reconnect()}
+                onClick={() =>
+                  void repositoryConnection
+                    .reconnect()
+                    .catch((e) => setError(e.message))
+                }
               >
                 Keep connected
               </button>
@@ -436,7 +529,9 @@ export default function SitePageEditor({
               </button>
             }
           >
-            {error || draft.error}
+            {developer
+              ? error || draft.error
+              : clientSourceError(error || draft.error)}
           </Notice>
         )}
         {notice && (
@@ -457,14 +552,16 @@ export default function SitePageEditor({
         )}
         {draft.stale && (
           <Notice tone="error">
-            The website's files changed. Your earlier edits are kept.{" "}
+            The website changed. Your earlier edits are kept.{" "}
             <button type="button" onClick={draft.download}>
               Download my unapplied edits
             </button>
-            <details>
-              <summary>Recover saved changes</summary>
-              <pre>{JSON.stringify(draft.stale.values, null, 2)}</pre>
-            </details>
+            {developer && (
+              <details>
+                <summary>Recover saved changes</summary>
+                <pre>{JSON.stringify(draft.stale.values, null, 2)}</pre>
+              </details>
+            )}
             <button
               type="button"
               onClick={() =>
@@ -589,7 +686,7 @@ export default function SitePageEditor({
             <div className="builder-site-panel-content">
               {inspection?.groups.map((group) => (
                 <section key={group.id}>
-                  <h3>{groupTitle(group)}</h3>
+                  <h3>{developer ? group.label : groupTitle(group)}</h3>
                   {(draft.orders[group.id] || group.items.map((i) => i.id)).map(
                     (id, index, array) => (
                       <div className="builder-site-section" key={id}>
@@ -686,29 +783,39 @@ export default function SitePageEditor({
             <div className="builder-site-build">
               <h2>
                 {build.busy
-                  ? build.job?.status === "building"
-                    ? "Building the preview…"
-                    : "Checking the preview…"
-                  : "Build a preview to edit on the page"}
+                  ? build.cancelling
+                    ? "Cancelling the build…"
+                    : build.job?.status === "queued"
+                      ? "Waiting to build the preview…"
+                      : build.job?.status === "building"
+                        ? "Building the preview…"
+                        : "Checking the preview…"
+                  : build.job?.status === "cancelled"
+                    ? "Build cancelled. Your edits are kept."
+                    : "Build a preview to edit on the page"}
               </h2>
               {build.plan && (
                 <>
-                  <p>
-                    <code>{build.plan.command}</code>
-                  </p>
-                  <dl>
-                    {build.plan.scripts.map((script) => (
-                      <React.Fragment key={script.name}>
-                        <dt>{script.name}</dt>
-                        <dd>
-                          <code>{script.command}</code>
-                        </dd>
-                      </React.Fragment>
-                    ))}
-                  </dl>
+                  {developer ? (
+                    <>
+                      <p>
+                        <code>{build.plan.command}</code>
+                      </p>
+                      <dl>
+                        {build.plan.scripts.map((script) => (
+                          <React.Fragment key={script.name}>
+                            <dt>{script.name}</dt>
+                            <dd>
+                              <code>{script.command}</code>
+                            </dd>
+                          </React.Fragment>
+                        ))}
+                      </dl>
+                    </>
+                  ) : null}
                   <p className="builder-hint">
-                    Runs the website's own build on this computer so you can
-                    edit on the page. Nothing goes live.
+                    Builds a preview of the website so you can edit on the page.
+                    Nothing goes live.
                   </p>
                   <button
                     type="button"
@@ -720,7 +827,13 @@ export default function SitePageEditor({
                   </button>
                 </>
               )}
-              {build.job?.status === "building" && (
+              {build.job?.status === "queued" && (
+                <p role="status">
+                  Position {build.job.queuePosition || 1} in this website’s
+                  build queue.
+                </p>
+              )}
+              {build.job?.status === "building" && build.job.startedAt && (
                 <p role="status">
                   {Math.max(
                     0,
@@ -729,15 +842,34 @@ export default function SitePageEditor({
                   seconds
                 </p>
               )}
+              {build.job &&
+                ["queued", "building"].includes(build.job.status) && (
+                  <button
+                    type="button"
+                    disabled={build.cancelling || disconnected}
+                    onClick={() => void build.cancel()}
+                  >
+                    Cancel build
+                  </button>
+                )}
+              {build.job?.status === "cancelled" && !build.busy && (
+                <button type="button" onClick={build.retry}>
+                  Build again
+                </button>
+              )}
               {build.error && (
                 <>
-                  <Notice tone="error">{build.error}</Notice>
+                  <Notice tone="error">
+                    {developer
+                      ? build.error
+                      : "The preview could not be built. Your edits are kept. Try again, or ask the website owner for help."}
+                  </Notice>
                   <button type="button" onClick={build.retry}>
                     Try building again
                   </button>
                 </>
               )}
-              {build.job && (
+              {developer && build.job && (
                 <details>
                   <summary>Build log</summary>
                   <pre>{build.job.log || "Waiting for output…"}</pre>
@@ -745,7 +877,7 @@ export default function SitePageEditor({
               )}
             </div>
           )}
-          {build.job?.status === "succeeded" && !build.busy && (
+          {build.frame && build.job?.status === "succeeded" && !build.busy && (
             <span className="builder-site-live-status" role="status">
               Preview built.
             </span>
@@ -759,10 +891,11 @@ export default function SitePageEditor({
               }}
             >
               <iframe
+                key={build.frame.url}
                 ref={frameRef}
                 title="Website canvas"
                 src={build.frame.url}
-                sandbox="allow-scripts allow-same-origin"
+                sandbox={repositoryConnection.frameSandbox}
                 allow="local-network-access; local-network; loopback-network"
                 referrerPolicy="no-referrer"
                 onLoad={canvas.hello}
@@ -784,9 +917,9 @@ export default function SitePageEditor({
               <button type="button" onClick={() => void popup.open()}>
                 Open the preview in a window
               </button>
-              {!localMode && connection.origin && (
+              {repositoryConnection.localBuilderOrigin() && (
                 <a
-                  href={`${connection.origin}/builder/?local=1&view=repository`}
+                  href={`${repositoryConnection.localBuilderOrigin()}/builder/?local=1&view=repository`}
                   target="_blank"
                   rel="noreferrer"
                 >
@@ -849,7 +982,11 @@ export default function SitePageEditor({
                               : "Current text"}
                       {field.design ? (
                         <input
-                          aria-label={`${field.file} ${field.label} line ${field.line}`}
+                          aria-label={
+                            developer
+                              ? `${field.file} ${field.label} line ${field.line}`
+                              : sourceFieldLabel(field)
+                          }
                           type={
                             field.design.min !== undefined ? "number" : "text"
                           }
@@ -865,7 +1002,11 @@ export default function SitePageEditor({
                         />
                       ) : (
                         <textarea
-                          aria-label={`${field.file} ${field.label} line ${field.line}`}
+                          aria-label={
+                            developer
+                              ? `${field.file} ${field.label} line ${field.line}`
+                              : sourceFieldLabel(field)
+                          }
                           rows={field.kind === "text" ? 4 : 2}
                           value={draft.values[field.id] ?? field.value}
                           maxLength={20000}
@@ -913,10 +1054,14 @@ export default function SitePageEditor({
                       <summary>Original text</summary>
                       <p>{field.value}</p>
                     </details>
-                    <h4>Where it comes from</h4>
-                    <p className="builder-hint">
-                      {fieldSourceLabel(field)} · {field.file}
-                    </p>
+                    {developer && (
+                      <>
+                        <h4>Where it comes from</h4>
+                        <p className="builder-hint">
+                          {fieldSourceLabel(field)} · {field.file}
+                        </p>
+                      </>
+                    )}
                     {field.file !== page.route && (
                       <p className="builder-hint">
                         Shared: changing this updates every page that uses it.
@@ -963,37 +1108,45 @@ export default function SitePageEditor({
               <>
                 <h3>{page.title}</h3>
                 <p>{page.path}</p>
-                <h4>Files involved</h4>
-                {inspection?.files.map((file) => (
-                  <p key={file.file} className="builder-hint">
-                    {file.file}
-                    {file.file !== page.route ? " · Shared component" : ""}
-                  </p>
-                ))}
-                <details>
-                  <summary>Managed content</summary>
-                  {inspection?.boundaries.map((reason, i) => (
-                    <p key={i}>{reason}</p>
-                  ))}
-                </details>
+                {developer && (
+                  <>
+                    <h4>Files involved</h4>
+                    {inspection?.files.map((file) => (
+                      <p key={file.file} className="builder-hint">
+                        {file.file}
+                        {file.file !== page.route ? " · Shared component" : ""}
+                      </p>
+                    ))}
+                    <details>
+                      <summary>Managed content</summary>
+                      {inspection?.boundaries.map((reason, i) => (
+                        <p key={i}>{reason}</p>
+                      ))}
+                    </details>
+                  </>
+                )}
               </>
             )}
           </div>
         </aside>
       </div>
       <footer className="builder-site-footer">
-        <span className="builder-site-footer-meta" title={page.route}>
-          <strong>{page.path}</strong>
-          <span className="builder-hint">{page.route}</span>
-          <span>
-            {changed} unapplied {changed === 1 ? "change" : "changes"}
-          </span>
-          {git?.isRepository && (
-            <span>
-              Branch {git.branch} · {git.files.length}{" "}
-              {git.files.length === 1 ? "file" : "files"} changed since the last
-              commit
-            </span>
+        <span
+          className="builder-site-footer-meta"
+          title={developer ? page.route : pageState.detail}
+        >
+          {developer ? (
+            <>
+              <strong>{page.path}</strong> · {draftLabel} ·{" "}
+              <span className="builder-hint">{page.route}</span> · {changed}{" "}
+              unapplied {changed === 1 ? "change" : "changes"}
+              {git?.isRepository &&
+                ` · Branch ${git.branch} · ${git.files.length} files changed since the last commit`}
+            </>
+          ) : (
+            <>
+              {page.title} · {draftLabel}
+            </>
           )}
         </span>
         {changed > 0 && (
@@ -1001,51 +1154,69 @@ export default function SitePageEditor({
             Download my unapplied edits
           </button>
         )}
-        {appliedPlan && git?.isRepository && (
-          <form
-            className="builder-row"
-            onSubmit={async (e) => {
-              e.preventDefault();
-              setBusy(true);
-              setError("");
-              try {
-                const result = await storage.repository({
-                  action: "repository-commit",
-                  planId: appliedPlan,
-                  message: commitMessage,
-                });
-                setAppliedPlan(undefined);
-                setNotice(result.message);
-              } catch (error) {
-                setError(error.message);
-              } finally {
-                setBusy(false);
-              }
-            }}
-          >
-            <label>
-              Commit message
-              <input
-                value={commitMessage}
-                onChange={(e) => setCommitMessage(e.target.value)}
-                placeholder="Say what you changed"
-                maxLength={2000}
-              />
-            </label>
-            <button
-              type="submit"
-              className="builder-primary"
-              disabled={busy || disconnected}
+        {"canSaveToWebsite" in connection && connection.canSaveToWebsite ? (
+          <RepositorySave
+            root={page.root}
+            route={page.route}
+            appliedPlan={appliedPlan}
+            disabled={locked || build.busy}
+            hasUnappliedChanges={changed > 0 || draft.assets.length > 0}
+            onCommit={setSavedCommit}
+            onStatusChange={websiteChanged}
+          />
+        ) : (
+          developer &&
+          appliedPlan &&
+          git?.isRepository && (
+            <form
+              className="builder-row"
+              onSubmit={async (e) => {
+                e.preventDefault();
+                setBusy(true);
+                setError("");
+                try {
+                  const result = await storage.repository({
+                    action: "repository-commit",
+                    planId: appliedPlan,
+                    message: commitMessage,
+                  });
+                  setAppliedPlan(undefined);
+                  setNotice(result.message);
+                } catch (error) {
+                  setError(error.message);
+                } finally {
+                  setBusy(false);
+                }
+              }}
             >
-              Commit these changes
-            </button>
-          </form>
+              <label>
+                Commit message
+                <input
+                  value={commitMessage}
+                  onChange={(e) => setCommitMessage(e.target.value)}
+                  placeholder="Say what you changed"
+                  maxLength={2000}
+                />
+              </label>
+              <button
+                type="submit"
+                className="builder-primary"
+                disabled={busy || disconnected}
+              >
+                Commit these changes
+              </button>
+            </form>
+          )
         )}
       </footer>
       <Dialog.Root open={reviewOpen} onOpenChange={setReviewOpen}>
         <Dialog.Portal>
           <Dialog.Overlay className="builder-modal-overlay" />
           <Dialog.Content
+            onCloseAutoFocus={(event) => {
+              event.preventDefault();
+              reviewTrigger.current?.focus();
+            }}
             className="builder-app builder-modal builder-site-review"
             data-theme={theme}
           >
@@ -1059,74 +1230,95 @@ export default function SitePageEditor({
               Review my changes
             </Dialog.Title>
             <Dialog.Description className="builder-modal-lede">
-              These files change in the website folder. Nothing is committed or
-              published yet.
+              These changes will be applied to the website folder.
             </Dialog.Description>
-            {plan?.changes
-              .filter((c) => c.action !== "unchanged")
-              .map((change, index) => (
-                <details key={change.file} open={index === 0}>
-                  <summary>
-                    {change.action === "update"
-                      ? "Update"
-                      : change.action === "create"
-                        ? "Add"
-                        : change.action === "delete"
-                          ? "Remove"
-                          : change.action}{" "}
-                    {change.file}
-                  </summary>
-                  {(() => {
-                    const edits =
-                      inspection?.fields.filter(
-                        (f) =>
-                          f.file === change.file &&
-                          draft.values[f.id] !== undefined &&
-                          draft.values[f.id] !== f.value,
-                      ) || [];
-                    const reordered =
-                      inspection?.groups.filter(
-                        (g) => g.file === change.file && draft.orders[g.id],
-                      ) || [];
-                    if (!edits.length && !reordered.length) return null;
-                    return (
-                      <ul className="builder-review-edits">
-                        {edits.map((f) => (
-                          <li key={f.id}>
-                            <strong>{fieldKindLabel(f)}</strong>
-                            <del>{f.value || "(empty)"}</del>
-                            <ins>{draft.values[f.id] || "(empty)"}</ins>
-                          </li>
-                        ))}
-                        {reordered.map((g) => (
-                          <li key={g.id}>
-                            <strong>{groupTitle(g)}</strong>
-                            <span>Put in a new order</span>
-                          </li>
-                        ))}
-                      </ul>
-                    );
-                  })()}
-                  {change.preview && (
-                    <details className="builder-review-file">
-                      <summary>
-                        {change.action === "create"
-                          ? "File details"
-                          : "Show the whole file"}
-                      </summary>
-                      <pre>{change.preview}</pre>
-                    </details>
-                  )}
-                  {change.conflict && (
-                    <Notice tone="error">{change.conflict}</Notice>
-                  )}
-                </details>
-              ))}
-            {error && <Notice tone="error">{error}</Notice>}
+            {reviewed?.planId === plan?.id && (
+              <ol
+                className="builder-change-review"
+                aria-label="Before and after changes"
+              >
+                {reviewed?.changes.map((change) => (
+                  <li key={change.id}>
+                    <h3>{change.label}</h3>
+                    {change.shared && (
+                      <p className="builder-hint">
+                        Other pages using this content will change too.
+                      </p>
+                    )}
+                    <div className="builder-change-pair">
+                      {(["before", "after"] as const).map((side) => (
+                        <div key={side}>
+                          <h4>{side === "before" ? "Before" : "After"}</h4>
+                          {change.ordered ? (
+                            <ol>
+                              {change[side].map((value, index) => (
+                                <li key={index}>{value}</li>
+                              ))}
+                            </ol>
+                          ) : (
+                            <p>{change[side][0] || <em>Empty</em>}</p>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  </li>
+                ))}
+              </ol>
+            )}
+            {reviewed?.planId === plan?.id && !reviewed?.changes.length && (
+              <p>
+                There are no changes to apply. Close this review to keep
+                editing.
+              </p>
+            )}
+            {Boolean(plan?.conflicts.length) && (
+              <Notice tone="error">
+                The website changed and these edits cannot be applied. Close
+                this review and reopen the page. Your edits are kept.
+              </Notice>
+            )}
+            {developer &&
+              plan?.changes
+                .filter((c) => c.action !== "unchanged")
+                .map((change, index) => (
+                  <details key={change.file} open={index === 0}>
+                    <summary>
+                      {change.action === "update"
+                        ? "Update"
+                        : change.action === "create"
+                          ? "Add"
+                          : change.action === "delete"
+                            ? "Remove"
+                            : change.action}{" "}
+                      {change.file}
+                    </summary>
+                    {change.preview && (
+                      <details className="builder-review-file">
+                        <summary>Show the whole file</summary>
+                        <pre>{change.preview}</pre>
+                      </details>
+                    )}
+                    {change.conflict && (
+                      <Notice tone="error">{change.conflict}</Notice>
+                    )}
+                  </details>
+                ))}
+            {error && (
+              <Notice tone="error">
+                {developer ? error : clientSourceError(error)}
+              </Notice>
+            )}
             <button
               type="button"
               className="builder-primary"
-              disabled={busy || Boolean(plan?.conflicts.length)}
+              disabled={
+                busy ||
+                !plan ||
+                reviewed?.planId !== plan.id ||
+                !reviewed.changes.length ||
+                reviewed.editKey !== editKey ||
+                Boolean(plan.conflicts.length)
+              }
               onClick={() => void apply()}
             >
               Apply changes to the folder

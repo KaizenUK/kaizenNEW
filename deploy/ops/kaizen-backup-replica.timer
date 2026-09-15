@@ -1,0 +1,11 @@
+[Unit]
+Description=Refresh the off-server Kaizen backup when this computer is online
+
+[Timer]
+OnCalendar=hourly
+RandomizedDelaySec=10min
+Persistent=true
+Unit=kaizen-backup-replica.service
+
+[Install]
+WantedBy=timers.target

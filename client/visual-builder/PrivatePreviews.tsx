@@ -1,5 +1,6 @@
 import { activeProjectId } from "./projectStorage";
 import React, { useContext, useEffect, useMemo, useRef, useState } from "react";
+import { FormEndpointContext } from "./FormEndpointContext";
 import { MediaContext } from "./MediaContext";
 import { storage, localMode } from "./storage";
 import {
@@ -136,6 +137,7 @@ export function PrivatePreviewControls({
 }
 
 export function PrivatePreviewViewer({ id }: { id: string }) {
+  const formEndpoint = useContext(FormEndpointContext);
   const media = useContext(MediaContext);
   const [record, setRecord] = useState<PrivatePreview>(),
     [error, setError] = useState("");
@@ -192,8 +194,8 @@ export function PrivatePreviewViewer({ id }: { id: string }) {
     return () => clearTimeout(timer);
   }, [record]);
   const html = useMemo(
-    () => (record ? previewHtml(media(record.document)) : ""),
-    [record, media],
+    () => (record ? previewHtml(media(record.document), formEndpoint) : ""),
+    [record, media, formEndpoint],
   );
   return (
     <div className="builder-app builder-private-preview">
@@ -275,15 +277,7 @@ export function PrivatePreviewList({ onClose }: { onClose?: () => void }) {
   void onClose;
   return (
     <>
-      <Head
-        info={<ProjectName />}
-        title="Private previews"
-        description={`Private links show a saved copy of a page to someone before it goes live. Create one from a page's Preview screen. ${
-          localMode
-            ? "Local links only work on this computer."
-            : "Links only work for signed-in editors."
-        }`}
-      >
+      <Head info={<ProjectName />} title="Private previews" help="previews">
         <button type="button" onClick={() => void load()} disabled={busy}>
           Refresh previews
         </button>
@@ -292,7 +286,11 @@ export function PrivatePreviewList({ onClose }: { onClose?: () => void }) {
         {error && <Notice tone="error">{error}</Notice>}
         <Card
           title="Active preview links"
-          description="Revoking a link stops future visits; a copy someone already opened cannot be recalled."
+          description={
+            rows.length
+              ? "Revoking a link stops future visits; a copy someone already opened cannot be recalled."
+              : undefined
+          }
         >
           <ul className="builder-release-list">
             {rows.map((row) => (

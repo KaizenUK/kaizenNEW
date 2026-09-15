@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState, type RefObject } from "react";
+import { repositoryConnection } from "./repositoryConnection";
 import type { SourceInspection } from "../../shared/builderSourceEditing";
 import type { useSourceEditingDraft } from "./useSourceEditingDraft";
 import type { SourceFrame } from "./useSiteBuild";
@@ -47,7 +48,7 @@ export function useSourceCanvas(
     if (preview)
       frameRef.current?.contentWindow?.postMessage(
         { ...data, nonce: preview.nonce },
-        new URL(preview.url).origin,
+        repositoryConnection.frameTarget(preview.url),
       );
   };
   const push = () => {
@@ -151,14 +152,17 @@ export function useSourceCanvas(
     const timeout = setTimeout(
       () =>
         setError(
-          "The page did not connect. Allow access to this computer in your browser, retry, or open the preview in a window.",
+          location.protocol === "https:" &&
+            new URL(frame.url).protocol === "http:"
+            ? "Your browser could not open this computer’s preview here. Open it in the local builder, or use the hosted helper."
+            : "The page did not connect. Retry, or open the preview in a window.",
         ),
       15000,
     );
     const receive = (event: MessageEvent) => {
       if (
         event.source !== frameRef.current?.contentWindow ||
-        event.origin !== new URL(frame.url).origin ||
+        event.origin !== repositoryConnection.frameOrigin(frame.url) ||
         event.data?.nonce !== frame.nonce
       )
         return;

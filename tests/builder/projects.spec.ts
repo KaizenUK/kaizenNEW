@@ -1,6 +1,129 @@
 import { test, expect } from "./browser-fixture";
 import { createHash } from "node:crypto";
 import { newDocument } from "../../client/visual-builder/starters";
+import { fixtureRoute } from "./fixture-routes";
+
+test("unfinished copy cancellation confirms its scope and keeps cleanup visible until purge", async ({
+  page,
+}, testInfo) => {
+  const initial = await page.request.get("/__builder-projects");
+  expect(initial.ok()).toBeTruthy();
+  const projects = await initial.json();
+  const id = crypto.randomUUID();
+  const copy = {
+    id,
+    name: "Garden website copy",
+    version: 1,
+    archived: false,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+    capabilities: {
+      legacyWorkspace: false,
+      hasInventory: false,
+      publishPath: "worker",
+    },
+    destination: {
+      kind: "unconfigured",
+      label: "No deployment destination configured",
+    },
+    access: { role: "owner", canPublish: true },
+    copy: { pending: true, canResume: true, files: 4, copied: 2 },
+  };
+  let cancelled = false,
+    purged = false,
+    requests = 0;
+  await fixtureRoute(page, "**/__builder-projects", async (route) => {
+    if (route.request().method() === "POST") {
+      const input = route.request().postDataJSON();
+      expect(input).toEqual({
+        action: "duplicate-cancel",
+        id,
+        version: 1,
+        confirm: true,
+      });
+      requests++;
+      cancelled = true;
+      return route.fulfill({
+        json: { projectId: id, cancelled: true, cleanupPending: true },
+      });
+    }
+    return route.fulfill({
+      json: [
+        ...projects,
+        ...(purged
+          ? []
+          : [
+              {
+                ...copy,
+                archived: cancelled,
+                copy: {
+                  ...copy.copy,
+                  canResume: !cancelled,
+                  ...(cancelled ? { cancelling: true } : {}),
+                },
+              },
+            ]),
+      ],
+    });
+  });
+  await page.goto("/builder/");
+  await page.getByRole("button", { name: "All projects", exact: true }).click();
+  const card = page.getByRole("article", { name: copy.name, exact: true });
+  await expect(
+    card.getByText("2 of 4 files copied", { exact: false }),
+  ).toBeVisible();
+  await card.getByRole("button", { name: "Cancel copy", exact: true }).click();
+  const confirmation = card.getByRole("group", {
+    name: `Cancel copy of ${copy.name}`,
+  });
+  await expect(confirmation).toBeFocused();
+  await confirmation.press("Escape");
+  await expect(
+    card.getByRole("button", { name: "Cancel copy", exact: true }),
+  ).toBeFocused();
+  expect(requests).toBe(0);
+  await card.getByRole("button", { name: "Cancel copy", exact: true }).click();
+  for (const [label, width] of [
+    ["desktop", 1440],
+    ["phone", 390],
+  ] as const) {
+    await page.setViewportSize({ width, height: 1000 });
+    await confirmation.scrollIntoViewIfNeeded();
+    expect(
+      await page.evaluate(() => document.documentElement.scrollWidth),
+    ).toBe(width);
+    await card.screenshot({
+      path: `test-results/launch-copy-cancel-${testInfo.project.name}-${label}.png`,
+    });
+  }
+  await page.clock.install();
+  await confirmation
+    .getByRole("button", { name: "Confirm cancellation" })
+    .click();
+  await expect(card).toContainText(
+    "Storage remains in use until cleanup finishes",
+  );
+  await expect(card.getByRole("button", { name: "Resume copy" })).toHaveCount(
+    0,
+  );
+  await expect(
+    card.getByRole("button", { name: "Restore project" }),
+  ).toHaveCount(0);
+  await expect(
+    card.getByRole("button", { name: "Duplicate", exact: true }),
+  ).toHaveCount(0);
+  await expect(card.getByRole("link", { name: "Open project" })).toHaveCount(0);
+  await expect(
+    page.getByRole("checkbox", { name: "Show archived projects" }),
+  ).not.toBeChecked();
+  await card.screenshot({
+    path: `test-results/launch-copy-cleanup-${testInfo.project.name}-phone.png`,
+  });
+  expect(requests).toBe(1);
+  purged = true;
+  await page.clock.fastForward(11000);
+  await expect(card).toHaveCount(0);
+});
 
 test("Unity client dashboard keeps two open projects and their assets isolated", async ({
   page,

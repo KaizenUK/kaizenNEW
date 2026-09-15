@@ -1,8 +1,11 @@
 # Kaizen Web — Project Guidelines
 
+**Current main handover — 15 September:** Sean paused implementation and authorized committing all pending work into `main`. Read [the consolidated Claude handover](docs/handover/claude-main-handover.md) first. Use `/home/sean/Documents/GitHub/kaizenNEW` on `main`; source from the earlier launch worktree is now committed here. Resume at D2d.2 only when implementation is resumed. Older instructions about uncommitted T4 or a required launch-worktree-only continuation are superseded.
+
+
 ## Current launch implementation handover
 
-The unfinished launch work is in **`/home/sean/Documents/GitHub/kaizen-launch`**, branch `codex/builder-launch`. Read [its current Claude handover](../kaizen-launch/docs/handover/l6-t4-claude-tasks.md) and `HANDOVER.md` in that worktree before continuing. Its modified and untracked L6-T4 implementation is not in this checkout or GitHub. Preserve both worktrees and Sean's existing changes; continue from the linked checklist's current checkpoint.
+Read `HANDOVER.md`, then [the Claude continuation tasks](docs/handover/l6-t4-claude-tasks.md) before changing builder code. Use the consolidated `main` checkout identified above; preserve private local state. The current resume point is **D2d.2 — client/domain/retry and direct-call coverage** in [the detailed release-retirement checkpoints](docs/handover/l6-t4-release-retirement-tasks.md). The launch brief and task map linked there govern this work; older pause/next-step notes are historical. Keep the handover current after each verified checkpoint.
 
 ## Content Principles (from guidance/Viral_Content_Guide.pdf)
 

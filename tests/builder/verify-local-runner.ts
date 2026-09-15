@@ -1,4 +1,4 @@
-// Run with pnpm exec tsx and independently installed Astro/export fixture paths.
+// Run with pnpm test:builder:runner and independently installed Astro/export fixture paths.
 import { chromium, expect } from "@playwright/test";
 import { RepositoryRunner } from "../../scripts/builder-runner";
 import { mkdtemp } from "node:fs/promises";

@@ -1,3 +1,4 @@
+import HelpLink from "./HelpLink";
 import React, { useEffect, useRef, useState } from "react";
 import { ArrowDown, ArrowUp, Pencil, Search } from "lucide-react";
 import { storage } from "./storage";
@@ -8,6 +9,7 @@ import type {
 import type { RepositoryPlan } from "../../scripts/builder-repository";
 import { useSourceEditingDraft } from "./useSourceEditingDraft";
 import { useSourceSelection } from "./useSourceSelection";
+import { builderStatuses } from "./builderStatus";
 import { Notice, Pill } from "./shell";
 import { fieldKindLabel as kindLabel } from "./sourceLabels";
 
@@ -106,9 +108,8 @@ export default function SourcePageEditor({
         </button>
       </div>
       <p className="builder-hint">
-        <code>{route}</code> · Click a line to change it. The design and code
-        stay exactly as they are. When you are done, review your changes and
-        apply them to the folder.
+        Edit matched text and links, then review your changes.{" "}
+        <HelpLink topic="source" />
       </p>
       <div className="builder-row builder-source-status-row">
         {draft.status && (
@@ -117,7 +118,20 @@ export default function SourcePageEditor({
             aria-label="Source editing draft"
             className="builder-source-status"
           >
-            <Pill tone={changed ? "orange" : "grey"}>{draft.status}</Pill>
+            {draft.ready && (
+              <Pill
+                tone={
+                  draft.saved && !draft.stale && !draft.error
+                    ? builderStatuses.saved.tone
+                    : builderStatuses.draft.tone
+                }
+              >
+                {draft.saved && !draft.stale && !draft.error
+                  ? builderStatuses.saved.label
+                  : builderStatuses.draft.label}
+              </Pill>
+            )}
+            <span>{draft.status}</span>
           </p>
         )}
         {(changed > 0 || draft.stale) && (

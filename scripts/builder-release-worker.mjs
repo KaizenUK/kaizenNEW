@@ -5,6 +5,15 @@ import { fileURLToPath } from "node:url";
 import { spawn } from "node:child_process";
 import { config as loadEnv } from "dotenv";
 import {
+  withNativeRelease,
+  assertNativeRelease,
+} from "./builder-native-release-guard.mjs";
+import {
+  RepositoryOutputAccounting,
+  assertRepositoryOutputTarget,
+  reconcileRepositoryOutput,
+} from "./builder-repository-output.mjs";
+import {
   activateRelease,
   stageRelease,
   verifyRelease,
@@ -55,12 +64,15 @@ export function createReleaseClient({ url, key, fetcher = fetch }) {
           const payload = await response.json().catch(() => ({}));
           const error = new Error(
             response.status < 500 &&
-              payload.code === "P0001" &&
+              ["P0001", "P0409", "P0429"].includes(payload.code) &&
               typeof payload.message === "string"
               ? payload.message.slice(0, 2000)
               : `Release service returned HTTP ${response.status}${/^[A-Z0-9]{5,10}$/.test(payload.code || "") ? ` (${payload.code})` : ""}. Check the worker configuration and service logs.`,
           );
           error.definitive = response.status >= 400 && response.status < 500;
+          error.code = /^[A-Z0-9]{5,10}$/.test(payload.code || "")
+            ? payload.code
+            : undefined;
           throw error;
         }
         return await response.json();
@@ -116,7 +128,23 @@ export function releaseEvidence(manifest) {
 
 /** One worker owns build -> file activation -> verified database promotion. Adapters exercise the real protocol in tests. */
 export async function runBuilderRelease(options, adapters = {}) {
+  if (options.native)
+    return withNativeRelease(
+      options,
+      options.billing?.projectId || "kaizen",
+      (input) => runBuilderRelease(input, adapters),
+    );
   const { client, store, origin, artifactId, commit = "", build } = options;
+  if (options.billing) {
+    assertRepositoryOutputTarget(options.billing);
+    if (
+      options.billing.projectId !== "kaizen" ||
+      options.billing.channel !== "production"
+    )
+      throw new Error(
+        "The original website coordinator requires its fixed production billing destination.",
+      );
+  }
   const stage = adapters.stage || stageRelease,
     activate = adapters.activate || activateRelease;
   const verify = adapters.verify || verifyRelease,
@@ -154,6 +182,7 @@ export async function runBuilderRelease(options, adapters = {}) {
     throw new Error(
       "This release is already in progress or complete. Inspect its status before restarting.",
     );
+  let accounting;
   const advance = (phase, proof = null, detail = null) =>
     client.rpc("builder_advance_release", {
       request_id: id,
@@ -164,19 +193,47 @@ export async function runBuilderRelease(options, adapters = {}) {
     });
   let attemptedSwitch = false;
   try {
+    if (options.sourceRoot)
+      await options.nativeFiles?.assertRepository(options.sourceRoot);
+    accounting = options.billing
+      ? new RepositoryOutputAccounting(client, {
+          ...options.billing,
+          id,
+          artifactId: artifact,
+          commit: claimed.rollback_of
+            ? (await verify(store, artifact)).commit
+            : commit,
+          sourceRoot: options.sourceRoot,
+          recovery:
+            Boolean(claimed.rollback_of) ||
+            claimed.request?.action === "unpublish",
+        })
+      : undefined;
+    await accounting?.prepareSource();
     if (!claimed.rollback_of) {
       const directory = path.join(store, "requests");
       await mkdir(directory, { recursive: true, mode: 0o700 });
       const snapshotFile = path.join(directory, `${id}.json`);
+      options.nativeFiles?.assertBytes(
+        Buffer.from(JSON.stringify(claimed.snapshot)),
+        "snapshot.json",
+      );
       // Exclusive creation catches accidental job re-use rather than replacing an uncertain build input.
       await writeFile(snapshotFile, JSON.stringify(claimed.snapshot), {
         flag: "wx",
         mode: 0o600,
       });
       await build(snapshotFile);
+      if (options.sourceRoot)
+        await options.nativeFiles?.assertRepository(options.sourceRoot);
+      await options.nativeFiles?.assertTree(options.source);
       await stage({ store, id: artifact, source: options.source, commit });
     }
     const hooks = {
+      async beforePrepare(manifest, old) {
+        await assertNativeRelease(options, manifest);
+        await assertNativeRelease(options, old);
+      },
       async beforeSwitch(manifest, old) {
         if (claimed.previous_release_id) {
           const previous = await client.get(claimed.previous_release_id);
@@ -185,6 +242,7 @@ export async function runBuilderRelease(options, adapters = {}) {
               "The serving artifact does not match the database release. Reconcile it before deploying.",
             );
         }
+        await accounting?.begin(manifest);
         await advance("activating");
         attemptedSwitch = true;
       },
@@ -206,10 +264,10 @@ export async function runBuilderRelease(options, adapters = {}) {
             uncertain.releaseCommitUncertain = true;
             throw uncertain;
           }
-          if (current.status === "live" && current.artifact_id === artifact)
-            return;
-          throw error;
+          if (current.status !== "live" || current.artifact_id !== artifact)
+            throw error;
         }
+        await accounting?.live();
       },
     };
     await activate({ store, id: artifact, origin }, hooks);
@@ -220,9 +278,11 @@ export async function runBuilderRelease(options, adapters = {}) {
       if (current.status === "live") {
         // File journaling may have failed after the DB commit; verify the committed serving artifact.
         await health(origin, await verify(store, artifact));
+        await accounting?.live();
         return { id, artifactId: artifact, status: "live" };
       }
       if (current.status === "building" && !attemptedSwitch) {
+        await accounting?.failed();
         await advance(
           "failed",
           null,
@@ -244,6 +304,7 @@ export async function runBuilderRelease(options, adapters = {}) {
         ) {
           const old = await verify(store, selected);
           await health(origin, old);
+          await accounting?.failed();
           await advance(
             "rolled_back",
             releaseEvidence(old),
@@ -265,7 +326,153 @@ export async function runBuilderRelease(options, adapters = {}) {
   }
 }
 
-async function cli() {
+export async function runRepositoryRelease(options, adapters = {}) {
+  if (options.native)
+    return withNativeRelease(options, options.billing?.projectId, (input) =>
+      runRepositoryRelease(input, adapters),
+    );
+  const {
+    client,
+    store,
+    origin,
+    artifactId,
+    commit,
+    source,
+    sourceRoot,
+    build,
+    billing,
+  } = options;
+  if (!billing)
+    throw new Error("Configure website output accounting before deploying.");
+  const accounting = new RepositoryOutputAccounting(client, {
+    ...billing,
+    id: options.requestId || randomUUID(),
+    artifactId,
+    commit,
+    sourceRoot,
+  });
+  const stage = adapters.stage || stageRelease,
+    activate = adapters.activate || activateRelease;
+  const verify = adapters.verify || verifyRelease,
+    list = adapters.list || listReleases,
+    health = adapters.health || checkLive;
+  try {
+    if (sourceRoot) await options.nativeFiles?.assertRepository(sourceRoot);
+    await accounting.prepareSource();
+    await build(undefined);
+    if (sourceRoot) await options.nativeFiles?.assertRepository(sourceRoot);
+    await options.nativeFiles?.assertTree(source);
+    await stage({ store, id: artifactId, source, commit });
+    await activate(
+      { store, id: artifactId, origin },
+      {
+        async beforePrepare(manifest, old) {
+          await assertNativeRelease(options, manifest);
+          await assertNativeRelease(options, old);
+        },
+        beforeSwitch: (manifest) => accounting.begin(manifest),
+        finalize: () => accounting.live(),
+      },
+    );
+    return { artifactId, status: "live" };
+  } catch (error) {
+    try {
+      const selected = (await list(store)).selectedReleaseId;
+      if (selected && selected !== artifactId) {
+        await health(origin, await verify(store, selected));
+        await accounting.failed();
+      }
+    } catch {
+      /* Keep uncertain usage reserved until actual recovery. */
+    }
+    throw error;
+  }
+}
+
+export async function reconcileBuilderRelease(options, adapters = {}) {
+  if (options.native)
+    return withNativeRelease(options, options.projectId, (input) =>
+      reconcileBuilderRelease(input, adapters),
+    );
+  const { client, requestId, projectId, channel, artifactId, store } = options;
+  if (!uuid(requestId) || projectId !== "kaizen" || channel !== "production")
+    throw new Error(
+      "Configure the original website's exact publication request before recovery.",
+    );
+  const recoveryOwner = randomUUID();
+  return reconcileRepositoryOutput(
+    {
+      ...options,
+      async beforeReserve(manifest) {
+        // This runs inside the stopped-process filesystem recovery lock. Read
+        // ownership only now, and atomically replace it before any file switch.
+        const item = await client.get(requestId);
+        if (!uuid(item.worker_id) || !item.artifact_id)
+          throw new Error(
+            "This publication has no claimed worker artifact to recover.",
+          );
+        let baseline;
+        if (item.previous_release_id)
+          baseline = (await client.get(item.previous_release_id)).artifact_id;
+        else {
+          const transactions = (await (adapters.list || listReleases)(store))
+            .transactions;
+          const candidates = new Set(
+            transactions
+              .filter(
+                (entry) =>
+                  entry.releaseId === item.artifact_id &&
+                  entry.previousReleaseId,
+              )
+              .map((entry) => entry.previousReleaseId),
+          );
+          if (candidates.size !== 1)
+            throw new Error(
+              "The first publication's retained activation journal must identify its previous artifact before recovery.",
+            );
+          baseline = [...candidates][0];
+        }
+        const begun = await client.rpc("builder_release_recovery_begin", {
+          request_id: requestId,
+          expected_owner: item.worker_id,
+          recovery_owner: recoveryOwner,
+          selected_artifact: artifactId,
+          desired_artifact: manifest.id,
+          baseline_artifact: baseline,
+        });
+        if (
+          begun?.worker_id !== recoveryOwner ||
+          begun?.recovery_artifact !== manifest.id
+        )
+          throw new Error(
+            "Publication recovery ownership could not be confirmed.",
+          );
+      },
+      async finalize(manifest, usage) {
+        const result = await client.rpc("builder_release_recovery_finish", {
+          request_id: requestId,
+          recovery_owner: recoveryOwner,
+          proof: releaseEvidence(manifest),
+          usage_id: usage.request_id,
+          source_commit: usage.source_commit,
+          sample: usage.sample,
+        });
+        if (
+          result?.id !== requestId ||
+          result?.artifactId !== manifest.id ||
+          result?.usageId !== usage.request_id ||
+          !["live", "rolled_back"].includes(result?.status)
+        )
+          throw new Error(
+            "The verified publication and usage acknowledgement remain uncertain. Reconcile the same request again.",
+          );
+      },
+    },
+    adapters,
+  );
+}
+
+export function loadReleaseEnvironment() {
   if (process.env.BUILDER_RELEASE_ENV_FILE) {
     if (!path.isAbsolute(process.env.BUILDER_RELEASE_ENV_FILE))
       throw new Error(
@@ -281,45 +488,105 @@ async function cli() {
       );
   }
   loadEnv({ path: path.resolve(".env"), quiet: true });
-  const env = process.env;
+  return process.env;
+}
+
+export async function runReleaseWorker(env, argv = [], adapters = {}) {
+  if (
+    argv.length > 1 ||
+    argv.some((arg) => !["--reconcile", "--reconcile-usage"].includes(arg))
+  )
+    throw new Error(
+      "Use the installed native worker for deployment maintenance.",
+    );
+  if (
+    (env.BUILDER_NATIVE_WORKER_ID || env.BUILDER_NATIVE_CONFIGURATION) &&
+    !adapters.native &&
+    !adapters.nativeFiles
+  )
+    throw new Error(
+      "Use the installed native release worker for this deployment.",
+    );
   const store = env.KAIZEN_RELEASE_STORE,
     origin = `https://${env.KAIZEN_PUBLIC_DOMAIN}`;
   if (!store || !path.isAbsolute(store))
     throw new Error("Set the absolute release store directory");
-  const build = (snapshotFile) =>
-    new Promise((resolve, reject) => {
-      const child = spawn("corepack", ["pnpm", "run", "build"], {
-        stdio: "inherit",
-        windowsHide: true,
-        env: { ...env, BUILDER_RELEASE_SNAPSHOT_FILE: snapshotFile || "" },
-      });
-      child.once("error", reject);
-      child.once("exit", (code) =>
-        code === 0
-          ? resolve()
-          : reject(new Error(`Static build failed with exit code ${code}.`)),
-      );
+  const build =
+    adapters.build ||
+    ((snapshotFile) =>
+      new Promise((resolve, reject) => {
+        const child = spawn("corepack", ["pnpm", "run", "build"], {
+          stdio: "inherit",
+          windowsHide: true,
+          env: { ...env, BUILDER_RELEASE_SNAPSHOT_FILE: snapshotFile || "" },
+        });
+        child.once("error", reject);
+        child.once("exit", (code) =>
+          code === 0
+            ? resolve()
+            : reject(new Error(`Static build failed with exit code ${code}.`)),
+        );
+      }));
+  const client =
+    adapters.client ||
+    createReleaseClient({
+      url: env.VITE_SUPABASE_URL || "",
+      key: env.BUILDER_RELEASE_SERVICE_ROLE_KEY,
     });
+  const billing = {
+    projectId: env.BUILDER_RELEASE_PROJECT_ID || "",
+    channel:
+      env.KAIZEN_DEPLOY_BRANCH === "stage"
+        ? "staging"
+        : env.KAIZEN_DEPLOY_BRANCH === "main"
+          ? "production"
+          : "",
+  };
+  assertRepositoryOutputTarget(billing);
+  if (argv.includes("--reconcile") || argv.includes("--reconcile-usage")) {
+    const recover =
+      env.VITE_BUILDER_CLOUD === "1"
+        ? reconcileBuilderRelease
+        : reconcileRepositoryOutput;
+    const result = await recover({
+      native: adapters.native,
+      nativeFiles: adapters.nativeFiles,
+      client,
+      ...billing,
+      requestId: env.KAIZEN_BUILDER_REQUEST_ID,
+      store,
+      origin,
+      artifactId: env.KAIZEN_RELEASE_ID,
+      restoreId: env.KAIZEN_RESTORE_RELEASE_ID || undefined,
+      sourceRoot: process.cwd(),
+    });
+    console.log(JSON.stringify(result));
+    return;
+  }
   if (env.VITE_BUILDER_CLOUD !== "1") {
     if (env.KAIZEN_BUILDER_REQUEST_ID)
       throw new Error(
         "This deployment is not configured for the cloud builder workspace.",
       );
-    await build(undefined);
-    await stageRelease({
+    const result = await runRepositoryRelease({
+      native: adapters.native,
+      nativeFiles: adapters.nativeFiles,
+      client,
       store,
-      id: env.KAIZEN_RELEASE_ID,
-      source: path.resolve("dist"),
+      origin,
+      artifactId: env.KAIZEN_RELEASE_ID,
       commit: env.KAIZEN_DEPLOY_SHA,
+      source: path.resolve("dist"),
+      sourceRoot: process.cwd(),
+      build,
+      billing,
     });
-    await activateRelease({ store, id: env.KAIZEN_RELEASE_ID, origin });
+    console.log(JSON.stringify(result));
     return;
   }
-  const client = createReleaseClient({
-    url: env.VITE_SUPABASE_URL || "",
-    key: env.BUILDER_RELEASE_SERVICE_ROLE_KEY,
-  });
   const result = await runBuilderRelease({
+    native: adapters.native,
+    nativeFiles: adapters.nativeFiles,
     client,
     store,
     origin,
@@ -327,6 +594,8 @@ async function cli() {
     commit: env.KAIZEN_DEPLOY_SHA,
     requestId: env.KAIZEN_BUILDER_REQUEST_ID || undefined,
     source: path.resolve("dist"),
+    sourceRoot: process.cwd(),
+    billing,
     build,
   });
   console.log(JSON.stringify(result));
@@ -335,7 +604,12 @@ if (
   process.argv[1] &&
   path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)
 )
-  cli().catch((error) => {
-    console.error(error.message);
-    process.exitCode = 1;
-  });
+  Promise.resolve()
+    .then(() => {
+      const env = loadReleaseEnvironment();
+      return runReleaseWorker(env, process.argv.slice(2));
+    })
+    .catch((error) => {
+      console.error(error.message);
+      process.exitCode = 1;
+    });

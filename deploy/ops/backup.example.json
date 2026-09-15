@@ -1,0 +1,42 @@
+{
+  "version": 1,
+  "stateDirectory": "/var/lib/kaizen-ops",
+  "repository": "/var/backups/kaizen/restic",
+  "passwordFile": "/etc/kaizen-ops/restic-password",
+  "restic": "/usr/bin/restic",
+  "supabase": {
+    "projectRef": "yourprojectreference",
+    "managementTokenFile": "/etc/kaizen-ops/supabase-access-token",
+    "workerEnvironmentFile": "/etc/kaizen/client-worker.env",
+    "postgresBin": "/usr/lib/postgresql/17/bin",
+    "certificateFile": "/etc/kaizen-ops/supabase-ca.crt"
+  },
+  "sources": [
+    {
+      "label": "working-copies",
+      "path": "/var/lib/kaizen-helper/work",
+      "kind": "helper",
+      "projectsFile": "/etc/kaizen-helper/projects.json"
+    },
+    {
+      "label": "production",
+      "path": "/var/lib/kaizen/production",
+      "kind": "release"
+    },
+    {
+      "label": "staging",
+      "path": "/var/lib/kaizen/staging",
+      "kind": "release"
+    },
+    {
+      "label": "website-settings",
+      "path": "/etc/kaizen",
+      "kind": "files"
+    },
+    {
+      "label": "helper-settings",
+      "path": "/etc/kaizen-helper",
+      "kind": "files"
+    }
+  ]
+}

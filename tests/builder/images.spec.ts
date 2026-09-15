@@ -117,7 +117,7 @@ test("optimised images retain originals and smaller mobile files through editing
       .fill(slug);
     await page.getByRole("button", { name: "Save", exact: true }).click();
     await expect(page.locator(".builder-save-status")).toContainText(
-      "All changes saved",
+      "Saved",
     );
     workspace = await api();
     // Add a background fixture to exercise responsive CSS alongside the image placed through the UI.

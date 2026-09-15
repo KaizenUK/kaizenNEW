@@ -33,6 +33,35 @@ const port = reservation.address().port;
 await new Promise((resolve) => reservation.close(resolve));
 const origin = `http://127.0.0.1:${port}`,
   forward = (file) => file.replaceAll("\\", "/");
+// Close each observation connection across graceful Nginx reloads.
+const siteFetch = (url, options = {}) =>
+  fetch(url, {
+    ...options,
+    headers: { ...options.headers, Connection: "close" },
+  });
+async function expectPageText(url, expected) {
+  // New workers can already pass release verification while old workers are
+  // finishing accepted requests. Bound that handoff without accepting old bytes.
+  for (let attempt = 0; ; attempt++) {
+    try {
+      assert.match(await (await siteFetch(url)).text(), expected);
+      return;
+    } catch (error) {
+      if (attempt === 5) throw error;
+      await new Promise((resolve) => setTimeout(resolve, 100));
+    }
+  }
+}
+async function expectLive(manifest) {
+  for (let attempt = 0; ; attempt++) {
+    try {
+      return await checkLive(origin, manifest);
+    } catch (error) {
+      if (attempt === 5) throw error;
+      await new Promise((resolve) => setTimeout(resolve, 100));
+    }
+  }
+}
 const nginx = (args) =>
   run(binary, ["-p", `${forward(prefix)}/`, "-c", "nginx.conf", ...args], {
     cwd: prefix,
@@ -112,15 +141,15 @@ try {
   await build("next", "New release");
   const live = await activateRelease({ store, id: "next", origin }, adapters);
   assert.equal(live.status, "live");
-  assert.match(
-    await (await fetch(`${origin}/campaign/`)).text(),
-    /CMS New release/,
-  );
+  await expectPageText(`${origin}/campaign/`, /CMS New release/);
   assert.equal(
-    (await fetch(`${origin}/old-url/`, { redirect: "manual" })).status,
+    (await siteFetch(`${origin}/old-url/`, { redirect: "manual" })).status,
     301,
   );
-  assert.equal((await fetch(`${origin}/_astro/original.hash.js`)).status, 200);
+  assert.equal(
+    (await siteFetch(`${origin}/_astro/original.hash.js`)).status,
+    200,
+  );
   await build(
     "invalid-config",
     "Invalid config",
@@ -130,7 +159,7 @@ try {
     () => activateRelease({ store, id: "invalid-config", origin }, adapters),
     /previous release was restored and verified/,
   );
-  await checkLive(origin, await verifyRelease(store, "next"));
+  await expectLive(await verifyRelease(store, "next"));
   // Valid Nginx syntax and correct pages cannot hide a lost query or wrong redirect target.
   await build(
     "wrong-redirect",
@@ -141,8 +170,11 @@ try {
     () => activateRelease({ store, id: "wrong-redirect", origin }, adapters),
     /previous release was restored and verified/,
   );
-  await checkLive(origin, await verifyRelease(store, "next"));
-  assert.equal((await fetch(`${origin}/redirects.generated.json`)).status, 404);
+  await expectLive(await verifyRelease(store, "next"));
+  assert.equal(
+    (await siteFetch(`${origin}/redirects.generated.json`)).status,
+    404,
+  );
   // Nginx accepts this release's syntax, but a route override serves the wrong page. The HTTP hash check must catch it.
   await build(
     "wrong-route",
@@ -153,15 +185,12 @@ try {
     () => activateRelease({ store, id: "wrong-route", origin }, adapters),
     /previous release was restored and verified/,
   );
-  await checkLive(origin, await verifyRelease(store, "next"));
+  await expectLive(await verifyRelease(store, "next"));
   await activateRelease({ store, id: "original", origin }, adapters);
-  assert.match(
-    await (await fetch(`${origin}/campaign/`)).text(),
-    /CMS Original release/,
-  );
-  assert.equal((await fetch(`${origin}/_astro/next.hash.js`)).status, 200);
+  await expectPageText(`${origin}/campaign/`, /CMS Original release/);
+  assert.equal((await siteFetch(`${origin}/_astro/next.hash.js`)).status, 200);
   assert.equal(
-    (await fetch(`${origin}/.well-known/kaizen-release.json`)).headers.get(
+    (await siteFetch(`${origin}/.well-known/kaizen-release.json`)).headers.get(
       "cache-control",
     ),
     "no-store",
@@ -177,7 +206,7 @@ try {
       id: "application-build",
     });
     await activateRelease({ store, id: application.id, origin }, adapters);
-    const observed = await checkLive(origin, application);
+    const observed = await expectLive(application);
     console.log(
       `Complete application artifact verified through Nginx: ${application.files.length} files, ${observed.checked} marker/page/redirect responses.`,
     );

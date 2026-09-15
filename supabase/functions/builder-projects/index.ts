@@ -1,10 +1,16 @@
+import { checkFunctionLimit } from "../_shared/functionLimits.ts";
+import { bootstrapAccount } from "../_shared/builderSignup.ts";
+import { domainProjectAction } from "../_shared/builderDomains.ts";
+import { runProjectCopy } from "../_shared/builderProjectCopies.ts";
+import { registerVerifiedAsset } from "../_shared/builderRegisterAssets.ts";
 import { createClient } from "npm:@supabase/supabase-js@2.98.0";
+import { recordClientDiagnostic } from "../_shared/clientDiagnostics.ts";
 import { getCorsHeaders, isOriginAllowed } from "../_shared/editorAuth.ts";
-import { disconnectedSettings } from "../../../shared/builderSettings.ts";
 import { fetchContentCatalogue } from "../../../shared/builderContent.ts";
 import {
   validProjectId,
   projectName,
+  projectCapabilities,
 } from "../../../shared/builderProjects.ts";
 import {
   applyProjectDraftAction,
@@ -16,7 +22,7 @@ import {
   previewSummary,
   isPreviewId,
 } from "../../../shared/builderPreviews.ts";
-import type { Asset, Workspace } from "../../../shared/visualBuilder.ts";
+import type { Workspace } from "../../../shared/visualBuilder.ts";
 import {
   clientDestinationFields,
   clientPublicationAction,
@@ -35,7 +41,9 @@ const projectRecord = (row: any, member: any) => ({
   createdAt: row.created_at,
   updatedAt: row.updated_at,
   destination: row.destination,
+  capabilities: projectCapabilities(row.capabilities),
   access: { role: member.role, canPublish: member.can_publish },
+  ...(row.copy ? { copy: row.copy } : {}),
 });
 
 Deno.serve(async (request) => {
@@ -54,9 +62,9 @@ Deno.serve(async (request) => {
     return json(403, { error: "Forbidden origin" });
   if (request.method !== "POST")
     return json(405, { error: "Method not allowed" });
-  const token = request.headers
-    .get("Authorization")
-    ?.replace(/^Bearer\s+/i, "");
+  const token = /^Bearer ([^\s]{1,8192})$/i.exec(
+    request.headers.get("Authorization") || "",
+  )?.[1];
   if (!token) return json(401, { error: "Sign in to open this project." });
   const url = Deno.env.get("SUPABASE_URL")!;
   const service = createClient(
@@ -64,9 +72,22 @@ Deno.serve(async (request) => {
     Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
     { auth: { persistSession: false } },
   );
+  const globalLimit = await checkFunctionLimit(
+    service,
+    "builder-projects",
+    headers,
+  );
+  if (globalLimit) return globalLimit;
   const { data: auth, error: authError } = await service.auth.getUser(token);
   if (authError || !auth.user)
     return json(401, { error: "Your session expired. Sign in again." });
+  const userLimit = await checkFunctionLimit(
+    service,
+    "builder-projects",
+    headers,
+    auth.user.id,
+  );
+  if (userLimit) return userLimit;
   const user = createClient(url, Deno.env.get("SUPABASE_ANON_KEY")!, {
     global: { headers: { Authorization: `Bearer ${token}` } },
     auth: { persistSession: false },
@@ -94,6 +115,10 @@ Deno.serve(async (request) => {
     }
     const input = JSON.parse(new TextDecoder().decode(bytes));
     const action = input.action || "list";
+    if (action === "bootstrap") {
+      const result = await bootstrapAccount(service, auth.user.id);
+      return json(result.status, result.body);
+    }
     async function list() {
       const rows = check(await user.from("builder_projects").select("*"));
       const memberships = check(
@@ -107,10 +132,16 @@ Deno.serve(async (request) => {
           .from("builder_client_destinations")
           .select(clientDestinationFields),
       );
+      const copies = check(
+        await service.rpc("builder_project_copy_summaries", {
+          actor: auth.user!.id,
+        }),
+      );
       return rows.map((row: any) =>
         projectRecord(
           {
             ...row,
+            copy: copies.find((copy: any) => copy.projectId === row.id),
             ...(destinations.some(
               (d: any) => d.project_id === row.id && d.enabled,
             )
@@ -144,7 +175,38 @@ Deno.serve(async (request) => {
     const target = input.projectId || input.id;
     if (typeof target !== "string" || !validProjectId(target))
       return json(400, { error: "Invalid project ID." });
-    // Every operation, including reads/download registration/previews, starts with
+    if (action === "duplicate-cancel") {
+      if (
+        input.confirm !== true ||
+        !Number.isInteger(input.version) ||
+        input.version < 1
+      )
+        return json(400, {
+          error: "Confirm cancellation of this unfinished copy.",
+        });
+      // The private routine checks current ownership itself. After verified
+      // purge, its small request receipt makes a lost-response retry idempotent.
+      return json(
+        200,
+        check(
+          await service.rpc("builder_project_copy_cancel", {
+            target,
+            actor: auth.user.id,
+            expected_version: input.version,
+          }),
+        ),
+      );
+    }
+    if (action === "record-error") {
+      const result = await recordClientDiagnostic(
+        service,
+        target,
+        auth.user.id,
+        input.report,
+      );
+      return json(result.status, result.body);
+    }
+    // Other operations, including reads/download registration/previews, start with
     // an actual RLS-backed membership lookup using the verified user's JWT.
     const membership = check(
       await user
@@ -165,6 +227,52 @@ Deno.serve(async (request) => {
       );
     if (!project || !membership)
       return json(403, { error: "Project membership required." });
+    if (
+      ["domain-state", "domain-add", "domain-verify", "domain-remove"].includes(
+        action,
+      )
+    ) {
+      if (
+        action !== "domain-state" &&
+        (membership.role !== "owner" || !membership.can_publish)
+      ) {
+        return json(403, {
+          error:
+            "A website owner with publishing permission must manage its domain.",
+        });
+      }
+      const result = await domainProjectAction({
+        service,
+        projectId: target,
+        actor: auth.user.id,
+        input,
+        configuration: Deno.env.get("BUILDER_DOMAIN_CONFIG"),
+      });
+      return json(result.status, result.body);
+    }
+    if (action === "project-billing" || action === "take-billing") {
+      if (action === "take-billing") {
+        if (membership.role !== "owner" || input.confirm !== true)
+          return json(403, {
+            error: "A website owner must confirm using their own plan.",
+          });
+        check(
+          await service.rpc("builder_take_project_billing", {
+            target,
+            actor: auth.user.id,
+          }),
+        );
+      }
+      return json(
+        200,
+        check(
+          await service.rpc("builder_project_billing_summary", {
+            target,
+            actor: auth.user.id,
+          }),
+        ),
+      );
+    }
     if (action === "rename" || action === "archive") {
       check(
         await user.rpc("builder_update_project", {
@@ -183,12 +291,7 @@ Deno.serve(async (request) => {
     if (action === "members")
       return json(
         200,
-        check(
-          await user
-            .from("builder_project_members")
-            .select("user_id,role,can_publish")
-            .eq("project_id", target),
-        ),
+        check(await user.rpc("builder_member_directory", { target })),
       );
     if (action === "set-member") {
       check(
@@ -201,110 +304,34 @@ Deno.serve(async (request) => {
       );
       return json(200, { ok: true });
     }
-    if (action === "duplicate") {
-      const source: Workspace =
-        target === "kaizen"
-          ? check(await user.rpc("builder_backup_workspace"))
-          : check(
-              await user
-                .from("builder_project_workspaces")
-                .select("payload")
-                .eq("project_id", target)
-                .single(),
-            ).payload;
-      const id = check(
-        await user.rpc("builder_create_project", {
-          project_name: projectName(input.name),
+    if (action === "duplicate" || action === "duplicate-resume") {
+      const id = await runProjectCopy({
+        service,
+        user,
+        actor: auth.user.id,
+        token,
+        project,
+        input,
+        origin: Deno.env.get("BUILDER_UPLOAD_ORIGIN"),
+      });
+      return json(
+        200,
+        (await list()).find((p: any) => p.id === id),
+      );
+    }
+    if (action === "register-asset") {
+      return json(
+        200,
+        await registerVerifiedAsset({
+          service,
+          actor: auth.user.id,
+          projectId: target,
+          asset: input.asset,
+          storageUrl: url,
         }),
       );
-      const copied: string[] = [];
-      try {
-        const replacements = new Map<string, string>();
-        for (const asset of source.assets) {
-          if (!isPreviewId(asset.id))
-            throw new Error("Invalid source asset ID.");
-          const sourceBucket =
-            target === "kaizen"
-              ? ["image", "icon", "font"].includes(asset.kind)
-                ? "builder-media"
-                : "builder-source"
-              : "builder-project-files";
-          const file = check(
-            await user.storage
-              .from(sourceBucket)
-              .download(
-                target === "kaizen" ? asset.id : `${target}/${asset.id}`,
-              ),
-          );
-          const buffer = await file.arrayBuffer();
-          const digest = Array.from(
-            new Uint8Array(await crypto.subtle.digest("SHA-256", buffer)),
-            (n) => n.toString(16).padStart(2, "0"),
-          ).join("");
-          if (digest !== asset.hash || buffer.byteLength !== asset.size)
-            throw new Error(`Source checksum failed: ${asset.name}`);
-          const destination = `${id}/${asset.id}`;
-          check(
-            await user.storage
-              .from("builder-project-files")
-              .upload(destination, buffer, {
-                contentType: asset.mime,
-                upsert: false,
-              }),
-          );
-          copied.push(destination);
-          replacements.set(asset.url, projectAssetUrl(id, asset.id));
-        }
-        const rewrite = (value: any): any =>
-          typeof value === "string"
-            ? replacements.get(value) || value
-            : Array.isArray(value)
-              ? value.map(rewrite)
-              : value && typeof value === "object"
-                ? Object.fromEntries(
-                    Object.entries(value).map(([key, item]) => [
-                      key,
-                      rewrite(item),
-                    ]),
-                  )
-                : value;
-        const workspace = rewrite(source);
-        if (workspace.settings)
-          workspace.settings = disconnectedSettings(workspace.settings);
-        assertProjectAssetReferences(workspace, id);
-        check(
-          await service.rpc("builder_commit_project_workspace", {
-            target: id,
-            actor: auth.user.id,
-            expected_version: 0,
-            workspace,
-          }),
-        );
-        return json(
-          200,
-          (await list()).find((p: any) => p.id === id),
-        );
-      } catch (error) {
-        const current = await service
-          .from("builder_project_workspaces")
-          .select("version")
-          .eq("project_id", id)
-          .maybeSingle();
-        if (current.data?.version === 0) {
-          if (copied.length)
-            await service.storage.from("builder-project-files").remove(copied);
-          await service
-            .from("builder_projects")
-            .delete()
-            .eq("id", id)
-            .eq("version", 1);
-        }
-        throw new Error(
-          `Project copy failed: ${(error as Error).message}. The source project is unchanged.`,
-        );
-      }
     }
-    if (target === "kaizen")
+    if (projectCapabilities(project.capabilities).legacyWorkspace)
       return json(409, {
         error: "The original site uses the preserved Kaizen workspace API.",
       });
@@ -449,33 +476,11 @@ Deno.serve(async (request) => {
       );
       return json(200, saved ? previewSummary(saved) : null);
     }
-    if (action === "register-asset") {
-      const asset = input.asset as Asset;
-      if (
-        !asset ||
-        !isPreviewId(asset.id) ||
-        !/^[a-f0-9]{64}$/.test(asset.hash) ||
-        !Number.isInteger(asset.size) ||
-        asset.size < 1 ||
-        asset.size > 50 * 1024 * 1024
-      )
-        throw new Error("Invalid asset metadata.");
-      const file = check(
-        await user.storage
-          .from("builder-project-files")
-          .download(`${target}/${asset.id}`),
-      );
-      const buffer = await file.arrayBuffer();
-      const digest = Array.from(
-        new Uint8Array(await crypto.subtle.digest("SHA-256", buffer)),
-        (n) => n.toString(16).padStart(2, "0"),
-      ).join("");
-      if (buffer.byteLength !== asset.size || digest !== asset.hash)
-        throw new Error(
-          "The uploaded file does not match its size/checksum. Resume the original import.",
-        );
-      input.asset = { ...asset, url: projectAssetUrl(target, asset.id) };
-    }
+    if (
+      action === "create-starter" &&
+      projectCapabilities(project.capabilities).hasInventory
+    )
+      throw new Error("Create a starter in a new builder project.");
     const result = applyProjectDraftAction(workspace, input);
     assertProjectAssetReferences(result.workspace, target);
     check(

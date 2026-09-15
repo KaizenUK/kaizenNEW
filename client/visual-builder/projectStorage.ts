@@ -1,7 +1,11 @@
 import type { BuilderProject } from "../../shared/builderProjects";
-import { LEGACY_PROJECT_ID } from "../../shared/builderProjects";
+import {
+  LEGACY_PROJECT_ID,
+  projectCapabilities,
+} from "../../shared/builderProjects";
 import { getSupabaseClient } from "../lib/supabase";
 import { builderCloudEnabled } from "./builderMode";
+import { trackStorageErrors } from "./diagnostics";
 
 // Fixed for this document's lifetime. Opening another project navigates, disposing
 // the editor and its pending import/autosave controllers before starting another.
@@ -12,7 +16,7 @@ export const activeProjectId =
 export function projectUrl(url: string): string {
   return `${url}${url.includes("?") ? "&" : "?"}project=${encodeURIComponent(activeProjectId)}`;
 }
-export async function projectRequest(input?: unknown): Promise<any> {
+async function requestProject(input?: unknown): Promise<any> {
   if (builderCloudEnabled) {
     const client = getSupabaseClient();
     if (!client) throw new Error("The hosted builder is not configured.");
@@ -56,4 +60,43 @@ export async function projectRequest(input?: unknown): Promise<any> {
     window.dispatchEvent(new Event("builder-projects-changed"));
   return result;
 }
-export const listProjects = (): Promise<BuilderProject[]> => projectRequest();
+export const { projectRequest } = trackStorageErrors({
+  projectRequest: requestProject,
+});
+let projectCache: Promise<BuilderProject[]> | undefined;
+export function clearProjectCache() {
+  projectCache = undefined;
+}
+if (typeof window !== "undefined")
+  window.addEventListener("builder-projects-changed", clearProjectCache);
+export function cachedProjects(): Promise<BuilderProject[]> {
+  if (!projectCache) {
+    const pending = projectRequest()
+      .then((items: BuilderProject[]) =>
+        items.map((item) => ({
+          ...item,
+          capabilities: projectCapabilities(item.capabilities),
+        })),
+      )
+      .catch((error) => {
+        if (projectCache === pending) projectCache = undefined;
+        throw error;
+      });
+    projectCache = pending;
+  }
+  return projectCache;
+}
+export const listProjects = (): Promise<BuilderProject[]> => {
+  clearProjectCache();
+  return cachedProjects();
+};
+export async function requireActiveProject(): Promise<BuilderProject> {
+  const project = (await cachedProjects()).find(
+    (item) => item.id === activeProjectId,
+  );
+  if (!project)
+    throw new Error(
+      "Project unavailable. Return to Projects and check your access.",
+    );
+  return project;
+}

@@ -1,0 +1,26 @@
+[Unit]
+Description=Kaizen website domain setup and maintenance
+Wants=network-online.target
+After=network-online.target kaizen-nginx.service directadmin.service
+
+[Service]
+Type=oneshot
+User=root
+Group=root
+WorkingDirectory=/var/lib/kaizen-domains
+Environment=NODE_ENV=production
+EnvironmentFile=/etc/kaizen/client-worker.env
+UnsetEnvironment=NODE_OPTIONS NODE_PATH LD_PRELOAD LD_LIBRARY_PATH
+# The installer replaces only the Node path with the verified immutable runtime.
+ExecStart=/usr/bin/node /opt/kaizen-domain-worker/worker.mjs --once
+TimeoutStartSec=30min
+TimeoutStopSec=30s
+KillMode=control-group
+UMask=0022
+PrivateTmp=true
+ProtectHome=true
+# DirectAdmin and its scoped Apache rewrite require writes under /usr/local.
+# The root bundle imports no project code or mutable helper checkout.
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=kaizen-domain-worker

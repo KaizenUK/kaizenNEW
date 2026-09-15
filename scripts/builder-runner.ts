@@ -2,9 +2,25 @@
 import { spawn, type ChildProcess } from "node:child_process";
 import { createHash, randomUUID, randomBytes } from "node:crypto";
 import { createServer, type Server } from "node:http";
-import { lstat, readFile, readdir, mkdir, rename } from "node:fs/promises";
+import {
+  lstat,
+  readFile,
+  readdir,
+  mkdir,
+  rename,
+  writeFile,
+} from "node:fs/promises";
+import {
+  SandboxCleanupError,
+  type SandboxBuild,
+  type SandboxCommand,
+} from "./builder-build-sandbox";
 import path from "node:path";
+import type { ControlledBuild } from "./builder-controlled-build";
 import { inspectRepository } from "./builder-repository";
+import { measureRepositorySource } from "./builder-repository-usage.mjs";
+const digest = (data: Uint8Array | string) =>
+  createHash("sha256").update(data).digest("hex");
 import type { SourceInspection } from "../shared/builderSourceEditing";
 import { frameCss, frameHtml } from "./builder-source-frame";
 import {
@@ -28,14 +44,18 @@ export type BuildJob = {
   projectId: string;
   root: string;
   command: string;
-  status: "building" | "succeeded" | "failed" | "cancelled";
-  startedAt: string;
+  status: "queued" | "building" | "succeeded" | "failed" | "cancelled";
+  queuedAt?: string;
+  queuePosition?: number;
+  cancelling?: boolean;
+  startedAt?: string;
   finishedAt?: string;
   log: string;
   error?: string;
   previewUrl?: string;
   previewExpiresAt?: number;
   recoveryDirectory: string;
+  recoveryRequired?: boolean;
 };
 type Command = { cli: string; manager: "pnpm" | "npm" };
 type Running = {
@@ -45,24 +65,12 @@ type Running = {
   selection?: { nonce: string; path: string; script: string };
   frames?: Map<string, { path: string; script: string; origin: string }>;
   child?: ChildProcess;
+  buildAbort?: AbortController;
   server?: Server;
   done?: Promise<void>;
   cancel?: string;
   timer?: NodeJS.Timeout;
 };
-const ignored = new Set([
-  "node_modules",
-  ".git",
-  ".kaizen-builder",
-  ".sanity",
-  ".astro",
-  ".vite",
-  "dist",
-  "coverage",
-  "test-results",
-]);
-const digest = (data: Uint8Array | string) =>
-  createHash("sha256").update(data).digest("hex");
 async function exists(file: string) {
   try {
     return await lstat(file);
@@ -82,37 +90,7 @@ async function realDirectory(root: string, relative: string) {
   return current;
 }
 async function sourceFingerprint(root: string) {
-  const hash = createHash("sha256");
-  let count = 0,
-    size = 0;
-  async function walk(folder: string) {
-    for (const entry of (
-      await readdir(path.join(root, folder), { withFileTypes: true })
-    ).sort((a, b) => a.name.localeCompare(b.name))) {
-      const name = folder ? `${folder}/${entry.name}` : entry.name;
-      if (ignored.has(entry.name) || name === ".kaizen/build-recovery")
-        continue;
-      if (++count > 10000)
-        throw new Error("Build review supports up to 10,000 source files.");
-      if (entry.isSymbolicLink())
-        throw new Error(`Build review does not follow source links: ${name}`);
-      if (entry.isDirectory()) await walk(name);
-      else {
-        const stat = await lstat(path.join(root, name));
-        size += stat.size;
-        if (!stat.isFile() || size > 200 * 1024 * 1024)
-          throw new Error(
-            "Build review supports up to 200 MB of regular source files.",
-          );
-        hash
-          .update(name)
-          .update("\0")
-          .update(digest(await readFile(path.join(root, name))));
-      }
-    }
-  }
-  await walk("");
-  return hash.digest("hex");
+  return (await measureRepositorySource(root)).revision;
 }
 async function packageCommand(): Promise<Command> {
   const inherited = process.env.npm_execpath;
@@ -250,6 +228,19 @@ export class RepositoryRunner {
   constructor(
     private timeoutMs = 5 * 60 * 1000,
     private previewMs = 60 * 60 * 1000,
+    private options: {
+      environment?: NodeJS.ProcessEnv;
+      watchStorage?: (
+        stop: (error: Error) => Promise<void>,
+      ) => Promise<() => Promise<void>>;
+      beforeBuild?: (job: BuildJob, fingerprint: string) => Promise<void>;
+      afterBuild?: (job: BuildJob) => Promise<void>;
+      controlledBuild?: (input: ControlledBuild) => Promise<number | null>;
+      isolatedBuild?: {
+        command: () => Promise<SandboxCommand>;
+        run: (input: SandboxBuild) => Promise<Map<string, Buffer>>;
+      };
+    } = {},
   ) {}
   async prepare(root: string, projectId: string): Promise<BuildPlan> {
     if (this.closed) throw new Error("The local companion is shutting down.");
@@ -267,7 +258,8 @@ export class RepositoryRunner {
       throw new Error(
         "Add a build script to package.json before using the companion.",
       );
-    const command = await packageCommand();
+    const command = await (this.options.isolatedBuild?.command() ??
+      packageCommand());
     if ((await sourceFingerprint(root)) !== fingerprint)
       throw new Error(
         "Repository files changed during the command review. Review the build again.",
@@ -291,7 +283,14 @@ export class RepositoryRunner {
     this.plans.set(value.id, { value, command });
     return structuredClone(value);
   }
-  async start(planId: string, projectId: string): Promise<BuildJob> {
+  async start(
+    planId: string,
+    projectId: string,
+    beforePreview?: (
+      files: ReadonlyMap<string, Buffer>,
+      fingerprint: string,
+    ) => Promise<void>,
+  ): Promise<BuildJob> {
     const plan = this.plans.get(planId);
     if (
       this.closed ||
@@ -341,9 +340,12 @@ export class RepositoryRunner {
         },
       };
       this.jobs.set(id, running);
-      running.done = this.execute(running, plan.command, fingerprint).finally(
-        () => this.locks.delete(key),
-      );
+      running.done = this.execute(
+        running,
+        plan.command,
+        fingerprint,
+        beforePreview,
+      ).finally(() => this.locks.delete(key));
       return structuredClone(running.value);
     } catch (error) {
       this.locks.delete(key);
@@ -360,6 +362,23 @@ export class RepositoryRunner {
   }
   status(id: string, projectId: string) {
     return structuredClone(this.require(id, projectId).value);
+  }
+  async wait(id: string, projectId: string) {
+    await this.require(id, projectId).done;
+    return this.status(id, projectId);
+  }
+  /** Immutable build bytes for the authenticated hosted presenter; never reads a request path from disk. */
+  previewFiles(id: string, projectId: string): ReadonlyMap<string, Buffer> {
+    const running = this.require(id, projectId);
+    if (
+      !running.server ||
+      !running.files ||
+      running.value.status !== "succeeded"
+    )
+      throw new Error(
+        "This preview expired or closed. Build the website again.",
+      );
+    return running.files;
   }
   async sourcePreview(
     id: string,
@@ -427,6 +446,7 @@ export class RepositoryRunner {
     const running = this.require(id, projectId);
     if (running.value.status === "building") {
       running.cancel = "Build cancelled.";
+      running.buildAbort?.abort(new Error(running.cancel));
       if (running.child) await stopChild(running.child);
       await running.done;
     }
@@ -448,16 +468,29 @@ export class RepositoryRunner {
     running: Running,
     command: Command,
     fingerprint: string,
+    beforePreview?: (
+      files: ReadonlyMap<string, Buffer>,
+      fingerprint: string,
+    ) => Promise<void>,
   ) {
     const job = running.value;
     let previous = false,
-      prepared = false;
+      prepared = false,
+      recorded = false;
+    let stopStorageWatch: (() => Promise<void>) | undefined;
     const log = (chunk: Buffer | string) => {
       job.log = (
         job.log + chunk.toString().replace(/\x1b\[[0-9;]*[A-Za-z]/g, "")
       ).slice(-100000);
     };
     try {
+      await this.options.beforeBuild?.(structuredClone(job), fingerprint);
+      recorded = true;
+      stopStorageWatch = await this.options.watchStorage?.(async (error) => {
+        running.cancel = error.message;
+        running.buildAbort?.abort(error);
+        if (running.child) await stopChild(running.child);
+      });
       const output = await realDirectory(job.root, "dist");
       await realDirectory(job.root, ".kaizen/build-recovery");
       await mkdir(job.recoveryDirectory, { recursive: true });
@@ -467,34 +500,98 @@ export class RepositoryRunner {
       }
       prepared = true;
       if (running.cancel) throw new Error(running.cancel);
-      const code = await new Promise<number | null>((resolve, reject) => {
-        // No input is interpolated into a shell command. The reviewed package manager runs its normal lifecycle scripts.
-        const child = spawn(process.execPath, [command.cli, "run", "build"], {
-          cwd: job.root,
-          windowsHide: true,
-          detached: process.platform !== "win32",
-          stdio: ["ignore", "pipe", "pipe"],
-          env: { ...process.env, FORCE_COLOR: "0", CI: "1" },
-        });
-        running.child = child;
+      let code: number | null;
+      if (this.options.isolatedBuild) {
+        const controller = new AbortController();
+        running.buildAbort = controller;
         const timeout = setTimeout(() => {
           running.cancel = "Build exceeded the five-minute time limit.";
-          void stopChild(child).catch((error) =>
-            log(`\nUnable to stop build: ${error.message}`),
-          );
+          controller.abort(new Error(running.cancel));
         }, this.timeoutMs);
-        child.stdout?.on("data", log);
-        child.stderr?.on("data", log);
-        child.once("error", (error) => {
+        try {
+          const files = await this.options.isolatedBuild.run({
+            id: job.id,
+            root: job.root,
+            command,
+            signal: controller.signal,
+            log,
+          });
+          if (running.cancel) throw new Error(running.cancel);
+          await mkdir(output);
+          for (const [name, bytes] of files) {
+            if (running.cancel) throw new Error(running.cancel);
+            const relative = name.slice(1);
+            const parent = path.posix.dirname(relative);
+            if (parent !== ".")
+              await mkdir(await realDirectory(job.root, `dist/${parent}`), {
+                recursive: true,
+              });
+            await writeFile(path.join(output, relative), bytes, {
+              flag: "wx",
+              mode: 0o600,
+            });
+          }
+          code = 0;
+        } finally {
           clearTimeout(timeout);
-          reject(error);
-        });
-        child.once("close", (code) => {
+          running.buildAbort = undefined;
+        }
+      } else if (this.options.controlledBuild) {
+        const controller = new AbortController();
+        running.buildAbort = controller;
+        const timeout = setTimeout(() => {
+          running.cancel = "Build exceeded the five-minute time limit.";
+          controller.abort(new Error(running.cancel));
+        }, this.timeoutMs);
+        try {
+          code = await this.options.controlledBuild({
+            id: job.id,
+            root: job.root,
+            command,
+            signal: controller.signal,
+            log,
+            environment: this.options.environment || process.env,
+          });
+        } finally {
           clearTimeout(timeout);
-          resolve(code);
+          running.buildAbort = undefined;
+        }
+      } else
+        code = await new Promise<number | null>((resolve, reject) => {
+          // No input is interpolated into a shell command. The reviewed package manager runs its normal lifecycle scripts.
+          const child = spawn(process.execPath, [command.cli, "run", "build"], {
+            cwd: job.root,
+            windowsHide: true,
+            detached: process.platform !== "win32",
+            stdio: ["ignore", "pipe", "pipe"],
+            env: {
+              ...(this.options.environment || process.env),
+              FORCE_COLOR: "0",
+              CI: "1",
+            },
+          });
+          running.child = child;
+          const timeout = setTimeout(() => {
+            running.cancel = "Build exceeded the five-minute time limit.";
+            void stopChild(child).catch((error) =>
+              log(`\nUnable to stop build: ${error.message}`),
+            );
+          }, this.timeoutMs);
+          child.stdout?.on("data", log);
+          child.stderr?.on("data", log);
+          child.once("error", (error) => {
+            clearTimeout(timeout);
+            reject(error);
+          });
+          child.once("close", (code) => {
+            clearTimeout(timeout);
+            resolve(code);
+          });
         });
-      });
       running.child = undefined;
+      const stopWatch = stopStorageWatch;
+      stopStorageWatch = undefined;
+      await stopWatch?.();
       if (running.cancel) throw new Error(running.cancel);
       if (code !== 0)
         throw new Error(
@@ -510,6 +607,7 @@ export class RepositoryRunner {
           "Build completed without dist/index.html. Only static sites using dist/ are supported.",
         );
       const files = await snapshot(builtOutput);
+      await beforePreview?.(files, fingerprint);
       running.files = files;
       running.fingerprint = fingerprint;
       if (running.cancel || this.closed)
@@ -720,10 +818,18 @@ export class RepositoryRunner {
       );
     } catch (error) {
       this.closePreview(running);
+      const cleanupUncertain = error instanceof SandboxCleanupError;
+      if (cleanupUncertain) job.recoveryRequired = true;
       const terminalStatus = running.cancel ? "cancelled" : "failed";
       job.error = error.message;
-      log("\nRecovering build output before finishing this job…\n");
-      if (prepared)
+      log(
+        cleanupUncertain
+          ? "\nPreserving build output until process cleanup is confirmed…\n"
+          : "\nRecovering build output before finishing this job…\n",
+      );
+      if (cleanupUncertain)
+        job.error += ` Output is preserved in the website folder and ${job.recoveryDirectory} until all build processes have stopped.`;
+      if (prepared && !cleanupUncertain)
         try {
           const output = await realDirectory(job.root, "dist");
           if (await exists(output))
@@ -737,13 +843,26 @@ export class RepositoryRunner {
               output,
             );
         } catch (recovery) {
+          job.recoveryRequired = true;
           job.error += ` Recovery requires attention: ${recovery.message}. Original output is retained in ${job.recoveryDirectory}.`;
         }
       // A terminal status promises that restoration has finished (or its
       // recovery error has been recorded). Polling/close must still await us.
       job.status = terminalStatus;
     } finally {
+      // Finish a check already in flight before releasing the build's lock.
+      await stopStorageWatch?.().catch(() => {});
       job.finishedAt = new Date().toISOString();
+      if (recorded)
+        try {
+          await this.options.afterBuild?.(structuredClone(job));
+        } catch {
+          this.closePreview(running);
+          job.status = "failed";
+          job.recoveryRequired = true;
+          job.error =
+            "The build record could not be completed. Ask the operator to check the preserved website and recovery files.";
+        }
     }
   }
   async close() {
@@ -753,6 +872,7 @@ export class RepositoryRunner {
         this.closePreview(running);
         if (running.value.status === "building") {
           running.cancel = "Companion stopped.";
+          running.buildAbort?.abort(new Error(running.cancel));
           if (running.child) await stopChild(running.child);
           await running.done;
         }

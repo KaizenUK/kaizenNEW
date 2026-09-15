@@ -1,0 +1,28 @@
+{
+  "version": 1,
+  "stateDirectory": "/var/lib/kaizen-ops",
+  "email": {
+    "to": "sean@kaizenweb.co.uk",
+    "from": "alerts@kaizenweb.co.uk",
+    "sendmail": "/usr/sbin/sendmail"
+  },
+  "checks": [
+    { "id": "hosted-helper", "kind": "unit", "unit": "kaizen-hosted-helper.service" },
+    { "id": "nginx", "kind": "unit", "unit": "kaizen-nginx.service" },
+    { "id": "public-proxy", "kind": "unit", "unit": "httpd.service" },
+    { "id": "mail-queue", "kind": "unit", "unit": "exim.service" },
+    { "id": "publication-schedule", "kind": "unit", "unit": "kaizen-client-worker.timer" },
+    { "id": "publication-worker", "kind": "unit", "unit": "kaizen-client-worker.service", "oneshot": true },
+    { "id": "backup-schedule", "kind": "unit", "unit": "kaizen-backup.timer" },
+    { "id": "backup-operation", "kind": "unit", "unit": "kaizen-backup.service", "oneshot": true },
+    { "id": "helper-response", "kind": "helper", "url": "http://127.0.0.1:4334/health" },
+    { "id": "production", "kind": "release", "store": "/var/lib/kaizen/production", "origin": "http://127.0.0.1:8091" },
+    { "id": "staging", "kind": "release", "store": "/var/lib/kaizen/staging", "origin": "http://127.0.0.1:8093" },
+    { "id": "client-demo", "kind": "release", "store": "/var/lib/kaizen-client-releases/client-demo", "origin": "http://127.0.0.1:8092" },
+    { "id": "vps-backup-age", "kind": "receipt", "path": "/var/lib/kaizen-ops/last-backup.json", "maxAgeSeconds": 129600 },
+    { "id": "off-server-backup-age", "kind": "receipt", "path": "/var/lib/kaizen-ops/last-replica.json", "dateField": "sourceCompletedAt", "maxAgeSeconds": 129600 },
+    { "id": "disk-reserve", "kind": "disk", "path": "/var/lib/kaizen-ops", "minFreeBytes": 16106127360, "minFreeFraction": 0.1 },
+    { "id": "hosted-errors", "kind": "database", "projectRef": "yourprojectreference", "managementTokenFile": "/etc/kaizen-ops/supabase-access-token" },
+    { "id": "billing-processing", "kind": "billing", "projectRef": "yourprojectreference", "managementTokenFile": "/etc/kaizen-ops/supabase-access-token" }
+  ]
+}

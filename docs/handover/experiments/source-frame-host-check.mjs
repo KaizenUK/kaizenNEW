@@ -1,13 +1,19 @@
-// M0-T1/M0-T3: real runner snapshot, HTTPS parent, no cookies or security-disabling flags.
+// Real runner snapshot, no cookies or security-disabling flags. WebKit uses
+// the local developer builder: HTTPS-to-HTTP loopback embedding is blocked there.
 // Run: pnpm exec tsx docs/handover/experiments/source-frame-host-check.mjs
 import { mkdtemp, mkdir, writeFile, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import path from "node:path";
-import { chromium, firefox, expect } from "@playwright/test";
+import { chromium, firefox, webkit, expect } from "@playwright/test";
 import { RepositoryRunner } from "../../../scripts/builder-runner.ts";
 import { RepositoryCompanion } from "../../../scripts/builder-repository.ts";
 const root = await mkdtemp(path.join(tmpdir(), "kaizen-frame-spike-"));
 const runner = new RepositoryRunner();
+const browserName = process.env.FRAME_BROWSER || "chromium";
+const parentOrigin =
+  browserName === "webkit"
+    ? "http://127.0.0.1:4322"
+    : "https://builder.example";
 let browser;
 const diagnostics = [];
 try {
@@ -59,7 +65,7 @@ try {
     job.id,
     "fixture",
     inspection,
-    "https://builder.example",
+    parentOrigin,
     true,
     true,
   );
@@ -67,17 +73,19 @@ try {
   expect(response.status).toBe(200);
   expect(response.headers.get("set-cookie")).toBeNull();
   expect(response.headers.get("content-security-policy")).toBe(
-    "connect-src 'none'; form-action 'none'; frame-ancestors 'self' https://builder.example",
+    `connect-src 'none'; form-action 'none'; frame-ancestors 'self' ${parentOrigin}`,
   );
   expect((await fetch(new URL("/app.js", preview.url))).status).toBe(403);
-  browser = await (
-    process.env.FRAME_BROWSER === "firefox" ? firefox : chromium
-  ).launch();
+  const engine = { chromium, firefox, webkit }[browserName];
+  if (!engine)
+    throw new Error("Choose chromium, firefox or webkit for the frame check.");
+  browser = await engine.launch();
   const context = await browser.newContext();
   // Models the browser's Allow decision, not disabled browser security.
-  await context.grantPermissions(["local-network-access"], {
-    origin: "https://builder.example",
-  });
+  if (browserName === "chromium")
+    await context.grantPermissions(["local-network-access"], {
+      origin: parentOrigin,
+    });
   const page = await context.newPage();
   page.on("pageerror", (e) => diagnostics.push(e.message));
   page.on("console", (m) => {
@@ -86,7 +94,7 @@ try {
   page.on("requestfailed", (r) =>
     diagnostics.push(`${r.url()}: ${r.failure()?.errorText}`),
   );
-  await page.route("https://builder.example/**", (r) =>
+  await page.route(`${parentOrigin}/**`, (r) =>
     r.fulfill({
       contentType: "text/html",
       body: `<!doctype html><h1>Hosted editor fixture</h1><output id="status">Waiting</output><iframe title="Website canvas" sandbox="allow-scripts allow-same-origin" allow="local-network-access; local-network; loopback-network" src="${preview.url}"></iframe><script>
@@ -99,7 +107,7 @@ try {
   </script>`,
     }),
   );
-  await page.goto("https://builder.example/");
+  await page.goto(parentOrigin);
   const frame = page.frameLocator("iframe");
   await expect(frame.getByRole("heading")).toHaveText("Rendered local page");
   await expect(page.locator("#status")).toHaveText("Handshake complete");
@@ -115,7 +123,7 @@ try {
   expect(await context.cookies(new URL(preview.url).origin)).toEqual([]);
   expect(diagnostics).toEqual([]);
   console.log(
-    `PASS: ${browser.version()} HTTPS parent → real loopback snapshot; modules, CSS imports, images and bidirectional nonce handshake; no cookies.`,
+    `PASS: ${browser.version()} ${parentOrigin.startsWith("https:") ? "HTTPS" : "HTTP local"} parent → real loopback snapshot; modules, CSS imports, images and bidirectional nonce handshake; no cookies.`,
   );
 } catch (error) {
   console.error("Frame diagnostics:", diagnostics);

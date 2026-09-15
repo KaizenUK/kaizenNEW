@@ -1,3 +1,4 @@
+import { downloadText } from "./downloadText";
 import React, {
   useDeferredValue,
   useEffect,
@@ -44,14 +45,6 @@ import { storage } from "./storage";
 import { MediaContext } from "./MediaContext";
 import { useContext } from "react";
 import { importQueue, withImportLock, type ImportJob } from "./importQueue";
-export function downloadText(name: string, value: string) {
-  const url = URL.createObjectURL(new Blob([value], { type: "text/plain" }));
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = name;
-  a.click();
-  setTimeout(() => URL.revokeObjectURL(url), 1000);
-}
 export default function AssetLibrary({
   assets,
   workspace,
@@ -299,10 +292,20 @@ export default function AssetLibrary({
   }
   async function discardImport() {
     if (!pendingJob || busy) return;
+    setBusy(true);
     try {
       await withImportLock(pendingJob.scope, async () => {
         const current = await importQueue.load(pendingJob.scope);
-        if (current) await importQueue.discard(current);
+        if (current) {
+          for (const entry of current.entries) {
+            if (
+              entry.uploadUrl &&
+              !["uploaded", "duplicate"].includes(entry.state)
+            )
+              await storage.cancelUpload(entry.uploadUrl, current.scope);
+          }
+          await importQueue.discard(current);
+        }
         setPendingJob(undefined);
         setErrors([]);
         setStatus(
@@ -311,15 +314,15 @@ export default function AssetLibrary({
       });
     } catch (error) {
       notify((error as Error).message);
+    } finally {
+      setBusy(false);
     }
   }
-  async function sample() {
+  async function sample(name = "sample-pack.zip") {
     try {
-      const response = await fetch("/builder-samples/sample-pack.zip");
+      const response = await fetch(`/builder-samples/${name}`);
       if (!response.ok) throw new Error("Sample pack unavailable");
-      await importPack([
-        { path: "sample-pack.zip", file: await response.blob() },
-      ]);
+      await importPack([{ path: name, file: await response.blob() }]);
     } catch (error) {
       notify((error as Error).message);
     }
@@ -502,7 +505,14 @@ export default function AssetLibrary({
             <button
               disabled={busy || !!pendingJob || !queueReady}
               className="builder-text-button"
-              onClick={sample}
+              onClick={() => void sample("starter-illustrations.zip")}
+            >
+              Import starter illustrations
+            </button>
+            <button
+              disabled={busy || !!pendingJob || !queueReady}
+              className="builder-text-button"
+              onClick={() => void sample()}
             >
               Try the sample asset pack
             </button>
@@ -753,9 +763,6 @@ export default function AssetLibrary({
       <div className="builder-library-main">
         <p className="builder-hint">
           {visible.length} {visible.length === 1 ? "asset" : "assets"}
-          {compact
-            ? " · Drag images onto the page, or press Use."
-            : " · Select an asset to see where it is used, replace it or download it."}
         </p>
         {visible.length > 48 && (
           <nav className="builder-asset-pagination" aria-label="Asset pages">

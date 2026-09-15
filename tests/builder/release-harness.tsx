@@ -33,3 +33,50 @@ export function mountReleasePanel(rows: ReleaseStatus[], draft: BuilderPage) {
     </main>,
   );
 }
+
+/** Controlled release metadata rendered by the real client panel. */
+export async function mountClientReleaseStatuses(
+  jobs: import("../../shared/builderClientPublication").ClientPublicationJob[],
+) {
+  const { default: ClientPublications } =
+    await import("../../client/visual-builder/ClientPublications");
+  storage.clientPublication = async () => ({
+    jobs: structuredClone(jobs),
+    destinations: jobs
+      .filter((job) => job.active)
+      .map((job) => job.destination),
+    nextCursor: null,
+  });
+  const root = document.createElement("div");
+  root.className = "builder-app builder-dashboard";
+  document.body.replaceChildren(root);
+  createRoot(root).render(
+    <main>
+      <ClientPublications onChanged={() => undefined} />
+    </main>,
+  );
+}
+
+export async function mountStatusPages(pages: BuilderPage[]) {
+  const { default: PagesView } =
+    await import("../../client/visual-builder/PagesView");
+  const root = document.createElement("div");
+  root.className = "builder-app builder-dashboard";
+  document.body.replaceChildren(root);
+  createRoot(root).render(
+    <main>
+      <PagesView
+        onUseTemplate={async () => {}}
+        onCreateStarter={async () => {}}
+        workspace={{ pages, assets: [], saved: [] }}
+        localMode={false}
+        loading={false}
+        error=""
+        creating={false}
+        onCreate={() => undefined}
+        onOpen={() => undefined}
+        onRetry={() => undefined}
+      />
+    </main>,
+  );
+}

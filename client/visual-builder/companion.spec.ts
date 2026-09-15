@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest";
+import { afterEach, describe, it, expect, vi } from "vitest";
 import { mkdtemp, mkdir, writeFile, readFile, symlink } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import path from "node:path";
@@ -37,6 +37,27 @@ async function fixture() {
   return { directory, root, projects };
 }
 describe("paired local repository capabilities", () => {
+  afterEach(() => vi.unstubAllEnvs());
+  it("uses the configured hosted origin and still requires an approved folder", async () => {
+    vi.stubEnv("BUILDER_COMPANION_ORIGINS", "https://builder.example");
+    const { root, projects } = await fixture();
+    const sessions = new CompanionSessions(projects);
+    await expect(sessions.connect(identity, root)).rejects.toThrow(
+      "not approved",
+    );
+    await expect(
+      sessions.connect(
+        { ...identity, origin: "https://builder.example" },
+        "relative",
+      ),
+    ).rejects.toThrow("absolute");
+    await expect(
+      sessions.connect(
+        { ...identity, origin: "https://builder.example" },
+        root,
+      ),
+    ).resolves.toMatchObject({ root });
+  });
   it("persists separate account/project draft identities and keeps original workspace intact", async () => {
     const { root, projects } = await fixture();
     const sessions = new CompanionSessions(projects);

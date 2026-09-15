@@ -1,15 +1,18 @@
 import React, { useMemo, useState, type ReactNode } from "react";
-import {
-  ArrowRight,
-  LayoutTemplate,
-  Plus,
-  Search,
-  Sparkles,
-} from "lucide-react";
-import type { BuilderPage, Workspace } from "../../shared/visualBuilder";
+import { ArrowRight, LayoutTemplate, Plus, Search } from "lucide-react";
+import type {
+  BuilderPage,
+  PageDocument,
+  Workspace,
+} from "../../shared/visualBuilder";
 import { Head, Notice, Pill, formatWhen } from "./shell";
-import { ProjectName } from "./activeProject";
+import { ProjectName, useActiveProject } from "./activeProject";
+import PageTemplateGallery from "./PageTemplateGallery";
+import StarterSiteDialog from "./StarterSiteDialog";
+import type { StarterPlan } from "../../shared/builderStarter";
 import PageThumbnail from "./PageThumbnail";
+import { useProjectCapabilities } from "./activeProject";
+import { builderStatuses, savedPageStatus } from "./builderStatus";
 
 /* The workspace home: every page with its status, plus the two ways to start a new one. */
 
@@ -24,25 +27,25 @@ const tones = [
   "#B8E0F2",
 ];
 
-export function pageStatus(page: BuilderPage): {
+export function pageStatus(
+  page: BuilderPage,
+  localPreview = false,
+): {
   label: string;
-  tone: "grey" | "green" | "orange";
+  tone: "grey" | "green" | "orange" | "blue";
   filter: Filter;
+  detail: string;
 } {
-  if (!page.published)
-    return { label: "Draft", tone: "grey", filter: "drafts" };
-  // Published snapshots are resolved copies of the draft, so compare edit times rather than content.
-  const publishedAt = page.publishedAt ? Date.parse(page.publishedAt) : NaN;
-  const lastEdit = Math.max(
-    Date.parse(page.updatedAt) || 0,
-    ...page.revisions.map((revision) => Date.parse(revision.createdAt) || 0),
-  );
-  if (Number.isFinite(publishedAt) && lastEdit > publishedAt + 1500)
-    return { label: "Changes to publish", tone: "orange", filter: "changed" };
-  return { label: "Published", tone: "green", filter: "published" };
+  const state = localPreview ? "saved" : savedPageStatus(page);
+  return {
+    ...builderStatuses[state],
+    filter:
+      state === "live" ? "published" : page.published ? "changed" : "drafts",
+  };
 }
 
 export default function PagesView({
+  firstRun,
   sitePages,
   sitePagesFirst = false,
   workspace,
@@ -52,10 +55,14 @@ export default function PagesView({
   error,
   creating,
   onCreate,
+  onUseTemplate,
+  onCreateStarter,
+  websitePaths,
   onOpen,
   onRetry,
   login,
 }: {
+  firstRun?: ReactNode;
   sitePages?: React.ReactNode;
   sitePagesFirst?: boolean;
   workspace?: Workspace;
@@ -65,10 +72,16 @@ export default function PagesView({
   error: string;
   creating: boolean;
   onCreate: (template: boolean) => void;
+  onUseTemplate: (pageId: string, document: PageDocument) => Promise<void>;
+  onCreateStarter: (plan: StarterPlan) => Promise<void>;
+  websitePaths?: string[];
   onOpen: (page: BuilderPage) => void;
   onRetry: () => void;
   login?: ReactNode;
 }) {
+  const capabilities = useProjectCapabilities();
+  const { project } = useActiveProject();
+  const localPreview = localMode && capabilities.publishPath === "github";
   const [filter, setFilter] = useState<Filter>("all");
   const [sort, setSort] = useState<Sort>("updated");
   const [query, setQuery] = useState("");
@@ -76,14 +89,22 @@ export default function PagesView({
   const counts = useMemo(() => {
     const result = { all: pages.length, drafts: 0, published: 0, changed: 0 };
     pages.forEach((page) => {
-      result[pageStatus(page).filter] += 1;
+      const category = pageStatus(page, localPreview).filter;
+      result[category] += 1;
+      if (category === "changed") result.drafts += 1;
     });
     return result;
-  }, [pages]);
+  }, [pages, localPreview]);
   const visible = useMemo(() => {
     const needle = query.trim().toLowerCase();
     return pages
-      .filter((page) => filter === "all" || pageStatus(page).filter === filter)
+      .filter(
+        (page) =>
+          filter === "all" ||
+          (filter === "drafts"
+            ? pageStatus(page, localPreview).filter !== "published"
+            : pageStatus(page, localPreview).filter === filter),
+      )
       .filter(
         (page) =>
           !needle ||
@@ -96,7 +117,7 @@ export default function PagesView({
           ? a.draft.title.localeCompare(b.draft.title)
           : Date.parse(b.updatedAt) - Date.parse(a.updatedAt),
       );
-  }, [pages, filter, query, sort]);
+  }, [pages, filter, query, sort, localPreview]);
   const signedIn = Boolean(workspace) || localMode;
   return (
     <>
@@ -111,11 +132,7 @@ export default function PagesView({
           )
         }
         title="Pages"
-        description={
-          workspace
-            ? "Every page in this project. Drafts stay private until you publish them."
-            : undefined
-        }
+        help="pages"
         status={
           workspace ? (
             <Pill
@@ -165,13 +182,11 @@ export default function PagesView({
         {login}
         {workspace && (
           <>
+            {firstRun}
             <section className="builder-banner" aria-label="Add a page">
               <div className="builder-banner-text">
                 <h2>Add a page</h2>
-                <p>
-                  Start with a blank page, or with the starter template that
-                  already has a hero, features and a call to action in place.
-                </p>
+
                 <div className="builder-banner-actions">
                   <button
                     type="button"
@@ -181,14 +196,22 @@ export default function PagesView({
                   >
                     <Plus size={18} /> Blank page
                   </button>
-                  <button
-                    type="button"
-                    className="builder-banner-secondary"
+                  <PageTemplateGallery
+                    workspace={workspace}
+                    siteName={project?.name}
+                    reserveExisting={capabilities.hasInventory}
+                    websitePaths={websitePaths}
                     disabled={creating}
-                    onClick={() => onCreate(true)}
-                  >
-                    <Sparkles size={18} /> Use starter template
-                  </button>
+                    onUse={onUseTemplate}
+                  />
+                  {!capabilities.hasInventory && pages.length === 0 && (
+                    <StarterSiteDialog
+                      workspace={workspace}
+                      siteName={project?.name || "Your business"}
+                      disabled={creating}
+                      onCreate={onCreateStarter}
+                    />
+                  )}
                 </div>
               </div>
               <Orb className="builder-orb-large" />
@@ -204,9 +227,8 @@ export default function PagesView({
                   {(
                     [
                       ["all", "All"],
-                      ["drafts", "Drafts"],
-                      ["published", "Published"],
-                      ["changed", "Changes to publish"],
+                      ["drafts", "Saved"],
+                      ["published", "Live"],
                     ] as const
                   ).map(([id, label]) => (
                     <button
@@ -235,12 +257,14 @@ export default function PagesView({
                 <span>Page</span>
                 <span>Status</span>
                 <span>Last edited</span>
-                <span className="builder-page-row-published">Published</span>
+                <span className="builder-page-row-published">
+                  Last published
+                </span>
                 <span />
               </div>
               <div className="builder-page-list">
                 {visible.map((page, index) => {
-                  const status = pageStatus(page);
+                  const status = pageStatus(page, localPreview);
                   return (
                     <button
                       type="button"
@@ -261,7 +285,9 @@ export default function PagesView({
                           <small>/{page.draft.slug}/</small>
                         </span>
                       </span>
-                      <Pill tone={status.tone}>{status.label}</Pill>
+                      <Pill tone={status.tone} title={status.detail}>
+                        {status.label}
+                      </Pill>
                       <span className="builder-page-row-date">
                         {formatWhen(page.updatedAt)}
                       </span>
@@ -281,9 +307,7 @@ export default function PagesView({
                 <div className="builder-empty-pages">
                   <LayoutTemplate size={28} aria-hidden="true" />
                   <strong>No pages yet</strong>
-                  <span>
-                    Add a blank page or use the starter template above.
-                  </span>
+                  <span>Add a blank page or browse the templates above.</span>
                 </div>
               )}
               {pages.length > 0 && !visible.length && (

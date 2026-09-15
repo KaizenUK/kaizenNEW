@@ -1,0 +1,50 @@
+[Unit]
+Description=Kaizen hosted website helper
+Wants=network-online.target
+After=network-online.target
+StartLimitIntervalSec=60s
+StartLimitBurst=5
+
+[Service]
+Type=simple
+User=kaizen-helper
+Group=kaizen-helper
+WorkingDirectory=/opt/kaizen-hosted-helper
+Environment=NODE_ENV=production
+Environment=npm_execpath=/opt/kaizen-runtime/node/lib/node_modules/corepack/dist/pnpm.js
+EnvironmentFile=/etc/kaizen-helper/helper.env
+ExecStart=/usr/bin/flock --nonblock --no-fork /var/lib/kaizen-helper/work/service.lock /opt/kaizen-runtime/node/bin/node /opt/kaizen-hosted-helper/node_modules/tsx/dist/cli.mjs /opt/kaizen-hosted-helper/scripts/builder-hosted-helper.ts
+Restart=on-failure
+RestartSec=5s
+TimeoutStopSec=90s
+KillMode=control-group
+SendSIGKILL=yes
+UMask=0077
+NoNewPrivileges=true
+PrivateTmp=true
+PrivateDevices=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/lib/kaizen-helper/work /etc/kaizen-helper/credentials
+Delegate=cpu memory pids
+DelegateSubgroup=supervisor
+# Keep the host cgroup tree read-only except this service's delegated subtree.
+ReadWritePaths=/sys/fs/cgroup/system.slice/kaizen-hosted-helper.service
+# An overmounted host /proc/sys prevents an unprivileged namespace from
+# mounting its own procfs. Client builds get a fresh, entirely read-only /proc;
+# the supervisor retains an empty capability set and its unprivileged UID.
+ProtectKernelTunables=false
+ProtectKernelModules=true
+ProtectControlGroups=true
+RestrictSUIDSGID=true
+LockPersonality=true
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6
+CapabilityBoundingSet=
+TasksMax=1024
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=kaizen-hosted-helper
+LogNamespace=kaizen-helper
+
+[Install]
+WantedBy=multi-user.target

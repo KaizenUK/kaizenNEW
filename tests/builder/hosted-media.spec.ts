@@ -12,11 +12,14 @@ test("hosted media presentation renews in a real browser without resetting open 
     route.fulfill({
       contentType: "application/javascript",
       body: `
+    export const createIsolatedSupabaseClient=()=>{throw new Error('Account changes are outside this fixture');};
     export function getSupabaseClient() { return {
       auth: {
+        initialize: async () => ({error:null}),
         getSession: async () => ({data:{session:{user:{id:'fixture-owner'},access_token:'fixture-token'}},error:null}),
         onAuthStateChange: callback => {window.fixtureAuth=callback;return {data:{subscription:{unsubscribe(){}}}};}
       },
+      functions: {invoke: async () => ({data:[{id:'11111111-1111-4111-8111-111111111111',capabilities:{hasInventory:false,legacyWorkspace:false,publishPath:'worker'}}],error:null})},
       storage: {from: () => ({createSignedUrl: async () => {
         window.fixtureSigns=(window.fixtureSigns||0)+1;
         if(window.fixtureDenied)return {data:null,error:{message:'Fixture access denied'}};
@@ -26,18 +29,11 @@ test("hosted media presentation renews in a real browser without resetting open 
   `,
     }),
   );
-  await page.route(
-    "**/client/visual-builder/cloudProjects.ts*",
-    async (route) => {
-      const response = await route.fetch(),
-        source = await response.text();
-      const pattern = /(export )?const hostedProject\s*=[\s\S]*?;/;
-      expect(source).toMatch(pattern);
-      await route.fulfill({
-        response,
-        body: source.replace(pattern, "$1const hostedProject = true;"),
-      });
-    },
+  await page.route("**/client/visual-builder/builderMode.ts*", (route) =>
+    route.fulfill({
+      contentType: "application/javascript",
+      body: "export const builderCloudEnabled = true;",
+    }),
   );
   await page.route("**/__fixture-media?*", (route) =>
     route.fulfill({

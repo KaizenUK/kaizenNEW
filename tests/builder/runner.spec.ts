@@ -72,7 +72,7 @@ test("Unity reviews a local build, reopens its status and previews the result", 
     });
   }
   const popupPromise = context.waitForEvent("page");
-  await page.getByRole("link", { name: "Open local website preview" }).click();
+  await page.getByRole("button", { name: "Open website preview" }).click();
   const preview = await popupPromise;
   await expect(
     preview.getByRole("heading", { name: "Built through Unity" }),
@@ -83,9 +83,9 @@ test("Unity reviews a local build, reopens its status and previews the result", 
   ).toBeVisible();
   await preview.close();
   await page
-    .getByRole("button", { name: "Stop local preview", exact: true })
+    .getByRole("button", { name: "Stop preview", exact: true })
     .click();
   await expect(
-    page.getByRole("link", { name: "Open local website preview" }),
+    page.getByRole("button", { name: "Open website preview" }),
   ).toHaveCount(0);
 });

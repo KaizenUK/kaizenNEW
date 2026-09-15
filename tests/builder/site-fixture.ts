@@ -2,7 +2,12 @@ import { mkdtemp, mkdir, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import type { Page } from "@playwright/test";
-export async function siteFixture(page: Page, source: string) {
+import { openSiteProject } from "./hosted-repository-fixture";
+export async function siteFixture(
+  page: Page,
+  source: string,
+  hostedWorkspace = false,
+) {
   const root = await mkdtemp(path.join(tmpdir(), "kaizen-site-browser-"));
   await mkdir(path.join(root, "src/pages"), { recursive: true });
   await mkdir(path.join(root, "public/images"), { recursive: true });
@@ -29,12 +34,7 @@ export async function siteFixture(page: Page, source: string) {
   });
   if (!response.ok()) throw new Error(await response.text());
   const project = await response.json();
-  await page.goto(`/builder/?project=${project.id}`);
-  await page.evaluate(
-    ({ id, root }) =>
-      localStorage.setItem(`kaizen-native-repository:${id}`, root),
-    { id: project.id, root },
-  );
+  await openSiteProject(page, project, root, hostedWorkspace);
   return {
     root,
     project,

@@ -39,11 +39,16 @@ test("registered content slots retain nested visual edits through save and reope
   await expect(
     frame.locator(".kb-content-panel [data-puck-dropzone]"),
   ).toHaveCount(1);
-  await frame.getByRole("heading", { name: "Our approach" }).click();
+  await frame
+    .getByRole("group", { name: "Registered block", exact: true })
+    .click({ position: { x: 8, y: 8 } });
   await page
     .getByRole("textbox", { name: "Panel heading", exact: true })
     .fill("A client-specific approach");
-  await frame.getByText("Nested copy before editing", { exact: true }).click();
+  await frame
+    .getByRole("group", { name: "Text block", exact: true })
+    .filter({ hasText: "Nested copy before editing" })
+    .click();
   await page
     .getByRole("textbox", { name: "Text", exact: true })
     .fill("Nested copy after editing");
@@ -54,7 +59,7 @@ test("registered content slots retain nested visual edits through save and reope
     .getByRole("button", { name: "Mobile preview", exact: true })
     .click();
   await expect(page.locator(".builder-save-status")).toContainText(
-    "All changes saved",
+    "Saved",
   );
   await page.reload();
   await page

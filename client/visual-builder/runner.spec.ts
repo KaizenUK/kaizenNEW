@@ -373,3 +373,40 @@ describe("reviewed local repository builds", () => {
     );
   });
 });
+
+it("checks generated output before exposing a preview and restores the previous output on quota denial", async () => {
+  const root = await fixture(
+    `await mkdir('dist',{recursive:true}); for(let i=0;i<6;i++) await writeFile('dist/'+(i?'page'+i:'index')+'.html','<h1>Generated</h1>');`,
+  );
+  await mkdir(path.join(root, "dist"));
+  await writeFile(path.join(root, "dist/index.html"), "Previous output");
+  const value = runner();
+  const plan = await value.prepare(root, "fixture-usage");
+  let observed = 0;
+  const job = await value.wait(
+    (
+      await value.start(
+        plan.id,
+        "fixture-usage",
+        async (files, fingerprint) => {
+          expect(fingerprint).toBe(plan.fingerprint);
+          observed = [...files.keys()].filter((file) =>
+            file.endsWith(".html"),
+          ).length;
+          throw new Error("This website exceeds its current plan.");
+        },
+      )
+    ).id,
+    "fixture-usage",
+  );
+  expect(observed).toBe(6);
+  expect(job.status).toBe("failed");
+  expect(job.error).toContain("exceeds its current plan");
+  expect(job.previewUrl).toBeUndefined();
+  expect(await readFile(path.join(root, "dist/index.html"), "utf8")).toBe(
+    "Previous output",
+  );
+  expect(() => value.previewFiles(job.id, "fixture-usage")).toThrow(
+    /expired or closed/,
+  );
+});

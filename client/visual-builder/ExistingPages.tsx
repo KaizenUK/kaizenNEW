@@ -39,7 +39,7 @@ export default function ExistingPages({
       <Head
         info={<ProjectName fallback="Kaizen workspace" />}
         title="Existing site pages"
-        description="These pages are built from the website's own code, not the builder. You can change their text, links and images and reorder sections. Their design stays as it is."
+        help="existing"
       >
         <a
           className="builder-secondary builder-button-link"
@@ -81,10 +81,8 @@ export default function ExistingPages({
             </label>
           </div>
           <p className="builder-hint">
-            {filtered.length} pages found. Blog articles are managed in the CMS.
-            Page list recorded{" "}
-            {new Date(inventory.generatedAt).toLocaleDateString()}; it updates
-            when the site is rebuilt.
+            {filtered.length} pages found · Recorded{" "}
+            {new Date(inventory.generatedAt).toLocaleDateString()}.
             {inventory.cmsStatus !== "available" &&
               (inventory.cmsStatus === "not-configured"
                 ? " The CMS connection is not configured in this build, so only known site routes are listed."

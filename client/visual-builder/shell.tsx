@@ -1,8 +1,9 @@
+import { helpTopics, type HelpTopic } from "./helpContent";
+import HelpLink from "./HelpLink";
 import React, { useEffect, useState, type ReactNode } from "react";
 import { Brand } from "./Brand";
 export { Brand } from "./Brand";
-import { ProjectIdentity } from "./activeProject";
-import { activeProjectId } from "./projectStorage";
+import { ProjectIdentity, useProjectCapabilities } from "./activeProject";
 import {
   Archive,
   ArrowUpRight,
@@ -17,12 +18,14 @@ import {
   Rocket,
   Settings,
   Share2,
+  UserRound,
   Sun,
 } from "lucide-react";
 
 /* Unity-styled shell for every workspace screen: sidebar, page head and small primitives. */
 
 export type BuilderView =
+  | "account"
   | "settings"
   | "projects"
   | "repository"
@@ -112,7 +115,8 @@ export function Sidebar({
   hasInventory: boolean;
   pendingCount: number;
 }) {
-  const legacy = activeProjectId === "kaizen";
+  const capabilities = useProjectCapabilities();
+  const legacy = capabilities.legacyWorkspace;
   // Grouped by what the user is trying to do, in the order the work happens.
   const groups: { title: string; items: NavItem[] }[] = [
     {
@@ -130,7 +134,7 @@ export function Sidebar({
           id: "releases",
           label: "Releases",
           icon: <Rocket size={22} />,
-          hidden: localMode && legacy,
+          hidden: localMode && capabilities.publishPath === "github",
           count: pendingCount,
         },
         { id: "redirects", label: "Redirects", icon: <Link2 size={22} /> },
@@ -144,7 +148,6 @@ export function Sidebar({
           id: "settings",
           label: "Settings",
           icon: <Settings size={22} />,
-          hidden: legacy,
         },
         { id: "backups", label: "Backups", icon: <Archive size={22} /> },
         {
@@ -155,6 +158,13 @@ export function Sidebar({
       ],
     },
   ];
+  if (!localMode)
+    groups.push({
+      title: "Account",
+      items: [
+        { id: "account", label: "Account", icon: <UserRound size={22} /> },
+      ],
+    });
   const name = email ? email.split("@")[0] : "Local editor";
   const showLiveSite = hasInventory || legacy;
   return (
@@ -247,6 +257,7 @@ export function Sidebar({
       </div>
       <div className="builder-sidebar-footer">
         <ThemeToggle theme={theme} onToggle={onToggleTheme} />
+        <Pill>Private beta</Pill>
         <a
           href="/"
           className="builder-sidebar-exit"
@@ -271,8 +282,13 @@ export function Shell({
 }) {
   return (
     <div className="builder-app builder-shell" data-theme={theme}>
+      <a className="builder-skip-link" href="#builder-main">
+        Skip to page content
+      </a>
       {sidebar}
-      <div className="builder-main">{children}</div>
+      <main className="builder-main" id="builder-main" tabIndex={-1}>
+        {children}
+      </main>
     </div>
   );
 }
@@ -282,12 +298,14 @@ export function Head({
   info,
   title,
   description,
+  help,
   status,
   children,
 }: {
   info?: ReactNode;
   title: ReactNode;
   description?: ReactNode;
+  help?: HelpTopic;
   status?: ReactNode;
   children?: ReactNode;
 }) {
@@ -299,8 +317,16 @@ export function Head({
           <h1 className="builder-head-title">{title}</h1>
           {status}
         </div>
-        {description && (
-          <p className="builder-head-description">{description}</p>
+        {(description || help) && (
+          <p className="builder-head-description">
+            {description || (help && helpTopics[help].description)}
+            {help && (
+              <>
+                {" "}
+                <HelpLink topic={help} />
+              </>
+            )}
+          </p>
         )}
       </div>
       {children && <div className="builder-head-actions">{children}</div>}

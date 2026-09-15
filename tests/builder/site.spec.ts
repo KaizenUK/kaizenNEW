@@ -202,6 +202,7 @@ test("three pages share styles and components while overrides, detach and live i
       name: "Your next chapter starts here.",
       exact: true,
     })
+    .locator('xpath=ancestor::*[@data-puck-component][1]')
     .click();
   await page
     .getByRole("textbox", { name: "Text", exact: true })
@@ -292,6 +293,7 @@ test("three pages share styles and components while overrides, detach and live i
   await page
     .frameLocator("#preview-frame")
     .getByRole("heading", { name: "A shared new chapter", exact: true })
+    .locator('xpath=ancestor::*[@data-puck-component][1]')
     .click();
   await page
     .getByRole("textbox", { name: "Text", exact: true })

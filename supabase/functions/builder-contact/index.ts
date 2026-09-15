@@ -1,16 +1,20 @@
+import { checkFunctionLimit } from "../_shared/functionLimits.ts";
 import { createClient } from "npm:@supabase/supabase-js@2.98.0";
 import {
   ContactError,
   handleContactRequest,
 } from "../../../shared/builderContact.ts";
 
-const allowedOrigins = (
-  Deno.env.get("BUILDER_CONTACT_ORIGINS") ||
-  "https://kaizenweb.co.uk,https://www.kaizenweb.co.uk"
-)
-  .split(",")
-  .map((value) => value.trim())
-  .filter(Boolean);
+import {
+  DEFAULT_CONTACT_ORIGINS,
+  parseAllowedOrigins,
+} from "../../../shared/builderOrigins.ts";
+
+const allowedOrigins = parseAllowedOrigins(
+  Deno.env.get("BUILDER_CONTACT_ORIGINS"),
+  DEFAULT_CONTACT_ORIGINS,
+  "BUILDER_CONTACT_ORIGINS",
+);
 const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") || "";
 const service = createClient(Deno.env.get("SUPABASE_URL")!, serviceKey);
 // Keyed hashes avoid storing IP addresses or another copy of contact details in the retry ledger.
@@ -34,6 +38,8 @@ async function hash(value: string) {
 Deno.serve((request) =>
   handleContactRequest(request, {
     allowedOrigins,
+    beforeRead: (headers) =>
+      checkFunctionLimit(service, "builder-contact", headers),
     async submit(id, record) {
       const { error } = await service.rpc("builder_submit_contact", {
         request_id: id,

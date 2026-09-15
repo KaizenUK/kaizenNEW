@@ -14,6 +14,9 @@ import {
   PROJECT_FORMAT_VERSION,
   validProjectId,
   projectName,
+  projectCapabilities,
+  DEFAULT_PROJECT_CAPABILITIES,
+  LEGACY_PROJECT_CAPABILITIES,
   type BuilderProject,
 } from "../shared/builderProjects";
 import type { Workspace } from "../shared/visualBuilder";
@@ -88,6 +91,20 @@ export class LocalProjects {
         throw new Error(
           "Unsupported project catalogue version. Preserve this directory and update the builder.",
         );
+      let migrated = false;
+      for (const project of result.projects) {
+        if (project.capabilities === undefined) {
+          project.capabilities = {
+            ...(project.id === LEGACY_PROJECT_ID
+              ? LEGACY_PROJECT_CAPABILITIES
+              : DEFAULT_PROJECT_CAPABILITIES),
+          };
+          migrated = true;
+        }
+        project.capabilities = projectCapabilities(project.capabilities);
+      }
+      if (migrated)
+        await this.atomic(path.join(this.root, "projects.json"), result);
       return result;
     } catch (error) {
       if (error.code !== "ENOENT") throw error;
@@ -99,6 +116,7 @@ export class LocalProjects {
         projects: [
           {
             id: LEGACY_PROJECT_ID,
+            capabilities: { ...LEGACY_PROJECT_CAPABILITIES },
             name: "Kaizen workspace",
             createdAt: now,
             updatedAt: now,
@@ -142,6 +160,7 @@ export class LocalProjects {
       const now = new Date().toISOString();
       const project: BuilderProject = {
         id: randomUUID(),
+        capabilities: { ...DEFAULT_PROJECT_CAPABILITIES },
         name: projectName(`Local: ${name}`.slice(0, 100)),
         createdAt: now,
         updatedAt: now,
@@ -175,6 +194,7 @@ export class LocalProjects {
       const now = new Date().toISOString();
       const project: BuilderProject = {
         id: randomUUID(),
+        capabilities: { ...DEFAULT_PROJECT_CAPABILITIES },
         name: projectName(name),
         version: 1,
         createdAt: now,
@@ -277,6 +297,7 @@ export class LocalProjects {
           throw new Error("Source project not found.");
         const project: BuilderProject = {
           id: randomUUID(),
+          capabilities: { ...DEFAULT_PROJECT_CAPABILITIES },
           name: projectName(input.name),
           createdAt: now,
           updatedAt: now,

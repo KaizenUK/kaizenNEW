@@ -1,0 +1,28 @@
+[Unit]
+Description=Capture and verify encrypted Kaizen backups
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=oneshot
+Environment=PYTHONDONTWRITEBYTECODE=1
+ExecStart=/usr/bin/python3 /opt/kaizen-ops/backup.py /etc/kaizen-ops/backup.json scheduled
+TimeoutStartSec=2h
+UMask=0077
+SuccessExitStatus=75
+Nice=10
+IOSchedulingClass=best-effort
+IOSchedulingPriority=7
+PrivateTmp=true
+ProtectHome=true
+ProtectSystem=strict
+ReadWritePaths=/var/lib/kaizen-ops /var/backups/kaizen /var/lib/kaizen-helper/work/locks /var/lib/kaizen/production /var/lib/kaizen/staging /var/lib/kaizen-client-releases
+NoNewPrivileges=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+RestrictSUIDSGID=true
+LockPersonality=true
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6
+StandardOutput=journal
+StandardError=journal

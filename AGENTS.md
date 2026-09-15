@@ -1,10 +1,14 @@
 # Kaizen
 
-**Current launch continuation:** unfinished L6-T4 code lives in `/home/sean/Documents/GitHub/kaizen-launch`, branch `codex/builder-launch`. Read [the current Claude handover](../kaizen-launch/docs/handover/l6-t4-claude-tasks.md) and that worktree's `HANDOVER.md` before resuming. Preserve modified/untracked files in both worktrees; this original checkout does not contain the current launch implementation.
+**Current main handover — 15 September:** Sean paused implementation and authorized committing all pending work into `main`. Read [the consolidated Claude handover](docs/handover/claude-main-handover.md) first. Use `/home/sean/Documents/GitHub/kaizenNEW` on `main`; source from the earlier launch worktree is now committed here. Resume at D2d.2 only when implementation is resumed. Older instructions about uncommitted T4 or a required launch-worktree-only continuation are superseded.
 
 ## Paused builder work / Linux handover
 
-For continuation of the multi-project visual builder, read `HANDOVER.md` first. It records the 11 September 2026 user-requested pause for a Windows wipe, production state, private-data restoration, and Claude's visual/UX brief. The critical unfinished requirement is genuine WYSIWYG editing of existing sites; source-content fields and a separate selector are not completion. Resume implementation when Sean asks after migrating. The ordered task map for that work is `docs/existing-site-visual-editing-plan.md`. That work shipped on 12 September 2026; the next ordered task map, from private beta to public product, is `docs/builder-launch-plan.md` with its one-page brief in `docs/handover/codex-launch-brief.md`. `KAIZEN-PRIVATE-MIGRATION*` files are private and must never be committed or published.
+For continuation of the multi-project visual builder, read `HANDOVER.md` first. It records the 11 September 2026 user-requested pause for a Windows wipe, production state, private-data restoration, and Claude's visual/UX brief. The critical unfinished requirement is genuine WYSIWYG editing of existing sites; source-content fields and a separate selector are not completion. Resume implementation when Sean asks after migrating. The ordered task map for that work is `docs/existing-site-visual-editing-plan.md`. The next ordered task map is `docs/builder-launch-plan.md`, with its goal brief in `docs/handover/codex-launch-brief.md`. Sean has provisionally accepted the private beta gate and authorized continuation through L0–L6. Follow the later autonomy instructions in the brief; diagnose and fix failed tests without stalling. `KAIZEN-PRIVATE-MIGRATION*` files are private and must never be committed or published.
+
+For the current unfinished L6-T4 work and a Claude takeover, read `docs/handover/l6-t4-claude-tasks.md` after `HANDOVER.md`. It identifies the latest proof and ordered continuation tasks; older next-step paragraphs are historical.
+
+The current D2 implementation is broken into six checkpoints in `docs/handover/l6-t4-release-retirement-tasks.md`. D2a–c are verified in fixtures, including actual release removal and recovery after two service kills. D2d.1 native worker/idle maintenance is also verified; continue D2d.2 client/domain/retry coverage, then history availability. Native integration is prepared but uninstalled; preserve its generation cancellation, last-executor ownership, store/native locks and serving/rollback checks.
 
 A production-ready Astro static application with React islands, Sanity CMS, TypeScript, Vitest, and modern tooling.
 
@@ -79,7 +83,6 @@ export const GET: APIRoute = async ({ url }) => {
 ```
 
 Path aliases:
-
 - `@/*` - Client folder
 - `@shared/*` - Shared folder
 
@@ -98,3 +101,4 @@ pnpm test       # Run Vitest tests
 - Static `dist/` deployed to VPS web root
 - Optional separate Studio static deploy (`apps/studio/dist`)
 - GitHub Actions CI/CD pipeline (`.github/workflows/deploy.yml`)
+- On the VPS, observe Git as the checkout's service account or with `GIT_OPTIONAL_LOCKS=0` / `git --no-optional-locks`. Root-run `git status` can otherwise refresh `.git/index` as root and break deployment or editing. Mutate the managed checkout as `kaizen-helper` and deployment checkouts as `kaizen-deploy`; preserve Sean's pending source and drafts.

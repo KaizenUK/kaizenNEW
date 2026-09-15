@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { storage } from "./storage";
 import { activeProjectId } from "./projectStorage";
-import { companionConnection } from "./companionConnection";
+import { repositoryConnection } from "./repositoryConnection";
 import type {
   SourceDraft,
   SourceEdits,
@@ -12,7 +12,10 @@ export function useSourceEditingDraft(inspection?: SourceInspection) {
   const [values, setValues] = useState<Record<string, string>>({});
   const [orders, setOrders] = useState<Record<string, string[]>>({});
   const [assets, setAssets] = useState<NonNullable<SourceEdits["assets"]>>([]);
-  const [ready, setReady] = useState(false);
+  const [loadedInspection, setLoadedInspection] = useState<SourceInspection>();
+  // A new inspection must not expose the previous draft as ready for one
+  // render before its loading effect runs (for example immediately after Apply).
+  const ready = Boolean(inspection && loadedInspection === inspection);
   const [loadAttempt, setLoadAttempt] = useState(0);
   const [stale, setStale] = useState<SourceEdits>();
   const [error, setError] = useState("");
@@ -20,7 +23,7 @@ export function useSourceEditingDraft(inspection?: SourceInspection) {
   const version = useRef(0),
     persisted = useRef("null");
   const recoveryKey = inspection
-    ? `kaizen-source-recovery:${JSON.stringify([companionConnection.recoveryIdentity(), activeProjectId, inspection.root, inspection.route])}`
+    ? `kaizen-source-recovery:${JSON.stringify([repositoryConnection.recoveryIdentity(), activeProjectId, inspection.root, inspection.route])}`
     : "";
   const pending = useRef<
     { edits: SourceEdits | null; text: string } | undefined
@@ -37,7 +40,8 @@ export function useSourceEditingDraft(inspection?: SourceInspection) {
   useEffect(() => {
     if (!inspection) return;
     let current = true;
-    setReady(false);
+    setLoadedInspection(undefined);
+    setStatus("Reading saved edits…");
     setError("");
     storage
       .repository({
@@ -70,7 +74,7 @@ export function useSourceEditingDraft(inspection?: SourceInspection) {
             JSON.stringify(recovery.edits) !== JSON.stringify(draft.edits)
           ) {
             setStale(recovery.edits);
-            setReady(true);
+            setLoadedInspection(inspection);
             setStatus(
               "A newer helper draft exists. Your browser edits are kept for recovery.",
             );
@@ -96,7 +100,7 @@ export function useSourceEditingDraft(inspection?: SourceInspection) {
             draft.edits ? "Restored your saved edits." : "No changes yet.",
           );
         }
-        setReady(true);
+        setLoadedInspection(inspection);
       })
       .catch((e) => {
         if (current) setError(e.message);
@@ -152,7 +156,7 @@ export function useSourceEditingDraft(inspection?: SourceInspection) {
           if (mounted.current) {
             setStatus(
               saved.edits
-                ? "Edits saved on this computer. Not applied to the website yet."
+                ? `${repositoryConnection.savedLabel} Not applied to the website yet.`
                 : "No changes yet.",
             );
             setError("");
@@ -268,6 +272,23 @@ export function useSourceEditingDraft(inspection?: SourceInspection) {
     stale,
     error,
     status,
+    saved:
+      ready &&
+      !stale &&
+      !error &&
+      persisted.current ===
+        JSON.stringify(
+          Object.keys(values).length ||
+            Object.keys(orders).length ||
+            assets.length
+            ? {
+                inspection,
+                values,
+                orders,
+                ...(assets.length ? { assets } : {}),
+              }
+            : null,
+        ),
     version,
     flush,
     discardStale,

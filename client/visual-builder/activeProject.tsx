@@ -1,23 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { ArrowLeftRight } from "lucide-react";
 import type { BuilderProject } from "../../shared/builderProjects";
-import { activeProjectId, listProjects } from "./projectStorage";
+import { activeProjectId, cachedProjects } from "./projectStorage";
+import { DEFAULT_PROJECT_CAPABILITIES } from "../../shared/builderProjects";
 
 /* One shared read of the project list, so every screen can say which project it belongs to. */
 
-let cache: Promise<BuilderProject[]> | undefined;
-function projects(): Promise<BuilderProject[]> {
-  if (!cache)
-    cache = listProjects().catch((error) => {
-      cache = undefined;
-      throw error;
-    });
-  return cache;
-}
-if (typeof window !== "undefined")
-  window.addEventListener("builder-projects-changed", () => {
-    cache = undefined;
-  });
+const projects = cachedProjects;
 
 export function useActiveProject(): {
   project?: BuilderProject;
@@ -31,10 +20,13 @@ export function useActiveProject(): {
   }>({ error: "", loading: true });
   useEffect(() => {
     let mounted = true;
-    const refresh = () =>
+    let sequence = 0;
+    const refresh = () => {
+      const current = ++sequence;
+      setState({ error: "", loading: true });
       void projects()
         .then((items) => {
-          if (mounted)
+          if (mounted && current === sequence)
             setState({
               project: items.find((p) => p.id === activeProjectId),
               error: "",
@@ -42,13 +34,14 @@ export function useActiveProject(): {
             });
         })
         .catch((error) => {
-          if (mounted)
+          if (mounted && current === sequence)
             setState({
               project: undefined,
               error: (error as Error).message,
               loading: false,
             });
         });
+    };
     refresh();
     window.addEventListener("builder-projects-changed", refresh);
     return () => {
@@ -57,6 +50,12 @@ export function useActiveProject(): {
     };
   }, []);
   return state;
+}
+
+export function useProjectCapabilities() {
+  return (
+    useActiveProject().project?.capabilities || DEFAULT_PROJECT_CAPABILITIES
+  );
 }
 
 /** The current project's name, for page heads. */

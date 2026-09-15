@@ -1,4 +1,8 @@
-import React, { useEffect, useRef } from "react";
+import React, { useRef, type RefObject } from "react";
+import EditorDialog, {
+  EditorDialogTitle,
+  EditorDialogDescription,
+} from "./EditorDialog";
 import { Check, CircleAlert, Eye, Globe, X } from "lucide-react";
 import type {
   BuilderPage,
@@ -68,6 +72,7 @@ export default function PublishDialog({
   onCancel,
   onPublish,
   onPreview,
+  returnFocus,
 }: {
   document: PageDocument;
   page: BuilderPage;
@@ -76,26 +81,19 @@ export default function PublishDialog({
   onCancel: () => void;
   onPublish: () => void;
   onPreview: () => void;
+  returnFocus: RefObject<HTMLElement | null>;
 }) {
-  const primary = useRef<HTMLButtonElement>(null);
-  useEffect(() => {
-    primary.current?.focus();
-    const onKey = (event: KeyboardEvent) => {
-      if (event.key === "Escape") onCancel();
-    };
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, [onCancel]);
+  const cancel = useRef<HTMLButtonElement>(null);
   const checks = publishChecks(document, workspace);
   const warnings = checks.filter((check) => !check.ok).length;
   return (
-    <div className="builder-modal-backdrop" onMouseDown={onCancel}>
-      <div
+    <div className="builder-modal-backdrop">
+      <EditorDialog
         className="builder-modal"
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="builder-publish-title"
-        onMouseDown={(event) => event.stopPropagation()}
+        onClose={onCancel}
+        returnFocus={returnFocus}
+        initialFocus={cancel}
+        hasDescription
       >
         <button
           type="button"
@@ -105,15 +103,15 @@ export default function PublishDialog({
         >
           <X size={20} />
         </button>
-        <h2 id="builder-publish-title" className="builder-modal-title">
+        <EditorDialogTitle className="builder-modal-title">
           Publish “{document.title || "Untitled page"}”?
-        </h2>
-        <p className="builder-modal-lede">
+        </EditorDialogTitle>
+        <EditorDialogDescription className="builder-modal-lede">
           {page.published
             ? "This replaces the live version. "
             : "This is the first time the page goes live. "}
           Here is how it will appear in search, with a quick check first.
-        </p>
+        </EditorDialogDescription>
         <div className="builder-seo-preview">
           <strong>{document.title || "Untitled page"}</strong>
           <small>kaizenweb.co.uk › {document.slug || "…"}</small>
@@ -142,7 +140,6 @@ export default function PublishDialog({
         </p>
         <div className="builder-modal-actions">
           <button
-            ref={primary}
             type="button"
             className="builder-primary"
             disabled={busy}
@@ -151,7 +148,7 @@ export default function PublishDialog({
             <Globe size={16} />
             {busy ? "Publishing…" : "Publish now"}
           </button>
-          <button type="button" disabled={busy} onClick={onCancel}>
+          <button ref={cancel} type="button" disabled={busy} onClick={onCancel}>
             Cancel
           </button>
           <button
@@ -163,7 +160,7 @@ export default function PublishDialog({
             <Eye size={16} /> Preview first
           </button>
         </div>
-      </div>
+      </EditorDialog>
     </div>
   );
 }

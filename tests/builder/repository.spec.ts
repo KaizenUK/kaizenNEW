@@ -116,7 +116,7 @@ test("Unity repository handoff reviews changes and reopens for another visual ed
     .fill("Visual edit after reopening the repository");
   await page.getByRole("button", { name: "Save", exact: true }).click();
   await expect(page.locator(".builder-save-status")).toContainText(
-    "All changes saved",
+    "Saved",
   );
   await page
     .getByRole("button", { name: "Back to pages", exact: true })

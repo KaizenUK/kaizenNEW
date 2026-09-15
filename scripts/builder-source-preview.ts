@@ -9,8 +9,9 @@ export function sourceEditingScript(
   inspection: SourceInspection,
   nonce: string,
   parentOrigin: string,
+  previewPrefix?: string,
 ) {
-  return canvasScript(inspection, nonce, parentOrigin);
+  return canvasScript(inspection, nonce, parentOrigin, previewPrefix);
 }
 
 /** Only static file routes have a deterministic built URL. */
@@ -33,17 +34,21 @@ export function sourceSelectionScript(
   fields: SourceField[],
   nonce: string,
   parentOrigin: string,
+  previewPrefix?: string,
 ) {
-  const config = JSON.stringify({ fields, nonce, parentOrigin }).replace(
-    /</g,
-    "\\u003c",
-  );
+  const config = JSON.stringify({
+    fields,
+    nonce,
+    parentOrigin,
+    previewPrefix,
+  }).replace(/</g, "\\u003c");
   return (
     `const kaizenSelection = ${config};\n` +
     String.raw`
 (() => {
-  const {fields, nonce, parentOrigin} = kaizenSelection;
-  const send = (type, ids = []) => window.opener?.postMessage({type, nonce, ids}, parentOrigin);
+  const {fields, nonce, parentOrigin, previewPrefix} = kaizenSelection;
+  const rawUrl = value => previewPrefix ? value?.split(previewPrefix + '/').join('/') : value;
+  const send = (type, ids = []) => (window.opener || (window.parent !== window ? window.parent : null))?.postMessage({type, nonce, ids}, parentOrigin);
   const normalize = value => String(value || '').replace(/\s+/g, ' ').trim();
   const host = document.createElement('div');
   host.setAttribute('data-kaizen-source-toolbar', '');
@@ -71,8 +76,8 @@ export function sourceSelectionScript(
       if (text.length <= 20000) texts.add(text);
       for (const node of element.childNodes) if (node.nodeType === Node.TEXT_NODE) texts.add(normalize(node.textContent));
       for (const attr of ['alt','title','placeholder','aria-label']) if (element.hasAttribute(attr)) texts.add(normalize(element.getAttribute(attr)));
-      if (element.hasAttribute('href')) links.add(element.getAttribute('href'));
-      for (const attr of ['src','poster']) if (element.hasAttribute(attr)) images.add(element.getAttribute(attr));
+      if (element.hasAttribute('href')) links.add(rawUrl(element.getAttribute('href')));
+      for (const attr of ['src','poster']) if (element.hasAttribute(attr)) images.add(rawUrl(element.getAttribute(attr)));
     }
     return fields.filter(field => normalize(field.value) && (field.kind === 'link' ? links.has(field.value) : field.kind === 'image' ? images.has(field.value) : texts.has(normalize(field.value)))).map(field => field.id);
   }

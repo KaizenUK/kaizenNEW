@@ -47,16 +47,9 @@ export default function ProjectBackups({
   }, [busy]);
   return (
     <>
-      <Head
-        info={<ProjectName />}
-        title="Backups"
-        description="Download an editable copy of this project, or restore one. A backup is different from a website export: it keeps everything editable in the builder."
-      />
+      <Head info={<ProjectName />} title="Backups" help="backups" />
       <div className="builder-page-body">
-        <Card
-          title="Editable backup"
-          description="Includes pages, shared design, revisions, saved sections, settings and the asset library. External media, CMS content and form services keep their connections; credentials, enquiries and deployed releases are not included."
-        >
+        <Card title="Editable backup">
           <div className="builder-row builder-actions">
             <button
               type="button"

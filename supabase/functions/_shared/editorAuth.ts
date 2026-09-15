@@ -1,3 +1,7 @@
+import {
+  DEFAULT_EDITOR_ORIGINS,
+  parseAllowedOrigins,
+} from "../../../shared/builderOrigins.ts";
 export const STUDIO_EDITOR_COOKIE = "kaizen_studio_auth";
 export const COOKIE_MAX_AGE_SECONDS = 900;
 
@@ -15,12 +19,6 @@ function normalizeOrigin(value: string): string {
   return String(value).replace(/\/+$/, "").trim().toLowerCase();
 }
 
-function normalizeUrlOrigin(value: string): string {
-  const parsed = parseOrigin(value);
-  if (!parsed) return normalizeOrigin(value);
-  return normalizeOrigin(parsed.origin);
-}
-
 function parseOrigin(value: string): URL | null {
   try {
     return new URL(value);
@@ -29,9 +27,14 @@ function parseOrigin(value: string): URL | null {
   }
 }
 
-function isHttpsRequest(requestUrl: URL, forwardedProto?: string | null): boolean {
+function isHttpsRequest(
+  requestUrl: URL,
+  forwardedProto?: string | null,
+): boolean {
   if (requestUrl.protocol === "https:") return true;
-  const proto = String(forwardedProto ?? "").trim().toLowerCase();
+  const proto = String(forwardedProto ?? "")
+    .trim()
+    .toLowerCase();
   if (!proto) return false;
   return proto.split(",").some((entry) => entry.trim() === "https");
 }
@@ -52,28 +55,16 @@ function parseCookieHeader(header: string | null): Record<string, string> {
 }
 
 function getAllowedOrigins(): string[] {
-  const fromEnv = getEnv("ALLOWED_STUDIO_ORIGINS")
-    .split(",")
-    .map((entry) => normalizeUrlOrigin(entry))
-    .filter(Boolean);
-
-  const publicSiteOrigin = normalizeUrlOrigin(
-    getEnv("VITE_PUBLIC_SITE_ORIGIN") || getEnv("PUBLIC_SITE_ORIGIN"),
+  return parseAllowedOrigins(
+    Deno.env.get("ALLOWED_STUDIO_ORIGINS"),
+    DEFAULT_EDITOR_ORIGINS,
+    "ALLOWED_STUDIO_ORIGINS",
   );
-  const studioOrigin = normalizeUrlOrigin(
-    getEnv("VITE_STUDIO_ORIGIN") ||
-      getEnv("STUDIO_ORIGIN") ||
-      getEnv("PUBLIC_STUDIO_URL") ||
-      getEnv("STUDIO_URL"),
-  );
-  if (publicSiteOrigin) fromEnv.push(publicSiteOrigin);
-  if (studioOrigin) fromEnv.push(studioOrigin);
-
-  return Array.from(new Set(fromEnv));
 }
 
 export function getEditorApiOrigin(requestUrl: URL): string {
-  const configured = getEnv("VITE_EDITOR_API_ORIGIN") || getEnv("EDITOR_API_ORIGIN");
+  const configured =
+    getEnv("VITE_EDITOR_API_ORIGIN") || getEnv("EDITOR_API_ORIGIN");
   if (configured) return configured.replace(/\/+$/, "");
   return requestUrl.origin;
 }
@@ -100,7 +91,7 @@ export function getCorsHeaders(request: Request): Headers {
   const allowedOrigins = getAllowedOrigins();
   const allowOrigin = allowedOrigins.includes(requestOrigin)
     ? requestOrigin
-    : allowedOrigins[0] ?? "";
+    : (allowedOrigins[0] ?? "");
 
   if (allowOrigin) {
     headers.set("Access-Control-Allow-Origin", allowOrigin);
@@ -110,7 +101,7 @@ export function getCorsHeaders(request: Request): Headers {
 
   headers.set(
     "Access-Control-Allow-Headers",
-    "content-type, authorization, x-forwarded-proto",
+    "content-type, authorization, apikey, x-client-info, x-forwarded-proto",
   );
   headers.set("Access-Control-Allow-Methods", "GET,POST,OPTIONS");
   headers.set("Cache-Control", "no-store");
@@ -144,13 +135,19 @@ export function buildEditorCookie(options: CookieOptions): string {
   return `${base}; Max-Age=0`;
 }
 
-export function normalizeRedirectPath(rawValue: string | null, requestUrl: URL): string {
+export function normalizeRedirectPath(
+  rawValue: string | null,
+  requestUrl: URL,
+): string {
   const value = String(rawValue ?? "").trim();
   if (!value) return "/blog";
 
   if (/^https?:\/\//i.test(value)) {
     const parsed = parseOrigin(value);
-    if (!parsed || parsed.host.toLowerCase() !== requestUrl.host.toLowerCase()) {
+    if (
+      !parsed ||
+      parsed.host.toLowerCase() !== requestUrl.host.toLowerCase()
+    ) {
       return "/blog";
     }
     return `${parsed.pathname || "/"}${parsed.search}${parsed.hash}`;

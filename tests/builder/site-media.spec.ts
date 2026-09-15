@@ -107,9 +107,16 @@ test("M3: replace a picture, explain managed content and reorder source sections
     await expect(page.getByRole("dialog")).toContainText(
       `public/images/${asset.hash}.svg`,
     );
+    const plainReview = page.getByRole("list", {
+      name: "Before and after changes",
+    });
+    await expect(plainReview).toContainText("replacement.svg");
+    await expect(plainReview).toContainText("Responsive images");
+    await expect(plainReview).not.toContainText(asset.hash);
     await page
       .getByRole("button", { name: "Apply changes to the folder", exact: true })
       .click();
+    await expect(page.getByRole("dialog")).toHaveCount(0);
     await expect
       .poll(() =>
         readFile(path.join(root, "public/images", `${asset.hash}.svg`), "utf8"),

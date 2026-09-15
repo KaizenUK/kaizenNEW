@@ -1,146 +1,359 @@
-import React, { useEffect, useState, type ReactNode } from "react";
+import React, { useEffect, useRef, useState, type ReactNode } from "react";
 import type { Session } from "@supabase/supabase-js";
 import { cloud, localMode } from "./storage";
 import { Brand } from "./shell";
+import {
+  initialAuthLink,
+  readAuthLink,
+  cleanAuthLink,
+  passwordRecoveryAccount,
+  finishPasswordRecovery,
+} from "../lib/authRedirect";
+import {
+  authErrorMessage,
+  missingAuthLink,
+  unavailableAuthLink,
+  passwordResetRedirect,
+} from "./authState";
+import { AccountChangeError, changeAccount } from "./accountAuth";
+import { accountEmail, accountName } from "../../shared/builderAccount";
+import BuilderLegalGate, { BuilderLegalLinks } from "./BuilderLegalGate";
+import BuilderFirstProjectGate from "./BuilderFirstProjectGate";
+import BuilderSignup from "./BuilderSignup";
 
 /** Authentication gates mounting the workspace; project access is enforced by RLS/API. */
 export default function BuilderAuth({ children }: { children: ReactNode }) {
   const [ready, setReady] = useState(localMode);
   const [session, setSession] = useState<Session | null>(null);
-  const [settingPassword, setSettingPassword] = useState(
+  const [link] = useState(
     () =>
-      typeof location !== "undefined" &&
-      (new URLSearchParams(location.search).get("password") === "setup" ||
-        /(?:^#|&)type=(?:invite|recovery)(?:&|$)/.test(location.hash)),
+      initialAuthLink() ??
+      (typeof location === "undefined" ? null : readAuthLink(location.href)),
   );
+  const [settingAccount, setSettingAccount] = useState<string>();
+  const [linkProblem, setLinkProblem] = useState("");
   const [email, setEmail] = useState("");
+  const [name, setName] = useState("");
+  const account = useRef<string | undefined>(undefined);
+  const completedSetup = useRef<string | undefined>(undefined);
+  const pendingAction = useRef<"signin" | "reset" | "setup" | undefined>(
+    undefined,
+  );
   const [password, setPassword] = useState("");
   const [confirmation, setConfirmation] = useState("");
   const [busy, setBusy] = useState(false);
   const [reset, setReset] = useState(false);
   const [error, setError] = useState("");
   const [notice, setNotice] = useState("");
+  const [signup, setSignup] = useState<"create" | "confirm" | undefined>();
+  const live = useRef(false),
+    operation = useRef(0),
+    working = useRef(false);
   useEffect(() => {
     if (localMode || !cloud) return;
-    let mounted = true;
-    const accept = (next: Session | null) => {
+    let mounted = true,
+      revision = 0,
+      initialized = false;
+    let latest: Session | null = null,
+      recoverySeen: string | undefined;
+    live.current = true;
+    const accept = (next: Session | null, event = "INITIAL_SESSION") => {
       if (!mounted) return;
+      const signedInFromForm =
+        initialized &&
+        event === "SIGNED_IN" &&
+        pendingAction.current === "signin";
+      if (account.current !== next?.user.id) {
+        operation.current++;
+        working.current = false;
+        setBusy(false);
+        account.current = next?.user.id;
+        completedSetup.current = undefined;
+        pendingAction.current = undefined;
+        const candidate =
+          next?.user.user_metadata?.full_name ?? next?.user.user_metadata?.name;
+        setName(typeof candidate === "string" ? candidate : "");
+        setPassword("");
+        setConfirmation("");
+        setError("");
+        setNotice("");
+        setSettingAccount(undefined);
+        setSignup(undefined);
+      }
+      latest = next;
       setSession(next);
-      setReady(true);
-      if (next?.user.user_metadata?.builder_password_set === false)
-        setSettingPassword(true);
+      if (initialized) setReady(true);
+      if (signedInFromForm) setLinkProblem("");
+      if (
+        next?.user.user_metadata?.builder_password_set === false &&
+        completedSetup.current !== next.user.id
+      )
+        setSettingAccount(next.user.id);
+      if (
+        next &&
+        (event === "PASSWORD_RECOVERY" ||
+          passwordRecoveryAccount() === next.user.id)
+      ) {
+        recoverySeen = next.user.id;
+        setSettingAccount(next.user.id);
+        setLinkProblem("");
+      }
     };
-    cloud.auth
-      .getSession()
-      .then(({ data, error }) => {
-        accept(data.session);
-        if (mounted && error) setError(error.message);
-      })
-      .catch(() => {
-        if (mounted) {
-          setReady(true);
-          setError(
-            "Sign-in could not be checked. Please reload and try again.",
-          );
-        }
-      });
     const { data } = cloud.auth.onAuthStateChange((event, next) => {
-      if (event === "PASSWORD_RECOVERY") setSettingPassword(true);
-      accept(next);
+      revision++;
+      accept(next, event);
     });
+    void (async () => {
+      try {
+        const startup = await cloud.auth.initialize();
+        const beforeRead = revision;
+        const current = await cloud.auth.getSession();
+        if (!mounted) return;
+        if (beforeRead === revision)
+          accept(current.error ? null : current.data.session);
+        const observed = latest as Session | null;
+        if (link?.failed || (startup.error && link?.callback)) {
+          const message = authErrorMessage(
+            startup.error || { code: link?.errorCode },
+            "check",
+          );
+          setLinkProblem(
+            message === authErrorMessage(null, "check")
+              ? unavailableAuthLink
+              : message,
+          );
+        } else if (
+          link?.setupRequested &&
+          (!observed ||
+            (passwordRecoveryAccount() !== observed.user.id &&
+              recoverySeen !== observed.user.id)) &&
+          observed?.user.user_metadata?.builder_password_set !== false
+        )
+          setLinkProblem(missingAuthLink);
+        else if (startup.error || (current.error && beforeRead === revision))
+          setError(authErrorMessage(startup.error || current.error, "check"));
+        if (link?.callback)
+          history.replaceState(null, "", cleanAuthLink(location.href));
+      } catch (error) {
+        if (mounted) {
+          const message = authErrorMessage(error, "check");
+          if (link?.callback || link?.setupRequested) setLinkProblem(message);
+          else setError(message);
+        }
+      } finally {
+        initialized = true;
+        if (mounted) setReady(true);
+      }
+    })();
     return () => {
       mounted = false;
+      live.current = false;
+      operation.current++;
       data.subscription.unsubscribe();
     };
   }, []);
+  async function signOut() {
+    if (!cloud || working.current) return;
+    working.current = true;
+    setBusy(true);
+    setError("");
+    const version = operation.current;
+    try {
+      const result = await cloud.auth.signOut({ scope: "local" });
+      if (result.error) throw result.error;
+      if (live.current && account.current === undefined) {
+        setLinkProblem("");
+        setSettingAccount(undefined);
+        setReset(false);
+        history.replaceState(null, "", cleanAuthLink(location.href));
+      }
+    } catch (error) {
+      if (live.current && version === operation.current)
+        setError(authErrorMessage(error, "signout"));
+    } finally {
+      if (live.current && version === operation.current) {
+        working.current = false;
+        setBusy(false);
+      }
+    }
+  }
   if (localMode || !cloud) return children;
-  if (ready && session && !settingPassword) return children;
-  const setup = Boolean(session && settingPassword);
+  const setup = Boolean(
+    session && !linkProblem && settingAccount === session.user.id,
+  );
+  if (ready && session && !setup && !linkProblem)
+    return (
+      <BuilderLegalGate key={session.user.id} accountId={session.user.id}>
+        <BuilderFirstProjectGate
+          key={session.user.id}
+          accountId={session.user.id}
+        >
+          {children}
+        </BuilderFirstProjectGate>
+      </BuilderLegalGate>
+    );
+  if (ready && !session && signup)
+    return (
+      <BuilderSignup
+        initialEmail={email}
+        confirmationOnly={signup === "confirm"}
+        onBack={() => {
+          setSignup(undefined);
+          setError("");
+          setNotice("");
+          setPassword("");
+          setReset(false);
+        }}
+      />
+    );
+  const invitedSetup =
+    setup && session?.user.user_metadata?.builder_password_set === false;
   return (
     <div className="builder-app builder-auth" data-theme="light">
       <main className="builder-auth-card">
         <Brand />
         {!ready ? (
           <p role="status">Checking your sign-in…</p>
+        ) : session && linkProblem ? (
+          <section
+            className="builder-login"
+            aria-label="Sign-in link unavailable"
+          >
+            <h1>This link could not be used</h1>
+            <p role="alert">{linkProblem}</p>
+            <p>
+              You are still signed in as <strong>{session.user.email}</strong>.
+              Continue with this account, or sign out to use another one.
+            </p>
+            {error && <p role="alert">{error}</p>}
+            <button
+              className="builder-primary"
+              disabled={busy}
+              onClick={() => {
+                setLinkProblem("");
+                history.replaceState(null, "", cleanAuthLink(location.href));
+              }}
+            >
+              Continue with this account
+            </button>
+            <button disabled={busy} onClick={() => void signOut()}>
+              Sign out and use another account
+            </button>
+          </section>
         ) : (
           <form
             className="builder-login"
             onSubmit={async (event) => {
               event.preventDefault();
-              if (busy) return;
+              if (working.current) return;
+              working.current = true;
+              pendingAction.current = setup
+                ? "setup"
+                : reset
+                  ? "reset"
+                  : "signin";
+              const version = operation.current;
               setBusy(true);
               setError("");
               setNotice("");
               try {
                 if (setup) {
+                  if (invitedSetup && !accountName(name))
+                    throw new AccountChangeError(
+                      "Add your name using 1–200 characters, without brackets or control characters.",
+                    );
                   if (password.length < 12)
-                    throw new Error(
+                    throw new AccountChangeError(
                       "Use at least 12 characters for your password.",
                     );
                   if (password !== confirmation)
-                    throw new Error("The passwords do not match.");
-                  const result = await cloud.auth.updateUser({
+                    throw new AccountChangeError("The passwords do not match.");
+                  const accountId = session!.user.id;
+                  await changeAccount(accountId, {
+                    action: "setup-password",
                     password,
-                    data: { builder_password_set: true },
+                    confirmation,
+                    ...(invitedSetup ? { name } : {}),
                   });
-                  if (result.error) throw result.error;
-                  const url = new URL(location.href);
-                  url.searchParams.delete("password");
-                  url.hash = "";
-                  history.replaceState(null, "", url);
+                  if (!live.current || version !== operation.current) return;
+                  history.replaceState(null, "", cleanAuthLink(location.href));
+                  finishPasswordRecovery(accountId);
+                  completedSetup.current = accountId;
                   setPassword("");
                   setConfirmation("");
-                  setSettingPassword(false);
+                  setSettingAccount(undefined);
                 } else if (reset) {
-                  const result = await cloud.auth.resetPasswordForEmail(email, {
-                    redirectTo: `${location.origin}/builder/?password=setup`,
-                  });
+                  const address = accountEmail(email);
+                  if (!address)
+                    throw new AccountChangeError(
+                      "Enter a valid email address.",
+                    );
+                  const result = await cloud.auth.resetPasswordForEmail(
+                    address,
+                    {
+                      redirectTo: passwordResetRedirect(location.href),
+                    },
+                  );
                   if (result.error) throw result.error;
+                  if (!live.current || version !== operation.current) return;
+                  setLinkProblem("");
                   setNotice(
                     "If this address has an account, a password reset link has been requested. Check your email.",
                   );
                 } else {
                   const result = await cloud.auth.signInWithPassword({
-                    email,
+                    email: email.trim(),
                     password,
                   });
                   if (result.error) throw result.error;
+                  if (!live.current || version !== operation.current) return;
                   setPassword("");
                 }
               } catch (error) {
-                setError(
-                  error instanceof Error
-                    ? error.message
-                    : "Sign-in failed. Please try again.",
-                );
+                if (live.current && version === operation.current)
+                  setError(
+                    error instanceof AccountChangeError &&
+                      error.code === "account_change_failed"
+                      ? error.message
+                      : authErrorMessage(
+                          error,
+                          setup ? "setup" : reset ? "reset" : "signin",
+                        ),
+                  );
               } finally {
-                setBusy(false);
+                if (live.current && version === operation.current) {
+                  working.current = false;
+                  pendingAction.current = undefined;
+                  setBusy(false);
+                }
               }
             }}
           >
             <h1>
               {setup
-                ? "Set your password"
+                ? invitedSetup
+                  ? "Set up your account"
+                  : "Set your password"
                 : reset
                   ? "Reset your password"
                   : "Sign in to Kaizen Builder"}
             </h1>
             <p>
               {setup
-                ? `Choose a password for ${session?.user.email}.`
-                : "Use your invited editor account to access your projects."}
+                ? invitedSetup
+                  ? `Add your name and choose a password for ${session?.user.email}.`
+                  : `Choose a password for ${session?.user.email}.`
+                : reset
+                  ? "Enter your account email to request a new password link."
+                  : "Sign in to access your projects, or create an account to start a website."}
             </p>
-            {settingPassword && !session && (
-              <p>
-                Your invitation or reset link has expired or has already been
-                used. Sign in, or request a new password reset link.
-              </p>
-            )}
+            {linkProblem && <p role="alert">{linkProblem}</p>}
             {!setup && (
               <label>
                 Email address
                 <input
                   name="email"
+                  disabled={busy}
                   type="email"
                   autoComplete="username"
                   required
@@ -149,11 +362,26 @@ export default function BuilderAuth({ children }: { children: ReactNode }) {
                 />
               </label>
             )}
+            {invitedSetup && (
+              <label>
+                Your name
+                <input
+                  name="full-name"
+                  disabled={busy}
+                  autoComplete="name"
+                  required
+                  maxLength={200}
+                  value={name}
+                  onChange={(event) => setName(event.target.value)}
+                />
+              </label>
+            )}
             {(!reset || setup) && (
               <label>
                 {setup ? "New password" : "Password"}
                 <input
                   name="password"
+                  disabled={busy}
                   type="password"
                   autoComplete={setup ? "new-password" : "current-password"}
                   minLength={setup ? 12 : undefined}
@@ -168,6 +396,7 @@ export default function BuilderAuth({ children }: { children: ReactNode }) {
                 Confirm password
                 <input
                   name="confirmation"
+                  disabled={busy}
                   type="password"
                   autoComplete="new-password"
                   minLength={12}
@@ -197,22 +426,53 @@ export default function BuilderAuth({ children }: { children: ReactNode }) {
                   setReset(!reset);
                   setError("");
                   setNotice("");
+                  setPassword("");
+                  setConfirmation("");
                 }}
               >
-                {reset ? "Back to sign in" : "Forgot password?"}
+                {reset
+                  ? "Back to sign in"
+                  : linkProblem
+                    ? "Request a new password reset link"
+                    : "Forgot password?"}
+              </button>
+            )}
+            {!setup && (
+              <button
+                type="button"
+                disabled={busy}
+                onClick={() => {
+                  setSignup("create");
+                  setPassword("");
+                }}
+              >
+                Create an account
+              </button>
+            )}
+            {!setup && (
+              <button
+                type="button"
+                disabled={busy}
+                onClick={() => {
+                  setSignup("confirm");
+                  setPassword("");
+                }}
+              >
+                Confirm your email
               </button>
             )}
             {setup && (
               <button
                 type="button"
                 disabled={busy}
-                onClick={() => void cloud.auth.signOut()}
+                onClick={() => void signOut()}
               >
                 Sign out
               </button>
             )}
           </form>
         )}
+        <BuilderLegalLinks />
       </main>
     </div>
   );

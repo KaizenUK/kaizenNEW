@@ -136,7 +136,10 @@ test("save a developer brief, reuse a reviewed component and publish its respons
       .getByRole("button", { name: "Use reviewed block", exact: true })
       .click();
     const frame = page.frameLocator("#preview-frame");
-    await frame.locator(".kb-reviewed-card").click();
+    // Select through the canvas overlay; the rendered article sits beneath it.
+    await frame
+      .getByRole("group", { name: "Registered block", exact: true })
+      .click();
     await page
       .getByRole("textbox", { name: "Card text", exact: true })
       .fill("A reviewed and editable card");
@@ -158,9 +161,7 @@ test("save a developer brief, reuse a reviewed component and publish its respons
       .getByRole("textbox", { name: "Page URL", exact: true })
       .fill(slug);
     await page.getByRole("button", { name: "Save", exact: true }).click();
-    await expect(page.locator(".builder-save-status")).toContainText(
-      "All changes saved",
-    );
+    await expect(page.locator(".builder-save-status")).toContainText("Saved");
     await page.getByRole("button", { name: "Publish", exact: true }).click();
     await page
       .getByRole("button", { name: "Publish now", exact: true })

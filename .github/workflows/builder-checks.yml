@@ -4,6 +4,11 @@ on:
   pull_request:
     paths:
       - "client/visual-builder/**"
+      - "client/lib/supabase*.ts"
+      - "client/lib/authRedirect.ts"
+      - "shared/builderAccount.ts"
+      - "shared/builderLegal.ts"
+      - "shared/builderPrivacy.ts"
       - "shared/visualBuilder.ts"
       - "shared/builderSite.ts"
       - "shared/builderContact.ts"
@@ -20,10 +25,17 @@ on:
       - "shared/builderRouteTypes.ts"
       - "shared/builderRedirects.js"
       - "shared/builderProjects.ts"
+      - "shared/builderOrigins.ts"
+      - "shared/builderDiagnostics.ts"
       - "shared/builderSettings.ts"
       - "shared/builderClientPublication.ts"
       - "shared/builderSiteMetadata.ts"
+      - "shared/builderWebsiteStatus.ts"
       - "shared/builderProjectOperations.ts"
+      - "shared/builderStarter.ts"
+      - "shared/builderRepositorySave.ts"
+      - "shared/builderRepositorySettings.ts"
+      - "shared/builderRepositoryPublish.ts"
       - "shared/publicRoutePolicy.js"
       - "shared/nginxRedirects.js"
       - "supabase/migrations/*builder*"
@@ -31,9 +43,33 @@ on:
       - "supabase/functions/builder-contact/**"
       - "supabase/functions/builder-content/**"
       - "supabase/functions/builder-projects/**"
+      - "supabase/functions/builder-invite/**"
+      - "supabase/functions/builder-account/**"
+      - "supabase/functions/builder-billing/**"
+      - "supabase/functions/builder-billing-webhook/**"
+      - "supabase/functions/_shared/builderAccounts.ts"
+      - "supabase/functions/_shared/builderPrivacy.ts"
+      - "supabase/functions/_shared/builderInvitations.ts"
       - "supabase/functions/_shared/clientPublication.ts"
+      - "supabase/functions/_shared/githubPublication.ts"
+      - "supabase/functions/_shared/clientDiagnostics.ts"
+      - "supabase/functions/_shared/editorAuth.ts"
+      - "supabase/functions/_shared/functionLimits.ts"
+      - "supabase/functions/_shared/requestBody.ts"
       - "public/builder-samples/**"
       - "scripts/builder-local.ts"
+      - "scripts/builder-hosted-*.ts"
+      - "scripts/builder-build-*.ts"
+      - "scripts/builder-build-*.py"
+      - "scripts/prepare-builder-isolation-check.mjs"
+      - "scripts/check-new-secrets.py"
+      - "scripts/ops/**"
+      - "tests/ops/**"
+      - "deploy/ops/**"
+      - "docs/builder-backups.md"
+      - "scripts/builder-account-delete.ts"
+      - "scripts/builder-privacy-requests.ts"
+      - "docs/builder-privacy.md"
       - "scripts/builder-client-publisher.ts"
       - "scripts/builder-client-worker.ts"
       - "deploy/systemd/**"
@@ -44,11 +80,15 @@ on:
       - "scripts/kaizen-releases.mjs"
       - "scripts/release-recovery.mjs"
       - "scripts/client-publication.mjs"
+      - "docs/visual-builder.md"
       - "docs/client-destinations.example.json"
+      - "docs/hosted-repositories.example.json"
       - "scripts/builder-release-worker.mjs"
       - "scripts/builder-previews.ts"
       - "scripts/builder-projects.ts"
+      - "scripts/builder-companion.ts"
       - "scripts/builder-repository.ts"
+      - "scripts/builder-repository-git.ts"
       - "scripts/builder-source-editing.ts"
       - "scripts/builder-source-drafts.ts"
       - "scripts/builder-source-preview.ts"
@@ -56,19 +96,26 @@ on:
       - "shared/builderSourceEditing.ts"
       - "scripts/builder-runner.ts"
       - "scripts/deploy-public-release.sh"
+      - "scripts/verify-studio-env.mjs"
+      - "apps/studio/**"
+      - "scripts/preflight-public-deploy.sh"
+      - "tests/deploy/**"
       - "scripts/generate-nginx-redirects.mjs"
       - "scripts/generate-builder-style-css.mjs"
       - "src/pages/**"
+      - "src/layouts/BuilderLegalLayout.astro"
       - "src/lib/builderPublished.ts"
       - "src/lib/builderPageInventory.ts"
       - "patches/**"
       - "tests/builder/**"
+      - "tests/functions/**"
       - "playwright.builder.config.ts"
       - "vitest.config.ts"
       - "astro.config.mjs"
       - "package.json"
       - "pnpm-lock.yaml"
       - ".github/workflows/builder-checks.yml"
+      - ".github/workflows/kaizen-uptime.yml"
       - ".github/workflows/deploy.yml"
   workflow_dispatch:
 
@@ -76,21 +123,70 @@ permissions:
   contents: read
 
 jobs:
-  builder:
-    runs-on: ubuntu-latest
-    timeout-minutes: 20
+  operations:
+    name: Encrypted backups and isolated PostgreSQL recovery
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: 22
+      - name: Install backup and native recovery tools
+        run: |
+          sudo install -d /usr/share/postgresql-common/pgdg
+          curl --fail --silent --show-error --location https://www.postgresql.org/media/keys/ACCC4CF8.asc -o /tmp/kaizen-pgdg.asc
+          sudo install -m 0644 /tmp/kaizen-pgdg.asc /usr/share/postgresql-common/pgdg/apt.postgresql.org.asc
+          echo 'deb [signed-by=/usr/share/postgresql-common/pgdg/apt.postgresql.org.asc] https://apt.postgresql.org/pub/repos/apt noble-pgdg main' | sudo tee /etc/apt/sources.list.d/kaizen-pgdg.list
+          sudo apt-get update
+          sudo apt-get install -y restic rsync postgresql-17 nginx
+      - name: Verify temporary encrypted backups, replicas and database recovery
+        run: python3 -m unittest discover -s tests/ops -p 'test_*.py' -v
+        env:
+          KAIZEN_PG_BIN: /usr/lib/postgresql/17/bin
+          KAIZEN_NGINX_BINARY: nginx
+  builder:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Install the pinned secret checker
+        run: |
+          python3 scripts/check-new-secrets.py --install "$RUNNER_TEMP/kaizen-gitleaks"
+          echo "GITLEAKS_BINARY=$RUNNER_TEMP/kaizen-gitleaks/gitleaks" >> "$GITHUB_ENV"
+      - name: Check only new credentials and private files
+        env:
+          SECURITY_BASE: ${{ github.event.pull_request.base.sha }}
+        run: |
+          security_base="${SECURITY_BASE:-$(git rev-parse HEAD^)}"
+          python3 tests/deploy/new-secrets.py
+          python3 scripts/check-new-secrets.py "$security_base"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
       - run: corepack enable
       - run: pnpm install --frozen-lockfile
+      - name: Audit dependencies (fail on high or critical advisories)
+        run: |
+          pnpm audit --audit-level high
+          pnpm --dir apps/studio audit --audit-level high
       - uses: denoland/setup-deno@v2
         with:
           deno-version: v2.x
-      - run: deno check --config supabase/functions/builder-projects/deno.json supabase/functions/builder-projects/index.ts supabase/functions/builder-publish/index.ts
+      - run: deno check --lock="$RUNNER_TEMP/builder-functions.lock" --config supabase/functions/builder-projects/deno.json supabase/functions/builder-projects/index.ts supabase/functions/builder-publish/index.ts supabase/functions/builder-contact/index.ts supabase/functions/builder-content/index.ts supabase/functions/builder-invite/index.ts supabase/functions/builder-account/index.ts supabase/functions/builder-billing/index.ts supabase/functions/builder-billing-webhook/index.ts
+      - name: Audit the actual function dependency graph
+        run: deno audit --lock="$RUNNER_TEMP/builder-functions.lock" --level high
+      - name: Check actual function request boundaries with fixture responses
+        run: deno test --lock="$RUNNER_TEMP/builder-functions.lock" --config supabase/functions/builder-projects/deno.json --allow-read --allow-env tests/functions/
       - run: pnpm typecheck
+      - name: Keep server credentials out of the Studio build
+        run: |
+          pnpm --dir apps/studio install --frozen-lockfile
+          pnpm test:studio:env
+      - name: Refuse overlapping staging and production destinations
+        run: bash tests/deploy/preflight.sh
       - run: pnpm exec playwright install --with-deps chromium
       - run: pnpm test
         env:
@@ -113,18 +209,85 @@ jobs:
           npm --prefix "$export_fixture" run typecheck
           npm --prefix "$export_fixture" run build
           node tests/builder/verify-client-repositories.mjs "$astro_fixture" "$export_fixture"
-          pnpm exec tsx tests/builder/verify-local-runner.ts "$astro_fixture" "$export_fixture"
+          pnpm run test:builder:runner "$astro_fixture" "$export_fixture"
       - name: Verify release activation and rollback with Nginx
         run: |
           sudo apt-get update
-          sudo apt-get install -y nginx
+          sudo apt-get install -y nginx bubblewrap apparmor-profiles
           KAIZEN_NGINX_BINARY=nginx pnpm test client/visual-builder/client-publication-database.spec.ts
           node tests/builder/verify-releases.mjs
           node tests/builder/verify-client-releases.mjs "$(cat test-results/astro-integration-fixture-path.txt)" test-results/export-project
-      - run: pnpm test:builder:browser
+      - name: Verify client builds in real Linux namespaces and cgroups
+        run: |
+          if [ -f /proc/sys/kernel/apparmor_restrict_unprivileged_userns ] && [ "$(cat /proc/sys/kernel/apparmor_restrict_unprivileged_userns)" = 1 ]; then
+            # Permit only Bubblewrap's namespace setup. Its child profile keeps
+            # capabilities denied, and the host's namespace restriction stays on.
+            sudo install -m 0644 /usr/share/apparmor/extra-profiles/bwrap-userns-restrict /etc/apparmor.d/kaizen-ci-bwrap
+            sudo apparmor_parser -r /etc/apparmor.d/kaizen-ci-bwrap
+            sudo grep -Fx 'bwrap (enforce)' /sys/kernel/security/apparmor/profiles
+            sudo grep -Fx 'unpriv_bwrap (enforce)' /sys/kernel/security/apparmor/profiles
+            test "$(cat /proc/sys/kernel/apparmor_restrict_unprivileged_userns)" = 1
+          fi
+          node scripts/prepare-builder-isolation-check.mjs "$RUNNER_TEMP/kaizen-build-isolation-check"
+          sudo install -d -m 0755 /var/lib/kaizen-build-isolation-check
+          sudo install -m 0644 "$RUNNER_TEMP/kaizen-build-isolation-check/verify.mjs" "$RUNNER_TEMP/kaizen-build-isolation-check/builder-build-payload.py" /var/lib/kaizen-build-isolation-check/
+          astro_fixture="$(cat test-results/astro-integration-fixture-path.txt)"
+          sudo cp -a "$astro_fixture/node_modules" /var/lib/kaizen-build-isolation-check/dependencies
+          isolation_node_root="$(node -p 'require("node:path").dirname(require("node:path").dirname(process.execPath))')"
+          stat -Lc 'Runner npm ownership: uid=%u gid=%g mode=%a' "$isolation_node_root/lib/node_modules/npm/bin/npm-cli.js"
+          # The hosted tool cache need not meet the production owner/mode policy.
+          # Give this fixture its own immutable copy; keep the guard unchanged.
+          sudo cp -a "$isolation_node_root" /var/lib/kaizen-build-isolation-check/node
+          sudo chown -R root:root /var/lib/kaizen-build-isolation-check/node
+          sudo chmod -R go-w /var/lib/kaizen-build-isolation-check/node
+          isolation_manager=/var/lib/kaizen-build-isolation-check/node/lib/node_modules/npm/bin/npm-cli.js
+          sudo systemd-run --unit=kaizen-build-isolation-check --wait --pipe --collect \
+            -p User="$(id -un)" -p NoNewPrivileges=yes -p PrivateTmp=yes -p PrivateDevices=yes \
+            -p ProtectSystem=strict -p ProtectHome=yes -p ProtectKernelTunables=no \
+            -p ProtectKernelModules=yes -p ProtectControlGroups=yes -p RestrictSUIDSGID=yes \
+            -p LockPersonality=yes -p CapabilityBoundingSet= -p Delegate="cpu memory pids" \
+            -p DelegateSubgroup=supervisor \
+            -p ReadWritePaths=/sys/fs/cgroup/system.slice/kaizen-build-isolation-check.service \
+            --setenv=KAIZEN_SANDBOX_MANAGER="$isolation_manager" \
+            --setenv=KAIZEN_SANDBOX_DEPENDENCIES=/var/lib/kaizen-build-isolation-check/dependencies \
+            /var/lib/kaizen-build-isolation-check/node/bin/node /var/lib/kaizen-build-isolation-check/verify.mjs
+      - name: Exercise the hosted repository transport
+        run: pnpm test:builder:browser tests/builder/hosted-repository.spec.ts tests/builder/site-*.spec.ts --project=chromium
+        env:
+          BUILDER_TEST_REPOSITORY_TRANSPORT: "hosted"
       - uses: actions/upload-artifact@v4
         if: failure()
         with:
           name: builder-browser-failure
+          path: test-results/builder-browser-results
+          retention-days: 7
+
+  browser-core:
+    name: Browser journeys (${{ matrix.browser }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        browser: [chromium, firefox, webkit]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: corepack enable
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm exec playwright install --with-deps ${{ matrix.browser }}
+      - name: Install the isolated publication fixture's server
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y nginx
+      - run: pnpm test:builder:browser --project=${{ matrix.browser }}
+        env:
+          KAIZEN_NGINX_BINARY: nginx
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: builder-browser-failure-${{ matrix.browser }}
           path: test-results/builder-browser-results
           retention-days: 7

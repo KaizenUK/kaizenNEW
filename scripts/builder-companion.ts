@@ -6,6 +6,7 @@ import {
   type CompanionIdentity,
 } from "../shared/builderCompanion";
 import type { LocalProjects } from "./builder-projects";
+import { companionAllowedOrigins } from "../shared/builderOrigins";
 
 type Session = {
   token: string;
@@ -42,22 +43,10 @@ export class CompanionSessions {
     private now = Date.now,
   ) {}
   origins() {
-    const origins = ["https://kaizenweb.co.uk"];
-    // Test servers may pair two loopback origins. Never enable an arbitrary remote test origin.
-    const test = process.env.BUILDER_COMPANION_TEST_ORIGIN;
-    if (test) {
-      const url = new URL(test);
-      if (
-        url.origin !== test ||
-        url.protocol !== "http:" ||
-        !["127.0.0.1", "localhost", "[::1]"].includes(url.hostname)
-      )
-        throw new Error(
-          "The companion test origin must be a loopback HTTP origin.",
-        );
-      origins.push(test);
-    }
-    return origins;
+    return companionAllowedOrigins(
+      process.env.BUILDER_COMPANION_ORIGINS,
+      process.env.BUILDER_COMPANION_TEST_ORIGIN,
+    );
   }
   async connect(value: unknown, folder: string, newFolder = false) {
     const identity = companionIdentity(value);

@@ -5,6 +5,7 @@ export function canvasScript(
   inspection: SourceInspection,
   nonce: string,
   parentOrigin: string,
+  previewPrefix = `/__kaizen-preview/${nonce}`,
 ) {
   const config = JSON.stringify({
     fields: inspection.fields,
@@ -12,13 +13,13 @@ export function canvasScript(
     boundaries: inspection.boundaries.slice(0, 3),
     nonce,
     parentOrigin,
+    previewPrefix,
   }).replace(/</g, "\\u003c");
   return (
     `const kaizenCanvas = ${config};\n` +
     String.raw`
 (() => {
-  const {fields, groups, boundaries, nonce, parentOrigin} = kaizenCanvas;
-  const prefix = '/__kaizen-preview/' + nonce;
+  const {fields, groups, boundaries, nonce, parentOrigin, previewPrefix: prefix} = kaizenCanvas;
   const send = (type, data = {}) => window.parent.postMessage({type:'kaizen-source-' + type, nonce, ...data}, parentOrigin);
   const managedReason = 'Managed elsewhere: no safe literal match.' + (boundaries.length ? ' ' + boundaries.join(' ') : ' This value may come from code or a CMS.');
   const visibleText = value => value.trim().replace(/\s+/g,' ');

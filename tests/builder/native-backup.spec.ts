@@ -165,7 +165,7 @@ test("Unity restores an independent native repository and its unapplied source d
     page.locator(".builder-repository-build [role=status]"),
   ).toContainText("Build finished", { timeout: 90000 });
   const opened = context.waitForEvent("page");
-  await page.getByRole("link", { name: "Open local website preview" }).click();
+  await page.getByRole("button", { name: "Open website preview" }).click();
   const preview = await opened;
   preview.on("pageerror", (error) => errors.push(error.message));
   for (const width of [1440, 390]) {
@@ -192,7 +192,7 @@ test("Unity restores an independent native repository and its unapplied source d
   ).toBeVisible();
   await preview.close();
   await page
-    .getByRole("button", { name: "Stop local preview", exact: true })
+    .getByRole("button", { name: "Stop preview", exact: true })
     .click();
   expect(errors).toEqual([]);
 });

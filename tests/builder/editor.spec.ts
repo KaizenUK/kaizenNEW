@@ -103,11 +103,21 @@ test("interactive blocks work in preview and publication, including keyboard nav
   await expect
     .poll(() => live.locator("video").evaluate((video) => video.currentTime))
     .toBeGreaterThan(0);
+  // Native caption preferences may leave a default track disabled (WebKit).
+  // Select captions before verifying that the published VTT loads and has cues.
+  await live.locator("video").evaluate((video) => {
+    video.textTracks[0].mode = "showing";
+  });
   await expect
     .poll(() =>
       live.locator("video track").evaluate((track) => track.readyState),
     )
     .toBe(2);
+  expect(
+    await live
+      .locator("video")
+      .evaluate((video) => video.textTracks[0].cues?.length),
+  ).toBeGreaterThan(0);
   await expect
     .poll(() => live.evaluate(() => document.documentElement.scrollWidth))
     .toBe(390);
@@ -127,7 +137,11 @@ test("interactive blocks work in preview and publication, including keyboard nav
 async function createPage(page: Page) {
   await page.goto("/builder/");
   await page
-    .getByRole("button", { name: "Use starter template", exact: true })
+    .getByRole("button", { name: "Browse templates", exact: true })
+    .click();
+  await page
+    .getByRole("article", { name: "Home template", exact: true })
+    .getByRole("button", { name: "Use template", exact: true })
     .click();
   await expect(page.locator("#preview-frame")).toBeVisible();
   return page.frameLocator("#preview-frame");
@@ -195,10 +209,9 @@ test("responsive styles survive autosave, reopening, preview and local publicati
   await expect(frame.locator(".kb-hero")).toHaveCSS("padding-bottom", "57px");
   await page.keyboard.press("Control+Shift+z");
   await expect(frame.locator(".kb-hero")).toHaveCSS("padding-bottom", "20px");
-  await expect(page.locator(".builder-save-status")).toContainText(
-    "All changes saved",
-    { timeout: 20_000 },
-  );
+  await expect(page.locator(".builder-save-status")).toContainText("Saved", {
+    timeout: 20_000,
+  });
   const slug = (
     await page.locator(".builder-canvas-toolbar .builder-hint").innerText()
   ).trim();
@@ -240,13 +253,11 @@ test("responsive styles survive autosave, reopening, preview and local publicati
   await page.getByRole("button", { name: "Revisions", exact: true }).click();
   await page
     .locator(".builder-revision")
-    .filter({ hasText: "Created page" })
+    .filter({ hasText: "Created Home from a template" })
     .getByRole("button", { name: "Restore as draft" })
     .click();
   await expect(frame.locator(".kb-hero")).toHaveCSS("padding-left", "48px");
-  await expect(page.locator(".builder-save-status")).toContainText(
-    "All changes saved",
-  );
+  await expect(page.locator(".builder-save-status")).toContainText("Saved");
   await live.setViewportSize({ width: 1280, height: 900 });
   await live.reload();
   await expect(live.locator(".kb-hero")).toHaveCSS("padding-left", "100px");
@@ -256,9 +267,7 @@ test("image crop, focal point and hover styles render in the page preview", asyn
   page,
 }) => {
   const frame = await createPage(page);
-  await frame
-    .getByRole("img", { name: "Abstract green hills and a yellow sun" })
-    .click();
+  await frame.getByRole("group", { name: "Image block", exact: true }).click();
   await page.getByText("Image crop & focal point", { exact: true }).click();
   await page
     .getByRole("combobox", { name: "desktop Image ratio", exact: true })
@@ -314,10 +323,13 @@ test("sample ZIP assets drag into nested content and support copy, paste and und
   await page
     .getByRole("button", { name: "Try the sample asset pack", exact: true })
     .click();
-  await expect(page.locator(".builder-import-status")).toContainText(
-    /imported|skipped/i,
-    { timeout: 45_000 },
-  );
+  await expect(page.locator(".builder-import-status"))
+    .toContainText(/imported|skipped/i, { timeout: 45_000 })
+    .catch(async (error) => {
+      throw new Error(
+        `${error.message}\nImport detail: ${await page.locator(".builder-error").allTextContents()}`,
+      );
+    });
   await page
     .getByRole("combobox", { name: "Filter by pack", exact: true })
     .selectOption(packName);
@@ -352,10 +364,23 @@ test("sample ZIP assets drag into nested content and support copy, paste and und
   await page.mouse.move(finish!.x + 15, finish!.y + finish!.height + 6, {
     steps: 12,
   });
+  // Puck debounces entry into a nested drop zone. Release over its visible
+  // insertion target, after the browser has rendered the drag feedback.
+  await expect(
+    frame
+      .locator(
+        ".kb-hero .kb-container [data-puck-line-placeholder], .kb-hero .kb-container [data-dnd-placeholder]",
+      )
+      .first(),
+  ).toBeVisible();
   await page.mouse.up();
   const nestedIcons = frame.locator(".kb-hero .kb-container .kb-icon");
   await expect(nestedIcons).toHaveCount(1);
-  await nestedIcons.locator("img").click();
+  // Images are rendered inside a movable group, which receives selection clicks.
+  const nestedIconBlocks = nestedIcons.locator(
+    "xpath=ancestor::*[@data-puck-component][1]",
+  );
+  await nestedIconBlocks.click();
   await page.keyboard.press("Control+c");
   await page.keyboard.press("Control+v");
   await expect(nestedIcons).toHaveCount(2);
@@ -363,18 +388,57 @@ test("sample ZIP assets drag into nested content and support copy, paste and und
   await expect(nestedIcons).toHaveCount(1);
   await page.getByRole("button", { name: "Redo", exact: true }).click();
   await expect(nestedIcons).toHaveCount(2);
-  await nestedIcons.first().click();
+  await nestedIconBlocks.first().click();
   await page.keyboard.press("Control+d");
   await expect(nestedIcons).toHaveCount(3);
+  await expect
+    .poll(() =>
+      nestedIcons
+        .locator("img")
+        .evaluateAll((images: HTMLImageElement[]) =>
+          images.every(
+            (image) =>
+              image.complete &&
+              image.naturalWidth > 0 &&
+              image.getBoundingClientRect().height > 0,
+          ),
+        ),
+    )
+    .toBe(true);
   const lastId = await nestedIcons.last().getAttribute("data-block-id");
   await nestedIcons.last().scrollIntoViewIfNeeded();
+  await nestedIcons.first().scrollIntoViewIfNeeded();
+  // IntersectionObserver ratios can round just below one at fractional pixels.
+  await expect(nestedIcons.first()).toBeInViewport({ ratio: 0.99 });
+  await expect(nestedIcons.last()).toBeInViewport({ ratio: 0.99 });
   const from = await nestedIcons.last().boundingBox();
   const to = await nestedIcons.first().boundingBox();
-  await page.mouse.move(from!.x + 10, from!.y + 10);
+  const x = from!.x + from!.width / 2,
+    y = from!.y + from!.height / 2;
+  const targetX = to!.x + to!.width / 2,
+    targetY = to!.y + to!.height / 4;
+  await page.mouse.move(x, y);
   await page.mouse.down();
-  await page.mouse.move(from!.x + 18, from!.y + 18, { steps: 3 });
-  await page.mouse.move(to!.x + 10, to!.y + 1, { steps: 12 });
+  await page.mouse.move(x + 8, y + 8, { steps: 3 });
+  await expect(frame.locator("[data-dnd-dragging]").first()).toBeVisible();
+  await page.mouse.move(targetX, targetY, { steps: 16 });
+  // The sortable placeholder can stay in its original slot until release.
+  // Check the dragged image reaches the destination; its centre may snap to
+  // the destination's centre instead of retaining the pointer's exact offset.
+  await expect
+    .poll(async () => {
+      const box = await frame
+        .locator("[data-dnd-dragging] .kb-icon")
+        .first()
+        .boundingBox();
+      if (!box) return false;
+      const centre = box.y + box.height / 2;
+      return centre >= to!.y && centre <= to!.y + to!.height;
+    })
+    .toBe(true);
   await page.mouse.up();
+  // Count the committed blocks after the temporary drag clone disappears.
+  await expect(nestedIcons).toHaveCount(3);
   await expect(nestedIcons.first()).toHaveAttribute("data-block-id", lastId!);
 });
 
@@ -396,23 +460,54 @@ test("rich text supports inline formatting and links in preview", async ({
     exact: true,
   });
   await source.scrollIntoViewIfNeeded();
+  await heading.scrollIntoViewIfNeeded();
+  await expect(heading).toBeInViewport({ ratio: 1 });
   const from = await source.boundingBox();
   const to = await heading.boundingBox();
   await page.mouse.move(from!.x + 10, from!.y + 10);
   await page.mouse.down();
   await page.mouse.move(from!.x + 20, from!.y + 15, { steps: 3 });
   await page.mouse.move(to!.x + 10, to!.y + to!.height + 8, { steps: 12 });
+  await expect(
+    frame
+      .locator(
+        ".kb-hero .kb-container [data-puck-line-placeholder], .kb-hero .kb-container [data-dnd-placeholder]",
+      )
+      .first(),
+  ).toBeVisible();
   await page.mouse.up();
   await expect(frame.locator(".kb-richtext")).toHaveCount(1);
   await frame.locator(".kb-richtext").click();
   const editor = frame.locator('.kb-richtext [contenteditable="true"]');
-  await editor.fill("Our next chapter");
+  const sidebarEditor = page.locator('.builder-right [contenteditable="true"]');
+  await editor.click();
+  await expect(editor).toBeFocused();
+  const initialText = await editor.innerText();
   await editor.press("Control+a");
+  await expect
+    .poll(() =>
+      editor.evaluate((element) =>
+        element.ownerDocument.getSelection()?.toString().trimEnd(),
+      ),
+    )
+    .toBe(initialText.trimEnd());
+  await editor.pressSequentially("Our next chapter");
+  await expect(editor).toBeFocused();
+  await expect(editor).toHaveText("Our next chapter");
+  // The other editor observes the committed document, not just the canvas DOM.
+  await expect(sidebarEditor).toHaveText("Our next chapter");
+  await editor.press("Control+a");
+  await expect
+    .poll(() =>
+      editor.evaluate((element) =>
+        element.ownerDocument.getSelection()?.toString().trimEnd(),
+      ),
+    )
+    .toBe("Our next chapter");
   await editor.press("Control+b");
   await expect(frame.locator(".kb-richtext strong")).toHaveText(
     "Our next chapter",
   );
-  const sidebarEditor = page.locator('.builder-right [contenteditable="true"]');
   await sidebarEditor.click();
   await sidebarEditor.press("Control+End");
   await sidebarEditor.press("Control+Shift+ArrowLeft");
@@ -437,9 +532,7 @@ test("rich text supports inline formatting and links in preview", async ({
     "/contact/",
   );
   await expect(frame.locator(".kb-richtext a")).toHaveText("chapter");
-  await expect(page.locator(".builder-save-status")).toContainText(
-    "All changes saved",
-  );
+  await expect(page.locator(".builder-save-status")).toContainText("Saved");
   const slug = (
     await page.locator(".builder-canvas-toolbar .builder-hint").innerText()
   ).trim();

@@ -38,6 +38,7 @@ import {
 import type { Plugin } from "vite";
 import { attachAssetImage, materializeImages } from "../shared/builderImages";
 import { applyRestorePlan } from "../shared/builderBackup";
+import { applyStarterSite } from "../shared/builderStarter";
 import { saveConversion } from "../shared/builderConversions";
 import {
   replaceAssetInDrafts,
@@ -246,7 +247,7 @@ export function builderLocalPlugin(): Plugin {
           const directory = projects.directory(project.id);
           const readWorkspace = () => readLocalWorkspace(directory);
           const writeWorkspace = (workspace: Workspace) => {
-            if (projectId === LEGACY_PROJECT_ID)
+            if (project.capabilities.hasInventory)
               for (const page of workspace.pages) {
                 normalizeSlug(page.draft.slug);
                 if (page.published) normalizeSlug(page.published.slug);
@@ -357,7 +358,7 @@ export function builderLocalPlugin(): Plugin {
             if (req.method !== "GET")
               return json(405, { error: "Unsupported request" });
             try {
-              if (projectId !== LEGACY_PROJECT_ID) {
+              if (!project.capabilities.legacyWorkspace) {
                 const cms = (await readWorkspace()).settings?.value.cms;
                 if (cms?.kind !== "sanity-public")
                   throw new Error(
@@ -477,7 +478,7 @@ export function builderLocalPlugin(): Plugin {
             const workspace = await readWorkspace();
             return json(
               200,
-              projectId === LEGACY_PROJECT_ID
+              project.capabilities.legacyWorkspace
                 ? workspace
                 : await publisher.workspace(projectId, workspace),
             );
@@ -513,6 +514,7 @@ export function builderLocalPlugin(): Plugin {
                 return existing;
               }
               const asset = await uploads.finish(input.uploadUrl, metadata);
+              // The original media URL has no project query; this is its storage address.
               if (projectId !== LEGACY_PROJECT_ID)
                 asset.url += `?project=${projectId}`;
               workspace.assets.push(asset);
@@ -571,13 +573,13 @@ export function builderLocalPlugin(): Plugin {
             if (
               input.action === "restore-backup" &&
               input.plan?.settings &&
-              projectId === LEGACY_PROJECT_ID
+              project.capabilities.legacyWorkspace
             )
               throw new Error(
                 "Restore client settings into a client project. The original site's services remain deployment-managed.",
               );
             if (input.action === "settings") {
-              if (projectId === LEGACY_PROJECT_ID)
+              if (project.capabilities.legacyWorkspace)
                 throw new Error(
                   "The original Kaizen site's services remain configured in its deployment environment. Use a client project for these settings.",
                 );
@@ -740,7 +742,7 @@ export function builderLocalPlugin(): Plugin {
               );
             }
             if (
-              projectId !== LEGACY_PROJECT_ID &&
+              project.capabilities.publishPath !== "github" &&
               ["publish", "publish-site", "publish-routes"].includes(
                 input.action,
               )
@@ -795,6 +797,13 @@ export function builderLocalPlugin(): Plugin {
               await writeWorkspace(workspace);
               return asset;
             }
+            if (input.action === "create-starter") {
+              if (project.capabilities.hasInventory)
+                throw new Error("Create a starter in a new builder project.");
+              const next = applyStarterSite(workspace, input.plan);
+              await writeWorkspace(next);
+              return next;
+            }
             if (input.action === "restore-backup") {
               const next = applyRestorePlan(workspace, input.plan);
               await writeWorkspace(next);
@@ -825,7 +834,7 @@ export function builderLocalPlugin(): Plugin {
               return next;
             }
             if (input.action === "save") {
-              if (projectId === LEGACY_PROJECT_ID)
+              if (project.capabilities.hasInventory)
                 normalizeSlug(input.document?.slug);
               if (
                 workspace.routes?.published.some(

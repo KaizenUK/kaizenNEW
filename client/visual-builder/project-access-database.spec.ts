@@ -39,6 +39,12 @@ describe("hosted project membership and private storage migration", () => {
         "utf8",
       ),
     );
+    await db.exec(
+      await readFile(
+        "supabase/migrations/202609120001_builder_project_capabilities.sql",
+        "utf8",
+      ),
+    );
     alpha = await as(
       owner,
       async () =>
@@ -93,6 +99,94 @@ describe("hosted project membership and private storage migration", () => {
     await as(stranger, async () =>
       expect((await db.query("select * from builder_pages")).rows).toEqual([]),
     );
+  });
+  it("assigns safe defaults, prevents user escalation and keeps a single legacy publication workspace", async () => {
+    expect(
+      (
+        await db.query<{ capabilities: any }>(
+          "select capabilities from builder_projects where id='kaizen'",
+        )
+      ).rows[0].capabilities,
+    ).toEqual({
+      hasInventory: true,
+      legacyWorkspace: true,
+      publishPath: "github",
+    });
+    expect(
+      (
+        await db.query<{ capabilities: any }>(
+          "select capabilities from builder_projects where id=$1",
+          [alpha],
+        )
+      ).rows[0].capabilities,
+    ).toEqual({
+      hasInventory: false,
+      legacyWorkspace: false,
+      publishPath: "worker",
+    });
+    await as(owner, async () => {
+      await expect(
+        db.query(
+          "update builder_projects set capabilities=jsonb_set(capabilities,'{publishPath}','\"github\"') where id=$1",
+          [alpha],
+        ),
+      ).rejects.toThrow(/permission denied/);
+    });
+    await expect(
+      db.query("update builder_projects set capabilities='{}' where id=$1", [
+        alpha,
+      ]),
+    ).rejects.toThrow(/capabilities_valid/);
+    await expect(
+      db.query(
+        "update builder_projects set capabilities=jsonb_set(capabilities,'{publishPath}','\"github\"') where id=$1",
+        [alpha],
+      ),
+    ).rejects.toThrow(/capabilities_valid/);
+    await expect(
+      db.query(
+        "update builder_projects set capabilities=(select capabilities from builder_projects where id='kaizen') where id=$1",
+        [alpha],
+      ),
+    ).rejects.toThrow(/one_legacy_workspace/);
+  });
+  it("resolves legacy access from configuration rather than a fixed project ID", async () => {
+    await db.exec("begin");
+    try {
+      await db.exec(
+        `update builder_projects set capabilities='{"hasInventory":false,"legacyWorkspace":false,"publishPath":"worker"}' where id='kaizen'`,
+      );
+      await db.query(
+        `update builder_projects set capabilities='{"hasInventory":true,"legacyWorkspace":true,"publishPath":"github"}' where id=$1`,
+        [beta],
+      );
+      await as(owner, async () => {
+        expect(
+          (
+            await db.query<{ allowed: boolean }>(
+              "select builder_is_editor() as allowed",
+            )
+          ).rows[0].allowed,
+        ).toBe(false);
+        expect((await db.query("select * from builder_pages")).rows).toEqual(
+          [],
+        );
+      });
+      await as(stranger, async () => {
+        expect(
+          (
+            await db.query<{ allowed: boolean }>(
+              "select builder_is_editor() as allowed",
+            )
+          ).rows[0].allowed,
+        ).toBe(true);
+        expect(
+          (await db.query("select * from builder_pages")).rows,
+        ).toHaveLength(1);
+      });
+    } finally {
+      await db.exec("rollback");
+    }
   });
   it("enforces independent metadata, workspace and member reads for unrelated accounts", async () => {
     await as(owner, async () => {

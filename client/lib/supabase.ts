@@ -1,9 +1,18 @@
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
-
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || "";
-const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY || "";
+import { supabaseUrl, supabaseKey } from "./supabaseConfig";
+import { trackPasswordRecovery } from "./authRedirect";
 
 let cachedClient: SupabaseClient | null = null;
+
+export const createIsolatedSupabaseClient = () =>
+  createClient(supabaseUrl, supabaseKey, {
+    auth: {
+      persistSession: false,
+      autoRefreshToken: false,
+      detectSessionInUrl: false,
+      storageKey: `kaizen-account-operation-${crypto.randomUUID()}`,
+    },
+  });
 
 export const getSupabaseClient = (): SupabaseClient | null => {
   if (!supabaseUrl || !supabaseKey) {
@@ -12,8 +21,8 @@ export const getSupabaseClient = (): SupabaseClient | null => {
 
   if (!cachedClient) {
     cachedClient = createClient(supabaseUrl, supabaseKey);
+    trackPasswordRecovery(cachedClient.auth);
   }
 
   return cachedClient;
 };
-

@@ -1,0 +1,41 @@
+[Unit]
+Description=Kaizen verified uploads
+Wants=network-online.target
+After=network-online.target
+StartLimitIntervalSec=60s
+StartLimitBurst=5
+
+[Service]
+Type=simple
+User=kaizen-upload
+Group=kaizen-upload
+WorkingDirectory=/opt/kaizen-upload-worker
+Environment=NODE_ENV=production
+EnvironmentFile=/etc/kaizen/upload-worker.env
+ExecStart=/usr/bin/flock --nonblock --no-fork /var/lib/kaizen-uploads/service.lock /opt/kaizen-runtime/node-v22.23.2-immutable/bin/node /opt/kaizen-upload-worker/worker.mjs
+Restart=on-failure
+RestartSec=5s
+TimeoutStopSec=150s
+KillMode=control-group
+UMask=0077
+NoNewPrivileges=true
+PrivateTmp=true
+PrivateDevices=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/lib/kaizen-uploads
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+RestrictSUIDSGID=true
+LockPersonality=true
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6
+CapabilityBoundingSet=
+TasksMax=64
+MemoryMax=768M
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=kaizen-upload-worker
+
+[Install]
+WantedBy=multi-user.target

@@ -33,4 +33,15 @@ expect_failure 'No initialised release store' env KAIZEN_RELEASE_STORE="$tempora
 expect_failure 'Node.js 22 or later' env MOCK_NODE_OLD=1 bash "$preflight"
 expect_failure 'Nginx configuration validation failed' env MOCK_NGINX_FAIL=1 bash "$preflight"
 bash "$preflight"
+export KAIZEN_DEPLOY_BRANCH=stage KAIZEN_PRODUCTION_APP_DIR="$temporary/production"
+export KAIZEN_PRODUCTION_RELEASE_STORE="$temporary/production-releases" KAIZEN_PRODUCTION_DOMAIN=production.example.test
+expect_failure 'Staging needs KAIZEN_PRODUCTION_APP_DIR' env -u KAIZEN_PRODUCTION_APP_DIR bash "$preflight"
+expect_failure 'Staging cannot use or contain a production directory' env KAIZEN_PRODUCTION_APP_DIR="$KAIZEN_APP_DIR" bash "$preflight"
+expect_failure 'Staging cannot use or contain a production directory' env KAIZEN_PRODUCTION_RELEASE_STORE="$KAIZEN_RELEASE_STORE" bash "$preflight"
+expect_failure 'Staging cannot use or contain a production directory' env KAIZEN_PRODUCTION_APP_DIR="$temporary" bash "$preflight"
+expect_failure 'Staging cannot use or contain a production directory' env KAIZEN_PRODUCTION_APP_DIR="$KAIZEN_APP_DIR/nested" bash "$preflight"
+ln -s "$KAIZEN_APP_DIR" "$temporary/production-link"
+expect_failure 'Staging cannot use or contain a production directory' env KAIZEN_PRODUCTION_APP_DIR="$temporary/production-link" bash "$preflight"
+expect_failure 'Staging cannot use the production domain' env KAIZEN_PUBLIC_DOMAIN=www.PRODUCTION.example.test bash "$preflight"
+bash "$preflight"
 echo 'All deployment preflight cases passed.'

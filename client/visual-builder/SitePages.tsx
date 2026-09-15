@@ -1,10 +1,13 @@
 import React, { useEffect, useState, useSyncExternalStore } from "react";
 import type { RepositoryInspection } from "../../scripts/builder-repository";
 import type { PageInventory } from "../../shared/builderPageInventory";
-import { companionConnection } from "./companionConnection";
-import { storage, localMode } from "./storage";
+import { repositoryConnection } from "./repositoryConnection";
+import { storage } from "./storage";
 import { activeProjectId } from "./projectStorage";
 import { Card, Notice, Pill } from "./shell";
+import { useWebsiteStatus } from "./useWebsiteStatus";
+import { websitePageStatus } from "./builderStatus";
+import { useBuilderViewMode } from "./viewMode";
 
 export type SitePage = {
   root: string;
@@ -34,22 +37,31 @@ export default function SitePages({
   onConnect: () => void;
   onCount?: (count: number) => void;
 }) {
+  const { mode } = useBuilderViewMode();
+  const developer = mode === "developer";
   const connection = useSyncExternalStore(
-    companionConnection.subscribe,
-    companionConnection.snapshot,
-    companionConnection.snapshot,
+    repositoryConnection.subscribe,
+    repositoryConnection.snapshot,
+    repositoryConnection.snapshot,
   );
   const [model, setModel] = useState<RepositoryInspection>(),
     [error, setError] = useState(""),
     [query, setQuery] = useState(""),
     [attempt, setAttempt] = useState(0);
+  const website = useWebsiteStatus(attempt);
   useEffect(() => {
-    if (!localMode && connection.status !== "connected") return;
+    if (connection.status !== "connected") {
+      setModel(undefined);
+      return;
+    }
     let live = true;
-    const root =
-      connection.root ||
-      localStorage.getItem(`kaizen-native-repository:${activeProjectId}`);
-    const key = activeProjectId + ":" + (root || "current");
+    const root = repositoryConnection.preferredRoot();
+    const key =
+      repositoryConnection.recoveryIdentity() +
+      ":" +
+      activeProjectId +
+      ":" +
+      (root || "current");
     if (cache.has(key)) setModel(cache.get(key));
     setError("");
     void storage
@@ -99,13 +111,16 @@ export default function SitePages({
   }, [model, total]);
   return (
     <Card
-      title="Pages from the website's code"
-      description="Edit their text, links and images on the page itself. Their design stays in the code."
+      title={developer ? "Pages from the website's code" : "Website pages"}
+      description="Edit text, links and images on the page itself. The existing design is preserved."
       ariaLabel="Website pages"
     >
-      {!localMode && connection.status !== "connected" && (
+      {connection.status !== "connected" && (
         <p>
-          Connect the helper to open pages from a website folder.{" "}
+          {connection.status === "connecting"
+            ? "Connecting to the website folder…"
+            : connection.error ||
+              "Connect the helper to open pages from a website folder."}{" "}
           <button type="button" onClick={onConnect}>
             Connect helper
           </button>
@@ -133,15 +148,30 @@ export default function SitePages({
                   <strong>{row.title}</strong>
                   <small>{row.path}</small>
                 </div>
-                <Pill
-                  tone={row.ownership === "code-managed" ? "primary" : "grey"}
-                >
-                  {row.ownership === "builder-editable"
-                    ? "Builder page"
-                    : row.ownership === "code-managed"
-                      ? "Managed in code"
-                      : "Needs a developer"}
-                </Pill>
+                <div className="builder-existing-actions">
+                  {(developer ||
+                    !["builder-editable", "code-managed"].includes(
+                      row.ownership,
+                    )) && (
+                    <Pill
+                      tone={
+                        row.ownership === "code-managed" ? "primary" : "grey"
+                      }
+                    >
+                      {row.ownership === "builder-editable"
+                        ? "Builder page"
+                        : row.ownership === "code-managed"
+                          ? "Managed in code"
+                          : "Needs a developer"}
+                    </Pill>
+                  )}
+                  <Pill
+                    tone={websitePageStatus(website, row.file).tone}
+                    title={websitePageStatus(website, row.file).detail}
+                  >
+                    {websitePageStatus(website, row.file).label}
+                  </Pill>
+                </div>
                 <button
                   type="button"
                   aria-label={`Edit existing ${row.path}`}
@@ -153,11 +183,8 @@ export default function SitePages({
                           action: "repository-open",
                           root: model.root,
                         });
-                        const url = `/builder/?local=1&project=${encodeURIComponent(project.id)}`;
                         location.assign(
-                          connection.origin
-                            ? new URL(url, connection.origin).href
-                            : url,
+                          repositoryConnection.projectLocation(project.id),
                         );
                       } catch (e) {
                         setError(e.message);

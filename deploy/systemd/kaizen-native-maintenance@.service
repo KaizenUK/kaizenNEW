@@ -1,0 +1,13 @@
+[Unit]
+Description=Kaizen native release maintenance (%i)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=root
+UMask=0077
+# The root-owned launcher accepts only main/stage, and executes the worker as
+# kaizen-deploy in the same service/cgroup/build.lock used by normal deployment.
+ExecStart=/usr/local/sbin/kaizen-public-deploy --branch %i --mode maintain
+TimeoutStartSec=0

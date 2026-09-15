@@ -7,6 +7,7 @@ import type {
 import { storage } from "./storage";
 import { exportProject, downloadProject } from "./exportProject";
 import RepositoryBuild from "./RepositoryBuild";
+import RepositorySave from "./RepositorySave";
 import SourcePageEditor from "./SourcePageEditor";
 import NativeRepositoryBackup from "./NativeRepositoryBackup";
 import { activeProjectId } from "./projectStorage";
@@ -33,17 +34,20 @@ export default function RepositoryPanel({
   remoteRoot,
   remoteOrigin,
   repositoryEnabled = true,
+  hosted = false,
   intro,
 }: {
   existingPath?: string;
   remoteRoot?: string;
   remoteOrigin?: string;
   repositoryEnabled?: boolean;
+  hosted?: boolean;
   intro?: React.ReactNode;
 }) {
   const [root, setRoot] = useState("");
   const [inspection, setInspection] = useState<RepositoryInspection>();
   const [plan, setPlan] = useState<RepositoryPlan>();
+  const [appliedPlan, setAppliedPlan] = useState<string>();
   const [sourceRoute, setSourceRoute] = useState<string>();
   const [busy, setBusy] = useState(false);
   const [status, setStatus] = useState("");
@@ -130,16 +134,9 @@ export default function RepositoryPanel({
   }
   return (
     <>
-      <Head
-        info={<ProjectName />}
-        title="Export & handoff"
-        description="Download the finished website to host anywhere, or work directly with the website's code folder on this computer."
-      />
+      <Head info={<ProjectName />} title="Export & handoff" help="repository" />
       <div className="builder-page-body builder-repository">
-        <Card
-          title="Download the website"
-          description="A ZIP with the finished website (upload the dist folder to any host) and its React source. It also includes an editable copy at .kaizen/project.zip so the project can be opened in the builder again later."
-        >
+        <Card title="Download the website">
           <div className="builder-row builder-actions">
             <button
               type="button"
@@ -162,10 +159,7 @@ export default function RepositoryPanel({
         {intro}
         {repositoryEnabled && (
           <>
-            <Card
-              title="Edit the website's code folder"
-              description="For websites that live in a code folder (a Git repository, usually from GitHub Desktop). Point the builder at the folder to change page text and links, add builder pages, or build a preview. Nothing is installed, committed or published for you. Works with Astro + React sites, Kaizen exports and empty folders."
-            >
+            <Card title="Edit the website's code folder">
               <form
                 className="builder-inline-form"
                 onSubmit={(event) => {
@@ -183,7 +177,9 @@ export default function RepositoryPanel({
                 }}
               >
                 <label>
-                  Website folder on this computer
+                  {hosted
+                    ? "Website folder for this project"
+                    : "Website folder on this computer"}
                   <input
                     required
                     value={root}
@@ -278,9 +274,11 @@ export default function RepositoryPanel({
                         })
                       }
                     >
-                      {remoteOrigin
-                        ? "Open in the local builder"
-                        : "Open folder as a new project"}
+                      {hosted
+                        ? "Open project pages"
+                        : remoteOrigin
+                          ? "Open in the local builder"
+                          : "Open folder as a new project"}
                     </button>
                   </div>
                   {remoteOrigin && (
@@ -344,6 +342,7 @@ export default function RepositoryPanel({
                           planId: plan.id,
                         });
                         setPlan(undefined);
+                        setAppliedPlan(result.planId);
                         setSourceRoute(undefined);
                         setStatus(result.message);
                       })
@@ -353,6 +352,13 @@ export default function RepositoryPanel({
                   </button>
                 </div>
               </Card>
+            )}
+            {inspection && (
+              <RepositorySave
+                root={inspection.root}
+                appliedPlan={appliedPlan}
+                disabled={busy}
+              />
             )}
             {inspection &&
               ["astro-react", "kaizen-export"].includes(

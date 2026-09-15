@@ -1,6 +1,40 @@
 /** Project identity is independent of page IDs and browser preferences. No credentials belong here. */
 export const PROJECT_FORMAT_VERSION = 1;
 export const LEGACY_PROJECT_ID = "kaizen";
+export type ProjectCapabilities = {
+  hasInventory: boolean;
+  legacyWorkspace: boolean;
+  publishPath: "github" | "worker";
+};
+export const DEFAULT_PROJECT_CAPABILITIES: Readonly<ProjectCapabilities> = {
+  hasInventory: false,
+  legacyWorkspace: false,
+  publishPath: "worker",
+};
+export const LEGACY_PROJECT_CAPABILITIES: Readonly<ProjectCapabilities> = {
+  hasInventory: true,
+  legacyWorkspace: true,
+  publishPath: "github",
+};
+/** Missing hosted configuration must never silently select the original site's API. */
+export function projectCapabilities(value: unknown): ProjectCapabilities {
+  const input = value as Partial<ProjectCapabilities> | null;
+  if (
+    !input ||
+    typeof input.hasInventory !== "boolean" ||
+    typeof input.legacyWorkspace !== "boolean" ||
+    !["github", "worker"].includes(input.publishPath || "") ||
+    (input.publishPath === "github") !== input.legacyWorkspace
+  )
+    throw new Error(
+      "This project’s settings are missing or invalid. Ask the owner to check the project setup.",
+    );
+  return {
+    hasInventory: input.hasInventory,
+    legacyWorkspace: input.legacyWorkspace,
+    publishPath: input.publishPath as ProjectCapabilities["publishPath"],
+  };
+}
 export type BuilderProject = {
   id: string;
   name: string;
@@ -8,11 +42,23 @@ export type BuilderProject = {
   updatedAt: string;
   archived: boolean;
   version: number;
+  capabilities: ProjectCapabilities;
   destination: {
-    kind: "unconfigured" | "legacy-local" | "legacy-hosted" | "client-configured";
+    kind:
+      | "unconfigured"
+      | "legacy-local"
+      | "legacy-hosted"
+      | "client-configured";
     label: string;
   };
   access?: { role: "owner" | "editor"; canPublish: boolean };
+  copy?: {
+    pending: boolean;
+    cancelling?: boolean;
+    canResume: boolean;
+    files: number;
+    copied: number;
+  };
 };
 export function validProjectId(id: string): boolean {
   return (

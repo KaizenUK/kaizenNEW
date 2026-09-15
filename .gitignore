@@ -44,3 +44,5 @@ terms.docx
 /.kaizen/recovery/
 /test-results/
 /KAIZEN-PRIVATE-MIGRATION*
+__pycache__/
+*.pyc

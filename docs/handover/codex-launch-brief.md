@@ -33,16 +33,20 @@ Stop at the private beta gate in the task map and wait for Sean's acceptance bef
 
 ## How to work
 
+- **Sean's handover update — 15 September:** implementation is paused. Consolidate all pending source into main for Claude, including incomplete T4, without deployment. This is an explicit exception to the earlier one-completed-task/one-commit sequence. Read [the current main handover](claude-main-handover.md); do not resume implementation merely because the branches are clean.
+
+- **Sean's autonomy update — 14 September:** continue through L0–L6 without waiting for him. A failed test means diagnose, fix and continue; it is not a reason to stall the goal. Use recommended choices for wording, hosting, TLS, Stripe wiring, domains and quotas. Record decisions and collect any external setup or human-only actions at the end; do not pause for routine choices. Finish all work Codex can perform. Manual gate use remains separate from implementation proof, and the provisional beta acceptance stays accepted.
+- **Sean's verification update — 13 September:** batch CI at the end of each milestone (L0–L6), then run it once more at the end of the goal. Do not stop for CI after each individual task. Keep documenting task evidence and doing relevant local checks as work progresses. Intermediate task commits may use `[skip ci]`; the milestone revision must run the full CI workflow.
 - One task at a time, one commit per task, on a branch off `main`. Commit messages say what changed for the user, then how.
 - Every task ships with the tests that prove it and a short update to the matching guide under `docs/`. Run `pnpm typecheck`, `pnpm test` and the relevant `tests/builder/*.spec.ts` before you call a task done; run the full `pnpm test:builder:browser` at the end of each stage.
 - Append an implementation log for each stage to the end of `docs/builder-launch-plan.md`: what shipped, what was proven and how, what was left out and why. Keep evidence honest; a passing test is not a manual acceptance.
-- When a decision needs Sean (isolation of server builds, error sink, domain approach, legal wording), write the options with a recommendation in the log and carry on with the parts that do not depend on it.
+- Record consequential choices and their limits in the log. Under Sean's autonomy update, implement the recommended option and defer remaining human-only actions to the end.
 - Screenshots of new or changed screens at desktop and phone widths go with each stage log.
 
 ## Verification standard
 
 - Unit and database tests for logic and access rules; browser scenarios for journeys; integration tests against temporary repositories and fake remotes for Git and builds.
-- CI in `.github/workflows/builder-checks.yml` must stay green.
+- CI in `.github/workflows/builder-checks.yml` must pass at each milestone boundary and again at the end of the goal, following Sean's updated cadence above.
 - Security work (auth, membership, path safety, locks, CSP) gets its own negative tests, not just happy paths.
 
 ## Roles

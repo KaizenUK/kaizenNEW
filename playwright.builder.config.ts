@@ -6,9 +6,44 @@ import {
   COMPANION_TEST_ORIGIN,
 } from "./tests/builder/ports";
 
+// Core journeys run in all three engines; Chromium retains the complete suite.
+const coreJourneys = [
+  "accessibility",
+  "auth",
+  "signup",
+  "account",
+  "billing",
+  "domains",
+  "legal-privacy",
+  "projects",
+  "editor",
+  "first-run",
+  "feature-loading",
+  "fixture-routes",
+  "page-templates",
+  "starter-site",
+  "site-canvas",
+  "site-media",
+  "site-frame-assets",
+  "hosted-preview",
+  "hosted-helper",
+  "hosted-save",
+  "companion",
+  "uploads",
+].map((name) => `**/${name}.spec.ts`);
+
 // A dedicated local service and workspace: never exercise production or personal drafts.
 export default defineConfig({
   testDir: "./tests/builder",
+  projects: [
+    { name: "chromium", use: { browserName: "chromium" } },
+    {
+      name: "firefox",
+      testMatch: coreJourneys,
+      use: { browserName: "firefox" },
+    },
+    { name: "webkit", testMatch: coreJourneys, use: { browserName: "webkit" } },
+  ],
   globalSetup: "./tests/builder/setup.ts",
   outputDir: "test-results/builder-browser-results",
   fullyParallel: false,

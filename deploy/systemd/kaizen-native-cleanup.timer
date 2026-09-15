@@ -1,0 +1,10 @@
+[Unit]
+Description=Check retained Kaizen native files
+
+[Timer]
+OnBootSec=5min
+OnUnitInactiveSec=10min
+Unit=kaizen-native-cleanup.service
+
+[Install]
+WantedBy=timers.target

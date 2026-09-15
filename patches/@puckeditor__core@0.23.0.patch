@@ -1,8 +1,25 @@
 diff --git a/dist/chunk-55V3NZVF.mjs b/dist/chunk-55V3NZVF.mjs
-index 01fc32e03adc11d014291a99cc8dbee1806880f8..9e578e42aa931a78b8ee2717c03876951221059f 100644
+index 01fc32e03adc11d014291a99cc8dbee1806880f8..5acb9e71e4b11da0acbb73b46225ef7bdd48bb80 100644
 --- a/dist/chunk-55V3NZVF.mjs
 +++ b/dist/chunk-55V3NZVF.mjs
-@@ -1517,7 +1517,7 @@ init_react_import();
+@@ -411,7 +411,7 @@ import { PointerActivationConstraints as PointerActivationConstraints2 } from "@
+ // lib/dnd/use-sensors.ts
+ init_react_import();
+ import { useState as useState3 } from "react";
+-import { PointerSensor } from "@dnd-kit/react";
++import { PointerSensor, KeyboardSensor } from "@dnd-kit/react";
+ import { PointerActivationConstraints } from "@dnd-kit/dom";
+ import { isElement } from "@dnd-kit/dom/utilities";
+ var { Delay, Distance } = PointerActivationConstraints;
+@@ -431,6 +431,7 @@ var useSensors = ({
+   other: otherDefault
+ }) => {
+   const [sensors] = useState3(() => [
++    KeyboardSensor,
+     PointerSensor.configure({
+       activationConstraints(event, source) {
+         var _a;
+@@ -1517,7 +1518,7 @@ init_react_import();
  var styles_module_default5 = { "Modal": "_Modal_g5xob_1", "Modal--isOpen": "_Modal--isOpen_g5xob_15", "Modal-inner": "_Modal-inner_g5xob_19" };
  
  // components/Modal/index.tsx
@@ -11,7 +28,63 @@ index 01fc32e03adc11d014291a99cc8dbee1806880f8..9e578e42aa931a78b8ee2717c0387695
  import { jsx as jsx10 } from "react/jsx-runtime";
  var getClassName6 = get_class_name_factory_default("Modal", styles_module_default5);
  var Modal = ({
-@@ -3700,10 +3700,9 @@ var createNestedDroppablePlugin = ({ onChange }, id) => class NestedDroppablePlu
+@@ -2936,6 +2937,25 @@ var DraggableComponent = ({
+   const ref = useRef2(null);
+   const refSetter = useCallback8(
+     (el) => {
++      // Canvas containers can contain links, inputs and nested blocks.
++      // A labelled group preserves those descendants in the accessibility tree.
++      if (el && el.tagName === "DIV" && !el.hasAttribute("role")) {
++        el.setAttribute("role", "group");
++        el.setAttribute("aria-label", `${label || componentType} block`);
++        el.setAttribute("aria-roledescription", "movable block");
++        el.setAttribute("aria-keyshortcuts", "Enter Space");
++        // aria-describedby must resolve in the canvas document, not its parent.
++        const descriptionId = "puck-canvas-keyboard-instructions";
++        const doc = el.ownerDocument;
++        if (!doc.getElementById(descriptionId)) {
++          const instructions = doc.createElement("p");
++          instructions.id = descriptionId;
++          instructions.hidden = true;
++          instructions.textContent = "Press Enter to select this block. Press Space to pick it up, arrow keys to move it, Space to drop it or Escape to cancel.";
++          doc.body.appendChild(instructions);
++        }
++        el.setAttribute("aria-describedby", descriptionId);
++      }
+       sortableRef(el);
+       if (ref.current !== el) {
+         ref.current = el;
+@@ -2945,7 +2965,7 @@ var DraggableComponent = ({
+         }
+       }
+     },
+-    [itemRef, sortableRef]
++    [itemRef, sortableRef, label, componentType]
+   );
+   const [portalEl, setPortalEl] = useState9();
+   useEffect8(() => {
+@@ -3146,12 +3166,20 @@ var DraggableComponent = ({
+     el.setAttribute("data-puck-component", id);
+     el.setAttribute("data-puck-dnd", id);
+     el.style.position = "relative";
++    const onKeyboardSelect = (event) => {
++      if (event.target === el && event.key === "Enter") {
++        event.preventDefault();
++        onClick(event);
++      }
++    };
++    el.addEventListener("keydown", onKeyboardSelect, true);
+     el.addEventListener("click", onClick);
+     el.addEventListener("mouseover", _onMouseOver);
+     el.addEventListener("mouseout", _onMouseOut);
+     return () => {
+       el.removeAttribute("data-puck-component");
+       el.removeAttribute("data-puck-dnd");
++      el.removeEventListener("keydown", onKeyboardSelect, true);
+       el.removeEventListener("click", onClick);
+       el.removeEventListener("mouseover", _onMouseOver);
+       el.removeEventListener("mouseout", _onMouseOut);
+@@ -3700,10 +3728,9 @@ var createNestedDroppablePlugin = ({ onChange }, id) => class NestedDroppablePlu
            onChange(findDeepestCandidate(position, manager), manager);
          }
        };
@@ -25,7 +98,7 @@ index 01fc32e03adc11d014291a99cc8dbee1806880f8..9e578e42aa931a78b8ee2717c0387695
        document.body.addEventListener("pointermove", handlePointerMove, {
          capture: true
          // dndkit's PointerSensor prevents propagation during drag
-@@ -4281,14 +4280,13 @@ var DragDropContextClient = ({
+@@ -4281,14 +4308,13 @@ var DragDropContextClient = ({
      (params, manager) => {
        const { zoneChanged, areaChanged } = getChanged(params);
        if (!zoneChanged && !areaChanged) return;
@@ -44,7 +117,7 @@ index 01fc32e03adc11d014291a99cc8dbee1806880f8..9e578e42aa931a78b8ee2717c0387695
        debouncedParamsRef.current = null;
      },
      [zoneStore]
-@@ -4339,18 +4337,8 @@ var DragDropContextClient = ({
+@@ -4339,18 +4365,8 @@ var DragDropContextClient = ({
              return;
            }
            if (areaChanged) {
@@ -65,7 +138,7 @@ index 01fc32e03adc11d014291a99cc8dbee1806880f8..9e578e42aa931a78b8ee2717c0387695
              return;
            }
            if (zoneChanged) {
-@@ -4398,7 +4386,8 @@ var DragDropContextClient = ({
+@@ -4398,7 +4414,8 @@ var DragDropContextClient = ({
              stopLinePlaceholderScrollTracking();
              const entryEl = (_a = getFrame()) == null ? void 0 : _a.querySelector("[data-puck-entry]");
              entryEl == null ? void 0 : entryEl.removeAttribute("data-puck-dragging");
@@ -75,7 +148,7 @@ index 01fc32e03adc11d014291a99cc8dbee1806880f8..9e578e42aa931a78b8ee2717c0387695
              if (!source) {
                setLinePlaceholderActive(false);
                zoneStore.setState({ draggedItem: null });
-@@ -4406,9 +4395,32 @@ var DragDropContextClient = ({
+@@ -4406,9 +4423,32 @@ var DragDropContextClient = ({
              }
              const { zone, index } = source.data;
              const { previewIndex = {} } = zoneStore.getState() || {};
@@ -109,6 +182,45 @@ index 01fc32e03adc11d014291a99cc8dbee1806880f8..9e578e42aa931a78b8ee2717c0387695
              const playCommitFlip = !event.canceled && (target == null ? void 0 : target.type) !== "void" && (thisPreview == null ? void 0 : thisPreview.linePlaceholder) ? prepareCommitFlip({
                zones: initialSelector.current ? [initialSelector.current.zone, thisPreview.zone] : [thisPreview.zone],
                itemId: thisPreview.type === "move" ? thisPreview.props.id : void 0,
+@@ -4479,6 +4519,13 @@ var DragDropContextClient = ({
+           },
+           onDragMove: (event, manager) => {
+             var _a;
++            // Keyboard movement has no pointermove event to enable nested zones.
++            // Resolve the same destination before dnd-kit applies this movement.
++            if (event.nativeEvent?.type === "keydown") {
++              const current = manager.dragOperation.position.current;
++              const position = event.to || { x: current.x + (event.by?.x || 0), y: current.y + (event.by?.y || 0) };
++              setDeepestAndCollide(findDeepestCandidate(new GlobalPosition(document.body, position), manager), manager);
++            }
+             updateLinePlaceholder(manager);
+             (_a = dragListeners.dragmove) == null ? void 0 : _a.forEach((fn) => {
+               fn(event, manager);
+@@ -7237,6 +7284,8 @@ var Layer = forwardRef2(function Layer2({
+           {
+             className: getClassName24("inner"),
+             ref: rowRef,
++            role: "group",
++            "aria-label": `${node.label} layer`,
+             onMouseEnter: (e) => {
+               e.stopPropagation();
+               if (outlineStore.getState().status !== "idle") {
+@@ -11878,6 +11927,7 @@ var Preview2 = ({ id = "puck-preview" }) => {
+         AutoFrame_default,
+         {
+           id: "preview-frame",
++          title: "Page canvas",
+           className: getClassName35("frame"),
+           "data-rfd-iframe": true,
+           syncHostStyles: iframe.syncHostStyles,
+@@ -11899,6 +11949,7 @@ var Preview2 = ({ id = "puck-preview" }) => {
+         "div",
+         {
+           id: "preview-frame",
++          title: "Page canvas",
+           className: getClassName35("frame"),
+           ref,
+           "data-puck-entry": true,
 diff --git a/dist/chunk-K2LNXU54.mjs b/dist/chunk-K2LNXU54.mjs
 index 81075c39650a79a9eccf7cefffdc7a65cbd00c97..c87639f345eba8ca5b33c580daffa3e9c5f5ef7f 100644
 --- a/dist/chunk-K2LNXU54.mjs
@@ -198,7 +310,7 @@ index 81075c39650a79a9eccf7cefffdc7a65cbd00c97..c87639f345eba8ca5b33c580daffa3e9
        const { dispatch, history } = get();
        dispatch({
 diff --git a/dist/index.js b/dist/index.js
-index aebc9c0e4d4eed1a407ea72d0d1469d16544d834..d5a0b7fa3ca818d88b895aab554d416c7c5931a9 100644
+index aebc9c0e4d4eed1a407ea72d0d1469d16544d834..12a4bfa8efd20a29abd1ec39c4e1f006d31b2241 100644
 --- a/dist/index.js
 +++ b/dist/index.js
 @@ -2785,14 +2785,23 @@ var init_use_hotkey = __esm({
@@ -287,7 +399,71 @@ index aebc9c0e4d4eed1a407ea72d0d1469d16544d834..d5a0b7fa3ca818d88b895aab554d416c
            var _a;
            const { dispatch, history } = get();
            dispatch({
-@@ -11383,10 +11402,9 @@ var createNestedDroppablePlugin = ({ onChange }, id) => class NestedDroppablePlu
+@@ -6133,6 +6152,7 @@ var useSensors = ({
+   other: otherDefault
+ }) => {
+   const [sensors] = (0, import_react13.useState)(() => [
++    import_react14.KeyboardSensor,
+     import_react14.PointerSensor.configure({
+       activationConstraints(event, source) {
+         var _a;
+@@ -8864,6 +8884,25 @@ var DraggableComponent = ({
+   const ref = (0, import_react53.useRef)(null);
+   const refSetter = (0, import_react53.useCallback)(
+     (el) => {
++      // Canvas containers can contain links, inputs and nested blocks.
++      // A labelled group preserves those descendants in the accessibility tree.
++      if (el && el.tagName === "DIV" && !el.hasAttribute("role")) {
++        el.setAttribute("role", "group");
++        el.setAttribute("aria-label", `${label || componentType} block`);
++        el.setAttribute("aria-roledescription", "movable block");
++        el.setAttribute("aria-keyshortcuts", "Enter Space");
++        // aria-describedby must resolve in the canvas document, not its parent.
++        const descriptionId = "puck-canvas-keyboard-instructions";
++        const doc = el.ownerDocument;
++        if (!doc.getElementById(descriptionId)) {
++          const instructions = doc.createElement("p");
++          instructions.id = descriptionId;
++          instructions.hidden = true;
++          instructions.textContent = "Press Enter to select this block. Press Space to pick it up, arrow keys to move it, Space to drop it or Escape to cancel.";
++          doc.body.appendChild(instructions);
++        }
++        el.setAttribute("aria-describedby", descriptionId);
++      }
+       sortableRef(el);
+       if (ref.current !== el) {
+         ref.current = el;
+@@ -8873,7 +8912,7 @@ var DraggableComponent = ({
+         }
+       }
+     },
+-    [itemRef, sortableRef]
++    [itemRef, sortableRef, label, componentType]
+   );
+   const [portalEl, setPortalEl] = (0, import_react53.useState)();
+   (0, import_react53.useEffect)(() => {
+@@ -9074,12 +9113,20 @@ var DraggableComponent = ({
+     el.setAttribute("data-puck-component", id);
+     el.setAttribute("data-puck-dnd", id);
+     el.style.position = "relative";
++    const onKeyboardSelect = (event) => {
++      if (event.target === el && event.key === "Enter") {
++        event.preventDefault();
++        onClick(event);
++      }
++    };
++    el.addEventListener("keydown", onKeyboardSelect, true);
+     el.addEventListener("click", onClick);
+     el.addEventListener("mouseover", _onMouseOver);
+     el.addEventListener("mouseout", _onMouseOut);
+     return () => {
+       el.removeAttribute("data-puck-component");
+       el.removeAttribute("data-puck-dnd");
++      el.removeEventListener("keydown", onKeyboardSelect, true);
+       el.removeEventListener("click", onClick);
+       el.removeEventListener("mouseover", _onMouseOver);
+       el.removeEventListener("mouseout", _onMouseOut);
+@@ -11383,10 +11430,9 @@ var createNestedDroppablePlugin = ({ onChange }, id) => class NestedDroppablePlu
            onChange(findDeepestCandidate(position, manager), manager);
          }
        };
@@ -301,7 +477,7 @@ index aebc9c0e4d4eed1a407ea72d0d1469d16544d834..d5a0b7fa3ca818d88b895aab554d416c
        document.body.addEventListener("pointermove", handlePointerMove, {
          capture: true
          // dndkit's PointerSensor prevents propagation during drag
-@@ -11851,14 +11869,13 @@ var DragDropContextClient = ({
+@@ -11851,14 +11897,13 @@ var DragDropContextClient = ({
      (params, manager) => {
        const { zoneChanged, areaChanged } = getChanged2(params);
        if (!zoneChanged && !areaChanged) return;
@@ -320,7 +496,7 @@ index aebc9c0e4d4eed1a407ea72d0d1469d16544d834..d5a0b7fa3ca818d88b895aab554d416c
        debouncedParamsRef.current = null;
      },
      [zoneStore]
-@@ -11909,18 +11926,8 @@ var DragDropContextClient = ({
+@@ -11909,18 +11954,8 @@ var DragDropContextClient = ({
              return;
            }
            if (areaChanged) {
@@ -341,7 +517,7 @@ index aebc9c0e4d4eed1a407ea72d0d1469d16544d834..d5a0b7fa3ca818d88b895aab554d416c
              return;
            }
            if (zoneChanged) {
-@@ -11968,7 +11975,8 @@ var DragDropContextClient = ({
+@@ -11968,7 +12003,8 @@ var DragDropContextClient = ({
              stopLinePlaceholderScrollTracking();
              const entryEl = (_a = getFrame()) == null ? void 0 : _a.querySelector("[data-puck-entry]");
              entryEl == null ? void 0 : entryEl.removeAttribute("data-puck-dragging");
@@ -351,7 +527,7 @@ index aebc9c0e4d4eed1a407ea72d0d1469d16544d834..d5a0b7fa3ca818d88b895aab554d416c
              if (!source) {
                setLinePlaceholderActive(false);
                zoneStore.setState({ draggedItem: null });
-@@ -11976,9 +11984,32 @@ var DragDropContextClient = ({
+@@ -11976,9 +12012,32 @@ var DragDropContextClient = ({
              }
              const { zone, index } = source.data;
              const { previewIndex = {} } = zoneStore.getState() || {};
@@ -385,8 +561,47 @@ index aebc9c0e4d4eed1a407ea72d0d1469d16544d834..d5a0b7fa3ca818d88b895aab554d416c
              const playCommitFlip = !event.canceled && (target == null ? void 0 : target.type) !== "void" && (thisPreview == null ? void 0 : thisPreview.linePlaceholder) ? prepareCommitFlip({
                zones: initialSelector.current ? [initialSelector.current.zone, thisPreview.zone] : [thisPreview.zone],
                itemId: thisPreview.type === "move" ? thisPreview.props.id : void 0,
+@@ -12049,6 +12108,13 @@ var DragDropContextClient = ({
+           },
+           onDragMove: (event, manager) => {
+             var _a;
++            // Keyboard movement has no pointermove event to enable nested zones.
++            // Resolve the same destination before dnd-kit applies this movement.
++            if (event.nativeEvent?.type === "keydown") {
++              const current = manager.dragOperation.position.current;
++              const position = event.to || { x: current.x + (event.by?.x || 0), y: current.y + (event.by?.y || 0) };
++              setDeepestAndCollide(findDeepestCandidate(new GlobalPosition(document.body, position), manager), manager);
++            }
+             updateLinePlaceholder(manager);
+             (_a = dragListeners.dragmove) == null ? void 0 : _a.forEach((fn) => {
+               fn(event, manager);
+@@ -16361,6 +16427,7 @@ var Preview2 = ({ id = "puck-preview" }) => {
+         AutoFrame_default,
+         {
+           id: "preview-frame",
++          title: "Page canvas",
+           className: getClassName30("frame"),
+           "data-rfd-iframe": true,
+           syncHostStyles: iframe.syncHostStyles,
+@@ -16382,6 +16449,7 @@ var Preview2 = ({ id = "puck-preview" }) => {
+         "div",
+         {
+           id: "preview-frame",
++          title: "Page canvas",
+           className: getClassName30("frame"),
+           ref,
+           "data-puck-entry": true,
+@@ -17039,6 +17107,8 @@ var Layer = (0, import_react90.forwardRef)(function Layer2({
+           {
+             className: getClassName34("inner"),
+             ref: rowRef,
++            role: "group",
++            "aria-label": `${node.label} layer`,
+             onMouseEnter: (e) => {
+               e.stopPropagation();
+               if (outlineStore.getState().status !== "idle") {
 diff --git a/dist/no-external.js b/dist/no-external.js
-index af3fa6755f42679605e6805aa46fdeb90df48281..4a1592d5cbd9e6418fea985c132cf093a4b92432 100644
+index af3fa6755f42679605e6805aa46fdeb90df48281..d106005d43fcb049aad4fb44c728ef618242608e 100644
 --- a/dist/no-external.js
 +++ b/dist/no-external.js
 @@ -2785,14 +2785,23 @@ var init_use_hotkey = __esm({
@@ -475,7 +690,71 @@ index af3fa6755f42679605e6805aa46fdeb90df48281..4a1592d5cbd9e6418fea985c132cf093
            var _a;
            const { dispatch, history } = get();
            dispatch({
-@@ -11383,10 +11402,9 @@ var createNestedDroppablePlugin = ({ onChange }, id) => class NestedDroppablePlu
+@@ -6133,6 +6152,7 @@ var useSensors = ({
+   other: otherDefault
+ }) => {
+   const [sensors] = (0, import_react13.useState)(() => [
++    import_react14.KeyboardSensor,
+     import_react14.PointerSensor.configure({
+       activationConstraints(event, source) {
+         var _a;
+@@ -8864,6 +8884,25 @@ var DraggableComponent = ({
+   const ref = (0, import_react53.useRef)(null);
+   const refSetter = (0, import_react53.useCallback)(
+     (el) => {
++      // Canvas containers can contain links, inputs and nested blocks.
++      // A labelled group preserves those descendants in the accessibility tree.
++      if (el && el.tagName === "DIV" && !el.hasAttribute("role")) {
++        el.setAttribute("role", "group");
++        el.setAttribute("aria-label", `${label || componentType} block`);
++        el.setAttribute("aria-roledescription", "movable block");
++        el.setAttribute("aria-keyshortcuts", "Enter Space");
++        // aria-describedby must resolve in the canvas document, not its parent.
++        const descriptionId = "puck-canvas-keyboard-instructions";
++        const doc = el.ownerDocument;
++        if (!doc.getElementById(descriptionId)) {
++          const instructions = doc.createElement("p");
++          instructions.id = descriptionId;
++          instructions.hidden = true;
++          instructions.textContent = "Press Enter to select this block. Press Space to pick it up, arrow keys to move it, Space to drop it or Escape to cancel.";
++          doc.body.appendChild(instructions);
++        }
++        el.setAttribute("aria-describedby", descriptionId);
++      }
+       sortableRef(el);
+       if (ref.current !== el) {
+         ref.current = el;
+@@ -8873,7 +8912,7 @@ var DraggableComponent = ({
+         }
+       }
+     },
+-    [itemRef, sortableRef]
++    [itemRef, sortableRef, label, componentType]
+   );
+   const [portalEl, setPortalEl] = (0, import_react53.useState)();
+   (0, import_react53.useEffect)(() => {
+@@ -9074,12 +9113,20 @@ var DraggableComponent = ({
+     el.setAttribute("data-puck-component", id);
+     el.setAttribute("data-puck-dnd", id);
+     el.style.position = "relative";
++    const onKeyboardSelect = (event) => {
++      if (event.target === el && event.key === "Enter") {
++        event.preventDefault();
++        onClick(event);
++      }
++    };
++    el.addEventListener("keydown", onKeyboardSelect, true);
+     el.addEventListener("click", onClick);
+     el.addEventListener("mouseover", _onMouseOver);
+     el.addEventListener("mouseout", _onMouseOut);
+     return () => {
+       el.removeAttribute("data-puck-component");
+       el.removeAttribute("data-puck-dnd");
++      el.removeEventListener("keydown", onKeyboardSelect, true);
+       el.removeEventListener("click", onClick);
+       el.removeEventListener("mouseover", _onMouseOver);
+       el.removeEventListener("mouseout", _onMouseOut);
+@@ -11383,10 +11430,9 @@ var createNestedDroppablePlugin = ({ onChange }, id) => class NestedDroppablePlu
            onChange(findDeepestCandidate(position, manager), manager);
          }
        };
@@ -489,7 +768,7 @@ index af3fa6755f42679605e6805aa46fdeb90df48281..4a1592d5cbd9e6418fea985c132cf093
        document.body.addEventListener("pointermove", handlePointerMove, {
          capture: true
          // dndkit's PointerSensor prevents propagation during drag
-@@ -11851,14 +11869,13 @@ var DragDropContextClient = ({
+@@ -11851,14 +11897,13 @@ var DragDropContextClient = ({
      (params, manager) => {
        const { zoneChanged, areaChanged } = getChanged2(params);
        if (!zoneChanged && !areaChanged) return;
@@ -508,7 +787,7 @@ index af3fa6755f42679605e6805aa46fdeb90df48281..4a1592d5cbd9e6418fea985c132cf093
        debouncedParamsRef.current = null;
      },
      [zoneStore]
-@@ -11909,18 +11926,8 @@ var DragDropContextClient = ({
+@@ -11909,18 +11954,8 @@ var DragDropContextClient = ({
              return;
            }
            if (areaChanged) {
@@ -529,7 +808,7 @@ index af3fa6755f42679605e6805aa46fdeb90df48281..4a1592d5cbd9e6418fea985c132cf093
              return;
            }
            if (zoneChanged) {
-@@ -11968,7 +11975,8 @@ var DragDropContextClient = ({
+@@ -11968,7 +12003,8 @@ var DragDropContextClient = ({
              stopLinePlaceholderScrollTracking();
              const entryEl = (_a = getFrame()) == null ? void 0 : _a.querySelector("[data-puck-entry]");
              entryEl == null ? void 0 : entryEl.removeAttribute("data-puck-dragging");
@@ -539,7 +818,7 @@ index af3fa6755f42679605e6805aa46fdeb90df48281..4a1592d5cbd9e6418fea985c132cf093
              if (!source) {
                setLinePlaceholderActive(false);
                zoneStore.setState({ draggedItem: null });
-@@ -11976,9 +11984,32 @@ var DragDropContextClient = ({
+@@ -11976,9 +12012,32 @@ var DragDropContextClient = ({
              }
              const { zone, index } = source.data;
              const { previewIndex = {} } = zoneStore.getState() || {};
@@ -573,3 +852,42 @@ index af3fa6755f42679605e6805aa46fdeb90df48281..4a1592d5cbd9e6418fea985c132cf093
              const playCommitFlip = !event.canceled && (target == null ? void 0 : target.type) !== "void" && (thisPreview == null ? void 0 : thisPreview.linePlaceholder) ? prepareCommitFlip({
                zones: initialSelector.current ? [initialSelector.current.zone, thisPreview.zone] : [thisPreview.zone],
                itemId: thisPreview.type === "move" ? thisPreview.props.id : void 0,
+@@ -12049,6 +12108,13 @@ var DragDropContextClient = ({
+           },
+           onDragMove: (event, manager) => {
+             var _a;
++            // Keyboard movement has no pointermove event to enable nested zones.
++            // Resolve the same destination before dnd-kit applies this movement.
++            if (event.nativeEvent?.type === "keydown") {
++              const current = manager.dragOperation.position.current;
++              const position = event.to || { x: current.x + (event.by?.x || 0), y: current.y + (event.by?.y || 0) };
++              setDeepestAndCollide(findDeepestCandidate(new GlobalPosition(document.body, position), manager), manager);
++            }
+             updateLinePlaceholder(manager);
+             (_a = dragListeners.dragmove) == null ? void 0 : _a.forEach((fn) => {
+               fn(event, manager);
+@@ -16361,6 +16427,7 @@ var Preview2 = ({ id = "puck-preview" }) => {
+         AutoFrame_default,
+         {
+           id: "preview-frame",
++          title: "Page canvas",
+           className: getClassName30("frame"),
+           "data-rfd-iframe": true,
+           syncHostStyles: iframe.syncHostStyles,
+@@ -16382,6 +16449,7 @@ var Preview2 = ({ id = "puck-preview" }) => {
+         "div",
+         {
+           id: "preview-frame",
++          title: "Page canvas",
+           className: getClassName30("frame"),
+           ref,
+           "data-puck-entry": true,
+@@ -17039,6 +17107,8 @@ var Layer = (0, import_react90.forwardRef)(function Layer2({
+           {
+             className: getClassName34("inner"),
+             ref: rowRef,
++            role: "group",
++            "aria-label": `${node.label} layer`,
+             onMouseEnter: (e) => {
+               e.stopPropagation();
+               if (outlineStore.getState().status !== "idle") {

@@ -227,7 +227,7 @@ import {content} from '../content';
     page.locator(".builder-repository-build [role=status]"),
   ).toContainText("Build finished", { timeout: 90_000 });
   const popup = context.waitForEvent("page");
-  await page.getByRole("link", { name: "Open local website preview" }).click();
+  await page.getByRole("button", { name: "Open website preview" }).click();
   const preview = await popup;
   preview.on("pageerror", (e) => errors.push(e.message));
   for (const width of [1440, 390]) {
@@ -337,7 +337,7 @@ import {content} from '../content';
   await editor.getByRole("button", { name: "Show all fields" }).click();
   await editor.getByRole("button", { name: "Close editor" }).click();
   await page
-    .getByRole("button", { name: "Stop local preview", exact: true })
+    .getByRole("button", { name: "Stop preview", exact: true })
     .click();
   await route.getByRole("button", { name: "Edit text and links" }).click();
   await editor.getByRole("searchbox").fill("Edited original design");

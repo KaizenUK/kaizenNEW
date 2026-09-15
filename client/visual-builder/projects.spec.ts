@@ -3,6 +3,10 @@ import { mkdir, mkdtemp, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { LocalProjects } from "../../scripts/builder-projects";
 import { libraryFixture } from "./library-fixture";
+import {
+  DEFAULT_PROJECT_CAPABILITIES,
+  LEGACY_PROJECT_CAPABILITIES,
+} from "../../shared/builderProjects";
 
 async function fixture() {
   const root = path.resolve("test-results/project-unit");
@@ -18,6 +22,7 @@ describe("local client project boundaries", () => {
     await writeFile(path.join(directory, "private-previews.json"), "retained");
     const list = await projects.list();
     expect(list.map((p) => p.id)).toEqual(["kaizen"]);
+    expect(list[0].capabilities).toEqual(LEGACY_PROJECT_CAPABILITIES);
     expect(await readFile(path.join(directory, "workspace.json"), "utf8")).toBe(
       bytes,
     );
@@ -51,6 +56,9 @@ describe("local client project boundaries", () => {
       name: "Copy",
     });
     expect(copied.destination.kind).toBe("unconfigured");
+    expect(copied.capabilities).toEqual(DEFAULT_PROJECT_CAPABILITIES);
+    expect(alpha.capabilities).toEqual(DEFAULT_PROJECT_CAPABILITIES);
+    expect(beta.capabilities).toEqual(DEFAULT_PROJECT_CAPABILITIES);
     const copy = JSON.parse(
       await readFile(
         path.join(projects.directory(copied.id), "workspace.json"),
@@ -130,5 +138,31 @@ describe("local client project boundaries", () => {
       JSON.stringify({ formatVersion: 999, projects: [] }),
     );
     await expect(projects.list()).rejects.toThrow(/Unsupported/);
+  });
+  it("upgrades old catalogue settings once and preserves explicitly configured inventory", async () => {
+    const { directory, projects } = await fixture();
+    const client = await projects.mutate({
+      action: "create",
+      name: "Independent website",
+    });
+    const catalogue = JSON.parse(
+      await readFile(path.join(directory, "projects.json"), "utf8"),
+    );
+    delete catalogue.projects[0].capabilities;
+    catalogue.projects[1].capabilities.hasInventory = true;
+    await writeFile(
+      path.join(directory, "projects.json"),
+      JSON.stringify(catalogue),
+    );
+    const updated = await projects.list();
+    expect(updated[0].capabilities).toEqual(LEGACY_PROJECT_CAPABILITIES);
+    expect(
+      updated.find((p) => p.id === client.id)?.capabilities.hasInventory,
+    ).toBe(true);
+    expect(
+      JSON.parse(await readFile(path.join(directory, "projects.json"), "utf8"))
+        .projects,
+    ).toEqual(updated);
+    expect(await new LocalProjects(directory).list()).toEqual(updated);
   });
 });

@@ -98,7 +98,7 @@ export default function RedirectsPanel({
       <Head
         info={<ProjectName />}
         title="Redirects"
-        description="Send visitors from an old URL to its replacement. Rules stay in draft until you publish them."
+        help="redirects"
         status={
           <Pill tone={dirty ? "orange" : changed ? "blue" : "green"}>
             {dirty
@@ -151,10 +151,7 @@ export default function RedirectsPanel({
           <Notice>Unsaved changes. Save or discard them before leaving.</Notice>
         )}
         <fieldset disabled={busy} className="builder-fieldset">
-          <Card
-            title="Draft rules"
-            description="Use paths such as /old-offer/ and /new-offer/. Publish the destination page first. Existing site sections and editor URLs are protected, and tracking parameters in the query string are kept."
-          >
+          <Card title="Draft rules">
             <datalist id="builder-redirect-destinations">
               {[...new Set<string>(localRedirectPaths(workspace.pages))].map(
                 (value) => (
@@ -238,10 +235,6 @@ export default function RedirectsPanel({
                 <Plus size={16} /> Add redirect
               </button>
             </div>
-            <p className="builder-hint">
-              Temporary (302) is safer while testing. Browsers remember
-              permanent (301) redirects even after you change them.
-            </p>
           </Card>
           {review && (
             <Card
@@ -293,10 +286,7 @@ export default function RedirectsPanel({
             </details>
             <details>
               <summary>Redirect history ({state.revisions.length})</summary>
-              <p className="builder-hint">
-                Restore a saved version into the draft, then save and review
-                before publishing.
-              </p>
+
               {[...state.revisions].reverse().map((revision) => (
                 <div className="builder-revision" key={revision.id}>
                   <span>

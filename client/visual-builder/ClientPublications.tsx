@@ -9,32 +9,11 @@ import type {
 } from "../../shared/builderClientPublication";
 import { Card, Head, Notice, Pill } from "./shell";
 import { ProjectName } from "./activeProject";
+import RepositoryPublish from "./RepositoryPublish";
+import { clientReleaseStatus } from "./builderStatus";
 
 /* Publishing a client project: choose a destination, review what goes live, then watch the release. */
 
-const labels: Record<ClientPublicationJob["phase"], string> = {
-  queued: "Queued",
-  building: "Building static website",
-  activating: "Activating release",
-  verifying: "Checking served output",
-  live: "Verified release",
-  failed: "Failed before publication",
-  rolled_back: "Previous release restored",
-  recovery_required: "Recovery needs attention",
-};
-const tones: Record<
-  ClientPublicationJob["phase"],
-  "grey" | "green" | "orange" | "blue" | "primary"
-> = {
-  queued: "blue",
-  building: "blue",
-  activating: "blue",
-  verifying: "blue",
-  live: "green",
-  failed: "orange",
-  rolled_back: "grey",
-  recovery_required: "orange",
-};
 const actionLabels: Record<ClientPublicationJob["action"], string> = {
   publish: "Publish",
   unpublish: "Unpublish",
@@ -43,8 +22,10 @@ const actionLabels: Record<ClientPublicationJob["action"], string> = {
 
 export default function ClientPublications({
   onChanged,
+  onConnectDomain,
 }: {
   onChanged: () => void;
+  onConnectDomain?: () => void;
 }) {
   const [destinations, setDestinations] = useState<ClientDestination[]>([]),
     [jobs, setJobs] = useState<ClientPublicationJob[]>([]);
@@ -161,32 +142,34 @@ export default function ClientPublications({
     );
   return (
     <>
-      <Head
-        info={<ProjectName />}
-        title="Releases"
-        description="Publish the saved project to its destination and keep track of every release. Saving drafts, exporting the website and publishing are separate steps."
-      >
+      <Head info={<ProjectName />} title="Releases" help="releases">
         <button type="button" disabled={busy} onClick={() => void refresh()}>
           <RefreshCw size={16} /> Refresh release status
         </button>
       </Head>
       <div className="builder-page-body">
+        <RepositoryPublish />
         {!loaded && (
           <p role="status" className="builder-hint">
             Loading destinations and release history…
           </p>
         )}
         {loaded && !destinations.length && !error && !refreshError && (
-          <Card
-            title="No publishing destination yet"
-            description="A server administrator needs to connect a dedicated staging or production host for this client. Projects can never publish over the Kaizen site. Setup is documented in docs/client-publication.md."
-          />
+          <Card title="No publishing destination yet">
+            <Notice>
+              {onConnectDomain
+                ? "Connect a domain in Settings, then return here to review your first publish."
+                : "Ask the website owner to connect a publishing destination."}
+            </Notice>
+            {onConnectDomain && (
+              <button type="button" onClick={onConnectDomain}>
+                Open domain settings
+              </button>
+            )}
+          </Card>
         )}
         {!!destinations.length && (
-          <Card
-            title="Publish"
-            description="Choose where this website goes live, then review exactly what the release contains."
-          >
+          <Card title="Publish">
             <div className="builder-form">
               <label>
                 Choose destination
@@ -324,10 +307,7 @@ export default function ClientPublications({
         {message && <Notice tone="success">{message}</Notice>}
         {error && <Notice tone="error">{error}</Notice>}
         {refreshError && <Notice tone="error">{refreshError}</Notice>}
-        <Card
-          title="Release history"
-          description="Releases in progress stay visible on every page of the history."
-        >
+        <Card title="Release history">
           <nav
             aria-label="Release history pages"
             className="builder-row builder-history-nav"
@@ -379,8 +359,12 @@ export default function ClientPublications({
                     </p>
                   </div>
                   <p role="status" className="builder-release-card-status">
-                    <Pill tone={tones[job.phase]}>{labels[job.phase]}</Pill>
-                    {job.active && <Pill tone="green">Live now</Pill>}
+                    <Pill
+                      tone={clientReleaseStatus(job).tone}
+                      title={clientReleaseStatus(job).detail}
+                    >
+                      {clientReleaseStatus(job).label}
+                    </Pill>
                   </p>
                 </div>
                 {job.error && <Notice tone="error">{job.error}</Notice>}
