@@ -1,5 +1,6 @@
 import { checkFunctionLimit } from "../_shared/functionLimits.ts";
 import { bootstrapAccount } from "../_shared/builderSignup.ts";
+import { domainProjectAction } from "../_shared/builderDomains.ts";
 import { createClient } from "npm:@supabase/supabase-js@2.98.0";
 import { recordClientDiagnostic } from "../_shared/clientDiagnostics.ts";
 import { getCorsHeaders, isOriginAllowed } from "../_shared/editorAuth.ts";
@@ -196,6 +197,29 @@ Deno.serve(async (request) => {
       );
     if (!project || !membership)
       return json(403, { error: "Project membership required." });
+    if (
+      ["domain-state", "domain-add", "domain-verify", "domain-remove"].includes(
+        action,
+      )
+    ) {
+      if (
+        action !== "domain-state" &&
+        (membership.role !== "owner" || !membership.can_publish)
+      ) {
+        return json(403, {
+          error:
+            "A website owner with publishing permission must manage its domain.",
+        });
+      }
+      const result = await domainProjectAction({
+        service,
+        projectId: target,
+        actor: auth.user.id,
+        input,
+        configuration: Deno.env.get("BUILDER_DOMAIN_CONFIG"),
+      });
+      return json(result.status, result.body);
+    }
     if (action === "project-billing" || action === "take-billing") {
       if (action === "take-billing") {
         if (membership.role !== "owner" || input.confirm !== true)

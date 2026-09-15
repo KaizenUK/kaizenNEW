@@ -22,8 +22,10 @@ const actionLabels: Record<ClientPublicationJob["action"], string> = {
 
 export default function ClientPublications({
   onChanged,
+  onConnectDomain,
 }: {
   onChanged: () => void;
+  onConnectDomain?: () => void;
 }) {
   const [destinations, setDestinations] = useState<ClientDestination[]>([]),
     [jobs, setJobs] = useState<ClientPublicationJob[]>([]);
@@ -155,8 +157,15 @@ export default function ClientPublications({
         {loaded && !destinations.length && !error && !refreshError && (
           <Card title="No publishing destination yet">
             <Notice>
-              Ask the website owner to connect a publishing destination.
+              {onConnectDomain
+                ? "Connect a domain in Settings, then return here to review your first publish."
+                : "Ask the website owner to connect a publishing destination."}
             </Notice>
+            {onConnectDomain && (
+              <button type="button" onClick={onConnectDomain}>
+                Open domain settings
+              </button>
+            )}
           </Card>
         )}
         {!!destinations.length && (

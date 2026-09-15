@@ -29,6 +29,7 @@ const privateTables = [
   "builder_publication_allowances",
   "builder_repository_publications",
   "builder_repository_output_jobs",
+  "builder_domains",
 ];
 const legacyTables = [
   "builder_pages",
@@ -161,6 +162,16 @@ describe("complete builder table access matrix", () => {
       [beta, ids.other],
     ]) {
       const destination = crypto.randomUUID();
+      await db.query(
+        "insert into builder_domains(id,project_id,hostname,verification_token,worker_id,requested_by,binding_kind,candidate_destination_id) values($1,$2,$3,repeat('d',64),'private-domain-worker',$4,'client-primary',$5)",
+        [
+          crypto.randomUUID(),
+          project,
+          `${project}.fixture.co.uk`,
+          actor,
+          crypto.randomUUID(),
+        ],
+      );
       await db.query(
         "insert into builder_project_previews(project_id,id,payload,expires_at) values($1,$2,'{\"private\":\"project preview canary\"}',now()+interval '1 hour'),($1,$3,'{\"private\":\"expired canary\"}',now()-interval '1 hour')",
         [project, crypto.randomUUID(), crypto.randomUUID()],

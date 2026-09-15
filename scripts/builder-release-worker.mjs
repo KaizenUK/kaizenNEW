@@ -66,6 +66,9 @@ export function createReleaseClient({ url, key, fetcher = fetch }) {
               : `Release service returned HTTP ${response.status}${/^[A-Z0-9]{5,10}$/.test(payload.code || "") ? ` (${payload.code})` : ""}. Check the worker configuration and service logs.`,
           );
           error.definitive = response.status >= 400 && response.status < 500;
+          error.code = /^[A-Z0-9]{5,10}$/.test(payload.code || "")
+            ? payload.code
+            : undefined;
           throw error;
         }
         return await response.json();

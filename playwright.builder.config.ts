@@ -13,6 +13,7 @@ const coreJourneys = [
   "signup",
   "account",
   "billing",
+  "domains",
   "legal-privacy",
   "projects",
   "editor",

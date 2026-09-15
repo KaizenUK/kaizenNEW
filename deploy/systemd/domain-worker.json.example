@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "workerId": "same-id-as-client-publication-worker",
+  "ipv4": ["192.0.2.10"],
+  "ipv6": [],
+  "reservedHostnames": ["your-existing-site.com"],
+  "providerUser": "admin",
+  "publicationUser": "kaizen-builder",
+  "native": {
+    "projectId": "kaizen",
+    "store": "/var/lib/kaizen/production",
+    "origin": "https://your-existing-site.com"
+  }
+}

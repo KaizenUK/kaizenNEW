@@ -5,6 +5,8 @@ import { createServer, type Server } from "node:http";
 import type { Page } from "./browser-fixture";
 import { bootstrapAccount } from "../../supabase/functions/_shared/builderSignup";
 import { createAccountHandler } from "../../supabase/functions/_shared/builderAccounts";
+import { domainProjectAction } from "../../supabase/functions/_shared/builderDomains";
+import { clientPublicationAction } from "../../supabase/functions/_shared/clientPublication";
 export const accountOwner = "11111111-1111-4111-8111-111111111111",
   accountPerson = "22222222-2222-4222-8222-222222222222",
   accountOtherOwner = "33333333-3333-4333-8333-333333333333";
@@ -24,6 +26,7 @@ export async function accountFixture(
     initialView?: "account" | "pages";
     needsLegalAcceptance?: boolean;
     billing?: boolean;
+    domains?: boolean;
   } = {},
 ) {
   const projectResponse = await page.request.post("/__builder-projects", {
@@ -58,6 +61,7 @@ export async function accountFixture(
     "202609140005_builder_privacy_retention.sql",
     "202609150008_builder_billing_retention.sql",
     ...billingMigrations,
+    "202609150009_builder_domains.sql",
   ]);
   for (const file of (await readdir("supabase/migrations")).sort()) {
     if (
@@ -85,9 +89,16 @@ export async function accountFixture(
   );
   // Existing owners receive the same migration backfill as production. New
   // fixture signups and invited editors retain normal Free account behavior.
-  for (const file of billingMigrations)
+  for (const file of [...billingMigrations, "202609150009_builder_domains.sql"])
     await db.exec(await readFile(`supabase/migrations/${file}`, "utf8"));
   const state = {
+    domainRequests: [] as {
+      actor: string;
+      action: string;
+      domainId?: string;
+    }[],
+    domainSetupAvailable: !!options.domains,
+    loseDomainResponse: false,
     billingRequests: [] as { actor: string; action: string; plan?: string }[],
     billingAvailable: !!options.billing,
     loseCheckoutResponse: false,
@@ -550,6 +561,107 @@ export async function accountFixture(
     if (url.pathname === "/functions/v1/builder-projects") {
       const input = request.postDataJSON();
       if (
+        [
+          "domain-state",
+          "domain-add",
+          "domain-verify",
+          "domain-remove",
+        ].includes(input.action)
+      ) {
+        state.domainRequests.push({
+          actor,
+          action: input.action,
+          domainId: input.domainId,
+        });
+        const result = await domainProjectAction({
+          projectId: input.projectId,
+          actor,
+          input,
+          configuration: state.domainSetupAvailable
+            ? JSON.stringify({
+                workerId: "fixture-domains",
+                ipv4: ["144.91.72.17"],
+                ipv6: [],
+                reservedHostnames: ["kaizenweb.co.uk"],
+              })
+            : undefined,
+          service: {
+            rpc: async (name, args) => {
+              if (
+                !["builder_domain_state", "builder_domain_request"].includes(
+                  name,
+                )
+              )
+                throw new Error("Unexpected domain RPC");
+              try {
+                const entries = Object.entries(args);
+                const data = (
+                  await db.query<any>(
+                    `select ${name}(${entries.map(([key], index) => `${key}=>$${index + 1}`).join(",")}) as value`,
+                    entries.map(([, value]) => value),
+                  )
+                ).rows[0].value;
+                return { data, error: null };
+              } catch (error) {
+                return {
+                  data: null,
+                  error: { code: error.code, message: error.message },
+                };
+              }
+            },
+          },
+        });
+        if (
+          state.loseDomainResponse &&
+          input.action !== "domain-state" &&
+          result.status === 200
+        ) {
+          state.loseDomainResponse = false;
+          await reply(
+            {
+              error:
+                "The earlier domain request may have completed. Refresh its status before trying again.",
+            },
+            503,
+          );
+        } else await reply(result.body, result.status);
+        return;
+      }
+      if (input.action === "client-release-list") {
+        const data = await clientPublicationAction({
+          actor,
+          projectId: input.projectId,
+          input,
+          service: {},
+          user: {
+            rpc: async (name, args) => {
+              if (name !== "builder_client_history")
+                throw new Error("Unexpected release RPC");
+              try {
+                const data = await db.transaction(async (tx) => {
+                  await tx.query(
+                    "select set_config('request.jwt.claim.sub',$1,true),set_config('request.jwt.claim.role','authenticated',true)",
+                    [actor],
+                  );
+                  await tx.exec("set local role authenticated");
+                  return (
+                    await tx.query<any>(
+                      "select builder_client_history($1,$2) as value",
+                      [args.target, args.before_job],
+                    )
+                  ).rows[0].value;
+                });
+                return { data, error: null };
+              } catch (error) {
+                return { data: null, error: { message: error.message } };
+              }
+            },
+          },
+        });
+        await reply(data);
+        return;
+      }
+      if (
         input.action === "project-billing" ||
         input.action === "take-billing"
       ) {
@@ -614,8 +726,13 @@ export async function accountFixture(
       if (input.action === "list") {
         const rows = (
           await db.query<any>(
-            "select p.id,p.name,m.role,m.can_publish from builder_projects p join builder_project_members m on m.project_id=p.id where m.user_id=$1",
+            "select p.id,p.name,p.archived,p.version,m.role,m.can_publish from builder_projects p join builder_project_members m on m.project_id=p.id where m.user_id=$1",
             [actor],
+          )
+        ).rows;
+        const destinations = (
+          await db.query<any>(
+            "select project_id,environment,origin from builder_client_destinations where enabled",
           )
         ).rows;
         await reply(
@@ -623,6 +740,26 @@ export async function accountFixture(
             ...project,
             id: row.id,
             name: row.name,
+            archived: row.archived,
+            version: row.version,
+            ...(destinations.some(
+              (destination) => destination.project_id === row.id,
+            )
+              ? {
+                  destination: {
+                    kind: "client-configured",
+                    label: destinations
+                      .filter(
+                        (destination) => destination.project_id === row.id,
+                      )
+                      .map(
+                        (destination) =>
+                          `${destination.environment}: ${destination.origin}`,
+                      )
+                      .join(" · "),
+                  },
+                }
+              : {}),
             capabilities: {
               legacyWorkspace: false,
               hasInventory: false,

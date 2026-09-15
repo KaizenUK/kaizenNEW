@@ -61,7 +61,10 @@ export async function readClientDestinations(file) {
   const stat = await lstat(file);
   if (!stat.isFile() || stat.isSymbolicLink() || stat.size > 100000)
     throw new Error("Invalid client destination configuration file.");
-  const config = JSON.parse(await readFile(file, "utf8"));
+  return validateClientDestinations(JSON.parse(await readFile(file, "utf8")));
+}
+/** Validate an operator-owned update before atomically replacing the registry. */
+export async function validateClientDestinations(config) {
   if (
     config.schemaVersion !== 1 ||
     Object.keys(config).sort().join(",") !== "destinations,schemaVersion" ||

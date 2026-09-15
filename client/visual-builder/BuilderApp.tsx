@@ -29,6 +29,8 @@ import { repositoryConnection } from "./repositoryConnection";
 import ClientSettings from "./ClientSettings";
 import RepositorySettings from "./RepositorySettings";
 import ProjectBillingPanel from "./ProjectBillingPanel";
+import DomainSettings from "./DomainSettings";
+import type { WebsiteDomainState } from "../../shared/builderDomains";
 import ProblemReport from "./ProblemReport";
 import { startErrorReporting } from "./errorReporting";
 import {
@@ -110,6 +112,25 @@ function BuilderWorkspace({ inventory }: { inventory?: PageInventory } = {}) {
   const [accountId, setAccountId] = useState<string | undefined>(
     localMode ? "local" : undefined,
   );
+  const domainScope = useRef("");
+  const domainStateChanged = useCallback(
+    (state: WebsiteDomainState) => {
+      const signature = JSON.stringify([
+        accountId,
+        state.projectId,
+        state.canManage,
+        state.archived,
+        state.domain?.id,
+        state.domain?.status === "connected",
+        state.domain?.operation === "remove",
+      ]);
+      if (domainScope.current === signature) return;
+      domainScope.current = signature;
+      clearProjectCache();
+      window.dispatchEvent(new Event("builder-projects-changed"));
+    },
+    [accountId],
+  );
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
   const [email, setEmail] = useState("");
@@ -118,19 +139,23 @@ function BuilderWorkspace({ inventory }: { inventory?: PageInventory } = {}) {
   const [notice, setNotice] = useState("");
   const [existingPath, setExistingPath] = useState<string>();
   const [creating, setCreating] = useState(false);
-  const [view, setView] = useState<BuilderView>(() =>
-    typeof location !== "undefined" &&
-    new URLSearchParams(location.search).get("view") === "account"
-      ? "account"
-      : typeof location !== "undefined" &&
-          new URLSearchParams(location.search).get("view") === "repository"
-        ? "repository"
-        : !localMode &&
-            typeof location !== "undefined" &&
-            !new URLSearchParams(location.search).has("project")
-          ? "projects"
-          : "pages",
-  );
+  const [view, setView] = useState<BuilderView>(() => {
+    const params = new URLSearchParams(
+      typeof location === "undefined" ? "" : location.search,
+    );
+    const requested = params.get("view");
+    if (
+      ["account", "repository", "settings", "releases"].includes(
+        requested || "",
+      )
+    )
+      return requested as BuilderView;
+    return !localMode &&
+      typeof location !== "undefined" &&
+      !params.has("project")
+      ? "projects"
+      : "pages";
+  });
   const [theme, toggleTheme] = useBuilderTheme();
   const [previewId] = useState(() =>
     typeof window === "undefined"
@@ -501,6 +526,13 @@ function BuilderWorkspace({ inventory }: { inventory?: PageInventory } = {}) {
             </ClientSettings>
             <div className="builder-page-body">
               {!localMode && accountId && (
+                <DomainSettings
+                  accountId={accountId}
+                  projectId={activeProjectId}
+                  onState={domainStateChanged}
+                />
+              )}
+              {!localMode && accountId && (
                 <ProjectBillingPanel
                   key={`${accountId}:${activeProjectId}`}
                   accountId={accountId}
@@ -515,6 +547,13 @@ function BuilderWorkspace({ inventory }: { inventory?: PageInventory } = {}) {
             <Head info={<ProjectName />} title="Settings" help="settings" />
             <div className="builder-page-body">
               <BuilderViewSettings />
+              {!localMode && accountId && workspace && (
+                <DomainSettings
+                  accountId={accountId}
+                  projectId={activeProjectId}
+                  onState={domainStateChanged}
+                />
+              )}
               {!localMode && accountId && workspace && (
                 <ProjectBillingPanel
                   key={`${accountId}:${activeProjectId}`}
@@ -731,7 +770,14 @@ function BuilderWorkspace({ inventory }: { inventory?: PageInventory } = {}) {
       {current === "releases" &&
         workspace &&
         capabilities.publishPath === "worker" &&
-        panel(<ClientPublications onChanged={() => void reload()} />)}
+        panel(
+          <ClientPublications
+            onChanged={() => void reload()}
+            onConnectDomain={
+              !localMode ? () => navigate("settings") : undefined
+            }
+          />,
+        )}
       {current === "releases" &&
         workspace &&
         capabilities.publishPath === "github" &&

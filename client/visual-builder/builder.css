@@ -4487,6 +4487,107 @@
   background: var(--surface);
 }
 
+.builder-domains {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.builder-domain-toolbar,
+.builder-domain-heading,
+.builder-domain-actions,
+.builder-domain-input-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.builder-domain-toolbar,
+.builder-domain-heading,
+.builder-domain-actions {
+  margin: 16px 0;
+}
+.builder-domain-heading h3 {
+  margin: 0;
+  min-width: 0;
+}
+.builder-domain-add {
+  display: grid;
+  gap: 8px;
+  margin-top: 20px;
+}
+.builder-domain-input-row input {
+  flex: 1 1 240px;
+  min-width: 0;
+}
+.builder-domain-records,
+.builder-domain-history {
+  margin-top: 20px;
+}
+.builder-domain-records summary,
+.builder-domain-history summary {
+  cursor: pointer;
+  font-weight: 600;
+}
+.builder-domain-records ol {
+  list-style: none;
+  padding: 0;
+  display: grid;
+  gap: 12px;
+}
+.builder-domain-records li {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 16px;
+  min-width: 0;
+}
+.builder-domain-records h4 {
+  margin: 0 0 12px;
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+.builder-domain-records h4 span {
+  color: var(--muted);
+}
+.builder-domain-records dl {
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr));
+  gap: 12px;
+}
+.builder-domain-records dt {
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+.builder-domain-records dd {
+  display: flex;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0;
+}
+.builder-domain-records code {
+  flex: 1 1 240px;
+  min-width: 0;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  user-select: all;
+}
+.builder-domain-records button {
+  flex: 0 0 auto;
+}
+.builder-domain-dns-help,
+.builder-domain-add small,
+.builder-domain-history time {
+  color: var(--muted);
+}
+.builder-domain-history li {
+  margin: 12px 0;
+}
+.builder-domain-history time {
+  display: block;
+  font-size: 0.875rem;
+}
+
 /* Contextual help stays beside the current task and returns focus to its trigger. */
 .builder-app .builder-help-link {
   display: inline;

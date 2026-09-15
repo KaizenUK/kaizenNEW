@@ -1,0 +1,11 @@
+[Unit]
+Description=Check Kaizen domain setup, DNS and certificates
+
+[Timer]
+OnBootSec=45s
+OnUnitInactiveSec=30s
+AccuracySec=1s
+Unit=kaizen-domain-worker.service
+
+[Install]
+WantedBy=timers.target

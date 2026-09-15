@@ -146,7 +146,7 @@ async function job(
   const id = crypto.randomUUID(),
     destination = crypto.randomUUID();
   await db.query(
-    "insert into builder_client_destinations(id,project_id,environment,origin,label,worker_id,active_artifact_id) values($1,$2,'production',$3,'Fixture','fixture','baseline') on conflict(project_id,environment) do nothing",
+    "insert into builder_client_destinations(id,project_id,environment,origin,label,worker_id,active_artifact_id) values($1,$2,'production',$3,'Fixture','fixture','baseline') on conflict(project_id,environment) where enabled do nothing",
     [destination, target, `https://${destination}.example.test`],
   );
   return (

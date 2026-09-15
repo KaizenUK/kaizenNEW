@@ -49,6 +49,8 @@ export async function clientLiveWorkspace(
       .select("id,active_job_id")
       .eq("project_id", projectId)
       .eq("environment", "production")
+      .eq("enabled", true)
+      .eq("domain_ready", true)
       .maybeSingle(),
   );
   let snapshot = null;
@@ -93,7 +95,8 @@ export async function clientPublicationAction({
     const present = (row: any) =>
       clientJob(
         row,
-        configured.find((d: any) => d.id === row.destination_id)?.active_job_id,
+        configured.find((d: any) => d.id === row.destination_id && d.enabled)
+          ?.active_job_id,
       );
     return {
       destinations: configured
