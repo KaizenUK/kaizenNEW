@@ -2,6 +2,7 @@ import { clone, type Workspace } from "./visualBuilder.ts";
 import { validateBackupWorkspace } from "./builderBackup.ts";
 import { LEGACY_PROJECT_ID, validProjectId } from "./builderProjects.ts";
 import type { ContentCatalogue } from "./visualBuilder.ts";
+import type { ReleaseAvailability } from "./builderReleases.ts";
 
 export type ClientDestination = {
   projectId: string;
@@ -40,6 +41,7 @@ export type ClientPublicationJob = {
   log: string;
   active: boolean;
   recoveryAvailable?: boolean;
+  availability?: ReleaseAvailability | null;
 };
 export type ClientPublicationReview = {
   id: string;

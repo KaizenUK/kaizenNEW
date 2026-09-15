@@ -437,3 +437,28 @@ Nine new cases cover:
 
 A separate case runs the client caller against the actual migration 019 in PGlite with real files: rollback-review protection, database grace cancellation, completion and later rollback refusal. Another verifies that a client alias can still be prepared and routed during a partial retirement. `l6-t4-client-retirement-combined1.log` passes 266 cases across fifteen affected files with actual Nginx and zero skips; `l6-t4-client-retirement-types1.log` reports 465 files, zero errors/warnings and 200 hints. Native release and domain worker bundles pass Node syntax checks, and the client worker CLI still refuses missing configuration. The killed-child case uses a real process, lock and files with a file-backed RPC double. No disposable systemd run of the client unit has been performed yet; D2d.4 records any installed-unit evidence. Nothing is installed or deployed.
 
+## Release history availability
+
+Release history now says whether an earlier verified release can still be restored. Retirement never deletes history: the release row, its log and its outcome stay, and only the restore action goes.
+
+- **Hosted client history:** `builder_client_history` adds `availability` to each job. It reads the private retirement records through `builder_release_availability`, which checks read access to the project and client scope and returns only `retained`, `removing` or `removed`. The retirement table and its internal phase helper stay unavailable to browsers.
+- **Native Kaizen history:** `builder_release_summary`, which `builder_list_releases` and the queue functions return, carries the same field for `repository:production`.
+- **Local helper history:** `ClientPublisher` marks a live release `removed` when the destination store no longer lists it. Reviewing its restoration is refused.
+- **Screens:** Releases (client) and the native release panel show "Being removed to free space. This release can no longer be restored." or "No longer kept. It was removed to free space and cannot be restored." in place of the restore button.
+- **Stale screens:** if a release is retired after the screen loaded, the existing server fence refuses the review or queued rollback with "This release is being removed or is no longer retained. Choose another release." The screen shows that message, closes the review and reloads history, so the option disappears. A retained release under storage pressure still restores normally (see the client caller section).
+
+Migration `202609150020_builder_release_availability.sql` must follow 019 and precede the matching frontend and Edge functions in the coordinated rollout. Older frontends ignore the new field.
+
+![Removed release in history, desktop](handover/builder-launch/release-availability-desktop.png)
+![Removed release in history, phone](handover/builder-launch/release-availability-mobile.png)
+
+New proof:
+
+- a SQL case: retained/removing/removed availability, cross-project and repository-scope refusal, no browser access to the phase helper, native availability through `builder_list_releases`, and history rows kept;
+- the access matrix, updated for exactly one new browser function;
+- two React cases: client and native screens hide restoration for removed releases and reload after a stale refusal;
+- a local publisher case: a removed store release is marked and its review refused;
+- the client-history and native releases browser journeys, with desktop and phone screenshots checked for no horizontal overflow.
+
+`l6-t4-release-history-combined2.log` passes 290 cases across eighteen affected files with actual Nginx and zero skips. An earlier identical run, `combined1`, had one real-Nginx domain assertion read the previous page immediately after a graceful reload; that file then passed 29/29 standalone and the full rerun passed, and no D2d.3 change touches that path. `l6-t4-release-history-browser1.log` passes both affected browser journeys; `l6-t4-release-history-types1.log` reports 466 files, zero errors/warnings and 200 hints; `l6-t4-release-history-edge1.log` passes the Deno check of both functions and the full Edge suite (10 tests, 68 steps). Nothing is installed or deployed.
+

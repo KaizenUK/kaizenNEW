@@ -10,7 +10,11 @@ import type {
 import { Card, Head, Notice, Pill } from "./shell";
 import { ProjectName } from "./activeProject";
 import RepositoryPublish from "./RepositoryPublish";
-import { clientReleaseStatus } from "./builderStatus";
+import {
+  clientReleaseStatus,
+  releaseAvailability,
+  retirementRefusal,
+} from "./builderStatus";
 
 /* Publishing a client project: choose a destination, review what goes live, then watch the release. */
 
@@ -112,6 +116,12 @@ export default function ClientPublications({
       await action();
     } catch (error) {
       setError(error.message);
+      // The release was removed after this screen loaded. Close the review
+      // and reload history so it no longer offers the restore.
+      if (retirementRefusal(error.message)) {
+        setReview(undefined);
+        void refresh();
+      }
     } finally {
       setBusy(false);
     }
@@ -408,15 +418,23 @@ export default function ClientPublications({
                       <ArrowUpRight size={14} aria-hidden="true" />
                     </a>
                   )}
-                  {job.phase === "live" && !job.active && (
-                    <button
-                      type="button"
-                      disabled={busy || pending(job.destination.destinationId)}
-                      onClick={() => void run(() => prepare("rollback", job))}
-                    >
-                      Review restoring this release
-                    </button>
-                  )}
+                  {job.phase === "live" &&
+                    !job.active &&
+                    (releaseAvailability(job.availability) ? (
+                      <p className="builder-hint">
+                        {releaseAvailability(job.availability)}
+                      </p>
+                    ) : (
+                      <button
+                        type="button"
+                        disabled={
+                          busy || pending(job.destination.destinationId)
+                        }
+                        onClick={() => void run(() => prepare("rollback", job))}
+                      >
+                        Review restoring this release
+                      </button>
+                    ))}
                 </div>
                 <details>
                   <summary>Release log</summary>

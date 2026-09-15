@@ -895,3 +895,57 @@ it("the client worker retires through the actual SQL fence only after rollback r
     await rm(root, { recursive: true, force: true });
   }
 });
+
+it("history reports whether each verified release is still kept, without exposing retirement records", async () => {
+  await clientJob("kept");
+  await clientJob("going");
+  await clientJob("gone");
+  expect((await observe("kept")).phase).toBe("pending");
+  await retiring("going");
+  expect((await finish("gone", await retiring("gone"))).phase).toBe("removed");
+  const history = (
+    await query(
+      "select builder_client_history($1) as value",
+      [project],
+      "authenticated",
+    )
+  )[0].value;
+  expect(
+    Object.fromEntries(
+      history.rows.map((row: any) => [row.artifact_id, row.availability]),
+    ),
+  ).toMatchObject({ kept: "retained", going: "removing", gone: "removed" });
+  await expect(
+    query(
+      "select builder_release_availability($1,$2,'gone') as value",
+      [randomUUID(), scope],
+      "authenticated",
+    ),
+  ).rejects.toThrow(/Project access required/);
+  await expect(
+    query(
+      "select builder_release_availability($1,'repository:production','gone') as value",
+      [project],
+      "authenticated",
+    ),
+  ).rejects.toThrow(/Project access required/);
+  await expect(
+    query(
+      "select builder_release_retention_phase($1,$2,'gone') as value",
+      [project, scope],
+      "authenticated",
+    ),
+  ).rejects.toThrow(/permission denied/);
+  const earlier = await native("native-earlier");
+  await retiring("native-earlier", "kaizen", "repository:production");
+  const releases = (
+    await query("select builder_list_releases() as value", [], "authenticated")
+  )[0].value;
+  expect(releases.find((release: any) => release.id === earlier)).toMatchObject(
+    { status: "live", availability: "removing" },
+  );
+  // History rows stay after removal; only restoration is unavailable.
+  expect(history.rows.map((row: any) => row.artifact_id)).toEqual(
+    expect.arrayContaining(["kept", "going", "gone"]),
+  );
+});

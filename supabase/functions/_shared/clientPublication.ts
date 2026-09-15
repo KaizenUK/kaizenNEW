@@ -37,6 +37,7 @@ export const clientJob = (row: any, activeId?: string) => ({
   createdAt: row.created_at,
   updatedAt: row.updated_at,
   active: activeId === row.id,
+  ...(row.availability ? { availability: row.availability } : {}),
 });
 export async function clientLiveWorkspace(
   user: any,

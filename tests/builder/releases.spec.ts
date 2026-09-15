@@ -32,6 +32,14 @@ test("release controls show observed states and require an explicit rollback/unp
     createdAt: "2026-09-09T12:00:00Z",
     artifactId: "earlier-artifact",
   };
+  const removed = {
+    ...current,
+    id: crypto.randomUUID(),
+    live: false,
+    createdAt: "2026-09-08T12:00:00Z",
+    artifactId: "removed-artifact",
+    availability: "removed",
+  };
   const draft = {
     id: crypto.randomUUID(),
     version: 3,
@@ -47,12 +55,16 @@ test("release controls show observed states and require an explicit rollback/unp
       const { mountReleasePanel } = await import(modulePath);
       mountReleasePanel(rows, draft);
     },
-    { rows: [current, earlier], draft },
+    { rows: [current, earlier, removed], draft },
   );
   await expect(
     page.getByRole("heading", { name: "Releases", exact: true }),
   ).toBeVisible();
   await expect(page.getByText("Live", { exact: true })).toBeVisible();
+  await expect(page.getByText(/No longer kept/)).toBeVisible();
+  await expect(
+    page.getByRole("button", { name: "Review rollback", exact: true }),
+  ).toHaveCount(1);
   await page
     .getByRole("button", { name: "Review rollback", exact: true })
     .click();

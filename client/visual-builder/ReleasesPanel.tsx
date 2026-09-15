@@ -5,7 +5,11 @@ import { storage } from "./storage";
 import { Card, Head, Notice } from "./shell";
 import { ProjectName } from "./activeProject";
 import RepositoryPublish from "./RepositoryPublish";
-import { mainReleaseStatus } from "./builderStatus";
+import {
+  mainReleaseStatus,
+  releaseAvailability,
+  retirementRefusal,
+} from "./builderStatus";
 
 const pending = (release: ReleaseStatus) =>
   [
@@ -78,10 +82,14 @@ export default function ReleasesPanel({
       }
       await refresh();
     } catch (error) {
-      if (mounted.current)
-        setError(
-          error instanceof Error ? error.message : "Release request failed.",
-        );
+      const message =
+        error instanceof Error ? error.message : "Release request failed.";
+      // A release removed after this screen loaded: show current history first.
+      if (retirementRefusal(message)) {
+        if (mounted.current) setReview(undefined);
+        await refresh();
+      }
+      if (mounted.current) setError(message);
     } finally {
       if (mounted.current) setBusy(false);
     }
@@ -200,20 +208,26 @@ export default function ReleasesPanel({
                     Retry dispatch
                   </button>
                 )}
-                {release.status === "live" && !release.live && (
-                  <button
-                    disabled={busy || Boolean(error) || hasPending}
-                    onClick={() =>
-                      setReview({
-                        action: "rollback",
-                        id: release.id,
-                        label: `Release from ${new Date(release.createdAt).toLocaleString()} · ${release.id.slice(0, 8)}`,
-                      })
-                    }
-                  >
-                    Review rollback
-                  </button>
-                )}
+                {release.status === "live" &&
+                  !release.live &&
+                  (releaseAvailability(release.availability) ? (
+                    <p className="builder-hint">
+                      {releaseAvailability(release.availability)}
+                    </p>
+                  ) : (
+                    <button
+                      disabled={busy || Boolean(error) || hasPending}
+                      onClick={() =>
+                        setReview({
+                          action: "rollback",
+                          id: release.id,
+                          label: `Release from ${new Date(release.createdAt).toLocaleString()} · ${release.id.slice(0, 8)}`,
+                        })
+                      }
+                    >
+                      Review rollback
+                    </button>
+                  ))}
               </li>
             ))}
           </ol>

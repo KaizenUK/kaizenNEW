@@ -85,6 +85,9 @@ test("Unity browses retained release pages, keeps recovery visible and reviews a
       active: { [destinationId]: jobs[124].id },
     };
   jobs[123].artifactId = "older";
+  // A verified release whose files are no longer kept keeps its history row.
+  jobs[122].phase = "live";
+  jobs[122].artifactId = "removed-to-free-space";
   await writeFile(indexFile, JSON.stringify(state));
   for (const job of jobs.slice(123))
     await writeFile(path.join(directory, `${job.id}.snapshot.json`), "null");
@@ -114,6 +117,15 @@ test("Unity browses retained release pages, keeps recovery visible and reviews a
       page.getByRole("button", { name: "Older releases", exact: true }),
     ).toBeDisabled();
     const retained = page.locator(`[data-release-id="${jobs[123].id}"]`);
+    const removed = page.locator(`[data-release-id="${jobs[122].id}"]`);
+    await expect(removed).toContainText("No longer kept");
+    await expect(
+      removed.getByRole("button", { name: "Review restoring this release" }),
+    ).toHaveCount(0);
+    await removed.scrollIntoViewIfNeeded();
+    await page.screenshot({
+      path: "test-results/builder-release-availability-desktop.png",
+    });
     await expect(
       retained.getByRole("button", { name: "Review restoring this release" }),
     ).toBeDisabled();
@@ -131,6 +143,16 @@ test("Unity browses retained release pages, keeps recovery visible and reviews a
     ).toBeVisible();
     await page.getByRole("button", { name: "Cancel review" }).click();
     await page.setViewportSize({ width: 390, height: 844 });
+    await removed.scrollIntoViewIfNeeded();
+    await expect(removed).toContainText("No longer kept");
+    expect(
+      await page.evaluate(
+        () => document.documentElement.scrollWidth > window.innerWidth,
+      ),
+    ).toBe(false);
+    await page.screenshot({
+      path: "test-results/builder-release-availability-mobile.png",
+    });
     await page
       .getByRole("button", { name: "Newer releases", exact: true })
       .click();

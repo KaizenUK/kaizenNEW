@@ -44,6 +44,8 @@ export const releasePhases = [
   "recovery_required",
 ] as const;
 export type ReleasePhase = (typeof releasePhases)[number];
+/** Whether a verified release's files are still kept for restoration. */
+export type ReleaseAvailability = "retained" | "removing" | "removed";
 export type ReleaseStatus = {
   id: string;
   action: ReleaseRequest["action"] | "rollback" | "redirects";
@@ -55,6 +57,7 @@ export type ReleaseStatus = {
   rollbackOf: string | null;
   error: string | null;
   live: boolean;
+  availability?: ReleaseAvailability | null;
 };
 
 /** Resolve only the explicitly reviewed changes; never mutate drafts or mark them published here. */

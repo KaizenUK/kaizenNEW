@@ -96,6 +96,7 @@ const browserFunctions = [
   "builder_client_history",
   "builder_legacy_project_id",
   "builder_member_directory",
+  "builder_release_availability",
 ].sort();
 
 describe("complete builder table access matrix", () => {

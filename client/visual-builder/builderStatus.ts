@@ -1,6 +1,10 @@
 import type { WebsiteStatus } from "../../shared/builderWebsiteStatus";
 import type { BuilderPage } from "../../shared/visualBuilder";
-import type { ReleasePhase, ReleaseStatus } from "../../shared/builderReleases";
+import type {
+  ReleaseAvailability,
+  ReleasePhase,
+  ReleaseStatus,
+} from "../../shared/builderReleases";
 import type { ClientPublicationJob } from "../../shared/builderClientPublication";
 import type { RepositorySaveStatus } from "../../shared/builderRepositorySave";
 import type { RepositoryPublishStatus } from "../../shared/builderRepositoryPublish";
@@ -182,3 +186,15 @@ export function websitePageStatus(
           "Saved in the website folder. Deployment has not been confirmed for this version.",
       };
 }
+
+/** Old releases may be removed to free space; their history always stays. */
+export function releaseAvailability(availability?: ReleaseAvailability | null) {
+  if (availability === "removing")
+    return "Being removed to free space. This release can no longer be restored.";
+  if (availability === "removed")
+    return "No longer kept. It was removed to free space and cannot be restored.";
+  return null;
+}
+/** The server refused a restore because the release is no longer kept. */
+export const retirementRefusal = (message: string) =>
+  /no longer retained|being removed/i.test(message);

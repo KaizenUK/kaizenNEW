@@ -231,12 +231,36 @@ export class ClientPublisher {
   async jobs(projectId: string) {
     await this.services.require(projectId);
     const state = await this.index(projectId);
+    // Local stores are not retired by the hosted service, but their files are
+    // the authority: a verified release that is no longer listed cannot return.
+    const kept = new Map<string, Promise<Set<string> | null>>();
+    const retained = (destinationId: string) => {
+      if (!kept.has(destinationId))
+        kept.set(
+          destinationId,
+          this.destination(projectId, destinationId)
+            .then((destination) => clientPublicationAction(destination, "list"))
+            .then(
+              (listed) =>
+                new Set(listed.releases.map((release: any) => release.id)),
+            )
+            .catch(() => null),
+        );
+      return kept.get(destinationId)!;
+    };
     return Promise.all(
       state.jobs.map(async (job) => {
         const visible: ClientPublicationJob = {
           ...job,
           active: state.active[job.destination.destinationId] === job.id,
         };
+        if (job.phase === "live") {
+          const ids = await retained(job.destination.destinationId);
+          if (ids)
+            visible.availability = ids.has(job.artifactId)
+              ? "retained"
+              : "removed";
+        }
         if (
           !this.running.has(job.id) &&
           [
@@ -493,6 +517,12 @@ export class ClientPublisher {
         );
       if (live.selectedReleaseId === prior.artifactId)
         throw new Error("That artifact is already selected.");
+      if (
+        !live.releases.some((release: any) => release.id === prior.artifactId)
+      )
+        throw new Error(
+          "This release is no longer retained. Choose another release.",
+        );
       snapshot = await this.snapshot(projectId, prior);
       artifactId = prior.artifactId;
     } else if (action !== "unpublish")

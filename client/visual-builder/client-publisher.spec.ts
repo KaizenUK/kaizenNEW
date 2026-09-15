@@ -6,6 +6,7 @@ import {
   readFile,
   lstat,
   rename,
+  rm,
 } from "node:fs/promises";
 import { spawn } from "node:child_process";
 import os from "node:os";
@@ -690,3 +691,40 @@ it("records failed served-output verification and restores the previous artifact
     await publisher.close();
   }
 }, 15000);
+
+it("marks an earlier local release that is no longer kept and refuses reviewing its restoration", async () => {
+  const f = await fixture(),
+    publisher = new ClientPublisher(f.services);
+  const find = async (id: string) =>
+    (await publisher.jobs(f.projectId)).find((job) => job.id === id);
+  try {
+    const first = await publisher.start(
+      f.projectId,
+      (await publisher.review(f.projectId, f.destinationId, "publish")).id,
+    );
+    await expect.poll(async () => (await find(first.id))?.phase).toBe("live");
+    f.edit("Second release");
+    const second = await publisher.start(
+      f.projectId,
+      (await publisher.review(f.projectId, f.destinationId, "publish")).id,
+    );
+    await expect.poll(async () => (await find(second.id))?.active).toBe(true);
+    expect(await find(first.id)).toMatchObject({
+      phase: "live",
+      active: false,
+      availability: "retained",
+    });
+    await rm(path.join(f.destination.store, "releases", first.artifactId), {
+      recursive: true,
+    });
+    expect(await find(first.id)).toMatchObject({
+      phase: "live",
+      availability: "removed",
+    });
+    await expect(
+      publisher.review(f.projectId, f.destinationId, "rollback", first.id),
+    ).rejects.toThrow(/no longer retained/);
+  } finally {
+    await publisher.close();
+  }
+});
