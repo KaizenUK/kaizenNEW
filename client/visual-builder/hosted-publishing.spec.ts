@@ -223,7 +223,9 @@ function billingFixture() {
   return { billing, calls, faults, secret, usage, usageCalls };
 }
 
-describe("repository publication billing", () => {
+// These cases drive real Git repositories and pushes, which can exceed
+// the 5-second default on a busy workstation.
+describe("repository publication billing", { timeout: 30000 }, () => {
   it.each(["quota", "lostReserve"] as const)(
     "%s denial happens before Git and an explicit retry advances the fenced attempt",
     async (fault) => {
@@ -330,7 +332,7 @@ describe("repository publication billing", () => {
   });
 });
 
-describe("reviewed production publication", () => {
+describe("reviewed production publication", { timeout: 30000 }, () => {
   it("promotes the exact staged commit without creating a commit or switching the checkout and separately reports production delivery", async () => {
     const { api, deployed, requests, base } = await ready();
     expect(
@@ -657,7 +659,7 @@ describe("reviewed production publication", () => {
   });
 });
 
-describe("durable publication recovery", () => {
+describe("durable publication recovery", { timeout: 30000 }, () => {
   it("reopens a private review after replacing all helper state and checks current account and project access", async () => {
     const { api, base } = await ready();
     const reviewed = await review(api);
@@ -871,7 +873,7 @@ describe("durable publication recovery", () => {
   );
 });
 
-describe("publication delivery observations", () => {
+describe("publication delivery observations", { timeout: 30000 }, () => {
   it("rejects missing, forged, oversized and unavailable markers and never sends credentials", async () => {
     for (const value of [
       { schemaVersion: 2, commit: "a".repeat(40), releaseId: "fixture" },
