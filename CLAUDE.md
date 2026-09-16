@@ -1,6 +1,6 @@
 # Kaizen Web — Project Guidelines
 
-**L6 is live — 16 September:** the coordinated rollout is complete except release retention and native cleanup, which stay off until the finished product has been used once. Production serves `l6-main-2` and staging `l6-stage-15`; the production release was built from `615db73` and staging from the current head. Read [the installation plan](docs/builder-t4-installation.md), then [the consolidated Claude handover](docs/handover/claude-main-handover.md). Use `/home/sean/Documents/GitHub/kaizenNEW` on `main`. Pushing from this machine needs `/home/sean/.local/state/kaizen/push-via-vps.sh`. Older instructions about an undeployed L6 or a blocked launcher are superseded.
+**L6 is live — 16 September:** the coordinated rollout is complete except release retention and native cleanup, which stay off until the finished product has been used once. Production serves `l6-main-2` and staging `l6-stage-15`; the production release was built from `615db73` and staging from the current head. Read [the installation plan](docs/builder-t4-installation.md), then [the consolidated Claude handover](docs/handover/claude-main-handover.md), and [the acceptance checklist](docs/handover/l6-acceptance-checklist.md) for what only Sean can verify. Use `/home/sean/Documents/GitHub/kaizenNEW` on `main`. Pushing from this machine needs `/home/sean/.local/state/kaizen/push-via-vps.sh`. Older instructions about an undeployed L6 or a blocked launcher are superseded.
 
 
 ## Current launch implementation handover

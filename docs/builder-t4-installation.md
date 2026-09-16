@@ -167,6 +167,8 @@ Supabase's own linters were read after the migrations landed. Everything actiona
 
 ## Human-only items collected so far
 
+These are also written as a short, ordered checklist in [the acceptance checklist](handover/l6-acceptance-checklist.md).
+
 - **Use the finished product once** (sign in, edit, upload an image, publish, roll back). That is the last gate before release retention and native cleanup are switched on.
 - **Studio subdomain:** `studio.kaizenweb.co.uk` has an Apache vhost but no DNS record anywhere, so the Studio is unreachable by that name.
 - **Continuous integration:** `builder-checks` runs only on a pull request, and this rollout pushed straight to `main`/`stage` with `[skip ci]`. Open a pull request (or dispatch the workflow) when a full CI record is wanted.
