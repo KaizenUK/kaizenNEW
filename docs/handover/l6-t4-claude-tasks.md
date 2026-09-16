@@ -16,12 +16,14 @@ Read [the launch brief](codex-launch-brief.md), [the task map](../builder-launch
 
 | Part                                           | Current state                                                             | Result needed                                                     |
 | ---------------------------------------------- | ------------------------------------------------------------------------- | ----------------------------------------------------------------- |
-| A–C: native cleanup and copy cancellation      | Implemented and verified in fixtures                                      | Preserve the implementation and evidence below                    |
-| D: retained disk and cache limits              | Verified in fixtures (D0–D5)                                               | Preserve; install and prove live in F–G                           |
-| E: publication abuse controls                  | Verified in fixtures                                                      | Deploy with the coordinated L6 rollout                            |
-| F: T4 integration and installation preparation | Pending D–E                                                               | Complete native/provider/browser proof and one T4 commit          |
-| G: L6 rollout                                  | Pending F                                                                 | Coordinated configuration, milestone CI and live verification     |
+| A–C: native cleanup and copy cancellation      | Complete; deployed 16 September, cleanup timer deliberately off            | Preserve the implementation and evidence below                    |
+| D: retained disk and cache limits              | Complete; installed and proven live, retention deliberately off            | Preserve; install and prove live in F–G                           |
+| E: publication abuse controls                  | Complete; deployed and the report path verified against production         | Deploy with the coordinated L6 rollout                            |
+| F: T4 integration and installation preparation | Complete; inventory, fingerprint and ordered plan recorded                 | Complete native/provider/browser proof and one T4 commit          |
+| G: L6 rollout                                  | Complete except retention: production l6-main-2, staging l6-stage-15       | Coordinated configuration, milestone CI and live verification     |
 | H: final goal audit                            | Agent parts complete; CI run and Sean's acceptance remain                 | Goal-wide verification and a concrete human-only checklist        |
+
+**Every part A–H is closed.** D2d finished with its caller checkpoint (D2d.4) on 15 September; D2e, D3, D4, D5, E, F and G followed, and H's audit is above. The only open work belongs to Sean: the acceptance run in [the acceptance checklist](l6-acceptance-checklist.md), the provider credentials named there, and one continuous-integration run that needs a GitHub credential. After the acceptance run, switch retention and native cleanup on with [step 11 of the installation plan](../builder-t4-installation.md).
 
 ### Paste into Claude when taking over
 
