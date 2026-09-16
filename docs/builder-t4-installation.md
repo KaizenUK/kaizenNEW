@@ -142,6 +142,21 @@ The DirectAdmin Apache vhost for `www.kaizenweb.co.uk` is the single public entr
 - Stripe checkout in test mode, then live;
 - signup email delivery.
 
+## Database advisories after the rollout
+
+Supabase's own linters were read after the migrations landed. Everything actionable was fixed; the rest is recorded here so nobody re-investigates it.
+
+- **Fixed:** the legal version trigger was the only builder function resolving names through the caller's search path ([`202609160001`](../supabase/migrations/202609160001_builder_legal_trigger_path.sql)). The access matrix test now checks every function, not only the security-definer ones.
+- **By design, 38 "row-level security enabled, no policy" notices:** the private tables have no policies precisely because nothing but the service role may read them. The access matrix test pins that.
+- **By design, one "security definer view" error** for `builder_public_redirects`: visitors must read published redirect rules without reading the private draft table behind them. The view keeps `security_barrier` and only exposes the published projection.
+- **By design, 22 "security definer function executable by authenticated"** notices: those are the reviewed browser RPCs, and the same test pins exactly which ones signed-in people may call.
+- **Needs a paid plan:** leaked-password protection (checking new passwords against known breaches) returns "payment required" on the current plan. Minimum password length is already 12.
+- **56 performance notices** are unindexed foreign keys and unused indexes on tables that are currently almost empty. Revisit when there is real traffic rather than guessing now.
+
+## Sign-up is switched off in Supabase Auth
+
+`disable_signup` is **true** and no SMTP sender is configured, so the builder's sign-up flow cannot create an account or send a confirmation email today. Both belong together: enabling sign-up without a sender would create accounts that can never confirm. Decide the sender first, then enable sign-up.
+
 ## Human-only items collected so far
 
 - **Use the finished product once** (sign in, edit, upload an image, publish, roll back). That is the last gate before release retention and native cleanup are switched on.
@@ -149,7 +164,8 @@ The DirectAdmin Apache vhost for `www.kaizenweb.co.uk` is the single public entr
 - **Continuous integration:** `builder-checks` runs only on a pull request, and this rollout pushed straight to `main`/`stage` with `[skip ci]`. Open a pull request (or dispatch the workflow) when a full CI record is wanted.
 - **Git credential:** the repository remote carried an embedded password; it has been removed from the remote URL. Treat that password as exposed.
 - **Payments:** Stripe live keys, webhook secret, price IDs, and the decision to charge real customers.
-- **Signup email:** sender and SMTP provider for signup confirmation.
+- **Signup email and sign-up itself:** choose the sender and SMTP provider, then switch `disable_signup` off. Until both are done, only existing accounts can sign in.
+- **Paid plan decision:** leaked-password protection and always-on point-in-time recovery both need a paid Supabase plan.
 - **Custom domains:** Cloudflare access for DNS acceptance.
 - **Wording and placement:** final Terms and Privacy wording, and where the public "Report a website" page goes.
 - **Backups:** paid point-in-time recovery and always-on offsite storage.
