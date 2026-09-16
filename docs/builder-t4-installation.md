@@ -1,6 +1,6 @@
 # L6 installation and rollout plan
 
-**Status: G complete except retention. L6 is installed and live.** Production serves release `l6-main-2` and staging `l6-stage-14`, both from `615db73`. Release retention and native cleanup remain switched off, and the remaining items are the human-only ones below. This plan turns the verified fixture work (A–E) into an ordered, reversible installation for the coordinated L6 rollout (G). Read it with [the Claude checklist](handover/l6-t4-claude-tasks.md) and the guides linked below.
+**Status: G complete except retention. L6 is installed and live.** Production serves release `l6-main-2` and staging `l6-stage-15`; the production release was built from `615db73` and staging from the current head. Release retention and native cleanup remain switched off, and the remaining items are the human-only ones below. This plan turns the verified fixture work (A–E) into an ordered, reversible installation for the coordinated L6 rollout (G). Read it with [the Claude checklist](handover/l6-t4-claude-tasks.md) and the guides linked below.
 
 ## Deployments now work through the installed launcher
 
@@ -125,7 +125,7 @@ The DirectAdmin Apache vhost for `www.kaizenweb.co.uk` is the single public entr
 | 7 Helper | done | restarted on `615db73` with the native identity and admission; Sean's draft and recovery files preserved |
 | 8 Client worker | done | `/opt/kaizen-builder` switched to `615db73`, run reports success |
 | 9a Native configuration | done | `builder_native_asset_configure` registered the fingerprint and three producers with cleanup disabled |
-| 9 Frontend | done | staging then production activated and verified; rollback to the previous release and forward again both verified on staging |
+| 9 Frontend | done | staging then production activated and verified; rollback to the previous release and forward again both verified on staging; staging redeployed from the current head as `l6-stage-15` |
 | 10 Scheduled workers | done | domain worker timer enabled and idle; maintenance reports `{"phase":"disabled"}` for both branches; cleanup and maintenance timers stay disabled |
 | 11 Retention | **not enabled** | still gated on a real upload, publish and copy through the live editor |
 
