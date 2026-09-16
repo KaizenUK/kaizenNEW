@@ -21,7 +21,7 @@ Read [the launch brief](codex-launch-brief.md), [the task map](../builder-launch
 | E: publication abuse controls                  | Verified in fixtures                                                      | Deploy with the coordinated L6 rollout                            |
 | F: T4 integration and installation preparation | Pending D–E                                                               | Complete native/provider/browser proof and one T4 commit          |
 | G: L6 rollout                                  | Pending F                                                                 | Coordinated configuration, milestone CI and live verification     |
-| H: final goal audit                            | Pending G                                                                 | Goal-wide verification and a concrete human-only checklist        |
+| H: final goal audit                            | Agent parts complete; CI run and Sean's acceptance remain                 | Goal-wide verification and a concrete human-only checklist        |
 
 ### Paste into Claude when taking over
 
@@ -237,16 +237,23 @@ Files: [signup guide](../builder-signup.md), [billing guide](../builder-billing.
 
 ### H — Final goal audit and Sean's handover
 
-**State: pending G.**
+**State: the agent-doable parts are complete. What remains needs Sean or a credential he holds.**
 
-Files: [launch brief](codex-launch-brief.md), [launch task map](../builder-launch-plan.md), [HANDOVER](../../HANDOVER.md), relevant guides and [Claude's UX brief](claude-ux-brief.md).
+Files: [launch brief](codex-launch-brief.md), [launch task map](../builder-launch-plan.md), [HANDOVER](../../HANDOVER.md), [the installation plan](../builder-t4-installation.md) and [the acceptance checklist](l6-acceptance-checklist.md).
 
-- [ ] Audit every L0–L6 acceptance requirement against implementation and evidence. Fix remaining agent-doable gaps; do not use task counts or fixture passes as manual acceptance.
-- [ ] Run the requested final goal-wide CI verification and record the exact revision.
-- [ ] Consolidate remaining human-only items: provider/account/dashboard access, approved legal wording, paid PITR/offsite decisions and provider recovery acceptance, notification/privacy-address delivery, and Sean's hands-on gate use. Recheck which actually remain before presenting them.
-- [ ] Update the final handover with deployed versions, operator recovery steps and a short product walkthrough. Keep the previously accepted beta gate accepted and the earlier account/email-to-publish behavior as its recorded follow-up, not a new acceptance hold.
+- [x] **Audited L0–L6 against the three gates.** Implementation and deployment are complete for every stage; what is left is operational.
+  - **Private beta gate** (Sean, Kaizen only): implemented and live. Sean's own run is the outstanding part. His 13 September provisional acceptance of the account/email notice stands as recorded and is not a new hold.
+  - **Client gate** (Kaizen's clients): implemented and live, including hosted service operations, client mode and first run. A client editing their site and an owner publishing it is a person's check.
+  - **Public gate** (a stranger signs up, pays, connects a domain, publishes): implemented but **not operable**, and not because of missing code. Sign-up is switched off in Supabase Auth with no email sender; Stripe has no credentials; custom domains need Cloudflare access, which is also L6-T3's one documented real-domain check.
+- [ ] **Final goal-wide CI at `4be5ee2812fd78024f2a3e9824b15407fd5a599d`.** `builder-checks` runs on a pull request or a workflow dispatch, and both need a GitHub API credential. This machine has none: pushes go through the server's deploy key, and the deploy token stored for the functions is only ever returned as a digest. Open a pull request at this revision, or dispatch the workflow, to record the run.
+- [x] **Rechecked the human-only items** rather than repeating an older list. Consolidated in [the acceptance checklist](l6-acceptance-checklist.md) with the activation settings.
+- [x] **Final handover updated** with the deployed versions, the deployment and rollback commands, operator recovery, the defects the first live installation exposed, and a short product walkthrough.
 
-**Done when:** nothing remains that the agent can perform and the final human checklist is concrete. Do not mark the full goal complete merely because code is committed or credits are low.
+**Checked during the audit and found already correct** (no change needed): the live Auth site address and redirect allow list point at the real builder on both hosts; the custom-domain hosting decision is recorded in [the domains guide](../builder-domains.md); the billing guide's setting names match what the deployed code reads; both billing webhook routes refuse an unsigned body with a plain 400 and the billing function refuses an unauthenticated call with 401; the abuse report function refuses websites Kaizen does not host without recording anything.
+
+**Fixed during the audit:** the one database function whose search path was not pinned ([`202609160001`](../../supabase/migrations/202609160001_builder_legal_trigger_path.sql)), with the access matrix test widened to check every function.
+
+**Done when:** nothing remains that the agent can perform and the final human checklist is concrete. That point is reached: the checklist is concrete, and the remaining work is Sean's hands-on run plus the provider credentials and CI run named above.
 
 ## Host and evidence references
 

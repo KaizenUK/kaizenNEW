@@ -25,6 +25,16 @@ Tell me which of these worked. If any step fails, the failure message is designe
 
 Details are in [the installation plan](../builder-t4-installation.md) under step 11.
 
+## Activation settings, ready to paste
+
+**Payments.** Set these as Supabase function settings (never in frontend settings): `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`, `BUILDER_STRIPE_LIVE_MODE`, `BUILDER_STRIPE_PRICE_PLUS`, `BUILDER_STRIPE_PRICE_AGENCY`, `BUILDER_STRIPE_PORTAL_CONFIGURATION`. The two prices must be different, active, monthly GBP prices in the mode you choose.
+
+Point the Stripe endpoint at `https://kbqraygsegcclzhsmpvz.functions.supabase.co/builder-billing-webhook` (it already answers, refusing anything unsigned with a plain 400) and subscribe it to `customer.subscription.created`, `customer.subscription.updated`, `customer.subscription.deleted`, `checkout.session.completed` and `checkout.session.expired`. Test mode first is fine; the code refuses deliveries from the opposite mode.
+
+**Sign-up.** Configure the sender under Auth, then switch `disable_signup` off. The confirmation redirect addresses are already correct: the site address is `https://kaizenweb.co.uk/builder/` and both `kaizenweb.co.uk` and `www.kaizenweb.co.uk` are allowed.
+
+**Continuous integration.** `builder-checks` runs on a pull request or a workflow dispatch. Both need a GitHub credential this machine does not have, so the end-of-goal CI run is yours: open a pull request at the current revision, or dispatch the workflow. If you would rather I did it in future, leave a fine-grained token (Contents: read/write) at `/home/sean/.config/kaizen/github-token.txt`.
+
 ## Decisions only you can make
 
 - **Payments.** Stripe secret key, webhook secret and price IDs, plus the decision to charge real customers. The billing functions are deployed and waiting; nothing can be bought until those exist.
