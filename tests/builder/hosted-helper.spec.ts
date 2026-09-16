@@ -57,8 +57,11 @@ test("the hosted editor follows queued builds, keeps drafts, shows failures and 
       .click();
     const input = page.locator(".builder-site-field-editor textarea");
     await input.fill("Keep these edits while building");
+    // Autosave here goes through the real hosted service, which takes longer
+    // when the machine is busy; the wording is what matters, not the speed.
     await expect(page.getByLabel("Source editing draft")).toContainText(
       "Saved",
+      { timeout: 45_000 },
     );
     await page.getByRole("button", { name: "Build", exact: true }).click();
     await expect(
@@ -162,8 +165,11 @@ test("the hosted editor follows queued builds, keeps drafts, shows failures and 
       .filter({ hasText: "Keep these edits while building" })
       .click();
     await expect(input).toHaveValue("Keep these edits while building");
+    // Autosave here goes through the real hosted service, which takes longer
+    // when the machine is busy; the wording is what matters, not the speed.
     await expect(page.getByLabel("Source editing draft")).toContainText(
       "Saved",
+      { timeout: 45_000 },
     );
     await expect(
       page.getByRole("button", { name: "Review my changes", exact: true }),
@@ -261,8 +267,11 @@ test("a hosted project inspects, saves and applies original source through the r
       .click();
     const input = page.locator(".builder-site-field-editor textarea");
     await input.fill("Saved through the hosted service");
+    // Autosave here goes through the real hosted service, which takes longer
+    // when the machine is busy; the wording is what matters, not the speed.
     await expect(page.getByLabel("Source editing draft")).toContainText(
       "Saved",
+      { timeout: 45_000 },
     );
     for (const width of [1440, 390]) {
       await page.setViewportSize({ width, height: 1000 });

@@ -145,7 +145,7 @@ The DirectAdmin Apache vhost for `www.kaizenweb.co.uk` is the single public entr
 **Verified again after the rollout** (16 September, logs in the private state directory):
 
 - the complete application suite, 1,536 cases including the five new regression tests, with actual Nginx. Run it with `VITE_BUILDER_CLOUD=0`: the repository's own `.env` enables hosted mode, and three export and publication specs then call the live functions and fail with a sign-in error;
-- the complete browser suite, 240 passing in one pass. Two cases timed out while the server installation was running in parallel (`content.spec.ts:28` and `hosted-helper.spec.ts:203`) and both pass on an otherwise idle machine;
+- the complete browser suite, 240 passing in one pass. Two cases timed out while the server installation was running in parallel (`content.spec.ts:28` and `hosted-helper.spec.ts:203`); both pass on an idle machine, and both have since been given headroom for a loaded one — the autosave waits that go through the real hosted service and that test's own ceiling;
 - the deployment launcher's own cases, and the live database audit recorded in `l6-final-audit.json`: no builder table without row-level security and no builder function without a pinned search path.
 
 **Still required as live proof during G:**

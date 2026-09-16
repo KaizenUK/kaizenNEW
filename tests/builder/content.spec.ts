@@ -29,7 +29,8 @@ test("Sanity listings and field bindings stay editable while deployments refresh
   page,
   context,
 }) => {
-  test.setTimeout(150_000);
+  // Real content refresh plus two deployments; allow for a loaded machine.
+  test.setTimeout(240_000);
   const suffix = crypto.randomUUID().slice(0, 8),
     slug = `journal-${suffix}`;
   const sourceFile = "test-results/builder-cms-source.json";
