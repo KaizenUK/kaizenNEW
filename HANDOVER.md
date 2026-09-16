@@ -1,5 +1,7 @@
 # Kaizen builder — Windows to Linux handover
 
+**L6 is live — 16 September:** production serves `l6-main-2` and staging `l6-stage-14`, both from `615db73`. Release retention and native cleanup stay off until the finished product has been used once. Read [the installation plan](docs/builder-t4-installation.md) first.
+
 **Current consolidation — 15 September:** Sean paused implementation and requested all pending work on `main` for Claude. Read [the consolidated main handover](docs/handover/claude-main-handover.md). Use `/home/sean/Documents/GitHub/kaizenNEW` on `main`. The editor polish and launch implementation are committed together; older references below to uncommitted T4 or launch-only files are historical. Implementation resumed with Claude: A–E are complete and committed; F (installation preparation) is in progress. **Deployment is currently blocked, safely:** GitHub `main` and `stage` (`afb9d3a`) call a deployment launcher that is not yet installed on the VPS. The next content update, builder publish or push fails before activation, and the live L5 websites stay unchanged. Do not restore the L5 workflow on `main`; see [the installation plan](docs/builder-t4-installation.md#deployment-is-currently-blocked-safely). L5 remains live; L6 is undeployed.
 
 Prepared 11 September 2026 at Sean's request; resumed on Linux on 12 September. **Read the Linux continuation below for current implementation and acceptance status.**

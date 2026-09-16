@@ -1,17 +1,13 @@
 # L6 installation and rollout plan
 
-**Status: F in progress. Nothing from L6 is installed or deployed.** L5 (`48823c6`) remains live. This plan turns the verified fixture work (A–E) into an ordered, reversible installation for the coordinated L6 rollout (G). Read it with [the Claude checklist](handover/l6-t4-claude-tasks.md) and the guides linked below.
+**Status: G complete except retention. L6 is installed and live.** Production serves release `l6-main-2` and staging `l6-stage-14`, both from `615db73`. Release retention and native cleanup remain switched off, and the remaining items are the human-only ones below. This plan turns the verified fixture work (A–E) into an ordered, reversible installation for the coordinated L6 rollout (G). Read it with [the Claude checklist](handover/l6-t4-claude-tasks.md) and the guides linked below.
 
-## Deployment is currently blocked, safely
+## Deployments now work through the installed launcher
 
-GitHub `main` and `stage` both point to `afb9d3a`, the consolidation commit, pushed with `[skip ci]`. Its `.github/workflows/deploy.yml` activates releases through `sudo -n /usr/local/sbin/kaizen-public-deploy`.
+`/usr/local/sbin/kaizen-public-deploy` is installed with its sudoers entry, so `.github/workflows/deploy.yml` can activate releases again, and a Sanity content update or builder publish reaches the live websites. GitHub `main` and `stage` both point at `615db73`.
 
-On the VPS that launcher is **not installed**, and sudo only allows `nginx -t` and `nginx -s reload` for `kaizen-deploy`. The last deployment ran for `48823c6` on 14 September, and no launcher attempt has been logged since.
-
-**What this means:**
-
-- **Blocked updates:** the next push to `main` or `stage`, a Sanity content update, or a builder publish dispatch will fail before activation. The live websites stay unchanged, but those updates cannot reach them until G installs the launcher together with the L6 migrations.
-- **Why not revert:** do not restore the L5 workflow on `main` to unblock updates. A successful deployment of today's `main` would publish unreleased L6 frontend and worker code before its database migrations. Coordinated rollout (below) is the fix.
+- **How this rollout deployed:** the launcher was driven directly on the server (`--mode deploy --branch stage|main`) rather than through the workflow, because the release commits were pushed with `[skip ci]`. The workflow path is unchanged and remains available.
+- **Rolling back:** `--mode reconcile --restore <retained release>` with `--release <currently selected release>`; both directions are verified on staging. The launcher refuses a restore whose `--release` no longer names the selected release.
 
 ## Current server inventory
 
@@ -20,7 +16,7 @@ Read-only inspection of `kaizen-vps` on 15 September:
 - **Filesystem:** one filesystem, `/dev/sda1`, 96 GiB with 46 GiB free, holds `/srv`, `/var/lib`, `/opt` and `/tmp`. Every producer therefore shares headroom, so enable [shared storage admission](builder-quotas.md#shared-storage-admission-and-native-inventory-coverage).
 - **Enabled services:** `kaizen-hosted-helper`, `kaizen-nginx` (ports 8091 production, 8092 client-demo, 8093 staging, 8094 domains), `kaizen-client-worker.timer`, `kaizen-backup.timer`, `kaizen-ops-monitor.timer`, `kaizen-client-demo-tls.timer`.
 - **Installed but disabled:** `kaizen-domain-worker.timer`.
-- **Not installed:** the upload worker and its `kaizen-upload` account, native release maintenance, native cleanup, `/opt/kaizen-native-release`, `/etc/kaizen/native-deploy.json`, `/var/lib/kaizen-native` and the public deployment launcher.
+- **Installed during this rollout** (absent in the 15 September inventory above): the upload worker and its `kaizen-upload` account, native release maintenance and cleanup units, `/opt/kaizen-native-release`, `/etc/kaizen/native-deploy.json`, `/etc/kaizen/native-cleanup.json`, `/var/lib/kaizen-native`, the shared admission directory, and the public deployment launcher.
 - **Accounts:** `kaizen-helper`, `kaizen-deploy`, `kaizen-builder`.
 - **Configuration files** (names only; values were not read): `/etc/kaizen/{production.env, staging.env, client-worker.env, client-destinations.json, domain-worker.json}` and `/etc/kaizen-helper/{helper.env, projects.json, credentials}`.
 
@@ -104,9 +100,28 @@ The DirectAdmin Apache vhost for `www.kaizenweb.co.uk` is the single public entr
 - **Recorded L5 function bodies:** the six live `builder-*` functions were saved before any deployment.
 - **`202609120001`** differs from the applied version only by a removed trailing blank line, so it is not reapplied.
 
-## Brief refusals between steps 2 and 5
+## The upload cutover window
 
-[`202609150013`](../supabase/migrations/202609150013_builder_storage_cutover.sql) removes direct browser writes to the builder buckets, and every upload then has to reserve its allowance through the upload worker. Between applying the migrations and installing that worker with the new frontend, editor media uploads are refused with a clear message; saved work, drafts and published websites are unaffected. Keep steps 2, 3, 5 and 9 together, and avoid uploading during the window.
+[`202609150013`](../supabase/migrations/202609150013_builder_storage_cutover.sql) removes direct browser writes to the builder buckets, so every upload reserves its allowance through the upload worker instead. During this rollout that window lasted from applying the migrations until the upload service was enabled about twenty minutes later, with no upload attempted in between. Keep steps 2, 3, 5 and 9 together in any future installation.
+
+## What the live rollout produced (16 September)
+
+| Step | State | Evidence |
+| --- | --- | --- |
+| 1 Recovery point | done | verified capture `a75e485a…`, 18,126 files, 43 sources, six L5 function bodies saved |
+| 2 Database | done | migrations `202609150001`–`021` recorded with exact sources; 51 builder tables with row-level security, 3 new private tables closed to signed-in users, 236 functions with no anonymous execute, 4 retention schedules |
+| 3 Edge functions | done | nine functions ACTIVE without JWT gating; `builder-billing`, `builder-billing-webhook` and `builder-report` new at v1; `BUILDER_HOSTED_BILLING_KEY` generated on the server and matched in the helper, `BUILDER_REPORT_ORIGINS` set |
+| 4 Shared storage admission | done | group `kaizen-storage` with all four accounts, `/var/lib/kaizen-storage-admission` 2770, drop-ins for helper/client worker/upload, `storageGroup` for deployments |
+| 5 Upload service | done | `kaizen-upload-worker` enabled, local health `running`, public `/editor-uploads` answers 412 rather than 503 |
+| 6 Native deployment runtime | done | launcher and sudoers installed (`visudo -c` clean), state directories created, preflight passes for both branches |
+| 7 Helper | done | restarted on `615db73` with the native identity and admission; Sean's draft and recovery files preserved |
+| 8 Client worker | done | `/opt/kaizen-builder` switched to `615db73`, run reports success |
+| 9a Native configuration | done | `builder_native_asset_configure` registered the fingerprint and three producers with cleanup disabled |
+| 9 Frontend | done | staging then production activated and verified; rollback to the previous release and forward again both verified on staging |
+| 10 Scheduled workers | done | domain worker timer enabled and idle; maintenance reports `{"phase":"disabled"}` for both branches; cleanup and maintenance timers stay disabled |
+| 11 Retention | **not enabled** | still gated on a real upload, publish and copy through the live editor |
+
+**Defects found and fixed during the rollout** (each with a test): the browser account fixture applied later migrations before the billing tables existed and seeded stored files without verified sizes; its client release stub lacked the suspension lookup; the report function would have demanded a login; storage measurement failed when a package manager made files vanish underneath it; and the published release identity file inherited the deployment service's private file mask, so every activation rolled back with a refused live check.
 
 ## Evidence so far
 
@@ -129,7 +144,10 @@ The DirectAdmin Apache vhost for `www.kaizenweb.co.uk` is the single public entr
 
 ## Human-only items collected so far
 
-- **Approve starting the production rollout (G).** Content updates stay blocked until then.
+- **Use the finished product once** (sign in, edit, upload an image, publish, roll back). That is the last gate before release retention and native cleanup are switched on.
+- **Studio subdomain:** `studio.kaizenweb.co.uk` has an Apache vhost but no DNS record anywhere, so the Studio is unreachable by that name.
+- **Continuous integration:** `builder-checks` runs only on a pull request, and this rollout pushed straight to `main`/`stage` with `[skip ci]`. Open a pull request (or dispatch the workflow) when a full CI record is wanted.
+- **Git credential:** the repository remote carried an embedded password; it has been removed from the remote URL. Treat that password as exposed.
 - **Payments:** Stripe live keys, webhook secret, price IDs, and the decision to charge real customers.
 - **Signup email:** sender and SMTP provider for signup confirmation.
 - **Custom domains:** Cloudflare access for DNS acceptance.
