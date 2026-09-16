@@ -521,6 +521,9 @@ export async function stageRelease({
         }),
         { flag: "wx", mode: 0o644 },
       );
+      // A private service umask would otherwise keep the identity file unreadable
+      // by the web server, so activation could never verify the live release.
+      await chmod(path.join(temporary, "site", MARKER), 0o644);
       const redirects =
         redirectRules !== null
           ? Buffer.from(builderNginxRules(redirectRules).join("\n") + "\n")

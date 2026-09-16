@@ -13,6 +13,7 @@ import {
   readFile,
   writeFile,
   rm,
+  stat,
   symlink,
   readdir,
 } from "node:fs/promises";
@@ -352,6 +353,23 @@ describe("retained website releases", () => {
     await writeFile(file, JSON.stringify(manifest));
     await checkLive(f.origin, await verifyRelease(f.store, "old-release"));
     expect((await verifyRelease(f.store, "new-release")).schemaVersion).toBe(1);
+  });
+  it("keeps a release readable by the web server under a private service umask", async () => {
+    const f = await fixture();
+    // The deployment service runs with a private umask so its state stays
+    // owner-only. Public release files must still reach visitors.
+    const previous = process.umask(0o077);
+    try {
+      await stageRelease({ source: f.next, store: f.store, id: "private-umask" });
+    } finally {
+      process.umask(previous);
+    }
+    const site = path.join(f.store, "releases/private-umask/site");
+    for (const file of [".well-known/kaizen-release.json", "index.html"])
+      expect(
+        (await stat(path.join(site, file))).mode & 0o044,
+        `${file} must stay readable by the web server`,
+      ).toBe(0o044);
   });
   it("keeps Apache/PHP configuration out of the Nginx public artifact without changing source output", async () => {
     const f = await fixture();
