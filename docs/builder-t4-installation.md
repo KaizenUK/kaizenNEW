@@ -142,10 +142,15 @@ The DirectAdmin Apache vhost for `www.kaizenweb.co.uk` is the single public entr
 - real-Nginx serving and rollback after retention;
 - the browser journeys for release history, suspension and the earlier L6 flows.
 
+**Verified again after the rollout** (16 September, logs in the private state directory):
+
+- the complete application suite, 1,536 cases including the five new regression tests, with actual Nginx. Run it with `VITE_BUILDER_CLOUD=0`: the repository's own `.env` enables hosted mode, and three export and publication specs then call the live functions and fail with a sign-in error;
+- the complete browser suite, 240 passing in one pass. Two cases timed out while the server installation was running in parallel (`content.spec.ts:28` and `hosted-helper.spec.ts:203`) and both pass on an otherwise idle machine;
+- the deployment launcher's own cases, and the live database audit recorded in `l6-final-audit.json`: no builder table without row-level security and no builder function without a pinned search path.
+
 **Still required as live proof during G:**
 
-- real Supabase Storage upload, resume and cancel, copy, and cleanup against disposable objects;
-- the installed launcher and helper with the real fingerprint;
+- real Supabase Storage upload, resume and cancel, copy, and cleanup — these need a signed-in session, so they are in [the acceptance checklist](handover/l6-acceptance-checklist.md);
 - a real custom-domain lifecycle (Cloudflare);
 - Stripe checkout in test mode, then live;
 - signup email delivery.
