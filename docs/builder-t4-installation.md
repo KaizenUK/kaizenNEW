@@ -76,7 +76,15 @@ Each step is verified before the next. None enables automatic cleanup until the 
 9a. **Register the native configuration.** Deployments refuse to start until the database knows this host's configuration and its producers: call `builder_native_asset_configure('kaizen-native-cleanup', <fingerprint>, array['kaizen'], <producers>, false)` with the service credential, keeping cleanup disabled. The producers are the three worker identities in the inventory. Until then every deployment fails with `Configured native website producer required`. **Rollback:** repeat the call with the previous values; it refuses while any operation is active.
 
 10. **Scheduled workers.** Enable `kaizen-domain-worker.timer`; public domain acceptance needs Cloudflare access (human). Install `kaizen-native-maintenance@{main,stage}` and `kaizen-native-cleanup` with the inventory above, keeping both timers disabled. Install the inventory as `/etc/kaizen/native-cleanup.json` root-owned **0600**; the worker refuses a group-readable file. Run maintenance once for each branch and confirm it reports `{"phase":"disabled"}`. The cleanup worker cannot be checked the same way: its database calls require cleanup to be enabled, so leave that service unrun until step 11.
-11. **Turn on retention.** Only after staging publication, rollback, history availability and upload/copy checks pass: set `BUILDER_RELEASE_RETENTION_ENABLED=1` for the deployments and client worker, then enable the maintenance and native cleanup timers. **Rollback:** set it back to `0`; any owned attempt still finishes safely.
+11. **Turn on retention** (not done; publication and rollback pass, the editor's own upload, publish and history checks are still outstanding). In order:
+    1. set `BUILDER_RELEASE_RETENTION_ENABLED=1` in `/etc/kaizen/production.env`, `/etc/kaizen/staging.env` and `/etc/kaizen/client-worker.env`;
+    2. re-register the native configuration with cleanup allowed — the same `builder_native_asset_configure` call as step 9a with its last argument `true`; the cleanup worker's database calls refuse to run while it is `false`, so that service cannot be smoke-tested before this;
+    3. `systemctl enable --now kaizen-native-maintenance@main.timer kaizen-native-maintenance@stage.timer kaizen-native-cleanup.timer`;
+    4. watch the first run of each, then confirm retained releases and rollback targets still exist.
+
+    **Rollback:** set the variable back to `0` and disable those timers; re-register with `false`. Any attempt already under way finishes safely.
+
+    **Left behind until then:** the staging store keeps the releases from this rollout's failed attempts (`l6-stage-10`, `l6-stage-12`, `l6-stage-13`) alongside the live `l6-stage-14` and the previous `gh-34909251210-1`. Retention removes them once it is on; do not delete them by hand.
 
 ## How public requests already reach the server
 
