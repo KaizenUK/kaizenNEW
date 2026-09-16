@@ -439,6 +439,13 @@ describe("complete builder table access matrix", () => {
     );
     for (const f of functions.filter((f) => f.definer))
       expect(f.config, f.name).toContain("search_path=public, pg_temp");
+    // Plain trigger functions pin a path too, so no caller's own search path
+    // can change what any builder function resolves.
+    for (const f of functions)
+      expect(
+        (f.config || []).some((entry) => entry.startsWith("search_path=")),
+        f.name,
+      ).toBe(true);
     for (const role of ["anon", "authenticated"] as const)
       await expect(
         as(role, ids.stranger, () => db.exec("select builder_live_snapshot()")),
