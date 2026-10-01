@@ -1,4 +1,5 @@
 ---
+import { Button } from "../../../client/components/untitled/base/buttons/button";
 /**
  * Services section — spacious, bright, easy to scan.
  * Each service gets one core memorable idea (SUCCESS principle #1).
@@ -10,7 +11,7 @@ const services = [
     hook: "People judge your business by your website before they ever call you.",
     description:
       "We design and build sites that load fast, look right on a phone and make it easy to get in touch.",
-    cta: "Start a project",
+    cta: "Talk to us about your site",
     href: "/contact",
   },
   {
@@ -19,7 +20,7 @@ const services = [
     hook: "A slow site loses people before they see what you do.",
     description:
       "We find what is slowing your site down and fix it. You get a plain-English report and a list of fixes, most important first.",
-    cta: "Run a free audit",
+    cta: "Check your website speed",
     href: "/performance-scanner",
   },
   {
@@ -82,28 +83,7 @@ const services = [
 
             {/* CTA */}
             <div class="md:col-span-3 flex items-center md:justify-end">
-              <a
-                href={s.href}
-                class="inline-flex items-center gap-3 font-heading font-bold text-lg text-gray-950 transition-all duration-200 group-hover:gap-5"
-              >
-                {s.cta}
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="20"
-                  height="20"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  aria-hidden="true"
-                  class="transition-transform duration-200 group-hover:translate-x-1"
-                >
-                  <path d="M5 12h14" />
-                  <path d="m12 5 7 7-7 7" />
-                </svg>
-              </a>
+              <Button href={s.href} color="link-color" size="lg" className="text-left whitespace-normal">{s.cta}</Button>
             </div>
           </div>
         ))

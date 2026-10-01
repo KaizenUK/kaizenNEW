@@ -1,3 +1,4 @@
+import { Button } from "./untitled/base/buttons/button";
 import { useEffect, useState } from "react";
 import { X } from "lucide-react";
 
@@ -114,26 +115,21 @@ export function CookieBanner() {
               </div>
 
               <div className="flex flex-col sm:flex-row gap-3 w-full md:w-auto flex-shrink-0">
-                <button
-                  onClick={handleAcceptAll}
-                  className="px-6 py-2 rounded-lg bg-gradient-to-r from-kaizen-cyan to-kaizen-lime text-kaizen-dark font-heading font-bold hover:opacity-90 transition"
-                >
+                <Button onPress={handleAcceptAll} size="lg" color="primary">
                   Accept All
-                </button>
+                </Button>
 
-                <button
-                  onClick={handleRejectAll}
-                  className="px-6 py-2 rounded-lg border-2 border-kaizen-text-dark/20 text-kaizen-dark font-heading font-bold hover:border-kaizen-cyan transition"
-                >
+                <Button onPress={handleRejectAll} size="lg" color="secondary">
                   Reject All
-                </button>
+                </Button>
 
-                <button
-                  onClick={() => setShowSettings(true)}
-                  className="px-6 py-2 rounded-lg text-kaizen-cyan font-heading font-bold hover:underline transition"
+                <Button
+                  onPress={() => setShowSettings(true)}
+                  size="lg"
+                  color="link-color"
                 >
                   Manage Cookies
-                </button>
+                </Button>
               </div>
             </div>
           </div>
@@ -188,9 +184,7 @@ export function CookieBanner() {
                 <button
                   onClick={toggleFunctional}
                   className={`flex-shrink-0 w-12 h-6 rounded-full flex items-center px-1 transition ${
-                    consent.functional
-                      ? "bg-kaizen-cyan"
-                      : "bg-gray-300"
+                    consent.functional ? "bg-kaizen-cyan" : "bg-gray-300"
                   }`}
                 >
                   <div
@@ -214,9 +208,7 @@ export function CookieBanner() {
                 <button
                   onClick={toggleAnalytics}
                   className={`flex-shrink-0 w-12 h-6 rounded-full flex items-center px-1 transition ${
-                    consent.analytics
-                      ? "bg-kaizen-cyan"
-                      : "bg-gray-300"
+                    consent.analytics ? "bg-kaizen-cyan" : "bg-gray-300"
                   }`}
                 >
                   <div
@@ -229,18 +221,22 @@ export function CookieBanner() {
             </div>
 
             <div className="flex gap-3 p-6 border-t border-kaizen-text-dark/10">
-              <button
-                onClick={() => setShowSettings(false)}
-                className="flex-1 px-4 py-2 rounded-lg border-2 border-kaizen-text-dark/20 text-kaizen-dark font-heading font-bold hover:border-kaizen-cyan transition"
+              <Button
+                onPress={() => setShowSettings(false)}
+                size="lg"
+                color="secondary"
+                className="flex-1"
               >
                 Cancel
-              </button>
-              <button
-                onClick={handleSavePreferences}
-                className="flex-1 px-4 py-2 rounded-lg bg-gradient-to-r from-kaizen-cyan to-kaizen-lime text-kaizen-dark font-heading font-bold hover:opacity-90 transition"
+              </Button>
+              <Button
+                onPress={handleSavePreferences}
+                size="lg"
+                color="primary"
+                className="flex-1"
               >
                 Save
-              </button>
+              </Button>
             </div>
           </div>
         </div>

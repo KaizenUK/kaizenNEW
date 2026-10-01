@@ -1,5 +1,5 @@
 ---
-import { ArrowRight } from "lucide-react";
+import { MarketingButton } from "../../client/components/untitled/MarketingButton";
 import StaticPageLayout from "../layouts/StaticPageLayout.astro";
 
 export const prerender = true;
@@ -47,10 +47,7 @@ const caseStudies = [
       <ul class="space-y-0">
         {caseStudies.map((study) => (
           <li>
-            <a
-              href={`/case-studies/${study.slug}/`}
-              class="group block border-b border-kaizen-light bg-transparent px-8 py-12 transition hover:bg-white"
-            >
+            <div class="group border-b border-kaizen-light bg-transparent px-8 py-12">
               <div class="grid grid-cols-1 items-start gap-8 lg:grid-cols-2">
                 <div>
                   <h3 class="mb-4 text-3xl font-heading font-bold text-kaizen-dark transition group-hover:text-kaizen-cyan md:text-4xl">
@@ -75,13 +72,10 @@ const caseStudies = [
                     </div>
                   </div>
 
-                  <div class="mt-6 flex items-center gap-2 font-medium text-kaizen-cyan">
-                    Read Case Study
-                    <ArrowRight className="h-4 w-4 shrink-0" aria-hidden="true" />
-                  </div>
+                  <MarketingButton action="caseStudy" href={`/case-studies/${study.slug}/`} variant="link" className="mt-6 self-start" />
                 </div>
               </div>
-            </a>
+            </div>
           </li>
         ))}
       </ul>
@@ -97,18 +91,8 @@ const caseStudies = [
         Tell us what is holding your site back. We will help you work out the next step.
       </p>
       <div class="flex flex-col items-center justify-center gap-6 sm:flex-row">
-        <a
-          href="/contact/"
-          class="rounded-lg bg-gradient-to-r from-kaizen-cyan to-kaizen-lime px-8 py-3 font-heading font-bold text-kaizen-dark transition hover:shadow-lg hover:shadow-kaizen-cyan/50"
-        >
-          Get in Touch
-        </a>
-        <a
-          href="/performance-scanner/"
-          class="rounded-lg border-2 border-white/30 px-8 py-3 font-heading font-bold text-white transition hover:border-kaizen-cyan hover:text-kaizen-cyan"
-        >
-          Run the Free Audit
-        </a>
+        <MarketingButton action="contact" />
+        <MarketingButton action="speed" />
       </div>
     </div>
   </section>

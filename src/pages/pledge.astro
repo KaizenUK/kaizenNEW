@@ -1,4 +1,5 @@
 ---
+import { MarketingButton } from "../../client/components/untitled/MarketingButton";
 import StaticPageLayout from "../layouts/StaticPageLayout.astro";
 import ContactCTAButton from "../../client/components/ContactCTAButton";
 
@@ -152,28 +153,8 @@ const commitments = [
         </p>
 
         <div class="flex flex-col sm:flex-row items-start gap-6">
-          <ContactCTAButton label="Start a conversation" client:load />
-          <a
-            href="/performance-scanner/"
-            class="inline-flex items-center gap-3 px-10 py-5 rounded-lg border border-white/20 text-white font-heading font-bold text-xl transition-all duration-200 hover:scale-[1.03] hover:border-white/50 active:scale-[0.97]"
-          >
-            Free site audit
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="22"
-              height="22"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              aria-hidden="true"
-            >
-              <path d="M7 17 17 7"></path>
-              <path d="M7 7h10v10"></path>
-            </svg>
-          </a>
+          <ContactCTAButton />
+          <MarketingButton action="speed" />
         </div>
       </div>
     </div>

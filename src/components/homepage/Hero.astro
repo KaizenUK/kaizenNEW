@@ -1,4 +1,5 @@
 ---
+import { MarketingButton } from "../../../client/components/untitled/MarketingButton";
 /**
  * Homepage Hero — light bg with subtle isometric 3D tiles.
  * Inspired by Aramco "Shoot for the Future" aesthetic.
@@ -47,49 +48,9 @@
       </p>
 
       <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
-        <a
-          href="/contact/"
-          class="px-10 py-5 rounded-lg bg-gray-950 text-white font-heading font-bold text-xl inline-flex items-center justify-center gap-3 transition-all duration-200 hover:scale-[1.03] hover:bg-gray-800 active:scale-[0.97]"
-        >
-          Talk to Us
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="22"
-            height="22"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            aria-hidden="true"
-          >
-            <path d="M5 12h14"></path>
-            <path d="m12 5 7 7-7 7"></path>
-          </svg>
-        </a>
+        <MarketingButton action="contact" />
 
-        <a
-          href="/performance-scanner/"
-          class="px-10 py-5 rounded-lg border-2 border-gray-950/20 text-gray-950 font-heading font-bold text-xl inline-flex items-center justify-center gap-3 transition-all duration-200 hover:scale-[1.03] hover:border-gray-950 active:scale-[0.97]"
-        >
-          Free Site Audit
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="22"
-            height="22"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            aria-hidden="true"
-          >
-            <path d="M7 17 17 7"></path>
-            <path d="M7 7h10v10"></path>
-          </svg>
-        </a>
+        <MarketingButton action="speed" />
       </div>
     </div>
   </div>

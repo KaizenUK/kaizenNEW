@@ -1,4 +1,5 @@
 ---
+import { Button } from "../../client/components/untitled/base/buttons/button";
 import StaticPageLayout from "../layouts/StaticPageLayout.astro";
 import SpeedScanner from "../../client/components/SpeedScanner";
 import ContactCTAButton from "../../client/components/ContactCTAButton";
@@ -255,28 +256,8 @@ const faqSchema = JSON.stringify({
         </p>
 
         <div class="flex flex-col sm:flex-row items-start gap-6">
-          <ContactCTAButton label="Talk to us about your site" client:load />
-          <a
-            href="/services/wordpress-web-design/"
-            class="inline-flex items-center gap-3 px-10 py-5 rounded-lg border border-white/20 text-white font-heading font-bold text-xl transition-all duration-200 hover:scale-[1.03] hover:border-white/50 active:scale-[0.97]"
-          >
-            Help with a slow WordPress site
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="22"
-              height="22"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              aria-hidden="true"
-            >
-              <path d="M5 12h14"></path>
-              <path d="m12 5 7 7-7 7"></path>
-            </svg>
-          </a>
+          <ContactCTAButton />
+          <Button href="/services/wordpress-web-design/" color="secondary" size="lg">Help with a slow WordPress site</Button>
         </div>
       </div>
     </div>

@@ -1,4 +1,5 @@
 ---
+import { MarketingButton } from "../../client/components/untitled/MarketingButton";
 import LandingPageLayout from "../layouts/LandingPageLayout.astro";
 import { ContactFormBox } from "../../client/components/ContactFormBox";
 import KaizenLogo from "../../client/components/KaizenLogo";
@@ -19,16 +20,9 @@ export const prerender = true;
   <header class="fixed top-0 inset-x-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-200/60">
     <div class="mx-auto max-w-[1440px] px-6 lg:px-12 h-16 flex items-center justify-between">
       <a href="https://kaizenweb.co.uk" class="inline-flex items-center">
-        <KaizenLogo className="h-7 w-[128px] text-[#001133]" client:load />
+        <KaizenLogo className="h-7 w-[88px] sm:w-[128px] text-[#001133]" client:load />
       </a>
-      <a
-        href="#get-in-touch"
-        class="group relative isolate inline-flex items-center justify-center overflow-hidden rounded-[18px] border border-white/25 px-5 py-2.5 text-[14px] text-white no-underline shadow-[0_12px_32px_rgba(10,34,102,0.34)] transition-transform duration-200 hover:-translate-y-px"
-      >
-        <span class="pointer-events-none absolute inset-0 rounded-[inherit] bg-[linear-gradient(135deg,#266bff_0%,#1658e8_56%,#0c3eb9_100%)]"></span>
-        <span class="pointer-events-none absolute inset-px rounded-[inherit] bg-[linear-gradient(180deg,rgba(255,255,255,0.2)_0%,rgba(255,255,255,0.08)_20%,rgba(8,38,112,0.16)_100%)]"></span>
-        <span class="relative z-1 font-medium text-white whitespace-nowrap">Get a free quote</span>
-      </a>
+      <MarketingButton action="contact" href="#get-in-touch" size="sm" className="max-sm:*:data-icon:hidden" />
     </div>
   </header>
 
@@ -57,18 +51,7 @@ export const prerender = true;
         </p>
 
         <div class="flex flex-col sm:flex-row items-start gap-5">
-          <a
-            href="#get-in-touch"
-            class="group relative isolate inline-flex items-center justify-center overflow-hidden rounded-[18px] border border-white/25 px-10 py-5 text-xl text-white no-underline shadow-[0_12px_32px_rgba(10,34,102,0.34)] transition-transform duration-200 hover:-translate-y-px hover:shadow-[0_18px_40px_rgba(10,34,102,0.4)]"
-          >
-            <span class="pointer-events-none absolute inset-0 rounded-[inherit] bg-[linear-gradient(135deg,#266bff_0%,#1658e8_56%,#0c3eb9_100%)]"></span>
-            <span class="pointer-events-none absolute inset-px rounded-[inherit] bg-[linear-gradient(180deg,rgba(255,255,255,0.2)_0%,rgba(255,255,255,0.08)_20%,rgba(8,38,112,0.16)_100%)]"></span>
-            <span class="pointer-events-none absolute inset-0 rounded-[inherit] shadow-[inset_0_1px_0_rgba(255,255,255,0.42),inset_0_-1px_0_rgba(255,255,255,0.08)]"></span>
-            <span class="relative z-1 inline-flex items-center gap-2 whitespace-nowrap font-heading font-bold tracking-[-0.01em] text-white">
-              Get a free quote
-              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="transition-transform duration-200 group-hover:translate-x-0.5" aria-hidden="true"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
-            </span>
-          </a>
+          <MarketingButton action="contact" href="#get-in-touch" />
           <span class="text-sm font-body text-white/20 self-center">Fixed-price. No obligation.</span>
         </div>
       </div>
@@ -200,17 +183,7 @@ export const prerender = true;
               stopped getting in the way.
             </p>
           </div>
-          <a
-            href="/case-studies/midland-oil-group/"
-            target="_blank"
-            class="inline-flex items-center gap-2 mt-8 text-sm font-body font-medium text-cyan-400 hover:text-cyan-300 transition-colors"
-          >
-            Read the full case study
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <path d="M7 17 17 7"></path>
-              <path d="M7 7h10v10"></path>
-            </svg>
-          </a>
+          <MarketingButton action="caseStudy" href="/case-studies/midland-oil-group/" target="_blank" variant="link" onDark className="mt-8" />
         </div>
       </div>
     </div>

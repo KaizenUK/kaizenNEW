@@ -1,10 +1,10 @@
+import { MarketingButton } from "../untitled/MarketingButton";
 import { useCallback, useMemo, useState, type ReactNode } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import {
   ArrowRight,
   ArrowUpRight,
   ChevronDown,
-  Sparkles,
   X,
 } from "lucide-react";
 import {
@@ -157,7 +157,7 @@ const OffCanvasMenu: React.FC<OffCanvasMenuProps> = ({ isOpen, onClose }) => {
                                 onClick={deferClose}
                                 className="group block overflow-hidden rounded-[18px] border border-black/10 bg-[#f7f9fc] p-3"
                               >
-                                <div className="overflow-hidden rounded-[14px] bg-[#edf2fb]">
+                                {section.promo.media ? <div className="overflow-hidden rounded-[14px] bg-[#edf2fb]">
                                   {section.promo.media.type === "video" ? (
                                     <video
                                       autoPlay
@@ -181,7 +181,7 @@ const OffCanvasMenu: React.FC<OffCanvasMenuProps> = ({ isOpen, onClose }) => {
                                       decoding="async"
                                     />
                                   )}
-                                </div>
+                                </div> : null}
 
                                 <div className="space-y-2 px-1 pt-4">
                                   <h3 className="text-[20px] font-semibold leading-[1.15] text-[#16181d]">
@@ -295,14 +295,7 @@ const OffCanvasMenu: React.FC<OffCanvasMenuProps> = ({ isOpen, onClose }) => {
             </div>
 
             <footer className="grid gap-2 border-t border-black/10 bg-white px-4 py-4">
-              <AppLink
-                href="/performance-scanner/"
-                onClick={deferClose}
-                className="inline-flex items-center justify-center gap-2 rounded-2xl border border-[#c5d4f1] bg-[#f4f7fe] px-4 py-3 text-[15px] font-medium text-[#133a86] transition-all duration-200 hover:border-[#1764ff] hover:bg-white hover:text-[#1764ff]"
-              >
-                <Sparkles className="h-4 w-4" />
-                Free Audit
-              </AppLink>
+              <MarketingButton action="speed" onPress={deferClose} className="w-full" />
               <StartProjectButton onClick={deferClose} compact className="w-full" />
             </footer>
           </motion.aside>

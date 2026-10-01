@@ -1,6 +1,6 @@
 import { useEffect, useId, useMemo } from "react";
 import { motion } from "framer-motion";
-import AppLink from "@/components/routing/AppLink";
+import { MarketingButton } from "./untitled/MarketingButton";
 
 import {
   Accordion,
@@ -56,7 +56,9 @@ export function FaqSection({
   useEffect(() => {
     if (typeof document === "undefined") return;
 
-    let script = document.getElementById(schemaScriptId) as HTMLScriptElement | null;
+    let script = document.getElementById(
+      schemaScriptId,
+    ) as HTMLScriptElement | null;
     if (!script) {
       script = document.createElement("script");
       script.type = "application/ld+json";
@@ -74,10 +76,7 @@ export function FaqSection({
   }, [faqSchemaJson, schemaScriptId]);
 
   return (
-    <section
-      id={id}
-      className={`py-28 md:py-36 relative ${className}`}
-    >
+    <section id={id} className={`py-28 md:py-36 relative ${className}`}>
       <div className="mx-auto max-w-[1440px] px-6 lg:px-12 relative z-10">
         {/* Header — left-aligned */}
         <motion.div
@@ -97,7 +96,13 @@ export function FaqSection({
         </motion.div>
 
         {/* Accordion columns */}
-        <div className={secondColumn ? "grid grid-cols-1 lg:grid-cols-2 gap-x-16 gap-y-0" : ""}>
+        <div
+          className={
+            secondColumn
+              ? "grid grid-cols-1 lg:grid-cols-2 gap-x-16 gap-y-0"
+              : ""
+          }
+        >
           <div className={secondColumn ? "" : "max-w-3xl"}>
             <Accordion type="single" collapsible className="w-full">
               {items.map((item, index) => (
@@ -146,27 +151,7 @@ export function FaqSection({
           viewport={{ once: true }}
           className="mt-16 flex items-center gap-6"
         >
-          <AppLink
-            href="/contact/"
-            className="inline-flex items-center gap-3 px-10 py-5 rounded-lg bg-gray-950 text-white font-heading font-bold text-xl hover:scale-[1.03] hover:bg-gray-800 active:scale-[0.97] transition-all duration-200"
-          >
-            Ask us anything
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="22"
-              height="22"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              aria-hidden="true"
-            >
-              <path d="M5 12h14" />
-              <path d="m12 5 7 7-7 7" />
-            </svg>
-          </AppLink>
+          <MarketingButton action="contact" />
         </motion.div>
       </div>
     </section>

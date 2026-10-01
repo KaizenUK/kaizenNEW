@@ -1,4 +1,5 @@
 ---
+import { MarketingButton } from "../../../client/components/untitled/MarketingButton";
 import StaticPageLayout from "../../layouts/StaticPageLayout.astro";
 import ContactCTAButton from "../../../client/components/ContactCTAButton";
 
@@ -217,53 +218,8 @@ const serviceSchema = JSON.stringify({
         on top — SEO, content, reputation — actually sticks.
       </p>
       <div class="mt-10 flex flex-col gap-4 sm:flex-row">
-        <a
-          href="/contact/"
-          class="group relative isolate inline-flex items-center justify-center overflow-hidden rounded-[18px] border border-white/25 px-6 py-3 text-[16px] text-white no-underline shadow-[0_12px_32px_rgba(10,34,102,0.34)] transition-transform duration-200 hover:-translate-y-px hover:shadow-[0_18px_40px_rgba(10,34,102,0.4)]"
-        >
-          <span
-            class="pointer-events-none absolute inset-0 rounded-[inherit] bg-[linear-gradient(135deg,#266bff_0%,#1658e8_56%,#0c3eb9_100%)]"
-          ></span>
-          <span
-            class="pointer-events-none absolute inset-px rounded-[inherit] bg-[linear-gradient(180deg,rgba(255,255,255,0.2)_0%,rgba(255,255,255,0.08)_20%,rgba(8,38,112,0.16)_100%)]"
-          ></span>
-          <span
-            class="pointer-events-none absolute inset-0 rounded-[inherit] shadow-[inset_0_1px_0_rgba(255,255,255,0.42),inset_0_-1px_0_rgba(255,255,255,0.08)]"
-          ></span>
-          <span
-            class="relative z-1 inline-flex items-center gap-2 whitespace-nowrap font-medium tracking-[-0.01em] text-white"
-          >
-            <span>Get a technical audit</span>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="h-4 w-4 transition-transform duration-200 group-hover:translate-x-0.5"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              ><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg
-            >
-          </span>
-        </a>
-        <a
-          href="/performance-scanner/"
-          class="inline-flex items-center justify-center gap-2 rounded-[18px] border border-gray-200 px-6 py-3 text-[16px] font-medium text-gray-950 no-underline transition-all duration-200 hover:-translate-y-px hover:border-gray-300"
-        >
-          <span>Run a free site scan</span>
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="h-4 w-4"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            ><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg
-          >
-        </a>
+        <MarketingButton action="contact" />
+        <MarketingButton action="speed" />
       </div>
     </div>
   </section>
@@ -869,7 +825,7 @@ const serviceSchema = JSON.stringify({
         <div
           class="mt-10 flex flex-col items-center gap-4 sm:flex-row sm:justify-center"
         >
-          <ContactCTAButton label="Talk to us about your site" client:load />
+          <ContactCTAButton />
         </div>
       </div>
     </div>
@@ -1057,36 +1013,7 @@ const serviceSchema = JSON.stringify({
               </p>
             </div>
           </div>
-          <a
-            href="/case-studies/helen-moore-hairdressing/"
-            class="group relative isolate mt-8 inline-flex items-center justify-center overflow-hidden rounded-[18px] border border-white/25 px-5 py-2.5 text-[15px] text-white no-underline shadow-[0_12px_32px_rgba(10,34,102,0.34)] transition-transform duration-200 hover:-translate-y-px hover:shadow-[0_18px_40px_rgba(10,34,102,0.4)]"
-          >
-            <span
-              class="pointer-events-none absolute inset-0 rounded-[inherit] bg-[linear-gradient(135deg,#266bff_0%,#1658e8_56%,#0c3eb9_100%)]"
-            ></span>
-            <span
-              class="pointer-events-none absolute inset-px rounded-[inherit] bg-[linear-gradient(180deg,rgba(255,255,255,0.2)_0%,rgba(255,255,255,0.08)_20%,rgba(8,38,112,0.16)_100%)]"
-            ></span>
-            <span
-              class="pointer-events-none absolute inset-0 rounded-[inherit] shadow-[inset_0_1px_0_rgba(255,255,255,0.42),inset_0_-1px_0_rgba(255,255,255,0.08)]"
-            ></span>
-            <span
-              class="relative z-1 inline-flex items-center gap-2 whitespace-nowrap font-medium tracking-[-0.01em] text-white"
-            >
-              <span>See Helen Moore's full case study</span>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                class="h-4 w-4 transition-transform duration-200 group-hover:translate-x-0.5"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                ><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg
-              >
-            </span>
-          </a>
+          <MarketingButton action="caseStudy" href="/case-studies/helen-moore-hairdressing/" variant="link" onDark className="mt-8" />
         </div>
       </div>
     </div>
@@ -1160,7 +1087,7 @@ const serviceSchema = JSON.stringify({
             whether to keep them, change scope, or move on.
           </p>
           <div class="mt-5">
-            <ContactCTAButton label="Ask about agency vetting" client:load />
+            <ContactCTAButton />
           </div>
         </div>
       </div>
@@ -1210,53 +1137,8 @@ const serviceSchema = JSON.stringify({
         can be solved.
       </p>
       <div class="mt-10 flex flex-col justify-center gap-4 sm:flex-row">
-        <a
-          href="/contact/"
-          class="group relative isolate inline-flex items-center justify-center overflow-hidden rounded-[18px] border border-white/25 px-6 py-3 text-[16px] text-white no-underline shadow-[0_12px_32px_rgba(10,34,102,0.34)] transition-transform duration-200 hover:-translate-y-px hover:shadow-[0_18px_40px_rgba(10,34,102,0.4)]"
-        >
-          <span
-            class="pointer-events-none absolute inset-0 rounded-[inherit] bg-[linear-gradient(135deg,#266bff_0%,#1658e8_56%,#0c3eb9_100%)]"
-          ></span>
-          <span
-            class="pointer-events-none absolute inset-px rounded-[inherit] bg-[linear-gradient(180deg,rgba(255,255,255,0.2)_0%,rgba(255,255,255,0.08)_20%,rgba(8,38,112,0.16)_100%)]"
-          ></span>
-          <span
-            class="pointer-events-none absolute inset-0 rounded-[inherit] shadow-[inset_0_1px_0_rgba(255,255,255,0.42),inset_0_-1px_0_rgba(255,255,255,0.08)]"
-          ></span>
-          <span
-            class="relative z-1 inline-flex items-center gap-2 whitespace-nowrap font-medium tracking-[-0.01em] text-white"
-          >
-            <span>Get a technical audit</span>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="h-4 w-4 transition-transform duration-200 group-hover:translate-x-0.5"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              ><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg
-            >
-          </span>
-        </a>
-        <a
-          href="/performance-scanner/"
-          class="inline-flex items-center justify-center gap-2 rounded-[18px] border border-white/15 px-6 py-3 text-[16px] font-medium text-white/60 no-underline transition-all duration-200 hover:-translate-y-px hover:text-white"
-        >
-          <span>Free site scan</span>
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="h-4 w-4"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            ><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg
-          >
-        </a>
+        <MarketingButton action="contact" />
+        <MarketingButton action="speed" />
       </div>
     </div>
   </section>

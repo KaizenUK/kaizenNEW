@@ -209,6 +209,7 @@ export const Button: {
 
       {loading && (
         <svg
+          aria-hidden="true"
           fill="none"
           data-icon="loading"
           viewBox="0 0 20 20"
@@ -244,7 +245,10 @@ export const Button: {
       {children && (
         <span
           data-text
-          className={cx("transition-inherit-all", !noTextPadding && "px-0.5")}
+          className={cx(
+            "inline-flex items-center gap-2 transition-inherit-all",
+            !noTextPadding && "px-0.5",
+          )}
         >
           {children}
         </span>
@@ -262,7 +266,7 @@ export const Button: {
     "data-loading": loading ? true : undefined,
     "data-icon-only": isIcon ? true : undefined,
     ...props,
-    isDisabled: disabled,
+    isDisabled: disabled || loading,
     className: cx(
       styles.common.root,
       styles.sizes[size].root,
@@ -280,7 +284,12 @@ export const Button: {
   };
 
   if ("href" in commonProps) {
-    return <AriaLink {...commonProps} href={disabled ? undefined : href} />;
+    return (
+      <AriaLink
+        {...commonProps}
+        href={disabled || loading ? undefined : href}
+      />
+    );
   }
 
   return (

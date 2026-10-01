@@ -1,3 +1,4 @@
+import { Button } from "./untitled/base/buttons/button";
 import { useState } from "react";
 
 // Define the metrics type for comprehensive reporting
@@ -977,9 +978,9 @@ export default function SpeedScanner() {
             Check how fast your page loads.
           </h2>
           <p className="text-white/40 text-base">
-            Enter your web address to see your score. If it is below 90,
-            we ask for your email before showing the full report.
-            You can download the report here for free.
+            Enter your web address to see your score. If it is below 90, we ask
+            for your email before showing the full report. You can download the
+            report here for free.
           </p>
         </div>
 
@@ -1005,13 +1006,14 @@ export default function SpeedScanner() {
               className="w-full px-6 py-4 pl-20 rounded-lg bg-white/[0.05] border border-white/10 text-white focus:border-cyan-500 focus:outline-none focus:ring-1 focus:ring-cyan-500 transition-all placeholder:text-white/20"
             />
           </div>
-          <button
-            onClick={runAudit}
-            disabled={loading}
-            className="px-8 py-4 rounded-lg font-bold text-gray-950 bg-white hover:bg-gray-100 transition-all hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
+          <Button
+            onPress={runAudit}
+            isDisabled={loading}
+            size="lg"
+            color="primary"
           >
             {loading ? "Scanning..." : "Check my site"}
-          </button>
+          </Button>
         </div>
 
         {/* STATUS TEXT */}
@@ -1068,13 +1070,7 @@ export default function SpeedScanner() {
               </div>
 
               <div className="relative w-full">
-                <div
-                  className={
-                    shouldGate
-                      ? "hidden"
-                      : ""
-                  }
-                >
+                <div className={shouldGate ? "hidden" : ""}>
                   {/* Metrics Grid */}
                   <div className="rounded-lg bg-white/[0.03] border border-white/5 p-5 mb-6">
                     <p className="text-xs font-medium uppercase tracking-[0.2em] text-white/30 mb-4">
@@ -1108,10 +1104,12 @@ export default function SpeedScanner() {
                     </div>
                   </div>
 
-                  <button
-                    onClick={downloadPDF}
-                    disabled={pdfLoading}
-                    className="flex items-center justify-center gap-2 w-full md:w-auto px-6 py-3 rounded-lg bg-white text-gray-950 font-bold hover:bg-gray-100 transition-all hover:scale-[1.02] active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed"
+                  <Button
+                    onPress={downloadPDF}
+                    isDisabled={pdfLoading}
+                    size="lg"
+                    color="primary"
+                    className="w-full md:w-auto"
                   >
                     <svg
                       className="w-5 h-5"
@@ -1127,7 +1125,7 @@ export default function SpeedScanner() {
                       />
                     </svg>
                     {pdfLoading ? "Building PDF..." : "Download PDF Report"}
-                  </button>
+                  </Button>
                 </div>
 
                 {/* The Gate Overlay */}
@@ -1138,8 +1136,8 @@ export default function SpeedScanner() {
                         Your full report is ready.
                       </h3>
                       <p className="text-white/40 text-sm mb-4 leading-relaxed">
-                        Enter your email to see the results and download your PDF.
-                        Tips by email are optional.
+                        Enter your email to see the results and download your
+                        PDF. Tips by email are optional.
                       </p>
                       <div className="flex flex-col sm:flex-row gap-2 mb-4">
                         <input
@@ -1151,12 +1149,13 @@ export default function SpeedScanner() {
                           value={email}
                           onChange={(e) => setEmail(e.target.value)}
                         />
-                        <button
-                          onClick={handleUnlock}
-                          className="px-5 py-3 bg-white hover:bg-gray-100 text-gray-950 text-sm font-bold rounded-lg transition-all whitespace-nowrap"
+                        <Button
+                          onPress={handleUnlock}
+                          size="lg"
+                          color="primary"
                         >
                           View my report
-                        </button>
+                        </Button>
                       </div>
 
                       {/* Consent Checkbox */}

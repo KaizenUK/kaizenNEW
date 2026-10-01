@@ -1,3 +1,8 @@
+---
+import { MarketingButton } from "../../../client/components/untitled/MarketingButton";
+import { Button } from "../../../client/components/untitled/base/buttons/button";
+---
+
 <header class="border-b border-white/10 bg-[#0a0a0a]/95 backdrop-blur supports-[backdrop-filter]:bg-[#0a0a0a]/75">
   <div class="linear-container flex h-16 items-center justify-between gap-4">
     <a href="/" class="inline-flex items-center gap-3 text-white no-underline" aria-label="Kaizen Home">
@@ -28,21 +33,15 @@
     <nav aria-label="Blog navigation" class="hidden items-center gap-3 md:flex">
       <a href="/blog/" class="linear-nav-link">Articles</a>
       <a href="/case-studies/" class="linear-nav-link">Case Studies</a>
-      <a href="/contact/" class="linear-nav-link linear-nav-link--cta">Start Project</a>
+      <MarketingButton action="contact" size="sm" />
     </nav>
   </div>
 
   <div id="blog-mobile-menu" class="hidden border-t border-white/10 md:hidden">
     <nav aria-label="Blog mobile navigation" class="linear-container grid gap-2 py-3">
-      <a href="/blog/" class="inline-flex h-11 items-center justify-center rounded-xl border border-white/10 bg-white/[0.02] px-4 text-sm font-medium text-gray-100 no-underline transition hover:border-white/25">
-        Articles
-      </a>
-      <a href="/case-studies/" class="inline-flex h-11 items-center justify-center rounded-xl border border-white/10 bg-white/[0.02] px-4 text-sm font-medium text-gray-100 no-underline transition hover:border-white/25">
-        Case Studies
-      </a>
-      <a href="/contact/" class="inline-flex h-11 items-center justify-center rounded-xl border border-sky-400/40 bg-sky-500/10 px-4 text-sm font-semibold text-sky-200 no-underline transition hover:border-sky-300/70 hover:text-sky-100">
-        Start Project
-      </a>
+      <Button href="/blog/" color="secondary" size="lg">Articles</Button>
+      <Button href="/case-studies/" color="secondary" size="lg">Case Studies</Button>
+      <MarketingButton action="contact" />
     </nav>
   </div>
 </header>

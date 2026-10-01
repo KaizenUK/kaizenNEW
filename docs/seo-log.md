@@ -2,6 +2,13 @@
 
 Every change that can affect search, newest first: date, URL, what changed and why. One change at a time where possible, then wait a few weeks before judging it (`seo-strategy`, "Measure, test and audit"). Positions quoted here are stale the day they are written; pull Search Console for current numbers.
 
+## 2 Oct 2026: shared action labels and links (F-02)
+
+- Marketing pages and navigation now use three consistent action labels for contact, the speed check and a case study. Former contact modal buttons are normal links to `/contact/`, present in server HTML. Ad landing pages retain their own form anchors. Existing article and service links keep their descriptive labels.
+- `/case-studies/` now gives each card a clear case-study link in the shared button style. The destinations are unchanged. Page titles, descriptions, canonicals and structured data are unchanged throughout this task.
+- Removed the temporary noindex `/ui-test/` route; it remains absent from the sitemap. Removed the unsupported "30 seconds" promise beside the homepage speed check. The free score still appears before the email step.
+- Fixed the existing mobile-menu crash when a promotion has no image, so visitors can reach the navigation links. Proof: `docs/audits/2026-10-02-f02-proof.md`.
+
 ## 1 Oct 2026: isolated design foundation (F-01)
 
 - Added the temporary `/ui-test/` design check with `noindex, nofollow` and confirmed it is excluded from the sitemap. F-02 removes it. No public navigation links to it.

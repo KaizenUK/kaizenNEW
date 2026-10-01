@@ -1,4 +1,5 @@
 ---
+import { MarketingButton } from "../../client/components/untitled/MarketingButton";
 import LandingPageLayout from "../layouts/LandingPageLayout.astro";
 import SpeedScanner from "../../client/components/SpeedScanner";
 import { ContactFormBox } from "../../client/components/ContactFormBox";
@@ -41,14 +42,9 @@ const problems = [
   <header class="fixed top-0 inset-x-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-200/60">
     <div class="mx-auto max-w-[1440px] px-6 lg:px-12 h-16 flex items-center justify-between">
       <a href="https://kaizenweb.co.uk" class="inline-flex items-center">
-        <KaizenLogo className="h-7 w-[128px] text-[#001133]" client:load />
+        <KaizenLogo className="h-7 w-[88px] sm:w-[128px] text-[#001133]" client:load />
       </a>
-      <a
-        href="#get-in-touch"
-        class="text-sm font-heading font-bold text-gray-950 hover:text-cyan-600 transition-colors"
-      >
-        Get in touch
-      </a>
+      <MarketingButton action="contact" href="#get-in-touch" size="sm" className="max-sm:*:data-icon:hidden" />
     </div>
   </header>
 
@@ -213,17 +209,7 @@ const problems = [
         <p class="text-base font-body text-gray-500">
           Midland Oil Group, rebuilt by Kaizen
         </p>
-        <a
-          href="/case-studies/midland-oil-group/"
-          target="_blank"
-          class="inline-flex items-center gap-2 mt-6 text-sm font-body font-medium text-cyan-600 hover:text-cyan-700 transition-colors"
-        >
-          Read the case study
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <path d="M7 17 17 7"></path>
-            <path d="M7 7h10v10"></path>
-          </svg>
-        </a>
+        <MarketingButton action="caseStudy" href="/case-studies/midland-oil-group/" target="_blank" variant="link" className="mt-6" />
       </div>
     </div>
   </section>

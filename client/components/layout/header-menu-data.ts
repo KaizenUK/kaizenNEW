@@ -103,7 +103,7 @@ const menuDefinitions: Record<DesktopMenuKey, DesktopMenuDefinition> = {
             href: "/case-studies/",
           },
           {
-            label: "Free Audit",
+            label: "Check your website speed",
             href: "/performance-scanner/",
             badge: "New",
           },
@@ -225,7 +225,7 @@ const menuDefinitions: Record<DesktopMenuKey, DesktopMenuDefinition> = {
             href: "/case-studies/",
           },
           {
-            label: "Start Your Project",
+            label: "Talk to us about your site",
             href: "/contact/",
           },
         ],

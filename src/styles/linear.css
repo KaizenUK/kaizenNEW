@@ -1,5 +1,8 @@
 @import "tailwindcss";
+@import "../../client/components/untitled/theme.css";
 @config "../../tailwind.config.ts";
+@plugin "tailwindcss-animate";
+@plugin "tailwindcss-react-aria-components";
 
 :root {
   color-scheme: dark;
@@ -35,10 +38,6 @@ body {
 
 .linear-nav-link {
   @apply rounded-full border border-white/10 px-3 py-1.5 text-xs font-medium tracking-wide text-gray-300 no-underline transition hover:border-white/20 hover:text-white;
-}
-
-.linear-nav-link--cta {
-  @apply border-sky-400/40 text-sky-300 hover:border-sky-300 hover:text-sky-200;
 }
 
 .linear-prose {

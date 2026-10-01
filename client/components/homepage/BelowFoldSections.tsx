@@ -1,6 +1,8 @@
+import { MarketingButton } from "../untitled/MarketingButton";
+import { Button } from "../untitled/base/buttons/button";
 import React, { Suspense, useState, lazy } from "react";
 import { motion } from "framer-motion";
-import { ArrowRight, ChevronRight } from "lucide-react";
+import { ChevronRight } from "lucide-react";
 
 const FaqSection = lazy(() =>
   import("@/components/FaqSection").then((m) => ({ default: m.FaqSection })),
@@ -217,13 +219,7 @@ export const PricingSlider = () => {
                     </ul>
                   </div>
 
-                  <button
-                    onClick={goToContact}
-                    className="mt-6 w-full px-6 py-3 rounded-lg bg-gradient-to-r from-kaizen-cyan to-kaizen-lime text-gray-950 font-heading font-bold hover:shadow-lg hover:scale-105 transition-all inline-flex items-center justify-center gap-2"
-                  >
-                    {currentTier.cta}
-                    <ArrowRight size={18} />
-                  </button>
+                  <MarketingButton action="contact" className="mt-6 w-full" />
                 </div>
               </div>
             </div>
@@ -268,13 +264,14 @@ export const PricingCTABanner = () => {
                 </p>
               </div>
               <div className="flex flex-col sm:flex-row gap-4">
-                <a
+                <Button
                   href="/blog/how-much-does-a-website-cost-in-liverpool-in-2025"
-                  className="inline-flex items-center justify-center px-5 py-3 rounded-full bg-kaizen-cyan text-slate-950 font-heading font-semibold hover:bg-kaizen-cyan/90 hover:shadow-lg hover:translate-y-0.5 transition-all gap-2"
+                  color="secondary"
+                  size="lg"
+                  iconTrailing={ChevronRight}
                 >
                   Open Pricing Guide
-                  <ChevronRight size={20} />
-                </a>
+                </Button>
                 <div className="flex items-center justify-center">
                   <span className="text-xs font-mono tracking-widest text-kaizen-cyan/70 uppercase">
                     Updated {getLastModifiedDate()}
@@ -436,25 +433,8 @@ export const LocalMap = () => {
             </div>
 
             <div className="flex flex-col sm:flex-row gap-3">
-              <button
-                onClick={() => {
-                  const scanner = document.getElementById(
-                    "live-performance-scanner",
-                  );
-                  scanner?.scrollIntoView({ behavior: "smooth" });
-                }}
-                className="px-8 py-4 rounded-lg bg-gradient-to-r from-kaizen-cyan to-kaizen-lime text-gray-950 font-heading font-bold hover:shadow-lg hover:scale-105 transition-all inline-flex items-center gap-2"
-              >
-                Get a Performance Audit
-                <ArrowRight size={20} />
-              </button>
-              <button
-                onClick={goToContact}
-                className="px-8 py-4 rounded-lg border-2 border-white/20 text-white font-heading font-bold hover:border-kaizen-cyan hover:text-kaizen-cyan transition-all inline-flex items-center gap-2"
-              >
-                Start Your Project
-                <ArrowRight size={20} />
-              </button>
+              <MarketingButton action="speed" />
+              <MarketingButton action="contact" />
             </div>
           </motion.div>
 

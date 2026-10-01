@@ -1,3 +1,4 @@
+import { MarketingButton } from "../untitled/MarketingButton";
 import {
   useCallback,
   useEffect,
@@ -10,7 +11,6 @@ import { AnimatePresence, motion } from "framer-motion";
 import {
   ArrowRight,
   ArrowUpRight,
-  Sparkles,
 } from "lucide-react";
 import KaizenLogo from "@/components/KaizenLogo";
 import {
@@ -281,13 +281,7 @@ const Header: React.FC<HeaderProps> = ({
             </nav>
 
             <div className="ml-auto flex items-center gap-2 pr-1">
-              <AppLink
-                href="/performance-scanner/"
-                className="hidden items-center gap-2 rounded-xl border border-[#c5d4f1] bg-[#f4f7fe] px-4 py-2 text-[15px] font-medium leading-[1.4] text-[#133a86] shadow-[inset_0_1px_0_rgba(255,255,255,0.8)] transition-all duration-200 hover:border-[#1764ff] hover:bg-white hover:text-[#1764ff] lg:inline-flex"
-              >
-                <Sparkles className="h-4 w-4" />
-                Free Audit
-              </AppLink>
+              <MarketingButton action="speed" size="sm" className="hidden xl:inline-flex" />
 
               <StartProjectButton className="hidden sm:inline-flex" />
 

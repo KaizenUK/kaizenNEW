@@ -1,6 +1,7 @@
+import { MarketingButton } from "../untitled/MarketingButton";
 import React from "react";
 import { motion } from "framer-motion";
-import { ArrowRight, ArrowUpRight } from "lucide-react";
+import { ArrowUpRight } from "lucide-react";
 import AppLink from "@/components/routing/AppLink";
 
 /**
@@ -91,31 +92,9 @@ export const CredibilitySection: React.FC = () => {
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
               >
-                <AppLink
-                  href="/case-studies/helen-moore-hairdressing"
-                  className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg border border-white/15 bg-white/5 text-white font-heading font-semibold hover:bg-white/10 transition"
-                >
-                  See proof in a case study
-                  <ArrowUpRight size={18} />
-                </AppLink>
+                <MarketingButton action="caseStudy" href="/case-studies/helen-moore-hairdressing" variant="link" />
               </motion.div>
-              <motion.button
-                onClick={() => {
-                  const scanner = document.getElementById(
-                    "live-performance-scanner",
-                  );
-                  scanner?.scrollIntoView({ behavior: "smooth" as any });
-                }}
-                className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg bg-gradient-to-r from-green-400 to-emerald-500 text-gray-950 font-heading font-bold transition"
-                whileHover={{
-                  scale: 1.05,
-                  boxShadow: "0 0 20px rgba(34,197,94,0.5)",
-                }}
-                whileTap={{ scale: 0.95 }}
-              >
-                Get a Performance Audit
-                <ArrowRight size={18} />
-              </motion.button>
+              <MarketingButton action="speed" />
             </div>
           </motion.div>
         </div>
