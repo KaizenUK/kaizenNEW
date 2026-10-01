@@ -1,20 +1,11 @@
-import {
-  ArrowRight,
-  ArrowUpRight,
-  Building2,
-  Mail,
-  MapPin,
-} from "lucide-react";
+import { ArrowUpRight, Building2, Mail, MapPin } from "lucide-react";
 import {
   InstagramIcon as Instagram,
   LinkedinIcon as Linkedin,
 } from "@/components/icons/CriticalIcons";
 import KaizenLogo from "@/components/KaizenLogo";
 import AppLink from "@/components/routing/AppLink";
-import {
-  SERVICE_AREAS_SUMMARY,
-  BUSINESS_EMAIL,
-} from "@/lib/seo";
+import { SERVICE_AREAS_SUMMARY, BUSINESS_EMAIL } from "@/lib/seo";
 import {
   COMPANY_NUMBER,
   LEGAL_COMPANY_NAME,
@@ -71,7 +62,6 @@ const footerColumns: Array<{
     links: [
       { label: "About", href: "/about/" },
       { label: "Our Pledge", href: "/pledge/" },
-      { label: "Blog", href: "/blog/" },
     ],
   },
   {
@@ -163,73 +153,37 @@ export default function SiteFooter({ buildLabel }: FooterProps) {
 
   return (
     <footer className="bg-gray-950 text-white">
-      {/* Hero area */}
+      {/* Contact and company details */}
       <div className="px-6 sm:px-10 lg:px-16 xl:px-24">
-        <div className="grid gap-12 pb-20 pt-28 md:pt-36 lg:grid-cols-[1.4fr_0.6fr] lg:gap-20">
-          {/* Left — big statement */}
-          <div>
-            <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-white/30 font-body">
-              Kaizen
+        <div className="grid gap-10 py-12 md:grid-cols-3 md:py-16">
+          <a href={`mailto:${BUSINESS_EMAIL}`} className="group no-underline">
+            <Mail className="h-5 w-5 text-white/20 transition-colors group-hover:text-white/50" />
+            <p className="mt-3 text-[11px] font-semibold uppercase tracking-[0.18em] text-white/30 font-body">
+              Email
             </p>
-            <h2 className="mt-5 max-w-[14ch] text-[clamp(2.75rem,5.5vw,5.4rem)] font-heading font-bold leading-[0.94] text-white">
-              Websites built properly.
-            </h2>
-            <p className="mt-6 max-w-[38rem] text-base leading-7 text-white/40 sm:text-lg font-body">
-              We design, build and improve websites that actually work for your business. No fluff. No runaround. Just results.
+            <p className="mt-2 text-lg font-medium text-white transition-colors group-hover:text-white/80">
+              {BUSINESS_EMAIL}
             </p>
+          </a>
 
-            <div className="mt-10 flex flex-col gap-4 sm:flex-row">
-              <AppLink
-                href="/contact/"
-                className="inline-flex items-center justify-center gap-3 rounded-lg bg-white px-10 py-5 text-xl font-heading font-bold text-gray-950 no-underline transition-all duration-200 hover:scale-[1.03] hover:shadow-[0_0_30px_rgba(255,255,255,0.25)] active:scale-[0.97]"
-              >
-                Start a conversation
-                <ArrowRight className="h-5 w-5" />
-              </AppLink>
-              <AppLink
-                href="/performance-scanner/"
-                className="inline-flex items-center justify-center gap-3 rounded-lg border border-white/20 px-10 py-5 text-xl font-heading font-bold text-white no-underline transition-all duration-200 hover:scale-[1.03] hover:border-white/50 active:scale-[0.97]"
-              >
-                Free site audit
-                <ArrowRight className="h-5 w-5" />
-              </AppLink>
-            </div>
+          <div>
+            <MapPin className="h-5 w-5 text-white/20" />
+            <p className="mt-3 text-[11px] font-semibold uppercase tracking-[0.18em] text-white/30 font-body">
+              Where we work
+            </p>
+            <p className="mt-2 text-base leading-6 text-white/60">
+              {SERVICE_AREAS_SUMMARY}. We come to you.
+            </p>
           </div>
 
-          {/* Right — contact details */}
-          <div className="flex flex-col gap-10 lg:pt-16">
-            <a
-              href={`mailto:${BUSINESS_EMAIL}`}
-              className="group no-underline"
-            >
-              <Mail className="h-5 w-5 text-white/20 transition-colors group-hover:text-white/50" />
-              <p className="mt-3 text-[11px] font-semibold uppercase tracking-[0.18em] text-white/30 font-body">
-                Email
-              </p>
-              <p className="mt-2 text-lg font-medium text-white transition-colors group-hover:text-white/80">
-                {BUSINESS_EMAIL}
-              </p>
-            </a>
-
-            <div>
-              <MapPin className="h-5 w-5 text-white/20" />
-              <p className="mt-3 text-[11px] font-semibold uppercase tracking-[0.18em] text-white/30 font-body">
-                Where we work
-              </p>
-              <p className="mt-2 text-base leading-6 text-white/60">
-                {SERVICE_AREAS_SUMMARY}. We come to you.
-              </p>
-            </div>
-
-            <div>
-              <Building2 className="h-5 w-5 text-white/20" />
-              <p className="mt-3 text-[11px] font-semibold uppercase tracking-[0.18em] text-white/30 font-body">
-                Registered Office
-              </p>
-              <p className="mt-2 text-base leading-6 text-white/60">
-                {REGISTERED_OFFICE_ADDRESS}
-              </p>
-            </div>
+          <div>
+            <Building2 className="h-5 w-5 text-white/20" />
+            <p className="mt-3 text-[11px] font-semibold uppercase tracking-[0.18em] text-white/30 font-body">
+              Registered Office
+            </p>
+            <p className="mt-2 text-base leading-6 text-white/60">
+              {REGISTERED_OFFICE_ADDRESS}
+            </p>
           </div>
         </div>
 
@@ -237,12 +191,13 @@ export default function SiteFooter({ buildLabel }: FooterProps) {
         <div className="h-px bg-white/10" />
 
         {/* Links grid */}
-        <div className="grid gap-10 py-16 md:py-20 sm:grid-cols-2 lg:grid-cols-[1.5fr_repeat(6,1fr)]">
+        <div className="grid gap-10 py-16 md:py-20 sm:grid-cols-2 lg:grid-cols-[1.5fr_repeat(5,1fr)]">
           {/* Brand column */}
           <div className="lg:pr-8">
             <KaizenLogo className="h-9 w-[164px] text-white" />
             <p className="mt-5 max-w-[28rem] text-base leading-7 text-white/40 font-body">
-              Better websites, better results. Continuous improvement is in the name.
+              Better websites, better results. Continuous improvement is in the
+              name.
             </p>
 
             <div className="mt-6 flex flex-wrap gap-3">
@@ -253,7 +208,11 @@ export default function SiteFooter({ buildLabel }: FooterProps) {
 
             <div className="mt-6 flex flex-wrap gap-x-5 gap-y-2">
               {trustLinks.map((link) => (
-                <FooterLinkItem key={link.label} {...link} className="text-[13px]" />
+                <FooterLinkItem
+                  key={link.label}
+                  {...link}
+                  className="text-[13px]"
+                />
               ))}
             </div>
           </div>
@@ -282,8 +241,8 @@ export default function SiteFooter({ buildLabel }: FooterProps) {
         <div className="flex flex-col gap-4 py-8 lg:flex-row lg:items-end lg:justify-between">
           <div className="space-y-1 text-sm leading-6 text-white/30 font-body">
             <p>
-              &copy; {year} {LEGAL_COMPANY_NAME} trading as {TRADING_NAME}. Company
-              No. {COMPANY_NUMBER}.
+              &copy; {year} {LEGAL_COMPANY_NAME} trading as {TRADING_NAME}.
+              Company No. {COMPANY_NUMBER}.
             </p>
             <p>Registered office: {REGISTERED_OFFICE_ADDRESS}</p>
           </div>

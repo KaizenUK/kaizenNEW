@@ -2,6 +2,11 @@
 
 Every change that can affect search, newest first: date, URL, what changed and why. One change at a time where possible, then wait a few weeks before judging it (`seo-strategy`, "Measure, test and audit"). Positions quoted here are stale the day they are written; pull Search Console for current numbers.
 
+## 1 Oct 2026: shared footer and phone layout (Q-05 to Q-08, Q-11)
+
+- All public pages using `SiteFooter`: removed the duplicate Blog link and the repeated footer sales block. Every unique navigation destination and legal line remains. Page endings now rely on their existing main action; F-06 will refresh the navigation design later.
+- `/`, `/services/local-seo/` and `/contact/`: corrected decorative overlap, the empty benefits cell, wrapping step numbers and small phone form fields. No title, description, canonical, URL or structured data changed. Copy issues on home/local SEO remain for their scheduled page tasks.
+
 ## 1 Oct 2026: WordPress proof and copy (Q-02, P-02 copy preparation)
 
 - `/services/wordpress-web-design/`: replaced the incorrect Midland load times with more than 8 seconds before and 1.2 seconds after; replaced the unsupported rankings sentence with three times the enquiries in the first month, as approved by Sean.

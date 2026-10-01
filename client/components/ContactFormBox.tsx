@@ -9,7 +9,9 @@ interface ContactFormBoxProps {
   autoFocusFields?: boolean;
 }
 
-export const ContactFormBox = ({ autoFocusFields = true }: ContactFormBoxProps) => {
+export const ContactFormBox = ({
+  autoFocusFields = true,
+}: ContactFormBoxProps) => {
   // Form data
   const [name, setName] = useState("");
   const [surname, setSurname] = useState("");
@@ -293,7 +295,7 @@ export const ContactFormBox = ({ autoFocusFields = true }: ContactFormBoxProps) 
                 <h4 className="text-white font-semibold mb-5">
                   What do we call you?
                 </h4>
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-xs font-medium text-white mb-2">
                       First Name <span className="text-red-400">*</span>
@@ -303,7 +305,7 @@ export const ContactFormBox = ({ autoFocusFields = true }: ContactFormBoxProps) 
                       value={name}
                       onChange={(e) => setName(e.target.value)}
                       placeholder="John"
-                      className="w-full bg-gray-800/50 border border-white/10 text-white placeholder:text-white/40 placeholder:text-xs rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-cyan-500 transition"
+                      className="w-full bg-gray-800/50 border border-white/10 text-white placeholder:text-white/40 placeholder:text-base rounded-lg px-4 py-3 text-base focus:outline-none focus:border-cyan-500 transition"
                       autoFocus={autoFocusFields}
                     />
                   </div>
@@ -316,7 +318,7 @@ export const ContactFormBox = ({ autoFocusFields = true }: ContactFormBoxProps) 
                       value={surname}
                       onChange={(e) => setSurname(e.target.value)}
                       placeholder="Smith"
-                      className="w-full bg-gray-800/50 border border-white/10 text-white placeholder:text-white/40 placeholder:text-xs rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-cyan-500 transition"
+                      className="w-full bg-gray-800/50 border border-white/10 text-white placeholder:text-white/40 placeholder:text-base rounded-lg px-4 py-3 text-base focus:outline-none focus:border-cyan-500 transition"
                     />
                   </div>
                 </div>
@@ -339,7 +341,7 @@ export const ContactFormBox = ({ autoFocusFields = true }: ContactFormBoxProps) 
                     onChange={(e) => setEmail(e.target.value)}
                     onBlur={handleEmailBlur}
                     placeholder="name@company.co.uk"
-                    className={`w-full bg-gray-800/50 border text-white placeholder:text-white/40 placeholder:text-xs rounded-lg px-4 py-3 text-sm focus:outline-none transition ${
+                    className={`w-full bg-gray-800/50 border text-white placeholder:text-white/40 placeholder:text-base rounded-lg px-4 py-3 text-base focus:outline-none transition ${
                       emailError
                         ? "border-red-500 focus:border-red-500"
                         : "border-white/10 focus:border-cyan-500"
@@ -360,7 +362,7 @@ export const ContactFormBox = ({ autoFocusFields = true }: ContactFormBoxProps) 
                     onChange={(e) => setPhone(e.target.value)}
                     onBlur={handlePhoneBlur}
                     placeholder="+44"
-                    className={`w-full bg-gray-800/50 border text-white placeholder:text-white/40 placeholder:text-xs rounded-lg px-4 py-3 text-sm focus:outline-none transition ${
+                    className={`w-full bg-gray-800/50 border text-white placeholder:text-white/40 placeholder:text-base rounded-lg px-4 py-3 text-base focus:outline-none transition ${
                       phoneError
                         ? "border-red-500 focus:border-red-500"
                         : "border-white/10 focus:border-cyan-500"
@@ -430,7 +432,7 @@ export const ContactFormBox = ({ autoFocusFields = true }: ContactFormBoxProps) 
                     onChange={(e) => setWebsite(e.target.value)}
                     onBlur={handleWebsiteBlur}
                     placeholder="example.co.uk"
-                    className={`w-full bg-gray-800/50 border text-white placeholder:text-white/40 placeholder:text-xs rounded-lg px-4 py-3 text-sm focus:outline-none transition ${
+                    className={`w-full bg-gray-800/50 border text-white placeholder:text-white/40 placeholder:text-base rounded-lg px-4 py-3 text-base focus:outline-none transition ${
                       websiteError
                         ? "border-red-500 focus:border-red-500"
                         : "border-white/10 focus:border-cyan-500"
@@ -456,7 +458,7 @@ export const ContactFormBox = ({ autoFocusFields = true }: ContactFormBoxProps) 
                     onChange={(e) => setMessage(e.target.value)}
                     placeholder="Tell us about your project..."
                     rows={4}
-                    className="w-full bg-gray-800/50 border border-white/10 text-white placeholder:text-white/40 placeholder:text-xs rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-cyan-500 transition resize-none"
+                    className="w-full bg-gray-800/50 border border-white/10 text-white placeholder:text-white/40 placeholder:text-base rounded-lg px-4 py-3 text-base focus:outline-none focus:border-cyan-500 transition resize-none"
                     autoFocus
                   />
                 </div>
