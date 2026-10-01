@@ -1,10 +1,8 @@
 import { defineArrayMember, defineField, defineType } from "sanity";
-import { 
-  EditIcon, 
-  ImageIcon, 
-  SearchIcon, 
-  CogIcon 
-} from "@sanity/icons"; // <--- Import icons here
+import { EditIcon } from "@sanity/icons/Edit";
+import { ImageIcon } from "@sanity/icons/Image";
+import { SearchIcon } from "@sanity/icons/Search";
+import { CogIcon } from "@sanity/icons/Cog";
 import { SeoMetaDescriptionField } from "../../components/SeoMetaDescriptionField";
 import { SeoMetaTitleField } from "../../components/SeoMetaTitleField";
 import { SlugQualityField } from "../../components/SlugQualityField";

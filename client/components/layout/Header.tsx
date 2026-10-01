@@ -10,12 +10,15 @@ import { AnimatePresence, motion } from "framer-motion";
 import {
   ArrowRight,
   ArrowUpRight,
-  Instagram,
-  Linkedin,
   Sparkles,
 } from "lucide-react";
 import KaizenLogo from "@/components/KaizenLogo";
-import { MenuIcon, XIcon } from "@/components/icons/CriticalIcons";
+import {
+  InstagramIcon as Instagram,
+  LinkedinIcon as Linkedin,
+  MenuIcon,
+  XIcon,
+} from "@/components/icons/CriticalIcons";
 import AppLink from "@/components/routing/AppLink";
 import {
   dropdownTriggers,

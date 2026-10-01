@@ -1,6 +1,6 @@
 import { assist } from "@sanity/assist";
 import { colorInput } from "@sanity/color-input";
-import { EyeOpenIcon } from "@sanity/icons";
+import { EyeOpenIcon } from "@sanity/icons/EyeOpen";
 import { visionTool } from "@sanity/vision";
 import { defineConfig } from "sanity";
 import { presentationTool } from "sanity/presentation";

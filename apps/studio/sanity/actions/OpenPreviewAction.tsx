@@ -1,4 +1,4 @@
-import { EyeOpenIcon } from "@sanity/icons";
+import { EyeOpenIcon } from "@sanity/icons/EyeOpen";
 import type { DocumentActionComponent, SanityDocument } from "sanity";
 
 const EDITOR_API_ORIGIN = (

@@ -4,11 +4,13 @@ import {
   ArrowRight,
   ArrowUpRight,
   ChevronDown,
-  Instagram,
-  Linkedin,
   Sparkles,
   X,
 } from "lucide-react";
+import {
+  InstagramIcon as Instagram,
+  LinkedinIcon as Linkedin,
+} from "@/components/icons/CriticalIcons";
 import KaizenLogo from "@/components/KaizenLogo";
 import AppLink from "@/components/routing/AppLink";
 import { cn } from "@/lib/utils";

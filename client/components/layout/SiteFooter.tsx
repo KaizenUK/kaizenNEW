@@ -2,11 +2,13 @@ import {
   ArrowRight,
   ArrowUpRight,
   Building2,
-  Instagram,
-  Linkedin,
   Mail,
   MapPin,
 } from "lucide-react";
+import {
+  InstagramIcon as Instagram,
+  LinkedinIcon as Linkedin,
+} from "@/components/icons/CriticalIcons";
 import KaizenLogo from "@/components/KaizenLogo";
 import AppLink from "@/components/routing/AppLink";
 import {

@@ -6,17 +6,15 @@ import {
   ACTIVE_PUBLIC_PAGE_SLUGS,
   ACTIVE_STATIC_SEO_ROUTES,
 } from "../../../../shared/publicRoutePolicy.js";
-import {
-  EarthGlobeIcon,
-  EditIcon,
-  CalendarIcon,
-  DocumentsIcon,
-  CogIcon,
-  UsersIcon,
-  TagIcon,
-  SearchIcon,
-  ArrowRightIcon,
-} from "@sanity/icons";
+import { EarthGlobeIcon } from "@sanity/icons/EarthGlobe";
+import { EditIcon } from "@sanity/icons/Edit";
+import { CalendarIcon } from "@sanity/icons/Calendar";
+import { DocumentsIcon } from "@sanity/icons/Documents";
+import { CogIcon } from "@sanity/icons/Cog";
+import { UsersIcon } from "@sanity/icons/Users";
+import { TagIcon } from "@sanity/icons/Tag";
+import { SearchIcon } from "@sanity/icons/Search";
+import { ArrowRightIcon } from "@sanity/icons/ArrowRight";
 
 // --- Helpers ---
 
