@@ -4,6 +4,34 @@
 **Task board:** `docs/audits/2026-10-01-task-plan.md` turns every finding below into a task any agent can pick up.
 **Rules audited against:** `.claude/skills/marketing-messaging`, `marketing-page-design`, `seo-strategy`, `docs/marketing/site-profile.md`, and Sean's standing rules (British English, reading age about 9, no em dashes, nothing that reads as AI-written, premium look).
 
+## Progress: 1 October 2026, after Phase Q
+
+Phase Q corrects the scanner flow and Midland figures, phone layout faults, duplicate footer asks, literal arrow text, missing image dimensions, blog titles/raw links, orphan body links and exposed implementation names. Proof notes are linked from the task board. Copy preparation for later page rebuilds was included where required by the house-style gate; those rebuilds remain open.
+
+The fresh production-build audit covers 29 current public pages, including six noindex/legal routes outside the sitemap. The retired Consigns page is excluded. The checker finds 63 dashes across six unchanged pages, down from about 190 in the original pass. It finds no exclamation marks, US spellings or banned hype words. Article-header excerpts are omitted by the current checker, so screenshots and CMS data were also inspected; the local-search excerpt's remaining dash was corrected.
+
+| Page changed in Phase Q | Reading age | Average sentence | Sentences over 20 | Dashes | AI patterns |
+|---|---:|---:|---:|---:|---:|
+| WordPress | 7.2 | 9.3 | 0 | 0 | 0 |
+| Scanner | 7.4 | 8.7 | 0 | 0 | 0 |
+| About | 7.1 | 8.1 | 0 | 0 | 0 |
+| Contact | 6.6 | 9.4 | 0 | 0 | 0 |
+| Product owner | 8.0 | 8.7 | 0 | 0 | 0 |
+| Case studies index | 8.4 | 9.1 | 0 | 0 | 0 |
+| Midland Oil | 8.7 | 9.6 | 0 | 0 | 0 |
+| Helen Moore | 9.0 | 10.4 | 0 | 0 | 0 |
+
+| Area | Updated result | Still open |
+|---|---|---|
+| Claims | Scanner explains email and PDF download; Midland figures match the profile; blanket security/ranking promises removed from rewritten pages | Check claims in the remaining P/B tasks |
+| Copy | Eight edited marketing pages meet age, sentence and hard-rule targets | Home, local SEO, pledge, landing pages and blog rewrites; terms has four dashes |
+| Links | All 58 raw URL labels in nine posts replaced; four orphan destinations now have body links | Full S-03 crawl and remaining service links |
+| Images | Zero missing dimensions on all 16 Midland images and every blog cover | Proof placement, new case-study cards and blog imagery |
+| Phone layout | Hero overlap, empty benefits cell, wrapping step numbers and small form fields corrected; reviewed pages have no horizontal overflow | Long pages, typography and design foundations |
+| Visual consistency | Duplicate footer ask and literal arrows removed | Untitled UI adoption, shared type/buttons/FAQ and full page rebuilds |
+
+The ten blog posts still measure ages 13.8 to 16.9; targeted metadata and link fixes do not complete B-03. No search-ranking or conversion improvement is inferred from this release. The original findings below remain as the baseline, not the current completion state.
+
 ## What this pass covered (and the first pass did not)
 
 | Area | First pass | This pass |

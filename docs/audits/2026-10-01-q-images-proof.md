@@ -20,4 +20,4 @@ Evidence is in ignored `.local/marketing-20261001/`.
 - The house-style hard-rule counts are unchanged. All copy is unchanged; removing arrow text slightly changes the sentence counter on contract product owner. Existing Midland/index dash fixes and page reading-age work remain assigned to P-07/P-08/P-09 and B-03.
 - All 57 screenshot tiles were inspected at 1440px and 375px across the index, both case studies, contract product owner, thank-you and a representative blog post. Images keep their ratios, icons align with labels, and every page has zero horizontal overflow. Existing typography, copy and large-spacing issues remain on the later page tasks.
 
-Production verification will be recorded after shipping. Stage remains unchanged until the goal ends.
+Production deployment `36897445612` passed. Live marker `gh-36897445612-1` identifies commit `5ecc3c9b8bc419916a24511cf21df3d71161d934`. The image crawl and all four arrow checks also pass on production. Stage remains unchanged until the goal ends.

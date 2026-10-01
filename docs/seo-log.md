@@ -2,6 +2,13 @@
 
 Every change that can affect search, newest first: date, URL, what changed and why. One change at a time where possible, then wait a few weeks before judging it (`seo-strategy`, "Measure, test and audit"). Positions quoted here are stale the day they are written; pull Search Console for current numbers.
 
+## 1 Oct 2026: blog titles, guide links and plain copy (Q-12 to Q-14)
+
+- Sanity blog search titles now read: /blog/choose-web-design-agency-liverpool/ "How to Choose a Web Design Agency in Liverpool"; /blog/fix-failing-software-project-financial-guide/ "Fixing a Failing Software Project vs Rebuilding"; /blog/free-website-speed-scan/ "How to Read Your Website Speed Report | Kaizen Web". The scanner guide H1 and excerpt now describe reading a report, leaving the actual tool query with /performance-scanner/. Descriptions on these three posts and /blog/wordpress-vs-react-business-roi/ now describe the article without ranking claims.
+- Replaced 58 raw URL link labels across nine posts with descriptive anchors, including the seven closing contact links. Fixed the dash paragraphs in the agency guide, local search checklist and website mistakes post; corrected the scanner article's email/download explanation and removed a dash from the local search excerpt. Revision checks and full read-back verified the exact CMS changes. No slug, destination, publication date, image or WordPress vs React topic changed.
+- /about/ now links to the Kaizen rebuild guide; /contract-product-owner/ to the software rescue guide; /contact/ to the pledge. The scanner-to-guide link was already shipped in Q-01. All are page-body links present in server HTML.
+- /about/, /contract-product-owner/, /case-studies/ and both case studies now use plain copy within the reading-age target. Removed implementation names and unsupported security promises; retained approved client results. About now names Merseyside and West Yorkshire as service areas. The product-owner page uses the site's voice with Sean's experience as proof. Its former local SEO link now leads to the Midland case study, which links up to the WordPress service. Metadata and URLs for these marketing pages are unchanged; their visual rebuilds remain in Phase P.
+
 ## 1 Oct 2026: image sizes and link icons (Q-09, Q-10)
 
 - `/case-studies/midland-oil-group/` and every blog post: added explicit image dimensions so browsers can reserve the right space during loading. The 16 Midland images use their real file dimensions; blog covers match the existing 1200 by 690 crop. A fresh crawl finds zero images without size across these pages.
