@@ -66,9 +66,13 @@ export const studioProjectId = requireEnv(
   "SANITY_STUDIO_PROJECT_ID (or PUBLIC_SANITY_PROJECT_ID fallback)",
 );
 
+// Falls back to the website's own dataset, so the Studio always edits the
+// content the site reads. A release build that lacks the Studio-specific
+// setting previously produced a Studio that crashed on load (1 Oct 2026).
 export const studioDataset = requireEnv(
   pick(processEnv.SANITY_STUDIO_DATASET, env.SANITY_STUDIO_DATASET) ??
-    pick(processEnv.PUBLIC_STUDIO_DATASET, env.PUBLIC_STUDIO_DATASET),
+    pick(processEnv.PUBLIC_STUDIO_DATASET, env.PUBLIC_STUDIO_DATASET) ??
+    publicDataset,
   "SANITY_STUDIO_DATASET (or PUBLIC_STUDIO_DATASET)",
 );
 
