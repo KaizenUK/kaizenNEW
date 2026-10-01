@@ -22,6 +22,7 @@
     "typecheck": "astro check && tsc --noEmit",
     "trace:summary": "node scripts/trace-summary.mjs",
     "sync:seo:sanity": "node scripts/sync-seo-to-sanity.mjs",
+    "sync:seo:fields": "sanity exec scripts/sync-seo-fields-to-sanity.mjs --with-user-token --",
     "supabase:editor:secrets": "bash scripts/supabase/set-editor-secrets.sh",
     "supabase:editor:deploy": "bash scripts/supabase/deploy-editor-functions.sh",
     "supabase:editor:smoke": "bash scripts/supabase/smoke-editor-api.sh"
