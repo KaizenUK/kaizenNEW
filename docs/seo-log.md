@@ -2,6 +2,12 @@
 
 Every change that can affect search, newest first: date, URL, what changed and why. One change at a time where possible, then wait a few weeks before judging it (`seo-strategy`, "Measure, test and audit"). Positions quoted here are stale the day they are written; pull Search Console for current numbers.
 
+## 1 Oct 2026: scanner accuracy (Q-01)
+
+- `/performance-scanner/`: explained the actual email gate and browser PDF download; removed unmeasured timing and unsupported ranking promises. Rewrote the answers and their FAQPage data in plain English. The tool runs a simulated phone test, not a complete assessment of real visitor experience.
+- Linked the page body to `/blog/free-website-speed-scan/` and `/services/wordpress-web-design/`, with descriptive anchors. Replaced the closing local SEO link in line with DEC-03.
+- Added primary sources: [Google's speed test guidance](https://developers.google.com/speed/docs/insights/v5/about) and [page experience guidance](https://developers.google.com/search/docs/appearance/page-experience). Title, description and canonical URL are unchanged. No Sanity write was needed.
+
 ## Baseline (Search Console export, Jun 2025 to Sep 2026, read 1 Oct 2026)
 
 - 196 clicks, 36,642 impressions, average position about 36.

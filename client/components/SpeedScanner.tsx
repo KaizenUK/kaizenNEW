@@ -97,17 +97,12 @@ export default function SpeedScanner() {
       opportunities: [],
       diagnostics: [],
     });
-    setStatusMsg("Connecting to Google Lighthouse...");
+    setStatusMsg("Waiting for your speed test results...");
     setIsEmailSubmitted(false);
     setEmailError("");
     setEmail("");
 
     try {
-      // UX Fakes: Show progress steps to build anticipation
-      setTimeout(() => setStatusMsg("Measuring Load Speeds..."), 1000);
-      setTimeout(() => setStatusMsg("Analysing Stability..."), 2000);
-      setTimeout(() => setStatusMsg("Generating Fix Plan..."), 3500);
-
       // 1. CALL GOOGLE DIRECTLY (Client-Side)
       // This bypasses the need for a backend server
       const endpoint = `https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url=${encodeURIComponent(auditUrl)}&category=PERFORMANCE&strategy=MOBILE&key=${API_KEY}`;
@@ -229,7 +224,6 @@ export default function SpeedScanner() {
   }
 
   async function handleUnlock() {
-    console.log("⚠️ KAIZEN SCANNER V2 - UPDATED CODE LOADED");
     const normalizedEmail = email.trim();
 
     // Email format validation (must include TLD)
@@ -272,7 +266,7 @@ export default function SpeedScanner() {
 
     // 3. Success - Unlock the view regardless of save status
     setIsEmailSubmitted(true);
-    setStatusMsg("Success! Report Unlocked.");
+    setStatusMsg("Your report is ready.");
     setEmailError("");
   }
 
@@ -484,7 +478,7 @@ export default function SpeedScanner() {
       // PAGE 2: CORE WEB VITALS EXPLAINED
       // ============================================
       doc.addPage();
-      addPageHeader("Core Web Vitals - What Google Measures");
+      addPageHeader("What your speed test measured");
 
       let yPos = 35;
 
@@ -493,12 +487,12 @@ export default function SpeedScanner() {
       doc.setFontSize(10);
       doc.setFont("helvetica", "normal");
       doc.text(
-        "Google uses these three metrics to determine if your website provides a good user experience.",
+        "These checks show how one page loaded during a phone test.",
         15,
         yPos,
       );
       doc.text(
-        "They directly impact your search rankings and conversion rates.",
+        "Real visits can differ. A good result does not guarantee a place in search results.",
         15,
         yPos + 5,
       );
@@ -974,16 +968,18 @@ export default function SpeedScanner() {
       id="live-performance-scanner"
       className="w-full max-w-4xl mx-auto text-white"
     >
-      <div className="p-8 md:p-12 rounded-2xl border border-white/10 bg-white/4 relative overflow-hidden">
+      <div className="p-6 md:p-12 rounded-2xl border border-white/10 bg-white/4 relative overflow-hidden">
         <div className="text-center mb-10">
           <p className="text-xs font-medium uppercase tracking-[0.25em] text-cyan-400/60 mb-4">
-            Live audit
+            Free speed check
           </p>
           <h2 className="text-3xl md:text-4xl font-bold text-white mb-3">
-            Paste your URL. Get answers in 30 seconds.
+            Check how fast your page loads.
           </h2>
           <p className="text-white/40 text-base">
-            No sign-up. No install. Just the same data Google uses to rank you.
+            Enter your web address to see your score. If it is below 90,
+            we ask for your email before showing the full report.
+            You can download the report here for free.
           </p>
         </div>
 
@@ -996,6 +992,7 @@ export default function SpeedScanner() {
             <input
               type="text"
               inputMode="url"
+              aria-label="Your website address"
               placeholder="yourwebsite.co.uk"
               value={url}
               onChange={(e) => {
@@ -1005,7 +1002,7 @@ export default function SpeedScanner() {
                   .replace(/^\/+/, "");
                 setUrl(next);
               }}
-              className="w-full px-6 py-4 pl-[108px] rounded-lg bg-white/[0.05] border border-white/10 text-white focus:border-cyan-500 focus:outline-none focus:ring-1 focus:ring-cyan-500 transition-all placeholder:text-white/20"
+              className="w-full px-6 py-4 pl-20 rounded-lg bg-white/[0.05] border border-white/10 text-white focus:border-cyan-500 focus:outline-none focus:ring-1 focus:ring-cyan-500 transition-all placeholder:text-white/20"
             />
           </div>
           <button
@@ -1013,7 +1010,7 @@ export default function SpeedScanner() {
             disabled={loading}
             className="px-8 py-4 rounded-lg font-bold text-gray-950 bg-white hover:bg-gray-100 transition-all hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
           >
-            {loading ? "Scanning..." : "Run Audit"}
+            {loading ? "Scanning..." : "Check my site"}
           </button>
         </div>
 
@@ -1074,19 +1071,19 @@ export default function SpeedScanner() {
                 <div
                   className={
                     shouldGate
-                      ? "blur-sm select-none pointer-events-none opacity-60"
+                      ? "hidden"
                       : ""
                   }
                 >
                   {/* Metrics Grid */}
                   <div className="rounded-lg bg-white/[0.03] border border-white/5 p-5 mb-6">
                     <p className="text-xs font-medium uppercase tracking-[0.2em] text-white/30 mb-4">
-                      Core Web Vitals
+                      Your phone test
                     </p>
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-left">
                       <div className="rounded-lg border border-white/5 bg-white/[0.02] p-3">
                         <p className="text-[11px] text-white/40 mb-1">
-                          Load Speed (LCP)
+                          Main content loads
                         </p>
                         <p className="text-white font-bold">
                           {metrics.lcp || "-"}
@@ -1094,7 +1091,7 @@ export default function SpeedScanner() {
                       </div>
                       <div className="rounded-lg border border-white/5 bg-white/[0.02] p-3">
                         <p className="text-[11px] text-white/40 mb-1">
-                          Interactivity (TBT)
+                          Time spent stuck
                         </p>
                         <p className="text-white font-bold">
                           {metrics.tbt || "-"}
@@ -1102,7 +1099,7 @@ export default function SpeedScanner() {
                       </div>
                       <div className="rounded-lg border border-white/5 bg-white/[0.02] p-3">
                         <p className="text-[11px] text-white/40 mb-1">
-                          Layout Shift (CLS)
+                          Page movement
                         </p>
                         <p className="text-white font-bold">
                           {metrics.cls || "-"}
@@ -1135,21 +1132,22 @@ export default function SpeedScanner() {
 
                 {/* The Gate Overlay */}
                 {shouldGate && (
-                  <div className="absolute inset-0 flex items-center justify-center">
+                  <div className="flex items-center justify-center">
                     <div className="w-full rounded-xl border border-white/10 bg-gray-950/80 backdrop-blur-md p-6">
                       <h3 className="text-lg text-white font-bold mb-2">
                         Your full report is ready.
                       </h3>
                       <p className="text-white/40 text-sm mb-4 leading-relaxed">
-                        Pop your email in and we&apos;ll unlock the detailed PDF
-                        with plain-English recommendations.
+                        Enter your email to see the results and download your PDF.
+                        Tips by email are optional.
                       </p>
                       <div className="flex flex-col sm:flex-row gap-2 mb-4">
                         <input
                           type="email"
                           inputMode="email"
+                          aria-label="Your email address"
                           placeholder="name@company.co.uk"
-                          className="flex-1 px-4 py-3 rounded-lg bg-white/[0.05] border border-white/10 text-white text-sm focus:outline-none focus:ring-1 focus:ring-cyan-500 placeholder:text-white/20"
+                          className="min-w-0 flex-1 px-4 py-3 rounded-lg bg-white/[0.05] border border-white/10 text-white text-base focus:outline-none focus:ring-1 focus:ring-cyan-500 placeholder:text-white/20"
                           value={email}
                           onChange={(e) => setEmail(e.target.value)}
                         />
@@ -1157,7 +1155,7 @@ export default function SpeedScanner() {
                           onClick={handleUnlock}
                           className="px-5 py-3 bg-white hover:bg-gray-100 text-gray-950 text-sm font-bold rounded-lg transition-all whitespace-nowrap"
                         >
-                          Unlock report
+                          View my report
                         </button>
                       </div>
 
