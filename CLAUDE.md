@@ -18,6 +18,16 @@ All website copy should follow the SUCCESS model:
 5. **Emotional** — Turn abstract ideas into human impact. Anchor to basic needs: safety, belonging, progress, identity, hope. High-arousal emotions (awe, excitement) drive action.
 6. **Stories** — Embed messages inside narrative. Make people feel smart or like insiders. Share useful, actionable advice.
 
+## Marketing pages, copy and SEO: read the marketing skills first
+
+Before writing, rewriting, designing or restructuring any marketing page, section, ad page or marketing email (for Kaizen or a client site), read these plain-Markdown skills, then the site's profile:
+- [`.claude/skills/marketing-messaging/SKILL.md`](./.claude/skills/marketing-messaging/SKILL.md): what the page says (evidence, segment, awareness, objections, proof, clear writing). It explains how the SUCCESS model above fits in.
+- [`.claude/skills/marketing-page-design/SKILL.md`](./.claude/skills/marketing-page-design/SKILL.md): how the page carries it, at a premium, distinctive bar.
+- [`.claude/skills/seo-strategy/SKILL.md`](./.claude/skills/seo-strategy/SKILL.md): which page owns which search term, quality bar, links, audits.
+- Kaizen's own facts: [`docs/marketing/site-profile.md`](./docs/marketing/site-profile.md) and [`docs/marketing/voice-of-customer.md`](./docs/marketing/voice-of-customer.md). A client site gets its own profile from `.claude/skills/marketing-messaging/references/site-profile-template.md`.
+
+Apply all three in full on any audit, rewrite, redesign or new marketing page, and write the "Full checklist pass" down (`marketing-messaging/references/working-tools.md`). A step that could not run says so and why.
+
 ## Design Direction
 
 - **Aesthetic**: Clean, spacious, bright. Inspired by Aramco sponsorships site.

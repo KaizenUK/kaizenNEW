@@ -14,6 +14,10 @@ A production-ready Astro static application with React islands, Sanity CMS, Type
 
 API endpoints should only be created when strictly necessary, for example to encapsulate logic that must live on the server, such as private key handling or certain DB operations.
 
+## Marketing copy, page design and SEO
+
+Before any marketing page, copy or SEO work, read the three plain-Markdown skills in `.claude/skills/` (`marketing-messaging`, `marketing-page-design`, `seo-strategy`) and the site profile in `docs/marketing/`. Details in `CLAUDE.md`, "Marketing pages, copy and SEO".
+
 ## Tech Stack
 
 - **PNPM**: Prefer pnpm
