@@ -2,6 +2,12 @@
 
 Every change that can affect search, newest first: date, URL, what changed and why. One change at a time where possible, then wait a few weeks before judging it (`seo-strategy`, "Measure, test and audit"). Positions quoted here are stale the day they are written; pull Search Console for current numbers.
 
+## 1 Oct 2026: WordPress proof and copy (Q-02, P-02 copy preparation)
+
+- `/services/wordpress-web-design/`: replaced the incorrect Midland load times with more than 8 seconds before and 1.2 seconds after; replaced the unsupported rankings sentence with three times the enquiries in the first month, as approved by Sean.
+- Simplified the three options and FAQ answers to pass the full-page copy checks. Removed guaranteed rankings, unsupported load-time and delivery-time promises, and blanket security claims. The long quoted-search-phrase table is now plain buying guidance in native details elements, with all text in the server HTML. FAQPage data matches the visible answers.
+- Title, description, URL and canonical are unchanged. The Midland case-study link now names the work. P-02 still owns the visual rebuild after the foundations; watch Search Console over the coming weeks before judging the copy change.
+
 ## 1 Oct 2026: scanner accuracy (Q-01)
 
 - `/performance-scanner/`: explained the actual email gate and browser PDF download; removed unmeasured timing and unsupported ranking promises. Rewrote the answers and their FAQPage data in plain English. The tool runs a simulated phone test, not a complete assessment of real visitor experience.
