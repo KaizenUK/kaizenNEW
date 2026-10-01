@@ -1,4 +1,5 @@
 ---
+import { ArrowRight } from "lucide-react";
 import StaticPageLayout from "../layouts/StaticPageLayout.astro";
 
 export const prerender = true;
@@ -141,7 +142,7 @@ const kaizenLinks = [
           class="inline-flex items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-kaizen-cyan to-kaizen-lime px-8 py-3 font-heading font-bold text-kaizen-dark transition hover:shadow-lg hover:shadow-kaizen-cyan/50"
         >
           Get in Touch
-          <span aria-hidden="true">-&gt;</span>
+          <ArrowRight className="h-4 w-4 shrink-0" aria-hidden="true" />
         </a>
       </div>
     </div>
@@ -418,7 +419,7 @@ const kaizenLinks = [
               </p>
               <p class="flex items-center gap-2 font-medium text-kaizen-cyan">
                 {item.linkText}
-                <span aria-hidden="true">-&gt;</span>
+                <ArrowRight className="h-4 w-4 shrink-0" aria-hidden="true" />
               </p>
             </a>
           ))
@@ -440,7 +441,7 @@ const kaizenLinks = [
         class="inline-flex items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-kaizen-cyan to-kaizen-lime px-8 py-3 font-heading font-bold text-kaizen-dark transition hover:shadow-lg hover:shadow-kaizen-cyan/50"
       >
         Get in Touch
-        <span aria-hidden="true">-&gt;</span>
+        <ArrowRight className="h-4 w-4 shrink-0" aria-hidden="true" />
       </a>
     </div>
   </section>

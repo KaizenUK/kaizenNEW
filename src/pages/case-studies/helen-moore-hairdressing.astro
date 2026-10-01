@@ -1,4 +1,5 @@
 ---
+import { ArrowRight } from "lucide-react";
 import StaticPageLayout from "../../layouts/StaticPageLayout.astro";
 
 export const prerender = true;
@@ -98,7 +99,7 @@ const outcomes = [
         class="inline-flex items-center gap-2 rounded-full bg-white px-8 py-3 font-heading font-bold text-slate-900 transition hover:bg-slate-100"
       >
         Get a Quote Like This
-        <span aria-hidden="true">-&gt;</span>
+        <ArrowRight className="h-4 w-4 shrink-0" aria-hidden="true" />
       </a>
     </div>
   </section>

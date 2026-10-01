@@ -1,4 +1,5 @@
 ---
+import { ArrowRight } from "lucide-react";
 import StaticPageLayout from "../layouts/StaticPageLayout.astro";
 
 export const prerender = true;
@@ -47,7 +48,7 @@ const recommendedReads = [
             class="inline-flex items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-kaizen-cyan to-kaizen-lime px-8 py-3 font-heading font-bold text-gray-950 transition hover:shadow-lg hover:shadow-kaizen-cyan/50"
           >
             Back to Home
-            <span aria-hidden="true">-&gt;</span>
+            <ArrowRight className="h-4 w-4 shrink-0" aria-hidden="true" />
           </a>
 
           <a
@@ -55,7 +56,7 @@ const recommendedReads = [
             class="inline-flex items-center justify-center gap-2 rounded-lg border-2 border-kaizen-cyan px-8 py-3 font-heading font-bold text-kaizen-cyan transition hover:bg-kaizen-cyan/10"
           >
             Explore WordPress Services
-            <span aria-hidden="true">-&gt;</span>
+            <ArrowRight className="h-4 w-4 shrink-0" aria-hidden="true" />
           </a>
 
           <a
@@ -63,7 +64,7 @@ const recommendedReads = [
             class="inline-flex items-center justify-center gap-2 rounded-lg border-2 border-white/30 px-8 py-3 font-heading font-bold text-white/70 transition hover:border-white/60 hover:text-white"
           >
             Read Our Blog
-            <span aria-hidden="true">-&gt;</span>
+            <ArrowRight className="h-4 w-4 shrink-0" aria-hidden="true" />
           </a>
         </div>
       </div>
@@ -87,7 +88,7 @@ const recommendedReads = [
               </p>
               <div class="flex items-center gap-2 text-sm font-semibold text-kaizen-cyan">
                 Read Article
-                <span aria-hidden="true">-&gt;</span>
+                <ArrowRight className="h-4 w-4 shrink-0" aria-hidden="true" />
               </div>
             </a>
           ))}

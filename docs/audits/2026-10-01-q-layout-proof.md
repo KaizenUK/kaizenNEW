@@ -33,4 +33,4 @@ Evidence is in ignored `.local/marketing-20261001/`.
 | WordPress | 7,434px | 11,081px | 0 |
 | Contact | 2,251px | 3,514px | 0 |
 
-The production deployment and live checks will be recorded after shipping. Stage remains unchanged until the goal ends.
+Production deployment `36896582316` passed. The live marker is `gh-36896582316-1`, commit `6059eab91907169625cd3408c3f9307e690902bf`. The same browser checks pass against production at all five widths, including all form steps without submitting. Home, local SEO and contact retain their production canonicals and `index, follow`. Stage remains unchanged until the goal ends.

@@ -2,6 +2,11 @@
 
 Every change that can affect search, newest first: date, URL, what changed and why. One change at a time where possible, then wait a few weeks before judging it (`seo-strategy`, "Measure, test and audit"). Positions quoted here are stale the day they are written; pull Search Console for current numbers.
 
+## 1 Oct 2026: image sizes and link icons (Q-09, Q-10)
+
+- `/case-studies/midland-oil-group/` and every blog post: added explicit image dimensions so browsers can reserve the right space during loading. The 16 Midland images use their real file dimensions; blog covers match the existing 1200 by 690 crop. A fresh crawl finds zero images without size across these pages.
+- Replaced text arrows with decorative SVG icons on the case studies index, Helen Moore, contract product owner and thank-you pages, and the retained city-page component. Copy, metadata, URLs and link destinations are unchanged.
+
 ## 1 Oct 2026: shared footer and phone layout (Q-05 to Q-08, Q-11)
 
 - All public pages using `SiteFooter`: removed the duplicate Blog link and the repeated footer sales block. Every unique navigation destination and legal line remains. Page endings now rely on their existing main action; F-06 will refresh the navigation design later.
