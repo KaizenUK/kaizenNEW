@@ -302,13 +302,44 @@ const components: PortableTextComponents = {
   },
 };
 
+// House style is plain punctuation. Copy pasted into Sanity often carries
+// curly quotes and the ellipsis character, so body text is normalised here.
+// Code blocks are left exactly as written.
+const PLAIN_PUNCTUATION: [RegExp, string][] = [
+  [/[\u2018\u2019]/g, "'"],
+  [/[\u201C\u201D]/g, '"'],
+  [/\u2026/g, "..."],
+];
+
+export function plainPunctuation(text: string): string {
+  return PLAIN_PUNCTUATION.reduce(
+    (result, [pattern, replacement]) => result.replace(pattern, replacement),
+    text,
+  );
+}
+
+function withPlainPunctuation(blocks: PortableTextBlock[]): PortableTextBlock[] {
+  return blocks.map((block) =>
+    block._type === "block" && Array.isArray(block.children)
+      ? {
+          ...block,
+          children: block.children.map((child) =>
+            typeof child.text === "string"
+              ? { ...child, text: plainPunctuation(child.text) }
+              : child,
+          ),
+        }
+      : block,
+  );
+}
+
 export default function PortableTextRenderer({
   value = [],
 }: PortableTextRendererProps) {
   return (
     <div className="linear-prose">
       <PortableText
-        value={value as unknown as SanityPortableTextBlock[]}
+        value={withPlainPunctuation(value) as unknown as SanityPortableTextBlock[]}
         components={components}
       />
     </div>

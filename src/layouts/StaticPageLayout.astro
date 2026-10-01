@@ -8,7 +8,12 @@ import {
   getPageMeta,
 } from "../../client/lib/seo";
 import { getPageByPath, getStaticPageBySlug, urlFor } from "../lib/sanity/client";
-import { normalizeSitePath, resolveCanonicalUrl } from "../lib/site";
+import {
+  isStagingBuild,
+  normalizeSitePath,
+  resolveCanonicalUrl,
+  STAGING_ROBOTS,
+} from "../lib/site";
 
 interface Props {
   path: string;
@@ -54,8 +59,9 @@ const meta = getPageMeta(path);
 const title = sanityTitle || titleOverride || meta.title;
 const description = sanityDescription || descriptionOverride || meta.description;
 const canonicalUrl = resolveCanonicalUrl(sanityCanonical || canonicalOverride, path);
-const robots =
-  robotsOverride ||
+const robots = isStagingBuild()
+  ? STAGING_ROBOTS
+  : robotsOverride ||
   (sanityNoIndex || meta.noIndex
     ? "noindex, nofollow"
     : import.meta.env.MODE === "development"

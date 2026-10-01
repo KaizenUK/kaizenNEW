@@ -3,6 +3,7 @@ import StaticPageLayout from "../layouts/StaticPageLayout.astro";
 import ManagedPageRenderer from "../../client/components/sanity/ManagedPageRenderer";
 import { getManagedRoutePaths, getPageByPath } from "../lib/sanity/client";
 import { RETIRED_PUBLIC_PATHS } from "../../shared/publicRoutePolicy.js";
+import { isStagingBuild } from "../lib/site";
 import { getBuilderPublishedPages } from "../lib/builderPublished";
 import PublishedPage from "../../client/visual-builder/Renderer";
 import { needsBuilderRuntime, type PageDocument } from "../../shared/visualBuilder";
@@ -37,7 +38,7 @@ if (!builderPage && (!page || !page.replaceRouteContent)) {
 
 const title = builderPage?.title || page?.seo?.metaTitle || page?.title || undefined;
 const description = builderPage?.description || page?.seo?.metaDescription || undefined;
-const robots = (builderPage?.noIndex || page?.seo?.noIndex) ? "noindex, nofollow" : undefined;
+const robots = isStagingBuild() || builderPage?.noIndex || page?.seo?.noIndex ? "noindex, nofollow" : undefined;
 const canonical = page?.seo?.canonicalUrl || undefined;
 ---
 

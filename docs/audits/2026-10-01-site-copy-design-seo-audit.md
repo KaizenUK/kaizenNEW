@@ -326,10 +326,10 @@ Thin data is still useful. It shows which terms Google already links to Kaizen, 
 Answered 1 Oct 2026 and recorded in the site profile: the contract product owner page stays; areas are Merseyside plus Cleckheaton, Gomersal and the area around them including Leeds and Bradford, but **don't change the service areas yet**; Sean travels to clients; Sean owns the Business Profile.
 
 Still open:
-1. **Midland Oil numbers disagree.** The homepage says more than 8 seconds to 1.2 seconds and "3x more enquiries in the first month". `/get-started/` says 9 seconds to under 2, PageSpeed 23 to 98, and "enquiries doubled". Which is right? Both are left as they were until Sean says.
-2. **Helen Moore's hero photo** is an Unsplash stock image with the alt text "Helen Moore Hairdressing salon interior". A stock photo presented as the client's salon misleads. Swap in a real photo of the salon, or label it as illustrative.
+1. ~~Midland Oil numbers disagree.~~ Sean: the homepage figures are right. `/get-started/` and `/review/` now say more than 8 seconds to 1.2 and three times the enquiries. The `/review/` line was a quote attributed to Midland Oil with the wrong figure; it is now a plain statement, not a quote, because we cannot put new words in a client's mouth.
+2. ~~Helen Moore's hero photo.~~ Sean: a stock photo by design. Left as it is.
 3. Run `pnpm sync:seo:sanity` (needs `SANITY_API_TOKEN` in `.env`) to put the new titles and descriptions live. It overwrites the SEO fields on those Sanity pages and deletes Sanity pages whose slugs are now retired, which includes the Elementor test page.
-4. **Two addresses in the footer.** The footer shows 103 Old Hall Street, Liverpool with a map pin, and separately "Registered office: Suite A, 82 James Carter Road, Mildenhall, IP28 7DE". Sean described Old Hall Street as the registered address. Which one is on Companies House? The LocalBusiness markup uses Old Hall Street. Both stay as they are until Sean confirms, because the service-area change is on hold.
+4. ~~Two addresses in the footer.~~ Sean: Mildenhall is the registered office; Old Hall Street is the Business Profile address, cited in many directories. Both stay. Note: customers cannot visit Old Hall Street, and Google's rules say such a profile should hide its address and list service areas. On hold with the service areas.
 5. Fix the blog post titles and descriptions in Sanity Studio by hand (they are not in the seed files): "How to Choose a Web Design Agency: Clear and Concisely", the garbled description on the failing-software-project post, "for their website" on the WordPress vs React post.
 
 ## 10. Original questions for Sean

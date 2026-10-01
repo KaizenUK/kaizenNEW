@@ -6,7 +6,7 @@ The facts the marketing skills (`.claude/skills/marketing-messaging`, `marketing
 
 - **Name and URL:** Kaizen Web, https://kaizenweb.co.uk (canonical, non-www).
 - **What it does:** web design and build for businesses. Also runs the Kaizen Builder for client sites. **One sentence in a buyer's words: unknown** (no real enquiries yet to take it from).
-- **Where (Sean, 1 Oct 2026):** Sean now lives in **Cleckheaton, West Yorkshire**. West Yorkshire is the main region **in addition to** Merseyside, which Kaizen still covers. 103 Old Hall Street, Liverpool L3 9BP is the **registered office only**: customers cannot visit it. Sean travels to clients. Copy can say Kaizen works across Merseyside and West Yorkshire; it must not say Kaizen is "based in" Liverpool, because Google treats a base customers cannot visit as a false location.
+- **Where (Sean, 1 Oct 2026):** Sean now lives in **Cleckheaton, West Yorkshire**. West Yorkshire is the main region **in addition to** Merseyside, which Kaizen still covers. The **registered office** is Suite A, 82 James Carter Road, Mildenhall, Bury St. Edmunds, IP28 7DE (`shared/legal.ts`). **103 Old Hall Street, Liverpool L3 9BP** is the address used on the Google Business Profile and cited in many directories; customers cannot visit it. Sean travels to clients. Copy can say Kaizen works across Merseyside and West Yorkshire; it must not say Kaizen is "based in" Liverpool, because Google treats a base customers cannot visit as a false location.
 - **Who it is for (Sean, 1 Oct 2026):** three segments, no priority order yet: trade and industrial businesses (for example Midland Oil Group), local service businesses (for example Helen Moore Hairdressing), and any business with a slow or tired WordPress site.
 - **Who it is not for:** **unknown.**
 - **Stage, traffic (Sean, 1 Oct 2026):** the site has been live a long time but has brought in almost no genuine enquiries. Fixing that is the point of the current work. Search Console data so far is thin.
@@ -22,6 +22,8 @@ The facts the marketing skills (`.claude/skills/marketing-messaging`, `marketing
 ## 3. Proof and claims
 
 - **Proof we have:** case studies under `src/pages/case-studies/`, a pledge page, a review page, and four Google reviews. **Which testimonials have written permission, and their exact wording: unknown.**
+- **Midland Oil figures (Sean, 1 Oct 2026):** more than 8 seconds to load before, 1.2 seconds after, and three times the enquiries in the first month. Older copy saying "9 seconds", "under 2 seconds" or "doubled" was wrong and has been corrected. The PageSpeed 23 to 98 figures on `/get-started/` were not contradicted and stay.
+- **Helen Moore hero image:** a stock photo, by design (Sean, 1 Oct 2026). Leave it.
 - **Case study claims (Sean, 1 Oct 2026):** Midland Oil Group and Helen Moore Hairdressing both agreed to the numbers and claims on their case studies. The "#1" local rankings were last checked in October 2026. Say when they were checked ("checked October 2026") but **never name the search terms**. Re-check before reusing.
 - **Statistics (Sean, 1 Oct 2026):** the only numbers we trust are our own, from Search Console. General industry figures ("53% leave after 3 seconds" and the like) come off the site unless a primary source is named and linked.
 - **Consign Comply / Consigns:** a product Kaizen built that has become its own spin-off business. Keep it on the site as proof of what Kaizen can build, framed that way. Not a service Kaizen sells here.
@@ -48,7 +50,8 @@ The facts the marketing skills (`.claude/skills/marketing-messaging`, `marketing
 - SEO change log: `docs/seo-log.md` (create on first change). Earlier technical audit: `SEO_AUDIT_REPORT.md` (Jan 2025).
 - Content backlog location: **unknown.**
 - **Local SEO matters here, and the region has grown.** West Yorkshire is added to Merseyside (Sean is in Cleckheaton). Follow "Local SEO" in `seo-strategy` and its checklist 14.
-  - Customers can't visit the registered office, so Kaizen is a **service-area business**, not a storefront. On the Business Profile the address must be hidden and the service areas named (towns or postcodes, up to 20, within about 2 hours' drive). The registered office must not go in the LocalBusiness `address` markup; it can stay on the site, labelled "Registered office", for company-law purposes.
+  - Customers can't visit 103 Old Hall Street, so under Google's rules Kaizen is a **service-area business**, not a storefront: the Business Profile should hide that address and name the service areas instead (towns or postcodes, up to 20, within about 2 hours' drive). A profile showing an address customers cannot visit risks suspension. Sean currently uses Old Hall Street on the profile and in directories; changing it is his call and is on hold with the service areas. The Mildenhall registered office stays on the site, labelled "Registered office", for company-law purposes.
+  - Staging (`stage.kaizenweb.co.uk`) must never be searchable (Sean, 1 Oct 2026). Every build from the `stage` branch is noindex (`isStagingBuild()` in `src/lib/site.ts`).
   - Sean travels to clients, so a service-area profile is allowed. Sean owns the Business Profile.
   - Areas (Sean, 1 Oct 2026): keep the existing Merseyside areas, and add Cleckheaton, Gomersal and the surrounding area, including Leeds and Bradford. **Do not change the service areas on the site or the profile yet**; Sean will say when.
   - Still open: how reviews are asked for.

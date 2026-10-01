@@ -18,6 +18,15 @@ function readEnv(key: string): string | undefined {
   return undefined;
 }
 
+// The deployment sets KAIZEN_DEPLOY_BRANCH for every release build. Staging
+// must never appear in search results, so every page it builds is noindex.
+// Production always rebuilds from main, so this can never reach the live site.
+export const STAGING_ROBOTS = "noindex, nofollow";
+
+export function isStagingBuild(): boolean {
+  return readEnv("KAIZEN_DEPLOY_BRANCH") === "stage";
+}
+
 export function getSiteOrigin(): string {
   return (readEnv("PUBLIC_SITE_URL") ?? DEFAULT_SITE_URL).replace(/\/+$/, "");
 }

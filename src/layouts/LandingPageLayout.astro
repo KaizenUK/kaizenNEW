@@ -1,5 +1,6 @@
 ---
 import "../../client/global.css";
+import { isStagingBuild, STAGING_ROBOTS } from "../lib/site";
 
 interface Props {
   title: string;
@@ -21,7 +22,7 @@ const {
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{title}</title>
     {description && <meta name="description" content={description} />}
-    <meta name="robots" content={robots} />
+    <meta name="robots" content={isStagingBuild() ? STAGING_ROBOTS : robots} />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link

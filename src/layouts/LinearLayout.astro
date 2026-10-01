@@ -2,7 +2,7 @@
 import "../styles/linear.css";
 import BlogNav from "../components/blog/BlogNav.astro";
 import SiteFooter from "../../client/components/layout/SiteFooter";
-import { resolveCanonicalUrl } from "../lib/site";
+import { isStagingBuild, resolveCanonicalUrl, STAGING_ROBOTS } from "../lib/site";
 
 interface Props {
   title: string;
@@ -34,8 +34,9 @@ const canonical = resolveCanonicalUrl(canonicalProp, Astro.url.pathname);
 const socialTitle = ogTitle || title;
 const socialDescription = ogDescription || description;
 const socialImage = ogImage || image;
-const robotsContent =
-  robots || (import.meta.env.MODE === "development" ? "noindex" : "index, follow");
+const robotsContent = isStagingBuild()
+  ? STAGING_ROBOTS
+  : robots || (import.meta.env.MODE === "development" ? "noindex" : "index, follow");
 const buildNumber = String(import.meta.env.VITE_BUILD_NUMBER ?? "").trim();
 const buildSha = String(import.meta.env.VITE_BUILD_SHA ?? "").trim().slice(0, 7);
 const buildLabel = buildNumber || buildSha || "local";

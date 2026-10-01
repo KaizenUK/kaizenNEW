@@ -12,9 +12,17 @@ Every change that can affect search, newest first: date, URL, what changed and w
 - West Yorkshire terms: one impression in 16 months.
 - Full read: `docs/audits/2026-10-01-site-copy-design-seo-audit.md`, section 11.
 
+## 1 Oct 2026 (second commit)
+
+- **Staging is noindex.** Every page built from the `stage` branch now carries `noindex, nofollow` (`isStagingBuild()` in `src/lib/site.ts`). Production builds from `main` are unchanged. Applies once `stage` deploys.
+- **Midland Oil figures** made consistent on `/get-started/` and `/review/` (more than 8 seconds to 1.2, three times the enquiries).
+- **Blog body text** renders curly quotes and the ellipsis character as plain punctuation.
+
+**Deploy status:** the production deploy for both of today's commits failed at "Activate production public release" (GitHub run 36863503435, and run 36858020270 for Sean's earlier `47d31f0`). The last successful deploy was 14 Sep. None of today's changes are live until that is fixed.
+
 ## 1 Oct 2026
 
-Deployed together, because they fix errors rather than test ideas:
+Pushed together, because they fix errors rather than test ideas:
 
 - **Retired pages now return a real 301.** `/web-design-wirral`, `/web-design-warrington`, `/web-design-chester`, `/web-design-liverpool`, `/web-design-liverpool-city-centre`, `/services/web-design-liverpool`, `/services`, `/services/ecommerce`, `/services/contract-product-owner`, `/services/digital-transformation`, `/digital-transformation`, `/agile-coaching`, `/project-rescue`, `/product-owner`, and four old case studies. Before this they returned 200 with a "Redirecting to" HTML page. Rules come from `shared/publicRoutePolicy.js` and are written to the Nginx file by `shared/builderRedirects.js`.
 - **New 301s:** `/elementor-test-landing/` (a test page that was live and indexable) to `/`; `/blog/new-kaizen-website-relaunch/` (old slug, was 404) to `/blog/more-than-a-refresh-why-we-rebuilt-the-kaizen-website/`.
