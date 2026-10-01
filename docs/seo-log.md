@@ -2,6 +2,11 @@
 
 Every change that can affect search, newest first: date, URL, what changed and why. One change at a time where possible, then wait a few weeks before judging it (`seo-strategy`, "Measure, test and audit"). Positions quoted here are stale the day they are written; pull Search Console for current numbers.
 
+## 1 Oct 2026: isolated design foundation (F-01)
+
+- Added the temporary `/ui-test/` design check with `noindex, nofollow` and confirmed it is excluded from the sitemap. F-02 removes it. No public navigation links to it.
+- Added scoped design tokens and components for later page work. Existing marketing copy, page metadata, canonical URLs and link destinations are unchanged. Asset growth is 2.08%; the homepage HTML size is unchanged. Verification is recorded in `docs/audits/2026-10-01-f01-proof.md`.
+
 ## 1 Oct 2026: blog titles, guide links and plain copy (Q-12 to Q-14)
 
 - Sanity blog search titles now read: /blog/choose-web-design-agency-liverpool/ "How to Choose a Web Design Agency in Liverpool"; /blog/fix-failing-software-project-financial-guide/ "Fixing a Failing Software Project vs Rebuilding"; /blog/free-website-speed-scan/ "How to Read Your Website Speed Report | Kaizen Web". The scanner guide H1 and excerpt now describe reading a report, leaving the actual tool query with /performance-scanner/. Descriptions on these three posts and /blog/wordpress-vs-react-business-roi/ now describe the article without ranking claims.

@@ -62,4 +62,6 @@ The five new blog body paragraphs separately measure age 7.3 and average 8.4 wor
 
 All 89 blog screenshot tiles and 62 final marketing/rechecked-local-guide tiles were inspected at 1440px and 375px. No new overlap or horizontal overflow was found. Images retain their shape and all new anchors are readable. The existing long pages, large spacing and mixed type/button styles remain F/P/B work; this copy pass does not claim visual acceptance.
 
-The full Phase Q scorecard is in the dated Progress section of `2026-10-01-full-audit-v2.md`. All 29 current public pages were checked, with the remaining failures recorded there. No shared runtime code changed in this batch; the preceding shared-layout change has its own Windows test comparison. Production verification follows deployment.
+The full Phase Q scorecard is in the dated Progress section of `2026-10-01-full-audit-v2.md`. All 29 current public pages were checked, with the remaining failures recorded there. No shared runtime code changed in this batch; the preceding shared-layout change has its own Windows test comparison.
+
+Production deployment `36929045152` passed. Live marker `gh-36929045152-1` identifies commit `4f544890ca933a75b95a52badf2b8949e6f15fc5`. All nine blog assertions, four body links and technology-name checks pass on production. Live marketing reading scores match the build exactly. Remote stage remains at `4dbda85`; it will be fast-forwarded only at the end of the goal.

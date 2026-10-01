@@ -1,5 +1,8 @@
 @import "tailwindcss";
+@import "./components/untitled/theme.css";
 @config "../tailwind.config.ts";
+@plugin "tailwindcss-animate";
+@plugin "tailwindcss-react-aria-components";
 @reference "tailwindcss";
 
 @font-face {

@@ -1,0 +1,58 @@
+/* Untitled UI semantic tokens use a uui prefix to preserve the builder's theme.
+   Brand endpoints match ContactCTAButton: #266bff and #0c3eb9. */
+@theme {
+  --font-display: "Manifa V2", system-ui, sans-serif;
+  --font-body: "DM Sans", system-ui, sans-serif;
+
+  --color-uui-brand-50: #eff5ff;
+  --color-uui-brand-100: #dce8ff;
+  --color-uui-brand-200: #bdd3ff;
+  --color-uui-brand-300: #8eb3ff;
+  --color-uui-brand-400: #5f92ff;
+  --color-uui-brand-500: #3879ff;
+  --color-uui-brand-600: #266bff;
+  --color-uui-brand-700: #174fe0;
+  --color-uui-brand-800: #0c3eb9;
+  --color-uui-brand-900: #123780;
+  --color-uui-brand-950: #0d214d;
+  --color-uui-dark: rgb(15 23 42);
+  --color-uui-cyan: rgb(6 182 212);
+
+  --color-uui-brand: var(--color-uui-brand-600);
+  --color-uui-brand-solid: var(--color-uui-brand-600);
+  --color-uui-brand-solid_hover: var(--color-uui-brand-800);
+  --color-uui-brand-secondary: var(--color-uui-brand-800);
+  --color-uui-brand-secondary_hover: var(--color-uui-brand-900);
+  --color-uui-fg-brand-secondary_alt: var(--color-uui-brand-800);
+  --color-uui-fg-brand-secondary_hover: var(--color-uui-brand-900);
+  --color-uui-primary: #fff;
+  --color-uui-primary_hover: #f8fafc;
+  --color-uui-border: #cbd5e1;
+  --color-uui-secondary: #334155;
+  --color-uui-secondary_hover: #0f172a;
+  --color-uui-tertiary: #475569;
+  --color-uui-tertiary_hover: #1e293b;
+  --color-uui-fg-quaternary: #64748b;
+  --color-uui-fg-quaternary_hover: #475569;
+  --color-uui-error: #d92d20;
+  --color-uui-error-solid: #d92d20;
+  --color-uui-error-solid_hover: #b42318;
+  --color-uui-error-primary: #b42318;
+  --color-uui-error-primary_hover: #912018;
+  --color-uui-error_subtle: #fda29b;
+  --color-uui-fg-error-secondary: #f04438;
+  --color-uui-fg-error-primary: #d92d20;
+  --shadow-uui-button:
+    0 1px 2px rgb(15 23 42 / 5%), 0 -2px 0 rgb(15 23 42 / 5%) inset;
+}
+
+@utility transition-inherit-all {
+  transition-property: inherit;
+  transition-duration: inherit;
+  transition-timing-function: inherit;
+}
+
+.uui-button {
+  font-family: var(--font-body);
+  min-height: 44px;
+}
