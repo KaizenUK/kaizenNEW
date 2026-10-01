@@ -12,6 +12,11 @@ Every change that can affect search, newest first: date, URL, what changed and w
 - West Yorkshire terms: one impression in 16 months.
 - Full read: `docs/audits/2026-10-01-site-copy-design-seo-audit.md`, section 11.
 
+## 1 Oct 2026 (late)
+
+- **No visitable address published.** Sean chose "registered office only": 103 Old Hall Street, Liverpool removed from the footer, the structured data and `llms.txt`. The home page structured data is now an `Organization` (legal name Kaizen Web Ltd) with `areaServed` covering Merseyside and West Yorkshire (Leeds, Bradford, Cleckheaton, Gomersal added); opening hours, price range and map position removed, as they belong with a visitable address. The registered office in Mildenhall stays on the site as a legal detail. Business Profile change (service area, address hidden) is Sean's next step on Google; watch for a short dip in local visibility while Google catches up.
+- **Midland case study:** "40+ years" (was "150+") and "licence".
+
 ## 1 Oct 2026 (evening)
 
 - **Consigns page removed** at Sean's request (separate business). `/products/consign-comply` 301s to `/` (added to `shared/publicRoutePolicy.js`). It was noindex and had no search traffic, so nothing to lose.

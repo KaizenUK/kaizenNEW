@@ -1,3 +1,4 @@
+import { LEGAL_COMPANY_NAME } from "../../shared/legal";
 export interface PageMeta {
   title: string;
   description: string;
@@ -9,13 +10,10 @@ export interface PageMeta {
 export const SITE_NAME = "Kaizen Web";
 export const SITE_URL = "https://kaizenweb.co.uk";
 export const BUSINESS_EMAIL = "hello@kaizenweb.co.uk";
-export const BUSINESS_ADDRESS = {
-  street: "103 Old Hall Street",
-  locality: "Liverpool",
-  region: "Merseyside",
-  postalCode: "L3 9BP",
-  country: "GB",
-};
+// Kaizen travels to clients and has no address customers can visit, so no
+// business address is published (Google service-area rules). The registered
+// office is a legal detail and lives in shared/legal.ts.
+export const SERVICE_AREAS_SUMMARY = "Merseyside and West Yorkshire";
 export const DEFAULT_OG_IMAGE =
   "https://cdn.builder.io/api/v1/image/assets%2Fe4ae46bbd81b4b95bef54d66dd9748cc%2F094cdc9be84c41ee9db80308cbe5ea73?format=webp&width=1200&height=630";
 
@@ -252,12 +250,14 @@ export const getPageMeta = (pathname: string): PageMeta => {
   return { ...defaultMeta };
 };
 
-export const buildLocalBusinessSchema = (description: string) => ({
+// Organisation, not LocalBusiness: LocalBusiness needs a street address, and a
+// service-area business must not publish one (seo-strategy, "Local SEO").
+export const buildOrganizationSchema = (description: string) => ({
   "@context": "https://schema.org",
-  "@type": ["ProfessionalService", "LocalBusiness", "Organization"],
+  "@type": "Organization",
   name: SITE_NAME,
   alternateName: "Kaizen",
-  legalName: "Kaizen",
+  legalName: LEGAL_COMPANY_NAME,
   image: DEFAULT_OG_IMAGE,
   logo: {
     "@type": "ImageObject",
@@ -268,85 +268,36 @@ export const buildLocalBusinessSchema = (description: string) => ({
   url: SITE_URL,
   email: BUSINESS_EMAIL,
   description,
-  address: {
-    "@type": "PostalAddress",
-    streetAddress: BUSINESS_ADDRESS.street,
-    addressLocality: BUSINESS_ADDRESS.locality,
-    addressRegion: BUSINESS_ADDRESS.region,
-    postalCode: BUSINESS_ADDRESS.postalCode,
-    addressCountry: BUSINESS_ADDRESS.country,
-  },
-geo: {
-  "@type": "GeoCoordinates",
-  latitude: 53.4114,
-  longitude: -2.9935,
-},
-areaServed: [
-    // Core Cities
-    {
-      "@type": "City",
-      name: "Liverpool",
-    },
-    {
-      "@type": "City",
-      name: "Chester",
-    },
-    {
-      "@type": "City",
-      name: "Warrington",
-    },
-    {
-      "@type": "City",
-      name: "St Helens",
-    },
-    {
-      "@type": "City",
-      name: "Southport",
-    },
-
-    // Regions (The "Net")
-    {
-      "@type": "AdministrativeArea",
-      name: "Wirral",
-    },
-    {
-      "@type": "AdministrativeArea",
-      name: "Merseyside",
-    },
-    {
-      "@type": "AdministrativeArea",
-      name: "Cheshire",
-    },
-    {
-      "@type": "AdministrativeArea",
-      name: "North Wales",
-    },
-    {
-      "@type": "Country",
-      name: "United Kingdom",
-    },
+  areaServed: [
+    // Merseyside and nearby
+    { "@type": "City", name: "Liverpool" },
+    { "@type": "City", name: "Chester" },
+    { "@type": "City", name: "Warrington" },
+    { "@type": "City", name: "St Helens" },
+    { "@type": "City", name: "Southport" },
+    { "@type": "AdministrativeArea", name: "Wirral" },
+    { "@type": "AdministrativeArea", name: "Merseyside" },
+    { "@type": "AdministrativeArea", name: "Cheshire" },
+    { "@type": "AdministrativeArea", name: "North Wales" },
+    // West Yorkshire (added 1 Oct 2026)
+    { "@type": "City", name: "Leeds" },
+    { "@type": "City", name: "Bradford" },
+    { "@type": "Place", name: "Cleckheaton" },
+    { "@type": "Place", name: "Gomersal" },
+    { "@type": "AdministrativeArea", name: "West Yorkshire" },
+    { "@type": "Country", name: "United Kingdom" },
   ],
-  openingHoursSpecification: [
-    {
-      "@type": "OpeningHoursSpecification",
-      dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
-      opens: "09:00",
-      closes: "18:00",
-    },
-  ],
-  priceRange: "££",
   foundingDate: "2026",
-  foundingLocation: "Wirral, UK",
   sameAs: [
     // Socials
     "https://www.linkedin.com/company/kaizen-uk",
     "https://www.instagram.com/kaizen.web.uk/",
 
-    // Core Trust Signals (Government & Maps)
+    // Company record and Google Business Profile
     "https://find-and-update.company-information.service.gov.uk/company/17007703",
     "https://www.google.com/maps/place/?q=place_id:ChIJA6LmO4Mhe0gR6N1ohnoK7ZE",
 
-    // Verified Directories & Reviews
+    // Directories and reviews
     "https://clutch.co/profile/kaizen-2",
     "https://www.provenexpert.com/kaizen/",
     "https://www.yell.com/biz/kaizen-liverpool-10997636/",

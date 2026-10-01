@@ -12,7 +12,7 @@ import {
 import KaizenLogo from "@/components/KaizenLogo";
 import AppLink from "@/components/routing/AppLink";
 import {
-  BUSINESS_ADDRESS,
+  SERVICE_AREAS_SUMMARY,
   BUSINESS_EMAIL,
 } from "@/lib/seo";
 import {
@@ -31,8 +31,6 @@ interface FooterLink {
   href: string;
   external?: boolean;
 }
-
-const officeAddress = `${BUSINESS_ADDRESS.street}, ${BUSINESS_ADDRESS.locality}, ${BUSINESS_ADDRESS.region} ${BUSINESS_ADDRESS.postalCode}`;
 
 const footerColumns: Array<{
   title: string;
@@ -213,20 +211,15 @@ export default function SiteFooter({ buildLabel }: FooterProps) {
               </p>
             </a>
 
-            <AppLink
-              href="https://www.google.com/maps/place/?q=place_id:ChIJA6LmO4Mhe0gR6N1ohnoK7ZE"
-              target="_blank"
-              rel="noreferrer"
-              className="group no-underline"
-            >
-              <MapPin className="h-5 w-5 text-white/20 transition-colors group-hover:text-white/50" />
+            <div>
+              <MapPin className="h-5 w-5 text-white/20" />
               <p className="mt-3 text-[11px] font-semibold uppercase tracking-[0.18em] text-white/30 font-body">
-                Liverpool
+                Where we work
               </p>
-              <p className="mt-2 text-base leading-6 text-white/60 transition-colors group-hover:text-white/80">
-                {officeAddress}
+              <p className="mt-2 text-base leading-6 text-white/60">
+                {SERVICE_AREAS_SUMMARY}. We come to you.
               </p>
-            </AppLink>
+            </div>
 
             <div>
               <Building2 className="h-5 w-5 text-white/20" />
