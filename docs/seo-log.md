@@ -12,13 +12,18 @@ Every change that can affect search, newest first: date, URL, what changed and w
 - West Yorkshire terms: one impression in 16 months.
 - Full read: `docs/audits/2026-10-01-site-copy-design-seo-audit.md`, section 11.
 
+## 1 Oct 2026 (evening)
+
+- **Consigns page removed** at Sean's request (separate business). `/products/consign-comply` 301s to `/` (added to `shared/publicRoutePolicy.js`). It was noindex and had no search traffic, so nothing to lose.
+- **Audit tooling added:** `scripts/audit/house-style.mjs` (copy rules) and `scripts/audit/page-shots.mjs` (desktop and phone screenshots). Second audit and task board in `docs/audits/2026-10-01-full-audit-v2.md` and `docs/audits/2026-10-01-task-plan.md`.
+
 ## 1 Oct 2026 (second commit)
 
 - **Staging is noindex.** Every page built from the `stage` branch now carries `noindex, nofollow` (`isStagingBuild()` in `src/lib/site.ts`). Production builds from `main` are unchanged. Applies once `stage` deploys.
 - **Midland Oil figures** made consistent on `/get-started/` and `/review/` (more than 8 seconds to 1.2, three times the enquiries).
 - **Blog body text** renders curly quotes and the ellipsis character as plain punctuation.
 
-**Deploy status:** the production deploy for both of today's commits failed at "Activate production public release" (GitHub run 36863503435, and run 36858020270 for Sean's earlier `47d31f0`). The last successful deploy was 14 Sep. None of today's changes are live until that is fixed.
+**Deploy status:** the first two production deploys that day failed at "Activate production public release" because the server's 10-second storage check timed out on a cold disk. Later deploys went through and everything above is live (checked on the live site the same day).
 
 ## 1 Oct 2026
 

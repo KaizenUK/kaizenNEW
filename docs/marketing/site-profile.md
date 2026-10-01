@@ -26,7 +26,7 @@ The facts the marketing skills (`.claude/skills/marketing-messaging`, `marketing
 - **Helen Moore hero image:** a stock photo, by design (Sean, 1 Oct 2026). Leave it.
 - **Case study claims (Sean, 1 Oct 2026):** Midland Oil Group and Helen Moore Hairdressing both agreed to the numbers and claims on their case studies. The "#1" local rankings were last checked in October 2026. Say when they were checked ("checked October 2026") but **never name the search terms**. Re-check before reusing.
 - **Statistics (Sean, 1 Oct 2026):** the only numbers we trust are our own, from Search Console. General industry figures ("53% leave after 3 seconds" and the like) come off the site unless a primary source is named and linked.
-- **Consign Comply / Consigns:** a product Kaizen built that has become its own spin-off business. Keep it on the site as proof of what Kaizen can build, framed that way. Not a service Kaizen sells here.
+- **Consigns (Consign Comply):** removed from the site on 1 Oct 2026 at Sean's request. It is a separate business now. Do not mention it in any Kaizen copy; `/products/consign-comply/` redirects to the home page.
 - **Claims never to make:** invented results, ratings or client logos without permission; anything about team size.
 - **Regulated or checkable facts:** none central to the business. Any performance or ranking claim ("perfect PageSpeed score") must be checkable at the time it is made, and dated.
 
@@ -63,7 +63,7 @@ The facts the marketing skills (`.claude/skills/marketing-messaging`, `marketing
 | (to build from Search Console) | | |
 
 - Terms not to target (from Search Console, Oct 2026): people looking for Google's own speed test ("google speed test", "test my site google" and about 300 variants); Shopify, Magento and WooCommerce work in Liverpool, unless Kaizen starts offering it; "kaizen seo ..." searches, which look like people looking for a different company called Kaizen.
-- Topic boundary: web design, build and performance for businesses. Consign Comply sits outside it as a showcase product (noindex here; the spin-off's own site owns its terms). Contract product owner work stays on the site (Sean, 1 Oct 2026).
+- Topic boundary: web design, build and performance for businesses. Consigns is not part of this site. Contract product owner work stays on the site (Sean, 1 Oct 2026).
 - Credit links on client sites ("website by Kaizen"): plain brand text, `nofollow`, or none. Never a keyword anchor (`seo-strategy`, links).
 
 ## 7. Measurement
