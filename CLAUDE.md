@@ -28,6 +28,8 @@ Before writing, rewriting, designing or restructuring any marketing page, sectio
 
 Apply all three in full on any audit, rewrite, redesign or new marketing page, and write the "Full checklist pass" down (`marketing-messaging/references/working-tools.md`). A step that could not run says so and why.
 
+**Current marketing work (from 1 Oct 2026):** the task board is `docs/audits/2026-10-01-task-plan.md`; evidence in `docs/audits/2026-10-01-full-audit-v2.md`; Sean's interview in `docs/marketing/voice-of-customer.md`. Tools: `scripts/audit/house-style.mjs`, `scripts/audit/page-shots.mjs`.
+
 ## Design Direction
 
 - **Aesthetic**: Clean, spacious, bright. Inspired by Aramco sponsorships site.

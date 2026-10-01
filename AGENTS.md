@@ -20,6 +20,8 @@ API endpoints should only be created when strictly necessary, for example to enc
 
 Before any marketing page, copy or SEO work, read the three plain-Markdown skills in `.claude/skills/` (`marketing-messaging`, `marketing-page-design`, `seo-strategy`) and the site profile in `docs/marketing/`. Details in `CLAUDE.md`, "Marketing pages, copy and SEO".
 
+**Current marketing work (from 1 Oct 2026):** take tasks from `docs/audits/2026-10-01-task-plan.md` (agent-agnostic, with a "How to work" section, a definition of done and a handover block). Evidence is in `docs/audits/2026-10-01-full-audit-v2.md`; Sean's own words are in `docs/marketing/voice-of-customer.md`. Check your work with `node scripts/audit/house-style.mjs` (copy rules) and `node scripts/audit/page-shots.mjs` (desktop and phone screenshots). House rules in brief: British English, reading age about 9, no em dashes, no jargon, never name the technology, nothing that reads as AI-written.
+
 ## Tech Stack
 
 - **PNPM**: Prefer pnpm
