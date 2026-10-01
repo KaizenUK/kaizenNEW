@@ -22,6 +22,8 @@ import {
 } from "./builder-controlled-build";
 import {
   isolatedBuildCommand,
+  defaultBuildLimits,
+  validateBuildLimits,
   type SandboxCommand,
 } from "./builder-build-sandbox";
 import {
@@ -32,12 +34,22 @@ import { nativeDiskGuard } from "./builder-hosted-disk";
 
 import { maintainNativeReleases } from "./builder-native-release-maintenance";
 
+/** Read only the operator's private release environment, never site content. */
+export function nativeBuildLimits(env: NodeJS.ProcessEnv) {
+  const value = env.BUILDER_NATIVE_BUILD_MEMORY_BYTES;
+  if (value !== undefined && !/^[1-9][0-9]*$/.test(value))
+    throw new Error("Configure a bounded native build memory allowance.");
+  const limits = {
+    ...defaultBuildLimits,
+    memoryBytes:
+      value === undefined ? defaultBuildLimits.memoryBytes : Number(value),
+  };
+  validateBuildLimits(limits, "trusted");
+  return limits;
+}
+
 type NativeReleaseAction =
-  | "deploy"
-  | "preflight"
-  | "reconcile"
-  | "reconcile-usage"
-  | "maintain";
+  "deploy" | "preflight" | "reconcile" | "reconcile-usage" | "maintain";
 export function nativeReleaseAction(argv: string[]): NativeReleaseAction {
   if (!argv.length) return "deploy";
   if (
@@ -164,6 +176,7 @@ export async function runNativeReleaseTask(
 export async function runNativeReleaseCli() {
   const action = nativeReleaseAction(process.argv.slice(2));
   const env = loadReleaseEnvironment();
+  const buildLimits = nativeBuildLimits(env);
   if (!path.isAbsolute(env.BUILDER_NATIVE_STATE_DIRECTORY || ""))
     throw new Error("Configure the native worker's private state directory.");
   const client = createReleaseClient({
@@ -222,17 +235,20 @@ export async function runNativeReleaseCli() {
         );
         await disk.check(projectId, 200 * 1024 ** 2);
         await disk.run(projectId, async (storageSignal) => {
-          const code = await runControlledBuild({
-            id: randomUUID(),
-            root: process.cwd(),
-            command,
-            signal: AbortSignal.any([controller.signal, storageSignal]),
-            environment: {
-              ...env,
-              BUILDER_RELEASE_SNAPSHOT_FILE: snapshotFile || "",
+          const code = await runControlledBuild(
+            {
+              id: randomUUID(),
+              root: process.cwd(),
+              command,
+              signal: AbortSignal.any([controller.signal, storageSignal]),
+              environment: {
+                ...env,
+                BUILDER_RELEASE_SNAPSHOT_FILE: snapshotFile || "",
+              },
+              log: (chunk) => process.stdout.write(chunk),
             },
-            log: (chunk) => process.stdout.write(chunk),
-          });
+            buildLimits,
+          );
           if (code !== 0)
             throw new Error(`Static build failed with exit code ${code}.`);
         });

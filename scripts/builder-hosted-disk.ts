@@ -137,7 +137,10 @@ export class HostedDiskGuard {
             project,
           ],
           {
-            timeout: 10_000,
+            // Cold dependency/store trees can exceed ten seconds on the VPS.
+            // Keep the scan bounded, but allow a complete measurement before
+            // refusing work. watch() already prevents overlapping samples.
+            timeout: 60_000,
             // A tree being written by a package manager reports every file that
             // disappeared while it was walked. Keep that bounded instead of
             // turning an ordinary race into a refusal.

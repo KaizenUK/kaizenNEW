@@ -28,6 +28,7 @@ const directories: string[] = [];
 const fixtures: Awaited<ReturnType<typeof hostedHelperFixture>>[] = [];
 afterEach(async () => {
   vi.restoreAllMocks();
+  vi.unstubAllEnvs();
   for (const fixture of fixtures.splice(0).reverse()) await fixture.close();
   for (const directory of directories.splice(0))
     await rm(directory, { recursive: true, force: true });
@@ -96,6 +97,29 @@ async function start(api: Awaited<ReturnType<typeof hostedHelperFixture>>) {
 }
 
 describe("hosted storage bounds", () => {
+  it.runIf(process.platform === "linux")(
+    "waits for a cold storage scan beyond the old ten-second deadline",
+    async () => {
+      const { root, disk } = await directory();
+      const bin = path.join(root, "slow-measure-bin");
+      await mkdir(bin);
+      await writeFile(
+        path.join(bin, "du"),
+        '#!/bin/sh\nsleep 11\nprintf "4096\\t%s\\n" "$6"\n',
+        { mode: 0o755 },
+      );
+      vi.stubEnv("PATH", `${bin}${path.delimiter}${process.env.PATH}`);
+      await expect(disk.check(helperProject)).resolves.toMatchObject({
+        bytes: 4096,
+      });
+      // A completed slow measurement must still enforce the storage allowance.
+      await expect(
+        disk.check(helperProject, limits.projectBytes),
+      ).rejects.toThrow("storage limit");
+    },
+    30_000,
+  );
+
   it("keeps measuring while a package manager makes files vanish underneath it", async () => {
     const { root, project } = await directory();
     const state = path.join(root, "native-state");
@@ -134,7 +158,10 @@ describe("hosted storage bounds", () => {
       nativeDiskGuard(project, state, env).check("kaizen"),
     ).resolves.toMatchObject({ bytes: 8192 });
     // An unreadable directory is not a vanished file: that total is incomplete.
-    await measure("du: cannot read directory '/retained/private': Permission denied", 1);
+    await measure(
+      "du: cannot read directory '/retained/private': Permission denied",
+      1,
+    );
     await expect(
       nativeDiskGuard(project, state, env).check("kaizen"),
     ).rejects.toThrow("could not check website storage");

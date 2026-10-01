@@ -38,7 +38,7 @@ export async function runControlledCommand(
   limits: BuildLimits = defaultBuildLimits,
 ): Promise<number | null> {
   input.signal.throwIfAborted();
-  const group = await createBuildGroup(input.id, limits);
+  const group = await createBuildGroup(input.id, limits, "trusted");
   let child: ChildProcess | undefined;
   let stopError: unknown;
   const stops: Promise<void>[] = [];

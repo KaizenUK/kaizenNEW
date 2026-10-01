@@ -45,6 +45,27 @@ export const defaultBuildLimits: Readonly<BuildLimits> = Object.freeze({
   processes: 128,
   cpuPercent: 200,
 });
+type BuildProfile = "isolated" | "trusted";
+
+/** Only operator-trusted commands may opt into a larger, still bounded group. */
+export function validateBuildLimits(
+  limits: BuildLimits,
+  profile: BuildProfile = "isolated",
+) {
+  if (
+    !["isolated", "trusted"].includes(profile) ||
+    !Number.isSafeInteger(limits.memoryBytes) ||
+    limits.memoryBytes < 64 * 1024 ** 2 ||
+    limits.memoryBytes > (profile === "trusted" ? 8 : 2) * 1024 ** 3 ||
+    !Number.isInteger(limits.processes) ||
+    limits.processes < 8 ||
+    limits.processes > 128 ||
+    !Number.isInteger(limits.cpuPercent) ||
+    limits.cpuPercent < 10 ||
+    limits.cpuPercent > 200
+  )
+    throw fail();
+}
 const sourceExclusions = new Set([
   "node_modules",
   "dist",
@@ -161,20 +182,13 @@ async function dependencies(root: string, signal: AbortSignal) {
   return folder;
 }
 
-export async function createBuildGroup(id: string, limits: BuildLimits) {
+export async function createBuildGroup(
+  id: string,
+  limits: BuildLimits,
+  profile: BuildProfile = "isolated",
+) {
   if (process.platform !== "linux" || !/^[a-f0-9-]{36}$/.test(id)) throw fail();
-  if (
-    !Number.isInteger(limits.memoryBytes) ||
-    limits.memoryBytes < 64 * 1024 ** 2 ||
-    limits.memoryBytes > 2 * 1024 ** 3 ||
-    !Number.isInteger(limits.processes) ||
-    limits.processes < 8 ||
-    limits.processes > 128 ||
-    !Number.isInteger(limits.cpuPercent) ||
-    limits.cpuPercent < 10 ||
-    limits.cpuPercent > 200
-  )
-    throw fail();
+  validateBuildLimits(limits, profile);
   const membership = (await readFile("/proc/self/cgroup", "utf8")).trim();
   const match = /^0::(\/[^\n]+\/supervisor)$/.exec(membership);
   if (!match || match[1].split("/").some((segment) => segment === ".."))
