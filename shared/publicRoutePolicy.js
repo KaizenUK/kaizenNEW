@@ -30,6 +30,9 @@ export const PUBLIC_ROUTE_REDIRECTS = {
   "/case-studies/independent-retailer": "/case-studies/",
   "/case-studies/kaizen-rebuild": "/case-studies/",
   "/product-owner": "/contract-product-owner/",
+  "/elementor-test-landing": "/",
+  "/blog/new-kaizen-website-relaunch":
+    "/blog/more-than-a-refresh-why-we-rebuilt-the-kaizen-website/",
 };
 
 export const RETIRED_PUBLIC_PATHS = Object.freeze(

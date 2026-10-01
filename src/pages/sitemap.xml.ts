@@ -36,6 +36,10 @@ const EXCLUDED_SITEMAP_ROUTES = new Set([
   "/get-started/",
   ...RETIRED_PUBLIC_PATHS,
 ]);
+// Editor and tool routes are never public pages, whatever lives below them.
+const EXCLUDED_SITEMAP_PREFIXES = ["/builder/", "/studio/"];
+// A static page that marks itself noindex must not be listed for crawling.
+const NOINDEX_SOURCE = /robots"?\s*(?:=|content=)\s*["'][^"']*noindex/i;
 
 interface SitemapEntry {
   loc: string;
@@ -73,11 +77,18 @@ function toStaticRoute(filePath: string): string | null {
   }
 
   const route = normalizeSitePath(`/${segments.join("/")}`);
-  if (EXCLUDED_SITEMAP_ROUTES.has(route)) {
+  if (
+    EXCLUDED_SITEMAP_ROUTES.has(route) ||
+    EXCLUDED_SITEMAP_PREFIXES.some((prefix) => route.startsWith(prefix))
+  ) {
     return null;
   }
 
   return route;
+}
+
+async function isNoIndexSource(filePath: string): Promise<boolean> {
+  return NOINDEX_SOURCE.test(await fs.readFile(filePath, "utf8"));
 }
 
 function toIsoDate(value?: string): string | undefined {
@@ -105,8 +116,14 @@ function buildXml(entries: SitemapEntry[]): string {
 export const GET: APIRoute = async () => {
   const buildTimestamp = new Date().toISOString();
   const staticPageFiles = await walkPageFiles(PAGES_DIR);
+  const staticPages = await Promise.all(
+    staticPageFiles.map(async (file) => {
+      const route = toStaticRoute(file);
+      return route && !(await isNoIndexSource(file)) ? route : null;
+    }),
+  );
   const staticRoutes = Array.from(
-    new Set(staticPageFiles.map(toStaticRoute).filter((route): route is string => Boolean(route))),
+    new Set(staticPages.filter((route): route is string => Boolean(route))),
   );
 
   const entries = new Map<string, SitemapEntry>();

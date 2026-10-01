@@ -10,8 +10,7 @@ interface Review {
   author: string;
   rating: 5 | 4;
   text: string;
-  date: string; // ISO date for schema
-  relative: string; // Display date e.g. "2 months ago"
+  date: string; // ISO date the review was posted on Google
 }
 
 const reviews: Review[] = [
@@ -20,59 +19,46 @@ const reviews: Review[] = [
     rating: 5,
     text: "So happy with the advice and communication I've received from Sean at Kaizen. I didn't know where to begin with creating my website and Sean made the whole process straightforward and stress-free.",
     date: "2026-03-05",
-    relative: "1 week ago",
   },
   {
     author: "Helen Parry",
     rating: 5,
     text: "Kaizen are highly professional and incredibly knowledgeable. Communication is amazing and work done to an incredible high standard. Couldn't recommend more highly.",
     date: "2026-02-26",
-    relative: "2 weeks ago",
   },
   {
     author: "Cassie Wolf",
     rating: 5,
     text: "I was having difficulties with the formatting of my old site. After many years, I needed to use it again but it was outdated and broken. Kaizen got it back up and running perfectly.",
     date: "2026-02-12",
-    relative: "4 weeks ago",
   },
   {
     author: "Paul Taylor",
     rating: 5,
     text: "We are extremely impressed with the service provided. From start to finish, they were easy to work with, responsive, and delivered exactly what we needed.",
     date: "2026-02-12",
-    relative: "4 weeks ago",
   },
 ];
 
 // Duplicate for seamless infinite scroll
 const allReviews = [...reviews, ...reviews];
 
-// Schema markup
-const schemaJson = JSON.stringify({
-  ...buildLocalBusinessSchema(
+// Show the month the review was posted. A relative label ("1 week ago")
+// is frozen at build time and goes stale.
+const postedMonth = (iso: string) =>
+  new Date(`${iso}T00:00:00Z`).toLocaleDateString("en-GB", {
+    month: "long",
+    year: "numeric",
+    timeZone: "UTC",
+  });
+
+// Business markup only. Google's rules do not allow a business to mark up
+// reviews of itself for star ratings, so the reviews stay out of the schema.
+const schemaJson = JSON.stringify(
+  buildLocalBusinessSchema(
     "Kaizen is a UK web consultancy focused on high-performance websites, technical SEO foundations, WordPress rebuilds, and hands-on product leadership.",
   ),
-  aggregateRating: {
-    "@type": "AggregateRating",
-    ratingValue: "5.0",
-    reviewCount: String(reviews.length),
-    bestRating: "5",
-    worstRating: "1",
-  },
-  review: reviews.map((r) => ({
-    "@type": "Review",
-    author: { "@type": "Person", name: r.author },
-    datePublished: r.date,
-    reviewRating: {
-      "@type": "Rating",
-      ratingValue: String(r.rating),
-      bestRating: "5",
-      worstRating: "1",
-    },
-    reviewBody: r.text,
-  })),
-});
+);
 ---
 
 <section class="py-28 md:py-36 bg-white overflow-hidden">
@@ -127,7 +113,7 @@ const schemaJson = JSON.stringify({
 
           <div class="mt-auto">
             <p class="text-sm font-heading font-bold text-gray-950">{review.author}</p>
-            <p class="text-xs font-body text-gray-400 mt-1">{review.relative}</p>
+            <p class="text-xs font-body text-gray-400 mt-1"><time datetime={review.date}>{postedMonth(review.date)}</time></p>
           </div>
         </div>
       ))}

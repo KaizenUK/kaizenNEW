@@ -2,7 +2,7 @@
 > UK web consultancy specialising in high-performance websites, WordPress rebuilds, technical SEO foundations, and hands-on product leadership.
 
 **URL:** https://kaizenweb.co.uk
-**Contact:** hello@kaizenweb.co.uk | +44 151 453 0008
+**Contact:** hello@kaizenweb.co.uk
 **Base:** Liverpool, United Kingdom
 **Service Area:** UK-wide
 **Last Updated:** 2026-03-13
@@ -31,7 +31,6 @@
 **Company Name:** Kaizen Web Ltd  
 **Trading Name:** Kaizen Ltd  
 **Companies House:** [17007703](https://find-and-update.company-information.service.gov.uk/company/17007703)  
-**Phone:** +44 151 453 0008  
 **Email:** hello@kaizenweb.co.uk
 
 ---

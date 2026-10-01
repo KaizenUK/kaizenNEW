@@ -2,7 +2,6 @@ import { defineConfig } from "astro/config";
 import react from "@astrojs/react";
 import tailwindcss from "@tailwindcss/vite";
 import path from "node:path";
-import { PUBLIC_ROUTE_REDIRECTS } from "./shared/publicRoutePolicy.js";
 import { builderCompanionUiPlugin } from "./scripts/builder-companion-ui.ts";
 import {
   builderLocalPlugin,
@@ -80,7 +79,9 @@ export default defineConfig({
     concurrency: 1,
   },
 
-  redirects: PUBLIC_ROUTE_REDIRECTS,
+  // Retired routes are 301s in the generated Nginx rules
+  // (shared/builderRedirects.js). Astro's redirect pages would be served
+  // as 200 HTML and fail the release file checks once Nginx redirects them.
 
   integrations: [react(), builderLocalAssets()],
 

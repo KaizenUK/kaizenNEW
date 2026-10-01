@@ -6,15 +6,12 @@ import {
   Linkedin,
   Mail,
   MapPin,
-  Phone,
 } from "lucide-react";
 import KaizenLogo from "@/components/KaizenLogo";
 import AppLink from "@/components/routing/AppLink";
 import {
   BUSINESS_ADDRESS,
   BUSINESS_EMAIL,
-  BUSINESS_PHONE,
-  BUSINESS_PHONE_HREF,
 } from "@/lib/seo";
 import {
   COMPANY_NUMBER,
@@ -180,15 +177,6 @@ export default function SiteFooter({ buildLabel }: FooterProps) {
             <p className="mt-6 max-w-[38rem] text-base leading-7 text-white/40 sm:text-lg font-body">
               We design, build and improve websites that actually work for your business. No fluff. No runaround. Just results.
             </p>
-            <p className="mt-4 max-w-[34rem] text-sm leading-6 text-white/55 font-body sm:text-base">
-              Prefer to talk it through? Call us on{" "}
-              <a
-                href={BUSINESS_PHONE_HREF}
-                className="font-semibold text-white transition-colors hover:text-cyan-300"
-              >
-                {BUSINESS_PHONE}
-              </a>.
-            </p>
 
             <div className="mt-10 flex flex-col gap-4 sm:flex-row">
               <AppLink
@@ -220,19 +208,6 @@ export default function SiteFooter({ buildLabel }: FooterProps) {
               </p>
               <p className="mt-2 text-lg font-medium text-white transition-colors group-hover:text-white/80">
                 {BUSINESS_EMAIL}
-              </p>
-            </a>
-
-            <a
-              href={BUSINESS_PHONE_HREF}
-              className="group no-underline"
-            >
-              <Phone className="h-5 w-5 text-white/20 transition-colors group-hover:text-white/50" />
-              <p className="mt-3 text-[11px] font-semibold uppercase tracking-[0.18em] text-white/30 font-body">
-                Call
-              </p>
-              <p className="mt-2 text-lg font-medium text-white transition-colors group-hover:text-white/80">
-                {BUSINESS_PHONE}
               </p>
             </a>
 

@@ -589,10 +589,10 @@ export default function SpeedScanner() {
         lcpVal,
         "lcp",
         "Time until the main content is visible. Usually your hero image or headline.",
-        "Users won't wait. 53% leave if a page takes over 3 seconds to show content.",
+        "People won't wait. If the main content is slow to appear, many go straight back to Google.",
         lcpVal > 2.5
           ? ["Compress & resize images", "Use WebP format"]
-          : ["Maintain current optimizations"],
+          : ["Keep the current speed fixes in place"],
         2.5,
         4.0,
         "s",

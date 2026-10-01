@@ -3,7 +3,6 @@ import {
   ArrowRightIcon,
   ArrowUpRightIcon,
 } from "@/components/icons/CriticalIcons";
-import { BUSINESS_PHONE, BUSINESS_PHONE_HREF } from "@/lib/seo";
 
 const LIGHTHOUSE_SCORE = 96;
 
@@ -146,15 +145,6 @@ export const HeroRemotionSequence: React.FC = () => {
               </button>
             </div>
 
-            <p className="mb-6 text-sm leading-relaxed text-white/65">
-              Prefer a quick chat? Call us on{" "}
-              <a
-                href={BUSINESS_PHONE_HREF}
-                className="font-semibold text-white transition-colors hover:text-kaizen-cyan"
-              >
-                {BUSINESS_PHONE}
-              </a>.
-            </p>
 
             {/* Social proof line */}
             <p className="text-sm text-white/50">

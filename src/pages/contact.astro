@@ -1,7 +1,6 @@
 ---
 import StaticPageLayout from "../layouts/StaticPageLayout.astro";
 import { ContactFormBox } from "../../client/components/ContactFormBox";
-import { BUSINESS_PHONE, BUSINESS_PHONE_HREF } from "../../client/lib/seo";
 
 export const prerender = true;
 
@@ -9,7 +8,8 @@ export const prerender = true;
 
 <StaticPageLayout
   path="/contact"
-  description="Let's talk. Send us a message, tell us where the site or delivery process is hurting, and we will come back with clear next steps."
+  title="Contact Kaizen Web | Talk About Your Website"
+  description="Tell us what is wrong with your website, or what you need from a new one. We will come back with clear next steps, in plain English."
 >
   <section class="min-h-screen bg-gradient-to-br from-kaizen-dark via-slate-900 to-kaizen-dark py-20 text-white">
     <div class="container mx-auto px-4">
@@ -18,10 +18,6 @@ export const prerender = true;
           <h1 class="mb-6 text-5xl font-heading font-bold leading-tight md:text-6xl lg:text-7xl">Let's Talk.</h1>
           <p class="text-xl leading-relaxed text-white/70">
             Send us a message and we will come back with clear next steps.
-          </p>
-          <p class="mt-4 text-base leading-relaxed text-white/60 md:text-lg">
-            Need to speak to someone straight away? Call us on
-            <a href={BUSINESS_PHONE_HREF} class="font-semibold text-kaizen-cyan transition hover:text-white">{BUSINESS_PHONE}</a>.
           </p>
         </div>
 

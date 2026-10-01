@@ -46,19 +46,19 @@ const paths = [
 /* ── The problem (story-driven) ──────────────────────────────── */
 const problems = [
   {
-    stat: "3 seconds",
+    stat: "Seconds",
     detail:
-      "That's the window. After that, most customers leave. Most WordPress sites don't even finish loading in that time. And after 8 seconds, they're gone forever.",
+      "That is how long people give a slow page before they go back to Google. Many WordPress sites are not ready by then.",
   },
   {
-    stat: "70%",
+    stat: "Plugins",
     detail:
-      "of small business websites have performance issues that directly hurt their Google rankings. Yours might be one of them.",
+      "Every plugin adds code that each page has to load. Slow WordPress sites often have dozens of them.",
   },
   {
     stat: "£0",
     detail:
-      "is what a beautiful website earns when nobody can find it — or when they leave before it finishes loading.",
+      "is what a beautiful website earns when nobody can find it, or when people leave before it loads.",
   },
 ];
 
@@ -147,8 +147,8 @@ const serviceSchema = JSON.stringify({
 
 <StaticPageLayout
   path="/services/wordpress-web-design"
-  title="WordPress Web Design | Custom Website vs WordPress | Kaizen Web"
-  description="Rebuild? Improve? Migrate? We have 3 clear paths to guide you to a decent, custom coded website. Fix a slow WordPress or build something better."
+  title="WordPress Web Design: Fix, Rebuild or Move | Kaizen Web"
+  description="Is your WordPress site slow or hard to update? We can speed it up, rebuild it properly or move you to a faster custom site, and we'll say which fits."
 >
   <script type="application/ld+json" set:html={serviceSchema} is:inline />
   <script type="application/ld+json" set:html={faqSchema} is:inline />
@@ -415,38 +415,9 @@ const serviceSchema = JSON.stringify({
         <p class="mt-8 text-xl text-gray-400">
           If that made you uncomfortable, we should talk.
         </p>
-        <a
-          href="tel:+441514530008"
-          class="group relative isolate mt-10 inline-flex items-center justify-center overflow-hidden rounded-[18px] border border-white/25 px-5 py-2.5 text-[16px] text-white no-underline shadow-[0_12px_32px_rgba(10,34,102,0.34)] transition-transform duration-200 hover:-translate-y-px hover:shadow-[0_18px_40px_rgba(10,34,102,0.4)]"
-        >
-          <span
-            class="pointer-events-none absolute inset-0 rounded-[inherit] bg-[linear-gradient(135deg,#266bff_0%,#1658e8_56%,#0c3eb9_100%)]"
-          ></span>
-          <span
-            class="pointer-events-none absolute inset-px rounded-[inherit] bg-[linear-gradient(180deg,rgba(255,255,255,0.2)_0%,rgba(255,255,255,0.08)_20%,rgba(8,38,112,0.16)_100%)]"
-          ></span>
-          <span
-            class="pointer-events-none absolute inset-0 rounded-[inherit] shadow-[inset_0_1px_0_rgba(255,255,255,0.42),inset_0_-1px_0_rgba(255,255,255,0.08)]"
-          ></span>
-          <span
-            class="relative z-1 inline-flex items-center gap-2 whitespace-nowrap font-medium tracking-[-0.01em] text-white"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="h-4 w-4"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              ><path
-                d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"
-              ></path></svg
-            >
-            <span>0151 453 0008</span>
-          </span>
-        </a>
+        <div class="mt-10 flex justify-center">
+          <ContactCTAButton label="Talk to us about your site" client:load />
+        </div>
       </div>
     </div>
   </section>

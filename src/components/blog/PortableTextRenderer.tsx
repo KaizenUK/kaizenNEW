@@ -87,6 +87,11 @@ function normalizeTableRows(value: TableValue): string[][] {
 
 const components: PortableTextComponents = {
   block: {
+    // The post title is the page's only H1. Body headings saved as H1 in
+    // Sanity render as section headings.
+    h1: ({ children }) => (
+      <h2 className="mt-10 mb-4 text-2xl font-bold">{children}</h2>
+    ),
     h2: ({ children }) => (
       <h2 className="mt-10 mb-4 text-2xl font-bold">{children}</h2>
     ),

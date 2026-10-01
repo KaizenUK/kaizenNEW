@@ -8,8 +8,6 @@ export interface PageMeta {
 
 export const SITE_NAME = "Kaizen Web";
 export const SITE_URL = "https://kaizenweb.co.uk";
-export const BUSINESS_PHONE = "+44 151 453 0008";
-export const BUSINESS_PHONE_HREF = `tel:${BUSINESS_PHONE.replace(/\s+/g, "")}`;
 export const BUSINESS_EMAIL = "hello@kaizenweb.co.uk";
 export const BUSINESS_ADDRESS = {
   street: "103 Old Hall Street",
@@ -38,9 +36,9 @@ const defaultMeta: PageMeta = {
 
 const pageMeta: Record<string, Partial<PageMeta>> = {
   "/": {
-    title: "Web Design & Website Performance Optimisation | Kaizen Web",
+    title: "Web Design That Loads Fast and Brings In Work | Kaizen Web",
     description:
-      "We build websites that look outstanding, convert your customers and perform with awe. From WordPress optimisation to performance audits, Kaizen has you covered",
+      "We design, build and fix websites for businesses. Fast pages, clear words and a site that makes it easy for customers to get in touch.",
     keywords: [
       "website not converting visitors",
       "wordpress site running slow",
@@ -59,7 +57,7 @@ const pageMeta: Record<string, Partial<PageMeta>> = {
   "/services/local-seo": {
     title: "Local SEO | Fix Your Site, Fix Your Rankings | Kaizen Web",
     description:
-      "We are not an SEO agency. But, if your site is struggling to rank despite you paying monthly for it, the site is the issue. Kaizen fixes your foundations.",
+      "Paying for SEO but still not ranking? The problem is often the website itself. We fix the speed, structure and setup that hold local rankings back.",
     keywords: [
       "local seo",
       "core web vitals",
@@ -70,9 +68,9 @@ const pageMeta: Record<string, Partial<PageMeta>> = {
     ],
   },
   "/services/wordpress-web-design": {
-    title: "WordPress Web Design | Fast, Easy to Run Sites | Kaizen",
+    title: "WordPress Web Design: Fix, Rebuild or Move | Kaizen Web",
     description:
-      "Rebuild? Improve? Migrate? We have 3 clear paths to guide you to a decent, custom coded website. Fix a slow WordPress or build something better.",
+      "Is your WordPress site slow or hard to update? We can speed it up, rebuild it properly or move you to a faster custom site, and we'll say which fits.",
     keywords: [
       "wordpress web design",
       "wordpress migration",
@@ -82,10 +80,9 @@ const pageMeta: Record<string, Partial<PageMeta>> = {
     ],
   },
   "/contract-product-owner": {
-    title:
-      "Contract Product Owner | Delivery Leadership | Kaizen",
+    title: "Contract Product Owner for Hire | Kaizen Web",
     description:
-      "Stop hiring 'Yes Men'. Our Contract Product Owners prioritise ROI, manage the backlog, and ensure your software solves the actual business problem.",
+      "Software project drifting? A contract product owner sets the priorities, keeps the work moving and makes sure what gets built is what you need.",
     keywords: [
       "contract product owner",
       "senior product owner",
@@ -94,9 +91,9 @@ const pageMeta: Record<string, Partial<PageMeta>> = {
     ],
   },
   "/about": {
-    title: "About Kaizen | Web Performance & Delivery Leadership",
+    title: "About Kaizen Web | How We Work",
     description:
-      "We're not another faceless agency. Meet Sean, our founder, and see how Kaizen approaches web performance, technical clarity, and commercial delivery.",
+      "Kaizen means continuous improvement. You deal with the same person from first call to launch, in plain English, with advice before any invoice.",
     keywords: [
       "about kaizen",
       "sean mcdonnell",
@@ -105,9 +102,9 @@ const pageMeta: Record<string, Partial<PageMeta>> = {
     ],
   },
   "/pledge": {
-    title: 'Our "No-BS" Pledge | Transparent Web Design | Kaizen',
+    title: "What to Expect Before You Commit | The Kaizen Pledge",
     description:
-      'Our "No-BS" Pledge. See our transparent policy on AI, pricing, and our process. No black box, no surprise bills, no excuses.',
+      "What working with Kaizen looks like, in writing, before you commit to anything: how pricing works, how we use AI and what happens if the scope changes.",
     keywords: [
       "kaizen pledge",
       "transparent web design",
@@ -116,9 +113,9 @@ const pageMeta: Record<string, Partial<PageMeta>> = {
     ],
   },
   "/case-studies": {
-    title: "Case Studies | Kaizen Web",
+    title: "Web Design Case Studies | Kaizen Web",
     description:
-      "Proof, not promises. Two public case studies showing the kind of rebuild, technical SEO foundation work, and delivery clarity Kaizen wants more of.",
+      "Real websites we have built and fixed, and what changed for each business. See the Midland Oil Group and Helen Moore Hairdressing projects.",
     keywords: [
       "web design case studies",
       "midland oil group",
@@ -126,9 +123,9 @@ const pageMeta: Record<string, Partial<PageMeta>> = {
     ],
   },
   "/contact": {
-    title: "Contact | Kaizen Web",
+    title: "Contact Kaizen Web | Talk About Your Website",
     description:
-      "Let's talk. Send us a message, tell us where the site or delivery process is hurting, and we will come back with clear next steps.",
+      "Tell us what is wrong with your website, or what you need from a new one. We will come back with clear next steps, in plain English.",
     keywords: ["contact kaizen", "website consultancy contact"],
   },
   "/thank-you": {
@@ -139,9 +136,9 @@ const pageMeta: Record<string, Partial<PageMeta>> = {
     keywords: ["thank you", "enquiry received", "kaizen"],
   },
   "/blog": {
-    title: "Blog | Kaizen | Performance, SEO & Delivery Insights",
+    title: "Website Guides for Business Owners | Kaizen Web",
     description:
-      "Practical insights on website performance, technical SEO, WordPress rebuilds, and delivery leadership.",
+      "Plain-English guides to website speed, search and getting more enquiries from your website.",
     keywords: [
       "website performance blog",
       "technical seo blog",
@@ -181,14 +178,14 @@ const pageMeta: Record<string, Partial<PageMeta>> = {
     noIndex: true,
   },
   "/case-studies/helen-moore-hairdressing": {
-    title: "Helen Moore Hairdressing Case Study | Kaizen",
+    title: "Salon Website Case Study: Helen Moore Hairdressing | Kaizen",
     description:
-      "Local hairdressing salon case study—how we built their online booking system and improved local visibility.",
+      "How we rebuilt a Wallasey salon's website so people can go from social media to a booked appointment in a few taps, and find it in local search.",
   },
   "/case-studies/midland-oil-group": {
     title: "Midland Oil Group Case Study | Kaizen Web",
     description:
-      "How we rebuilt Midland Oil Group - from a sluggish, confusing WordPress to high-end tech platform that transformed the business.",
+      "How we rebuilt Midland Oil Group's website so customers can find the right oil without phoning. Products sorted by industry, plus an AI oil finder.",
   },
   "/products/consign-comply": {
     title:
@@ -205,9 +202,9 @@ const pageMeta: Record<string, Partial<PageMeta>> = {
     ],
   },
   "/performance-scanner": {
-    title: "Free Website Speed Test | Check Your Google PageSpeed Score",
+    title: "Free Website Speed Test for Business Sites | Kaizen Web",
     description:
-      "Your slow website is costing you customers. Run a free PageSpeed check to find out what is holding you back and fixes. Instant results. Fix your site speed now.",
+      "Test how fast your website loads on a phone. See what is slowing it down and what to fix first, in plain English. Free.",
     keywords: [
       "google pagespeed insights",
       "core web vitals",
@@ -283,7 +280,6 @@ export const buildLocalBusinessSchema = (description: string) => ({
     height: 150,
   },
   url: SITE_URL,
-  telephone: BUSINESS_PHONE,
   email: BUSINESS_EMAIL,
   description,
   address: {

@@ -146,8 +146,25 @@ export function mergeRedirectConfiguration(builder, cms, available) {
         `The redirect destination is not in this published site: ${destination}`,
       );
   }
+  const cmsRules = nginxRedirectRules(cms);
+  const cmsSources = new Set(
+    cms.flatMap((rule) => [
+      redirectPath(rule.source),
+      canonicalRedirectPath(rule.source),
+    ]),
+  );
+  // Retired site routes are real 301s from Nginx, with and without the
+  // trailing slash. A Sanity redirect for the same path keeps precedence.
+  const fixedRules = fixed.flatMap((rule) =>
+    redirectAliases(rule.source)
+      .filter((source) => !cmsSources.has(source))
+      .map(
+        (source) =>
+          `location = "${source}" { return 301 "${rule.destination}$is_args$args"; }`,
+      ),
+  );
   return {
-    rules: [...nginxRedirectRules(cms), ...builderNginxRules(normalized)],
+    rules: [...cmsRules, ...builderNginxRules(normalized), ...fixedRules],
     checks: builderRedirectChecks(normalized),
   };
 }
