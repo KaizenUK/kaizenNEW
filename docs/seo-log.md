@@ -2,6 +2,12 @@
 
 Every change that can affect search, newest first: date, URL, what changed and why. One change at a time where possible, then wait a few weeks before judging it (`seo-strategy`, "Measure, test and audit"). Positions quoted here are stale the day they are written; pull Search Console for current numbers.
 
+## 2 Oct 2026: article and service links (S-03)
+
+- `/blog/fix-failing-software-project-financial-guide/` now links to contract product owner help and contact; `/blog/more-than-a-refresh-why-we-rebuilt-the-kaizen-website/` links to homepage web design and contact. `/blog/free-website-speed-scan/` links to WordPress web design, and `/blog/website-mistakes-liverpool/` links to homepage web design. Existing article text and search fields are preserved by revision-guarded writes and exact read-back.
+- `/`, `/services/wordpress-web-design/`, `/services/local-seo/` and `/contract-product-owner/` now link to their relevant buying, comparison, checklist or fix-versus-rebuild guide. Eight short paragraphs add ten descriptive links using existing layouts. No URL, title, description, canonical, publication date or structured-data change.
+- All ten articles now have service and contact/scanner body links. All four current service/home routes link to guides. The 55-document crawl has no missing internal destination or generic label; all 23 indexable pages are reachable within two clicks. Recheck after the planned P-03/B-04 retirements. Proof: `docs/audits/2026-10-02-s03-proof.md`. Search or enquiry gains are not yet measured.
+
 ## 2 Oct 2026: search page ownership (S-01)
 
 - `docs/marketing/site-profile.md` now assigns the main topics and every one of the 54 exported queries with at least 100 impressions. The map uses Sean's 1 October Search Console export, covering 4 June 2025 to 28 September 2026. Relevant queries have one owner; excluded offers and client-navigation searches are identified explicitly.
