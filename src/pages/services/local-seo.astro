@@ -1,4 +1,5 @@
 ---
+import { FaqSection } from "../../../client/components/untitled/faq";
 import { MarketingButton } from "../../../client/components/untitled/MarketingButton";
 import StaticPageLayout from "../../layouts/StaticPageLayout.astro";
 import ContactCTAButton from "../../../client/components/ContactCTAButton";
@@ -107,69 +108,47 @@ const dnhSteps = [
 /* ── FAQ ─────────────────────────────────────────────────────── */
 const faqs = [
   {
-    question: "Do I actually need ongoing SEO to rank locally?",
-    answer:
-      "Not always. If your site is fast, well-structured, mobile-friendly, and has proper data markup — Google can do its job without help. Plenty of businesses rank well locally without a monthly SEO spend, because the site itself does the heavy lifting. Ongoing SEO makes sense in competitive industries, but it should build on a solid foundation — not compensate for a broken one.",
+    "question": "Do I need a monthly plan to fix my website?",
+    "answer": "We can agree a set of changes for your site. We explain what is included and what it costs."
   },
   {
-    question: "Why isn't my site ranking even though I'm paying for SEO?",
-    answer:
-      "Usually because the SEO work sits on top of a site with fundamental technical problems. Slow speed, poor mobile experience, missing data markup, bad structure. Those undermine everything else. We fix the foundation so the SEO work you're already paying for can actually take effect.",
+    "question": "Why is my site hard to find on Google?",
+    "answer": "There can be more than one reason. We can check the pages you have and explain what needs work. A faster site alone will not put you first."
   },
   {
-    question: "What is Information Architecture?",
-    answer:
-      "It's how your site's content is structured and connected — your URL layout, internal links, navigation, and page groupings. Google uses it to understand which pages matter most and how topics relate to each other. Poor structure means Google can't figure out what your site is about, so it spreads your ranking power thinly instead of concentrating it where it counts.",
+    "question": "Can people find what they need on my site?",
+    "answer": "We check whether the menus and links lead to the right pages. Clear page names help people know where to go next."
   },
   {
-    question: "What are Core Web Vitals?",
-    answer:
-      "Google's way of scoring three things: how fast your site loads, how quickly it responds when someone taps something, and how stable the layout is while loading. They're a direct ranking factor. Most sites built with heavy themes or page builders fail these checks because of bloated code, unoptimised images, and scripts that block the page from appearing.",
+    "question": "How do I know if my site works well on a phone?",
+    "answer": "Try opening it on your phone. You should be able to read it and tap links with ease. Our free speed check can help spot slow pages."
   },
   {
-    question: "Will I lose my rankings if you change my site?",
-    answer:
-      "No. We follow a Do No Harm protocol — every URL is mapped, every redirect is handled, all your data markup is preserved or improved. We snapshot your rankings before we start and monitor them after launch. Everything you've built up stays intact. The technical improvements just let it work harder.",
+    "question": "Could a rebuild change where my site appears on Google?",
+    "answer": "Your place in search results can change when a site changes. We plan where old links should lead and check them before launch. We cannot promise a search position."
   },
   {
-    question: "Can I keep my SEO agency?",
-    answer:
-      "Absolutely — and they'll probably thank you. SEO agencies do their best work when the site underneath is fast, well-structured, and technically sound. We handle the code-level stuff they can't (or won't), and their content, strategy, and link building suddenly becomes far more effective.",
+    "question": "Can I keep the person who writes my pages?",
+    "answer": "We agree which parts of the site we will work on. You can keep other help that suits your business."
   },
   {
-    question: "What does the SEO agency vetting involve?",
-    answer:
-      "We review the work your current agency has done — what they've changed, what they're reporting, and whether it's actually moved the needle. We'll tell you if they're doing solid work, if the reports are just vanity metrics, or if there are gaps. Think of it as a second opinion from someone who understands the technical side.",
+    "question": "Can you check a site that someone else built?",
+    "answer": "We can look at the site you have. We will explain what works and what needs attention. We agree any paid work before we start."
   },
   {
-    question: "How long until I see results?",
-    answer:
-      "Google recrawls most sites within days of a speed improvement. You'll typically see the speed scores improve in Search Console within about a month. Ranking movement varies, but clients often see things shift within 4–8 weeks. Unlike retainer-based SEO, the fixes compound over time — they don't stop working when you stop paying.",
+    "question": "How will I know if the changes helped?",
+    "answer": "We can compare how the pages load before and after changes. Keep a note of the calls and messages your site brings. We cannot promise when search results will change."
   },
   {
-    question: "How is this different from what my SEO agency does?",
-    answer:
-      "They optimise content, build links, and track rankings — they work with what the site gives them. We work on the site itself — the code, the structure, the speed, the data markup. They're decorating the house. We're fixing the foundations.",
+    "question": "How is a better website meant to help my business?",
+    "answer": "People need to know what you do. Your site should make it easy to get in touch. We work on the pages that help with this."
   },
   {
-    question: "Is a monthly retainer ever worth it?",
-    answer:
-      "In competitive industries, yes — ongoing SEO can be valuable. But only on top of a technically sound site. If your agency is spending half their time working around your site's limitations, that's money going toward patching problems rather than building on strengths. Fix the site first. Then decide if you still need monthly support.",
-  },
+    "question": "Do I need to rebuild a site that is only a few years old?",
+    "answer": "Age alone does not decide it. We look at whether the site still does the job you need. Small fixes may be enough."
+  }
 ];
 
-const faqSchema = JSON.stringify({
-  "@context": "https://schema.org",
-  "@type": "FAQPage",
-  mainEntity: faqs.map((item) => ({
-    "@type": "Question",
-    name: item.question,
-    acceptedAnswer: {
-      "@type": "Answer",
-      text: item.answer,
-    },
-  })),
-});
 
 const serviceSchema = JSON.stringify({
   "@context": "https://schema.org",
@@ -191,7 +170,6 @@ const serviceSchema = JSON.stringify({
   description="Paying for SEO but still not ranking? The problem is often the website itself. We fix the speed, structure and setup that hold local rankings back."
 >
   <script type="application/ld+json" set:html={serviceSchema} is:inline />
-  <script type="application/ld+json" set:html={faqSchema} is:inline />
 
   <!-- ═══ HERO ═══ -->
   <section class="marketing-section bg-white">
@@ -1094,33 +1072,13 @@ const serviceSchema = JSON.stringify({
     </div>
   </section>
 
-  <!-- ═══ FAQ ═══ -->
-  <section class="marketing-section bg-[#f5f5f3]">
-    <div class="mx-auto max-w-[1440px] px-6 sm:px-10 lg:px-16 xl:px-24">
-      <div class="mb-16">
-        <p
-          class="marketing-eyebrow mb-6 text-xs font-medium font-body uppercase tracking-[0.25em] text-gray-400"
-        >
-          Common questions
-        </p>
-        <h2 class="text-4xl font-heading font-bold text-gray-950 md:text-5xl">
-          Local SEO FAQ
-        </h2>
-      </div>
-      <div class="grid grid-cols-1 gap-4 lg:grid-cols-2 lg:gap-x-12">
-        {
-          faqs.map((item) => (
-            <details class="rounded-xl border border-gray-200 bg-white p-6">
-              <summary class="cursor-pointer text-lg font-heading font-bold text-gray-950">
-                {item.question}
-              </summary>
-              <p class="mt-4 leading-relaxed text-gray-600">{item.answer}</p>
-            </details>
-          ))
-        }
-      </div>
-    </div>
-  </section>
+  <FaqSection
+    id="local-seo-faq"
+    heading="Know what could help people find you."
+    eyebrow="Common questions"
+    items={faqs}
+    className="bg-[#f5f5f3]"
+  />
 
   <!-- ═══ CTA ═══ -->
   <section class="marketing-section bg-gray-950">

@@ -1,75 +1,72 @@
-import { Suspense, lazy } from "react";
-
-const FaqSection = lazy(() =>
-  import("@/components/FaqSection").then((m) => ({ default: m.FaqSection })),
-);
+import { FaqSection } from "../untitled/faq";
+import { MarketingButton } from "../untitled/MarketingButton";
 
 const items = [
   {
-    question: "Do you only build new websites, or can you fix existing ones?",
+    question: "Do I need a new site, or can you fix mine?",
     answer:
-      "Both. Sometimes a site needs a fresh start, sometimes it just needs the right fixes. We'll look at what you've got and tell you honestly which makes more sense.",
+      "We can fix an existing site, including WordPress. We look at what works and what needs to change. A rebuild may help if small fixes are not enough.",
   },
   {
-    question: "My site is on WordPress. Can you still help?",
+    question: "Will I still be able to edit my pages?",
     answer:
-      "Absolutely. We work with WordPress every day — cleaning up slow plugins, improving page speed, and fixing the issues that quietly kill your Google rankings.",
+      "You can edit your pages and blog. We show you how before launch. We can also make changes for you.",
   },
   {
-    question: "I'm not technical — will I understand what you're doing?",
+    question: "How will I know what I am paying for?",
     answer:
-      "That's the whole point. Everything gets explained in plain English. No jargon, no acronyms, no assuming you know what a CDN is. You'll always know what's happening and why.",
+      "We explain what needs to change in plain English. We agree what the work covers and what it costs before you pay.",
   },
   {
-    question: "What does a performance audit actually include?",
+    question: "What does the free website check show?",
     answer:
-      "Page speed, Google's quality scores, mobile usability, accessibility, and security. You get a clear report with a prioritised list of fixes — and what each one will actually change.",
+      "It tests how fast one page loads on a phone. You see your score first. If it is below 90, we ask for your email before showing the full report.",
   },
   {
-    question: "How long does a typical project take?",
+    question: "How long will the work take?",
     answer:
-      "It depends on the scope. A performance audit and action plan can be done in days. A full site build usually takes a few weeks. We'll give you a realistic timeline before we start — and stick to it.",
-  },
-];
-
-const highIntent = [
-  {
-    question: "My website gets traffic but nobody enquires. Can you fix that?",
-    answer:
-      "That's one of the most common problems we solve. Traffic without conversions usually means the site isn't giving visitors a clear reason to act. We'll identify what's blocking them and fix it.",
+      "It depends on your site and what needs to change. We agree the work and dates with you before we start.",
   },
   {
-    question: "My site is slow and it's hurting my Google rankings. What can you do?",
+    question: "My site gets visits but no calls. Can you help?",
     answer:
-      "We'll run a full performance audit, find the exact bottlenecks, and fix them in priority order. Most sites we work on go from failing Core Web Vitals to passing within the first round of changes.",
+      "We can check what people see and how they contact you. Then we explain what may be getting in their way.",
   },
   {
-    question: "I've been burned by an agency before. How are you different?",
+    question: "Can you help with a slow website?",
     answer:
-      "You deal with one person from start to finish. No account managers, no disappearing acts. We'll tell you what your site actually needs — even if the answer is less than you expected.",
+      "We look for what is slowing your pages down. Then we agree which fixes to make first.",
   },
   {
-    question: "Can you help if I already have a developer but need direction?",
+    question: "I paid for a site that let me down. What would be different?",
     answer:
-      "That's exactly what our product owner service is for. We step in to manage priorities, translate between you and your developers, and make sure the project actually ships.",
+      "You deal with the same person from the first chat. We agree what the work covers before it starts. You see the pages before they go live.",
   },
   {
-    question: "I need a website that ranks on Google, not just looks good.",
+    question: "Can you help if my website project has got stuck?",
     answer:
-      "Every site we build is performance-optimised and structured for search from day one. Fast load times, clean code, proper meta data, and content that Google can actually understand.",
+      "We can look at the work so far. We help you decide what matters next and agree what our role will be.",
+  },
+  {
+    question: "What happens when I get in touch?",
+    answer:
+      "One of us will get back to you the same day, or the next working day at the latest. The first chat about your site is free. Work starts after you pay a non-refundable deposit.",
   },
 ];
 
 export function HomepageFAQ() {
   return (
-    <Suspense fallback={<div className="py-16 bg-white" />}>
-      <FaqSection
-        heading="Got questions? Good."
-        eyebrow="Before you ask"
-        items={items}
-        secondColumn={highIntent}
-        className="bg-white"
-      />
-    </Suspense>
+    <FaqSection
+      id="home-faq"
+      heading="Know what happens before you start."
+      eyebrow="Common questions"
+      items={items}
+      className="marketing-section--joined"
+      footer={
+        <div className="text-center">
+          <MarketingButton action="contact" />
+        </div>
+      }
+    />
   );
 }

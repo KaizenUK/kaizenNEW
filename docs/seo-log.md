@@ -2,6 +2,12 @@
 
 Every change that can affect search, newest first: date, URL, what changed and why. One change at a time where possible, then wait a few weeks before judging it (`seo-strategy`, "Measure, test and audit"). Positions quoted here are stale the day they are written; pull Search Console for current numbers.
 
+## 2 Oct 2026: server-rendered shared FAQs (F-05)
+
+- `/`, `/services/wordpress-web-design/`, `/services/local-seo/` and `/performance-scanner/` now use the same native FAQ. All 38 answers are in initial HTML, including the homepage answers previously loaded by the client. Each page has one FAQPage script generated from its visible questions and answers.
+- Home/local-search answers now describe agreed website work, editing and next steps in plain English. Removed unsupported timing/ranking promises and monthly local-SEO offers. The homepage explains the real score-first scanner flow, agreed reply time, free first chat and non-refundable deposit. WordPress/scanner answers are unchanged.
+- Existing scanner guide links, Service data, metadata and URLs remain. The local-search redirect remains P-03. Proof: `docs/audits/2026-10-02-f05-proof.md`.
+
 ## 2 Oct 2026: consistent marketing section spacing (F-04)
 
 - Active marketing, ad, case-study and legal pages use two consistent section sizes. Removed oversized gaps around headings and rows, plus empty viewport-height tails on short introductions. Header clearance and image proportions are preserved.

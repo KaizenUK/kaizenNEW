@@ -1,4 +1,5 @@
 ---
+import { FaqSection } from "../../client/components/untitled/faq";
 import { Button } from "../../client/components/untitled/base/buttons/button";
 import StaticPageLayout from "../layouts/StaticPageLayout.astro";
 import SpeedScanner from "../../client/components/SpeedScanner";
@@ -70,18 +71,6 @@ const faqs = [
   },
 ];
 
-const faqSchema = JSON.stringify({
-  "@context": "https://schema.org",
-  "@type": "FAQPage",
-  mainEntity: faqs.map((item) => ({
-    "@type": "Question",
-    name: item.question,
-    acceptedAnswer: {
-      "@type": "Answer",
-      text: item.answer,
-    },
-  })),
-});
 ---
 
 <StaticPageLayout
@@ -89,7 +78,6 @@ const faqSchema = JSON.stringify({
   title="Free Website Speed Test for Business Sites | Kaizen Web"
   description="Test how fast your website loads on a phone. See what is slowing it down and what to fix first, in plain English. Free."
 >
-  <script type="application/ld+json" set:html={faqSchema} is:inline />
   <!-- ═══ HERO ═══ -->
   <section class="marketing-section relative bg-[#f5f5f3]">
     <div class="mx-auto max-w-[1440px] px-6 lg:px-12">
@@ -195,41 +183,19 @@ const faqSchema = JSON.stringify({
     </div>
   </section>
 
-  <!-- ═══ FAQ ═══ -->
-  <section class="marketing-section bg-[#f5f5f3]">
-    <div class="mx-auto max-w-[1440px] px-6 lg:px-12">
-      <div class="mb-16">
-        <p
-          class="marketing-eyebrow text-xs font-medium font-body uppercase tracking-[0.25em] text-gray-400 mb-6"
-        >
-          Common questions
-        </p>
-        <h2
-          class="text-4xl md:text-5xl font-heading font-bold text-gray-950 leading-tight"
-        >
-          Know what your speed test tells you.
-        </h2>
-      </div>
-
-      <div class="grid grid-cols-1 gap-4 lg:grid-cols-2 lg:gap-x-12">
-        {
-          faqs.map((item) => (
-            <details class="rounded-xl border border-gray-200 bg-white p-6">
-              <summary class="cursor-pointer text-lg font-heading font-bold text-gray-950">
-                {item.question}
-              </summary>
-              <p class="mt-4 leading-relaxed text-gray-600">{item.answer}</p>
-            </details>
-          ))
-        }
-      </div>
-      <p class="mt-8 text-gray-600">
-        Read <a class="underline" href="/blog/free-website-speed-scan/">how the free website speed scan works</a>.
-        See <a class="underline" href="https://developers.google.com/speed/docs/insights/v5/about">Google's guide to speed test results</a>
-        and <a class="underline" href="https://developers.google.com/search/docs/appearance/page-experience">how page experience affects search</a>.
-      </p>
-    </div>
-  </section>
+  <FaqSection
+    id="scanner-faq"
+    heading="Know what your speed test tells you."
+    eyebrow="Common questions"
+    items={faqs}
+    className="bg-[#f5f5f3]"
+  >
+    <p slot="footer">
+      Read <a class="underline" href="/blog/free-website-speed-scan/">how the free website speed scan works</a>.
+      See <a class="underline" href="https://developers.google.com/speed/docs/insights/v5/about">Google's guide to speed test results</a>
+      and <a class="underline" href="https://developers.google.com/search/docs/appearance/page-experience">how page experience affects search</a>.
+    </p>
+  </FaqSection>
 
   <!-- ═══ CTA ═══ -->
   <section class="marketing-section bg-gray-950 text-white relative overflow-hidden">

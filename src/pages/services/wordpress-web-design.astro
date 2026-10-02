@@ -1,4 +1,5 @@
 ---
+import { FaqSection } from "../../../client/components/untitled/faq";
 import { MarketingButton } from "../../../client/components/untitled/MarketingButton";
 import StaticPageLayout from "../../layouts/StaticPageLayout.astro";
 import ContactCTAButton from "../../../client/components/ContactCTAButton";
@@ -99,18 +100,6 @@ const faqs = [
   }
 ];
 
-const faqSchema = JSON.stringify({
-  "@context": "https://schema.org",
-  "@type": "FAQPage",
-  mainEntity: faqs.map((item) => ({
-    "@type": "Question",
-    name: item.question,
-    acceptedAnswer: {
-      "@type": "Answer",
-      text: item.answer,
-    },
-  })),
-});
 
 const serviceSchema = JSON.stringify({
   "@context": "https://schema.org",
@@ -132,7 +121,6 @@ const serviceSchema = JSON.stringify({
   description="Is your WordPress site slow or hard to update? We can speed it up, rebuild it properly or move you to a faster custom site, and we'll say which fits."
 >
   <script type="application/ld+json" set:html={serviceSchema} is:inline />
-  <script type="application/ld+json" set:html={faqSchema} is:inline />
 
   <!-- ═══ HERO ═══ -->
   <section class="marketing-section bg-white">
@@ -377,33 +365,13 @@ const serviceSchema = JSON.stringify({
     </div>
   </section>
 
-  <!-- ═══ FAQ (Credible + Practical Value) ═══ -->
-  <section class="marketing-section bg-[#f5f5f3]">
-    <div class="mx-auto max-w-[1440px] px-6 sm:px-10 lg:px-16 xl:px-24">
-      <div class="mb-16">
-        <p
-          class="marketing-eyebrow mb-6 text-xs font-medium font-body uppercase tracking-[0.25em] text-gray-400"
-        >
-          Common questions
-        </p>
-        <h2 class="text-4xl font-heading font-bold text-gray-950 md:text-5xl">
-          Get clear answers before you decide.
-        </h2>
-      </div>
-      <div class="grid grid-cols-1 gap-4 lg:grid-cols-2 lg:gap-x-12">
-        {
-          faqs.map((item) => (
-            <details class="rounded-xl border border-gray-200 bg-white p-6">
-              <summary class="cursor-pointer text-lg font-heading font-bold text-gray-950">
-                {item.question}
-              </summary>
-              <p class="mt-4 leading-relaxed text-gray-600">{item.answer}</p>
-            </details>
-          ))
-        }
-      </div>
-    </div>
-  </section>
+  <FaqSection
+    id="wordpress-faq"
+    heading="Get clear answers before you decide."
+    eyebrow="Common questions"
+    items={faqs}
+    className="bg-[#f5f5f3]"
+  />
 
   <!-- ═══ CTA ═══ -->
   <section class="marketing-section bg-gray-950">
