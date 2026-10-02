@@ -2,6 +2,13 @@
 
 Every change that can affect search, newest first: date, URL, what changed and why. One change at a time where possible, then wait a few weeks before judging it (`seo-strategy`, "Measure, test and audit"). Positions quoted here are stale the day they are written; pull Search Console for current numbers.
 
+## 2 Oct 2026: combine the overlapping software-project guides (B-04)
+
+- Kept `/blog/fix-failing-software-project-financial-guide/`, the stronger URL in the saved page-impression export (277 versus 173). Merged the useful warning signs and planning guidance from `/blog/software-project-rescue/`; removed unsupported generalisations about why projects fail or how many can be recovered.
+- Title/H1 is "Fix or Rebuild a Failing Software Project?". The practical guide now asks readers to check what works, agree a useful result and compare the work and risks ahead. Two primary GOV.UK links support the advice. URL, canonical, original publication date, author, category and images are preserved.
+- Retired URL and its `/blogdetail/` and `/insights/` aliases get direct server 301s, with/without trailing slashes and with query strings preserved. The old document remains in the CMS for recovery/preview, but public reads exclude it. Removed its generated HTML, index card and sitemap entry. The contract product owner page links directly to the retained guide.
+- Copy reads at age 9.8. A crawl finds nine public articles and 22 indexable pages, with no orphan or missing internal destination; all articles retain service and contact/scanner links. Full checks and pending live verification: `docs/audits/2026-10-02-b04-proof.md`. No search or enquiry uplift is claimed.
+
 ## 2 Oct 2026: practical website checks and fresh build reads (B-03, fifth of five)
 
 - `/blog/website-mistakes-liverpool/` now gives five checks for a site's message, images, next step, phone form and current details. Removed unsupported abandonment, tool/performance and rebuild claims. W3C headings/labels and Google image-loading sources support the practical guidance.

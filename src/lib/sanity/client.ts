@@ -2,6 +2,7 @@ import { createClient } from "@sanity/client";
 import { createImageUrlBuilder } from "@sanity/image-url";
 import type { SanityImageSource } from "@sanity/image-url";
 import { getStudioUrl } from "../site";
+import { RETIRED_PUBLIC_PATHS } from "@shared/publicRoutePolicy.js";
 import type {
   ManagedCallToAction,
   ManagedCtaSection,
@@ -612,10 +613,16 @@ function normalizeManagedPage(
 
 // ── Query functions ────────────────────────────────────────────────
 
+// Keep retired documents editable in the CMS without publishing a second URL.
+const retiredPostPaths = new Set<string>(RETIRED_PUBLIC_PATHS);
+function isPublicPost(post: SanityPost): boolean {
+  return !retiredPostPaths.has(`/blog/${post.slug.replace(/^\/+|\/+$/g, "")}/`);
+}
+
 export async function getAllPosts(): Promise<SanityPost[]> {
   if (!sanityClient) return [];
   const posts = await sanityClient.fetch<SanityPost[]>(POSTS_QUERY);
-  return posts.map(normalizePost);
+  return posts.filter(isPublicPost).map(normalizePost);
 }
 
 export async function getPostBySlug(
@@ -627,7 +634,7 @@ export async function getPostBySlug(
   const post = await client.fetch<SanityPost | null>(POST_BY_SLUG_QUERY, {
     slug,
   });
-  return post ? normalizePost(post) : null;
+  return post && (preview || isPublicPost(post)) ? normalizePost(post) : null;
 }
 
 export async function getPostById(
@@ -646,7 +653,7 @@ export async function getPostById(
     id: normalizedId,
   });
 
-  return post ? normalizePost(post) : null;
+  return post && (preview || isPublicPost(post)) ? normalizePost(post) : null;
 }
 
 export async function getPostsByCategory(
@@ -657,7 +664,7 @@ export async function getPostsByCategory(
     POSTS_BY_CATEGORY_QUERY,
     { categoryId },
   );
-  return posts.map(normalizePost);
+  return posts.filter(isPublicPost).map(normalizePost);
 }
 
 export async function getAllCategories(): Promise<SanityCategory[]> {

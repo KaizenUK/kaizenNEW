@@ -34,6 +34,12 @@ export const PUBLIC_ROUTE_REDIRECTS = {
   "/products/consign-comply": "/",
   "/blog/new-kaizen-website-relaunch":
     "/blog/more-than-a-refresh-why-we-rebuilt-the-kaizen-website/",
+  "/blog/software-project-rescue":
+    "/blog/fix-failing-software-project-financial-guide/",
+  "/blogdetail/software-project-rescue":
+    "/blog/fix-failing-software-project-financial-guide/",
+  "/insights/software-project-rescue":
+    "/blog/fix-failing-software-project-financial-guide/",
 };
 
 export const RETIRED_PUBLIC_PATHS = Object.freeze(
