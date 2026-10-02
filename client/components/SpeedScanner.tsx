@@ -971,7 +971,7 @@ export default function SpeedScanner() {
     >
       <div className="p-6 md:p-12 rounded-2xl border border-white/10 bg-white/4 relative overflow-hidden">
         <div className="text-center mb-10">
-          <p className="text-xs font-medium uppercase tracking-[0.25em] text-cyan-400/60 mb-4">
+          <p className="marketing-eyebrow marketing-eyebrow--dark text-xs font-medium uppercase tracking-[0.25em] text-cyan-400/60 mb-4">
             Free speed check
           </p>
           <h2 className="text-3xl md:text-4xl font-bold text-white mb-3">
@@ -1073,7 +1073,7 @@ export default function SpeedScanner() {
                 <div className={shouldGate ? "hidden" : ""}>
                   {/* Metrics Grid */}
                   <div className="rounded-lg bg-white/[0.03] border border-white/5 p-5 mb-6">
-                    <p className="text-xs font-medium uppercase tracking-[0.2em] text-white/30 mb-4">
+                    <p className="marketing-eyebrow marketing-eyebrow--dark text-xs font-medium uppercase tracking-[0.2em] text-white/30 mb-4">
                       Your phone test
                     </p>
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-left">

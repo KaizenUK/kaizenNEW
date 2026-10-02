@@ -158,7 +158,7 @@ export default function SiteFooter({ buildLabel }: FooterProps) {
         <div className="grid gap-10 py-12 md:grid-cols-3 md:py-16">
           <a href={`mailto:${BUSINESS_EMAIL}`} className="group no-underline">
             <Mail className="h-5 w-5 text-white/20 transition-colors group-hover:text-white/50" />
-            <p className="mt-3 text-[11px] font-semibold uppercase tracking-[0.18em] text-white/30 font-body">
+            <p className="marketing-eyebrow marketing-eyebrow--dark mt-3 text-xs font-semibold uppercase tracking-[0.18em] text-white/30 font-body">
               Email
             </p>
             <p className="mt-2 text-lg font-medium text-white transition-colors group-hover:text-white/80">
@@ -168,7 +168,7 @@ export default function SiteFooter({ buildLabel }: FooterProps) {
 
           <div>
             <MapPin className="h-5 w-5 text-white/20" />
-            <p className="mt-3 text-[11px] font-semibold uppercase tracking-[0.18em] text-white/30 font-body">
+            <p className="marketing-eyebrow marketing-eyebrow--dark mt-3 text-xs font-semibold uppercase tracking-[0.18em] text-white/30 font-body">
               Where we work
             </p>
             <p className="mt-2 text-base leading-6 text-white/60">
@@ -178,7 +178,7 @@ export default function SiteFooter({ buildLabel }: FooterProps) {
 
           <div>
             <Building2 className="h-5 w-5 text-white/20" />
-            <p className="mt-3 text-[11px] font-semibold uppercase tracking-[0.18em] text-white/30 font-body">
+            <p className="marketing-eyebrow marketing-eyebrow--dark mt-3 text-xs font-semibold uppercase tracking-[0.18em] text-white/30 font-body">
               Registered Office
             </p>
             <p className="mt-2 text-base leading-6 text-white/60">
@@ -220,7 +220,7 @@ export default function SiteFooter({ buildLabel }: FooterProps) {
           {/* Link columns */}
           {footerColumns.map((column) => (
             <div key={column.title}>
-              <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-white/30 font-body">
+              <p className="marketing-eyebrow marketing-eyebrow--dark text-xs font-semibold uppercase tracking-[0.18em] text-white/30 font-body">
                 {column.title}
               </p>
               <ul className="mt-4 space-y-3">
@@ -255,7 +255,7 @@ export default function SiteFooter({ buildLabel }: FooterProps) {
               className="text-sm text-white/30"
             />
             {buildLabel ? (
-              <span className="rounded-full border border-white/10 px-3 py-1 text-[11px] font-mono uppercase tracking-[0.18em] text-white/30">
+              <span className="marketing-eyebrow marketing-eyebrow--dark rounded-full border border-white/10 px-3 py-1 text-xs font-body uppercase tracking-[0.18em] text-white/30">
                 Build {buildLabel}
               </span>
             ) : null}

@@ -2,6 +2,12 @@
 
 Every change that can affect search, newest first: date, URL, what changed and why. One change at a time where possible, then wait a few weeks before judging it (`seo-strategy`, "Measure, test and audit"). Positions quoted here are stale the day they are written; pull Search Console for current numbers.
 
+## 2 Oct 2026: font loading and readable labels (F-03)
+
+- Public marketing and ad landing pages preload the 25,356-byte WOFF2 heading font, replacing the 75,080-byte TTF download for supported browsers. The original TTF remains as a fallback.
+- Marketing headings use corrected font proportions and a 1.1 line height. Small section and navigation labels use at least 12px DM Sans with stronger contrast. Case-study labels no longer use a monospace font.
+- This is a presentation change. Copy, heading levels, page URLs, titles, descriptions, canonicals and structured data are unchanged. Verification and the measured homepage layout shift are recorded in `docs/audits/2026-10-02-f03-proof.md`.
+
 ## 2 Oct 2026: shared action labels and links (F-02)
 
 - Marketing pages and navigation now use three consistent action labels for contact, the speed check and a case study. Former contact modal buttons are normal links to `/contact/`, present in server HTML. Ad landing pages retain their own form anchors. Existing article and service links keep their descriptive labels.

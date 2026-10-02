@@ -86,7 +86,7 @@ export function FaqSection({
           className="mb-20 md:mb-28 max-w-2xl"
         >
           {eyebrow && (
-            <p className="text-xs font-medium tracking-[0.25em] text-gray-400 uppercase mb-5 font-body">
+            <p className="marketing-eyebrow text-xs font-medium tracking-[0.25em] text-gray-400 uppercase mb-5 font-body">
               {eyebrow}
             </p>
           )}

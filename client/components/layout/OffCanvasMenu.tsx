@@ -200,7 +200,7 @@ const OffCanvasMenu: React.FC<OffCanvasMenuProps> = ({ isOpen, onClose }) => {
                               {section.primaryColumns.map((column) => (
                                 <div key={column.title || column.items[0]?.href}>
                                   {column.title ? (
-                                    <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#6d7788]">
+                                    <p className="marketing-eyebrow text-xs font-semibold uppercase tracking-[0.14em] text-[#6d7788]">
                                       {column.title}
                                     </p>
                                   ) : null}
@@ -217,7 +217,7 @@ const OffCanvasMenu: React.FC<OffCanvasMenuProps> = ({ isOpen, onClose }) => {
                                           <span className="inline-flex items-center gap-2 text-[16px] font-medium leading-6 text-[#16181d]">
                                             <span>{item.label}</span>
                                             {item.badge ? (
-                                              <span className="rounded-sm bg-[#e5f3cf] px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-[0.08em] text-[#355413]">
+                                              <span className="marketing-eyebrow rounded-sm bg-[#e5f3cf] px-1.5 py-0.5 text-xs font-semibold uppercase tracking-[0.08em] text-[#355413]">
                                                 {item.badge}
                                               </span>
                                             ) : null}
@@ -235,7 +235,7 @@ const OffCanvasMenu: React.FC<OffCanvasMenuProps> = ({ isOpen, onClose }) => {
                               {section.utilitySections?.map((utility) => (
                                 <div key={utility.title || utility.items?.[0]?.href || utility.socials?.[0]?.href}>
                                   {utility.title ? (
-                                    <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#6d7788]">
+                                    <p className="marketing-eyebrow text-xs font-semibold uppercase tracking-[0.14em] text-[#6d7788]">
                                       {utility.title}
                                     </p>
                                   ) : null}
@@ -251,7 +251,7 @@ const OffCanvasMenu: React.FC<OffCanvasMenuProps> = ({ isOpen, onClose }) => {
                                           >
                                             <span>{item.label}</span>
                                             {item.badge ? (
-                                              <span className="rounded-sm bg-[#e5f3cf] px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-[0.08em] text-[#355413]">
+                                              <span className="marketing-eyebrow rounded-sm bg-[#e5f3cf] px-1.5 py-0.5 text-xs font-semibold uppercase tracking-[0.08em] text-[#355413]">
                                                 {item.badge}
                                               </span>
                                             ) : null}

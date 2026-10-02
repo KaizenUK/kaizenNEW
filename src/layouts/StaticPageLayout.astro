@@ -94,6 +94,7 @@ const ogImage = sanityOgImage || meta.image || DEFAULT_OG_IMAGE;
     <meta name="twitter:description" content={description} />
     {ogImage && <meta name="twitter:image" content={ogImage} />}
     <link rel="canonical" href={canonicalUrl} />
+    <link rel="preload" href="/fonts/manifa-v2-bold.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -101,7 +102,7 @@ const ogImage = sanityOgImage || meta.image || DEFAULT_OG_IMAGE;
       rel="stylesheet"
     />
   </head>
-  <body class="min-h-screen bg-white text-kaizen-text-dark antialiased">
+  <body class="marketing-page min-h-screen bg-white text-kaizen-text-dark antialiased">
     <NavShell client:load />
 
     <main class="pt-20">

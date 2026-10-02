@@ -7,10 +7,47 @@
 
 @font-face {
   font-family: 'Manifa V2';
-  src: url('/fonts/manifa-v2-bold.ttf') format('truetype');
+  src: url('/fonts/manifa-v2-bold.woff2') format('woff2'),
+    url('/fonts/manifa-v2-bold.ttf') format('truetype');
   font-weight: 700;
   font-style: normal;
   font-display: swap;
+}
+
+/* Manifa's capital height is 481/1000 em. Match a normal display cap height
+   without changing the unadjusted face used outside marketing pages. */
+@font-face {
+  font-family: 'Manifa V2 Display';
+  src: url('/fonts/manifa-v2-bold.woff2') format('woff2'),
+    url('/fonts/manifa-v2-bold.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+  size-adjust: 150%;
+  ascent-override: 66.3%;
+  descent-override: 16.7%;
+  line-gap-override: 0%;
+}
+
+.marketing-page :is(.font-heading, .font-display) {
+  font-family: 'Manifa V2 Display', system-ui, sans-serif;
+}
+
+/* Keep display headings compact without changing the builder's typography. */
+.marketing-page :where(h1, h2, h3, h4, h5, h6):is(.font-heading, .font-display) {
+  line-height: 1.1;
+}
+
+.marketing-page .marketing-eyebrow {
+  font-family: "DM Sans", system-ui, sans-serif;
+  font-size: 0.75rem;
+  font-weight: 600;
+  line-height: 1.5;
+  color: #4b5563;
+}
+
+.marketing-page .marketing-eyebrow--dark {
+  color: #d1d5db;
 }
 
 @layer base {

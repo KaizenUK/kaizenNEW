@@ -391,7 +391,7 @@ const Header: React.FC<HeaderProps> = ({
                                   {activeMenuData.primaryColumns.map((column) => (
                                     <div key={column.title || column.items[0]?.href} className="min-w-0">
                                       {column.title ? (
-                                        <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#6d7788]">
+                                        <p className="marketing-eyebrow text-xs font-semibold uppercase tracking-[0.16em] text-[#6d7788]">
                                           {column.title}
                                         </p>
                                       ) : null}
@@ -404,7 +404,7 @@ const Header: React.FC<HeaderProps> = ({
                                                 <span className="inline-flex items-center gap-2 text-[18px] font-medium leading-[1.5]">
                                                   <span>{item.label}</span>
                                                   {item.badge ? (
-                                                    <span className="shrink-0 whitespace-nowrap rounded-sm bg-[#f0f0ee] px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-[0.08em] text-[#8a8a86]">
+                                                    <span className="marketing-eyebrow shrink-0 whitespace-nowrap rounded-sm bg-[#f0f0ee] px-1.5 py-0.5 text-xs font-semibold uppercase tracking-[0.08em] text-[#8a8a86]">
                                                       {item.badge}
                                                     </span>
                                                   ) : null}
@@ -420,7 +420,7 @@ const Header: React.FC<HeaderProps> = ({
                                                 <span className="inline-flex items-center gap-2 text-[18px] font-medium leading-[1.5]">
                                                   <span>{item.label}</span>
                                                   {item.badge ? (
-                                                    <span className="rounded-sm bg-[#e5f3cf] px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-[0.08em] text-[#355413]">
+                                                    <span className="marketing-eyebrow shrink-0 whitespace-nowrap rounded-sm bg-[#e5f3cf] px-1.5 py-0.5 text-xs font-semibold uppercase tracking-[0.08em] text-[#355413]">
                                                       {item.badge}
                                                     </span>
                                                   ) : null}
@@ -444,7 +444,7 @@ const Header: React.FC<HeaderProps> = ({
                                     {activeMenuData.utilitySections.map((section) => (
                                       <div key={section.title || section.items?.[0]?.href || section.socials?.[0]?.href}>
                                         {section.title ? (
-                                          <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#6d7788]">
+                                          <p className="marketing-eyebrow text-xs font-semibold uppercase tracking-[0.16em] text-[#6d7788]">
                                             {section.title}
                                           </p>
                                         ) : null}
@@ -460,7 +460,7 @@ const Header: React.FC<HeaderProps> = ({
                                                 >
                                                   <span>{item.label}</span>
                                                   {item.badge ? (
-                                                    <span className="rounded-sm bg-[#e5f3cf] px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-[0.08em] text-[#355413]">
+                                                    <span className="marketing-eyebrow shrink-0 whitespace-nowrap rounded-sm bg-[#e5f3cf] px-1.5 py-0.5 text-xs font-semibold uppercase tracking-[0.08em] text-[#355413]">
                                                       {item.badge}
                                                     </span>
                                                   ) : null}
