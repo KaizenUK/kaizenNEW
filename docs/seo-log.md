@@ -2,6 +2,14 @@
 
 Every change that can affect search, newest first: date, URL, what changed and why. One change at a time where possible, then wait a few weeks before judging it (`seo-strategy`, "Measure, test and audit"). Positions quoted here are stale the day they are written; pull Search Console for current numbers.
 
+## 2 Oct 2026: practical website checks and fresh build reads (B-03, fifth of five)
+
+- `/blog/website-mistakes-liverpool/` now gives five checks for a site's message, images, next step, phone form and current details. Removed unsupported abandonment, tool/performance and rebuild claims. W3C headings/labels and Google image-loading sources support the practical guidance.
+- Title/H1 is "5 Website Mistakes You Can Check on Your Own Site"; description and excerpt match. Real Kaizen homepage and phone-form screenshots replace the generated illustration. The form image is labelled as its first step with example placeholders; no real enquiry was sent.
+- Preserved the URL, canonical, indexability, publication date, author and category. Descriptive body links reach the web-design hub, case studies, scanner, local-search checklist and contact. The old local-SEO service link and tracking parameters are removed. Other page metadata and all structured data are unchanged.
+- Astro server/static reads now use the fresh CMS API after two builds picked up old article content. Published-only reads and browser/non-Astro cache settings remain unchanged. Rejected builds were not shipped; the final build contains the verified article. Full Windows test comparison has no new failures.
+- Built copy reads at age 8.8 with zero wording/long-sentence hits. Proof: `docs/audits/2026-10-02-b03-mistakes-proof.md`. All five rewrites are locally verified; B-03 closes after the final live checks. No search or enquiry uplift is claimed.
+
 ## 2 Oct 2026: sourced website-price examples (B-03, fourth of five)
 
 - `/blog/how-much-does-a-website-cost-in-liverpool-in-2025/` now explains the work inside a quote, with two attributed UK package examples. Prices include their VAT status and ongoing charges; removed unsupported market-wide ranges and price/quality claims. These are different advertised offers, not Kaizen rates or industry averages. Sources and figures are recorded in the site profile.

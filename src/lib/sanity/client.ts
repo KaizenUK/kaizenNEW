@@ -157,7 +157,9 @@ export const sanityClient = hasSanityConfig
       projectId,
       dataset,
       apiVersion: "2025-01-01", // Align with sanity.config.ts
-      useCdn: !token,
+      // Static/server renders must use fresh published content after an edit.
+      // Keep cached reads available in the browser and non-Astro callers.
+      useCdn: !token && import.meta.env?.SSR !== true,
       token,
       perspective: "published",
     })
