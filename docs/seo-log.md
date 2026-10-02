@@ -2,6 +2,12 @@
 
 Every change that can affect search, newest first: date, URL, what changed and why. One change at a time where possible, then wait a few weeks before judging it (`seo-strategy`, "Measure, test and audit"). Positions quoted here are stale the day they are written; pull Search Console for current numbers.
 
+## 2 Oct 2026: search page ownership (S-01)
+
+- `docs/marketing/site-profile.md` now assigns the main topics and every one of the 54 exported queries with at least 100 impressions. The map uses Sean's 1 October Search Console export, covering 4 June 2025 to 28 September 2026. Relevant queries have one owner; excluded offers and client-navigation searches are identified explicitly.
+- The homepage owns general web design and the brand. WordPress work, the speed-test tool and the website-cost guide keep their existing URLs and distinct jobs. Local SEO remains excluded under DEC-03. All 23 current indexable titles were reviewed; the scanner guide's earlier title fix already resolves that conflict, so this task changes no title or CMS field.
+- Separate query/page exports do not prove query-level cannibalisation. No current rank or uplift is claimed. P-03 still owns the local-search redirect; B-04 retains the fix-versus-rebuild guide when merging the rescue article, based on its higher exported page impressions. Source, coverage and validation: `docs/audits/2026-10-02-s01-proof.md`.
+
 ## 2 Oct 2026: homepage copy and design rebuild (P-01)
 
 - `/` now leads with web design for business owners, real Midland before/after screenshots and the approved first-month enquiry result. Early pledge points address paying again and editing the site. Three buyer routes link to the relevant case studies or WordPress service. A clearly labelled loading replay uses actual screenshots and the confirmed more-than-eight-second/1.2-second figures.

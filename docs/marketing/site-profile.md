@@ -68,11 +68,87 @@ The facts the marketing skills (`.claude/skills/marketing-messaging`, `marketing
   - Areas (Sean, 1 Oct 2026): the existing Merseyside areas plus Cleckheaton, Gomersal and the surrounding area, including Leeds and Bradford. In the site data since 1 Oct 2026.
   - Still open: how reviews are asked for.
   - Existing Liverpool-targeted pages and posts (slugs with "liverpool") are kept at their URLs (don't change URLs for a keyword), but their titles, H1s and copy need a decision once the area list is settled.
-- **Page-owner map:**
+- **Page-owner map, checked 2 Oct 2026 (S-01):** the owners below are editorial decisions based on the current offer and search intent. They are not a claim that Google currently ranks only that URL. The export has separate query and page tables, with no query-to-page pairs.
 
-| Term | Owner URL | Notes |
+| Term or intent | Owner URL | Boundary |
 |---|---|---|
-| (to build from Search Console) | | |
+| Web design, website design and general website rebuild work | `/` | Main commercial hub. Regional variants use this page, not new town pages. |
+| WordPress web design, fixing or replacing a slow WordPress site | `/services/wordpress-web-design/` | Specific commercial service. Link back to the web-design hub. |
+| Website speed test, free website speed test | `/performance-scanner/` | Working tool. The report-reading guide supports it and does not own the test query. |
+| Website cost, how much a website costs | `/blog/how-much-does-a-website-cost-in-liverpool-in-2025/` | General buying guide. Keep the existing URL; review its facts in B-03. |
+| Hidden costs of cheap websites | `/blog/hidden-costs-cheap-websites/` | Ongoing costs and buying risks, distinct from the general cost guide. |
+| Kaizen Web, Kaizen websites, web design Kaizen | `/` | Brand destination. Bare "kaizen" is ambiguous; use the exact business name. |
+| Local SEO, SEO agency, SEO company | None | Excluded under DEC-03. P-03 retires the service page; the legacy checklist remains an informational article, not an SEO sales page. |
+| Website project rescue consultant, contract product owner | `/contract-product-owner/` | Commercial help. The software-project guides link here. |
+| Fixing a failing software project versus rebuilding | `/blog/fix-failing-software-project-financial-guide/` | Informational decision guide. B-04 merges the overlapping rescue article into this URL, which has more page impressions. |
+| WordPress versus React | `/blog/wordpress-vs-react-business-roi/` | Existing comparison topic, distinct from buying WordPress web-design work. |
+| How to choose a web designer | `/blog/choose-web-design-agency-liverpool/` | Informational selection guide. Buying web design belongs to the homepage. |
+| Kaizen pledge | `/pledge/` | What to expect when working with Kaizen. |
+| Midland Oil case-study evidence | `/case-studies/midland-oil-group/` | Demonstrates Kaizen's work. Do not target people trying to reach Midland. |
+| Helen Moore case-study evidence | `/case-studies/helen-moore-hairdressing/` | Demonstrates Kaizen's work. Do not target people trying to book the salon. |
+
+**Every exported query with at least 100 impressions:** `kaizenweb.co.uk-Performance-on-Search-2026-10-01.zip`, `Queries.csv`, exported 1 Oct 2026. `Filters.csv` says Web / Last 16 months; `Chart.csv` spans 4 June 2025 to 28 September 2026. All 54 qualifying rows are included, including the row at exactly 100. Of these, 25 have a target owner, six point to evidence only and 23 are excluded. "None" is a deliberate exclusion, not an invitation to create a page. Other terms in the core map stay relevant even below this threshold.
+
+| Export query | Impressions | Owner URL | Use |
+|---|---:|---|---|
+| local seo liverpool | 3,076 | None | Exclude: no local SEO service (DEC-03). |
+| local seo wirral | 1,370 | None | Exclude: no local SEO service (DEC-03). |
+| seo services wirral | 1,109 | None | Exclude: no local SEO service (DEC-03). |
+| local seo services liverpool | 930 | None | Exclude: no local SEO service (DEC-03). |
+| midland oil group | 882 | `/case-studies/midland-oil-group/` | Evidence only. Do not target people seeking the client. |
+| web design wirral | 866 | `/` | Commercial web design. No separate town page. |
+| midland oil group ltd | 695 | `/case-studies/midland-oil-group/` | Evidence only. Do not target people seeking the client. |
+| midland oil refinery | 676 | `/case-studies/midland-oil-group/` | Evidence only. Do not target people seeking the client. |
+| targeted seo liverpool - local seo services | 645 | None | Exclude: no local SEO service (DEC-03). |
+| ecommerce liverpool | 595 | None | Exclude: not a current service. |
+| kaizen | 543 | `/` | Broad/ambiguous brand term; identify Kaizen Web clearly. |
+| ecommerce web design liverpool | 539 | None | Exclude: not a current service. |
+| wirral web design | 449 | `/` | Commercial web design. No separate town page. |
+| web development wirral | 364 | `/` | Commercial web design. No separate town page. |
+| helen moore hairdressing | 352 | `/case-studies/helen-moore-hairdressing/` | Evidence only. Do not target people seeking the salon. |
+| web design warrington | 348 | `/` | Legacy location query. General home only; no new local claim or page. |
+| kaizen web | 346 | `/` | Kaizen Web brand intent. |
+| website design wirral | 338 | `/` | Commercial web design. No separate town page. |
+| wirral website design | 323 | `/` | Commercial web design. No separate town page. |
+| seo agency wirral | 281 | None | Exclude: no local SEO service (DEC-03). |
+| web designers wirral | 273 | `/` | Commercial web design. No separate town page. |
+| web design agency liverpool | 245 | `/` | Commercial web design. No separate town page. |
+| kaizen pledge | 238 | `/pledge/` | Brand promise and terms of working together. |
+| web design kaizen | 222 | `/` | Kaizen Web brand intent. |
+| website design warrington | 220 | `/` | Legacy location query. General home only; no new local claim or page. |
+| local seo service liverpool | 219 | None | Exclude: no local SEO service (DEC-03). |
+| website design packages wirral | 208 | `/` | General web-design offer; no package or price promise. |
+| wirral seo | 200 | None | Exclude: no local SEO service (DEC-03). |
+| midland oil company | 175 | `/case-studies/midland-oil-group/` | Evidence only. Do not target people seeking the client. |
+| web design chester | 175 | `/` | Legacy location query. General home only; no new local claim or page. |
+| mog uk lubricants | 162 | `/case-studies/midland-oil-group/` | Evidence only. Do not target people seeking the client. |
+| web design liverpool | 156 | `/` | Commercial web design. No separate town page. |
+| web design and development in liverpool | 145 | `/` | Commercial web design. No separate town page. |
+| seo services liverpool | 143 | None | Exclude: no local SEO service (DEC-03). |
+| seo company wirral | 140 | None | Exclude: no local SEO service (DEC-03). |
+| web designers warrington | 138 | `/` | Legacy location query. General home only; no new local claim or page. |
+| ecommerce website development liverpool | 131 | None | Exclude: not a current service. |
+| react vs wordpress | 130 | `/blog/wordpress-vs-react-business-roi/` | Informational comparison; service intent stays on WordPress. |
+| does kaizen do local seo for estate agents | 128 | None | Exclude: no local SEO service (DEC-03). |
+| warrington web design | 126 | `/` | Legacy location query. General home only; no new local claim or page. |
+| digital kaizen | 123 | None | Exclude: ambiguous or other-company intent. |
+| shopify agency liverpool | 121 | None | Exclude: not a current service. |
+| kaizen websites | 120 | `/` | Kaizen Web brand intent. |
+| targeted seo liverpool - google maps | 118 | None | Exclude: no local SEO service (DEC-03). |
+| liverpool ecommerce | 117 | None | Exclude: not a current service. |
+| google page checker | 108 | None | Exclude: search for Google's tool. |
+| chester web design | 107 | `/` | Legacy location query. General home only; no new local claim or page. |
+| ecommerce website design liverpool | 107 | None | Exclude: not a current service. |
+| targeted seo liverpool - local maps ranking | 107 | None | Exclude: no local SEO service (DEC-03). |
+| web agency chester | 105 | `/` | Legacy location query. General home only; no new local claim or page. |
+| website project rescue consultant | 105 | `/contract-product-owner/` | Commercial rescue help; guides support this service. |
+| web designer wirral | 104 | `/` | Commercial web design. No separate town page. |
+| kaizen seo contact number | 103 | None | Exclude: ambiguous or other-company intent. |
+| kaizen seo support email | 100 | None | Exclude: ambiguous or other-company intent. |
+
+The 1,000 exported query rows total 29,970 impressions and 76 clicks. The chart totals are 36,642 impressions and 196 clicks. These are different source totals; the query table is not treated as complete property traffic, and no missing query-to-page relationship is inferred. Numbers describe that export, not current rankings. Source hash, row checks and title review: `docs/audits/2026-10-02-s01-proof.md`.
+
+**Title review:** all 23 current indexable page titles were read. The old speed-test guide conflict was fixed in Q-12: the guide now says "How to Read Your Website Speed Report", while the tool owns "Free Website Speed Test". The home, WordPress service, comparison, cost guide, hidden-cost guide, case studies and selection guide have distinct jobs. Sharing a broader phrase in an explicitly narrower title is not a second owner. No additional title or CMS change is needed for S-01. P-03 still retires the local-SEO service, and B-04 resolves the overlapping software articles. Any claim of observed query cannibalisation needs a fresh query-by-page export.
 
 - Terms not to target (from Search Console, Oct 2026): people looking for Google's own speed test ("google speed test", "test my site google" and about 300 variants); Shopify, Magento and WooCommerce work in Liverpool, unless Kaizen starts offering it; "kaizen seo ..." searches, which look like people looking for a different company called Kaizen.
 - Topic boundary: web design, build and performance for businesses. Consigns is not part of this site. Contract product owner work stays on the site (Sean, 1 Oct 2026), written in the site's voice with Sean named as the proof (DEC-07).
