@@ -1,7 +1,6 @@
 ---
 import { MarketingButton } from "../../client/components/untitled/MarketingButton";
 import StaticPageLayout from "../layouts/StaticPageLayout.astro";
-import ContactCTAButton from "../../client/components/ContactCTAButton";
 
 export const prerender = true;
 
@@ -9,23 +8,23 @@ export const prerender = true;
 const commitments = [
   {
     num: "01",
-    title: "AI is a tool, not a shortcut.",
-    copy: "Yes, Kaizen uses AI. It handles the repetitive work so more time goes into the things that actually matter — your strategy, your design, your site's architecture. A prompt can't understand your customers or design a brand. It can save hours on the grunt work so the thinking gets the attention it deserves.",
+    title: "Your business guides the work.",
+    copy: "We use AI to help with routine tasks. We plan the site around what your customers need. We check the work before it goes live.",
   },
   {
     num: "02",
-    title: "The quote is the quote.",
-    copy: "The price agreed is the price you pay. If the work takes longer than expected, that's not your problem. The only thing that changes the number is if the scope changes — and that's always a conversation, never a surprise on an invoice.",
+    title: "You agree the price first.",
+    copy: "We agree the work and price before we start. Extra time on that work does not change your quote. If you want more work, we agree a new price first.",
   },
   {
     num: "03",
-    title: "30 days of snagging. Free.",
-    copy: "After launch, you get 30 days where any bug or issue gets fixed at no extra cost. Minor tweaks within reason are included too. If something bigger comes up, you'll know whether it's a fix or a new feature before any work starts.",
+    title: "Report a fault within 30 days.",
+    copy: "Tell us about faults in our work within 30 days of launch. We fix them at no extra cost. Small tweaks within reason are included too. For a bigger change, we agree the cost before work starts.",
   },
   {
     num: "04",
-    title: "Sometimes the answer is no.",
-    copy: "Not every project is the right fit. If Kaizen isn't the right choice for what you need, you'll hear that upfront — not three weeks into a project that's going sideways. The same goes the other way. This works best when both sides are genuinely invested.",
+    title: "We tell you if we can help.",
+    copy: "We talk through what your website needs before you commit. If we are not the right fit, we will tell you before work starts.",
   },
 ];
 ---
@@ -42,19 +41,24 @@ const commitments = [
         <p
           class="marketing-eyebrow text-xs font-medium font-body uppercase tracking-[0.25em] text-gray-400 mb-6"
         >
-          The pledge
+          The Kaizen pledge
         </p>
         <h1
           class="text-balance text-4xl md:text-5xl lg:text-6xl font-heading font-bold text-gray-950 leading-tight mb-8"
         >
-          <span class="block text-balance">Here's what you can expect.</span>
-          <span class="block text-balance text-gray-400">Before you commit to anything.</span>
+          <span class="block text-balance">Know what to expect.</span>
+          <span class="block text-balance text-gray-500">Before we build your website.</span>
         </h1>
-        <p class="text-lg md:text-xl text-gray-500 font-body leading-relaxed">
-          Most agencies talk about transparency. This page actually does it.
-          No spin, no small print — just how this works, written down so
-          you can hold Kaizen to it.
+        <p class="text-lg md:text-xl text-gray-600 font-body leading-relaxed">
+          Your business should know what its new website will cost.
+          We agree the work and price before you commit.
         </p>
+        <div class="mt-6">
+          <MarketingButton action="contact" />
+          <p class="mt-4 max-w-md font-body text-sm leading-relaxed text-gray-600">
+            One of us will get back to you the same day, or the next working day at the latest.
+          </p>
+        </div>
       </div>
     </div>
   </section>
@@ -71,12 +75,12 @@ const commitments = [
         <p
           class="marketing-eyebrow marketing-eyebrow--dark text-xs font-medium font-body uppercase tracking-[0.25em] text-white/40 mb-6"
         >
-          What you're signing up for
+          How we work
         </p>
         <h2
           class="text-4xl md:text-5xl lg:text-6xl font-heading font-bold text-white leading-tight"
         >
-          No surprises.<br />On either side.
+          Agree the work<br />before we start.
         </h2>
       </div>
 
@@ -116,12 +120,11 @@ const commitments = [
         <h2
           class="text-4xl md:text-5xl font-heading font-bold text-gray-950 leading-tight mb-8"
         >
-          The short version.
+          You can ask before you decide.
         </h2>
-        <p class="text-lg md:text-xl text-gray-500 font-body leading-relaxed">
-          You'll know what's happening, what it costs, and what you're getting —
-          at every stage. If something changes, you'll hear about it before it
-          hits your inbox. That's it. That's the pledge.
+        <p class="text-lg md:text-xl text-gray-600 font-body leading-relaxed">
+          Ask us about anything you are unsure of. We explain what the quote covers before you pay.
+          Work starts after a non-refundable deposit.
         </p>
       </div>
     </div>
@@ -143,18 +146,18 @@ const commitments = [
         <h2
           class="text-balance text-4xl md:text-5xl lg:text-6xl font-heading font-bold text-white leading-tight mb-8"
         >
-          <span class="block text-balance">Now you know how this works.</span>
-          <span class="block text-balance text-gray-500">Ready to see if it fits?</span>
+          <span class="block text-balance">Talk through your plans.</span>
+          <span class="block text-balance text-gray-500">Start with a free chat.</span>
         </h2>
-        <p class="text-lg md:text-xl text-white/50 font-body leading-relaxed mb-14 max-w-2xl">
-          A quick conversation is the easiest way to find out. No pitch deck,
-          no pressure — just a proper look at what you need and whether Kaizen
-          is the right fit.
+        <p class="text-lg md:text-xl text-white/50 font-body leading-relaxed mb-8 max-w-2xl">
+          Tell us what your site needs to do. We will explain where we can help.
         </p>
 
-        <div class="flex flex-col sm:flex-row items-start gap-6">
-          <ContactCTAButton />
-          <MarketingButton action="speed" />
+        <div>
+          <MarketingButton action="contact" />
+          <p class="mt-4 max-w-md font-body text-sm leading-relaxed text-white/70">
+            One of us will get back to you the same day, or the next working day at the latest.
+          </p>
         </div>
       </div>
     </div>

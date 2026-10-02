@@ -37,6 +37,7 @@ The facts the marketing skills (`.claude/skills/marketing-messaging`, `marketing
 - **Midland Oil, newer results (Sean, 1 Oct 2026):** several genuine enquiries a day instead of visits that never turned into enquiries, and interest from a large national business it could not have reached before. **The company's name is confidential; never name it, never say the order was turned down, and word it so Midland never looks unable to cope.** Agreed wording to use once Midland is happy: "Since the rebuild, Midland gets several genuine enquiries a day, and has had interest from a large national business it would not have reached before." Midland has agreed (1 Oct 2026).
 - **No photo of Sean** (1 Oct 2026). The About page leads with the work and Midland's story.
 - **Claims never to make:** invented results, ratings or client logos without permission; anything about team size; a free design or free first draft (a non-refundable deposit comes first).
+- **Existing pledge policy, checked against published source 2 Oct 2026:** report faults in our work within 30 days of launch for a fix at no extra cost; small tweaks within reason are included. Source: the pre-existing pledge and `shared/legal.ts`, clause 5.7's fault-reporting window. P-10 restates this policy; it does not offer all future changes or third-party faults for free.
 - **Regulated or checkable facts:** none central to the business. Any performance or ranking claim ("perfect PageSpeed score") must be checkable at the time it is made, and dated.
 
 ## 4. Offer and next step
@@ -156,5 +157,8 @@ The 1,000 exported query rows total 29,970 impressions and 76 clicks. The chart 
 
 ## 7. Measurement
 
-- Conversions that count: **unknown** (likely a contact or get-started submission).
+- Measurement checked 2 Oct 2026 at `0d0a5e0`: no browser analytics tracker detected in live home, contact, scanner or blog scripts and their local dependency graphs. The reporting account and last-30-day totals remain unverified; a missing tracker does not mean zero enquiries. Google Analytics opens at sign-in in the available browser.
+- Conversion definitions to verify: a successfully saved contact enquiry and a successfully saved scanner email lead, counted separately. A honeypot contact can show confirmation without saving; the scanner unlocks the report even when its save fails. Neither UI state alone proves a saved lead. Existing alert code includes HubSpot writes, but live delivery/reporting is not yet verified.
+- Monthly Search Console export reminder is active: **Export Kaizen Search Console data**, first day of each month, 09:00 Europe/London, starting 1 Nov 2026. Retain dated copies of the previous complete month and the available 16-month history. Automation ID: `export-kaizen-search-console-data`.
+- Evidence and remaining S-04 work: `docs/audits/2026-10-02-s04-measurement.md`. Analytics account details requested from Sean; do not mark measurement complete without a verified report.
 - Audits go in `docs/audits/`.

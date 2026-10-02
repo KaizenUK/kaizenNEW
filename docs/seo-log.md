@@ -2,6 +2,17 @@
 
 Every change that can affect search, newest first: date, URL, what changed and why. One change at a time where possible, then wait a few weeks before judging it (`seo-strategy`, "Measure, test and audit"). Positions quoted here are stale the day they are written; pull Search Console for current numbers.
 
+## 2 Oct 2026: plain pledge and direct contact path (P-10)
+
+- `/pledge/` keeps its existing structure and four commitments, with shorter wording about the work, price, faults and project fit. Removed all six dashes and sales rhetoric. The existing 30-day fault-reporting policy is stated with its scope; the agreed non-refundable deposit and free first conversation are clear.
+- Added the agreed contact action and response line in the first screen and at the close. One closing ask replaces the competing contact/scanner pair; the shared header still offers the scanner. No title, description, canonical, URL, CMS or structured-data change.
+- Reading age 7.3; all five desktop/phone screenshot tiles and eight browser views pass. Other page bodies and all 55 generated documents' metadata are unchanged. Proof: `docs/audits/2026-10-02-p10-proof.md`. No enquiry or search uplift is claimed.
+
+## 2 Oct 2026: measurement audit and export reminder (S-04, incomplete)
+
+- No recognised browser analytics tracker found in the live homepage, contact, scanner or blog script graphs. Reporting account and last-30-day conversions remain unverified. Existing database saves and alert integrations need authenticated read-back before totals can be reported.
+- Set an active monthly Search Console export reminder for the first day of each month at 09:00 Europe/London, starting 1 November. No public page, URL, tracker or conversion event was changed by this audit. Evidence and remaining work: `docs/audits/2026-10-02-s04-measurement.md`.
+
 ## 2 Oct 2026: article and service links (S-03)
 
 - `/blog/fix-failing-software-project-financial-guide/` now links to contract product owner help and contact; `/blog/more-than-a-refresh-why-we-rebuilt-the-kaizen-website/` links to homepage web design and contact. `/blog/free-website-speed-scan/` links to WordPress web design, and `/blog/website-mistakes-liverpool/` links to homepage web design. Existing article text and search fields are preserved by revision-guarded writes and exact read-back.
