@@ -4,7 +4,7 @@
 
 - Audited 28 current public routes after all page and blog rebuilds. The current sitemap has 22 self-canonical indexable pages. All nine guides and three service owners meet body-link coverage; no orphan, missing destination, generic anchor or retired internal link is found. Maximum depth is two.
 - All 53 built documents retain metadata/schema. Four terms punctuation substitutions preserve the legal meaning; the noindex thank-you page receives the agreed reply, current guide topics and canonical links. Cookie/privacy/GDPR contrast, the shared desktop-menu landmark and contact labels/error recovery are corrected. No URL, indexability, sitemap or CMS change.
-- All 220 final tiles, 112 local page views, 16 menu views, types, full build and Windows test-name comparison pass. All 22 final journeys and both form viewport reviews pass. Production release verification is pending; S-05 remains open. Proof: docs/audits/2026-10-02-s05-proof.md. S-04 conversion reporting and Sean's S-02 listings remain separate; no ranking or enquiry uplift is claimed.
+- All 220 final tiles, 112 local page views, 16 menu views, types, full build and Windows test-name comparison pass. All 22 final journeys and both form viewport reviews pass. Released in `3667dac`, deployment `36995212547`; all 28 live content comparisons, 41 destinations, 100 redirects, 112 page views, 16 menu views and 22 journeys pass. Twelve extra live form captures inspected. S-05 is complete. Proof: docs/audits/2026-10-02-s05-proof.md. S-04 conversion reporting and Sean's S-02 listings remain separate; no ranking or enquiry uplift is claimed.
 
 ## 2 Oct 2026: clear software-project choices and existing experience (P-09)
 

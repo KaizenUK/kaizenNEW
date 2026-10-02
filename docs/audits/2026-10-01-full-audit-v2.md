@@ -6,25 +6,25 @@
 
 ## Progress: 2 October 2026, after Phase P and final site audit
 
-All eleven Phase P tasks are verified and live, alongside all Phase Q, F and B tasks. P-09 is the last page release, in 6f13109 with deployment 36990006987. The individual proofs and task board retain the release evidence. S-05 now audits the final 28-route inventory; all local interaction checks pass and its production release is pending. See docs/audits/2026-10-02-s05-proof.md for the exact scope and exceptions.
+All eleven Phase P tasks are verified and live, alongside all Phase Q, F and B tasks. P-09 is the last page release, in 6f13109 with deployment 36990006987. The individual proofs and task board retain the release evidence. S-05 now audits the final 28-route inventory; the corrections are verified and live in 3667dac, deployment 36995212547. S-05 is complete. See docs/audits/2026-10-02-s05-proof.md for the exact scope and exceptions.
 
 The final build preserves metadata/schema in all 53 HTML documents. The fresh sitemap has 22 self-canonical indexable pages, nine guides and three service owners. No orphan, missing destination, generic anchor or retired internal link remains; every indexable page is within two clicks of home. Local SEO is retired with a direct redirect, and overlapping software-project posts are merged.
 
 The current copy run has zero dashes, exclamation marks, US spellings, banned words or AI-pattern hits. Marketing, guide and response pages read at ages 7.3 to 9.9. Actual paragraph sentences meet the 20-word limit; merged label fragments remain documented separately. Existing legal prose is retained, with reading ages 12.4 to 20.3 and one legitimate “Client staff” definition. This is not a claim that legal terms meet the marketing reading-age target.
 
-The visual audit reviews all 220 final tiles across 56 desktop/phone views. All 112 local page views pass image, overflow, page-error and applicable axe checks. Final corrections address the desktop menu landmark, legal-page contrast, thank-you guide wording and contact-form labels/error recovery. The full Windows comparison retains 1,078 passing tests, 439 inherited failures and 44 pending tests, with no regression or new failure. Production verification of these audit corrections remains pending.
+The visual audit reviews all 220 final tiles across 56 desktop/phone views. All 112 local page views pass image, overflow, page-error and applicable axe checks. Final corrections address the desktop menu landmark, legal-page contrast, thank-you guide wording and contact-form labels/error recovery. The full Windows comparison retains 1,078 passing tests, 439 inherited failures and 44 pending tests, with no regression or new failure. Production verification passes: all 28 exact page comparisons, 41 internal destinations, 100 redirects, 112 live page views, 16 menu views and 22 journeys. Twelve live form captures also pass visual inspection.
 
-### Current scorecard after Phase P and the final local audit
+### Current scorecard after Phase P and the final production audit
 
 | Area | Verdict | Evidence and remaining work |
 |---|---|---|
-| SEO technical | Ownership and links verified | Current sitemap/canonicals, service-guide coverage and depth pass. Live S-05 regression check pending. |
+| SEO technical | Ownership and links verified | Current sitemap/canonicals, service-guide coverage and depth pass. All live S-05 regression checks pass. |
 | Copy: house rules | Public marketing copy meets the target | Ages 7.3 to 9.9 and zero mechanical hard-rule breaches. Specialist legal prose is explicitly separate. |
 | Copy: claims and proof | Reviewed and attributed | Approved client results, real work and dated primary sources; no new result or uplift claim. |
 | Copy: message | Page rebuilds complete | Buyer, offer, proof and agreed action/reply are present. Sean's homepage design review remains separate. |
-| Design: premium bar | Full page and screenshot review complete | All planned page rebuilds are live. Both final form viewports pass; audit release remains. |
-| Design: consistency | Shared foundations used throughout | Blog, marketing, response pages and menus use the current system; final corrections verified locally. |
-| Mobile and accessibility | Browser checks pass locally | 112 page views and 16 menu views pass. All 22 final journeys also pass; production checks remain. |
+| Design: premium bar | Full page and screenshot review complete | All planned page rebuilds are live. All twelve final live form captures and the audit release pass. |
+| Design: consistency | Shared foundations used throughout | Blog, marketing, response pages and menus use the current system; final corrections verified locally and live. |
+| Mobile and accessibility | Browser checks pass locally and live | 112 page views and 16 menu views pass. All 22 final journeys and equivalent production checks pass. |
 | Measurement and listings | Two outstanding tasks | S-04 reporting account/30-day conversions remain unverified. S-02 is Sean's end-of-project listing change. |
 
 Earlier progress sections and scorecards below are historical checkpoints. This section and the task board give the current state.
