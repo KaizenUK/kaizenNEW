@@ -1,6 +1,6 @@
 # P-08: Midland Oil Group case study
 
-2 October 2026. Local verification passes; production release pending. The two-page P-08 task remains open until Helen's rebuild and both live checks are complete.
+2 October 2026. Released in `2181878`; production deployment [36985576824](https://github.com/KaizenUK/kaizenNEW/actions/runs/36985576824) and live verification pass. The two-page P-08 task remains open until Helen's rebuild and live checks are complete.
 
 ## What changed
 
@@ -26,6 +26,12 @@ A descriptive service link and pledge link sit with the free first conversation 
 
 Private evidence is under `.local/marketing-20261001/p08-*`. Nothing in that directory is committed. Stage remains held until the whole goal ends.
 
+## Production verification
+
+The release marker identifies commit `2181878cde1d4f9880240430f26b69fa73cdee44`. Midland returns 200 and exactly matches the verified local body, headings, links, metadata and structured data. All 5 internal page destinations return 200. All nine public screenshots match the original asset SHA-256 hashes. The case-study URL remains in the sitemap, and the retired local-search service remains absent.
+
+The same eight live browser views, eight keyboard contact journeys and 32 gallery checks pass. JavaScript-off image links, native disclosures, image dimensions, zoom and gallery navigation, rapid reopening, scroll restoration and focus return are verified. Normal, expanded and modal accessibility checks have zero axe violations. No browser errors, overflow or form submissions. Private proof: `p08-midland-live.json` and `p08-midland-browser-live.json`.
+
 ## Definition of done for this page
 
 - [x] First phone screen names the work, buyer and next step.
@@ -37,6 +43,6 @@ Private evidence is under `.local/marketing-20261001/p08-*`. Nothing in that dir
 - [x] Intended search-description change is consistent and guarded; initial-HTML content and existing URLs remain.
 - [x] Descriptive links connect the service owner, case-study index, pledge and other case study.
 - [x] Final repaired gallery/browser and required local checks pass.
-- [ ] Production deployment and live verification pass.
+- [x] Production deployment and live verification pass.
 
 No ranking or enquiry uplift is claimed from this layout. S-04 still needs verified conversion reporting.
