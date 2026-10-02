@@ -5,6 +5,7 @@
 - `/blog/how-much-does-a-website-cost-in-liverpool-in-2025/`: removed the links to Webfactory and Genius Division (Sean: no links to competitors). Their names and published prices stay as plain text. Changed in Sanity (`wp-post-16`) and in `docs/marketing/articles/website-cost-guide.md`.
 - `/about/`: process heading no longer breaks with one word on its own line. Home page review excerpts start with a capital letter. Contact form: "First name", no sample names, and a plainer message hint.
 - Deploy fix: `pnpm-lock.yaml` updated for the `posthog-js` package added in `b0468d0`, whose deploy failed on the out-of-date lockfile.
+- **Sitemap:** each guide's `lastmod` now uses the later of its publish date and its content review date (`src/data/blog-editorial.ts`). The nine rewritten guides showed 2025 dates before, which gave Google no reason to recrawl them. All live titles and descriptions were checked against the Sanity seeds the same day and match.
 
 ## 2 Oct 2026: saved-enquiry measurement (S-04)
 

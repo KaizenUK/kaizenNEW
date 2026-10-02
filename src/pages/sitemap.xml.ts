@@ -14,6 +14,7 @@ import {
   normalizeSitePath,
   resolveCanonicalUrl,
 } from "../lib/site";
+import { getBlogReview } from "../lib/blog";
 import { RETIRED_PUBLIC_PATHS } from "../../shared/publicRoutePolicy.js";
 import { getBuilderPublishedPages } from "../lib/builderPublished";
 
@@ -188,9 +189,16 @@ export const GET: APIRoute = async () => {
     if (post.seo?.noIndex) continue;
     if (!isCanonicalForPath(route, post.seo?.canonicalUrl)) continue;
 
+    // A completed content review is a real update, so it moves lastmod on.
+    const review = getBlogReview(post._id);
+    const dates = [
+      toIsoDate(post.publishedAt),
+      review ? toIsoDate(`${review.checkedOn}T12:00:00Z`) : undefined,
+    ].filter((date): date is string => Boolean(date));
+
     entries.set(normalizeSitePath(route), {
       loc: resolveCanonicalUrl(post.seo?.canonicalUrl, route),
-      lastmod: toIsoDate(post.publishedAt) ?? buildTimestamp,
+      lastmod: dates.sort().pop() ?? buildTimestamp,
     });
   }
 
