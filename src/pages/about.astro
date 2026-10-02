@@ -1,32 +1,17 @@
 ---
-import { MarketingButton } from "../../client/components/untitled/MarketingButton";
+import { MarketingButton, contactResponse } from "../../client/components/untitled/MarketingButton";
+import { MetricsBlock } from "../../client/components/untitled/proof";
+import { caseStudies } from "../../client/components/untitled/proof/evidence";
+import { COMPANY_NUMBER, LEGAL_COMPANY_NAME, REGISTERED_OFFICE_ADDRESS, TRADING_NAME } from "../../shared/legal";
 import StaticPageLayout from "../layouts/StaticPageLayout.astro";
-import ContactCTAButton from "../../client/components/ContactCTAButton";
 
 export const prerender = true;
-
-/* ── What you get — concrete outcomes ─────────────────────── */
-const outcomes = [
-  {
-    "num": "01",
-    "title": "The same person throughout.",
-    "copy": "You speak to the person doing the work. They know your site and the choices made along the way."
-  },
-  {
-    "num": "02",
-    "title": "Advice before invoices.",
-    "copy": "You may need a rebuild, or a few small fixes. We explain the options before work starts."
-  },
-  {
-    "num": "03",
-    "title": "See the work before launch.",
-    "copy": "Check the pages on your phone and computer. We agree what needs to work and test it before launch."
-  },
-  {
-    "num": "04",
-    "title": "Plain English at each step.",
-    "copy": "You should understand what you are paying for. Ask us to explain anything that is unclear."
-  }
+const midland = caseStudies.midland;
+const projectSteps = [
+  { title: "Start with a free chat.", copy: "Tell us what gets in the way. We look at your site and talk through the options." },
+  { title: "Agree the work and price.", copy: "You know what is included before work starts. We begin after the agreed non-refundable deposit." },
+  { title: "Review before launch.", copy: "Look through your new pages on a phone and computer. We work through your feedback and check the site." },
+  { title: "Keep making useful changes.", copy: "After launch, you can edit your own pages and blog. We can make changes for you quickly when you need them. We agree the cost before extra work." },
 ];
 ---
 
@@ -35,143 +20,117 @@ const outcomes = [
   title="About Kaizen Web | How We Work"
   description="Kaizen means continuous improvement. You deal with the same person from first call to launch, in plain English, with advice before any invoice."
 >
-  <!-- ═══ HERO ═══ -->
-  <section class="marketing-section relative bg-[#f5f5f3]">
+  <section class="marketing-section bg-slate-50" aria-labelledby="about-heading">
     <div class="mx-auto max-w-[1440px] px-6 lg:px-12">
-      <div class="max-w-3xl">
-        <p
-          class="marketing-eyebrow text-xs font-medium font-body uppercase tracking-[0.25em] text-gray-400 mb-6"
-        >
-          About
-        </p>
-        <h1
-          class="text-balance text-4xl md:text-5xl lg:text-6xl font-heading font-bold text-gray-950 leading-tight mb-8"
-        >
-          <span class="block text-balance">Web design with the same person</span>
-          <span class="block text-balance">from first chat to launch.</span>
-        </h1>
-        <p class="text-lg md:text-xl text-gray-500 font-body leading-relaxed mb-6">You paid for a website. It should help your business. If the last build left you let down, we understand the doubt.</p>
-        <p class="text-lg md:text-xl text-gray-500 font-body leading-relaxed">We start by looking at what works and what needs to change.</p>
-      </div>
-    </div>
-  </section>
-
-  <!-- ═══ THE NAME ═══ -->
-  <section class="marketing-section bg-white">
-    <div class="mx-auto max-w-[1440px] px-6 lg:px-12">
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-24">
+      <div class="grid items-end gap-7 lg:grid-cols-[1.1fr_0.9fr] lg:gap-20">
         <div>
-          <h2
-            class="text-5xl md:text-6xl lg:text-7xl font-heading font-bold text-gray-950 leading-none mb-8"
-          >
-            Kaizen.
-          </h2>
-          <p
-            class="text-2xl md:text-3xl font-heading font-bold text-gray-950 leading-snug"
-          >Kaizen means continuous improvement.</p>
+          <p class="marketing-eyebrow mb-5 uppercase tracking-[0.2em]">How we work</p>
+          <h1 id="about-heading" class="font-heading text-4xl font-bold leading-tight text-uui-dark md:text-5xl lg:text-6xl">About Kaizen.<br /><span class="text-slate-500">The same person<br />from chat to launch.</span></h1>
         </div>
-        <div class="lg:pt-8">
-          <div class="border-l-2 border-gray-200 pl-8 lg:pl-10">
-            <p class="text-lg md:text-xl text-gray-500 font-body leading-relaxed mb-6">A website needs care after launch. We can make changes for you as your business grows.</p>
-            <p class="text-lg md:text-xl text-gray-500 font-body leading-relaxed">Start with the changes that matter most. You should know what each change is for before you pay for it.</p>
-            <p class="mt-6 text-lg text-gray-700">
-              See <a href="/blog/more-than-a-refresh-why-we-rebuilt-the-kaizen-website/" class="underline underline-offset-4 hover:text-gray-950">why we rebuilt the Kaizen website</a>.
-            </p>
+        <div class="max-w-xl">
+          <p class="text-lg leading-relaxed text-slate-600 md:text-xl">We build websites for business owners. You deal with the same person from the first chat to later changes.</p>
+          <p class="mt-4 text-base leading-relaxed text-slate-600">Start with a free first conversation.</p>
+          <MarketingButton action="contact" className="mt-5" />
+          <p class="mt-4 max-w-md text-sm leading-6 text-slate-600">{contactResponse}</p>
+        </div>
+      </div>
+      <div class="mt-10 grid gap-6 sm:grid-cols-2 lg:mt-12" aria-label="Midland Oil Group before and after our work">
+        <figure class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+          <div class="flex items-center justify-between gap-4 border-b border-slate-200 px-5 py-3 text-sm">
+            <span class="font-semibold text-uui-dark">Midland Oil Group</span>
+            <span class="rounded-md bg-slate-100 px-2 py-1 text-xs font-semibold text-slate-600">Before</span>
           </div>
+          <img src="/images/case-studies/midland-oil-group/mog-old-homepage.webp" alt="Midland Oil Group's old homepage before our work" width="2544" height="1313" loading="eager" decoding="async" class="block h-auto w-full" />
+          <figcaption class="border-t border-slate-200 px-5 py-4 text-sm leading-6 text-slate-600">The old homepage took more than 8 seconds to load.</figcaption>
+        </figure>
+        <figure class="overflow-hidden rounded-2xl border border-uui-brand-200 bg-white shadow-sm">
+          <div class="flex items-center justify-between gap-4 border-b border-slate-200 px-5 py-3 text-sm">
+            <span class="font-semibold text-uui-dark">Midland Oil Group</span>
+            <span class="rounded-md bg-uui-brand-50 px-2 py-1 text-xs font-semibold text-uui-brand-800">After</span>
+          </div>
+          <img src={midland.screenshot.src} alt={midland.screenshot.alt} width={midland.screenshot.width} height={midland.screenshot.height} loading="eager" decoding="async" class="block h-auto w-full" />
+          <figcaption class="border-t border-slate-200 px-5 py-4 text-sm leading-6 text-slate-600">The rebuilt site has clearer product choices and an oil finder.</figcaption>
+        </figure>
+      </div>
+      <div class="mt-10 grid gap-8 border-t border-slate-200 pt-8 lg:grid-cols-2 lg:gap-20">
+        <div class="max-w-xl">
+          <h2 class="font-heading text-3xl font-bold text-uui-dark md:text-4xl">From visits to genuine enquiries.</h2>
+          <p class="mt-4 text-lg leading-relaxed text-slate-600">Midland's old site was slow and hard to use. We rebuilt the pages and made it easier to find the right oil.</p>
+          <p class="mt-4 text-lg leading-relaxed text-slate-600">Since the rebuild, Midland gets several genuine enquiries a day. A large national business has also shown interest.</p>
         </div>
+        <MetricsBlock />
       </div>
     </div>
   </section>
 
-  <!-- ═══ HOW THIS IS DIFFERENT ═══ -->
-  <section class="marketing-section bg-gray-950 text-white relative overflow-hidden">
-    <div
-      class="pointer-events-none absolute -top-1/2 -right-1/4 w-[800px] h-[800px] rounded-full bg-kaizen-cyan/[0.04] blur-3xl"
-      aria-hidden="true"
-    ></div>
-
-    <div class="mx-auto max-w-[1440px] px-6 lg:px-12 relative z-10">
-      <div class="max-w-3xl mb-8 md:mb-12">
-        <p
-          class="marketing-eyebrow marketing-eyebrow--dark text-xs font-medium font-body uppercase tracking-[0.25em] text-white/40 mb-6"
-        >
-          How this works
-        </p>
-        <h2
-          class="text-4xl md:text-5xl lg:text-6xl font-heading font-bold text-white leading-tight"
-        >You know who to speak to.</h2>
+  <section class="marketing-section bg-gray-950" aria-labelledby="about-process-heading">
+    <div class="mx-auto grid max-w-[1440px] gap-10 px-6 lg:grid-cols-[0.9fr_1.1fr] lg:gap-20 lg:px-12">
+      <div>
+        <p class="marketing-eyebrow marketing-eyebrow--dark mb-5 uppercase tracking-[0.2em]">From the first conversation</p>
+        <h2 id="about-process-heading" class="font-heading text-4xl font-bold text-white md:text-5xl">Know what you are paying for<br />before we start.</h2>
+        <p class="mt-6 max-w-md text-lg leading-relaxed text-slate-300">A past website can leave you wary of paying again. We explain the work in plain English and agree the price.</p>
+        <p class="mt-5 max-w-md text-lg leading-relaxed text-slate-300">You speak to the person doing the work. Ask us to explain anything that is unclear.</p>
+        <a href="/pledge/" class="mt-6 inline-block font-semibold text-uui-brand-200 underline underline-offset-4 hover:text-white">Read our pledge on work and price</a>
       </div>
-
-      <div class="space-y-0">
-        {
-          outcomes.map((item, i) => (
-            <div
-              class:list={[
-                "grid grid-cols-1 md:grid-cols-12 gap-6 md:gap-12 py-8 md:py-10 first:pt-0 last:pb-0",
-                i < outcomes.length - 1 && "border-b border-white/10",
-              ]}
-            >
-              <div class="md:col-span-4 lg:col-span-3">
-                <span class="text-sm font-body text-kaizen-cyan tracking-wide block mb-2">
-                  {item.num}
-                </span>
-                <h3 class="text-2xl md:text-3xl font-heading font-bold text-white">
-                  {item.title}
-                </h3>
-              </div>
-              <div class="md:col-span-8 lg:col-span-9">
-                <p class="text-base md:text-lg font-body text-white/50 leading-relaxed max-w-2xl">
-                  {item.copy}
-                </p>
-              </div>
+      <ol class="divide-y divide-white/15">
+        {projectSteps.map((step, index) => (
+          <li class="grid grid-cols-[2rem_1fr] gap-5 py-6 first:pt-0 last:pb-0">
+            <span aria-hidden="true" class="flex size-8 items-center justify-center rounded-full border border-uui-brand-300/40 text-sm font-semibold text-uui-brand-200">{index + 1}</span>
+            <div>
+              <h3 class="font-heading text-2xl font-bold text-white">{step.title}</h3>
+              <p class="mt-3 text-base leading-relaxed text-slate-300">{step.copy}</p>
             </div>
-          ))
-        }
-      </div>
+          </li>
+        ))}
+      </ol>
     </div>
   </section>
 
-  <!-- ═══ THE PERSONAL BIT ═══ -->
-  <section class="marketing-section bg-[#f5f5f3]">
-    <div class="mx-auto max-w-[1440px] px-6 lg:px-12">
-      <div class="max-w-3xl mx-auto">
-        <p
-          class="marketing-eyebrow text-xs font-medium font-body uppercase tracking-[0.25em] text-gray-400 mb-6"
-        >Where we work</p>
-        <h2
-          class="text-4xl md:text-5xl font-heading font-bold text-gray-950 leading-tight mb-10"
-        >Merseyside and West Yorkshire.<br /><span class="text-gray-400">We come to you.</span></h2>
-        <div class="space-y-6 text-lg md:text-xl text-gray-500 font-body leading-relaxed">
-          <p>We work with owners who want more from their websites. That might mean more calls or an easier way to book.</p>
-          <p>You deal with the same person from the first chat onwards. You can ask questions and get clear answers.</p>
-          <p>We show you what we plan to do. Work starts after a non-refundable deposit. You review the site before launch.</p>
+  <section class="marketing-section bg-white" aria-labelledby="about-care-heading">
+    <div class="mx-auto grid max-w-[1440px] gap-10 px-6 lg:grid-cols-2 lg:gap-20 lg:px-12">
+      <div>
+        <h2 id="about-care-heading" class="font-heading text-4xl font-bold text-uui-dark md:text-5xl">Your site should keep up<br />with your business.</h2>
+        <p class="mt-6 max-w-xl text-lg leading-relaxed text-slate-600">Kaizen means continuous improvement. Start with the changes that matter most.</p>
+        <p class="mt-4 max-w-xl text-lg leading-relaxed text-slate-600">You may need a full rebuild or a few small fixes. We will explain which fits and why.</p>
+        <div class="mt-6 flex flex-col items-start gap-4">
+          <a href="/services/wordpress-web-design/" class="font-semibold text-uui-brand-800 underline underline-offset-4 hover:text-uui-dark">Compare our website rebuild options</a>
+          <a href="/blog/more-than-a-refresh-why-we-rebuilt-the-kaizen-website/" class="font-semibold text-uui-brand-800 underline underline-offset-4 hover:text-uui-dark">Why we rebuilt our own website</a>
+        </div>
+        <div class="mt-10 border-l-2 border-uui-brand-600 pl-5">
+          <h3 class="font-heading text-2xl font-bold text-uui-dark">Merseyside and West Yorkshire.</h3>
+          <p class="mt-2 text-base leading-relaxed text-slate-600">We travel to clients across both areas.</p>
         </div>
       </div>
+      <aside class="self-start rounded-2xl border border-slate-200 bg-slate-50 p-6 sm:p-8" aria-labelledby="about-company-heading">
+        <p class="marketing-eyebrow mb-4 uppercase tracking-[0.2em]">Company details</p>
+        <h2 id="about-company-heading" class="font-heading text-3xl font-bold text-uui-dark">{LEGAL_COMPANY_NAME}</h2>
+        <p class="mt-3 text-base leading-relaxed text-slate-600">Trading as {TRADING_NAME}.</p>
+        <dl class="mt-6 space-y-6 border-t border-slate-200 pt-6 text-base leading-relaxed">
+          <div><dt class="font-semibold text-uui-dark">Company number</dt><dd class="mt-1 text-slate-600">{COMPANY_NUMBER}</dd></div>
+          <div><dt class="font-semibold text-uui-dark">Registered office</dt><dd class="mt-1 text-slate-600">{REGISTERED_OFFICE_ADDRESS}</dd></div>
+        </dl>
+        <p class="mt-3 text-sm leading-6 text-slate-600">Registered office only. Visits are not available.</p>
+        <a href={`https://find-and-update.company-information.service.gov.uk/company/${COMPANY_NUMBER}`} class="mt-5 inline-block font-semibold text-uui-brand-800 underline underline-offset-4 hover:text-uui-dark">Check our Companies House record</a>
+        <div class="mt-6 border-t border-slate-200 pt-6">
+          <p class="text-base leading-relaxed text-slate-600">Founded by Sean McDonnell.</p>
+          <a href="/authors/sean-mcdonnell/" class="mt-2 inline-block font-semibold text-uui-brand-800 underline underline-offset-4 hover:text-uui-dark">About Sean and the website guides</a>
+        </div>
+      </aside>
     </div>
   </section>
 
-  <!-- ═══ CTA ═══ -->
-  <section class="marketing-section bg-gray-950 text-white relative overflow-hidden">
-    <div
-      class="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_30%_50%,rgba(6,182,212,0.08),transparent_60%)]"
-    ></div>
-
-    <div class="mx-auto max-w-[1440px] px-6 lg:px-12 relative z-10">
-      <div class="max-w-3xl">
-        <p
-          class="marketing-eyebrow marketing-eyebrow--dark text-xs font-medium font-body uppercase tracking-[0.25em] text-white/40 mb-8"
-        >
-          Next step
-        </p>
-        <h2
-          class="text-balance text-4xl md:text-5xl lg:text-6xl font-heading font-bold text-white leading-tight mb-8"
-        >Start with a free chat<br /><span class="text-gray-500">about your website.</span></h2>
-        <p class="text-lg md:text-xl text-white/50 font-body leading-relaxed mb-14 max-w-2xl">Tell us what is wrong with the site. We will help you work out what to do next.</p>
-
-        <div class="flex flex-col sm:flex-row items-start gap-6">
-          <ContactCTAButton />
+  <section class="marketing-section marketing-section--compact border-t border-slate-200 bg-slate-50" aria-labelledby="about-contact-heading">
+    <div class="mx-auto grid max-w-[1440px] items-center gap-8 px-6 lg:grid-cols-2 lg:gap-20 lg:px-12">
+      <div>
+        <h2 id="about-contact-heading" class="font-heading text-4xl font-bold text-uui-dark md:text-5xl">Start with a free chat<br />about your website.</h2>
+        <p class="mt-5 max-w-xl text-lg leading-relaxed text-slate-600">Tell us what is wrong with the site. We will help you work out what to do next.</p>
+      </div>
+      <div>
+        <div class="flex flex-col items-start gap-4 sm:flex-row sm:flex-wrap">
+          <MarketingButton action="contact" />
           <MarketingButton action="speed" />
         </div>
+        <p class="mt-4 max-w-md text-sm leading-6 text-slate-600">{contactResponse}</p>
       </div>
     </div>
   </section>
