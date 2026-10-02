@@ -1,6 +1,6 @@
 # P-08: Midland Oil Group case study
 
-2 October 2026. Released in `2181878`; production deployment [36985576824](https://github.com/KaizenUK/kaizenNEW/actions/runs/36985576824) and live verification pass. The two-page P-08 task remains open until Helen's rebuild and live checks are complete.
+2 October 2026. Released in `2181878`; production deployment [36985576824](https://github.com/KaizenUK/kaizenNEW/actions/runs/36985576824) and live verification pass. Both case-study rebuilds are now verified live; P-08 is complete. See `2026-10-02-p08-helen-proof.md` for Helen.
 
 ## What changed
 

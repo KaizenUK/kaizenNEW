@@ -1,6 +1,6 @@
 # P-08: Helen Moore Hairdressing case study
 
-2 October 2026. Local verification passes; production release pending. P-08 stays open until this page is verified live; Midland's release is recorded in `2026-10-02-p08-midland-proof.md`.
+2 October 2026. Released in `f854238`; production deployment [36987405181](https://github.com/KaizenUK/kaizenNEW/actions/runs/36987405181) and live verification pass. P-08 is complete; Midland's release is recorded in `2026-10-02-p08-midland-proof.md`.
 
 ## What changed
 
@@ -31,6 +31,12 @@ An external client-site issue was also observed: direct navigation to `/services
 
 Private evidence is in `.local/marketing-20261001/p08-helen-*` and `p07-helen-*`. Stage stays unchanged until the whole goal ends.
 
+## Production verification
+
+Release `gh-36987405181-1` identifies commit `f854238663dade8ff7c3f71349a48d880efdba72`. The live page returns 200 and exactly matches the verified local body, headings, links, metadata and schema. All five internal page destinations return 200. The real homepage screenshot matches its local SHA-256 exactly. Sitemap membership is preserved.
+
+Eight live browser views, eight keyboard image journeys and eight keyboard contact journeys pass. Both images load at their declared dimensions, the first-screen action/reply fit on the phone, and there are zero page errors or overflow. All four JavaScript views have zero axe violations. No form or appointment request is submitted. Private evidence: `p08-helen-live.json` and `p08-helen-browser-live.json`.
+
 ## Definition of done
 
 - [x] First phone screen explains the client, work, reader and next step.
@@ -42,6 +48,6 @@ Private evidence is in `.local/marketing-20261001/p08-helen-*` and `p07-helen-*`
 - [x] Metadata/schema preserved; content exists in initial HTML.
 - [x] Descriptive links to service, index, pledge, contact and Midland.
 - [x] Final local checks pass.
-- [ ] Production deployment and live checks pass.
+- [x] Production deployment and live checks pass.
 
 No new ranking or enquiry improvement is claimed from this layout. S-04 still requires verified reporting.
