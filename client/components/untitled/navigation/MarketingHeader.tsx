@@ -29,6 +29,7 @@ export function MarketingHeader({
     null,
   );
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [desktopPortal, setDesktopPortal] = useState<HTMLElement | null>(null);
 
   useEffect(() => {
     const desktop = window.matchMedia("(min-width: 1024px)");
@@ -59,6 +60,7 @@ export function MarketingHeader({
           </a>
 
           <nav
+            ref={setDesktopPortal}
             aria-label="Main navigation"
             className="hidden min-w-0 flex-1 justify-center lg:flex"
           >
@@ -86,6 +88,8 @@ export function MarketingHeader({
                       <ChevronDownIcon className="size-4 text-slate-500 transition-transform group-aria-expanded:rotate-180 motion-reduce:transition-none" />
                     </Button>
                     <Popover
+                      // Keep the panel and its hidden dismiss control in the navigation landmark.
+                      UNSTABLE_portalContainer={desktopPortal ?? undefined}
                       placement="bottom start"
                       offset={12}
                       containerPadding={16}

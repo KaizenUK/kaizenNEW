@@ -1,5 +1,5 @@
 import { Button } from "./untitled/base/buttons/button";
-import { useState } from "react";
+import { useId, useState } from "react";
 import { motion } from "framer-motion";
 import { Mail, Check, AlertCircle } from "lucide-react";
 
@@ -13,6 +13,7 @@ interface ContactFormBoxProps {
 export const ContactFormBox = ({
   autoFocusFields = true,
 }: ContactFormBoxProps) => {
+  const formId = useId();
   // Form data
   const [name, setName] = useState("");
   const [surname, setSurname] = useState("");
@@ -298,10 +299,14 @@ export const ContactFormBox = ({
                 </h4>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-xs font-medium text-white mb-2">
+                    <label
+                      htmlFor={`${formId}-name`}
+                      className="block text-xs font-medium text-white mb-2"
+                    >
                       First Name <span className="text-red-400">*</span>
                     </label>
                     <input
+                      id={`${formId}-name`}
                       type="text"
                       value={name}
                       onChange={(e) => setName(e.target.value)}
@@ -311,10 +316,14 @@ export const ContactFormBox = ({
                     />
                   </div>
                   <div>
-                    <label className="block text-xs font-medium text-white mb-2">
+                    <label
+                      htmlFor={`${formId}-surname`}
+                      className="block text-xs font-medium text-white mb-2"
+                    >
                       Surname
                     </label>
                     <input
+                      id={`${formId}-surname`}
                       type="text"
                       value={surname}
                       onChange={(e) => setSurname(e.target.value)}
@@ -333,14 +342,26 @@ export const ContactFormBox = ({
                   How do we reach you?
                 </h4>
                 <div>
-                  <label className="block text-xs font-medium text-white mb-2">
+                  <label
+                    htmlFor={`${formId}-email`}
+                    className="block text-xs font-medium text-white mb-2"
+                  >
                     Email <span className="text-red-400">*</span>
                   </label>
                   <input
+                    id={`${formId}-email`}
                     type="email"
                     value={email}
-                    onChange={(e) => setEmail(e.target.value)}
+                    onChange={(e) => {
+                      setEmail(e.target.value);
+                      if (emailError)
+                        setEmailError(validateEmail(e.target.value));
+                    }}
                     onBlur={handleEmailBlur}
+                    aria-invalid={!!emailError}
+                    aria-describedby={
+                      emailError ? `${formId}-email-error` : undefined
+                    }
                     placeholder="name@company.co.uk"
                     className={`w-full bg-gray-800/50 border text-white placeholder:text-white/40 placeholder:text-base rounded-lg px-4 py-3 text-base focus:outline-none transition ${
                       emailError
@@ -350,18 +371,35 @@ export const ContactFormBox = ({
                     autoFocus
                   />
                   {emailError && (
-                    <p className="text-red-400 text-xs mt-2">{emailError}</p>
+                    <p
+                      id={`${formId}-email-error`}
+                      className="text-red-400 text-xs mt-2"
+                    >
+                      {emailError}
+                    </p>
                   )}
                 </div>
                 <div>
-                  <label className="block text-xs font-medium text-white mb-2">
+                  <label
+                    htmlFor={`${formId}-phone`}
+                    className="block text-xs font-medium text-white mb-2"
+                  >
                     Phone
                   </label>
                   <input
+                    id={`${formId}-phone`}
                     type="tel"
                     value={phone}
-                    onChange={(e) => setPhone(e.target.value)}
+                    onChange={(e) => {
+                      setPhone(e.target.value);
+                      if (phoneError)
+                        setPhoneError(validatePhone(e.target.value));
+                    }}
                     onBlur={handlePhoneBlur}
+                    aria-invalid={!!phoneError}
+                    aria-describedby={
+                      phoneError ? `${formId}-phone-error` : undefined
+                    }
                     placeholder="+44"
                     className={`w-full bg-gray-800/50 border text-white placeholder:text-white/40 placeholder:text-base rounded-lg px-4 py-3 text-base focus:outline-none transition ${
                       phoneError
@@ -370,7 +408,12 @@ export const ContactFormBox = ({
                     }`}
                   />
                   {phoneError && (
-                    <p className="text-red-400 text-xs mt-2">{phoneError}</p>
+                    <p
+                      id={`${formId}-phone-error`}
+                      className="text-red-400 text-xs mt-2"
+                    >
+                      {phoneError}
+                    </p>
                   )}
                 </div>
               </div>
@@ -424,14 +467,26 @@ export const ContactFormBox = ({
                   What's the website?
                 </h4>
                 <div>
-                  <label className="block text-xs font-medium text-white mb-2">
+                  <label
+                    htmlFor={`${formId}-website`}
+                    className="block text-xs font-medium text-white mb-2"
+                  >
                     Website
                   </label>
                   <input
+                    id={`${formId}-website`}
                     type="text"
                     value={website}
-                    onChange={(e) => setWebsite(e.target.value)}
+                    onChange={(e) => {
+                      setWebsite(e.target.value);
+                      if (websiteError)
+                        setWebsiteError(validateWebsite(e.target.value));
+                    }}
                     onBlur={handleWebsiteBlur}
+                    aria-invalid={!!websiteError}
+                    aria-describedby={
+                      websiteError ? `${formId}-website-error` : undefined
+                    }
                     placeholder="example.co.uk"
                     className={`w-full bg-gray-800/50 border text-white placeholder:text-white/40 placeholder:text-base rounded-lg px-4 py-3 text-base focus:outline-none transition ${
                       websiteError
@@ -441,7 +496,12 @@ export const ContactFormBox = ({
                     autoFocus
                   />
                   {websiteError && (
-                    <p className="text-red-400 text-xs mt-2">{websiteError}</p>
+                    <p
+                      id={`${formId}-website-error`}
+                      className="text-red-400 text-xs mt-2"
+                    >
+                      {websiteError}
+                    </p>
                   )}
                 </div>
               </div>
@@ -450,11 +510,15 @@ export const ContactFormBox = ({
             {/* Step 5: Message & Consent */}
             {currentStep === 5 && (
               <div className="space-y-4">
-                <h4 className="text-white font-semibold mb-5">
+                <h4
+                  id={`${formId}-message-label`}
+                  className="text-white font-semibold mb-5"
+                >
                   How can we help?
                 </h4>
                 <div>
                   <textarea
+                    aria-labelledby={`${formId}-message-label`}
                     value={message}
                     onChange={(e) => setMessage(e.target.value)}
                     placeholder="Tell us about your project..."

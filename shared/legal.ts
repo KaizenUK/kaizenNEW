@@ -53,7 +53,7 @@ Effective Date: February 2026
    4.1 No credit accounts: The Developer does not offer credit accounts at this time. Work is provided against advance payments and/or invoices as set out below.
    4.2 Deposit (Project/Development Work): A non-refundable deposit of 50% of the total project value is required before any project/development work commences, unless otherwise agreed in writing.
    4.3 Final Balance (Project/Development Work): Final balance is due upon Delivery and in any event prior to Go-Live being performed (unless the parties agree otherwise in writing).
-   4.4 Content-only work: Content-only requests are invoiced when the requested content work is completed (or at intervals if agreed), and are payable within the invoice due date. The 50% deposit model in Clauses 4.2–4.3 does not apply to content-only requests unless agreed in writing.
+   4.4 Content-only work: Content-only requests are invoiced when the requested content work is completed (or at intervals if agreed), and are payable within the invoice due date. The 50% deposit model in Clauses 4.2 to 4.3 does not apply to content-only requests unless agreed in writing.
    4.5 Hosting and maintenance fees are billed monthly or annually in advance as agreed.
    4.6 Invoice Due Dates: All invoices are due within 14 days of issue unless stated otherwise on the invoice.
    4.7 VAT: All fees are exclusive of VAT unless expressly stated otherwise. VAT (if applicable) will be added at the prevailing rate.
@@ -195,7 +195,7 @@ Effective Date: February 2026
     (d) triggers termination under the dormancy provisions in Clause 6; or
     (e) the Developer reasonably believes, based on credible information from reputable sources, that the Client (or its directors/owners) has engaged in, is engaging in, or is reasonably suspected of engaging in: unlawful discrimination; human trafficking/forced labour; modern slavery; serious harassment or violence; bribery/corruption; sanctions breaches; money laundering; or other serious unlawful or unethical conduct such that continued association would likely damage the Developer’s reputation.
     14.2.1 Effect of termination under 14.2(e): On termination under Clause 14.2(e), the Developer will have no obligation to continue providing services. The deposit remains non-refundable, and the Client must pay all fees for work performed up to termination and any non-cancellable committed costs. Any further refunds are excluded to the extent permitted by law.
-    14.2.2 Effect of termination under 14.2(a)–(d): On termination under Clauses 14.2(a)–(d), the Client must pay all fees due for work completed and any non-cancellable committed costs. The deposit remains non-refundable.
+    14.2.2 Effect of termination under 14.2(a) to (d): On termination under Clauses 14.2(a) to (d), the Client must pay all fees due for work completed and any non-cancellable committed costs. The deposit remains non-refundable.
     14.3 Termination by Developer (for convenience): The Developer may terminate for convenience on 14 days’ written notice. In that event, the Client will pay for work completed and any non-cancellable committed costs up to the termination date. Any unused portion of fees already paid for work not. performed will be refunded.
     14.4 Data handover fee (minimum): Where the Client requests data handover or packaging of Deliverables beyond standard repository transfer (including exports, archives, migration packaging, documentation collation, or coordinated handover to a third party), the Developer may charge a minimum fee of £200, with additional time billed at the applicable hourly rate where the request exceeds a reasonable amount of work.
     14.5 Termination does not affect rights accrued before termination.
@@ -234,7 +234,7 @@ Effective Date: February 2026
 
 ---
 
-Schedule 1 — Data Processing Schedule (DPA Summary)
+Schedule 1: Data Processing Schedule (DPA Summary)
 A. Subject matter & duration: processing personal data as needed to perform the Work and for the duration of the services (and any lawful retention thereafter).
 B. Nature & purpose: hosting, maintaining, developing, troubleshooting, and supporting the Client’s website and related systems; plus the Developer’s internal admin (controller).
 C. Types of personal data: may include names, emails, IP addresses, contact form submissions, and site usage data depending on the site.

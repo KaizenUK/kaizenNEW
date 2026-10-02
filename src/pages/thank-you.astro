@@ -1,80 +1,40 @@
 ---
 import { Button } from "../../client/components/untitled/base/buttons/button";
+import { contactResponse } from "../../client/components/untitled/MarketingButton";
 import { ArrowRight } from "lucide-react";
 import StaticPageLayout from "../layouts/StaticPageLayout.astro";
 
 export const prerender = true;
-
 const recommendedReads = [
-  {
-    title: "Five Website Mistakes That Quietly Kill Sales",
-    slug: "website-mistakes-liverpool",
-    description: "Learn the common pitfalls that are costing you conversions.",
-  },
-  {
-    title: "How Much Does a Website Cost in Liverpool in 2025?",
-    slug: "how-much-does-a-website-cost-in-liverpool-in-2025",
-    description: "Transparent pricing guide for serious web projects.",
-  },
-  {
-    title: "How to Choose a Web Design Agency Without the Fluff",
-    slug: "choose-web-design-agency-liverpool",
-    description: "Questions to ask before hiring. Red flags to watch for.",
-  },
+  { title: "5 Website Mistakes You Can Check on Your Own Site", slug: "website-mistakes-liverpool", description: "Try five checks on your pages and contact form." },
+  { title: "How Much Does a Website Cost? A Guide to Quotes", slug: "how-much-does-a-website-cost-in-liverpool-in-2025", description: "See what to look for when you compare website quotes." },
+  { title: "How to Choose a Web Designer", slug: "choose-web-design-agency-liverpool", description: "Questions to ask before you agree to the work." },
 ];
 ---
 
-<StaticPageLayout
-  path="/thank-you"
-  robots="noindex, follow"
->
-  <section class="marketing-section bg-gray-950 px-4 text-white">
-    <div class="container mx-auto max-w-4xl">
-      <div class="mb-8 md:mb-12 text-center">
-        <div class="mb-6 inline-flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-r from-kaizen-cyan to-kaizen-lime text-3xl text-gray-950">
-          &#10003;
-        </div>
-
-        <h1 class="mb-6 text-5xl font-heading font-bold md:text-6xl">
-          We've received your request.
-        </h1>
-
-        <p class="mx-auto mb-8 max-w-2xl text-xl leading-relaxed text-gray-400">
-          We will be in touch shortly with clear next steps. We look forward to speaking.
-        </p>
-
-        <div class="flex flex-wrap justify-center gap-4">
-          <Button href="/" color="secondary" size="lg">Back to Home</Button>
-
-          <Button href="/services/wordpress-web-design/" color="secondary" size="lg">Explore WordPress Services</Button>
-
-          <Button href="/blog/" color="secondary" size="lg">Read Our Blog</Button>
-        </div>
+<StaticPageLayout path="/thank-you" robots="noindex, follow">
+  <section class="marketing-section bg-uui-dark text-white">
+    <div class="mx-auto max-w-[1440px] px-6 lg:px-12">
+      <div class="max-w-3xl">
+        <h1 class="text-balance font-heading text-4xl font-bold md:text-5xl lg:text-6xl">Thanks for getting in touch.</h1>
+        <p class="mt-6 max-w-2xl text-lg leading-relaxed text-slate-300">{contactResponse}</p>
+        <Button href="/" color="secondary" size="lg" className="mt-7">Back to home</Button>
       </div>
-
-      <div class="mt-8 border-t border-gray-800 pt-8 md:mt-12 md:pt-12">
-        <h2 class="mb-12 text-center text-3xl font-heading font-bold">
-          Recommended Reads
-        </h2>
-
-        <div class="grid grid-cols-1 gap-8 md:grid-cols-3">
+      <div class="mt-10 border-t border-slate-600 pt-8 lg:mt-14 lg:pt-10">
+        <h2 class="font-heading text-3xl font-bold md:text-4xl">Make your next website choice clearer.</h2>
+        <p class="mt-4 max-w-2xl text-base leading-relaxed text-slate-300">These guides can help while you wait for a reply.</p>
+        <div class="mt-7 grid gap-6 md:grid-cols-3">
           {recommendedReads.map((read) => (
-            <a
-              href={`/blog/${read.slug}`}
-              class="group block h-full rounded-lg border border-gray-800 p-6 transition duration-300 hover:border-kaizen-cyan/50 hover:bg-gray-900/50"
-            >
-              <h3 class="mb-3 text-xl font-heading font-bold transition group-hover:text-kaizen-cyan">
-                {read.title}
-              </h3>
-              <p class="mb-4 text-sm leading-relaxed text-gray-400">
-                {read.description}
-              </p>
-              <div class="flex items-center gap-2 text-sm font-semibold text-kaizen-cyan">
-                Read Article
-                <ArrowRight className="h-4 w-4 shrink-0" aria-hidden="true" />
-              </div>
+            <a href={`/blog/${read.slug}/`} class="group block rounded-2xl border border-slate-600 p-6 outline-offset-4 transition-colors hover:bg-slate-800 focus-visible:outline-2 focus-visible:outline-uui-brand-200">
+              <h3 class="font-heading text-2xl font-bold text-white">{read.title}</h3>
+              <p class="mt-4 text-base leading-relaxed text-slate-300">{read.description}</p>
+              <ArrowRight className="mt-5 size-5 text-uui-brand-200" aria-hidden="true" />
             </a>
           ))}
+        </div>
+        <div class="mt-7 flex flex-wrap gap-x-8 gap-y-4 text-base font-semibold text-uui-brand-200">
+          <a href="/services/wordpress-web-design/" class="underline underline-offset-4 hover:text-white">Compare our website rebuild options</a>
+          <a href="/blog/" class="underline underline-offset-4 hover:text-white">Browse all website guides</a>
         </div>
       </div>
     </div>

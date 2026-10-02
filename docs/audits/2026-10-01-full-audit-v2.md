@@ -4,6 +4,31 @@
 **Task board:** `docs/audits/2026-10-01-task-plan.md` turns every finding below into a task any agent can pick up.
 **Rules audited against:** `.claude/skills/marketing-messaging`, `marketing-page-design`, `seo-strategy`, `docs/marketing/site-profile.md`, and Sean's standing rules (British English, reading age about 9, no em dashes, nothing that reads as AI-written, premium look).
 
+## Progress: 2 October 2026, after Phase P and final site audit
+
+All eleven Phase P tasks are verified and live, alongside all Phase Q, F and B tasks. P-09 is the last page release, in 6f13109 with deployment 36990006987. The individual proofs and task board retain the release evidence. S-05 now audits the final 28-route inventory; all local interaction checks pass and its production release is pending. See docs/audits/2026-10-02-s05-proof.md for the exact scope and exceptions.
+
+The final build preserves metadata/schema in all 53 HTML documents. The fresh sitemap has 22 self-canonical indexable pages, nine guides and three service owners. No orphan, missing destination, generic anchor or retired internal link remains; every indexable page is within two clicks of home. Local SEO is retired with a direct redirect, and overlapping software-project posts are merged.
+
+The current copy run has zero dashes, exclamation marks, US spellings, banned words or AI-pattern hits. Marketing, guide and response pages read at ages 7.3 to 9.9. Actual paragraph sentences meet the 20-word limit; merged label fragments remain documented separately. Existing legal prose is retained, with reading ages 12.4 to 20.3 and one legitimate “Client staff” definition. This is not a claim that legal terms meet the marketing reading-age target.
+
+The visual audit reviews all 220 final tiles across 56 desktop/phone views. All 112 local page views pass image, overflow, page-error and applicable axe checks. Final corrections address the desktop menu landmark, legal-page contrast, thank-you guide wording and contact-form labels/error recovery. The full Windows comparison retains 1,078 passing tests, 439 inherited failures and 44 pending tests, with no regression or new failure. Production verification of these audit corrections remains pending.
+
+### Current scorecard after Phase P and the final local audit
+
+| Area | Verdict | Evidence and remaining work |
+|---|---|---|
+| SEO technical | Ownership and links verified | Current sitemap/canonicals, service-guide coverage and depth pass. Live S-05 regression check pending. |
+| Copy: house rules | Public marketing copy meets the target | Ages 7.3 to 9.9 and zero mechanical hard-rule breaches. Specialist legal prose is explicitly separate. |
+| Copy: claims and proof | Reviewed and attributed | Approved client results, real work and dated primary sources; no new result or uplift claim. |
+| Copy: message | Page rebuilds complete | Buyer, offer, proof and agreed action/reply are present. Sean's homepage design review remains separate. |
+| Design: premium bar | Full page and screenshot review complete | All planned page rebuilds are live. Both final form viewports pass; audit release remains. |
+| Design: consistency | Shared foundations used throughout | Blog, marketing, response pages and menus use the current system; final corrections verified locally. |
+| Mobile and accessibility | Browser checks pass locally | 112 page views and 16 menu views pass. All 22 final journeys also pass; production checks remain. |
+| Measurement and listings | Two outstanding tasks | S-04 reporting account/30-day conversions remain unverified. S-02 is Sean's end-of-project listing change. |
+
+Earlier progress sections and scorecards below are historical checkpoints. This section and the task board give the current state.
+
 ## Progress: 2 October 2026, after Phase B
 
 All four Phase B tasks are verified and live. B-01 ships in `1823626`, deployment `36971480599`, with eleven live content/search checks, 22 live browser views, four menu checks, four journeys and twelve redirect checks passing. Its 88 local browser views have no normal-state axe findings, page errors, missing images or overflow. The individual proof files and board retain the earlier releases. The homepage, contact, pledge and both ad pages have also shipped since the Phase F checkpoint. Seven Phase P tasks remain open; their earlier copy fixes do not constitute visual completion.
