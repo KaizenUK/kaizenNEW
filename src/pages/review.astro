@@ -10,65 +10,65 @@ export const prerender = true;
 const problems = [
   {
     num: "01",
-    title: "It's slow.",
+    title: "Pages take too long to load.",
     detail:
-      "If your site is slow on a phone, people leave before they read a single word. You never hear from them, so you never know they came.",
+      "Open your site on a phone. If you have to wait, your customers may have to wait too. The speed check below gives you a starting point.",
   },
   {
     num: "02",
-    title: "It doesn't work on mobile.",
+    title: "The phone layout is hard to use.",
     detail:
-      "Google ranks your site on its mobile version, not the desktop one. If the text is tiny, the buttons are cramped or the layout breaks on a phone, your rankings pay for it.",
+      "Check that you can read the text without zooming. Try the menu and form. Small buttons or cramped fields can make simple tasks hard.",
   },
   {
     num: "03",
-    title: "It looks outdated.",
+    title: "The site no longer fits the business.",
     detail:
-      "People decide whether to trust a business within seconds of landing on the site. An outdated design doesn't just look bad — it actively costs you credibility with potential customers.",
+      "Your business may have changed since the site was built. Check that the photos and service details still show what you do today.",
   },
   {
     num: "04",
-    title: "It's invisible to Google.",
+    title: "People cannot find what they need.",
     detail:
-      "Poor structure, missing data markup, and technical issues mean Google can't understand what your site is about. You could have the best product in your area and still not show up.",
+      "Ask someone to find your main service and contact details. If they get lost, your pages may need clearer headings and links.",
   },
 ];
 ---
 
 <LandingPageLayout
-  title="Your Website Review | Kaizen Web"
+  title="Help with Your Business Website | Kaizen Web"
+  description="Find what could be holding your business website back. Check common problems, see real work by Kaizen and start with a free conversation."
 >
   <!-- ═══ MINIMAL HEADER ═══ -->
   <header class="fixed top-0 inset-x-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-200/60">
     <div class="mx-auto max-w-[1440px] px-6 lg:px-12 h-16 flex items-center justify-between">
-      <a href="https://kaizenweb.co.uk" class="inline-flex items-center">
+      <a href="/" aria-label="Kaizen home" class="inline-flex items-center rounded focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-cyan-700">
         <KaizenLogo className="h-7 w-[88px] sm:w-[128px] text-[#001133]" client:load />
       </a>
       <MarketingButton action="contact" href="#get-in-touch" size="sm" className="max-sm:*:data-icon:hidden" />
     </div>
   </header>
 
+  <main>
   <!-- ═══ HERO ═══ -->
   <section class="marketing-section marketing-section--landing-hero relative bg-[#f5f5f3]">
     <div class="mx-auto max-w-[1440px] px-6 lg:px-12">
       <div class="max-w-3xl">
         <p
-          class="marketing-eyebrow text-xs font-medium font-body uppercase tracking-[0.25em] text-gray-400 mb-6"
+          class="marketing-eyebrow text-xs font-medium font-body uppercase tracking-[0.25em] text-gray-600 mb-6"
         >
-          Your website review
+          Help with your business website
         </p>
         <h1
           class="text-balance text-4xl md:text-5xl lg:text-6xl font-heading font-bold text-gray-950 leading-tight mb-8"
         >
-          Your website could be<br />
-          <span class="text-gray-400">working a lot harder.</span>
+          A clearer, faster<br /> <span class="text-gray-700">website for your business.</span>
         </h1>
-        <p class="text-lg md:text-xl text-gray-500 font-body leading-relaxed">
-          You got in touch because something about your site isn't right.
-          Maybe it's slow, maybe it looks tired, maybe it's just not
-          bringing in the leads it should. This page explains what's
-          likely going wrong — and what it would take to fix it.
+        <p class="text-lg md:text-xl text-gray-600 font-body leading-relaxed mb-8">
+          Kaizen rebuilds dated, slow sites to help people find what you sell. Tell us what needs to change. The first chat is free.
         </p>
+        <MarketingButton action="contact" href="#get-in-touch" />
+        <p class="mt-4 text-sm text-gray-600 font-body max-w-md">One of us will get back to you the same day, or the next working day at the latest.</p>
       </div>
     </div>
   </section>
@@ -83,15 +83,14 @@ const problems = [
     <div class="mx-auto max-w-[1440px] px-6 lg:px-12 relative z-10">
       <div class="max-w-3xl mb-8 md:mb-12">
         <p
-          class="marketing-eyebrow marketing-eyebrow--dark text-xs font-medium font-body uppercase tracking-[0.25em] text-white/40 mb-6"
+          class="marketing-eyebrow marketing-eyebrow--dark text-xs font-medium font-body uppercase tracking-[0.25em] text-white/70 mb-6"
         >
           Common issues
         </p>
         <h2
           class="text-4xl md:text-5xl font-heading font-bold text-white leading-tight"
         >
-          Four things that cost<br />
-          <span class="text-gray-500">businesses customers every day.</span>
+          Check how your site<br /> <span class="text-white/80">works for a customer.</span>
         </h2>
       </div>
 
@@ -105,7 +104,7 @@ const problems = [
               ]}
             >
               <div class="md:col-span-4 lg:col-span-3">
-                <span class="text-sm font-body text-cyan-400/60 tracking-wide block mb-2">
+                <span class="text-sm font-body text-cyan-300 tracking-wide block mb-2">
                   {item.num}
                 </span>
                 <h3 class="text-2xl md:text-3xl font-heading font-bold text-white">
@@ -113,7 +112,7 @@ const problems = [
                 </h3>
               </div>
               <div class="md:col-span-8 lg:col-span-9">
-                <p class="text-base md:text-lg font-body text-white/50 leading-relaxed max-w-2xl">
+                <p class="text-base md:text-lg font-body text-white/70 leading-relaxed max-w-2xl">
                   {item.detail}
                 </p>
               </div>
@@ -139,59 +138,55 @@ const problems = [
     <div class="mx-auto max-w-[1440px] px-6 lg:px-12">
       <div class="max-w-3xl mb-8 md:mb-12">
         <p
-          class="marketing-eyebrow text-xs font-medium font-body uppercase tracking-[0.25em] text-gray-400 mb-6"
+          class="marketing-eyebrow text-xs font-medium font-body uppercase tracking-[0.25em] text-gray-600 mb-6"
         >
           What happens next
         </p>
         <h2
           class="text-4xl md:text-5xl font-heading font-bold text-gray-950 leading-tight"
         >
-          A site that earns its keep.<br />
-          <span class="text-gray-400">Not just one that exists.</span>
+          Agree what needs to change.<br /> <span class="text-gray-700">See the work before launch.</span>
         </h2>
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-16">
         <div>
           <div class="w-12 h-12 rounded-xl bg-gray-950 flex items-center justify-center mb-6">
-            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">
+            <svg aria-hidden="true" class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">
               <path stroke-linecap="round" stroke-linejoin="round" d="M12 21a9.004 9.004 0 008.716-6.747M12 21a9.004 9.004 0 01-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 017.843 4.582M12 3a8.997 8.997 0 00-7.843 4.582m15.686 0A11.953 11.953 0 0112 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0121 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0112 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 013 12c0-1.605.42-3.113 1.157-4.418" />
             </svg>
           </div>
           <h3 class="text-xl font-heading font-bold text-gray-950 mb-3">
-            Fast, mobile-first design
+            Easy to use on a phone
           </h3>
-          <p class="text-base font-body text-gray-500 leading-relaxed">
-            Clean code, optimised images, no page builder bloat. Your
-            site loads in under two seconds and works on every device.
+          <p class="text-base font-body text-gray-600 leading-relaxed">
+            We check the pages and form on phones as we build. You can try them yourself before the site goes live.
           </p>
         </div>
         <div>
           <div class="w-12 h-12 rounded-xl bg-gray-950 flex items-center justify-center mb-6">
-            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">
+            <svg aria-hidden="true" class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">
               <path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z" />
             </svg>
           </div>
           <h3 class="text-xl font-heading font-bold text-gray-950 mb-3">
-            Built to rank locally
+            Clear pages for your business
           </h3>
-          <p class="text-base font-body text-gray-500 leading-relaxed">
-            Proper structure, data markup, and Core Web Vitals that
-            pass. The technical foundation that makes SEO actually work.
+          <p class="text-base font-body text-gray-600 leading-relaxed">
+            We help people find your services and get in touch. Your pages use plain words that your customers know.
           </p>
         </div>
         <div>
           <div class="w-12 h-12 rounded-xl bg-gray-950 flex items-center justify-center mb-6">
-            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">
+            <svg aria-hidden="true" class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">
               <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
             </svg>
           </div>
           <h3 class="text-xl font-heading font-bold text-gray-950 mb-3">
-            You own everything
+            Help with future changes
           </h3>
-          <p class="text-base font-body text-gray-500 leading-relaxed">
-            No lock-in. No proprietary platform. No monthly fee to keep
-            your own site running. It's yours, full stop.
+          <p class="text-base font-body text-gray-600 leading-relaxed">
+            You can edit your own pages and blog. We can also make changes for you. We agree the cost before any extra work.
           </p>
         </div>
       </div>
@@ -202,20 +197,24 @@ const problems = [
   <section class="marketing-section marketing-section--compact bg-[#f5f5f3]">
     <div class="mx-auto max-w-[1440px] px-6 lg:px-12">
       <div class="max-w-3xl mx-auto text-center">
-        <p class="text-2xl md:text-3xl font-heading font-bold text-gray-950 leading-snug mb-8">
+        <figure class="mb-8">
+          <img src="/images/case-studies/midland-oil-group/mog-new-homepage.webp" width="2550" height="1312" alt="Midland Oil's rebuilt homepage with clear product choices" loading="lazy" decoding="async" class="w-full rounded-lg border border-gray-300" />
+          <figcaption class="mt-4 text-sm text-gray-600 font-body">Midland Oil's website after the rebuild.</figcaption>
+        </figure>
+        <h2 class="text-2xl md:text-3xl font-heading font-bold text-gray-950 leading-snug mb-8">
           Pages went from more than 8 seconds to 1.2. Enquiries tripled
           in the first month.
-        </p>
-        <p class="text-base font-body text-gray-500">
+        </h2>
+        <p class="text-base font-body text-gray-600">
           Midland Oil Group, rebuilt by Kaizen
         </p>
-        <MarketingButton action="caseStudy" href="/case-studies/midland-oil-group/" target="_blank" variant="link" className="mt-6" />
+        <MarketingButton action="caseStudy" href="/case-studies/midland-oil-group/" variant="link" className="mt-6" />
       </div>
     </div>
   </section>
 
   <!-- ═══ CONTACT FORM ═══ -->
-  <section id="get-in-touch" class="marketing-section bg-gray-950 text-white relative overflow-hidden">
+  <section id="get-in-touch" tabindex="-1" aria-labelledby="contact-heading" class="scroll-mt-20 focus-visible:outline-2 focus-visible:outline-offset-[-4px] focus-visible:outline-cyan-300 marketing-section bg-gray-950 text-white relative overflow-hidden">
     <div
       class="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_30%_50%,rgba(6,182,212,0.08),transparent_60%)]"
     ></div>
@@ -225,43 +224,40 @@ const problems = [
         <!-- Left: Copy -->
         <div class="max-w-lg">
           <p
-            class="marketing-eyebrow marketing-eyebrow--dark text-xs font-medium font-body uppercase tracking-[0.25em] text-white/40 mb-6"
+            class="marketing-eyebrow marketing-eyebrow--dark text-xs font-medium font-body uppercase tracking-[0.25em] text-white/70 mb-6"
           >
             Next step
           </p>
-          <h2
+          <h2 id="contact-heading"
             class="text-4xl md:text-5xl font-heading font-bold text-white leading-tight mb-8"
           >
-            Worth a conversation.<br />
-            <span class="text-gray-500">No pitch deck involved.</span>
+            Start with a free chat<br /> <span class="text-white/80">about your site.</span>
           </h2>
-          <p class="text-lg text-white/50 font-body leading-relaxed mb-10">
-            If what you've seen on this page rings true, a quick chat is
-            the easiest way to find out what fixing it would actually
-            involve. No pressure, no 47-slide deck — just a proper look
-            at what's going on and what the options are.
+          <p class="text-lg text-white/70 font-body leading-relaxed mb-10">
+            One of us will get back to you the same day, or the next working day at the latest.
           </p>
 
-          <div class="space-y-6 text-white/30 text-sm font-body">
+          <div class="space-y-6 text-white/70 text-sm font-body">
             <div class="flex items-start gap-3">
-              <svg class="w-5 h-5 text-cyan-400/60 mt-0.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">
+              <svg aria-hidden="true" class="w-5 h-5 text-cyan-300 mt-0.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
               </svg>
-              <span>Fixed-price quotes — no surprise invoices</span>
+              <span>You agree the work and price first.</span>
             </div>
             <div class="flex items-start gap-3">
-              <svg class="w-5 h-5 text-cyan-400/60 mt-0.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">
+              <svg aria-hidden="true" class="w-5 h-5 text-cyan-300 mt-0.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
               </svg>
-              <span>30 days of snagging included after launch</span>
+              <span>You approve the site before it goes live.</span>
             </div>
             <div class="flex items-start gap-3">
-              <svg class="w-5 h-5 text-cyan-400/60 mt-0.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">
+              <svg aria-hidden="true" class="w-5 h-5 text-cyan-300 mt-0.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
               </svg>
-              <span>You own everything — no lock-in, no monthly fees</span>
+              <span>Work starts after a non-refundable deposit.</span>
             </div>
           </div>
+          <p class="mt-8 text-sm text-white/70">Read <a href="/pledge/" class="underline underline-offset-4 hover:text-white focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-cyan-300">our pledge about the work and price</a>.</p>
         </div>
 
         <!-- Right: Form -->
@@ -272,16 +268,18 @@ const problems = [
     </div>
   </section>
 
+  </main>
+
   <!-- ═══ MINIMAL FOOTER ═══ -->
   <footer class="bg-gray-950 border-t border-white/5 py-8">
     <div class="mx-auto max-w-[1440px] px-6 lg:px-12">
-      <div class="flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-white/20 font-body">
+      <div class="flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-white/70 font-body">
         <p>&copy; {new Date().getFullYear()} Kaizen Web Ltd. Company No. 17007703</p>
         <a
-          href="https://kaizenweb.co.uk"
-          class="hover:text-white/40 transition-colors"
+          href="/"
+          class="hover:text-white transition-colors rounded focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-cyan-300"
         >
-          kaizenweb.co.uk
+          Kaizen home
         </a>
       </div>
     </div>

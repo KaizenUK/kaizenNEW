@@ -13,6 +13,12 @@ Checked 2 October 2026 at production release `0d0a5e0`. This is an incomplete ta
 
 Local evidence: ignored `.local/marketing-20261001/s04-instrumentation.json` records live script roots, asset counts and pattern results. Source files provide the submission semantics above. A missing tracker is not a zero-conversion report.
 
+### Ad-page follow-up during P-11
+
+The expanded six-route audit found a Bing UET loader on `/get-started/` with the literal ID `YOUR_UET_TAG_ID`; its graph has 15 local JavaScript files. A document-level submit listener labels attempts as conversions without checking a successful database save. Neither establishes a working account or reliable lead count. `/review/` has 21 local JavaScript files and no recognised tracker signature. The original four-route results remain unchanged; Microsoft UET and Clarity signatures were added to the expanded check.
+
+P-11 removes the unconfigured loader and submit listener. Browser checks on both built ad pages observe no Bing/Clarity/Google tracking request. The actual contact and scanner components, saved-lead semantics and database integration remain unchanged. S-04 still needs the existing account identified, or an agreed reporting destination, before instrumentation can be completed.
+
 ## Completed reminder
 
 Created and read back the active thread reminder `export-kaizen-search-console-data`, **Export Kaizen Search Console data**, for the first day of each month at 09:00 local time (Europe/London). It reminds Sean to export the previous complete calendar month and the available 16-month history, retain dated exports and compare page/query results against the SEO log. The reminder points to Google Search Console. The first scheduled monthly date after this setup is 1 November 2026.

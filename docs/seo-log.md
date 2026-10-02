@@ -2,6 +2,12 @@
 
 Every change that can affect search, newest first: date, URL, what changed and why. One change at a time where possible, then wait a few weeks before judging it (`seo-strategy`, "Measure, test and audit"). Positions quoted here are stale the day they are written; pull Search Console for current numbers.
 
+## 2 Oct 2026: clear ad pages and contact flow (P-11)
+
+- `/get-started/` and `/review/` retain `noindex, nofollow` and stay out of the sitemap. Both now explain website work for business owners, a free first chat and the agreed reply time. Unsupported rankings, ad-cost, universal loading-time and no-monthly-fee claims are removed; the real Midland screenshot and approved result provide the proof.
+- Existing shared buttons and fonts remain. Added a main landmark, stronger contrast, descriptive home/pledge links and focusable contact sections with fixed-header clearance. The actual contact/scanner components and submission logic are unchanged. The review title now describes general help instead of implying a personal review; both pages gain accurate descriptions. No URL, redirect, canonical, structured-data or indexable-page metadata change.
+- Removed the slow-site page's unconfigured Bing UET placeholder and attempt-based conversion listener. This does not establish working measurement; S-04 remains open for account and conversion evidence. Reading ages are 7.5 and 7.7. Proof: `docs/audits/2026-10-02-p11-proof.md`. No search or enquiry uplift is claimed.
+
 ## 2 Oct 2026: plain pledge and direct contact path (P-10)
 
 - `/pledge/` keeps its existing structure and four commitments, with shorter wording about the work, price, faults and project fit. Removed all six dashes and sales rhetoric. The existing 30-day fault-reporting policy is stated with its scope; the agreed non-refundable deposit and free first conversation are clear.
