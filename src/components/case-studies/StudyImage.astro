@@ -1,0 +1,32 @@
+---
+interface Props {
+  src: string;
+  alt: string;
+  width: number;
+  height: number;
+  caption: string;
+  eager?: boolean;
+  onDark?: boolean;
+}
+const { src, alt, width, height, caption, eager = false, onDark = false } = Astro.props;
+---
+
+<figure class="min-w-0">
+  <a
+    href={src}
+    aria-label={`Enlarge image: ${alt}`}
+    class="group block overflow-hidden rounded-xl border border-slate-300 bg-white shadow-lg outline-offset-4 focus-visible:outline-2 focus-visible:outline-uui-brand-500"
+    data-lightbox-link
+  >
+    <div class="flex h-8 items-center gap-1.5 border-b border-slate-200 bg-slate-100 px-3" aria-hidden="true">
+      <span class="size-2 rounded-full bg-slate-400"></span>
+      <span class="size-2 rounded-full bg-slate-400"></span>
+      <span class="size-2 rounded-full bg-slate-400"></span>
+      <span class="ml-auto text-xs font-medium text-slate-600">Midland Oil Group</span>
+    </div>
+    <img src={src} alt={alt} width={width} height={height} loading={eager ? "eager" : "lazy"} decoding="async" data-lightbox class="block h-auto w-full cursor-zoom-in" />
+  </a>
+  <figcaption class:list={["mt-4 text-sm leading-6", onDark ? "text-slate-300" : "text-slate-600"]}>
+    {caption} <span class="whitespace-nowrap">Select to enlarge.</span>
+  </figcaption>
+</figure>

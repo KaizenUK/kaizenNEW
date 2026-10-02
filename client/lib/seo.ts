@@ -169,7 +169,7 @@ const pageMeta: Record<string, Partial<PageMeta>> = {
   "/case-studies/midland-oil-group": {
     title: "Midland Oil Group Case Study | Kaizen Web",
     description:
-      "How we rebuilt Midland Oil Group's website so customers can find the right oil without phoning. Products sorted by industry, plus an AI oil finder.",
+      "How we rebuilt Midland Oil Group's website to help buyers find the right oil. Real before-and-after screens, an oil finder and three times the enquiries.",
   },
   "/performance-scanner": {
     title: "Free Website Speed Test for Business Sites | Kaizen Web",

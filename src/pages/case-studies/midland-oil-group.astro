@@ -1,746 +1,138 @@
 ---
-import { Button } from "../../../client/components/untitled/base/buttons/button";
 import StaticPageLayout from "../../layouts/StaticPageLayout.astro";
-import ContactCTAButton from "../../../client/components/ContactCTAButton";
+import { MarketingButton, contactResponse } from "../../../client/components/untitled/MarketingButton";
+import { MetricsBlock } from "../../../client/components/untitled/proof/MetricsBlock";
+import StudyImage from "../../components/case-studies/StudyImage.astro";
 import ImageLightbox from "../../../client/components/ImageLightbox";
 
 export const prerender = true;
-
-/* ── Before / After ─────────────────────────────────────────── */
-const beforeProblems = [
-  {
-    "label": "Hard to choose a product",
-    "copy": "Visitors knew their machine or industry. They did not always know the product name. The site gave them little help with that choice."
-  },
-  {
-    "label": "Useful services were hard to find",
-    "copy": "Waste oil collection was easy to miss. Buyers could leave without knowing Midland offered what they needed."
-  },
-  {
-    "label": "Questions became phone calls",
-    "copy": "People had to call to ask which oil to use. The site could not guide them to a product."
-  },
-  {
-    "label": "Proof was missing from the pages",
-    "copy": "Midland held ISO certificates, but the site did not show them. Buyers had more work to do before they could trust it."
-  },
-  {
-    "label": "Data sheets were hard to browse",
-    "copy": "The old downloads page was a long list. Finding a sheet meant searching through the files."
-  }
-];
-
-/* ── The walkthrough sections ───────────────────────────────── */
-const walkthrough = [
-  {
-    "num": "01",
-    "title": "Start with the industry",
-    "subtitle": "A clear first choice",
-    "copy": "Buyers choose their industry first. The site then shows products that fit that kind of work. They do not need to know a product code.",
-    "alt": "Midland oil products grouped for farming customers",
-    "img": "/images/case-studies/midland-oil-group/mog-new-sectors.webp",
-    "width": 2537,
-    "height": 1228
-  },
-  {
-    "num": "02",
-    "title": "Make the menus useful",
-    "subtitle": "Know where each link leads",
-    "copy": "The menus explain what each section holds. Buyers can see the choices before they open a page.",
-    "alt": "Midland website menu with industry links and short descriptions",
-    "img": "/images/case-studies/midland-oil-group/mog-mega-nav.webp",
-    "width": 2542,
-    "height": 415
-  },
-  {
-    "num": "03",
-    "title": "Ask MOG",
-    "subtitle": "Help choosing the right oil",
-    "copy": "The oil finder asks about the vehicle, machine or job. It then suggests a product from the range. Buyers can find a starting point without calling Midland.",
-    "alt": "Ask MOG oil finder showing vehicle and machine choices",
-    "img": "/images/case-studies/midland-oil-group/mog-ask-mog.webp",
-    "width": 543,
-    "height": 701
-  },
-  {
-    "num": "04",
-    "title": "Give each service a page",
-    "subtitle": "Show the full offer",
-    "copy": "Waste oil collection now has its own place on the site. It sits alongside blending and the other oil services. Buyers can see what Midland offers.",
-    "alt": "Midland website page listing its oil services",
-    "img": "/images/case-studies/midland-oil-group/mog-services-hub.webp",
-    "width": 2533,
-    "height": 1296
-  },
-  {
-    "num": "05",
-    "title": "Show how the brands fit",
-    "subtitle": "A clear home for each range",
-    "copy": "Each Midland brand now has its own area. Buyers can see what it offers and find the right product range.",
-    "alt": "Midland brands with links to their product ranges",
-    "img": "/images/case-studies/midland-oil-group/mog-brands-on-homepage.webp",
-    "width": 1684,
-    "height": 403
-  },
-  {
-    "num": "06",
-    "title": "Find a data sheet",
-    "subtitle": "Search by product name",
-    "copy": "Buyers can search for the data sheet they need. They can check the details before they choose a product.",
-    "alt": "Midland data sheet search with product filters",
-    "img": "/images/case-studies/midland-oil-group/mog-technical-library.webp",
-    "width": 1719,
-    "height": 1126
-  }
-];
-
-/* ── Results / numbers ──────────────────────────────────────── */
-const results = [
-  {
-    "stat": "3x",
-    "label": "Enquiries in the first month",
-    "copy": "Three times the enquiries after the rebuild."
-  },
-  {
-    "stat": "40+",
-    "label": "Years in the oil trade",
-    "copy": "Experience buyers can see and check on the site."
-  },
-  {
-    "stat": "1.2s",
-    "label": "Load time",
-    "copy": "Down from more than 8 seconds on the old site."
-  }
+const imageRoot = "/images/case-studies/midland-oil-group/";
+const details = [
+  { title: "See where each menu link leads", copy: "The menus explain what each section holds. Buyers can see the choices before they open a page.", image: "mog-mega-nav.webp", alt: "Midland menu with industry links and short descriptions", width: 2542, height: 415, caption: "Industry choices have a short, useful description." },
+  { title: "Find the services as well as the oil", copy: "Waste oil collection now has its own place on the site. It sits alongside blending and the other oil services.", image: "mog-services-hub.webp", alt: "Midland website page listing its oil services", width: 2533, height: 1296, caption: "Buyers can see the full range of oil services." },
+  { title: "Choose a brand and find its range", copy: "Each Midland brand has its own area. Buyers can see what it offers and find the right product range.", image: "mog-brands-on-homepage.webp", alt: "Midland brands with links to their product ranges", width: 1684, height: 403, caption: "Each brand has a clear place on the homepage." },
+  { title: "Search for the right data sheet", copy: "Buyers can search for the data sheet they need. They can check the details before they choose a product.", image: "mog-technical-library.webp", alt: "Midland data sheet search with product filters", width: 1719, height: 1126, caption: "Search and filters help buyers find product details." },
+  { title: "Check the company behind the products", copy: "Company details and certificates are easy to find. Buyers can check who they are dealing with before they get in touch.", image: "mog-footer-with-iso.webp", alt: "Midland website footer with company details and certificate links", width: 1662, height: 636, caption: "The footer puts company details and documents together." },
 ];
 ---
 
 <StaticPageLayout
   path="/case-studies/midland-oil-group/"
   title="Midland Oil Group Case Study | Kaizen Web"
-  description="How we rebuilt Midland Oil Group's website so customers can find the right oil without phoning. Products sorted by industry, plus an AI oil finder."
+  description="How we rebuilt Midland Oil Group's website to help buyers find the right oil. Real before-and-after screens, an oil finder and three times the enquiries."
 >
-  <!-- ═══ HERO ═══ -->
-  <section class="marketing-section relative bg-gray-950 overflow-hidden">
-    <div
-      class="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_30%_20%,rgba(6,182,212,0.08),transparent_60%)]"
-    >
-    </div>
-    <div
-      class="mx-auto max-w-[1440px] px-6 sm:px-10 lg:px-16 xl:px-24 relative"
-    >
-      <a
-        href="/case-studies/"
-        class="mb-10 inline-flex items-center gap-2 text-white/40 transition hover:text-white font-body text-sm"
-      >
-        <span aria-hidden="true">&larr;</span>
-         All case studies
-      </a>
-      <p
-        class="marketing-eyebrow marketing-eyebrow--dark mb-6 text-xs font-medium font-body uppercase tracking-[0.25em] text-white/40"
-      >Case study: Midland Oil Group</p>
-      <h1
-        class="max-w-6xl text-5xl font-heading font-bold leading-[1.1] text-white md:text-6xl lg:text-7xl"
-      >A faster website.<br /><span class="text-gray-500">More enquiries for Midland Oil.</span></h1>
-      <p class="mt-8 max-w-2xl text-xl leading-relaxed text-gray-400"><a href="https://midlandoilgroup.co.uk/" rel="nofollow noopener" target="_blank" class="text-white underline decoration-white/30 hover:decoration-white">Midland Oil Group</a> has more than 40 years in the oil trade. Its old website made choosing a product hard. We rebuilt it around the questions customers ask.</p>
-      <p class="mt-6 max-w-2xl text-3xl font-heading font-bold text-cyan-400 md:text-4xl">Find the right oil without a phone call.</p>
-    </div>
-  </section>
-
-  <!-- ═══ HERO IMAGE — BEFORE / AFTER ═══ -->
-  <section class="marketing-section marketing-section--continuation bg-gray-950">
-    <div class="mx-auto max-w-[1440px] px-6 sm:px-10 lg:px-16 xl:px-24">
-      <div class="grid grid-cols-1 gap-8 md:grid-cols-2">
-        <figure>
-          <p class="marketing-eyebrow marketing-eyebrow--dark mb-4 text-sm font-bold uppercase tracking-wider text-gray-500">
-            Before
-          </p>
-          <img
-            src="/images/case-studies/midland-oil-group/mog-old-homepage.webp"
-            width="2544"
-            height="1313"
-            alt="The old Midland Oil Group WordPress site: generic template, flat navigation, broken on mobile"
-            loading="eager"
-            decoding="async"
-            data-lightbox
-            class="w-full rounded-2xl border border-white/10"
-          />
-          <figcaption class="mt-3 text-sm text-gray-500">The old site made products hard to find on a phone.</figcaption>
-        </figure>
-        <figure>
-          <p class="marketing-eyebrow marketing-eyebrow--dark mb-4 text-sm font-bold uppercase tracking-wider text-cyan-400">
-            After
-          </p>
-          <img
-            src="/images/case-studies/midland-oil-group/mog-new-homepage.webp"
-            width="2550"
-            height="1312"
-            alt="The new Midland Oil Group platform: custom-built with sector-first navigation and responsive design"
-            loading="eager"
-            decoding="async"
-            data-lightbox
-            class="w-full rounded-2xl border border-cyan-400/20"
-          />
-          <figcaption class="mt-3 text-sm text-gray-500">The new site helps buyers choose oil for their industry.</figcaption>
-        </figure>
-      </div>
-    </div>
-  </section>
-
-  <!-- ═══ QUICK SUMMARY ═══ -->
-  <section class="marketing-section marketing-section--compact bg-white border-b border-gray-200">
-    <div class="mx-auto max-w-[1440px] px-6 sm:px-10 lg:px-16 xl:px-24">
-      <div class="grid grid-cols-1 gap-10 md:grid-cols-3 md:gap-16">
+  <section class="marketing-section bg-slate-50">
+    <div class="mx-auto max-w-[1440px] px-6 lg:px-12">
+      <a href="/case-studies/" class="mb-7 inline-block text-sm font-semibold text-uui-brand-800 underline underline-offset-4">All website case studies</a>
+      <div class="grid items-center gap-10 lg:grid-cols-[1fr_1.1fr] lg:gap-14">
         <div>
-          <p
-            class="marketing-eyebrow mb-3 text-xs font-medium font-body uppercase tracking-[0.25em] text-gray-400"
-          >
-            The client
-          </p>
-          <p class="text-lg leading-relaxed text-gray-700">Midland makes and supplies oil from the West Midlands. It holds ISO 9001 and ISO 14001 certificates. <a href="https://midlandoilgroup.co.uk/" rel="nofollow noopener" target="_blank" class="text-cyan-600 underline decoration-cyan-600/30 hover:decoration-cyan-600">Visit the Midland Oil website</a>.</p>
-        </div>
-        <div>
-          <p
-            class="marketing-eyebrow mb-3 text-xs font-medium font-body uppercase tracking-[0.25em] text-gray-400"
-          >
-            What we did
-          </p>
-          <p class="text-lg leading-relaxed text-gray-700">
-            We rebuilt the site around how customers choose their oil.
-            They can browse by industry or ask the oil finder.
-            They can also search the data sheets.
-          </p>
-        </div>
-        <div>
-          <p
-            class="marketing-eyebrow mb-3 text-xs font-medium font-body uppercase tracking-[0.25em] text-gray-400"
-          >
-            The shift
-          </p>
-          <p class="text-lg leading-relaxed text-gray-700">
-            Customers can now find the right oil on the site.
-            They do not need to start with a phone call.
-          </p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ═══ THE PROBLEM ═══ -->
-  <section class="marketing-section bg-white">
-    <div class="mx-auto max-w-[1440px] px-6 sm:px-10 lg:px-16 xl:px-24">
-      <p
-        class="marketing-eyebrow mb-6 text-xs font-medium font-body uppercase tracking-[0.25em] text-gray-400"
-      >
-        Where they were
-      </p>
-      <h2
-        class="max-w-3xl text-4xl font-heading font-bold leading-tight text-gray-950 md:text-5xl"
-      >Buyers needed a starting point.</h2>
-      <p class="mt-6 max-w-2xl text-lg leading-relaxed text-gray-600">The old site expected people to know which oil they needed. Buyers had to search long product lists or call for help. Useful services were hard to spot. The site also loaded slowly.</p>
-
-      <!-- Before screenshot -->
-      <div class="mt-12">
-        <img
-          src="/images/case-studies/midland-oil-group/mog-old-homepage.webp"
-            width="2544"
-            height="1313"
-          alt="The old Midland Oil Group WordPress homepage with generic template design and product-first navigation"
-          loading="lazy"
-          decoding="async"
-          data-lightbox
-          class="w-full rounded-2xl border border-gray-200"
-        />
-        <p class="mt-3 text-sm text-gray-400 text-center">The old homepage led with products, with little help choosing.</p>
-      </div>
-
-      <div class="mt-10 md:mt-12 space-y-0">
-        {
-          beforeProblems.map((item, i) => (
-            <div
-              class={`grid grid-cols-1 gap-4 border-t border-gray-200 py-8 md:grid-cols-[240px_1fr] md:gap-10 ${i === beforeProblems.length - 1 ? "border-b" : ""}`}
-            >
-              <p class="text-lg font-heading font-bold text-gray-950">
-                {item.label}
-              </p>
-              <p class="leading-relaxed text-gray-600">{item.copy}</p>
-            </div>
-          ))
-        }
-      </div>
-    </div>
-  </section>
-
-  <!-- ═══ PATTERN INTERRUPT ═══ -->
-  <section class="marketing-section bg-gray-950">
-    <div class="mx-auto max-w-[1440px] px-6 sm:px-10 lg:px-16 xl:px-24">
-      <div class="mx-auto max-w-3xl text-center">
-        <p
-          class="text-5xl font-heading font-bold leading-tight text-white md:text-6xl lg:text-7xl"
-        >The same oil business.<br /><span class="text-cyan-400">An easier way to buy.</span></p>
-        <p class="mt-8 text-xl text-gray-400">We put the questions buyers ask at the centre of the new site.</p>
-      </div>
-    </div>
-  </section>
-
-  <!-- ═══ THE WALKTHROUGH ═══ -->
-  <section class="marketing-section bg-white">
-    <div class="mx-auto max-w-[1440px] px-6 sm:px-10 lg:px-16 xl:px-24">
-      <p
-        class="marketing-eyebrow mb-6 text-xs font-medium font-body uppercase tracking-[0.25em] text-gray-400"
-      >
-        What changed
-      </p>
-      <h2
-        class="max-w-3xl text-4xl font-heading font-bold leading-tight text-gray-950 md:text-5xl"
-      >Help people find what they need.</h2>
-      <p class="mt-6 max-w-2xl text-lg leading-relaxed text-gray-600">These changes make the range easier to explore.</p>
-
-      <div class="mt-10 md:mt-12 space-y-16 md:space-y-24">
-        {
-          walkthrough.map((item) => (
-            <div class="grid grid-cols-1 gap-8 lg:gap-12 lg:grid-cols-2 lg:items-center">
-              <div>
-                <span class="text-sm font-medium font-body text-gray-400">
-                  {item.num}
-                </span>
-                <h3 class="mt-2 text-3xl font-heading font-bold text-gray-950 md:text-4xl">
-                  {item.title}
-                </h3>
-                <p class="marketing-eyebrow mt-1 text-sm font-bold uppercase tracking-wider text-cyan-600/70">
-                  {item.subtitle}
-                </p>
-                <p class="mt-5 text-lg leading-relaxed text-gray-600">
-                  {item.copy}
-                </p>
-              </div>
-              <img
-                src={item.img}
-                width={item.width}
-                height={item.height}
-                alt={item.alt}
-                loading="lazy"
-                decoding="async"
-                data-lightbox
-                class="w-full rounded-2xl border border-gray-200"
-              />
-            </div>
-          ))
-        }
-      </div>
-    </div>
-  </section>
-
-  <!-- ═══ TRUST & CREDIBILITY ═══ -->
-  <section class="marketing-section bg-[#f5f5f3]">
-    <div class="mx-auto max-w-[1440px] px-6 sm:px-10 lg:px-16 xl:px-24">
-      <div class="grid grid-cols-1 gap-8 lg:gap-16 lg:grid-cols-[1fr_1.2fr] lg:items-start">
-        <div>
-          <p
-            class="marketing-eyebrow mb-6 text-xs font-medium font-body uppercase tracking-[0.25em] text-gray-400"
-          >Proof buyers can check</p>
-          <h2
-            class="text-4xl font-heading font-bold leading-tight text-gray-950 md:text-5xl"
-          >More than 40 years in oil.<br /><span class="text-gray-400">Now clear on the site.</span></h2>
-          <p class="mt-6 text-lg leading-relaxed text-gray-600">Midland already had the experience and certificates buyers look for. The old site did little to show them.</p>
-          <p class="mt-4 text-lg leading-relaxed text-gray-600">The new footer shows the ISO badges and company number. Buyers can also find the legal pages from any page. That makes the key details easier to check.</p>
-        </div>
-        <div>
-          <img
-            src="/images/case-studies/midland-oil-group/mog-footer-with-iso.webp"
-            width="1662"
-            height="636"
-            alt="Footer showing ISO 9001 and ISO 14001 certification badges, company number, and LinkedIn link"
-            loading="lazy"
-            decoding="async"
-            data-lightbox
-            class="w-full rounded-2xl border border-gray-200"
-          />
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ═══ HOMEPAGE WALKTHROUGH ═══ -->
-  <section class="marketing-section bg-white">
-    <div class="mx-auto max-w-[1440px] px-6 sm:px-10 lg:px-16 xl:px-24">
-      <p
-        class="marketing-eyebrow mb-6 text-xs font-medium font-body uppercase tracking-[0.25em] text-gray-400"
-      >
-        The homepage
-      </p>
-      <h2
-        class="max-w-3xl text-4xl font-heading font-bold leading-tight text-gray-950 md:text-5xl"
-      >Show what Midland does.</h2>
-      <p class="mt-6 max-w-2xl text-lg leading-relaxed text-gray-600">The homepage explains the oil services and helps buyers choose where to start. It shows the brands and links to their product ranges.</p>
-
-      <div class="mt-12 grid grid-cols-1 gap-8 md:grid-cols-2">
-        <img
-          src="/images/case-studies/midland-oil-group/mog-homepage-hero.webp"
-            width="2141"
-            height="863"
-          alt="New homepage hero with UK Lubricant Specialists headline and oil droplet imagery"
-          loading="lazy"
-          decoding="async"
-          data-lightbox
-          class="w-full rounded-2xl border border-gray-200"
-        />
-        <img
-          src="/images/case-studies/midland-oil-group/mog-lubricant-lifecycle.webp"
-            width="1723"
-            height="502"
-          alt="The Complete Lubricant Lifecycle section: Formulation, Manufacture, Regeneration, Disposal"
-          loading="lazy"
-          decoding="async"
-          data-lightbox
-          class="w-full rounded-2xl border border-gray-200"
-        />
-        <img
-          src="/images/case-studies/midland-oil-group/mog-brands-on-homepage.webp"
-            width="1684"
-            height="403"
-          alt="Brands section showing four sub-brands with positioning statements"
-          loading="lazy"
-          decoding="async"
-          data-lightbox
-          class="w-full rounded-2xl border border-gray-200"
-        />
-        <img
-          src="/images/case-studies/midland-oil-group/mog-stats-by-the-numbers.webp"
-            width="1834"
-            height="408"
-          alt="By The Numbers: 5,000+ product variations, 40+ years experience, 130+ industrial products"
-          loading="lazy"
-          decoding="async"
-          data-lightbox
-          class="w-full rounded-2xl border border-gray-200"
-        />
-      </div>
-    </div>
-  </section>
-
-  <!-- ═══ BEFORE / AFTER COMPARISON ═══ -->
-  <section class="marketing-section bg-gray-950">
-    <div class="mx-auto max-w-[1440px] px-6 sm:px-10 lg:px-16 xl:px-24">
-      <p
-        class="marketing-eyebrow marketing-eyebrow--dark mb-6 text-xs font-medium font-body uppercase tracking-[0.25em] text-gray-500"
-      >
-        Side by side
-      </p>
-      <h2
-        class="max-w-3xl text-4xl font-heading font-bold leading-tight text-white md:text-5xl"
-      >See the change for yourself.</h2>
-
-      <div class="mt-16 grid grid-cols-1 gap-8 md:grid-cols-2">
-        <div>
-          <p
-            class="marketing-eyebrow marketing-eyebrow--dark mb-4 text-sm font-bold uppercase tracking-wider text-gray-500"
-          >
-            Before
-          </p>
-          <img
-            src="/images/case-studies/midland-oil-group/mog-old-homepage.webp"
-            width="2544"
-            height="1313"
-            alt="Old Midland Oil Group WordPress site with generic template and flat navigation"
-            loading="lazy"
-            decoding="async"
-            data-lightbox
-            class="w-full rounded-2xl border border-white/10"
-          />
-          <ul class="mt-6 space-y-3 text-gray-500">
-            <li class="flex items-start gap-3">
-              <svg
-                class="mt-0.5 h-5 w-5 shrink-0 text-gray-700"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                ><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg
-              >
-              <span>A template that did not match the brand.</span>
-            </li>
-            <li class="flex items-start gap-3">
-              <svg
-                class="mt-0.5 h-5 w-5 shrink-0 text-gray-700"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                ><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg
-              >
-              <span>The same look across different brands.</span>
-            </li>
-            <li class="flex items-start gap-3">
-              <svg
-                class="mt-0.5 h-5 w-5 shrink-0 text-gray-700"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                ><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg
-              >
-              <span>Long menus with little help choosing.</span>
-            </li>
-            <li class="flex items-start gap-3">
-              <svg
-                class="mt-0.5 h-5 w-5 shrink-0 text-gray-700"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                ><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg
-              >
-              <span>Slow pages that needed a rebuild.</span>
-            </li>
-          </ul>
-        </div>
-        <div>
-          <p
-            class="marketing-eyebrow marketing-eyebrow--dark mb-4 text-sm font-bold uppercase tracking-wider text-cyan-400"
-          >
-            After
-          </p>
-          <img
-            src="/images/case-studies/midland-oil-group/mog-new-homepage.webp"
-            width="2550"
-            height="1312"
-            alt="New Midland Oil Group homepage with clear menus and industry links"
-            loading="lazy"
-            decoding="async"
-            data-lightbox
-            class="w-full rounded-2xl border border-cyan-400/20"
-          />
-          <ul class="mt-6 space-y-3 text-gray-300">
-            <li class="flex items-start gap-3">
-              <svg
-                class="mt-0.5 h-5 w-5 shrink-0 text-cyan-400"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2.5"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                ><path d="M20 6 9 17l-5-5"></path></svg
-              >
-              <span>A design that fits the Midland brand.</span>
-            </li>
-            <li class="flex items-start gap-3">
-              <svg
-                class="mt-0.5 h-5 w-5 shrink-0 text-cyan-400"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2.5"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                ><path d="M20 6 9 17l-5-5"></path></svg
-              >
-              <span>Browse products by industry.</span>
-            </li>
-            <li class="flex items-start gap-3">
-              <svg
-                class="mt-0.5 h-5 w-5 shrink-0 text-cyan-400"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2.5"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                ><path d="M20 6 9 17l-5-5"></path></svg
-              >
-              <span>Ask MOG&#8482; helps buyers choose the right oil.</span>
-            </li>
-            <li class="flex items-start gap-3">
-              <svg
-                class="mt-0.5 h-5 w-5 shrink-0 text-cyan-400"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2.5"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                ><path d="M20 6 9 17l-5-5"></path></svg
-              >
-              <span>You can edit the pages and blog easily.</span>
-            </li>
-          </ul>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ═══ RESULTS ═══ -->
-  <section class="marketing-section bg-[#f5f5f3]">
-    <div class="mx-auto max-w-[1440px] px-6 sm:px-10 lg:px-16 xl:px-24">
-      <p
-        class="marketing-eyebrow mb-6 text-xs font-medium font-body uppercase tracking-[0.25em] text-gray-400"
-      >
-        The outcome
-      </p>
-      <h2
-        class="max-w-3xl text-4xl font-heading font-bold leading-tight text-gray-950 md:text-5xl"
-      >More enquiries after the rebuild.</h2>
-      <p class="mt-6 max-w-2xl text-lg leading-relaxed text-gray-600">Midland saw three times the enquiries in the first month. It now gets several genuine enquiries a day. A large national business also showed interest after finding the new site.</p>
-
-      <div class="mt-16 grid grid-cols-1 gap-8 md:grid-cols-3">
-        {
-          results.map((item) => (
-            <div class="rounded-2xl border border-gray-200 bg-white p-8">
-              <p class="text-4xl font-heading font-bold text-cyan-600">
-                {item.stat}
-              </p>
-              <p class="marketing-eyebrow mt-3 text-sm font-bold uppercase tracking-wider text-gray-400">
-                {item.label}
-              </p>
-              <p class="mt-3 text-sm leading-relaxed text-gray-500">
-                {item.copy}
-              </p>
-            </div>
-          ))
-        }
-      </div>
-
-      <div class="mt-12 rounded-xl bg-gray-950 p-8 md:p-10">
-        <div class="grid grid-cols-1 gap-8 md:grid-cols-2 md:items-center">
-          <div>
-            <p class="marketing-eyebrow marketing-eyebrow--dark text-sm font-bold uppercase tracking-wider text-gray-500">
-              What this means for the business
-            </p>
-            <ul class="mt-6 space-y-4">
-              <li class="flex items-start gap-3 text-gray-300">
-                <svg
-                  class="mt-0.5 h-5 w-5 shrink-0 text-cyan-400"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2.5"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  ><path d="M20 6 9 17l-5-5"></path></svg
-                >
-                <span
-                  >Customers can find oil without making a phone call.</span
-                >
-              </li>
-              <li class="flex items-start gap-3 text-gray-300">
-                <svg
-                  class="mt-0.5 h-5 w-5 shrink-0 text-cyan-400"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2.5"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  ><path d="M20 6 9 17l-5-5"></path></svg
-                >
-                <span
-                  >Buyers can check the ISO certificates.</span
-                >
-              </li>
-              <li class="flex items-start gap-3 text-gray-300">
-                <svg
-                  class="mt-0.5 h-5 w-5 shrink-0 text-cyan-400"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2.5"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  ><path d="M20 6 9 17l-5-5"></path></svg
-                >
-                <span
-                  >Waste oil collection is easy to find.</span
-                >
-              </li>
-              <li class="flex items-start gap-3 text-gray-300">
-                <svg
-                  class="mt-0.5 h-5 w-5 shrink-0 text-cyan-400"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2.5"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  ><path d="M20 6 9 17l-5-5"></path></svg
-                >
-                <span
-                  >Each brand has a clear place on the site.</span
-                >
-              </li>
-              <li class="flex items-start gap-3 text-gray-300">
-                <svg
-                  class="mt-0.5 h-5 w-5 shrink-0 text-cyan-400"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2.5"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  ><path d="M20 6 9 17l-5-5"></path></svg
-                >
-                <span
-                  >Data sheets can be found by product name.</span
-                >
-              </li>
-            </ul>
-          </div>
-          <div class="text-center md:text-right">
-            <p
-              class="text-5xl font-heading font-bold text-white md:text-6xl lg:text-7xl"
-            >
-              <span class="whitespace-nowrap">Ask MOG<sup class="text-[0.35em] align-super text-cyan-400">&#8482;</sup></span>
-            </p>
-            <p class="mt-4 text-sm text-gray-500">Oil finder provided on licence by Kaizen</p>
+          <p class="marketing-eyebrow mb-4">Web design for trade and industry</p>
+          <h1 class="text-balance font-heading text-4xl font-bold text-uui-dark md:text-5xl lg:text-6xl">Midland Oil Group.<br /><span class="text-uui-brand-800">A clearer path to the right oil.</span></h1>
+          <p class="mt-6 max-w-xl text-lg leading-relaxed text-slate-600">Midland's old site made choosing oil hard. We rebuilt it so buyers could find products and send an enquiry.</p>
+          <div class="mt-7">
+            <MarketingButton action="contact" />
+            <p class="mt-3 max-w-md text-sm leading-6 text-slate-600">{contactResponse}</p>
           </div>
         </div>
+        <StudyImage src={imageRoot + "mog-new-homepage.webp"} alt="The rebuilt Midland Oil Group homepage with industry choices" width={2550} height={1312} caption="The new site gives buyers a clear place to start." eager />
       </div>
     </div>
   </section>
 
-  <!-- ═══ CTA ═══ -->
-  <section class="marketing-section bg-gray-950">
-    <div
-      class="mx-auto max-w-[1440px] px-6 sm:px-10 lg:px-16 xl:px-24 text-center"
-    >
-      <h2 class="text-4xl font-heading font-bold text-white md:text-5xl">Make it easier for customers<br /><span class="text-gray-500">to choose your business.</span></h2>
-      <p class="mx-auto mt-6 max-w-2xl text-xl leading-relaxed text-gray-400">We can help people find what they need on your site. Start with our <a href="/services/wordpress-web-design/" class="text-gray-200 underline decoration-gray-500 hover:decoration-white">website rebuild options</a>, or tell us what needs to change.</p>
-      <div
-        class="mt-10 flex flex-col items-center gap-4 sm:flex-row sm:justify-center"
-      >
-        <ContactCTAButton />
-        <Button href="/case-studies/" color="secondary" size="lg">See more case studies</Button>
+  <section class="marketing-section marketing-section--compact border-y border-slate-200 bg-white" aria-labelledby="midland-result-heading">
+    <div class="mx-auto grid max-w-[1440px] gap-9 px-6 lg:grid-cols-2 lg:gap-16 lg:px-12">
+      <div>
+        <h2 id="midland-result-heading" class="text-balance font-heading text-4xl font-bold text-uui-dark md:text-5xl">More visits turn into real enquiries.</h2>
+        <p class="mt-5 max-w-xl text-lg leading-relaxed text-slate-600">Since the rebuild, Midland gets several genuine enquiries a day. A large national business has also shown interest.</p>
+        <p class="mt-3 text-sm leading-6 text-slate-600">These are Midland's results. They are not a promise for every site.</p>
+      </div>
+      <MetricsBlock showSourceLink={false} />
+    </div>
+  </section>
+
+  <section class="marketing-section bg-slate-50" aria-labelledby="midland-before-heading">
+    <div class="mx-auto grid max-w-[1440px] items-center gap-10 px-6 lg:grid-cols-2 lg:gap-16 lg:px-12">
+      <div>
+        <p class="marketing-eyebrow mb-4">Before the rebuild</p>
+        <h2 id="midland-before-heading" class="text-balance font-heading text-4xl font-bold text-uui-dark md:text-5xl">Good products were hard to find.</h2>
+        <p class="mt-5 text-lg leading-relaxed text-slate-600">Midland makes and supplies oil in the West Midlands. It has more than 40 years in the trade.</p>
+        <p class="mt-4 text-lg leading-relaxed text-slate-600">The old site expected buyers to know product names. Services were hard to spot, and data sheets sat in a long list.</p>
+        <p class="mt-4 text-lg leading-relaxed text-slate-600">People needed to call to work out where to start.</p>
+      </div>
+      <StudyImage src={imageRoot + "mog-old-homepage.webp"} alt="The old Midland Oil Group homepage with its product list" width={2544} height={1313} caption="The old site left buyers to work out which range they needed." />
+    </div>
+  </section>
+
+  <section class="marketing-section bg-white" aria-labelledby="midland-industry-heading">
+    <div class="mx-auto max-w-[1440px] px-6 lg:px-12">
+      <div class="mb-9 grid gap-5 lg:grid-cols-2 lg:gap-16">
+        <h2 id="midland-industry-heading" class="text-balance font-heading text-4xl font-bold text-uui-dark md:text-5xl">Start with the work.<br />Then find the oil.</h2>
+        <p class="max-w-xl text-lg leading-relaxed text-slate-600">Buyers choose their industry first. The site then shows products that fit that kind of work. They do not need to know a product code.</p>
+      </div>
+      <StudyImage src={imageRoot + "mog-new-sectors.webp"} alt="Midland oil products grouped for farming customers" width={2537} height={1228} caption="The farming pages bring the relevant oils into one place." />
+    </div>
+  </section>
+
+  <section class="marketing-section bg-uui-dark text-white" aria-labelledby="midland-finder-heading">
+    <div class="mx-auto grid max-w-[1440px] items-center gap-10 px-6 lg:grid-cols-[1fr_0.8fr] lg:gap-24 lg:px-12">
+      <div>
+        <p class="marketing-eyebrow marketing-eyebrow--dark mb-4">Ask MOG oil finder</p>
+        <h2 id="midland-finder-heading" class="text-balance font-heading text-4xl font-bold md:text-5xl">Find a starting point without a phone call.</h2>
+        <p class="mt-5 max-w-xl text-lg leading-relaxed text-slate-300">The oil finder asks about the vehicle, machine or job. It then suggests a product from the range.</p>
+        <p class="mt-4 max-w-xl text-lg leading-relaxed text-slate-300">Buyers can narrow down the choice before they contact Midland.</p>
+        <p class="mt-6 border-l-2 border-uui-brand-300 pl-4 text-sm leading-6 text-slate-300">Oil finder provided on licence by Kaizen.</p>
+      </div>
+      <div class="mx-auto w-full max-w-sm">
+        <StudyImage src={imageRoot + "mog-ask-mog.webp"} alt="Ask MOG oil finder showing vehicle and machine choices" width={543} height={701} caption="A useful first step for buyers who do not know the range." onDark />
       </div>
     </div>
   </section>
 
-  <!-- ═══ PREV / NEXT NAV ═══ -->
-  <section class="marketing-section marketing-section--compact border-t border-white/10 bg-gray-950">
-    <div
-      class="mx-auto flex max-w-[1440px] items-center justify-between gap-4 px-6 sm:px-10 lg:px-16 xl:px-24 text-sm font-medium font-body"
-    >
-      <a
-        href="/case-studies/helen-moore-hairdressing/"
-        class="text-white/60 transition hover:text-white">&larr; Helen Moore Hairdressing</a
-      >
-      <a
-        href="/case-studies/"
-        class="text-white/30 transition hover:text-white">All Case Studies</a
-      >
-      <a
-        href="/contact/"
-        class="text-white/60 transition hover:text-white">Talk to us about your site</a
-      >
+  <section class="marketing-section bg-slate-50" aria-labelledby="midland-details-heading">
+    <div class="mx-auto grid max-w-[1440px] items-start gap-9 px-6 lg:grid-cols-[0.7fr_1.3fr] lg:gap-16 lg:px-12">
+      <div>
+        <h2 id="midland-details-heading" class="text-balance font-heading text-4xl font-bold text-uui-dark md:text-5xl">The details help buyers choose.</h2>
+        <p class="mt-5 text-lg leading-relaxed text-slate-600">Open each example to see how the rest of the site works.</p>
+        <a href="https://midlandoilgroup.co.uk/" class="mt-6 inline-block font-semibold text-uui-brand-800 underline underline-offset-4" rel="noopener" target="_blank">Visit Midland Oil Group's website</a>
+      </div>
+      <div class="min-w-0 divide-y divide-slate-200 border-y border-slate-200">
+        {details.map((item) => (
+          <details class="group py-5">
+            <summary class="flex cursor-pointer list-none items-center justify-between gap-5 rounded-sm font-heading text-xl font-bold text-uui-dark outline-offset-4 focus-visible:outline-2 focus-visible:outline-uui-brand-500 [&::-webkit-details-marker]:hidden">
+              {item.title}
+              <svg class="size-5 shrink-0 transition-transform group-open:rotate-180 motion-reduce:transition-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m6 9 6 6 6-6" /></svg>
+            </summary>
+            <div class="pt-5">
+              <p class="mb-6 text-base leading-relaxed text-slate-600">{item.copy}</p>
+              <StudyImage src={imageRoot + item.image} alt={item.alt} width={item.width} height={item.height} caption={item.caption} />
+            </div>
+          </details>
+        ))}
+      </div>
     </div>
   </section>
 
-  <!-- Lightbox overlay — mounted once, listens for clicks on any img[data-lightbox] -->
+  <section class="marketing-section bg-white" aria-labelledby="midland-contact-heading">
+    <div class="mx-auto grid max-w-[1440px] gap-8 px-6 lg:grid-cols-2 lg:gap-16 lg:px-12">
+      <div>
+        <p class="marketing-eyebrow mb-4">Your website</p>
+        <h2 id="midland-contact-heading" class="text-balance font-heading text-4xl font-bold text-uui-dark md:text-5xl">Help buyers find what they need.</h2>
+        <p class="mt-5 max-w-xl text-lg leading-relaxed text-slate-600">We rebuild dated, slow websites for businesses. The first chat is free, so we can talk through what needs to change.</p>
+        <div class="mt-7">
+          <MarketingButton action="contact" />
+          <p class="mt-3 max-w-md text-sm leading-6 text-slate-600">{contactResponse}</p>
+        </div>
+      </div>
+      <div class="self-center rounded-2xl border border-slate-200 bg-slate-50 p-7 md:p-9">
+        <h3 class="font-heading text-2xl font-bold text-uui-dark">See what a rebuild involves.</h3>
+        <p class="mt-4 text-base leading-relaxed text-slate-600">We agree the price before work starts. A non-refundable deposit comes before the first draft.</p>
+        <ul class="mt-6 space-y-4 font-semibold text-uui-brand-800">
+          <li><a href="/services/wordpress-web-design/" class="underline underline-offset-4">Compare our website rebuild options</a></li>
+          <li><a href="/pledge/" class="underline underline-offset-4">Read our promises before you pay</a></li>
+          <li><a href="/case-studies/helen-moore-hairdressing/" class="underline underline-offset-4">See Helen Moore's salon website story</a></li>
+        </ul>
+      </div>
+    </div>
+  </section>
   <ImageLightbox client:load />
 </StaticPageLayout>

@@ -1,230 +1,135 @@
 import { useState, useEffect, useCallback, useRef } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { X, ZoomIn, ZoomOut } from "lucide-react";
+import { ArrowLeft, ArrowRight, X, ZoomIn, ZoomOut } from "lucide-react";
+import { Button } from "./untitled/base/buttons/button";
 
-/**
- * Mount once on the page with `client:load`.
- * Any `<img data-lightbox>` on the page becomes clickable.
- * Images are grouped and navigable with arrow keys / buttons.
- */
+type GalleryImage = { src: string; alt: string; width: number; height: number };
+
+/** Enhances full-image links while preserving their no-JavaScript destination. */
 export default function ImageLightbox() {
-  const [images, setImages] = useState<Array<{ src: string; alt: string }>>([]);
+  const [images, setImages] = useState<GalleryImage[]>([]);
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
   const [zoom, setZoom] = useState(1);
-  const scrollRef = useRef<HTMLDivElement>(null);
-
+  const [bounds, setBounds] = useState({ width: 0, height: 0 });
+  const dialogRef = useRef<HTMLDialogElement>(null);
+  const viewportRef = useRef<HTMLDivElement>(null);
+  const openerRef = useRef<HTMLElement | null>(null);
   const isOpen = activeIndex !== null;
+  const close = useCallback(() => setActiveIndex(null), []);
 
-  const close = useCallback(() => {
-    setActiveIndex(null);
-    setZoom(1);
-  }, []);
-
-  // Collect all lightbox images and attach click handlers
   useEffect(() => {
-    const els = Array.from(
-      document.querySelectorAll<HTMLImageElement>("img[data-lightbox]")
-    );
-    const data = els.map((el) => ({
-      src: el.src,
-      alt: el.alt || "",
-    }));
-    setImages(data);
-
-    const handlers = els.map((el, i) => {
-      const handler = () => {
-        setActiveIndex(i);
-        setZoom(1);
-      };
-      el.style.cursor = "zoom-in";
-      el.addEventListener("click", handler);
-      return { el, handler };
+    const links = Array.from(document.querySelectorAll<HTMLAnchorElement>("a[data-lightbox-link]"));
+    const entries = links.flatMap((link) => {
+      const image = link.querySelector<HTMLImageElement>("img[data-lightbox]");
+      return image ? [{ link, image }] : [];
     });
-
-    return () => {
-      handlers.forEach(({ el, handler }) =>
-        el.removeEventListener("click", handler)
-      );
-    };
+    setImages(entries.map(({ link, image }) => ({
+      src: link.href,
+      alt: image.alt,
+      width: Number(image.getAttribute("width")),
+      height: Number(image.getAttribute("height")),
+    })));
+    const handlers = entries.map(({ link }, index) => {
+      const handler = (event: MouseEvent) => {
+        if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+        if (typeof dialogRef.current?.showModal !== "function") return;
+        event.preventDefault();
+        openerRef.current = link;
+        setZoom(1);
+        setActiveIndex(index);
+      };
+      link.addEventListener("click", handler);
+      return { link, handler };
+    });
+    return () => handlers.forEach(({ link, handler }) => link.removeEventListener("click", handler));
   }, []);
 
-  // Lock scroll
   useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "";
-    }
+    if (!isOpen) return;
+    const dialog = dialogRef.current;
+    if (!dialog) return;
+    const previousOverflow = document.body.style.overflow;
+    dialog.showModal();
+    dialog.querySelector<HTMLButtonElement>('[aria-label="Close image viewer"]')?.focus();
+    document.body.style.overflow = "hidden";
     return () => {
-      document.body.style.overflow = "";
+      dialog.close();
+      document.body.style.overflow = previousOverflow;
+      openerRef.current?.focus({ preventScroll: true });
     };
   }, [isOpen]);
 
-  // Keyboard nav
   useEffect(() => {
-    const handleKey = (e: KeyboardEvent) => {
-      if (!isOpen || activeIndex === null) return;
-      if (e.key === "Escape") close();
-      if (e.key === "ArrowRight" && activeIndex < images.length - 1) {
-        setActiveIndex(activeIndex + 1);
-        setZoom(1);
-      }
-      if (e.key === "ArrowLeft" && activeIndex > 0) {
-        setActiveIndex(activeIndex - 1);
-        setZoom(1);
-      }
+    const viewport = viewportRef.current;
+    if (!isOpen || !viewport) return;
+    const update = () => setBounds({ width: viewport.clientWidth, height: viewport.clientHeight });
+    update();
+    const observer = new ResizeObserver(update);
+    observer.observe(viewport);
+    return () => observer.disconnect();
+  }, [isOpen]);
+
+  useEffect(() => { viewportRef.current?.scrollTo(0, 0); }, [activeIndex]);
+
+  // A control can lose focus when it becomes disabled at either end of the gallery.
+  // Keep arrow navigation available throughout the native modal in that state.
+  useEffect(() => {
+    if (!isOpen) return;
+    const handleKey = (event: KeyboardEvent) => {
+      if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
+      event.preventDefault();
+      const direction = event.key === "ArrowLeft" ? -1 : 1;
+      setActiveIndex((index) => index === null ? null : Math.max(0, Math.min(images.length - 1, index + direction)));
+      setZoom(1);
     };
     window.addEventListener("keydown", handleKey);
     return () => window.removeEventListener("keydown", handleKey);
-  }, [isOpen, activeIndex, images.length, close]);
+  }, [isOpen, images.length]);
 
-  const zoomIn = () => {
-    setZoom((z) => Math.min(z + 0.5, 3));
+  const move = (direction: number) => {
+    if (activeIndex === null) return;
+    setActiveIndex(Math.max(0, Math.min(images.length - 1, activeIndex + direction)));
+    setZoom(1);
   };
-  const zoomOut = () => {
-    setZoom((z) => Math.max(z - 0.5, 0.5));
-  };
-
-  // Reset scroll position when changing images
-  useEffect(() => {
-    if (scrollRef.current) {
-      scrollRef.current.scrollTo(0, 0);
-    }
-  }, [activeIndex]);
-
-  if (images.length === 0) return null;
+  const image = activeIndex === null ? undefined : images[activeIndex];
+  const fit = image ? Math.min(bounds.width / image.width, bounds.height / image.height, 1) : 1;
 
   return (
-    <AnimatePresence>
-      {isOpen && activeIndex !== null && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.2 }}
-          className="fixed inset-0 z-9999 flex items-center justify-center bg-black/90 backdrop-blur-sm"
-          onClick={close}
-        >
-          {/* Top-right controls */}
-          <div
-            className="absolute top-4 right-4 z-10 flex items-center gap-2"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <button
-              onClick={zoomOut}
-              className="flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-white transition hover:bg-white/20"
-              aria-label="Zoom out"
-            >
-              <ZoomOut className="h-5 w-5" />
-            </button>
-            <span className="min-w-[3rem] text-center text-sm text-white/60">
-              {Math.round(zoom * 100)}%
-            </span>
-            <button
-              onClick={zoomIn}
-              className="flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-white transition hover:bg-white/20"
-              aria-label="Zoom in"
-            >
-              <ZoomIn className="h-5 w-5" />
-            </button>
-            <button
-              onClick={close}
-              className="ml-2 flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-white transition hover:bg-white/20"
-              aria-label="Close lightbox"
-            >
-              <X className="h-5 w-5" />
-            </button>
-          </div>
-
-          {/* Prev / Next arrows */}
-          {images.length > 1 && activeIndex > 0 && (
-            <button
-              className="absolute left-4 top-1/2 z-10 flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full bg-white/10 text-white transition hover:bg-white/20"
-              onClick={(e) => {
-                e.stopPropagation();
-                setActiveIndex(activeIndex - 1);
-                setZoom(1);
-              }}
-              aria-label="Previous image"
-            >
-              <svg
-                className="h-6 w-6"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path d="m15 18-6-6 6-6" />
-              </svg>
-            </button>
-          )}
-          {images.length > 1 && activeIndex < images.length - 1 && (
-            <button
-              className="absolute right-4 top-1/2 z-10 flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full bg-white/10 text-white transition hover:bg-white/20"
-              onClick={(e) => {
-                e.stopPropagation();
-                setActiveIndex(activeIndex + 1);
-                setZoom(1);
-              }}
-              aria-label="Next image"
-            >
-              <svg
-                className="h-6 w-6"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path d="m9 18 6-6-6-6" />
-              </svg>
-            </button>
-          )}
-
-          {/* Image container */}
-          <motion.div
-            key={activeIndex}
-            ref={scrollRef}
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.95 }}
-            transition={{ duration: 0.2 }}
-            className="max-h-[85vh] max-w-[90vw] overflow-auto"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <img
-              src={images[activeIndex].src}
-              alt={images[activeIndex].alt}
-              className="block rounded-lg"
-              style={
-                zoom === 1
-                  ? {
-                      width: "100%",
-                      maxHeight: "85vh",
-                      objectFit: "contain",
-                    }
-                  : {
-                      maxWidth: "none",
-                      width: `${zoom * 100}%`,
-                    }
-              }
-            />
-          </motion.div>
-
-          {/* Caption + counter */}
-          <p className="absolute bottom-4 left-1/2 max-w-lg -translate-x-1/2 text-center text-sm text-white/50">
-            {images[activeIndex].alt}
-            {images.length > 1 && (
-              <span className="ml-3 text-white/30">
-                {activeIndex + 1} / {images.length}
-              </span>
-            )}
-          </p>
-        </motion.div>
-      )}
-    </AnimatePresence>
+    <dialog
+      ref={dialogRef}
+      aria-labelledby="image-viewer-title"
+      aria-describedby="image-viewer-caption"
+      className="fixed m-auto w-[calc(100%-2rem)] max-w-6xl max-h-[94dvh] overflow-auto rounded-2xl border border-slate-600 bg-uui-dark p-4 text-white shadow-2xl backdrop:bg-slate-950/90 sm:p-6"
+      onCancel={close}
+      onClose={(event) => {
+        // A queued close event from the previous image must not close a reopened dialog.
+        if (!event.currentTarget.open) close();
+      }}
+      onClick={(event) => {
+        const rect = event.currentTarget.getBoundingClientRect();
+        if (event.target === event.currentTarget && (event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom)) close();
+      }}
+    >
+      <div className="mb-4 flex items-center justify-between gap-4">
+        <h2 id="image-viewer-title" className="font-heading text-xl font-bold">Midland website images</h2>
+        <Button color="secondary" size="lg" iconLeading={X} aria-label="Close image viewer" onPress={close} />
+      </div>
+      <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+        <div className="flex items-center gap-2">
+          <Button color="secondary" size="lg" iconLeading={ZoomOut} aria-label="Zoom out" isDisabled={zoom <= 0.5} onPress={() => setZoom((value) => Math.max(0.5, value - 0.5))} />
+          <output aria-label="Image zoom" className="w-12 text-center text-sm font-semibold">{Math.round(zoom * 100)}%</output>
+          <Button color="secondary" size="lg" iconLeading={ZoomIn} aria-label="Zoom in" isDisabled={zoom >= 3} onPress={() => setZoom((value) => Math.min(3, value + 0.5))} />
+        </div>
+        <div className="flex items-center gap-2">
+          <Button color="secondary" size="lg" iconLeading={ArrowLeft} aria-label="Previous image" isDisabled={activeIndex === null || activeIndex === 0} onPress={() => move(-1)} />
+          <Button color="secondary" size="lg" iconLeading={ArrowRight} aria-label="Next image" isDisabled={activeIndex === null || activeIndex === images.length - 1} onPress={() => move(1)} />
+        </div>
+      </div>
+      <div ref={viewportRef} className="h-[52dvh] overflow-auto rounded-lg bg-slate-950" tabIndex={0} role="region" aria-label="Full-size image. Scroll when zoomed in.">
+        {image && <img src={image.src} alt={image.alt} width={image.width} height={image.height} className="mx-auto block max-w-none" style={{ width: image.width * fit * zoom, height: image.height * fit * zoom }} />}
+      </div>
+      <p id="image-viewer-caption" className="mt-4 text-sm leading-6 text-slate-200" aria-live="polite">
+        {image?.alt}{activeIndex !== null && <span className="ml-2 whitespace-nowrap">({activeIndex + 1} of {images.length})</span>}
+      </p>
+    </dialog>
   );
 }

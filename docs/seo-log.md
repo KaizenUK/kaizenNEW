@@ -1,5 +1,12 @@
 # SEO change log: kaizenweb.co.uk
 
+## 2 Oct 2026: Midland case study with early results and real work (P-08)
+
+- `/case-studies/midland-oil-group/` now places the buying problem, actual work and approved results near the start. Nine distinct screenshots replace repeated image placements; five native disclosures keep detailed examples in initial HTML. Shared buttons/type and a keyboard-accessible gallery preserve the useful walkthrough.
+- URL, client-specific title, canonical, indexability and structured data remain. The description now explains the oil finder without jargon. Page props, fallback and seed match the exact CMS document; revision-guarded read-back proves only its description changed. All 53 built pages were compared; other page bodies and search fields are unchanged.
+- Types, full build, copy (age 8.9), all closed/expanded tiles, eight browser views, 32 gallery checks and Windows test comparison pass. Production verification pending. P-08 remains open for Helen. Proof: `docs/audits/2026-10-02-p08-midland-proof.md`. No ranking or enquiry uplift is claimed.
+
+
 ## 2 Oct 2026: About page with real work and a clear process (P-04)
 
 - `/about/` now shows Midland's real before/after work and approved results, the same-person promise and a clear route from a free first chat through deposit, review and launch. Editing help and later changes are explained without technology names or new price/timing claims.
