@@ -27,7 +27,7 @@ const caseStudies = [
   title="Web Design Case Studies | Kaizen Web"
   description="Real websites we have built and fixed, and what changed for each business. See the Midland Oil Group and Helen Moore Hairdressing projects."
 >
-  <section class="flex min-h-[60vh] items-center bg-white py-20">
+  <section class="marketing-section flex items-center bg-white">
     <div class="container mx-auto max-w-4xl px-4">
       <h1 class="mb-8 text-5xl font-heading font-black leading-tight text-kaizen-dark md:text-6xl lg:text-7xl">
         See what a better website can do.
@@ -38,16 +38,16 @@ const caseStudies = [
     </div>
   </section>
 
-  <section class="bg-kaizen-light py-20">
+  <section class="marketing-section bg-kaizen-light">
     <div class="container mx-auto max-w-5xl px-4">
-      <h2 class="mb-16 text-4xl font-heading font-bold text-kaizen-dark md:text-5xl">
+      <h2 class="mb-8 md:mb-12 text-4xl font-heading font-bold text-kaizen-dark md:text-5xl">
         Websites built around the buyer.
       </h2>
 
       <ul class="space-y-0">
         {caseStudies.map((study) => (
           <li>
-            <div class="group border-b border-kaizen-light bg-transparent px-8 py-12">
+            <div class="group border-b border-kaizen-light bg-transparent px-8 py-8 md:py-10">
               <div class="grid grid-cols-1 items-start gap-8 lg:grid-cols-2">
                 <div>
                   <h3 class="mb-4 text-3xl font-heading font-bold text-kaizen-dark transition group-hover:text-kaizen-cyan md:text-4xl">
@@ -82,7 +82,7 @@ const caseStudies = [
     </div>
   </section>
 
-  <section class="bg-kaizen-dark py-20 text-white md:py-32">
+  <section class="marketing-section bg-kaizen-dark text-white">
     <div class="container mx-auto max-w-3xl px-4 text-center">
       <h2 class="mb-8 text-4xl font-heading font-black md:text-5xl lg:text-6xl">
         Could your site work harder?

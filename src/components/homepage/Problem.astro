@@ -7,11 +7,11 @@ import { MarketingButton } from "../../../client/components/untitled/MarketingBu
  */
 ---
 
-<section class="py-28 md:py-36 bg-white" id="problem-section">
+<section class="marketing-section marketing-section--joined bg-white" id="problem-section">
   <div class="mx-auto max-w-[1440px] px-6 lg:px-12">
     <div class="max-w-3xl mx-auto">
       <p
-        class="marketing-eyebrow text-xs font-medium tracking-[0.25em] text-gray-400 uppercase mb-16 font-body"
+        class="marketing-eyebrow text-xs font-medium tracking-[0.25em] text-gray-400 uppercase mb-8 md:mb-12 font-body"
       >
         Sound familiar?
       </p>
@@ -38,7 +38,7 @@ import { MarketingButton } from "../../../client/components/untitled/MarketingBu
         </p>
       </div>
 
-      <div class="flex flex-col sm:flex-row items-start sm:items-center gap-6 pt-16">
+      <div class="flex flex-col sm:flex-row items-start sm:items-center gap-6 pt-8 md:pt-12">
         <MarketingButton action="speed" />
         <span class="text-sm font-body text-gray-400">Free test. Your score comes first.</span>
       </div>
@@ -50,12 +50,12 @@ import { MarketingButton } from "../../../client/components/untitled/MarketingBu
   .story-stack {
     display: flex;
     flex-direction: column;
-    gap: 3.5rem;
+    gap: 2rem;
   }
 
   @media (min-width: 768px) {
     .story-stack {
-      gap: 5rem;
+      gap: 3rem;
     }
   }
 

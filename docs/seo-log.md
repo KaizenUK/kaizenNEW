@@ -2,6 +2,11 @@
 
 Every change that can affect search, newest first: date, URL, what changed and why. One change at a time where possible, then wait a few weeks before judging it (`seo-strategy`, "Measure, test and audit"). Positions quoted here are stale the day they are written; pull Search Console for current numbers.
 
+## 2 Oct 2026: consistent marketing section spacing (F-04)
+
+- Active marketing, ad, case-study and legal pages use two consistent section sizes. Removed oversized gaps around headings and rows, plus empty viewport-height tails on short introductions. Header clearance and image proportions are preserved.
+- Parsed before/after HTML for all 18 changed routes confirms identical wording, links, heading levels, metadata and structured data. This is a presentation change; URLs and page ownership are unchanged. Proof: `docs/audits/2026-10-02-f04-proof.md`.
+
 ## 2 Oct 2026: font loading and readable labels (F-03)
 
 - Public marketing and ad landing pages preload the 25,356-byte WOFF2 heading font, replacing the 75,080-byte TTF download for supported browsers. The original TTF remains as a fallback.

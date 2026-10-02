@@ -24,7 +24,7 @@ const steps = [
 ];
 ---
 
-<section class="py-28 md:py-36 bg-gray-950 text-white relative overflow-hidden">
+<section class="marketing-section bg-gray-950 text-white relative overflow-hidden">
   <!-- Subtle accent glow -->
   <div
     class="pointer-events-none absolute -top-1/2 -right-1/4 w-[800px] h-[800px] rounded-full bg-kaizen-cyan/[0.04] blur-3xl"
@@ -33,7 +33,7 @@ const steps = [
 
   <div class="mx-auto max-w-[1440px] px-6 lg:px-12 relative z-10">
     <!-- Header -->
-    <div class="mb-20 md:mb-28 max-w-2xl">
+    <div class="mb-8 md:mb-12 max-w-2xl">
       <p
         class="marketing-eyebrow marketing-eyebrow--dark text-xs font-medium tracking-[0.25em] text-kaizen-cyan uppercase mb-5 font-body"
       >
@@ -52,7 +52,7 @@ const steps = [
         steps.map((step, i) => (
           <div
             class:list={[
-              "grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-12 py-16 md:py-20",
+              "grid grid-cols-1 md:grid-cols-12 gap-6 md:gap-12 py-8 md:py-10 first:pt-0 last:pb-0",
               i < steps.length - 1 && "border-b border-white/10",
             ]}
           >

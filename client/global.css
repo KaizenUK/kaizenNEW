@@ -50,6 +50,41 @@
   color: #d1d5db;
 }
 
+/* Two band sizes; cards and media keep their own internal spacing. */
+.marketing-page {
+  --marketing-section-standard: 4rem;
+  --marketing-section-compact: 2rem;
+}
+
+@media (min-width: 768px) {
+  .marketing-page {
+    --marketing-section-standard: 6rem;
+    --marketing-section-compact: 4rem;
+  }
+}
+
+.marketing-page .marketing-section {
+  padding-block: var(--marketing-section-standard);
+}
+
+.marketing-page .marketing-section--compact {
+  padding-block: var(--marketing-section-compact);
+}
+
+/* Adjacent bands with the same background share a smaller incoming edge. */
+.marketing-page .marketing-section--joined {
+  padding-block-start: var(--marketing-section-compact);
+}
+
+.marketing-page .marketing-section--continuation {
+  padding-block-start: 0;
+}
+
+/* Landing pages have a fixed 64px header without the main layout's offset. */
+.marketing-page .marketing-section--landing-hero {
+  padding-block-start: calc(4rem + var(--marketing-section-standard));
+}
+
 @layer base {
   /**
    * Kaizen Web brand colors and theme

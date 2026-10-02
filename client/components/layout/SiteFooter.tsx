@@ -155,7 +155,7 @@ export default function SiteFooter({ buildLabel }: FooterProps) {
     <footer className="bg-gray-950 text-white">
       {/* Contact and company details */}
       <div className="px-6 sm:px-10 lg:px-16 xl:px-24">
-        <div className="grid gap-10 py-12 md:grid-cols-3 md:py-16">
+        <div className="marketing-section marketing-section--compact grid gap-10 py-12 md:grid-cols-3 md:py-16">
           <a href={`mailto:${BUSINESS_EMAIL}`} className="group no-underline">
             <Mail className="h-5 w-5 text-white/20 transition-colors group-hover:text-white/50" />
             <p className="marketing-eyebrow marketing-eyebrow--dark mt-3 text-xs font-semibold uppercase tracking-[0.18em] text-white/30 font-body">
@@ -191,7 +191,7 @@ export default function SiteFooter({ buildLabel }: FooterProps) {
         <div className="h-px bg-white/10" />
 
         {/* Links grid */}
-        <div className="grid gap-10 py-16 md:py-20 sm:grid-cols-2 lg:grid-cols-[1.5fr_repeat(5,1fr)]">
+        <div className="marketing-section marketing-section--compact grid gap-10 py-16 md:py-20 sm:grid-cols-2 lg:grid-cols-[1.5fr_repeat(5,1fr)]">
           {/* Brand column */}
           <div className="lg:pr-8">
             <KaizenLogo className="h-9 w-[164px] text-white" />

@@ -76,14 +76,14 @@ export function FaqSection({
   }, [faqSchemaJson, schemaScriptId]);
 
   return (
-    <section id={id} className={`py-28 md:py-36 relative ${className}`}>
+    <section id={id} className={`marketing-section marketing-section--joined py-28 md:py-36 relative ${className}`}>
       <div className="mx-auto max-w-[1440px] px-6 lg:px-12 relative z-10">
         {/* Header — left-aligned */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="mb-20 md:mb-28 max-w-2xl"
+          className="mb-8 md:mb-12 max-w-2xl"
         >
           {eyebrow && (
             <p className="marketing-eyebrow text-xs font-medium tracking-[0.25em] text-gray-400 uppercase mb-5 font-body">
