@@ -4,7 +4,7 @@
 
 - `/contract-product-owner/` now uses the shared site design, a clear two-line desktop H1, real Midland website work and the agreed first-screen action/reply. Separate modules explain choosing what to build and planning delivery. Sean's four existing experience descriptions remain; current credential badges without verified evidence are removed.
 - The service review process links to the merged software-project guide. The closing offer explains a free first chat, agreed work/price and the deposit, with pledge and website-option links. All 53 documents preserve metadata/schema, and every original internal destination remains. No CMS, URL or sitemap change.
-- Types, full build, copy (age 8.5), all eight final tiles, eight browser views and eight image/guide/contact journeys pass. Production verification pending. Proof: `docs/audits/2026-10-02-p09-proof.md`. No ranking or enquiry uplift is claimed.
+- Types, full build, copy (age 8.5), all eight final tiles, eight browser views and eight image/guide/contact journeys pass. Released in `6f13109`, deployment `36990006987`; exact live content/search/image checks, eight live views and eight image/guide/contact journeys pass. P-09 is complete. Proof: `docs/audits/2026-10-02-p09-proof.md`. No ranking or enquiry uplift is claimed.
 
 
 ## 2 Oct 2026: case-study index with real screenshots and client results (P-07)
