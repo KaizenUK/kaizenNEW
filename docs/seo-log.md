@@ -1,5 +1,12 @@
 # SEO change log: kaizenweb.co.uk
 
+## 2 Oct 2026: case-study index with real screenshots and client results (P-07)
+
+- `/case-studies/` now shows two substantial work cards with real screenshots, buyer types and approved results. Midland's confirmed load-time and enquiry figures are attached to its card. Helen's verified homepage screenshot and steady-booking result join the shared proof record. No new ranking claim is added.
+- The first phone screen has the agreed action/reply and a clear rebuild offer. Descriptive links connect both full case studies, website options, scanner, pledge and contact. All 53 built documents preserve metadata/schema; only the index body changes. No CMS, URL or sitemap change.
+- Types, full build, copy (age 9.3), all six final tiles, eight browser views, sixteen case-study journeys, eight contact journeys and the full Windows test comparison pass. Production verification pending. Proof: `docs/audits/2026-10-02-p07-proof.md`. No ranking or enquiry uplift is claimed.
+
+
 ## 2 Oct 2026: Helen case study with a clear booking story (P-08)
 
 - `/case-studies/helen-moore-hairdressing/` now identifies the local-service buyer and rebuild in the first screen, with the agreed contact action/reply. The selected stock photo remains and is labelled as an example; its declared height is corrected. A separate dated homepage screenshot shows the real work, followed by the appointment-request journey and descriptive service/pledge links.

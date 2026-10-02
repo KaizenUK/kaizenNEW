@@ -99,6 +99,21 @@ export const caseStudies = {
       height: 1312,
     },
   },
+  helen: {
+    client: "Helen Moore Hairdressing",
+    buyer: "For local service businesses",
+    title: "Make the next booking step clear.",
+    summary: "Visitors can find the salon and ask for an appointment.",
+    result: "Steady bookings from new local clients since the rebuild.",
+    href: "/case-studies/helen-moore-hairdressing/",
+    websiteLabel: "www.helenmoorehairdressing.co.uk",
+    screenshot: {
+      src: "/images/case-studies/helen-moore-hairdressing/helen-homepage-2026-10-02.webp",
+      alt: "Helen Moore's homepage with services and appointment buttons",
+      width: 1440,
+      height: 1000,
+    },
+  },
 } as const;
 
 export type CaseStudyId = keyof typeof caseStudies;

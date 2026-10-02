@@ -1,26 +1,10 @@
 ---
-import { MarketingButton } from "../../client/components/untitled/MarketingButton";
+import { MarketingButton, contactResponse } from "../../client/components/untitled/MarketingButton";
+import { CaseStudyCard } from "../../client/components/untitled/proof/CaseStudyCard";
+import { MetricsBlock } from "../../client/components/untitled/proof/MetricsBlock";
 import StaticPageLayout from "../layouts/StaticPageLayout.astro";
 
 export const prerender = true;
-
-const caseStudies = [
-  {
-    client: "Midland Oil Group",
-    summary:
-      "A faster website with an oil finder and clear product pages.",
-    services: ["Website Rebuild", "Oil Finder", "Clear Menus", "Faster Pages"],
-    slug: "midland-oil-group",
-  },
-  {
-    client: "Helen Moore Hairdressing",
-    summary:
-      "A salon website with a clear path to booking.",
-    result: "Steady bookings from new local clients since the rebuild.",
-    services: ["Web Design", "Local Search", "Booking System"],
-    slug: "helen-moore-hairdressing",
-  },
-];
 ---
 
 <StaticPageLayout
@@ -28,73 +12,51 @@ const caseStudies = [
   title="Web Design Case Studies | Kaizen Web"
   description="Real websites we have built and fixed, and what changed for each business. See the Midland Oil Group and Helen Moore Hairdressing projects."
 >
-  <section class="marketing-section flex items-center bg-white">
-    <div class="container mx-auto max-w-4xl px-4">
-      <h1 class="mb-8 text-5xl font-heading font-black leading-tight text-kaizen-dark md:text-6xl lg:text-7xl">
-        See what a better website can do.
-      </h1>
-      <p class="text-xl leading-relaxed text-kaizen-text-dark/70 md:text-2xl">
-        See the work we did for an oil supplier and a salon. Find out what changed for their customers.
-      </p>
+  <section class="marketing-section bg-white">
+    <div class="mx-auto grid max-w-[1440px] items-end gap-7 px-6 lg:grid-cols-[1.1fr_0.9fr] lg:gap-16 lg:px-12">
+      <div>
+        <p class="marketing-eyebrow mb-4">Real work and results</p>
+        <h1 class="text-balance font-heading text-4xl font-bold text-uui-dark md:text-5xl lg:text-6xl">Web design case studies.<br /><span class="text-uui-brand-800">Help customers choose you.</span></h1>
+      </div>
+      <div>
+        <p class="max-w-xl text-lg leading-relaxed text-slate-600">We rebuild dated, slow websites for businesses. See the work and results for an oil supplier and a salon.</p>
+        <div class="mt-7">
+          <MarketingButton action="contact" />
+          <p class="mt-3 max-w-md text-sm leading-6 text-slate-600">{contactResponse}</p>
+        </div>
+      </div>
     </div>
   </section>
 
-  <section class="marketing-section bg-kaizen-light">
-    <div class="container mx-auto max-w-5xl px-4">
-      <h2 class="mb-8 md:mb-12 text-4xl font-heading font-bold text-kaizen-dark md:text-5xl">
-        Websites built around the buyer.
-      </h2>
-
-      <ul class="space-y-0">
-        {caseStudies.map((study) => (
-          <li>
-            <div class="group border-b border-kaizen-light bg-transparent px-8 py-8 md:py-10">
-              <div class="grid grid-cols-1 items-start gap-8 lg:grid-cols-2">
-                <div>
-                  <h3 class="mb-4 text-3xl font-heading font-bold text-kaizen-dark transition group-hover:text-kaizen-cyan md:text-4xl">
-                    {study.client}
-                  </h3>
-                  <p class="text-lg leading-relaxed text-kaizen-text-dark/70">
-                    {study.summary}
-                  </p>
-                  {study.result && <p class="mt-4 border-l-2 border-uui-brand-600 pl-4 text-base font-semibold leading-relaxed text-uui-dark">{study.result}</p>}
-                </div>
-
-                <div class="flex h-full flex-col justify-between">
-                  <div>
-                    <p class="marketing-eyebrow mb-4 text-xs font-body font-bold tracking-widest text-kaizen-text-dark/50">
-                      SERVICES PROVIDED
-                    </p>
-                    <div class="flex flex-wrap gap-3">
-                      {study.services.map((service) => (
-                        <span class="inline-block rounded-full border border-kaizen-light bg-white px-4 py-2 text-sm font-medium text-kaizen-dark transition group-hover:border-kaizen-cyan">
-                          {service}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-
-                  <MarketingButton action="caseStudy" href={`/case-studies/${study.slug}/`} variant="link" className="mt-6 self-start" />
-                </div>
-              </div>
-            </div>
-          </li>
-        ))}
-      </ul>
+  <section class="marketing-section marketing-section--continuation bg-white" aria-label="Website projects and results">
+    <div class="mx-auto max-w-[1440px] space-y-12 px-6 lg:space-y-16 lg:px-12">
+      <div>
+        <CaseStudyCard studyId="midland" headingLevel="h2" layout="wide" imageLoading="eager" />
+        <div class="mt-6 rounded-2xl border border-slate-200 bg-slate-50 p-6 sm:p-8">
+          <MetricsBlock showSourceLink={false} />
+        </div>
+      </div>
+      <CaseStudyCard studyId="helen" headingLevel="h2" layout="wide" />
+      <p class="max-w-2xl text-sm leading-6 text-slate-600">These are each client's results after the rebuild. They are not a promise of the same result for every business.</p>
     </div>
   </section>
 
-  <section class="marketing-section bg-kaizen-dark text-white">
-    <div class="container mx-auto max-w-3xl px-4 text-center">
-      <h2 class="mb-8 text-4xl font-heading font-black md:text-5xl lg:text-6xl">
-        Could your site work harder?
-      </h2>
-      <p class="mb-12 text-xl leading-relaxed text-white/80">
-        Tell us what is holding your site back. We will help you work out the next step.
-      </p>
-      <div class="flex flex-col items-center justify-center gap-6 sm:flex-row">
-        <MarketingButton action="contact" />
-        <MarketingButton action="speed" />
+  <section class="marketing-section bg-uui-dark text-white" aria-labelledby="case-studies-contact-heading">
+    <div class="mx-auto grid max-w-[1440px] gap-9 px-6 lg:grid-cols-2 lg:gap-20 lg:px-12">
+      <div>
+        <h2 id="case-studies-contact-heading" class="text-balance font-heading text-4xl font-bold md:text-5xl">Talk through what your site needs.</h2>
+        <p class="mt-5 max-w-xl text-lg leading-relaxed text-slate-300">The first conversation is free. Tell us what is holding your site back, and we will help you choose a next step.</p>
+        <div class="mt-7">
+          <MarketingButton action="contact" />
+          <p class="mt-3 max-w-md text-sm leading-6 text-slate-300">{contactResponse}</p>
+        </div>
+      </div>
+      <div class="self-center border-t border-slate-600 pt-7 lg:border-t-0 lg:border-l lg:pt-0 lg:pl-10">
+        <h3 class="font-heading text-2xl font-bold">Find the right place to start.</h3>
+        <p class="mt-4 text-base leading-relaxed text-slate-300">You can compare the website options or start with a free speed check.</p>
+        <a href="/services/wordpress-web-design/" class="mt-6 block font-semibold text-uui-brand-200 underline underline-offset-4 hover:text-white">Compare our website rebuild options</a>
+        <MarketingButton action="speed" variant="secondary" className="mt-5" />
+        <p class="mt-6 text-sm leading-6 text-slate-300">Before you commit, <a href="/pledge/" class="font-semibold text-uui-brand-200 underline underline-offset-4 hover:text-white">read our promises before you pay</a>.</p>
       </div>
     </div>
   </section>
