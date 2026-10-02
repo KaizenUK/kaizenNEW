@@ -1,5 +1,12 @@
 # SEO change log: kaizenweb.co.uk
 
+## 2 Oct 2026: Helen case study with a clear booking story (P-08)
+
+- `/case-studies/helen-moore-hairdressing/` now identifies the local-service buyer and rebuild in the first screen, with the agreed contact action/reply. The selected stock photo remains and is labelled as an example; its declared height is corrected. A separate dated homepage screenshot shows the real work, followed by the appointment-request journey and descriptive service/pledge links.
+- The approved steady-booking result and existing dated ranking wording stay on the same page. No fresh ranking check is implied and no search terms are disclosed. All 53 built pages preserve metadata/schema; only Helen's body changes. No CMS write, URL or sitemap change.
+- Types, full build, copy (age 9.5), all seven final tiles, eight browser views and eight image/contact journeys pass. Production verification pending. Proof: `docs/audits/2026-10-02-p08-helen-proof.md`. No ranking or enquiry uplift is claimed.
+
+
 ## 2 Oct 2026: Midland case study with early results and real work (P-08)
 
 - `/case-studies/midland-oil-group/` now places the buying problem, actual work and approved results near the start. Nine distinct screenshots replace repeated image placements; five native disclosures keep detailed examples in initial HTML. Shared buttons/type and a keyboard-accessible gallery preserve the useful walkthrough.

@@ -1,27 +1,12 @@
 ---
-import { MarketingButton } from "../../../client/components/untitled/MarketingButton";
+import { MarketingButton, contactResponse } from "../../../client/components/untitled/MarketingButton";
 import StaticPageLayout from "../../layouts/StaticPageLayout.astro";
 
 export const prerender = true;
-
-const services = ["Website rebuild", "Easy booking", "Local search"];
-
-const outcomes = [
-  {
-    "value": "Fast",
-    "label": "Phone pages",
-    "copy": "A faster site makes it easier to check the salon and book."
-  },
-  {
-    "value": "Book",
-    "label": "A clear next step",
-    "copy": "Visitors can go from the salon page to booking an appointment."
-  },
-  {
-    "value": "#1",
-    "label": "Local ranking",
-    "copy": "Top of local search for its main services. Checked October 2026."
-  }
+const bookingSteps = [
+  { title: "Find the salon", copy: "People arrive from social media or local search. The homepage makes it clear where they are." },
+  { title: "Choose the next step", copy: "Visitors can check the services or go straight to booking. Both choices are clear on the homepage." },
+  { title: "Ask for an appointment", copy: "The booking page gives people a way to contact the salon. They can take the next step from their phone." },
 ];
 ---
 
@@ -30,89 +15,108 @@ const outcomes = [
   title="Salon Website Case Study: Helen Moore Hairdressing | Kaizen"
   description="How we rebuilt a Wallasey salon's website so people can go from social media to a booked appointment in a few taps, and find it in local search."
 >
-  <section class="bg-white">
-    <div class="grid lg:min-h-[75vh] grid-cols-1 lg:grid-cols-2">
-      <div class="relative h-72 overflow-hidden lg:h-auto">
-        <img
-          src="https://images.unsplash.com/photo-1560066984-138dadb4c035?q=80&w=1674&auto=format&fit=crop"
-          alt="A salon interior, shown as an example"
-          width="1674"
-          height="1116"
-          class="h-full w-full object-cover"
-          loading="lazy"
-          decoding="async"
-        />
-      </div>
-      <div class="marketing-section flex items-center px-6 lg:px-16">
-        <div class="max-w-xl">
-          <a href="/case-studies/" class="mb-8 inline-flex items-center gap-2 text-sm font-medium text-slate-500 transition hover:text-slate-900">
-            <span aria-hidden="true">&larr;</span>
-            Back to Case Studies
-          </a>
-          <p class="marketing-eyebrow mb-4 text-xs font-body font-bold uppercase tracking-[0.2em] text-rose-500">The Salon Experience</p>
-          <h1 class="mb-6 text-5xl font-heading font-black leading-tight text-slate-900 md:text-6xl">Helen Moore Hairdressing</h1>
-          <div class="space-y-4 text-lg leading-relaxed text-slate-600">
-            <p>
-              Helen Moore is a salon in Wallasey. Its old website was slow and hard to use on a phone.
-            </p>
-            <p>
-              We rebuilt the pages around what people need before they book. Visitors can find the salon and move to booking an appointment.
-            </p>
-          </div>
-          <div class="mt-8 flex flex-wrap gap-2">
-            {
-              services.map((item) => (
-                <span class="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-600">{item}</span>
-              ))
-            }
+  <section class="marketing-section bg-slate-50">
+    <div class="mx-auto max-w-[1440px] px-6 lg:px-12">
+      <a href="/case-studies/" class="mb-7 inline-block text-sm font-semibold text-uui-brand-800 underline underline-offset-4">All website case studies</a>
+      <div class="grid items-center gap-10 lg:grid-cols-2 lg:gap-16">
+        <div>
+          <p class="marketing-eyebrow mb-4">Web design for local service businesses</p>
+          <h1 class="text-balance font-heading text-4xl font-bold text-uui-dark md:text-5xl lg:text-6xl">Helen Moore Hairdressing.<br /><span class="text-uui-brand-800">A clearer way to book.</span></h1>
+          <p class="mt-6 max-w-xl text-lg leading-relaxed text-slate-600">We rebuilt this Wallasey salon's slow website. The new pages help phone visitors find the salon and take the next step.</p>
+          <div class="mt-7">
+            <MarketingButton action="contact" />
+            <p class="mt-3 max-w-md text-sm leading-6 text-slate-600">{contactResponse}</p>
           </div>
         </div>
-      </div>
-    </div>
-  </section>
-
-  <section class="marketing-section marketing-section--compact bg-slate-50">
-    <div class="container mx-auto max-w-6xl px-4">
-      <div class="grid grid-cols-1 gap-8 md:grid-cols-3">
-        {
-          outcomes.map((item) => (
-            <article class="rounded-2xl border border-slate-100 bg-white p-8 shadow-sm">
-              <h2 class="mb-1 text-4xl font-heading font-bold text-slate-900">{item.value}</h2>
-              <p class="marketing-eyebrow mb-3 text-xs font-body font-bold uppercase tracking-wider text-slate-400">{item.label}</p>
-              <p class="text-sm text-slate-600">{item.copy}</p>
-            </article>
-          ))
-        }
+        <figure>
+          <img
+            src="https://images.unsplash.com/photo-1560066984-138dadb4c035?q=80&w=1674&auto=format&fit=crop"
+            alt="A salon interior, shown as an example"
+            width="1674"
+            height="1256"
+            class="aspect-[4/3] w-full rounded-2xl object-cover shadow-lg lg:aspect-[5/6]"
+            loading="eager"
+            decoding="async"
+          />
+          <figcaption class="mt-4 text-sm leading-6 text-slate-600">Stock photo, shown as an example salon.</figcaption>
+        </figure>
       </div>
     </div>
   </section>
 
   <section class="marketing-section bg-white" aria-labelledby="helen-result-heading">
-    <div class="mx-auto grid max-w-[1440px] gap-6 px-6 lg:grid-cols-2 lg:gap-16 lg:px-12">
-      <h2 id="helen-result-heading" class="text-balance font-heading text-4xl font-bold text-uui-dark md:text-5xl">New local clients<br />are booking with the salon.</h2>
-      <div class="space-y-4 text-lg leading-relaxed text-slate-600">
-        <p>The rebuilt site gives people a clear route to booking. The salon has had steady bookings from new local clients since the rebuild.</p>
-        <p>That result came without an ongoing monthly SEO bill. It is this salon's experience, not a promise of the same result for every business.</p>
-        <p>If your site is hard to use, <a href="/services/wordpress-web-design/" class="font-semibold text-uui-brand-800 underline underline-offset-4 hover:text-uui-dark">compare our website rebuild options</a>.</p>
+    <div class="mx-auto grid max-w-[1440px] gap-9 px-6 lg:grid-cols-[1.2fr_0.8fr] lg:gap-20 lg:px-12">
+      <div>
+        <p class="marketing-eyebrow mb-4">The salon's result</p>
+        <h2 id="helen-result-heading" class="text-balance font-heading text-4xl font-bold text-uui-dark md:text-5xl">New local clients are booking with the salon.</h2>
+        <p class="mt-5 max-w-2xl text-lg leading-relaxed text-slate-600">The salon has had steady bookings from new local clients since the rebuild. That came without an ongoing monthly SEO bill.</p>
+        <p class="mt-4 max-w-2xl text-base leading-relaxed text-slate-600">This is the salon's experience. It is not a promise of the same result for every business.</p>
+      </div>
+      <div class="self-center rounded-2xl border border-slate-200 bg-slate-50 p-7 md:p-9">
+        <p class="marketing-eyebrow mb-4">Local ranking</p>
+        <p class="font-heading text-6xl font-bold text-uui-brand-800"><span aria-hidden="true">#1</span><span class="sr-only">Number one</span></p>
+        <p class="mt-4 text-base leading-relaxed text-slate-600">Top of local search for its main services. Checked October 2026.</p>
       </div>
     </div>
   </section>
 
-  <section class="marketing-section bg-slate-900 text-white">
-    <div class="container mx-auto max-w-4xl px-4 text-center">
-      <h2 class="mb-6 text-4xl font-heading font-bold md:text-5xl">Make it easier to book with you.</h2>
-      <p class="mx-auto mb-8 max-w-2xl text-lg text-white/75">
-        Your website should help people take the next step. We can make that step easier to find.
-      </p>
-      <MarketingButton action="contact" />
+  <section class="marketing-section bg-slate-50" aria-labelledby="helen-work-heading">
+    <div class="mx-auto grid max-w-[1440px] items-center gap-10 px-6 lg:grid-cols-[0.9fr_1.1fr] lg:gap-16 lg:px-12">
+      <div>
+        <p class="marketing-eyebrow mb-4">The rebuilt website</p>
+        <h2 id="helen-work-heading" class="text-balance font-heading text-4xl font-bold text-uui-dark md:text-5xl">Put the booking step where people can find it.</h2>
+        <p class="mt-5 text-lg leading-relaxed text-slate-600">The old site was hard to use on a phone. We rebuilt the pages around what people need before they book.</p>
+        <p class="mt-4 text-lg leading-relaxed text-slate-600">The homepage gives them a clear choice: check the services or book an appointment.</p>
+        <a href="https://www.helenmoorehairdressing.co.uk/" target="_blank" rel="noopener" class="mt-6 inline-block font-semibold text-uui-brand-800 underline underline-offset-4">Visit Helen Moore Hairdressing's website</a>
+      </div>
+      <figure>
+        <a href="/images/case-studies/helen-moore-hairdressing/helen-homepage-2026-10-02.webp" aria-label="Enlarge the Helen Moore website screenshot" class="block overflow-hidden rounded-xl border border-slate-300 bg-white shadow-lg outline-offset-4 focus-visible:outline-2 focus-visible:outline-uui-brand-500">
+          <div class="flex h-8 items-center gap-1.5 border-b border-slate-200 bg-slate-100 px-3" aria-hidden="true">
+            <span class="size-2 rounded-full bg-slate-400"></span><span class="size-2 rounded-full bg-slate-400"></span><span class="size-2 rounded-full bg-slate-400"></span>
+            <span class="ml-auto text-xs font-medium text-slate-600">Helen Moore Hairdressing</span>
+          </div>
+          <img src="/images/case-studies/helen-moore-hairdressing/helen-homepage-2026-10-02.webp" alt="Helen Moore's homepage with services and appointment buttons" width="1440" height="1000" loading="lazy" decoding="async" class="block h-auto w-full" />
+        </a>
+        <figcaption class="mt-4 text-sm leading-6 text-slate-600">The salon's website, captured 2 October 2026. Select to enlarge.</figcaption>
+      </figure>
     </div>
   </section>
 
-  <section class="marketing-section marketing-section--compact border-t border-slate-100 bg-white">
-    <div class="container mx-auto flex max-w-5xl items-center justify-between gap-4 px-4 text-sm font-medium">
-      <a href="/case-studies/midland-oil-group/" class="text-slate-900 transition hover:text-rose-500">&larr; Midland Oil Group</a>
-      <a href="/case-studies/" class="text-slate-500 transition hover:text-slate-900">View All</a>
-      <a href="/contact/" class="text-slate-900 transition hover:text-rose-500">Talk to us about your site</a>
+  <section class="marketing-section bg-white" aria-labelledby="helen-booking-heading">
+    <div class="mx-auto max-w-[1440px] px-6 lg:px-12">
+      <h2 id="helen-booking-heading" class="max-w-3xl text-balance font-heading text-4xl font-bold text-uui-dark md:text-5xl">From finding the salon to asking for a visit.</h2>
+      <ol class="mt-10 grid gap-7 md:grid-cols-3 md:gap-10">
+        {bookingSteps.map((step, i) => (
+          <li class="border-t-2 border-uui-brand-600 pt-6">
+            <span class="font-heading text-3xl font-bold text-uui-brand-800" aria-hidden="true">0{i + 1}</span>
+            <h3 class="mt-5 font-heading text-2xl font-bold text-uui-dark">{step.title}</h3>
+            <p class="mt-3 text-base leading-relaxed text-slate-600">{step.copy}</p>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <section class="marketing-section bg-uui-dark text-white" aria-labelledby="helen-contact-heading">
+    <div class="mx-auto grid max-w-[1440px] gap-9 px-6 lg:grid-cols-2 lg:gap-20 lg:px-12">
+      <div>
+        <p class="marketing-eyebrow marketing-eyebrow--dark mb-4">Your website</p>
+        <h2 id="helen-contact-heading" class="text-balance font-heading text-4xl font-bold md:text-5xl">Make it easier to book with you.</h2>
+        <p class="mt-5 max-w-xl text-lg leading-relaxed text-slate-300">We rebuild dated, slow websites for businesses. The first conversation is free, so we can talk through what needs to change.</p>
+        <div class="mt-7">
+          <MarketingButton action="contact" />
+          <p class="mt-3 max-w-md text-sm leading-6 text-slate-300">{contactResponse}</p>
+        </div>
+      </div>
+      <div class="self-center border-t border-slate-600 pt-7 lg:border-t-0 lg:border-l lg:pt-0 lg:pl-10">
+        <h3 class="font-heading text-2xl font-bold">Know what happens before you pay.</h3>
+        <p class="mt-4 text-base leading-relaxed text-slate-300">We agree the price before work starts. A non-refundable deposit comes before the first draft.</p>
+        <ul class="mt-6 space-y-4 font-semibold text-uui-brand-200">
+          <li><a href="/services/wordpress-web-design/" class="underline underline-offset-4 hover:text-white">Compare our website rebuild options</a></li>
+          <li><a href="/pledge/" class="underline underline-offset-4 hover:text-white">Read our promises before you pay</a></li>
+          <li><a href="/case-studies/midland-oil-group/" class="underline underline-offset-4 hover:text-white">See how Midland's buyers find the right oil</a></li>
+        </ul>
+      </div>
     </div>
   </section>
 </StaticPageLayout>
