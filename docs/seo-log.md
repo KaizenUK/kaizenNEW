@@ -2,6 +2,12 @@
 
 Every change that can affect search, newest first: date, URL, what changed and why. One change at a time where possible, then wait a few weeks before judging it (`seo-strategy`, "Measure, test and audit"). Positions quoted here are stale the day they are written; pull Search Console for current numbers.
 
+## 2 Oct 2026: buyer-led navigation and static footer (F-06)
+
+- Shared marketing navigation now uses Services, Work, About, Guides and Contact. The desktop Helen Moore case-study entry is a working link. Guide labels describe their topics without technology names; existing destinations are preserved.
+- The shared footer keeps all 28 audited destinations in server HTML, including the six guide links, company/public profiles and legal pages. Contact details remain visible, the registered office is labelled once, and page endings receive no extra sales ask.
+- Compared 31 footer-bearing routes: page-body copy, metadata and structured data are unchanged. No URL, redirect or keyword-owner change. Local-search navigation stays until P-03. Keyboard, accessibility, visual and link evidence: `docs/audits/2026-10-02-f06-proof.md`.
+
 ## 2 Oct 2026: server-rendered shared FAQs (F-05)
 
 - `/`, `/services/wordpress-web-design/`, `/services/local-seo/` and `/performance-scanner/` now use the same native FAQ. All 38 answers are in initial HTML, including the homepage answers previously loaded by the client. Each page has one FAQPage script generated from its visible questions and answers.

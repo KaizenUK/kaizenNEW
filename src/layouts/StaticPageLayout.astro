@@ -103,9 +103,9 @@ const ogImage = sanityOgImage || meta.image || DEFAULT_OG_IMAGE;
     />
   </head>
   <body class="marketing-page min-h-screen bg-white text-kaizen-text-dark antialiased">
-    <NavShell client:load />
+    <NavShell pathname={normalizedPath} client:load />
 
-    <main class="pt-20">
+    <main id="main-content" tabindex="-1" class="pt-20">
       <slot />
     </main>
 
