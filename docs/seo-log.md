@@ -2,6 +2,13 @@
 
 Every change that can affect search, newest first: date, URL, what changed and why. One change at a time where possible, then wait a few weeks before judging it (`seo-strategy`, "Measure, test and audit"). Positions quoted here are stale the day they are written; pull Search Console for current numbers.
 
+## 2 Oct 2026: sourced website-price examples (B-03, fourth of five)
+
+- `/blog/how-much-does-a-website-cost-in-liverpool-in-2025/` now explains the work inside a quote, with two attributed UK package examples. Prices include their VAT status and ongoing charges; removed unsupported market-wide ranges and price/quality claims. These are different advertised offers, not Kaizen rates or industry averages. Sources and figures are recorded in the site profile.
+- Title/H1 is "How Much Does a Website Cost? A Guide to Quotes"; description and excerpt match. The real Midland homepage replaces the generated cover/social image. An actual Ask MOG screenshot illustrates the feature and licence scope to include in a quote, without revealing Midland's project price.
+- Preserved the legacy URL, canonical, indexability, publication date, author and category. Body links reach WordPress work, the scanner, hidden-cost guide, Midland and contact. Removed the old local-SEO service link and tracking parameters. All other page metadata and all structured data are unchanged.
+- Built copy reads at age 9.1 with zero wording/long-sentence hits. The first build fetched old CMS content and was rejected; the later public read, repeated full build and final page checks pass. Proof: `docs/audits/2026-10-02-b03-cost-proof.md`. One B-03 rewrite remains; no measured search or enquiry improvement is claimed.
+
 ## 2 Oct 2026: evidence-led local-search checklist (B-03, third of five)
 
 - `/blog/local-seo-liverpool-checklist/` now covers accurate business details, visiting/service areas, clear services, phone/contact checks, genuine reviews and separate search/enquiry counts. Removed unsupported claims about website speed or structure controlling rankings. Four primary Google sources sit beside the relevant advice.

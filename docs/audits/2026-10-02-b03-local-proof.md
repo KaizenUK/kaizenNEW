@@ -31,4 +31,8 @@ Ignored evidence: `.local/marketing-20261001/b03-local-*` snapshots, CMS plan/re
 
 ## Release
 
-Prepared for direct main release after the checks above. Record the exact deployment and live verification after activation. Stage remains unchanged until the entire goal ends.
+Shipped directly to main as `7494803cf4391e8ecb24c05a44f7da9fae09564c`. Production deployment `36962388549` succeeded; live release `gh-36962388549-1`, created at `2026-10-02T03:58:57.645Z`, identifies that exact commit.
+
+The article and index return 200. Live article text, links, metadata and structured data match the verified build; its index card also matches. All 16 live browser views pass for image loading, page errors, overflow and contact-link keyboard focus, with no new axe findings against the recorded baseline.
+
+Live evidence: `b03-local-live-server.json` and `b03-local-browser-live.json` under the ignored evidence directory. Remote main matches the release. Stage remains `4dbda85bab98fa16ba32157347ebb87bcc90a7d5`, verified after deployment, until the whole goal ends.
