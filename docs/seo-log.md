@@ -2,6 +2,12 @@
 
 Every change that can affect search, newest first: date, URL, what changed and why. One change at a time where possible, then wait a few weeks before judging it (`seo-strategy`, "Measure, test and audit"). Positions quoted here are stale the day they are written; pull Search Console for current numbers.
 
+## 2 Oct 2026: homepage copy and design rebuild (P-01)
+
+- `/` now leads with web design for business owners, real Midland before/after screenshots and the approved first-month enquiry result. Early pledge points address paying again and editing the site. Three buyer routes link to the relevant case studies or WordPress service. A clearly labelled loading replay uses actual screenshots and the confirmed more-than-eight-second/1.2-second figures.
+- Removed repeated homepage arguments, retained the ten server-rendered FAQ answers and four existing review excerpts, and left one closing contact ask. The title, description, canonical, URL and FAQPage data are unchanged. The Organization description now states the current website offer and Merseyside/West Yorkshire service areas in plain English.
+- No redirect or competing page introduced. The homepage keeps web-design ownership; WordPress service intent stays on its existing route. P-03 still owns retirement of the local-search page. Copy, responsive, accessibility and server evidence: `docs/audits/2026-10-02-p01-proof.md`. Search and enquiry effects need time and later measurement; no uplift is claimed.
+
 ## 2 Oct 2026: readable reviews and real case-study proof (F-07)
 
 - `/`: the four existing Google reviews now appear once as static cards, with complete selected excerpts, names, posting months and links to the existing listing. Each excerpt is labelled. No new review or aggregate-rating data is emitted; existing Organization data is unchanged.

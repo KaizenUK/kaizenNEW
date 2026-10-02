@@ -43,11 +43,13 @@ Review dates are the existing repository dates, not fresh verification against G
 
 The original quote source remains available after adoption with `git show a842521519d5700d64d702f0059a73c5adf02584:src/components/homepage/Reviews.astro`. `evidence.ts` now holds the live excerpts. Helen's excerpt focuses on the work standard; Paul's retains both ease of working together and delivery. The card explicitly labels each as part of a review.
 
-## Homepage adoption
+## Homepage adoption in F-07
 
 `src/components/homepage/Reviews.astro` replaces the moving, duplicate and clipped carousel with `Testimonials`. The existing Organization schema expression and script are unchanged. `src/components/homepage/CaseSpotlight.astro` uses the wide card followed by the two confirmed metrics across the band's full width. This avoids a tall empty column beside the screenshot. The adjacent card supplies the one case-study action, so the metrics' duplicate source link is hidden here. Section order, band colours, Google destination and case-study URL stay unchanged. The old plugin count and AI wording are removed from these replaced sections.
 
 There is no Helen screenshot preset because the current image is explicitly a stock salon photo. There is no ranking metric because the profile requires a fresh check before a ranking claim is reused. Add further case presets only with a real screenshot and the relevant confirmed evidence.
+
+P-01 subsequently keeps `Testimonials` near the closing ask and distributes Midland proof through the hero, buyer routes and screenshot comparison. `CaseSpotlight.astro` is no longer rendered on the homepage; the standalone card and metrics remain available for later pages. P-01 also replaces only the Organization description with the current plain-English website offer. See `docs/audits/2026-10-02-p01-proof.md` for the current homepage acceptance.
 
 The board's [Social cards 01](https://www.untitledui.com/react/marketing/testimonial-sections/testimonial-social-cards-01), [Simple accent line](https://www.untitledui.com/react/marketing/metrics-sections/metrics-simple-accent-line) and [Case study cards](https://www.untitledui.com/react/marketing/testimonial-sections/testimonial-case-study-cards) catalogue patterns informed these Kaizen components. Their Pro source was not downloaded or represented as copied; this is a custom implementation on the installed F-01 primitives and theme.
 

@@ -1,93 +1,52 @@
 ---
+import { ArrowRight } from "lucide-react";
+import { MarketingButton } from "../../../client/components/untitled/MarketingButton";
 import { Button } from "../../../client/components/untitled/base/buttons/button";
-/**
- * Services section — spacious, bright, easy to scan.
- * Each service gets one core memorable idea (SUCCESS principle #1).
- */
-const services = [
-  {
-    number: "01",
-    title: "Web Design",
-    hook: "People judge your business by your website before they ever call you.",
-    description:
-      "We design and build sites that load fast, look right on a phone and make it easy to get in touch.",
-    cta: "Talk to us about your site",
-    href: "/contact",
-  },
-  {
-    number: "02",
-    title: "Performance",
-    hook: "A slow site loses people before they see what you do.",
-    description:
-      "We find what is slowing your site down and fix it. You get a plain-English report and a list of fixes, most important first.",
-    cta: "Check your website speed",
-    href: "/performance-scanner",
-  },
-  {
-    number: "03",
-    title: "Product Owner for Hire",
-    hook: "Most web projects don't fail because of bad code. They fail because nobody's in charge.",
-    description:
-      "We step in as your product owner. We set the priorities, talk to your developers for you and make sure the work gets finished.",
-    cta: "How product ownership works",
-    href: "/contract-product-owner",
-  },
-];
 ---
 
-<section class="marketing-section bg-white">
+<section class="marketing-section bg-slate-50" aria-labelledby="home-routes-heading">
   <div class="mx-auto max-w-[1440px] px-6 lg:px-12">
-    <!-- Section header -->
-    <div class="mb-8 md:mb-12 max-w-2xl">
-      <p
-        class="marketing-eyebrow text-xs font-medium tracking-[0.25em] text-gray-400 uppercase mb-5 font-body"
-      >
-        What We Do
-      </p>
-      <h2
-        class="text-4xl md:text-5xl lg:text-6xl font-heading font-bold text-gray-950 leading-tight"
-      >
-        What we actually do
-      </h2>
+    <div class="mb-8 max-w-3xl md:mb-12">
+      <p class="marketing-eyebrow mb-5">Which one are you?</p>
+      <h2 id="home-routes-heading" class="text-balance font-heading text-4xl font-bold text-slate-950 md:text-5xl lg:text-6xl">Start with what your customers need.</h2>
     </div>
-
-    <!-- Service rows -->
-    <div class="space-y-0">
-      {
-        services.map((s, i) => (
-          <div
-            class:list={[
-              "group grid grid-cols-1 md:grid-cols-12 gap-6 md:gap-12 py-8 md:py-10 first:pt-0 last:pb-0",
-              i < services.length - 1 && "border-b border-gray-200",
-            ]}
-          >
-            {/* Number + title */}
-            <div class="md:col-span-4 flex flex-col">
-              <span class="text-sm font-body text-gray-300 mb-4 block">
-                {s.number}
-              </span>
-              <h3 class="text-3xl md:text-4xl font-heading font-bold text-gray-950 leading-tight">
-                {s.title}
-              </h3>
-            </div>
-
-            {/* Hook + description */}
-            <div class="md:col-span-5 flex flex-col justify-center">
-              <p class="text-xl md:text-2xl font-body font-medium text-gray-950 leading-snug mb-4">
-                {s.hook}
-              </p>
-              <p class="text-base md:text-lg font-body text-gray-500 leading-relaxed">
-                {s.description}
-              </p>
-            </div>
-
-            {/* CTA */}
-            <div class="md:col-span-3 flex items-center md:justify-end">
-              <Button href={s.href} color="link-color" size="lg" className="text-left whitespace-normal">{s.cta}</Button>
-            </div>
-          </div>
-        ))
-      }
+    <div class="grid gap-6 lg:grid-cols-3">
+      <article class="flex min-w-0 flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+        <div class="aspect-[16/9] overflow-hidden border-b border-slate-200 bg-slate-100 p-4 pb-0">
+          <img src="/images/case-studies/midland-oil-group/mog-new-sectors.webp" alt="Midland Oil's product choices grouped by industry" width="2537" height="1228" loading="lazy" decoding="async" class="h-full w-full rounded-t-lg object-cover object-top shadow-sm" />
+        </div>
+        <div class="flex flex-1 flex-col p-6 md:p-7">
+          <h3 class="font-heading text-3xl font-bold text-slate-950">Trade and industrial businesses</h3>
+          <p class="mt-4 font-body text-base leading-relaxed text-slate-600">Help buyers find the right product and ask for a quote.</p>
+          <p class="mt-5 border-l-2 border-uui-brand-600 pl-4 font-body text-sm leading-6 text-slate-700">Midland's new site sorts its oils by the work buyers do.</p>
+          <div class="mt-auto pt-5"><MarketingButton action="caseStudy" variant="link" /></div>
+        </div>
+      </article>
+      <article class="flex min-w-0 flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+        <div class="relative aspect-[16/9] overflow-hidden bg-slate-100">
+          <img src="https://images.unsplash.com/photo-1560066984-138dadb4c035?q=80&w=800&auto=format&fit=crop" alt="A salon interior, shown as an example" width="800" height="533" loading="lazy" decoding="async" class="h-full w-full object-cover" />
+          <p class="absolute bottom-3 left-3 rounded-md bg-white px-2 py-1 font-body text-xs text-slate-700">Salon photo for illustration.</p>
+        </div>
+        <div class="flex flex-1 flex-col p-6 md:p-7">
+          <h3 class="font-heading text-3xl font-bold text-slate-950">Local service businesses</h3>
+          <p class="mt-4 font-body text-base leading-relaxed text-slate-600">Make it easy to check your work and book with you.</p>
+          <p class="mt-5 border-l-2 border-uui-brand-600 pl-4 font-body text-sm leading-6 text-slate-700">Helen Moore's salon pages give visitors a clear route to booking.</p>
+          <div class="mt-auto pt-5"><MarketingButton action="caseStudy" href="/case-studies/helen-moore-hairdressing/" variant="link" /></div>
+        </div>
+      </article>
+      <article class="flex min-w-0 flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+        <div class="flex aspect-[16/9] items-center justify-center gap-4 bg-uui-brand-50 px-5 font-body" role="img" aria-label="Midland Oil load time: more than 8 seconds before, 1.2 seconds after">
+          <div aria-hidden="true" class="text-center"><p class="font-heading text-4xl text-slate-600">8s+</p><p class="mt-2 text-sm text-slate-600">Before</p></div>
+          <ArrowRight size={26} aria-hidden="true" className="shrink-0 text-uui-brand-600" />
+          <div aria-hidden="true" class="text-center"><p class="font-heading text-5xl text-uui-brand-800">1.2s</p><p class="mt-2 text-sm text-uui-brand-800">After</p></div>
+        </div>
+        <div class="flex flex-1 flex-col p-6 md:p-7">
+          <h3 class="font-heading text-3xl font-bold text-slate-950">Slow WordPress sites</h3>
+          <p class="mt-4 font-body text-base leading-relaxed text-slate-600">Find out what is worth keeping and what needs to change.</p>
+          <p class="mt-5 border-l-2 border-uui-brand-600 pl-4 font-body text-sm leading-6 text-slate-700">Midland's old site took more than 8 seconds to load. Its new site takes 1.2.</p>
+          <div class="mt-auto pt-5"><Button href="/services/wordpress-web-design/" color="link-color" className="whitespace-normal text-left">Explore WordPress web design</Button></div>
+        </div>
+      </article>
     </div>
   </div>
 </section>

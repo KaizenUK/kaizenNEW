@@ -4,6 +4,45 @@
 **Task board:** `docs/audits/2026-10-01-task-plan.md` turns every finding below into a task any agent can pick up.
 **Rules audited against:** `.claude/skills/marketing-messaging`, `marketing-page-design`, `seo-strategy`, `docs/marketing/site-profile.md`, and Sean's standing rules (British English, reading age about 9, no em dashes, nothing that reads as AI-written, premium look).
 
+## Progress: 2 October 2026, after Phase F
+
+All seven foundations are implemented, verified and live on production at `8b263e6`. The site now has isolated Untitled UI tokens, three agreed action labels, corrected heading proportions and smaller WOFF2 loading, two section-spacing sizes, a shared server-rendered FAQ, accessible marketing navigation, one static footer and reusable client proof. Each foundation's commit and release evidence is linked from the board. P-01 remains the first full page rebuild; these changes do not mark any Phase P task complete.
+
+The fresh final-build house-style run covers the same 29 public pages as Phase Q. It finds **51 dashes on six pages**, down from 63 after Q and about 190 in the original audit. There are no exclamation marks, US spelling or banned-word hits. Remaining dashes: home 10, local SEO 18, pledge 6, get-started 8, review 5 and terms 4. These unchanged sections remain for the later page tasks and final audit. Source: ignored `.local/marketing-20261001/phase-f-house-style.log`.
+
+| Current marketing page | Reading age | Average sentence | Sentences over 20 | Dashes | AI patterns |
+|---|---:|---:|---:|---:|---:|
+| Home | 8.8 | 9.3 | 4 | 10 | 8 |
+| WordPress | 7.2 | 9.3 | 0 | 0 | 0 |
+| Local SEO, awaiting retirement | 10.1 | 10.4 | 11 | 18 | 10 |
+| About | 7.1 | 8.1 | 0 | 0 | 0 |
+| Contact | 6.6 | 9.4 | 0 | 0 | 0 |
+| Scanner | 7.4 | 8.7 | 0 | 0 | 0 |
+| Product owner | 8.0 | 8.7 | 0 | 0 | 0 |
+| Case studies index | 8.8 | 10.5 | 1 | 0 | 0 |
+| Midland Oil | 8.7 | 9.7 | 1 | 0 | 0 |
+| Helen Moore | 9.2 | 10.8 | 0 | 0 | 0 |
+
+The case-index and Midland long-sentence flags join independent badges or link labels; they are not newly lengthened prose. Their visual rebuilds still remain P-07/P-08. The newly adopted homepage proof bands were checked separately from the unchanged narrative: review excerpts age 9.7, Midland age 9.3, no long sentences or hard-rule/staffing/AI hits. The four shared FAQs also meet the copy gate. Whole-home age alone does not make its remaining copy acceptable.
+
+The ten blog bodies still measure ages 13.8 to 16.9, and the index is 13.4. B-01 to B-03 still own their presentation, sources, author and readability. The checker omits article-header excerpts; this table is not a replacement for those checks. No search-ranking or conversion improvement is inferred.
+
+Visual re-audit uses the official page-shot runs made and reviewed through the foundation changes. F-04 covers all 18 marketing/ad/legal routes at both widths; F-05 covers all four changed FAQs; F-06 adds the blog index, cost guide, every navigation state and corrected footer; F-07's final normal-state run covers home, WordPress and contact, with all 30 tiles inspected. The final F-07 native-focus correction changes no normal layout and has four further inspected captures. Earlier captures are identified by task, not described as new final-build captures. All reported views have zero horizontal overflow. Proof notes record the full review and browser coverage. Current phone heights are 14,300px for home, 9,586px for WordPress and 2,557px for contact; WordPress is below the P-02 length target, but its new hero/cards are still required.
+
+### Current scorecard after Phase F
+
+| Area | Verdict | Current evidence and remaining work |
+|---|---|---|
+| SEO technical | Core fixes retained | Existing metadata/schema/URLs preserved through the foundations; FAQs are in initial HTML. Complete ownership and internal-link work remains S-01/S-03. |
+| Copy: house rules | Much improved, unfinished | 51 dashes remain on six pages. Rewritten service/about/contact/proof copy meets targets; home, retirement, pledge, ads and blog work remain. |
+| Copy: claims and proof | Core claims corrected | Scanner flow and Midland results match the evidence; readable Google excerpts and a real case-study screenshot are reusable. Later page/blog claims still need review. |
+| Copy: message | Homepage rebuild required | Its H1 is still a slogan. Buyer routes, the main purchase doubt and proof in the first screen remain P-01. |
+| Design: premium bar | Foundation ready, pages unfinished | Reusable controls, type, spacing and proof are verified. Heroes, case-study index, product-owner page and blog still need their full rebuilds. |
+| Design: consistency | Shared marketing system in place | Three action styles, shared FAQ, header/footer and proof are available. Blog body/header design remains B-01. |
+| Mobile | Layout faults fixed, page work remains | Zero overflow in reviewed captures; contact is shorter and WordPress is below 10,000px. Home and retiring local SEO remain long; P tasks own the new page structure. |
+
+The original scorecard and numbered findings below remain a dated baseline. The task board and dated progress sections are the current state.
+
 ## Progress: 1 October 2026, after Phase Q
 
 Phase Q corrects the scanner flow and Midland figures, phone layout faults, duplicate footer asks, literal arrow text, missing image dimensions, blog titles/raw links, orphan body links and exposed implementation names. Proof notes are linked from the task board. Copy preparation for later page rebuilds was included where required by the house-style gate; those rebuilds remain open.
@@ -43,7 +82,7 @@ The ten blog posts still measure ages 13.8 to 16.9; targeted metadata and link f
 
 **Still not possible from here, and why:** buyer research (no enquiries or customer interviews yet; see DEC-01); user testing with real people; competitor and search-results review (worth doing once the page-owner map exists); the Google Business Profile itself (Sean's account).
 
-## Scorecard
+## Original scorecard, 1 October before Phase Q
 
 | Area | Verdict | One line |
 |---|---|---|

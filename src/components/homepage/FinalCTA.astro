@@ -1,42 +1,17 @@
 ---
-import { MarketingButton } from "../../../client/components/untitled/MarketingButton";
-/**
- * Final CTA block - full-width conversion section before footer.
- * Bold, simple, one clear action.
- * Static Astro component.
- */
+import { MarketingButton, contactResponse } from "../../../client/components/untitled/MarketingButton";
 ---
 
-<section class="marketing-section bg-gray-950 text-white relative overflow-hidden">
-  <div
-    class="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_30%_50%,rgba(6,182,212,0.08),transparent_60%)]"
-  >
-  </div>
-
-  <div class="mx-auto max-w-[1440px] px-6 lg:px-12 relative z-10">
-    <div class="max-w-3xl">
-      <p
-        class="marketing-eyebrow marketing-eyebrow--dark text-xs font-medium tracking-[0.25em] text-white/40 uppercase mb-8 font-body"
-      >
-        Next step
-      </p>
-
-      <h2
-        class="text-4xl md:text-5xl lg:text-6xl font-heading font-bold mb-8 leading-tight text-white"
-      >
-        Your competitors won't wait.<br />Why should you?
-      </h2>
-
-      <p class="text-lg md:text-xl text-white/50 leading-relaxed mb-14 max-w-2xl font-body">
-        Every day your site underperforms is a day someone else gets the click, the call, the sale. A conversation costs nothing. Ignoring it costs everything.
-      </p>
-
-      <div class="flex flex-col sm:flex-row items-start gap-6">
-        <MarketingButton action="contact" />
-
-        <MarketingButton action="speed" />
-      </div>
-
+<section class="marketing-section bg-slate-950 text-white" aria-labelledby="home-contact-heading">
+  <div class="mx-auto grid max-w-[1440px] items-center gap-8 px-6 lg:grid-cols-[1fr_0.85fr] lg:gap-20 lg:px-12">
+    <div>
+      <p class="marketing-eyebrow marketing-eyebrow--dark mb-5">Your next step</p>
+      <h2 id="home-contact-heading" class="max-w-2xl text-balance font-heading text-4xl font-bold text-white md:text-5xl lg:text-6xl">Tell us what your site should do better.</h2>
+      <p class="mt-6 max-w-xl font-body text-lg leading-relaxed text-slate-300">The first chat is free. We will look at what you need and explain where we can help.</p>
+    </div>
+    <div class="rounded-2xl border border-white/15 bg-white/5 p-6 sm:p-8">
+      <MarketingButton action="contact" className="max-w-full whitespace-normal text-left" />
+      <p class="mt-4 font-body text-sm leading-6 text-slate-300">{contactResponse}</p>
     </div>
   </div>
 </section>

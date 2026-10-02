@@ -1,5 +1,4 @@
 import { FaqSection } from "../untitled/faq";
-import { MarketingButton } from "../untitled/MarketingButton";
 
 const items = [
   {
@@ -58,15 +57,9 @@ export function HomepageFAQ() {
   return (
     <FaqSection
       id="home-faq"
-      heading="Know what happens before you start."
+      heading="Get the answers before you commit."
       eyebrow="Common questions"
       items={items}
-      className="marketing-section--joined"
-      footer={
-        <div className="text-center">
-          <MarketingButton action="contact" />
-        </div>
-      }
     />
   );
 }

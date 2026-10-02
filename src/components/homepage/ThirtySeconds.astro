@@ -1,583 +1,147 @@
 ---
 import { Button } from "../../../client/components/untitled/base/buttons/button";
-/**
- * "30 Seconds" — show, don't tell.
- * A visual timer that makes slow loading times visceral.
- * Two side-by-side browser mockups: one crawls, one snaps to life.
- * The visitor watches the slow side tick up and FEELS the pain.
- * SUCCESS: Unexpected (timer is uncomfortable), Concrete (real seconds), Emotional (anxiety).
- */
+import { MarketingButton } from "../../../client/components/untitled/MarketingButton";
 ---
 
-<section class="marketing-section bg-gray-950 overflow-hidden" id="thirty-seconds">
+<section class="marketing-section bg-slate-950 text-white" id="thirty-seconds" aria-labelledby="home-speed-heading" data-speed-comparison>
   <div class="mx-auto max-w-[1440px] px-6 lg:px-12">
-    <!-- Header -->
-    <div class="mb-8 md:mb-12 max-w-3xl">
-      <p
-        class="marketing-eyebrow marketing-eyebrow--dark text-xs font-medium tracking-[0.25em] text-gray-500 uppercase mb-5 font-body"
-      >
-        Before and after
-      </p>
-      <h2
-        class="text-4xl md:text-5xl lg:text-6xl font-heading font-bold text-white leading-tight mb-6"
-      >
-        8 seconds to load. Would you wait?
-      </h2>
-      <p class="text-lg md:text-xl text-gray-400 font-body leading-relaxed">
-        This is a real site we rebuilt. The old one took more than 8 seconds to show a page. The new one takes 1.2 seconds. Watch them side by side.
-      </p>
+    <div class="mb-8 max-w-3xl md:mb-12">
+      <p class="marketing-eyebrow marketing-eyebrow--dark mb-5">Midland Oil, before and after</p>
+      <h2 id="home-speed-heading" class="text-balance font-heading text-4xl font-bold text-white md:text-5xl lg:text-6xl">See how much sooner the page is ready.</h2>
+      <p class="mt-6 font-body text-lg leading-relaxed text-slate-300">The old site took more than 8 seconds to load. The new one takes 1.2 seconds.</p>
+      <p id="speed-explanation" class="mt-3 font-body text-sm leading-6 text-slate-300">Screenshots replay the recorded wait. This is not a live speed test.</p>
     </div>
-
-    <!-- Two browser mockups side by side -->
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-10">
-      <!-- SLOW SITE -->
-      <div class="thirty-browser" data-speed="slow">
-        <div class="thirty-browser-bar">
-          <div class="thirty-dots">
-            <span class="thirty-dot thirty-dot--red"></span>
-            <span class="thirty-dot thirty-dot--yellow"></span>
-            <span class="thirty-dot thirty-dot--green"></span>
+    <div class="grid grid-cols-2 gap-3 md:gap-6">
+      <figure class="min-w-0">
+        <div class="overflow-hidden rounded-2xl border border-white/20 bg-white">
+          <div class="flex flex-col items-start gap-1 border-b border-slate-200 px-3 py-3 font-body text-xs sm:flex-row sm:items-center sm:justify-between sm:gap-3 sm:px-4 sm:text-sm">
+            <span class="font-semibold text-slate-900">Before</span>
+            <span class="text-slate-600">More than 8 seconds</span>
           </div>
-          <div class="thirty-url">
-            <span class="thirty-url-text">Old site</span>
-          </div>
-          <div class="thirty-timer thirty-timer--slow" data-timer="slow">
-            <span class="thirty-timer-value">0.0</span><span class="thirty-timer-unit">s</span>
-          </div>
-        </div>
-        <div class="thirty-viewport thirty-viewport--slow">
-          <!-- Loading state -->
-          <div class="thirty-loading" data-loading="slow">
-            <div class="thirty-spinner"></div>
-            <p class="thirty-loading-text">Loading…</p>
-          </div>
-          <!-- Skeleton that slowly fills in -->
-          <div class="thirty-skeleton" data-skeleton="slow">
-            <div class="thirty-skel-hero"></div>
-            <div class="thirty-skel-nav">
-              <div class="thirty-skel-bar" style="width:30%"></div>
-              <div class="thirty-skel-bar" style="width:20%"></div>
-              <div class="thirty-skel-bar" style="width:25%"></div>
-            </div>
-            <div class="thirty-skel-content">
-              <div class="thirty-skel-line" style="width:90%"></div>
-              <div class="thirty-skel-line" style="width:75%"></div>
-              <div class="thirty-skel-line" style="width:82%"></div>
-              <div class="thirty-skel-line" style="width:60%"></div>
-            </div>
-            <div class="thirty-skel-img"></div>
-          </div>
-          <!-- Visitor left message -->
-          <div class="thirty-abandoned" data-abandoned="slow">
-            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="text-red-400 mb-3">
-              <circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/>
-            </svg>
-            <p class="text-red-400 font-heading font-bold text-lg">Still loading.</p>
-            <p class="text-gray-500 font-body text-sm mt-1">Would you still be here?</p>
-          </div>
-        </div>
-        <p class="text-center text-gray-500 font-body text-sm mt-4">Before: more than 8 seconds</p>
-      </div>
-
-      <!-- FAST SITE -->
-      <div class="thirty-browser" data-speed="fast">
-        <div class="thirty-browser-bar">
-          <div class="thirty-dots">
-            <span class="thirty-dot thirty-dot--red"></span>
-            <span class="thirty-dot thirty-dot--yellow"></span>
-            <span class="thirty-dot thirty-dot--green"></span>
-          </div>
-          <div class="thirty-url">
-            <span class="thirty-url-text">New site</span>
-          </div>
-          <div class="thirty-timer thirty-timer--fast" data-timer="fast">
-            <span class="thirty-timer-value">0.0</span><span class="thirty-timer-unit">s</span>
-          </div>
-        </div>
-        <div class="thirty-viewport thirty-viewport--fast">
-          <!-- Loading state (brief) -->
-          <div class="thirty-loading" data-loading="fast">
-            <div class="thirty-spinner thirty-spinner--fast"></div>
-          </div>
-          <!-- Fully loaded state -->
-          <div class="thirty-loaded" data-loaded="fast">
-            <div class="thirty-site-hero">
-              <div class="thirty-site-logo"></div>
-              <div class="thirty-site-nav-row">
-                <div class="thirty-site-nav-item"></div>
-                <div class="thirty-site-nav-item"></div>
-                <div class="thirty-site-nav-item"></div>
-              </div>
-              <div class="thirty-site-heading"></div>
-              <div class="thirty-site-subheading"></div>
-              <div class="thirty-site-cta"></div>
-            </div>
-            <div class="thirty-site-content">
-              <div class="thirty-site-cards">
-                <div class="thirty-site-card"></div>
-                <div class="thirty-site-card"></div>
-                <div class="thirty-site-card"></div>
-              </div>
+          <div class="relative aspect-[2550/1312]">
+            <img src="/images/case-studies/midland-oil-group/mog-old-homepage.webp" alt="Midland Oil's old homepage before the rebuild" width="2544" height="1313" loading="lazy" decoding="async" class="block h-full w-full object-cover object-top" />
+            <div hidden data-loading="before" class="loading-cover absolute inset-0 place-content-center bg-slate-100 p-2 text-center font-body text-xs leading-4 text-slate-800 sm:p-5 sm:text-base sm:leading-6">
+              <div aria-hidden="true" class="loading-dot mx-auto mb-1 size-2 rounded-full bg-slate-400 sm:mb-4 sm:size-3"></div>
+              <p>Waiting for the old page.</p>
             </div>
           </div>
-          <!-- Success badge -->
-          <div class="thirty-success" data-success="fast">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-emerald-400">
-              <path d="M20 6 9 17l-5-5"/>
-            </svg>
-            <span class="text-emerald-400 font-heading font-bold text-sm">Loaded in 1.2s</span>
+        </div>
+        <figcaption class="mt-4 font-body text-xs leading-6 text-slate-300 sm:text-sm">The old homepage before our work.</figcaption>
+      </figure>
+      <figure class="min-w-0">
+        <div class="overflow-hidden rounded-2xl border border-uui-brand-300 bg-white">
+          <div class="flex flex-col items-start gap-1 border-b border-slate-200 px-3 py-3 font-body text-xs sm:flex-row sm:items-center sm:justify-between sm:gap-3 sm:px-4 sm:text-sm">
+            <span class="font-semibold text-slate-900">After the rebuild</span>
+            <span class="text-uui-brand-800">1.2 seconds</span>
+          </div>
+          <div class="relative aspect-[2550/1312]">
+            <img src="/images/case-studies/midland-oil-group/mog-new-homepage.webp" alt="Midland Oil's rebuilt homepage with clear product choices" width="2550" height="1312" loading="lazy" decoding="async" class="block h-full w-full object-cover object-top" />
+            <div hidden data-loading="after" class="loading-cover absolute inset-0 place-content-center bg-slate-100 p-2 text-center font-body text-xs leading-4 text-slate-800 sm:p-5 sm:text-base sm:leading-6">
+              <div aria-hidden="true" class="loading-dot mx-auto mb-1 size-2 rounded-full bg-uui-brand-600 sm:mb-4 sm:size-3"></div>
+              <p>Waiting for the new page.</p>
+            </div>
           </div>
         </div>
-        <p class="text-center text-gray-500 font-body text-sm mt-4">After: 1.2 seconds</p>
-      </div>
+        <figcaption class="mt-4 font-body text-xs leading-6 text-slate-300 sm:text-sm">A clearer way to find the right oil.</figcaption>
+      </figure>
     </div>
-
-    <!-- Replay button -->
-    <div class="mt-12 text-center">
-      <Button
-        type="button"
-        color="secondary"
-        size="lg"
-        data-replay
-      >
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
-          <path d="M3 3v5h5"/>
-          <path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"/>
-          <path d="M21 21v-5h-5"/>
-        </svg>
-        Watch again
-      </Button>
+    <div data-comparison-controls hidden class="mt-6">
+      <div class="flex flex-col items-start gap-3 sm:flex-row sm:flex-wrap">
+        <Button id="speed-play" color="secondary" size="lg" aria-describedby="speed-explanation">Play the loading comparison</Button>
+        <Button id="speed-show" color="link-color" size="lg" className="text-uui-brand-200 hover:text-white">Show both pages</Button>
+      </div>
+      <p data-comparison-status role="status" class="mt-3 min-h-12 font-body text-sm leading-6 text-slate-300">Both pages are shown.</p>
+    </div>
+    <div class="mt-6 flex flex-col gap-5 border-t border-white/15 pt-6 sm:flex-row sm:items-center sm:justify-between">
+      <p class="max-w-xl font-body text-lg leading-relaxed text-white">Since the rebuild, Midland gets several genuine enquiries a day.</p>
+      <MarketingButton action="caseStudy" variant="link" onDark />
     </div>
   </div>
 </section>
 
 <style>
-  /* Browser chrome */
-  .thirty-browser {
-    border-radius: 16px;
-    overflow: hidden;
-    background: rgb(17 17 17);
-    border: 1px solid rgb(255 255 255 / 0.08);
-  }
-
-  .thirty-browser-bar {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 12px 16px;
-    background: rgb(30 30 30);
-    border-bottom: 1px solid rgb(255 255 255 / 0.06);
-  }
-
-  .thirty-dots {
-    display: flex;
-    gap: 6px;
-  }
-
-  .thirty-dot {
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-  }
-
-  .thirty-dot--red { background: #ff5f57; }
-  .thirty-dot--yellow { background: #febc2e; }
-  .thirty-dot--green { background: #28c840; }
-
-  .thirty-url {
-    flex: 1;
-    background: rgb(20 20 20);
-    border-radius: 6px;
-    padding: 4px 12px;
-  }
-
-  .thirty-url-text {
-    color: rgb(255 255 255 / 0.4);
-    font-family: 'DM Sans', system-ui, sans-serif;
-    font-size: 12px;
-  }
-
-  .thirty-timer {
-    display: flex;
-    align-items: baseline;
-    gap: 1px;
-    font-variant-numeric: tabular-nums;
-  }
-
-  .thirty-timer-value {
-    font-family: 'DM Sans', system-ui, sans-serif;
-    font-size: 14px;
-    font-weight: 700;
-    min-width: 3ch;
-    text-align: right;
-  }
-
-  .thirty-timer-unit {
-    font-family: 'DM Sans', system-ui, sans-serif;
-    font-size: 11px;
-    font-weight: 500;
-    color: rgb(255 255 255 / 0.4);
-  }
-
-  .thirty-timer--slow .thirty-timer-value { color: #f87171; }
-  .thirty-timer--fast .thirty-timer-value { color: #34d399; }
-
-  /* Viewport */
-  .thirty-viewport {
-    position: relative;
-    aspect-ratio: 16 / 10;
-    overflow: hidden;
-  }
-
-  /* Loading spinner */
-  .thirty-loading {
-    position: absolute;
-    inset: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 12px;
-    background: rgb(17 17 17);
-    z-index: 3;
-  }
-
-  .thirty-spinner {
-    width: 28px;
-    height: 28px;
-    border: 3px solid rgb(255 255 255 / 0.1);
-    border-top-color: rgb(255 255 255 / 0.5);
-    border-radius: 50%;
-    animation: thirty-spin 1s linear infinite;
-  }
-
-  .thirty-spinner--fast {
-    border-top-color: #34d399;
-  }
-
-  .thirty-loading-text {
-    color: rgb(255 255 255 / 0.3);
-    font-family: 'DM Sans', system-ui, sans-serif;
-    font-size: 13px;
-  }
-
-  @keyframes thirty-spin {
-    to { transform: rotate(360deg); }
-  }
-
-  /* Skeleton (slow site) */
-  .thirty-skeleton {
-    position: absolute;
-    inset: 0;
-    padding: 16px;
-    opacity: 0;
-    z-index: 2;
-  }
-
-  .thirty-skel-hero {
-    width: 100%;
-    height: 35%;
-    background: rgb(255 255 255 / 0.04);
-    border-radius: 8px;
-    margin-bottom: 12px;
-  }
-
-  .thirty-skel-nav {
-    display: flex;
-    gap: 8px;
-    margin-bottom: 16px;
-  }
-
-  .thirty-skel-bar {
-    height: 8px;
-    background: rgb(255 255 255 / 0.06);
-    border-radius: 4px;
-  }
-
-  .thirty-skel-content {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    margin-bottom: 16px;
-  }
-
-  .thirty-skel-line {
-    height: 8px;
-    background: rgb(255 255 255 / 0.05);
-    border-radius: 4px;
-  }
-
-  .thirty-skel-img {
-    width: 60%;
-    height: 20%;
-    background: rgb(255 255 255 / 0.03);
-    border-radius: 8px;
-  }
-
-  /* Abandoned overlay */
-  .thirty-abandoned {
-    position: absolute;
-    inset: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    background: rgb(17 17 17 / 0.9);
-    opacity: 0;
-    z-index: 4;
-    pointer-events: none;
-  }
-
-  /* Fast site loaded state */
-  .thirty-loaded {
-    position: absolute;
-    inset: 0;
-    opacity: 0;
-    z-index: 2;
-    background: #fafafa;
-  }
-
-  .thirty-site-hero {
-    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-    padding: 12px 16px;
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-    height: 55%;
-    justify-content: center;
-    align-items: flex-start;
-  }
-
-  .thirty-site-logo {
-    width: 60px;
-    height: 8px;
-    background: rgb(255 255 255 / 0.6);
-    border-radius: 2px;
-    position: absolute;
-    top: 12px;
-    left: 16px;
-  }
-
-  .thirty-site-nav-row {
-    display: flex;
-    gap: 8px;
-    position: absolute;
-    top: 12px;
-    right: 16px;
-  }
-
-  .thirty-site-nav-item {
-    width: 32px;
-    height: 6px;
-    background: rgb(255 255 255 / 0.3);
-    border-radius: 2px;
-  }
-
-  .thirty-site-heading {
-    width: 70%;
-    height: 14px;
-    background: rgb(255 255 255 / 0.9);
-    border-radius: 3px;
-  }
-
-  .thirty-site-subheading {
-    width: 50%;
-    height: 8px;
-    background: rgb(255 255 255 / 0.4);
-    border-radius: 2px;
-  }
-
-  .thirty-site-cta {
-    width: 80px;
-    height: 22px;
-    background: #34d399;
-    border-radius: 4px;
-    margin-top: 4px;
-  }
-
-  .thirty-site-content {
-    padding: 12px 16px;
-  }
-
-  .thirty-site-cards {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 8px;
-  }
-
-  .thirty-site-card {
-    aspect-ratio: 1;
-    background: #f0f0f0;
-    border-radius: 6px;
-    border: 1px solid #e5e5e5;
-  }
-
-  /* Success badge */
-  .thirty-success {
-    position: absolute;
-    bottom: 12px;
-    left: 50%;
-    transform: translateX(-50%);
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    background: rgb(0 0 0 / 0.7);
-    backdrop-filter: blur(8px);
-    padding: 6px 14px;
-    border-radius: 999px;
-    opacity: 0;
-    z-index: 5;
-  }
-
-  /* Reduced motion */
+  [data-speed-comparison] [hidden] { display: none !important; }
+  .loading-cover { display: grid; }
+  .loading-dot { animation: loading-pulse 1s ease-in-out infinite alternate; }
+  @keyframes loading-pulse { to { opacity: 0.35; } }
   @media (prefers-reduced-motion: reduce) {
-    .thirty-spinner { animation: none; }
-    .thirty-skeleton,
-    .thirty-loaded,
-    .thirty-success,
-    .thirty-abandoned,
-    .thirty-loading {
-      transition: none !important;
-    }
+    .loading-dot { animation: none; }
   }
 </style>
 
 <script>
-  function initThirtySeconds() {
-    const section = document.getElementById('thirty-seconds');
-    if (!section) return;
+  function setupComparison() {
+    const root = document.querySelector<HTMLElement>("[data-speed-comparison]");
+    const controls = root?.querySelector<HTMLElement>("[data-comparison-controls]");
+    const status = root?.querySelector<HTMLElement>("[data-comparison-status]");
+    const before = root?.querySelector<HTMLElement>('[data-loading="before"]');
+    const after = root?.querySelector<HTMLElement>('[data-loading="after"]');
+    const play = root?.querySelector<HTMLButtonElement>("#speed-play");
+    const show = root?.querySelector<HTMLButtonElement>("#speed-show");
+    if (!root || !controls || !status || !before || !after || !play || !show) return;
 
-    const slowTimer = section.querySelector('[data-timer="slow"] .thirty-timer-value') as HTMLElement;
-    const fastTimer = section.querySelector('[data-timer="fast"] .thirty-timer-value') as HTMLElement;
-    const slowLoading = section.querySelector('[data-loading="slow"]') as HTMLElement;
-    const fastLoading = section.querySelector('[data-loading="fast"]') as HTMLElement;
-    const slowSkeleton = section.querySelector('[data-skeleton="slow"]') as HTMLElement;
-    const slowAbandoned = section.querySelector('[data-abandoned="slow"]') as HTMLElement;
-    const fastLoaded = section.querySelector('[data-loaded="fast"]') as HTMLElement;
-    const fastSuccess = section.querySelector('[data-success="fast"]') as HTMLElement;
-    const replayBtn = section.querySelector('[data-replay]') as HTMLElement;
+    const motion = window.matchMedia("(prefers-reduced-motion: reduce)");
+    let timers: ReturnType<typeof setTimeout>[] = [];
+    let generation = 0;
+    controls.hidden = false;
 
-    if (!slowTimer || !fastTimer) return;
-
-    let animationFrame: number;
-    let startTime: number;
-    let hasRun = false;
-
-    function reset() {
-      cancelAnimationFrame(animationFrame);
-      slowTimer.textContent = '0.0';
-      fastTimer.textContent = '0.0';
-
-      slowLoading.style.opacity = '1';
-      slowSkeleton.style.opacity = '0';
-      slowAbandoned.style.opacity = '0';
-      slowAbandoned.style.transition = '';
-
-      fastLoading.style.opacity = '1';
-      fastLoaded.style.opacity = '0';
-      fastSuccess.style.opacity = '0';
-      fastLoaded.style.transition = '';
-      fastSuccess.style.transition = '';
-      slowSkeleton.style.transition = '';
-      slowLoading.style.transition = '';
-      fastLoading.style.transition = '';
+    function clearTimers() {
+      generation++;
+      timers.forEach(clearTimeout);
+      timers = [];
     }
 
-    function run() {
-      reset();
-      hasRun = true;
+    function showBoth() {
+      clearTimers();
+      before!.hidden = true;
+      after!.hidden = true;
+      play!.disabled = false;
+      root!.dataset.state = "shown";
+      status!.textContent = "Both pages are shown.";
+    }
 
-      const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-      if (prefersReducedMotion) {
-        // Static version: just show the end states
-        slowTimer.textContent = '8.4';
-        fastTimer.textContent = '1.2';
-        slowLoading.style.opacity = '0';
-        slowSkeleton.style.opacity = '1';
-        slowAbandoned.style.opacity = '1';
-        fastLoading.style.opacity = '0';
-        fastLoaded.style.opacity = '1';
-        fastSuccess.style.opacity = '1';
+    show.addEventListener("click", showBoth);
+    play.addEventListener("click", async () => {
+      clearTimers();
+      const current = generation;
+      if (motion.matches) {
+        showBoth();
+        status.textContent = "Both pages are shown. The new page took 1.2 seconds; the old one took more than 8.";
         return;
       }
-
-      startTime = performance.now();
-
-      function tick() {
-        const elapsed = (performance.now() - startTime) / 1000;
-
-        // Slow timer runs up to ~8.4s then stops
-        const slowTime = Math.min(elapsed, 8.4);
-        slowTimer.textContent = slowTime.toFixed(1);
-
-        // Fast timer runs to 1.2s then stops
-        const fastTime = Math.min(elapsed, 1.2);
-        fastTimer.textContent = fastTime.toFixed(1);
-
-        // Slow site: show skeleton at 2s (partially loaded)
-        if (elapsed >= 2) {
-          slowLoading.style.transition = 'opacity 0.6s ease';
-          slowLoading.style.opacity = '0.3';
-          slowSkeleton.style.transition = 'opacity 1.5s ease';
-          slowSkeleton.style.opacity = '1';
+      play.disabled = true;
+      status.textContent = "Preparing the screenshots.";
+      try {
+        await Promise.all([...root.querySelectorAll<HTMLImageElement>("img")].map(async (image) => {
+          image.loading = "eager";
+          await image.decode();
+        }));
+      } catch {
+        if (generation === current) {
+          showBoth();
+          status.textContent = "The screenshots could not load. You can still read the case study.";
         }
-
-        // Fast site: loaded at 1.2s
-        if (elapsed >= 1.2) {
-          fastLoading.style.transition = 'opacity 0.15s ease';
-          fastLoading.style.opacity = '0';
-          fastLoaded.style.transition = 'opacity 0.3s ease';
-          fastLoaded.style.opacity = '1';
-        }
-
-        // Fast site: show success badge at 1.6s
-        if (elapsed >= 1.6) {
-          fastSuccess.style.transition = 'opacity 0.3s ease';
-          fastSuccess.style.opacity = '1';
-        }
-
-        // Slow site: visitor leaves at 8s
-        if (elapsed >= 8) {
-          slowAbandoned.style.transition = 'opacity 0.4s ease';
-          slowAbandoned.style.opacity = '1';
-        }
-
-        // Stop animation at 9s
-        if (elapsed < 9) {
-          animationFrame = requestAnimationFrame(tick);
-        }
+        return;
       }
-
-      animationFrame = requestAnimationFrame(tick);
-    }
-
-    // Intersection Observer — auto-play when scrolled into view
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting && !hasRun) {
-            // Small delay so the user sees the initial state first
-            setTimeout(run, 400);
-          }
-        });
-      },
-      { threshold: 0.3 }
-    );
-
-    observer.observe(section);
-
-    // Replay button
-    if (replayBtn) {
-      replayBtn.addEventListener('click', () => {
-        hasRun = false;
-        run();
-      });
-    }
+      if (generation !== current) return;
+      play.disabled = false;
+      before.hidden = false;
+      after.hidden = false;
+      root.dataset.state = "playing";
+      status.textContent = "Loading both pages.";
+      timers.push(setTimeout(() => {
+        after.hidden = true;
+        status.textContent = "The new page is ready. The old page is still loading.";
+      }, 1200));
+      timers.push(setTimeout(() => {
+        root.dataset.state = "finished";
+        status.textContent = "The old page is still loading after 8 seconds.";
+      }, 8000));
+    });
+    motion.addEventListener("change", showBoth);
+    document.addEventListener("visibilitychange", () => {
+      if (document.hidden) showBoth();
+    });
   }
-
-  // Run on initial load and after view transitions
-  initThirtySeconds();
-  document.addEventListener('astro:page-load', initThirtySeconds);
+  setupComparison();
 </script>

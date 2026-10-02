@@ -1,0 +1,37 @@
+---
+import { FileCheck2, Eye, UserRound, PencilLine } from "lucide-react";
+import { Button } from "../../../client/components/untitled/base/buttons/button";
+
+const promises = [
+  { Icon: FileCheck2, title: "Know what you are paying for.", copy: "We agree what the work covers and what it costs. If your plans change, we agree the cost first." },
+  { Icon: Eye, title: "See your pages before they go live.", copy: "You can look through the new site and tell us what needs to change." },
+  { Icon: UserRound, title: "Deal with the same person.", copy: "From the first chat to launch, you know who to speak to. You can ask questions as we go." },
+  { Icon: PencilLine, title: "Keep your pages easy to edit.", copy: "You can edit your pages and blog. We show you how, or make changes for you." },
+];
+---
+
+<section class="marketing-section bg-white" aria-labelledby="home-pledge-heading">
+  <div class="mx-auto grid max-w-[1440px] gap-10 px-6 lg:grid-cols-[0.8fr_1.2fr] lg:gap-16 lg:px-12">
+    <div>
+      <p class="marketing-eyebrow mb-5">Before you pay again</p>
+      <h2 id="home-pledge-heading" class="max-w-xl text-balance font-heading text-4xl font-bold text-slate-950 md:text-5xl">
+        You should know what you are getting.
+      </h2>
+      <p class="mt-6 max-w-lg font-body text-lg leading-relaxed text-slate-600">
+        A past website can leave you wary of paying again. We put the plan and price in writing before work starts.
+      </p>
+      <Button href="/pledge/" color="link-color" className="mt-5">Read the Kaizen pledge</Button>
+    </div>
+    <div class="grid gap-6 sm:grid-cols-2">
+      {promises.map(({ Icon, title, copy }) => (
+        <div class="rounded-2xl border border-slate-200 bg-slate-50 p-6">
+          <div class="mb-5 flex size-11 items-center justify-center rounded-xl border border-uui-brand-100 bg-white text-uui-brand-700 shadow-sm">
+            <Icon size={22} strokeWidth={1.75} aria-hidden="true" />
+          </div>
+          <h3 class="font-heading text-2xl font-bold text-slate-950">{title}</h3>
+          <p class="mt-3 font-body text-base leading-relaxed text-slate-600">{copy}</p>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
