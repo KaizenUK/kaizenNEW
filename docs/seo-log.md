@@ -6,7 +6,7 @@ Every change that can affect search, newest first: date, URL, what changed and w
 
 - `/performance-scanner/` puts its address field and email explanation in the first phone screen. A dated, real Kaizen homepage result shows what the report contains, with separate desktop and phone images. The closing message explains the next step without claiming the test finds everything.
 - Shared scanner presentation also changes on `/review/`. The PDF uses plain language, actual test dates, newer Google findings and pages that expand to fit the results. The existing below-90 email gate, optional consent and browser download remain. Report details stay tied to the page tested even if the input changes.
-- All 54 built documents retain their metadata and structured data. URL, canonical, title, description, initial-HTML FAQs and existing link destinations remain; review stays noindex. No CMS or sitemap change. Local checks pass; production release and live verification pending. Proof: `docs/audits/2026-10-02-p06-proof.md`. No search or enquiry improvement is claimed.
+- All 54 built documents retain their metadata and structured data. URL, canonical, title, description, initial-HTML FAQs and existing link destinations remain; review stays noindex. No CMS or sitemap change. Released in `5c1fb06`, deployment `36974909685`; live content/search/asset checks, 16 live page views and two complete controlled live flows pass. P-06 is complete. Proof: `docs/audits/2026-10-02-p06-proof.md`. No search or enquiry improvement is claimed.
 
 ## 2 Oct 2026: bring the guides into the main site design (B-01)
 
