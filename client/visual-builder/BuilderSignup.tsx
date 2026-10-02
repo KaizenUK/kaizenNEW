@@ -9,6 +9,7 @@ import {
   confirmationNotice,
 } from "../../shared/builderSignup";
 import { authErrorMessage } from "./authState";
+import { capturePostHog } from "../lib/posthog";
 
 export default function BuilderSignup({
   initialEmail,
@@ -92,6 +93,7 @@ export default function BuilderSignup({
               )
                 throw result.error;
               if (!live.current) return;
+              if (!confirming) capturePostHog("builder_signup_requested");
               setNotice(confirming ? confirmationNotice : signupNotice);
               setConfirming(true);
               setPassword("");

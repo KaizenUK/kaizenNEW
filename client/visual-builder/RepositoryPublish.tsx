@@ -11,6 +11,7 @@ import { useActiveProject } from "./activeProject";
 import { useWebsiteStatus } from "./useWebsiteStatus";
 import { builderStatuses, repositoryPublicationState } from "./builderStatus";
 import { Card, Notice, Pill } from "./shell";
+import { capturePostHog } from "../lib/posthog";
 
 export default function RepositoryPublish() {
   const { project } = useActiveProject();
@@ -87,7 +88,17 @@ function Publication({ connected }: { connected: boolean }) {
           ? { reviewId: status?.review.id }
           : {}),
       });
-      if (mounted.current && version === generation.current) setStatus(value);
+      if (mounted.current && version === generation.current) {
+        setStatus(value);
+        if (action === "repository-publish-review")
+          capturePostHog("website_publish_reviewed", {
+            publication_phase: value.phase,
+          });
+        if (action === "repository-publish")
+          capturePostHog("website_published", {
+            publication_phase: value.phase,
+          });
+      }
     } catch (error) {
       if (mounted.current && version === generation.current)
         setError(error.message);

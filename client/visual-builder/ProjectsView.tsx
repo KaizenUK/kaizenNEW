@@ -14,6 +14,7 @@ import {
   projectRequest,
 } from "./projectStorage";
 import { Head, Notice, Pill } from "./shell";
+import { capturePostHog } from "../lib/posthog";
 
 export { ProjectIdentity } from "./activeProject";
 
@@ -61,7 +62,11 @@ export default function ProjectsView() {
     return () => clearInterval(timer);
   }, [projects]);
   async function mutate(input: unknown) {
-    const request = input as { action?: string; id?: string };
+    const request = input as {
+      action?: string;
+      id?: string;
+      archived?: boolean;
+    };
     let currentCopyId =
       request.action === "duplicate-resume" ? request.id : undefined;
     if (request.action === "duplicate-cancel" && request.id)
@@ -96,6 +101,11 @@ export default function ProjectsView() {
       }
       setProjects(await listProjects());
       setName("");
+      if (request.action === "create") capturePostHog("project_created");
+      if (request.action === "archive")
+        capturePostHog(
+          request.archived ? "project_archived" : "project_restored",
+        );
       return true;
     } catch (error) {
       const stopped =

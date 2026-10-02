@@ -17,6 +17,7 @@ import {
   clientSaveError,
   clientSaveMessage,
 } from "./repositorySaveCopy";
+import { capturePostHog, logPostHog } from "../lib/posthog";
 
 type Props = {
   root: string;
@@ -180,14 +181,17 @@ function SaveControls({
             generation.current++;
             setError("");
             try {
-              setStatus(
-                await storage.repository({
-                  action: "repository-save",
-                  root,
-                  planId: status.planId,
-                  message,
-                }),
-              );
+              const next = await storage.repository({
+                action: "repository-save",
+                root,
+                planId: status.planId,
+                message,
+              });
+              setStatus(next);
+              capturePostHog("website_saved", { save_phase: next.phase });
+              logPostHog("website save completed", {
+                save_phase: next.phase,
+              });
               setRefresh((value) => value + 1);
             } catch (error) {
               setError(error.message);

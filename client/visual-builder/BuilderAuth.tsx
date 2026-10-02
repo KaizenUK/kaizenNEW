@@ -20,6 +20,25 @@ import { accountEmail, accountName } from "../../shared/builderAccount";
 import BuilderLegalGate, { BuilderLegalLinks } from "./BuilderLegalGate";
 import BuilderFirstProjectGate from "./BuilderFirstProjectGate";
 import BuilderSignup from "./BuilderSignup";
+import { capturePostHog, logPostHog } from "../lib/posthog";
+
+type BrowserPostHog = {
+  identify: (distinctId: string, properties?: Record<string, string>) => void;
+  reset: () => void;
+};
+
+function posthogClient(): BrowserPostHog | undefined {
+  return (window as Window & { posthog?: BrowserPostHog }).posthog;
+}
+
+function identifyBuilderAccount(session: Session) {
+  const properties: Record<string, string> = {};
+  if (session.user.email) properties.email = session.user.email;
+  const name =
+    session.user.user_metadata?.full_name ?? session.user.user_metadata?.name;
+  if (typeof name === "string") properties.name = name;
+  posthogClient()?.identify(session.user.id, properties);
+}
 
 /** Authentication gates mounting the workspace; project access is enforced by RLS/API. */
 export default function BuilderAuth({ children }: { children: ReactNode }) {
@@ -64,6 +83,8 @@ export default function BuilderAuth({ children }: { children: ReactNode }) {
         event === "SIGNED_IN" &&
         pendingAction.current === "signin";
       if (account.current !== next?.user.id) {
+        if (account.current) posthogClient()?.reset();
+        if (next) identifyBuilderAccount(next);
         operation.current++;
         working.current = false;
         setBusy(false);
@@ -83,7 +104,11 @@ export default function BuilderAuth({ children }: { children: ReactNode }) {
       latest = next;
       setSession(next);
       if (initialized) setReady(true);
-      if (signedInFromForm) setLinkProblem("");
+      if (signedInFromForm) {
+        capturePostHog("builder_sign_in_completed");
+        logPostHog("builder sign-in completed");
+        setLinkProblem("");
+      }
       if (
         next?.user.user_metadata?.builder_password_set === false &&
         completedSetup.current !== next.user.id

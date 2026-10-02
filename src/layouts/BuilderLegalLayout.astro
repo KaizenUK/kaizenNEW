@@ -1,4 +1,6 @@
 ---
+import PostHog from "../components/posthog.astro";
+
 interface Props {
   frontmatter: { title: string; description: string; version: string };
 }
@@ -13,6 +15,7 @@ const { title, description, version } = Astro.props.frontmatter;
     <meta name="robots" content="noindex, follow" />
     <meta name="referrer" content="no-referrer" />
     <title>{title} · Kaizen Builder</title>
+    <PostHog />
     <link rel="icon" href="/favicon.svg" />
   </head>
   <body>
