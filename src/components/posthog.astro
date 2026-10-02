@@ -15,7 +15,7 @@ const apiHost = import.meta.env.PUBLIC_POSTHOG_HOST;
     const applyConsent = analytics => {
       window.kaizenAnalyticsAllowed = analytics === true;
       if (!analytics) {
-        try { window.posthog?.opt_out_capturing({ clear_persistence: true }); } catch { /* Optional tracker. */ }
+        try { window.posthog?.opt_out_capturing(); } catch { /* Optional tracker. */ }
         return;
       }
       if (!apiKey || !apiHost) return;
@@ -32,11 +32,15 @@ const apiHost = import.meta.env.PUBLIC_POSTHOG_HOST;
       autocapture: false,
       capture_exceptions: false,
       disable_session_recording: true,
+      disable_surveys: true,
+      disable_conversations: true,
+      disable_product_tours: true,
       enable_heatmaps: false,
       capture_dead_clicks: false,
       capture_performance: false,
       capture_pageleave: false,
       person_profiles: "never",
+      opt_out_persistence_by_default: true,
       before_send: event => {
         if (!window.kaizenAnalyticsAllowed || location.hostname !== "kaizenweb.co.uk") return null;
         if (!["$pageview", "contact_form_submitted", "scanner_email_lead_saved"].includes(event.event)) return null;

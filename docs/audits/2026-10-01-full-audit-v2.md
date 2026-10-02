@@ -4,6 +4,12 @@
 **Task board:** `docs/audits/2026-10-01-task-plan.md` turns every finding below into a task any agent can pick up.
 **Rules audited against:** `.claude/skills/marketing-messaging`, `marketing-page-design`, `seo-strategy`, `docs/marketing/site-profile.md`, and Sean's standing rules (British English, reading age about 9, no em dashes, nothing that reads as AI-written, premium look).
 
+## Progress: 2 October 2026, measurement complete
+
+All 40 tasks within the goal are complete. Sean explicitly deferred S-02, his Business Profile and directory changes, until afterwards; those external listings are not claimed complete. S-04 now runs in PostHog EU project 203621, deployed in `57324be` (`37009100208`). Live test events for saved contacts and scanner leads were received, excluded from the saved report and independently counted. The report reads zero measured real conversions at verification. Tracking begins 2 Oct; earlier dates are unmeasured. The monthly Search Console reminder is active. See `docs/audits/2026-10-02-s04-measurement.md` for report link, filters, dates and limitations.
+
+The final measurement addition preserves all 53 documents' search metadata and the 22-page sitemap. Thirty-four local browser checks, twelve reviewed consent views, real-SDK withdrawal checks, eight live page comparisons and both live form probes pass. The isolated full test comparison has 1,082 passes, the same 439 inherited Windows failures, 44 pending tests and no regressions.
+
 ## Progress: 2 October 2026, after Phase P and final site audit
 
 All eleven Phase P tasks are verified and live, alongside all Phase Q, F and B tasks. P-09 is the last page release, in 6f13109 with deployment 36990006987. The individual proofs and task board retain the release evidence. S-05 now audits the final 28-route inventory; the corrections are verified and live in 3667dac, deployment 36995212547. S-05 is complete. See docs/audits/2026-10-02-s05-proof.md for the exact scope and exceptions.
@@ -25,7 +31,7 @@ The visual audit reviews all 220 final tiles across 56 desktop/phone views. All 
 | Design: premium bar | Full page and screenshot review complete | All planned page rebuilds are live. All twelve final live form captures and the audit release pass. |
 | Design: consistency | Shared foundations used throughout | Blog, marketing, response pages and menus use the current system; final corrections verified locally and live. |
 | Mobile and accessibility | Browser checks pass locally and live | 112 page views and 16 menu views pass. All 22 final journeys and equivalent production checks pass. |
-| Measurement and listings | Two outstanding tasks | S-04 reporting account/30-day conversions remain unverified. S-02 is Sean's end-of-project listing change. |
+| Measurement and listings | Measurement verified; listings deferred | S-04 is complete with the explicit 2 Oct collection start and historical-data limitation. Sean deferred S-02 until after the goal. |
 
 Earlier progress sections and scorecards below are historical checkpoints. This section and the task board give the current state.
 

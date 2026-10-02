@@ -75,3 +75,25 @@ The install also left builder instrumentation and a package addition in the shar
 ### Reporting still to verify after deployment
 
 The connector has saved-insight read/write access. Its separate marketing-goal and governed-metric scopes are unavailable, so use a clearly described saved event-count insight, not a claim of an approved catalogue metric. Existing matching insight search returns none. Neither new conversion name exists in the pre-release event schema. There is no verified 30-day historical collection to recover. Live ingestion, report filters and counts will be recorded after this release.
+
+## Live verification and S-04 completion, 2 October
+
+Released in **57324be6b949712d4038260b4cee979dfc47c9f9**, successful production deployment **37009100208**, release **gh-37009100208-1**. The marker records activation at **12:53:21 UTC on 2 October 2026**. Eight live home/contact/scanner/blog/ad/policy responses return 200 and preserve search metadata and structured data. Public PostHog configuration is present.
+
+Both form paths were then exercised in the live browser with only their database boundary mocked. One `contact_form_submitted` and one `scanner_email_lead_saved` reached PostHog; live property schema and exact `site` / `is_test` values were read back. A separate one-day QA count returns **1 / 1**. No contact record, scanner lead, email or alert was created.
+
+The current SDK deliberately rejects automation, including `navigator.webdriver`. The delivery probe uses its documented `opt_out_useragent_filter` setting **only in that test browser**. The website still emits `is_test=true`, and production retains default bot filtering. The SDK's obsolete `get_config` method and former capture return value are not used to assert success. Current SDK configuration and the event-processing callback were inspected; actual delivery is independently confirmed in PostHog.
+
+### Saved report
+
+[Kaizen website: saved enquiries (last 30 days)](https://eu.posthog.com/project/203621/insights/kyWwxRRM), insight **6290215**, short ID **kyWwxRRM**. Saved, favourited and read back with `insight-query`. Two total-count bars show contact enquiries and scanner email leads separately. Filters: `site=kaizenweb.co.uk`, `is_test is_not true`, plus project test-account exclusions. UTC, rolling `-30d`; the saved query resolves from **2 September 2026 00:00 UTC through 2 October 2026 23:59:59.999999 UTC** at verification. The summary formatter labels the last day's bucket at midnight; it is not an exclusion of 2 October.
+
+At read-back, **0 contact / 0 scanner real conversions**. Both deliberate QA events are excluded. **Collection began on 2 October 2026. Earlier zeros are unmeasured history, not proof of no enquiries.** No backfill or synthetic real conversion was added. Consented browser save counts can undercount database leads because of rejected consent, blocking or delivery failure; these are not unique-person totals. This limitation is also in the saved report description.
+
+### Final SDK corrections and exact release checks
+
+The live SDK check found optional survey/conversation bundles inherited from the shared project. The final site configuration disables surveys, conversations and product tours without changing the other sites' project settings. It also uses `opt_out_persistence_by_default=true`: the current SDK ignores the old `clear_persistence` argument. The real-SDK consent probe verifies that withdrawal removes the browser-ID cookie, and that a declined reload does not load the SDK. Stage performs no PostHog requests and has no cookie-choice prompt.
+
+An isolated managed checkout verifies the marketing commit without Sean's separate installer changes. Types and the complete site/Studio build pass. Full test comparison against the last S-05 release: **1,565 total, 1,082 passed, 439 inherited failures, 44 pending**, with no regression or new failure. The final browser checks cover the current SDK and optional-widget exclusions. Private reports: `s04-isolated-test-comparison.json`, `s04-final-test-comparison.json`, `s04-sdk-isolated.json`, `s04-browser-live.json`, `s04-report-evidence.json` and release-marker records.
+
+The original monthly Search Console reminder remains active; no duplicate reminder is created. **S-04 is complete. S-02 is explicitly deferred by Sean until after the goal**, and its listing changes are not claimed complete. Production and staging are brought to the final closing commit only after these checks.

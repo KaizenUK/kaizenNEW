@@ -4,7 +4,7 @@
 
 - Integrates Sean's PostHog install across public marketing layouts with working cookie choices. Counts saved contact enquiries and saved scanner email leads separately; excludes failed saves, bot confirmations and automated tests. Cookie/privacy pages now describe the collection.
 - URL parameters and campaign properties are removed, so old internal UTM links do not create false acquisition campaigns. No URL, title, canonical, schema, sitemap or CMS change. Historical data and ranking gains are not invented.
-- Types, build, test-name comparison, 34 browser checks and all twelve changed-UI viewport captures pass. All 53 documents preserve search metadata; the 22-page sitemap and link coverage pass. Live ingestion/report proof will follow deployment. Details: `docs/audits/2026-10-02-s04-measurement.md`.
+- Types, build, test-name comparison, 34 browser checks and all twelve changed-UI viewport captures pass. All 53 documents preserve search metadata; the 22-page sitemap and link coverage pass. Live release `57324be` / deployment `37009100208` verified. Both labelled QA conversions arrived and are excluded from the [saved report](https://eu.posthog.com/project/203621/insights/kyWwxRRM); measured real counts are 0 / 0 at read-back. Collection began 2 Oct; prior dates were unmeasured. Final SDK checks disable unrelated widgets and clear identifiers on withdrawal. Details: `docs/audits/2026-10-02-s04-measurement.md`.
 
 
 ## 2 Oct 2026: final site audit and accessibility corrections (S-05)
