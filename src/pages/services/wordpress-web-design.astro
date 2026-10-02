@@ -3,6 +3,7 @@ import { FaqSection } from "../../../client/components/untitled/faq";
 import { MarketingButton, contactResponse } from "../../../client/components/untitled/MarketingButton";
 import { MetricsBlock } from "../../../client/components/untitled/proof";
 import { caseStudies } from "../../../client/components/untitled/proof/evidence";
+import PhoneJourney from "../../components/services/PhoneJourney.astro";
 import StaticPageLayout from "../../layouts/StaticPageLayout.astro";
 
 export const prerender = true;
@@ -186,6 +187,8 @@ const serviceSchema = JSON.stringify({
     </div>
   </section>
 
+  <PhoneJourney />
+
   <section class="marketing-section bg-gray-950" aria-labelledby="wordpress-process-heading">
     <div class="mx-auto grid max-w-[1440px] items-start gap-10 px-6 lg:grid-cols-[0.9fr_1.1fr] lg:gap-20 lg:px-12">
       <div>
@@ -208,6 +211,28 @@ const serviceSchema = JSON.stringify({
           </li>
         ))}
       </ol>
+    </div>
+  </section>
+
+  <section class="marketing-section marketing-section--compact bg-slate-50" aria-labelledby="wordpress-move-heading">
+    <div class="mx-auto max-w-[1440px] px-6 lg:px-12">
+      <div class="grid items-start gap-6 lg:grid-cols-2 lg:gap-20">
+        <h2 id="wordpress-move-heading" class="text-balance font-heading text-3xl font-bold text-uui-dark md:text-4xl">Look after the pages<br />people already find.</h2>
+        <p class="max-w-xl text-lg leading-relaxed text-slate-600">Search positions can change after a rebuild. We plan the move and check for problems before and after launch.</p>
+      </div>
+      <details id="wordpress-move-plan" class="group mt-6 rounded-xl border border-slate-200 bg-white">
+        <summary class="flex min-h-11 cursor-pointer list-none items-center justify-between gap-4 rounded-xl p-5 font-semibold text-uui-dark focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-uui-brand-600 [&::-webkit-details-marker]:hidden">
+          How we look after your existing pages
+          <span aria-hidden="true" class="shrink-0 text-2xl font-normal text-slate-500 group-open:rotate-45">+</span>
+        </summary>
+        <ol class="grid gap-6 border-t border-slate-200 p-5 sm:grid-cols-2 sm:p-7">
+          <li><h3 class="font-heading text-2xl font-bold text-uui-dark">Record the site first.</h3><p class="mt-2 text-base leading-relaxed text-slate-600">We save the current pages and their web addresses. We check which pages people find through search.</p></li>
+          <li><h3 class="font-heading text-2xl font-bold text-uui-dark">Plan each changed address.</h3><p class="mt-2 text-base leading-relaxed text-slate-600">If a page moves, we send its old address to the right new page. We check the links before launch.</p></li>
+          <li><h3 class="font-heading text-2xl font-bold text-uui-dark">Keep useful page details.</h3><p class="mt-2 text-base leading-relaxed text-slate-600">We review page titles, descriptions and business details. We carry over what is still correct.</p></li>
+          <li><h3 class="font-heading text-2xl font-bold text-uui-dark">Check after launch.</h3><p class="mt-2 text-base leading-relaxed text-slate-600">We look for broken links and pages missing from search. We check how search visits change.</p></li>
+        </ol>
+      </details>
+      <p class="mt-5 text-sm leading-6 text-slate-600">For checks you can do yourself, use our <a href="/blog/local-seo-liverpool-checklist/" class="font-semibold text-uui-brand-800 underline underline-offset-4 hover:text-uui-dark">local search checklist</a>.</p>
     </div>
   </section>
 

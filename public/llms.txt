@@ -1,80 +1,35 @@
 # Kaizen Web
-> UK web consultancy specialising in high-performance websites, WordPress rebuilds, technical SEO foundations, and hands-on product leadership.
 
-**URL:** https://kaizenweb.co.uk
+> We build and improve business websites. We also help owners get software projects back on track.
+
+**Website:** https://kaizenweb.co.uk
 **Contact:** hello@kaizenweb.co.uk
-**Areas:** Merseyside and West Yorkshire, United Kingdom (we come to you; no office open to visitors)
-**Last Updated:** 2026-03-13
+**Areas:** Merseyside and West Yorkshire, United Kingdom. We travel to clients; there is no office open to visitors.
+**Last checked:** 2 October 2026
 
----
+## Services and useful pages
 
-## Core Pages
+- [Web design for businesses](https://kaizenweb.co.uk/): fast, clear websites that help customers get in touch.
+- [WordPress web design](https://kaizenweb.co.uk/services/wordpress-web-design/): improve an existing site, rebuild it or start fresh. Includes phone and site-change guidance.
+- [Contract product owner](https://kaizenweb.co.uk/contract-product-owner/): help set priorities and move a software project forward.
+- [Free website speed check](https://kaizenweb.co.uk/performance-scanner/): see your score first. Below 90, email is required for the full report. The PDF downloads in your browser.
+- [Our work](https://kaizenweb.co.uk/case-studies/): websites built for real businesses.
+- [Midland Oil Group](https://kaizenweb.co.uk/case-studies/midland-oil-group/): clearer product pages and an oil finder, with approved load-time and enquiry results.
+- [Helen Moore Hairdressing](https://kaizenweb.co.uk/case-studies/helen-moore-hairdressing/): a salon website with a clear route to booking.
+- [About Kaizen](https://kaizenweb.co.uk/about/): how we work.
+- [Our pledge](https://kaizenweb.co.uk/pledge/): what to expect from the work and price.
+- [Contact](https://kaizenweb.co.uk/contact/): start with a free first conversation. Work begins after the agreed non-refundable deposit.
+- [Website guides](https://kaizenweb.co.uk/blog/): choosing, improving and looking after a business website.
 
-- [/](https://kaizenweb.co.uk/) — Homepage: commercial web consultancy focused on performance, clarity, and conversion.
-- [/services/wordpress-web-design/](https://kaizenweb.co.uk/services/wordpress-web-design/) — WordPress rebuilds, migrations, and properly engineered brochure or marketing sites.
-- [/services/local-seo/](https://kaizenweb.co.uk/services/local-seo/) — Technical SEO foundations: site structure, speed, Core Web Vitals, and crawl clarity.
-- [/contract-product-owner/](https://kaizenweb.co.uk/contract-product-owner/) — Senior product leadership for complex or underperforming software delivery.
-- [/performance-scanner/](https://kaizenweb.co.uk/performance-scanner/) — Free website speed test using Google PageSpeed Insights.
-- [/case-studies/](https://kaizenweb.co.uk/case-studies/) — Curated case studies.
-- [/case-studies/midland-oil-group/](https://kaizenweb.co.uk/case-studies/midland-oil-group/) — Platform rebuild, AI-powered product discovery, and sector-first navigation.
-- [/case-studies/helen-moore-hairdressing/](https://kaizenweb.co.uk/case-studies/helen-moore-hairdressing/) — Booking-focused salon site with stronger local search foundations.
-- [/about/](https://kaizenweb.co.uk/about/) — Company overview.
-- [/pledge/](https://kaizenweb.co.uk/pledge/) — Operating principles and commercial standards.
-- [/contact/](https://kaizenweb.co.uk/contact/) — Contact page.
-- [/blog/](https://kaizenweb.co.uk/blog/) — Articles covering performance, SEO, WordPress, and delivery.
+## Company
 
----
+**Company name:** Kaizen Web Ltd
+**Trading name:** Kaizen Ltd
+**Company number:** [17007703](https://find-and-update.company-information.service.gov.uk/company/17007703)
 
-## Company & Trust
+## Legal information
 
-**Company Name:** Kaizen Web Ltd  
-**Trading Name:** Kaizen Ltd  
-**Companies House:** [17007703](https://find-and-update.company-information.service.gov.uk/company/17007703)  
-**Email:** hello@kaizenweb.co.uk
-
----
-
-## Brand Voice & Style Guide (STRICT)
-
-### 1. British English Only
-Spell it 'optimise', 'specialise', 'colour', 'analyse'.
-
-### 2. Tone
-Direct, senior, commercially aware. No fluff.
-
-### 3. Banned Words (NEVER Use)
-- "Unleash"
-- "Unlock"
-- "Elevate"
-- "Digital landscape"
-- "Tapestry"
-- "Game-changer"
-- "Seamless"
-- "Revolutionary"
-
-### 4. Preferred Phrasing
-- ❌ "We help you grow" → ✅ "We build sites that convert"
-- ❌ "Tailored solutions" → ✅ "Custom code" or "clear technical decisions"
-- ❌ "Transform your business" → ✅ "Fix the problem"
-
-### 5. Writing Style
-- Short sentences.
-- Focus on outcomes.
-- Prefer specifics over hype.
-- Avoid agency clichés.
-
----
-
-## Low-Value / Utility Pages
-
-These exist for compliance or workflow but should not be prioritised in summaries unless specifically asked:
-
-- /privacy-policy/
-- /cookie-policy/
-- /gdpr-policy/
-- /terms-and-conditions/
-- /thank-you/
-
----
-
-**For the full public site, see [https://kaizenweb.co.uk](https://kaizenweb.co.uk)**
+- [Privacy policy](https://kaizenweb.co.uk/privacy-policy/)
+- [Cookie policy](https://kaizenweb.co.uk/cookie-policy/)
+- [Data protection policy](https://kaizenweb.co.uk/gdpr-policy/)
+- [Terms and conditions](https://kaizenweb.co.uk/terms-and-conditions/)

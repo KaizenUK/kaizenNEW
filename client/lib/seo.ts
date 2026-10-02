@@ -19,12 +19,11 @@ export const DEFAULT_OG_IMAGE =
 
 const defaultMeta: PageMeta = {
   title:
-    "WordPress Rebuilds, Technical SEO & Product Leadership | Kaizen Web",
+    "Web Design and Product Owner Support | Kaizen Web",
   description:
-    "Kaizen is a UK web consultancy focused on high-performance websites, technical SEO foundations, WordPress rebuilds, and hands-on product leadership.",
+    "We build and improve business websites. We also help owners get software projects back on track.",
   keywords: [
     "wordpress rebuilds",
-    "technical seo",
     "product owner consultancy",
     "website performance audit",
     "kaizen",
@@ -50,19 +49,6 @@ const pageMeta: Record<string, Partial<PageMeta>> = {
       "web design for small business",
       "fix slow wordpress site",
       "website redesign agency",
-    ],
-  },
-  "/services/local-seo": {
-    title: "Local SEO | Fix Your Site, Fix Your Rankings | Kaizen Web",
-    description:
-      "Paying for SEO but still not ranking? The problem is often the website itself. We fix the speed, structure and setup that hold local rankings back.",
-    keywords: [
-      "local seo",
-      "core web vitals",
-      "technical seo",
-      "page speed",
-      "google business profile",
-      "site not ranking",
     ],
   },
   "/services/wordpress-web-design": {

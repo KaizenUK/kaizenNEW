@@ -4,10 +4,36 @@ import {
   mergeRedirectConfiguration,
   validateBuilderRedirects,
   builderRedirectChecks,
+  localRedirectPaths,
 } from "../../shared/builderRedirects.js";
 import { saveRoutes, publishLocalRoutes } from "../../shared/builderRoutes";
 import { makeRestorePlan, applyRestorePlan } from "../../shared/builderBackup";
 describe("release redirects", () => {
+  it("retires the local search service and rejects conflicting redirect owners", () => {
+    const paths = localRedirectPaths([]);
+    expect(paths).not.toContain("/services/local-seo/");
+    expect(paths).toContain("/services/wordpress-web-design/");
+    const { rules } = mergeRedirectConfiguration([], [], paths);
+    for (const source of ["/services/local-seo", "/services/local-seo/"]) {
+      expect(rules).toContain(
+        `location = "${source}" { return 301 "/services/wordpress-web-design/$is_args$args"; }`,
+      );
+    }
+    expect(() =>
+      mergeRedirectConfiguration(
+        [{ id: crypto.randomUUID(), source: "/services/local-seo/", destination: "/", status: 301 }],
+        [],
+        paths,
+      ),
+    ).toThrow(/source belongs to the existing site or editor/);
+    expect(() =>
+      mergeRedirectConfiguration(
+        [],
+        [{ source: "/services/local-seo", destination: "/", isPermanent: true }],
+        paths,
+      ),
+    ).toThrow(/Conflicting existing redirects/);
+  });
   it("checks aliases, occupied pages, full redirect graphs and final destinations", () => {
     const rules = [
       {

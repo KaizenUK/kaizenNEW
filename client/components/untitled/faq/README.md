@@ -41,7 +41,7 @@ The outer band uses F-04's `marketing-section`. Add `className="marketing-sectio
 ## Integrations
 
 - Home: `HomepageFAQ.tsx` directly imports this component with `id="home-faq"`. Its ten plain-English answers and contact footer render without lazy/Suspense or a client directive.
-- Local SEO: `src/pages/services/local-seo.astro` uses ten revised answers and `id="local-seo-faq"`. The component owns FAQPage; separate Service data remains.
+- The local SEO service page was retired in P-03. Its useful phone and site-change guidance now lives on the WordPress page; its former FAQ is retained in Git history.
 - WordPress: `src/pages/services/wordpress-web-design.astro` uses its unchanged ten answers and `id="wordpress-faq"`. Separate Service data and the three buying-option disclosures remain.
 - Scanner: `src/pages/performance-scanner.astro` uses its unchanged eight answers and `id="scanner-faq"`. Its three guidance links pass through the named `footer` slot.
 

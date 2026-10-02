@@ -1,5 +1,12 @@
 # SEO change log: kaizenweb.co.uk
 
+## 2 Oct 2026: retire the local SEO service (P-03)
+
+- `/services/local-seo/` is retired under DEC-03. Both slash forms get direct 301 rules to `/services/wordpress-web-design/`, preserving query strings. The old page, seed, SEO fallback, navigation/footer entry and machine-readable service listing are removed; managed-page generation excludes the retired route while its CMS recovery data remains.
+- WordPress receives a labelled example phone journey and a plain site-change process that acknowledges possible ranking changes. The local-search checklist stays at its existing URL. Helen Moore's approved booking result moves into its case study and the case-study index. Surviving pages keep identical metadata/schema; all ten WordPress FAQs remain.
+- Fresh crawl: 52 public HTML documents, 22 indexable pages, nine guides and three service owners. No retired internal link, orphan, missing destination or generic label; every indexable page is within two clicks of home. Sitemap matches the indexable set.
+- Types, full build, copy (ages 7.5/9.5/8.9), all 39 final tiles, 40 browser views, eight menu checks, 16 contact journeys and Windows test comparison pass. Production release and live verification are pending. Proof: `docs/audits/2026-10-02-p03-proof.md`. Local SEO topic impressions may fall; no ranking or enquiry uplift is claimed.
+
 ## 2 Oct 2026: clearer WordPress service choices (P-02)
 
 - Rebuilt the presentation at `/services/wordpress-web-design/`: real Midland work and approved results, three distinct options, the agreed response sentence, a clear buying process and a pledge link. Removed repeated comparison copy and sales endings.

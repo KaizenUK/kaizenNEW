@@ -9,14 +9,15 @@ const caseStudies = [
     client: "Midland Oil Group",
     summary:
       "A faster website with an oil finder and clear product pages.",
-    services: ["Website Rebuild", "AI Tooling", "Clear Menus", "Faster Pages"],
+    services: ["Website Rebuild", "Oil Finder", "Clear Menus", "Faster Pages"],
     slug: "midland-oil-group",
   },
   {
     client: "Helen Moore Hairdressing",
     summary:
       "A salon website with a clear path to booking.",
-    services: ["Web Design", "Local SEO", "Booking System"],
+    result: "Steady bookings from new local clients since the rebuild.",
+    services: ["Web Design", "Local Search", "Booking System"],
     slug: "helen-moore-hairdressing",
   },
 ];
@@ -56,6 +57,7 @@ const caseStudies = [
                   <p class="text-lg leading-relaxed text-kaizen-text-dark/70">
                     {study.summary}
                   </p>
+                  {study.result && <p class="mt-4 border-l-2 border-uui-brand-600 pl-4 text-base font-semibold leading-relaxed text-uui-dark">{study.result}</p>}
                 </div>
 
                 <div class="flex h-full flex-col justify-between">

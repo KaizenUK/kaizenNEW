@@ -13,6 +13,7 @@ function toPageSlug(pathname) {
 
 export const PUBLIC_ROUTE_REDIRECTS = {
   "/services": "/services/wordpress-web-design/",
+  "/services/local-seo": "/services/wordpress-web-design/",
   "/services/contract-product-owner": "/contract-product-owner/",
   "/services/web-design-liverpool": "/",
   "/web-design-liverpool": "/",
@@ -53,7 +54,6 @@ export const RETIRED_PUBLIC_PAGE_SLUGS = Object.freeze(
 export const ACTIVE_PUBLIC_PAGE_SLUGS = Object.freeze([
   "home",
   "blog",
-  "services/local-seo",
   "services/wordpress-web-design",
   "contract-product-owner",
   "about",

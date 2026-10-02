@@ -2,7 +2,7 @@
 // tiles that are easy to review. Agent-agnostic; needs Playwright's Chromium
 // (pnpm exec playwright install chromium).
 //
-//   node scripts/audit/page-shots.mjs <outDir> / /about/ /services/local-seo/
+//   node scripts/audit/page-shots.mjs <outDir> / /about/ /services/wordpress-web-design/
 //   BASE_URL=http://localhost:4321 node scripts/audit/page-shots.mjs shots /
 //
 // Output per page and width: <name>.<desk|mob>.full.jpg, numbered tiles, and

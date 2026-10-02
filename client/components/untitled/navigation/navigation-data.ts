@@ -23,7 +23,6 @@ export const speedLink: NavigationLink = {
 
 export const serviceLinks: readonly NavigationLink[] = [
   { label: "WordPress web design", href: "/services/wordpress-web-design/" },
-  { label: "Local search", href: "/services/local-seo/" },
   { label: "Contract product owner", href: "/contract-product-owner/" },
 ];
 
