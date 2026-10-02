@@ -2,6 +2,13 @@
 
 Every change that can affect search, newest first: date, URL, what changed and why. One change at a time where possible, then wait a few weeks before judging it (`seo-strategy`, "Measure, test and audit"). Positions quoted here are stale the day they are written; pull Search Console for current numbers.
 
+## 2 Oct 2026: evidence-led local-search checklist (B-03, third of five)
+
+- `/blog/local-seo-liverpool-checklist/` now covers accurate business details, visiting/service areas, clear services, phone/contact checks, genuine reviews and separate search/enquiry counts. Removed unsupported claims about website speed or structure controlling rankings. Four primary Google sources sit beside the relevant advice.
+- Title/H1 is "Local Search Checklist for Your Business Website"; description and excerpt match. Real screenshots of Kaizen's homepage and service-area footer replace the generated map illustration in the cover, body and social preview. The example describes the website only; Sean's Google listing action remains S-02.
+- Preserved URL, canonical, indexability, publication date, author and category. Body links lead to the main web-design hub, WordPress service, scanner and contact; removed the old local-SEO service link and tracking parameters. P-03 still owns site-wide service retirement. All other page metadata and all structured data are unchanged.
+- Built copy reads at age 9.6 with no wording or long-sentence hits. Proof: `docs/audits/2026-10-02-b03-local-proof.md`. Two B-03 rewrites remain. No new ranking or enquiry result is claimed.
+
 ## 2 Oct 2026: checking the costs inside a quote (B-03, second of five)
 
 - `/blog/hidden-costs-cheap-websites/` is now a practical checklist for recurring bills, edits, upkeep, moving old pages and testing the customer journey. Removed unsupported claims about cheap hosting, security, plugin counts and price predicting quality. No prices or failure rates are invented.
