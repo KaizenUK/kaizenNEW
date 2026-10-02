@@ -2,6 +2,12 @@
 
 Every change that can affect search, newest first: date, URL, what changed and why. One change at a time where possible, then wait a few weeks before judging it (`seo-strategy`, "Measure, test and audit"). Positions quoted here are stale the day they are written; pull Search Console for current numbers.
 
+## 2 Oct 2026: readable reviews and real case-study proof (F-07)
+
+- `/`: the four existing Google reviews now appear once as static cards, with complete selected excerpts, names, posting months and links to the existing listing. Each excerpt is labelled. No new review or aggregate-rating data is emitted; existing Organization data is unchanged.
+- The Midland band now shows the real site screenshot, a plain oil-finder explanation and approved results: several genuine enquiries a day, 1.2-second loading and three times the enquiries in the first month. Removed the old plugin count and AI wording. The existing case-study destination remains beside the evidence.
+- Both bands are present in server HTML without hydration. All page metadata, URLs and structured data are unchanged, as is homepage text outside these bands. Proof: `docs/audits/2026-10-02-f07-proof.md`. The full homepage rebuild remains P-01.
+
 ## 2 Oct 2026: buyer-led navigation and static footer (F-06)
 
 - Shared marketing navigation now uses Services, Work, About, Guides and Contact. The desktop Helen Moore case-study entry is a working link. Guide labels describe their topics without technology names; existing destinations are preserved.
