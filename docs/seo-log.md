@@ -4,7 +4,7 @@
 
 - `/case-studies/` now shows two substantial work cards with real screenshots, buyer types and approved results. Midland's confirmed load-time and enquiry figures are attached to its card. Helen's verified homepage screenshot and steady-booking result join the shared proof record. No new ranking claim is added.
 - The first phone screen has the agreed action/reply and a clear rebuild offer. Descriptive links connect both full case studies, website options, scanner, pledge and contact. All 53 built documents preserve metadata/schema; only the index body changes. No CMS, URL or sitemap change.
-- Types, full build, copy (age 9.3), all six final tiles, eight browser views, sixteen case-study journeys, eight contact journeys and the full Windows test comparison pass. Production verification pending. Proof: `docs/audits/2026-10-02-p07-proof.md`. No ranking or enquiry uplift is claimed.
+- Types, full build, copy (age 9.3), all six final tiles, eight browser views, sixteen case-study journeys, eight contact journeys and the full Windows test comparison pass. Released in `34e32d4`, deployment `36988337730`; exact live content/search/image checks, eight live views, sixteen case-study journeys and eight contact journeys pass. P-07 is complete. Proof: `docs/audits/2026-10-02-p07-proof.md`. No ranking or enquiry uplift is claimed.
 
 
 ## 2 Oct 2026: Helen case study with a clear booking story (P-08)
