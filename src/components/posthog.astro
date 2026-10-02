@@ -41,6 +41,11 @@ const apiHost = import.meta.env.PUBLIC_POSTHOG_HOST;
       capture_pageleave: false,
       person_profiles: "never",
       opt_out_persistence_by_default: true,
+      loaded: client => {
+        // Our current choice must replace an opt-out remembered by the SDK.
+        if (!window.kaizenAnalyticsAllowed) client.opt_out_capturing();
+        else if (client.has_opted_out_capturing()) client.opt_in_capturing();
+      },
       before_send: event => {
         if (!window.kaizenAnalyticsAllowed || location.hostname !== "kaizenweb.co.uk") return null;
         if (!["$pageview", "contact_form_submitted", "scanner_email_lead_saved"].includes(event.event)) return null;

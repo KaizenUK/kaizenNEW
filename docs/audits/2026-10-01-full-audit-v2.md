@@ -6,6 +6,8 @@
 
 ## Progress: 2 October 2026, measurement complete
 
+Final consent follow-up also verifies withdrawal followed by reload and re-acceptance, plus consent changing while the SDK loads. Eight analytics regression tests pass. The final full comparison has 1,569 tests: 1,086 pass, 439 inherited Windows failures and 44 pending, with no regressions. The two environments are brought to the corrected final commit before the goal closes.
+
 All 40 tasks within the goal are complete. Sean explicitly deferred S-02, his Business Profile and directory changes, until afterwards; those external listings are not claimed complete. S-04 now runs in PostHog EU project 203621, deployed in `57324be` (`37009100208`). Live test events for saved contacts and scanner leads were received, excluded from the saved report and independently counted. The report reads zero measured real conversions at verification. Tracking begins 2 Oct; earlier dates are unmeasured. The monthly Search Console reminder is active. See `docs/audits/2026-10-02-s04-measurement.md` for report link, filters, dates and limitations.
 
 The final measurement addition preserves all 53 documents' search metadata and the 22-page sitemap. Thirty-four local browser checks, twelve reviewed consent views, real-SDK withdrawal checks, eight live page comparisons and both live form probes pass. The isolated full test comparison has 1,082 passes, the same 439 inherited Windows failures, 44 pending tests and no regressions.
