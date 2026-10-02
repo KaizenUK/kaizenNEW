@@ -33,4 +33,8 @@ Ignored evidence is under `.local/marketing-20261001/`: `b03-comparison-*` snaps
 
 ## Release
 
-Prepared for direct shipment to main. Production and live verification are recorded after deployment. Stage stays at `4dbda85bab98fa16ba32157347ebb87bcc90a7d5` until the entire goal ends.
+Shipped directly to main as `91f50887e5d1a5759d611df20975fb0e34030022`. Production deployment `36960324633` succeeded. The live marker identifies that exact commit as `gh-36960324633-1`, created at `2026-10-02T03:30:58.607Z`.
+
+The article and blog index return 200. Live article text, links, metadata and structured data match the verified build; the index card also matches. Sixteen live browser views pass for image loading, keyboard focus, page errors and overflow, with the same existing landmark findings and no new accessibility failures. The unrelated scanner card's known host-timezone date difference remains assigned to B-02.
+
+Live evidence: `b03-comparison-live-server.json` and `b03-comparison-browser-live.json` in the ignored evidence directory. Remote main matches the release; stage is still `4dbda85bab98fa16ba32157347ebb87bcc90a7d5`, verified after deployment, until the entire goal ends.

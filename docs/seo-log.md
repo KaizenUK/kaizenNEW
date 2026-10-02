@@ -2,6 +2,13 @@
 
 Every change that can affect search, newest first: date, URL, what changed and why. One change at a time where possible, then wait a few weeks before judging it (`seo-strategy`, "Measure, test and audit"). Positions quoted here are stale the day they are written; pull Search Console for current numbers.
 
+## 2 Oct 2026: checking the costs inside a quote (B-03, second of five)
+
+- `/blog/hidden-costs-cheap-websites/` is now a practical checklist for recurring bills, edits, upkeep, moving old pages and testing the customer journey. Removed unsupported claims about cheap hosting, security, plugin counts and price predicting quality. No prices or failure rates are invented.
+- Title/H1 is "Hidden Costs of Cheap Websites: What to Check". Description and excerpt match. Added Nominet, WordPress and Google primary sources beside supported explanations. A real Midland product-selection comparison replaces the generated illustration in the cover, article and social preview; the index card updates from those fields.
+- Kept the URL, canonical, indexability, publication date, author and category. Descriptive body links lead to the WordPress service, scanner, Midland example, general cost guide and contact. New links omit the replaced article's tracking parameters. All other page metadata and structured data are unchanged.
+- Built copy reads at age 8.4, with no wording or long-sentence hits. Full proof: `docs/audits/2026-10-02-b03-hidden-proof.md`. Three B-03 rewrites remain; no search or enquiry improvement is claimed.
+
 ## 2 Oct 2026: practical website-build comparison (B-03, first of five)
 
 - `/blog/wordpress-vs-react-business-roi/` now explains how to compare the editor, phone experience, quoted work and upkeep. The title/H1 is "WordPress vs React: How to Choose for Your Business"; the description and excerpt match the new buying guidance. The existing comparison topic and URL remain; Kaizen's implementation is not disclosed.
