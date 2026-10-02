@@ -40,4 +40,8 @@ The original 55-page HTML snapshot and 16 before browser views are preserved. Th
 
 ## Release
 
-Prepared for direct main release after these checks. Record the deployment and live checks after activation. Stage remains unchanged until the entire goal ends.
+Released directly to main in `4561c87e4696402bb7adc7789029c38f65daa7f5`. Production deployment `36964372283` passed; live marker `gh-36964372283-1` records activation at `2026-10-02T04:26:36.606Z`.
+
+The live article and blog index return 200. Article content, links, metadata and structured data match the verified local build; the updated index card also matches. Sixteen live browser views at 320, 375, 768 and 1440px with JavaScript off/on pass: every image loads, no overflow or page errors, visible contact-link focus and no new accessibility findings. The existing missing-main/region findings remain assigned to B-01; the scanner card's existing timezone issue remains B-02.
+
+All five B-03 rewrites are now verified on production. Evidence: `b03-mistakes-live-server.json` and `b03-mistakes-browser-live.json` under the private local evidence directory. Remote stage is still `4dbda85bab98fa16ba32157347ebb87bcc90a7d5`, unchanged until the entire goal ends.

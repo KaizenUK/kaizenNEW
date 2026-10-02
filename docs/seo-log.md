@@ -8,7 +8,7 @@ Every change that can affect search, newest first: date, URL, what changed and w
 - Title/H1 is "5 Website Mistakes You Can Check on Your Own Site"; description and excerpt match. Real Kaizen homepage and phone-form screenshots replace the generated illustration. The form image is labelled as its first step with example placeholders; no real enquiry was sent.
 - Preserved the URL, canonical, indexability, publication date, author and category. Descriptive body links reach the web-design hub, case studies, scanner, local-search checklist and contact. The old local-SEO service link and tracking parameters are removed. Other page metadata and all structured data are unchanged.
 - Astro server/static reads now use the fresh CMS API after two builds picked up old article content. Published-only reads and browser/non-Astro cache settings remain unchanged. Rejected builds were not shipped; the final build contains the verified article. Full Windows test comparison has no new failures.
-- Built copy reads at age 8.8 with zero wording/long-sentence hits. Proof: `docs/audits/2026-10-02-b03-mistakes-proof.md`. All five rewrites are locally verified; B-03 closes after the final live checks. No search or enquiry uplift is claimed.
+- Built copy reads at age 8.8 with zero wording/long-sentence hits. Proof: `docs/audits/2026-10-02-b03-mistakes-proof.md`. All five rewrites are now verified live; final commit `4561c87`, deployment `36964372283`, live content/search checks and 16 live browser views pass. B-03 is complete. No search or enquiry uplift is claimed.
 
 ## 2 Oct 2026: sourced website-price examples (B-03, fourth of five)
 
