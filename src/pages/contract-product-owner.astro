@@ -1,352 +1,147 @@
 ---
-import { MarketingButton } from "../../client/components/untitled/MarketingButton";
-import { ArrowRight } from "lucide-react";
+import { MarketingButton, contactResponse } from "../../client/components/untitled/MarketingButton";
+import { caseStudies } from "../../client/components/untitled/proof/evidence";
+import StudyImage from "../components/case-studies/StudyImage.astro";
 import StaticPageLayout from "../layouts/StaticPageLayout.astro";
 
 export const prerender = true;
-
-const comparisonRows = [
-  {
-    "feature": "The goal",
-    "pm": "What needs to happen before launch?",
-    "po": "What should the software help people do?"
-  },
-  {
-    "feature": "The order",
-    "pm": "Which work can happen next?",
-    "po": "Which change will help the most?"
-  },
-  {
-    "feature": "New requests",
-    "pm": "How will this affect the plan?",
-    "po": "Is this worth doing now?"
-  },
-  {
-    "feature": "Checking progress",
-    "pm": "Is the work ready when we need it?",
-    "po": "Does it solve the problem we agreed?"
-  }
+const screenshot = caseStudies.midland.screenshot;
+const experience = [
+  { name: "Playtech", work: "Sean worked on product plans and the move from older software.", use: "He can help you plan changes to a service that is already in use." },
+  { name: "High 5 Games", work: "Sean helped coordinate the work needed to bring games to business clients.", use: "He knows how to keep connected pieces of work moving together." },
+  { name: "SMD Credit Solutions", work: "Sean helped improve how software work was planned and delivered.", use: "He can help you spot where the way of working is slowing things down." },
+  { name: "LeoVegas", work: "Sean built a player support service that worked across languages.", use: "He can help you turn what users tell you into useful changes." },
 ];
-
-const experienceCards = [
-  {
-    "title": "Playtech",
-    "proof": "Sean worked on product plans and the move from older software.",
-    "matters": "He can help you plan changes to a service that is already in use."
-  },
-  {
-    "title": "High 5 Games",
-    "proof": "Sean helped coordinate the work needed to bring games to business clients.",
-    "matters": "He knows how to keep connected pieces of work moving together."
-  },
-  {
-    "title": "SMD Credit Solutions",
-    "proof": "Sean helped improve how software work was planned and delivered.",
-    "matters": "He can help you spot where the way of working is slowing things down."
-  },
-  {
-    "title": "LeoVegas",
-    "proof": "Sean built a player support service that worked across languages.",
-    "matters": "He can help you turn what users tell you into useful changes."
-  }
+const choices = [
+  { title: "Choosing what to build", intro: "Start with what people need the software to do.", questions: [
+    ["The goal", "What should the software help people do?"],
+    ["The order", "Which change will help the most?"],
+    ["New requests", "Is this worth doing now?"],
+    ["Checking progress", "Does it solve the problem we agreed?"],
+  ] },
+  { title: "Planning how to deliver it", intro: "Work out how to get there, with the people involved.", questions: [
+    ["The goal", "What needs to happen before launch?"],
+    ["The order", "Which work can happen next?"],
+    ["New requests", "How will this affect the plan?"],
+    ["Checking progress", "Is the work ready when we need it?"],
+  ] },
 ];
-
-const processSteps = [
-  {
-    "step": "01",
-    "title": "Look at the work so far.",
-    "copy": "We review what exists and speak to the people who use it. Then we agree what the project needs to achieve."
-  },
-  {
-    "step": "02",
-    "title": "Choose what comes next.",
-    "copy": "We put the work in order and make the choices clear. You can see what is included and what can wait."
-  },
-  {
-    "step": "03",
-    "title": "Check the work as it grows.",
-    "copy": "We review progress against the agreed aim. You get plain updates on what is ready and what needs attention."
-  }
-];
-
-const hireScenarios = [
-  {
-    "title": "You need time to run the business.",
-    "copy": "You cannot be in every project meeting. We help keep choices moving and bring the key decisions to you."
-  },
-  {
-    "title": "The project has lost direction.",
-    "copy": "Dates keep moving, or nobody agrees what is needed. We help you find a clear next step."
-  },
-  {
-    "title": "Several suppliers need to work together.",
-    "copy": "One delay can hold up the whole project. We help the people involved agree what needs to happen next."
-  }
-];
-
-const kaizenLinks = [
-  {
-    "title": "The Midland Oil rebuild",
-    "copy": "See how clearer product choices helped Midland get more enquiries.",
-    "link": "/case-studies/midland-oil-group/",
-    "linkText": "See the Midland Oil case study"
-  },
-  {
-    "title": "WordPress web design",
-    "copy": "Choose a rebuild or smaller fixes based on what your site needs.",
-    "link": "/services/wordpress-web-design/",
-    "linkText": "Compare the website options"
-  }
+const steps = [
+  { title: "Look at the work so far.", copy: "We review what exists and speak to the people who use it. Then we agree what the project needs to achieve." },
+  { title: "Choose what comes next.", copy: "We put the work in order and make the choices clear. You can see what is included and what can wait." },
+  { title: "Check the work as it grows.", copy: "We review progress against the agreed aim. You get plain updates on what is ready and what needs attention." },
 ];
 ---
+
 <StaticPageLayout
   path="/contract-product-owner"
   title="Contract Product Owner for Hire | Kaizen Web"
   description="Software project drifting? A contract product owner sets the priorities, keeps the work moving and makes sure what gets built is what you need."
 >
   <section class="marketing-section bg-white">
-    <div class="container mx-auto px-4">
-      <div class="max-w-4xl">
-        <h1 class="mb-6 text-5xl font-heading font-black leading-tight text-kaizen-dark md:text-6xl lg:text-7xl">Contract product owner<br />for your software project.</h1>
-        <h2 class="mb-12 text-2xl font-heading font-semibold leading-tight text-kaizen-dark md:text-3xl">Give the work a clear next step.</h2>
-        <p class="mb-8 max-w-3xl text-lg leading-relaxed text-kaizen-text-dark/70 md:text-xl">A software project can keep costing money without getting closer to launch. We help you decide what to build and keep the work moving. You work with <strong>Sean McDonnell</strong>, founder of Kaizen.</p>
-        <MarketingButton action="contact" />
-      </div>
-    </div>
-  </section>
-
-  <section class="marketing-section bg-kaizen-light">
-    <div class="container mx-auto px-4">
-      <div class="max-w-3xl">
-        <h2 class="text-balance mb-8 text-4xl font-heading font-bold text-kaizen-dark md:text-5xl">Know what the project needs to achieve.</h2>
-        <p class="mb-8 text-lg leading-relaxed text-kaizen-text-dark/70 md:text-xl">Before more work starts, get clear on the problem you need to solve. We review the work so far and agree what matters most.</p>
+    <div class="mx-auto max-w-[1440px] px-6 lg:px-12">
+      <p class="marketing-eyebrow mb-4">For owners of software projects</p>
+      <h1 class="font-heading text-4xl font-bold text-uui-dark md:text-5xl lg:text-6xl"><span class="block">Contract product owner.</span>{" "}<span class="block text-uui-brand-800">A clear next step for your project.</span></h1>
+      <div class="mt-7 grid items-start gap-10 lg:mt-10 lg:grid-cols-2 lg:gap-16">
         <div>
-          <h3 class="mb-4 text-2xl font-heading font-bold text-kaizen-dark">Make each choice count.</h3>
-          <p class="text-lg leading-relaxed text-kaizen-text-dark/70">You should know why a feature is being built. We help you weigh up the value, cost and risks before you commit.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section class="marketing-section bg-white">
-    <div class="container mx-auto px-4">
-      <h2 class="mb-6 text-4xl font-heading font-bold text-kaizen-dark md:mb-8 md:text-5xl">Experience from live software projects.</h2>
-      <div class="mx-auto mb-8 max-w-4xl text-center">
-        <p class="text-lg text-kaizen-text-dark/70">Sean brings this experience to the choices your project faces.</p>
-      </div>
-      <div class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
-        {
-          experienceCards.map((card) => (
-            <article class="h-full rounded-2xl border border-kaizen-light bg-kaizen-light p-6">
-              <h3 class="mb-3 text-base font-heading font-bold leading-snug text-kaizen-dark">
-                {card.title}
-              </h3>
-              <p class="marketing-eyebrow mb-1 text-xs font-semibold uppercase tracking-wide text-kaizen-cyan">
-                Proof
-              </p>
-              <p class="mb-4 text-sm leading-relaxed text-kaizen-text-dark/70">
-                {card.proof}
-              </p>
-              <p class="marketing-eyebrow mb-1 text-xs font-semibold uppercase tracking-wide text-kaizen-cyan">
-                Why It Matters
-              </p>
-              <p class="text-sm leading-relaxed text-kaizen-text-dark/80">
-                {card.matters}
-              </p>
-            </article>
-          ))
-        }
-      </div>
-    </div>
-  </section>
-
-  <section class="marketing-section marketing-section--joined bg-white">
-    <div class="container mx-auto px-4">
-      <h2 class="mb-8 md:mb-12 text-center text-4xl font-heading font-bold text-kaizen-dark md:text-5xl">From a review to a clear plan.</h2>
-      <div class="mx-auto max-w-3xl space-y-8">
-        {
-          processSteps.map((item) => (
-            <article class="flex items-start gap-8 md:gap-12">
-              <div class="flex-shrink-0">
-                <div class="flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-kaizen-cyan to-kaizen-lime">
-                  <span class="text-xl font-heading font-black text-kaizen-dark">
-                    {item.step}
-                  </span>
-                </div>
-              </div>
-              <div class="flex-grow pt-2">
-                <h3 class="mb-4 text-2xl font-heading font-bold text-kaizen-dark md:text-3xl">
-                  {item.title}
-                </h3>
-                <p class="text-lg leading-relaxed text-kaizen-text-dark/70">
-                  {item.copy}
-                </p>
-              </div>
-            </article>
-          ))
-        }
-      </div>
-    </div>
-  </section>
-
-  <section class="marketing-section bg-kaizen-light">
-    <div class="container mx-auto px-4">
-      <div class="mx-auto mb-12 max-w-4xl">
-        <h2 class="mb-6 text-4xl font-heading font-bold text-kaizen-dark md:text-5xl">Keep the plan and the purpose together.</h2>
-        <p class="text-lg leading-relaxed text-kaizen-text-dark/70 md:text-xl">Project planning covers how the work gets done. Product choices cover what to build and why. Both matter when you want useful software.</p>
-        <p class="mt-4 text-lg leading-relaxed text-kaizen-text-dark/70">We connect those choices to what your business needs.</p>
-      </div>
-
-      <div class="mx-auto max-w-4xl">
-        <div class="hidden overflow-x-auto md:block">
-          <div class="min-w-[640px] rounded-2xl border border-kaizen-light bg-white shadow-sm">
-            <div class="grid grid-cols-3 border-b border-kaizen-light/70">
-              <div class="bg-kaizen-light/70 p-4 text-sm font-heading font-semibold text-kaizen-dark">
-                Feature
-              </div>
-              <div class="border-l border-kaizen-light/70 bg-red-50 p-4 text-sm font-heading font-semibold text-kaizen-dark">
-                Planning the work
-              </div>
-              <div class="border-l border-kaizen-light/70 bg-green-50 p-4 text-sm font-heading font-semibold text-kaizen-dark">
-                Choosing the work
-              </div>
-            </div>
-            {
-              comparisonRows.map((row, index) => (
-                <div
-                  class={`grid grid-cols-3 border-t border-kaizen-light/60 ${index % 2 === 0 ? "bg-white" : "bg-kaizen-light/40"}`}
-                >
-                  <div class="p-4 text-sm font-heading font-semibold text-kaizen-dark">
-                    {row.feature}
-                  </div>
-                  <div class="border-l border-kaizen-light/60 p-4 text-sm text-kaizen-text-dark/80">
-                    {row.pm}
-                  </div>
-                  <div class="border-l border-kaizen-light/60 bg-green-50/60 p-4 text-sm text-kaizen-text-dark/90">
-                    {row.po}
-                  </div>
-                </div>
-              ))
-            }
+          <p class="max-w-xl text-lg leading-relaxed text-slate-600">A software project can keep costing money without getting closer to launch. We help you decide what to build and keep the work moving.</p>
+          <div class="mt-6">
+            <MarketingButton action="contact" />
+            <p class="mt-3 max-w-md text-sm leading-6 text-slate-600">{contactResponse}</p>
           </div>
+          <p class="mt-6 max-w-xl text-base leading-relaxed text-slate-600">You work with <a href="/authors/sean-mcdonnell/" class="font-semibold text-uui-brand-800 underline underline-offset-4 hover:text-uui-dark">Sean McDonnell, Kaizen's founder</a>. We can work alongside your current suppliers.</p>
         </div>
-
-        <div class="space-y-4 md:hidden">
-          {
-            comparisonRows.map((row) => (
-              <article class="overflow-hidden rounded-2xl border border-kaizen-light bg-white shadow-sm">
-                <div class="border-b border-kaizen-light/70 bg-kaizen-light/70 px-4 py-3">
-                  <p class="text-sm font-heading font-semibold text-kaizen-dark">
-                    {row.feature}
-                  </p>
-                </div>
-                <div class="divide-y divide-kaizen-light/60">
-                  <div class="bg-red-50 p-4">
-                    <p class="marketing-eyebrow mb-1 text-xs font-semibold uppercase tracking-wide text-red-700">Planning the work</p>
-                    <p class="text-sm text-kaizen-text-dark/80">{row.pm}</p>
-                  </div>
-                  <div class="bg-green-50/70 p-4">
-                    <p class="marketing-eyebrow mb-1 text-xs font-semibold uppercase tracking-wide text-green-800">Choosing the work</p>
-                    <p class="text-sm text-kaizen-text-dark/90">{row.po}</p>
-                  </div>
-                </div>
-              </article>
-            ))
-          }
+        <div>
+          <StudyImage src={screenshot.src} alt={screenshot.alt} width={screenshot.width} height={screenshot.height} eager caption="Our Midland Oil website rebuild helps buyers find the right oil." />
+          <a href="/case-studies/midland-oil-group/" class="mt-4 inline-block font-semibold text-uui-brand-800 underline underline-offset-4 hover:text-uui-dark">See the Midland Oil website case study</a>
         </div>
-
-        <p class="mt-6 text-sm text-kaizen-text-dark/80 md:text-base">A plan helps you track progress. A clear purpose helps you decide whether that progress is useful.</p>
-      </div>
-
-      <div class="mx-auto mt-12 max-w-4xl border-t border-kaizen-light pt-10">
-        <h3 class="mb-4 text-2xl font-heading font-bold text-kaizen-dark md:text-3xl">Where does a product owner fit?</h3>
-        <p class="mb-4 text-lg leading-relaxed text-kaizen-text-dark/80">The role helps you choose what the software should do. It starts with the needs of the people who will use it.</p>
-        <p class="mb-4 text-lg leading-relaxed text-kaizen-text-dark/80">We agree which changes matter most and explain the trade-offs. You can then make choices with a clear view of the costs.</p>
-        <p class="text-lg leading-relaxed text-kaizen-text-dark/80">The role can sit alongside your current suppliers. We agree the scope of our work before it starts.</p>
       </div>
     </div>
   </section>
 
-  <section class="marketing-section marketing-section--joined bg-kaizen-light">
-    <div class="container mx-auto px-4">
-      <h2 class="mb-8 md:mb-12 text-center text-4xl font-heading font-bold text-kaizen-dark md:text-5xl">Training and professional links.</h2>
-      <div class="mx-auto grid max-w-4xl grid-cols-1 gap-8 md:grid-cols-3">
-        {
-          [
-            "PRINCE2 Certified",
-            "Project Management Institute (PMI) Member",
-            "HubSpot Certified",
-          ].map((title) => (
-            <article class="text-center">
-              <div class="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-xl bg-gradient-to-br from-kaizen-cyan/20 to-kaizen-lime/20">
-                <span class="text-2xl text-kaizen-cyan">✓</span>
-              </div>
-              <p class="text-xl font-heading font-bold text-kaizen-dark">
-                {title}
-              </p>
-            </article>
-          ))
-        }
+  <section class="marketing-section bg-slate-50" aria-labelledby="purpose-heading">
+    <div class="mx-auto max-w-[1440px] px-6 lg:px-12">
+      <div class="max-w-3xl">
+        <h2 id="purpose-heading" class="text-balance font-heading text-4xl font-bold text-uui-dark md:text-5xl">Keep the purpose and the plan together.</h2>
+        <p class="mt-5 text-lg leading-relaxed text-slate-600">A product owner helps you choose what the software should do. A project plan sets out how the work gets done. Both need to serve the same goal.</p>
+      </div>
+      <div class="mt-8 grid gap-6 md:grid-cols-2">
+        {choices.map((choice) => (
+          <article class="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8">
+            <h3 class="font-heading text-2xl font-bold text-uui-dark md:text-3xl">{choice.title}</h3>
+            <p class="mt-3 text-base leading-relaxed text-slate-600">{choice.intro}</p>
+            <dl class="mt-6 divide-y divide-slate-200">
+              {choice.questions.map(([label, question]) => (
+                <div class="py-4 first:pt-0 last:pb-0">
+                  <dt class="text-xs font-semibold tracking-wide text-uui-brand-800">{label}</dt>
+                  <dd class="mt-1 text-base leading-relaxed text-uui-dark">{question}</dd>
+                </div>
+              ))}
+            </dl>
+          </article>
+        ))}
+      </div>
+      <p class="mt-6 max-w-3xl text-base leading-relaxed text-slate-600">We explain the choices and costs before you commit. You can see why each piece of work is worth doing.</p>
+    </div>
+  </section>
+
+  <section class="marketing-section bg-white" aria-labelledby="experience-heading">
+    <div class="mx-auto grid max-w-[1440px] gap-8 px-6 lg:grid-cols-[0.8fr_1.2fr] lg:gap-16 lg:px-12">
+      <div>
+        <p class="marketing-eyebrow mb-4">Sean's work history</p>
+        <h2 id="experience-heading" class="text-balance font-heading text-4xl font-bold text-uui-dark md:text-5xl">Experience with software people use.</h2>
+        <p class="mt-5 max-w-xl text-lg leading-relaxed text-slate-600">Sean brings this experience to the choices your project faces. From changing older software to hearing what users need, it shapes how we work.</p>
+      </div>
+      <div class="grid gap-6 sm:grid-cols-2">
+        {experience.map((item) => (
+          <article class="rounded-2xl border border-slate-200 p-6">
+            <h3 class="font-heading text-2xl font-bold text-uui-dark">{item.name}</h3>
+            <p class="mt-4 text-base leading-relaxed text-slate-600">{item.work}</p>
+            <p class="mt-4 border-t border-slate-200 pt-4 text-sm leading-6 text-slate-600">{item.use}</p>
+          </article>
+        ))}
       </div>
     </div>
   </section>
 
-  <section class="marketing-section bg-white">
-    <div class="container mx-auto px-4">
-      <h2 class="mb-8 md:mb-12 text-center text-4xl font-heading font-bold text-kaizen-dark md:text-5xl">Get help when the work loses direction.</h2>
-      <p class="mx-auto mb-10 max-w-3xl text-center text-lg text-kaizen-text-dark/70">
-        Read our guide to <a href="/blog/fix-failing-software-project-financial-guide/" class="underline underline-offset-4 hover:text-kaizen-dark">fixing or rebuilding unfinished software</a>.
-        Check the warning signs and compare your options before spending more.
-      </p>
-      <div class="mx-auto grid max-w-5xl grid-cols-1 gap-8 md:grid-cols-3">
-        {
-          hireScenarios.map((item) => (
-            <article class="rounded-2xl border border-kaizen-light bg-kaizen-light p-8 transition hover:border-kaizen-cyan">
-              <h3 class="mb-4 text-2xl font-heading font-bold text-kaizen-dark">
-                {item.title}
-              </h3>
-              <p class="text-lg leading-relaxed text-kaizen-text-dark/70">
-                {item.copy}
-              </p>
-            </article>
-          ))
-        }
+  <section class="marketing-section bg-uui-dark text-white" aria-labelledby="review-heading">
+    <div class="mx-auto max-w-[1440px] px-6 lg:px-12">
+      <div class="max-w-3xl">
+        <h2 id="review-heading" class="text-balance font-heading text-4xl font-bold md:text-5xl">Review the work before adding more.</h2>
+        <p class="mt-5 text-lg leading-relaxed text-slate-300">If dates keep moving, we help you find out what needs to change. The review gives the next choice a clear basis.</p>
+      </div>
+      <ol class="mt-9 grid gap-8 md:grid-cols-3 md:gap-10">
+        {steps.map((step, index) => (
+          <li class="border-t border-slate-600 pt-6">
+            <span class="font-heading text-3xl font-bold text-uui-brand-200" aria-hidden="true">{String(index + 1).padStart(2, "0")}</span>
+            <h3 class="mt-5 font-heading text-2xl font-bold">{step.title}</h3>
+            <p class="mt-4 text-base leading-relaxed text-slate-300">{step.copy}</p>
+          </li>
+        ))}
+      </ol>
+      <div class="mt-10 border-t border-slate-600 pt-7">
+        <p class="max-w-3xl text-base leading-relaxed text-slate-300">Not every project needs to start again. Our guide helps you check what works and compare the choices ahead.</p>
+        <a href="/blog/fix-failing-software-project-financial-guide/" class="mt-4 inline-block font-semibold text-uui-brand-200 underline underline-offset-4 hover:text-white">Read the guide to fixing or rebuilding unfinished software</a>
       </div>
     </div>
   </section>
 
-  <section class="marketing-section bg-kaizen-light">
-    <div class="container mx-auto px-4">
-      <h2 class="mb-8 md:mb-12 text-center text-4xl font-heading font-bold text-kaizen-dark md:text-5xl">See how this works on a website.</h2>
-      <div class="mx-auto grid max-w-3xl grid-cols-1 gap-8 md:grid-cols-2">
-        {
-          kaizenLinks.map((item) => (
-            <a
-              href={item.link}
-              class="group block h-full rounded-2xl border border-kaizen-light bg-white p-8 transition hover:border-kaizen-cyan"
-            >
-              <h3 class="mb-4 text-2xl font-heading font-bold text-kaizen-dark transition group-hover:text-kaizen-cyan">
-                {item.title}
-              </h3>
-              <p class="mb-6 text-lg leading-relaxed text-kaizen-text-dark/70">
-                {item.copy}
-              </p>
-              <p class="flex items-center gap-2 font-medium text-kaizen-cyan">
-                {item.linkText}
-                <ArrowRight className="h-4 w-4 shrink-0" aria-hidden="true" />
-              </p>
-            </a>
-          ))
-        }
+  <section class="marketing-section bg-slate-50" aria-labelledby="project-contact-heading">
+    <div class="mx-auto grid max-w-[1440px] gap-9 px-6 lg:grid-cols-2 lg:gap-20 lg:px-12">
+      <div>
+        <h2 id="project-contact-heading" class="text-balance font-heading text-4xl font-bold text-uui-dark md:text-5xl">Talk through where the work has got stuck.</h2>
+        <p class="mt-5 max-w-xl text-lg leading-relaxed text-slate-600">The first conversation is free. Tell us what you need the software to do. We will help you decide whether this service fits.</p>
+        <div class="mt-7">
+          <MarketingButton action="contact" />
+          <p class="mt-3 max-w-md text-sm leading-6 text-slate-600">{contactResponse}</p>
+        </div>
       </div>
-    </div>
-  </section>
-
-  <section class="marketing-section bg-kaizen-dark text-kaizen-text-light">
-    <div class="container mx-auto px-4 text-center">
-      <h2 class="mb-8 text-4xl font-heading font-bold text-kaizen-text-light md:text-5xl">Work out what your project needs next.</h2>
-      <p class="mx-auto mb-12 max-w-2xl text-xl leading-relaxed text-kaizen-text-light/80">Tell us where the work has got stuck. We will help you decide whether this service fits.</p>
-      <MarketingButton action="contact" />
+      <div class="self-center rounded-2xl border border-slate-200 bg-white p-6 sm:p-8">
+        <h3 class="font-heading text-2xl font-bold text-uui-dark">Agree the work before you pay.</h3>
+        <p class="mt-4 text-base leading-relaxed text-slate-600">We agree what is included and the price before starting. Paid work begins after a non-refundable deposit.</p>
+        <a href="/pledge/" class="mt-5 block font-semibold text-uui-brand-800 underline underline-offset-4 hover:text-uui-dark">Read our promises before you pay</a>
+        <p class="mt-6 border-t border-slate-200 pt-6 text-sm leading-6 text-slate-600">If your website is the problem, <a href="/services/wordpress-web-design/" class="font-semibold text-uui-brand-800 underline underline-offset-4 hover:text-uui-dark">compare our website rebuild options</a>.</p>
+      </div>
     </div>
   </section>
 </StaticPageLayout>
