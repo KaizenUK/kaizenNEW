@@ -1,0 +1,63 @@
+---
+import StaticPageLayout from "../../layouts/StaticPageLayout.astro";
+import { getAuthorBySlug } from "../../lib/sanity/client";
+import { SEAN_AUTHOR } from "../../data/blog-editorial";
+import { MarketingButton, contactResponse } from "../../../client/components/untitled/MarketingButton";
+
+export const prerender = true;
+const author = await getAuthorBySlug(SEAN_AUTHOR.slug) ?? SEAN_AUTHOR;
+---
+
+<StaticPageLayout
+  path="/authors/sean-mcdonnell/"
+  title="Sean McDonnell | Kaizen Web"
+  description="Meet Sean McDonnell, founder of Kaizen. See the work behind the website guides, how we check their sources and where to send a correction."
+>
+  <section class="marketing-section bg-white">
+    <div class="mx-auto grid max-w-6xl gap-10 px-6 lg:grid-cols-2 lg:items-center lg:gap-16">
+      <header>
+        <p class="marketing-eyebrow mb-4 text-sm font-semibold uppercase tracking-widest text-slate-600">About the author</p>
+        <h1 class="font-heading text-5xl font-bold text-kaizen-dark md:text-6xl">{author.name}</h1>
+        <p class="mt-4 text-xl font-semibold text-slate-700">{author.role}</p>
+        <p class="mt-6 text-lg leading-relaxed text-slate-700">{author.bio}</p>
+        <a href="/blog/" class="mt-6 inline-block font-semibold text-uui-brand-700 underline underline-offset-4 hover:text-uui-brand-800">Browse the website guides</a>
+      </header>
+      <figure class="overflow-hidden rounded-2xl border border-slate-200 bg-slate-50">
+        <img src="/images/case-studies/midland-oil-group/mog-new-homepage.webp" alt="The Midland Oil website showing its product range and oil finder" width="2550" height="1312" loading="eager" decoding="async" class="h-auto w-full" />
+        <figcaption class="border-t border-slate-200 p-5 text-sm leading-relaxed text-slate-700">
+          A real Kaizen project. The <a href="/case-studies/midland-oil-group/" class="font-semibold underline underline-offset-4">Midland Oil case study</a> shows the old and new pages.
+        </figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section class="marketing-section marketing-section--compact bg-slate-50">
+    <div class="mx-auto grid max-w-6xl gap-10 px-6 md:grid-cols-2 md:gap-16">
+      <div>
+        <h2 class="font-heading text-3xl font-bold text-kaizen-dark md:text-4xl">Check the work behind the advice.</h2>
+        <p class="mt-5 text-base leading-relaxed text-slate-700">Start with our case studies. They show what each business needed and the work we did.</p>
+        <p class="mt-4 text-base leading-relaxed text-slate-700">You can also visit the <a href="https://midlandoilgroup.co.uk/" rel="nofollow noopener" class="font-semibold underline underline-offset-4">live Midland Oil website</a> and try the product journey yourself.</p>
+        <p class="mt-4 text-base leading-relaxed text-slate-700">Sean also helps owners plan software work. Our <a href="/contract-product-owner/" class="font-semibold underline underline-offset-4">contract product owner page</a> describes that work and his background.</p>
+        <p class="mt-4 text-base leading-relaxed text-slate-700"><a href="https://find-and-update.company-information.service.gov.uk/company/17007703/officers" class="font-semibold underline underline-offset-4">Companies House lists Sean as a director of Kaizen Web Ltd</a>.</p>
+      </div>
+      <div id="how-the-guides-are-checked">
+        <h2 class="font-heading text-3xl font-bold text-kaizen-dark md:text-4xl">See when the advice was checked.</h2>
+        <p class="mt-5 text-base leading-relaxed text-slate-700">Each guide keeps its first publication date. Its separate checked date records a review of the content and sources.</p>
+        <p class="mt-4 text-base leading-relaxed text-slate-700">We link to the original guidance beside claims that rely on it. Examples from our own work link to the relevant page or case study.</p>
+        <p class="mt-4 text-base leading-relaxed text-slate-700">The checked date only changes after we review the guide. Prices and other details can change after a review, so check the linked source before relying on them.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="marketing-section marketing-section--compact bg-white">
+    <div class="mx-auto max-w-6xl px-6">
+      <div class="max-w-2xl">
+        <h2 class="font-heading text-3xl font-bold text-kaizen-dark md:text-4xl">Help us keep the guides useful.</h2>
+        <p class="mt-5 text-base leading-relaxed text-slate-700">If a guide is wrong or out of date, <a href="/contact/" class="font-semibold underline underline-offset-4">tell us what needs correcting</a>. Include the page link and the part we should check.</p>
+        <p class="mt-4 text-base leading-relaxed text-slate-700">You can also get in touch about your own website. The first conversation is free.</p>
+        <div class="mt-6"><MarketingButton action="contact" /></div>
+        <p class="mt-4 text-sm leading-relaxed text-slate-700">{contactResponse}</p>
+      </div>
+    </div>
+  </section>
+</StaticPageLayout>

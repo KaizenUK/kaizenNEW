@@ -95,7 +95,11 @@ export type SanityImageValue = SanityImageSource & {
 };
 
 export interface SanityAuthor {
+  _id?: string;
   name: string;
+  slug?: string;
+  role?: string;
+  bio?: string;
   image?: SanityImageValue;
 }
 
@@ -290,7 +294,7 @@ const POST_PROJECTION = `
       asset->${IMAGE_ASSET_PROJECTION}
     }
   },
-  "author": author->{ name, image { ..., asset->${IMAGE_ASSET_PROJECTION} } },
+  "author": author->{ _id, name, "slug": slug.current, role, bio, image { ..., asset->${IMAGE_ASSET_PROJECTION} } },
   "categories": categories[]->{ _id, title, "slug": slug.current }
 `;
 
@@ -670,6 +674,14 @@ export async function getPostsByCategory(
 export async function getAllCategories(): Promise<SanityCategory[]> {
   if (!sanityClient) return [];
   return sanityClient.fetch<SanityCategory[]>(CATEGORIES_QUERY);
+}
+
+export async function getAuthorBySlug(slug: string): Promise<SanityAuthor | null> {
+  if (!sanityClient) return null;
+  return sanityClient.fetch<SanityAuthor | null>(
+    `*[_type == "author" && slug.current == $slug][0] { _id, name, "slug": slug.current, role, bio }`,
+    { slug },
+  );
 }
 
 export async function getAllRedirects(): Promise<SanityRedirect[]> {

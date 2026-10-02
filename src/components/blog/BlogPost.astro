@@ -6,6 +6,7 @@ import {
   type SanityImageSource,
 } from "../../lib/sanity/client";
 import { getStudioUrl } from "../../lib/site";
+import { formatBlogDate, getAuthorPath, getBlogReview } from "../../lib/blog";
 
 interface Props {
   post: SanityPost;
@@ -13,13 +14,9 @@ interface Props {
 
 const { post } = Astro.props;
 
-const published = post.publishedAt
-  ? new Intl.DateTimeFormat("en-GB", {
-      day: "2-digit",
-      month: "long",
-      year: "numeric",
-    }).format(new Date(post.publishedAt))
-  : "Draft";
+const published = formatBlogDate(post.publishedAt);
+const review = getBlogReview(post._id);
+const authorPath = getAuthorPath(post.author);
 
 const imageFor = (
   source: SanityImageSource | undefined,
@@ -70,7 +67,7 @@ const studioUrl = getStudioUrl();
       />
 
       <div class="linear-meta mb-4 flex items-center gap-4">
-        <span>{published}</span>
+        <time datetime={post.publishedAt}>{published}</time>
         <span>&bull;</span>
         <span>{post.readTime} min read</span>
       </div>
@@ -102,7 +99,18 @@ const studioUrl = getStudioUrl();
           )
         }
         <div class="linear-meta">
-          <p class="m-0">{post.author?.name ?? "Kaizen Team"}</p>
+          <p class="m-0">
+            By {authorPath ? (
+              <a href={authorPath} rel="author" class="text-sky-300 underline underline-offset-4 hover:text-sky-200">
+                {post.author?.name}
+              </a>
+            ) : (post.author?.name ?? "Kaizen")}
+          </p>
+          {review && (
+            <p class="mb-0 mt-2">
+              Last checked: <time datetime={review.checkedOn}>{review.label}</time>
+            </p>
+          )}
         </div>
       </div>
     </header>

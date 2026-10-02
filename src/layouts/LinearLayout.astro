@@ -6,6 +6,7 @@ import { isStagingBuild, resolveCanonicalUrl, STAGING_ROBOTS } from "../lib/site
 
 interface Props {
   title: string;
+  author?: string;
   description?: string;
   canonical?: string;
   ogTitle?: string;
@@ -19,6 +20,7 @@ interface Props {
 
 const {
   title,
+  author = "Kaizen Web",
   description = "Kaizen insights on performance engineering, design systems, and conversion-focused websites.",
   canonical: canonicalProp,
   ogTitle,
@@ -52,7 +54,7 @@ const footerBuildLabel =
     <title>{title}</title>
     <meta name="description" content={description} />
     <meta name="robots" content={robotsContent} />
-    <meta name="author" content="Kaizen Web" />
+    <meta name="author" content={author} />
     <meta name="publisher" content="Kaizen Web" />
     <link rel="canonical" href={canonical} />
     <meta property="og:site_name" content="Kaizen Web" />

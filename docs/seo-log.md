@@ -2,6 +2,13 @@
 
 Every change that can affect search, newest first: date, URL, what changed and why. One change at a time where possible, then wait a few weeks before judging it (`seo-strategy`, "Measure, test and audit"). Positions quoted here are stale the day they are written; pull Search Console for current numbers.
 
+## 2 Oct 2026: named author, real review dates and sourced guides (B-02)
+
+- All nine public blog posts now name Sean McDonnell, link to `/authors/sean-mcdonnell/` and display a checked date tied to a completed content/source review. Article author metadata matches. The new indexable profile links approved work and the company officer record, explains the review policy and provides a correction route. It is included in the sitemap and page-owner map.
+- Reviewed and corrected `/blog/free-website-speed-scan/`, `/blog/choose-web-design-agency-liverpool/` and `/blog/more-than-a-refresh-why-we-rebuilt-the-kaizen-website/` before assigning review dates. Removed unsupported performance/provider/analytics claims, added primary sources and aligned their titles, descriptions and excerpts. The rebuild guide gains a real homepage screenshot. The other six articles retain their verified B-03/B-04 bodies and sources.
+- Original article URLs, canonicals and publication timestamps are preserved. Index cards now link directly to the canonical trailing-slash URLs, avoiding a redirect and fixing navigation in the strict local preview. UK date display is independent of the build host; the scanner's 3 February timestamp displays consistently on its article and index card. Checked dates do not follow build time or generic CMS edits. The retired B-04 document and original brand author are unchanged.
+- Local verification passes: copy ages 8.0 to 9.8, full build, types, test comparison, all 75 screenshot tiles, 88 browser views and a fresh 23-page indexable crawl. Release/live checks pending. Proof: `docs/audits/2026-10-02-b02-proof.md`. No ranking or enquiry uplift is claimed.
+
 ## 2 Oct 2026: combine the overlapping software-project guides (B-04)
 
 - Kept `/blog/fix-failing-software-project-financial-guide/`, the stronger URL in the saved page-impression export (277 versus 173). Merged the useful warning signs and planning guidance from `/blog/software-project-rescue/`; removed unsupported generalisations about why projects fail or how many can be recovered.

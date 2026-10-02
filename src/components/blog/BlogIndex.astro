@@ -1,6 +1,7 @@
 ---
 import FeatureCardMotion from "./FeatureCardMotion";
 import { urlFor, type SanityPost, type SanityImageSource } from "../../lib/sanity/client";
+import { formatBlogDate } from "../../lib/blog";
 
 interface Props {
   posts: SanityPost[];
@@ -10,12 +11,7 @@ const { posts } = Astro.props;
 const [featuredPost, ...otherPosts] = posts ?? [];
 
 const formatPublishedDate = (dateString?: string) => {
-  if (!dateString) return "Draft";
-  return new Intl.DateTimeFormat("en-GB", {
-    day: "2-digit",
-    month: "short",
-    year: "numeric",
-  }).format(new Date(dateString));
+  return formatBlogDate(dateString, "short");
 };
 
 const imageFor = (
@@ -63,7 +59,7 @@ const postImageFor = (
     featuredPost ? (
       <div class="grid auto-rows-fr gap-4 md:grid-cols-3">
         <FeatureCardMotion
-          href={`/blog/${featuredPost.slug}`}
+          href={`/blog/${featuredPost.slug}/`}
           className="linear-card group relative flex min-h-[22rem] flex-col overflow-hidden md:col-span-2 md:row-span-2"
           client:idle
         >
@@ -123,7 +119,7 @@ const postImageFor = (
         {
           otherPosts.map((post) => (
             <a
-              href={`/blog/${post.slug}`}
+              href={`/blog/${post.slug}/`}
               class="linear-card group relative flex flex-col gap-4 p-5 sm:p-6"
             >
               {
