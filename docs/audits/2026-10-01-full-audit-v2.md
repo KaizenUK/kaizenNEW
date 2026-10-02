@@ -4,9 +4,9 @@
 **Task board:** `docs/audits/2026-10-01-task-plan.md` turns every finding below into a task any agent can pick up.
 **Rules audited against:** `.claude/skills/marketing-messaging`, `marketing-page-design`, `seo-strategy`, `docs/marketing/site-profile.md`, and Sean's standing rules (British English, reading age about 9, no em dashes, nothing that reads as AI-written, premium look).
 
-## Progress: 2 October 2026, Phase B verification
+## Progress: 2 October 2026, after Phase B
 
-B-02 to B-04 are live; B-01's new shared-site blog design has passed local build, type, copy and visual checks and awaits its final browser/deployment verification. The individual proof files and task board retain release status. The homepage, contact, pledge and both ad pages have also shipped since the Phase F checkpoint. Seven Phase P tasks remain open; their earlier copy fixes do not constitute visual completion.
+All four Phase B tasks are verified and live. B-01 ships in `1823626`, deployment `36971480599`, with eleven live content/search checks, 22 live browser views, four menu checks, four journeys and twelve redirect checks passing. Its 88 local browser views have no normal-state axe findings, page errors, missing images or overflow. The individual proof files and board retain the earlier releases. The homepage, contact, pledge and both ad pages have also shipped since the Phase F checkpoint. Seven Phase P tasks remain open; their earlier copy fixes do not constitute visual completion.
 
 The fresh whole-site copy run covers 29 public pages, excluding builder and legacy redirect HTML. Nine articles replace the original ten after B-04, and the author profile is new. There are **22 remaining dashes**: 18 on the local SEO page awaiting P-03 retirement and four in the unchanged legal terms. No exclamation marks, US spelling or banned-word hits occur. The local SEO page retains ten AI-pattern flags; legal terms contain one staffing-word hit. These are remaining findings, not passes. Raw evidence: ignored `.local/marketing-20261001/phase-b-house-style.log`.
 
@@ -26,7 +26,7 @@ All nine guides have primary sources, real examples, service/contact links, Sean
 
 The B-01 visual review covers all 100 new desktop/phone tiles: index and all nine posts, with home/contact/author controls. All images load and no tile has overflow, clipping or empty card bands. Main navigation, fonts, colours and footer now match the marketing site. The 375px index is 6,188px, down from 7,192px. Four menu states and private quote/code/table/action/video captures were also inspected. The blog's missing main landmark is fixed. Open desktop menus retain one inherited axe best-practice `region` finding for the React Aria portal/hidden Dismiss control, reproduced on the unchanged homepage at both desktop widths. Resolve or explicitly reassess that shared-menu finding during final S-05; B-01 does not change its source.
 
-### Current scorecard during Phase B verification
+### Current scorecard after Phase B
 
 | Area | Verdict | Evidence and remaining work |
 |---|---|---|
@@ -34,8 +34,8 @@ The B-01 visual review covers all 100 new desktop/phone tiles: index and all nin
 | Copy: house rules | Blog rewritten, remaining page findings identified | All nine guides meet their gate. Local SEO retirement and unchanged legal-copy flags remain. |
 | Copy: claims and proof | Reviewed sources and real examples available | Published source reviews, explicit checked dates and approved client results replace unsupported claims. No ranking or enquiry uplift is inferred. |
 | Copy: message | Main homepage released | P-01 is live; Sean's review is pending before its bespoke patterns are reused. Other P briefs/rebuilds remain. |
-| Design: premium bar | Blog locally verified; remaining P pages open | All B-01 tiles reviewed. Seven page tasks still need their final design/retirement/report-preview work. |
-| Design: consistency | Blog now uses the main foundations | Shared fonts/navigation/footer and light reading styles pass local checks. Production B-01 verification and final shared-menu follow-up remain. |
+| Design: premium bar | Blog released; remaining P pages open | All B-01 tiles reviewed. Seven page tasks still need their final design/retirement/report-preview work. |
+| Design: consistency | Blog now uses the main foundations | Shared fonts/navigation/footer and light reading styles pass local and live checks. Final shared-menu follow-up remains. |
 | Mobile | Blog cards corrected | No overflow in all 100 captures; no stretched card rows. Final whole-site review follows the remaining P tasks. |
 | Measurement | Not yet verified | Monthly export reminder is set. Analytics account and 30-day conversion evidence remain S-04; Business Profile changes remain Sean's S-02 action. |
 

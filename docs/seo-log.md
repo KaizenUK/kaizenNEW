@@ -6,7 +6,7 @@ Every change that can affect search, newest first: date, URL, what changed and w
 
 - `/blog/` and all nine article routes adopt the existing site navigation, fonts, colours and footer, with a light reading layout and main landmark. The index replaces its stretched featured grid with nine naturally sized cards and gains a descriptive author/review-policy link.
 - All 53 original documents retain their metadata and structured data. Article prose, sources, images, original publication dates, explicit checked dates, URLs and canonicals are preserved. No CMS write or sitemap change. A fresh crawl retains all service/contact links and finds no orphan or missing internal destination across 23 indexable pages.
-- Local types, full build, copy, 100 screenshot tiles and Windows test comparison pass. Eighty-eight browser views and four navigation journeys also pass; deployment verification is pending; proof: `docs/audits/2026-10-02-b01-proof.md`. No ranking or enquiry improvement is claimed.
+- Local types, full build, copy, 100 screenshot tiles and Windows test comparison pass. Eighty-eight local browser views and four navigation journeys also pass. Released in `1823626`, deployment `36971480599`; eleven live content/search checks, 22 live browser views, four live menu checks, four live journeys and twelve redirect checks pass. B-01 is complete; proof: `docs/audits/2026-10-02-b01-proof.md`. No ranking or enquiry improvement is claimed.
 
 ## 2 Oct 2026: named author, real review dates and sourced guides (B-02)
 
