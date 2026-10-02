@@ -2,6 +2,12 @@
 
 Every change that can affect search, newest first: date, URL, what changed and why. One change at a time where possible, then wait a few weeks before judging it (`seo-strategy`, "Measure, test and audit"). Positions quoted here are stale the day they are written; pull Search Console for current numbers.
 
+## 2 Oct 2026: show the speed check and a real report together (P-06)
+
+- `/performance-scanner/` puts its address field and email explanation in the first phone screen. A dated, real Kaizen homepage result shows what the report contains, with separate desktop and phone images. The closing message explains the next step without claiming the test finds everything.
+- Shared scanner presentation also changes on `/review/`. The PDF uses plain language, actual test dates, newer Google findings and pages that expand to fit the results. The existing below-90 email gate, optional consent and browser download remain. Report details stay tied to the page tested even if the input changes.
+- All 54 built documents retain their metadata and structured data. URL, canonical, title, description, initial-HTML FAQs and existing link destinations remain; review stays noindex. No CMS or sitemap change. Local checks pass; production release and live verification pending. Proof: `docs/audits/2026-10-02-p06-proof.md`. No search or enquiry improvement is claimed.
+
 ## 2 Oct 2026: bring the guides into the main site design (B-01)
 
 - `/blog/` and all nine article routes adopt the existing site navigation, fonts, colours and footer, with a light reading layout and main landmark. The index replaces its stretched featured grid with nine naturally sized cards and gains a descriptive author/review-policy link.

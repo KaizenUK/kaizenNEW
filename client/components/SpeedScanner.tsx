@@ -1,5 +1,6 @@
 import { Button } from "./untitled/base/buttons/button";
-import { useState } from "react";
+import { useEffect, useState, type ReactNode } from "react";
+import { scannerFindingIds } from "@/lib/scanner-report";
 
 // Define the metrics type for comprehensive reporting
 type MetricsState = {
@@ -30,7 +31,15 @@ type MetricsState = {
   }>;
 };
 
-export default function SpeedScanner() {
+export default function SpeedScanner({
+  showExample = false,
+  children,
+}: {
+  showExample?: boolean;
+  children?: ReactNode;
+}) {
+  const [reportUrl, setReportUrl] = useState("");
+  const [testedAt, setTestedAt] = useState("");
   const [url, setUrl] = useState("");
   const [loading, setLoading] = useState(false);
   const [score, setScore] = useState<number | null>(null);
@@ -59,6 +68,13 @@ export default function SpeedScanner() {
   const [pdfLoading, setPdfLoading] = useState(false);
   const [consentToMarketing, setConsentToMarketing] = useState(false);
 
+  useEffect(() => {
+    if (score === null) return;
+    const heading = document.getElementById("scanner-result-title");
+    heading?.focus({ preventScroll: true });
+    heading?.scrollIntoView({ block: "start", behavior: "instant" });
+  }, [score, isEmailSubmitted]);
+
   // --- CONFIGURATION ---
   // Safe to expose because you restricted it to kaizenweb.co.uk in Google Cloud
   const API_KEY = "AIzaSyDSXGxDMpnliJGpRpPzahrrTSpFvaCApXc";
@@ -78,7 +94,10 @@ export default function SpeedScanner() {
   // --- MAIN FUNCTION: Run the Audit ---
   async function runAudit() {
     const auditUrl = buildAuditUrl(url);
-    if (!auditUrl) return;
+    if (!auditUrl) {
+      setStatusMsg("Error: Enter your website address to start.");
+      return;
+    }
 
     setLoading(true);
     setScore(null);
@@ -123,7 +142,18 @@ export default function SpeedScanner() {
       const audits = data.lighthouseResult.audits;
       const lighthouseScore =
         data.lighthouseResult.categories.performance.score * 100;
-      setScore(Math.round(lighthouseScore));
+      if (
+        typeof data.lighthouseResult.categories.performance.score !==
+          "number" ||
+        !Number.isFinite(lighthouseScore) ||
+        data.lighthouseResult.runtimeError
+      ) {
+        throw new Error(
+          "The test could not measure this page. Please try again.",
+        );
+      }
+      setReportUrl(auditUrl);
+      setTestedAt(data.lighthouseResult.fetchTime || new Date().toISOString());
 
       // Core Web Vitals
       const lcpAudit = audits["largest-contentful-paint"];
@@ -134,31 +164,7 @@ export default function SpeedScanner() {
       const ttiAudit = audits["interactive"];
 
       // Extract opportunities (things that can be fixed)
-      const opportunityIds = [
-        "render-blocking-resources",
-        "unused-javascript",
-        "unused-css-rules",
-        "offscreen-images",
-        "unminified-javascript",
-        "unminified-css",
-        "uses-optimized-images",
-        "uses-webp-images",
-        "uses-text-compression",
-        "uses-responsive-images",
-        "efficient-animated-content",
-        "duplicated-javascript",
-        "legacy-javascript",
-        "total-byte-weight",
-        "dom-size",
-        "critical-request-chains",
-        "redirects",
-        "uses-rel-preconnect",
-        "server-response-time",
-        "mainthread-work-breakdown",
-        "bootup-time",
-        "font-display",
-        "third-party-summary",
-      ];
+      const opportunityIds = scannerFindingIds;
 
       const opportunities = opportunityIds
         .map((id) => {
@@ -214,12 +220,15 @@ export default function SpeedScanner() {
 
       const base64Image = audits["final-screenshot"]?.details?.data;
       setScreenshot(base64Image || "");
+      setScore(Math.round(lighthouseScore));
 
       setLoading(false);
       setStatusMsg(""); // Clear status
     } catch (err: any) {
       console.error("SpeedScanner error:", err);
-      setStatusMsg(`Error: ${err.message || "Could not scan URL"}`);
+      setStatusMsg(
+        "Error: We could not test this page. Check the address and try again.",
+      );
       setLoading(false);
     }
   }
@@ -249,7 +258,7 @@ export default function SpeedScanner() {
         const { error } = await supabase.from("speed_scanner_results").insert([
           {
             email: normalizedEmail,
-            website_url: buildAuditUrl(url) || null,
+            website_url: reportUrl || null,
             performance_score: typeof score === "number" ? score : null,
             consent_to_marketing: consentToMarketing,
           },
@@ -271,689 +280,20 @@ export default function SpeedScanner() {
     setEmailError("");
   }
 
-  // --- PDF GENERATION - Comprehensive Lighthouse-Style Report ---
   async function downloadPDF() {
+    if (score === null) return;
     setPdfLoading(true);
     try {
-      const { jsPDF } = await import("jspdf");
-
-      const doc = new jsPDF("p", "mm", "a4");
-      const pageWidth = doc.internal.pageSize.getWidth();
-      const pageHeight = doc.internal.pageSize.getHeight();
-
-      // Color palette
-      const navy = [2, 6, 23] as const;
-      const cyan = [6, 182, 212] as const;
-      const green = [34, 197, 94] as const;
-      const red = [239, 68, 68] as const;
-      const orange = [249, 115, 22] as const;
-      const white = [255, 255, 255] as const;
-      const lightGrey = [248, 250, 252] as const;
-      const darkGrey = [71, 85, 105] as const;
-
-      // Use stored numeric values
-      const lcpVal = metrics.lcpValue;
-      const tbtVal = metrics.tbtValue;
-      const clsVal = metrics.clsValue;
-      const fcpVal = metrics.fcpValue;
-      const siVal = metrics.siValue;
-
-      // Helper: Get status color and text
-      const getStatus = (metric: string, value: number) => {
-        const thresholds: Record<string, { good: number; ok: number }> = {
-          lcp: { good: 2.5, ok: 4 },
-          fcp: { good: 1.8, ok: 3 },
-          si: { good: 3.4, ok: 5.8 },
-          tbt: { good: 200, ok: 600 },
-          cls: { good: 0.1, ok: 0.25 },
-        };
-        const t = thresholds[metric] || { good: 0, ok: 0 };
-        if (value <= t.good) return { color: green, text: "GOOD", emoji: "✓" };
-        if (value <= t.ok)
-          return { color: orange, text: "NEEDS IMPROVEMENT", emoji: "!" };
-        return { color: red, text: "POOR", emoji: "✕" };
-      };
-
-      // Helper: Add page header
-      const addPageHeader = (title: string) => {
-        doc.setFillColor(navy[0], navy[1], navy[2]);
-        doc.rect(0, 0, pageWidth, 25, "F");
-        doc.setTextColor(white[0], white[1], white[2]);
-        doc.setFontSize(14);
-        doc.setFont("helvetica", "bold");
-        doc.text(title, 15, 16);
-        doc.setFontSize(8);
-        doc.setFont("helvetica", "normal");
-        doc.text("kaizenweb.co.uk", pageWidth - 35, 16);
-      };
-
-      // Helper: Add footer
-      const addFooter = (pageNum: number, totalPages: number) => {
-        doc.setFontSize(8);
-        doc.setTextColor(150, 150, 150);
-        doc.text(
-          `Page ${pageNum} of ${totalPages}`,
-          pageWidth / 2,
-          pageHeight - 8,
-          { align: "center" },
-        );
-      };
-
-      // ============================================
-      // PAGE 1: COVER PAGE
-      // ============================================
-      doc.setFillColor(navy[0], navy[1], navy[2]);
-      doc.rect(0, 0, pageWidth, pageHeight, "F");
-
-      // Brand
-      doc.setTextColor(cyan[0], cyan[1], cyan[2]);
-      doc.setFontSize(28);
-      doc.setFont("helvetica", "bold");
-      doc.text("KAIZEN", 20, 30);
-      doc.setFontSize(10);
-      doc.setTextColor(white[0], white[1], white[2]);
-      doc.setFont("helvetica", "normal");
-      doc.text("Performance Web Design", 20, 38);
-
-      // Report Title
-      doc.setFontSize(10);
-      doc.setTextColor(cyan[0], cyan[1], cyan[2]);
-      doc.text("WEBSITE PERFORMANCE AUDIT", 20, 60);
-
-      doc.setFontSize(18);
-      doc.setTextColor(white[0], white[1], white[2]);
-      doc.setFont("helvetica", "bold");
-      const displayUrl = url.length > 40 ? url.substring(0, 40) + "..." : url;
-      doc.text(displayUrl || "Website Audit", 20, 72);
-
-      // Score Section
-      const scoreColor =
-        score && score < 50 ? red : score && score < 90 ? orange : green;
-      doc.setFillColor(scoreColor[0], scoreColor[1], scoreColor[2]);
-      doc.circle(pageWidth - 40, 50, 22, "F");
-      doc.setTextColor(white[0], white[1], white[2]);
-      doc.setFontSize(24);
-      doc.setFont("helvetica", "bold");
-      const scoreText = `${score}`;
-      doc.text(scoreText, pageWidth - 40 - scoreText.length * 3.5, 56);
-      doc.setFontSize(8);
-      doc.text("/ 100", pageWidth - 40 + 8, 56);
-
-      // Score interpretation
-      doc.setFontSize(9);
-      doc.setTextColor(scoreColor[0], scoreColor[1], scoreColor[2]);
-      const interpretation =
-        score && score >= 90
-          ? "Excellent"
-          : score && score >= 50
-            ? "Needs Work"
-            : "Poor";
-      doc.text(interpretation, pageWidth - 50, 80);
-
-      // Quick Summary Box
-      doc.setFillColor(30, 41, 59);
-      doc.roundedRect(15, 95, pageWidth - 30, 55, 3, 3, "F");
-      doc.setTextColor(cyan[0], cyan[1], cyan[2]);
-      doc.setFontSize(10);
-      doc.setFont("helvetica", "bold");
-      doc.text("QUICK SUMMARY", 22, 108);
-
-      doc.setTextColor(white[0], white[1], white[2]);
-      doc.setFontSize(9);
-      doc.setFont("helvetica", "normal");
-
-      // Summary metrics in columns
-      const summaryY = 120;
-      const col1 = 22,
-        col2 = 75,
-        col3 = 128;
-
-      doc.setFont("helvetica", "bold");
-      doc.text("LCP", col1, summaryY);
-      doc.text("CLS", col2, summaryY);
-      doc.text("TBT", col3, summaryY);
-
-      doc.setFontSize(14);
-      const lcpStatus = getStatus("lcp", lcpVal);
-      const clsStatus = getStatus("cls", clsVal);
-      const tbtStatus = getStatus("tbt", tbtVal);
-
-      doc.setTextColor(
-        lcpStatus.color[0],
-        lcpStatus.color[1],
-        lcpStatus.color[2],
-      );
-      doc.text(metrics.lcp || "-", col1, summaryY + 12);
-      doc.setTextColor(
-        clsStatus.color[0],
-        clsStatus.color[1],
-        clsStatus.color[2],
-      );
-      doc.text(metrics.cls || "-", col2, summaryY + 12);
-      doc.setTextColor(
-        tbtStatus.color[0],
-        tbtStatus.color[1],
-        tbtStatus.color[2],
-      );
-      doc.text(metrics.tbt || "-", col3, summaryY + 12);
-
-      // Screenshot
-      if (screenshot) {
-        const phoneX = pageWidth / 2 - 18;
-        const phoneY = 160;
-        const phoneW = 36;
-        const phoneH = 78;
-        doc.setFillColor(20, 20, 20);
-        doc.roundedRect(
-          phoneX - 3,
-          phoneY - 3,
-          phoneW + 6,
-          phoneH + 6,
-          4,
-          4,
-          "F",
-        );
-        try {
-          const imageFormat = screenshot.startsWith("data:image/png")
-            ? "PNG"
-            : "JPEG";
-          doc.addImage(screenshot, imageFormat, phoneX, phoneY, phoneW, phoneH);
-        } catch (e) {
-          // Screenshot failed to load
-        }
-      }
-
-      // Footer
-      doc.setFontSize(9);
-      doc.setTextColor(100, 100, 100);
-      doc.text(
-        `Generated: ${new Date().toLocaleDateString("en-GB")} at ${new Date().toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" })}`,
-        20,
-        275,
-      );
-      doc.text("Powered by Kaizen Performance Scanner", 20, 282);
-      doc.setTextColor(cyan[0], cyan[1], cyan[2]);
-      doc.text("kaizenweb.co.uk", pageWidth - 45, 282);
-
-      // ============================================
-      // PAGE 2: CORE WEB VITALS EXPLAINED
-      // ============================================
-      doc.addPage();
-      addPageHeader("What your speed test measured");
-
-      let yPos = 35;
-
-      // Intro text
-      doc.setTextColor(darkGrey[0], darkGrey[1], darkGrey[2]);
-      doc.setFontSize(10);
-      doc.setFont("helvetica", "normal");
-      doc.text(
-        "These checks show how one page loaded during a phone test.",
-        15,
-        yPos,
-      );
-      doc.text(
-        "Real visits can differ. A good result does not guarantee a place in search results.",
-        15,
-        yPos + 5,
-      );
-      yPos += 18;
-
-      // Helper to draw metric cards with comprehensive explanations
-      const drawMetricCard = (
-        metricName: string,
-        value: string,
-        numValue: number,
-        metricKey: string,
-        whatItIs: string,
-        whyItMatters: string,
-        howToFix: string[],
-        goodThreshold: number,
-        poorThreshold: number,
-        unit: string,
-      ) => {
-        const status = getStatus(metricKey, numValue);
-        const cardHeight = 80;
-
-        // Card background
-        doc.setFillColor(lightGrey[0], lightGrey[1], lightGrey[2]);
-        doc.roundedRect(15, yPos, pageWidth - 30, cardHeight, 2, 2, "F");
-
-        // Status indicator bar
-        doc.setFillColor(status.color[0], status.color[1], status.color[2]);
-        doc.rect(15, yPos, 3, cardHeight, "F");
-
-        // LEFT COLUMN: Metric name, value, and status
-        const leftColX = 23;
-        doc.setFontSize(10);
-        doc.setTextColor(navy[0], navy[1], navy[2]);
-        doc.setFont("helvetica", "bold");
-        doc.text(metricName, leftColX, yPos + 7, { maxWidth: 35 });
-
-        doc.setFontSize(18);
-        doc.setTextColor(status.color[0], status.color[1], status.color[2]);
-        doc.text(value || "-", leftColX, yPos + 22);
-
-        doc.setFontSize(8);
-        doc.setTextColor(status.color[0], status.color[1], status.color[2]);
-        doc.text(status.text, leftColX, yPos + 30);
-
-        // MIDDLE & RIGHT COLUMNS: Explanation text
-        const contentX = 65;
-        const contentWidth = pageWidth - 30 - contentX - 15;
-
-        // What it is (with threshold info integrated)
-        doc.setFontSize(8);
-        doc.setTextColor(navy[0], navy[1], navy[2]);
-        doc.setFont("helvetica", "bold");
-        doc.text("WHAT IT IS:", contentX, yPos + 7);
-        doc.setFont("helvetica", "normal");
-        doc.setTextColor(darkGrey[0], darkGrey[1], darkGrey[2]);
-        const thresholdText = `${whatItIs} Ideally this should be less than ${goodThreshold}${unit}.`;
-        doc.text(thresholdText, contentX, yPos + 12, {
-          maxWidth: contentWidth,
-        });
-
-        // Why it matters
-        doc.setFont("helvetica", "bold");
-        doc.setTextColor(navy[0], navy[1], navy[2]);
-        doc.text("WHY IT MATTERS:", contentX, yPos + 28);
-        doc.setFont("helvetica", "normal");
-        doc.setTextColor(darkGrey[0], darkGrey[1], darkGrey[2]);
-        doc.text(whyItMatters, contentX, yPos + 33, { maxWidth: contentWidth });
-
-        // How to fix
-        doc.setFont("helvetica", "bold");
-        doc.setTextColor(navy[0], navy[1], navy[2]);
-        doc.text("HOW TO FIX:", contentX, yPos + 53);
-        doc.setFont("helvetica", "normal");
-        doc.setTextColor(darkGrey[0], darkGrey[1], darkGrey[2]);
-        let fixY = yPos + 58;
-        howToFix.slice(0, 2).forEach((fix) => {
-          doc.text(`• ${fix}`, contentX, fixY, { maxWidth: contentWidth - 5 });
-          fixY += 5;
-        });
-
-        yPos += cardHeight + 5;
-      };
-
-      // LCP Card
-      drawMetricCard(
-        "Largest Contentful Paint (LCP)",
-        metrics.lcp,
-        lcpVal,
-        "lcp",
-        "Time until the main content is visible. Usually your hero image or headline.",
-        "People won't wait. If the main content is slow to appear, many go straight back to Google.",
-        lcpVal > 2.5
-          ? ["Compress & resize images", "Use WebP format"]
-          : ["Keep the current speed fixes in place"],
-        2.5,
-        4.0,
-        "s",
-      );
-
-      // TBT Card
-      drawMetricCard(
-        "Total Blocking Time (TBT)",
-        metrics.tbt,
-        tbtVal,
-        "tbt",
-        "Time the page is frozen while loading JavaScript. Users can't click or scroll.",
-        "A frozen page feels broken. High TBT kills conversions and frustrates users.",
-        tbtVal > 200
-          ? ["Remove unused JavaScript", "Defer non-critical scripts"]
-          : ["Keep JavaScript minimal"],
-        200,
-        600,
-        "ms",
-      );
-
-      // CLS Card
-      drawMetricCard(
-        "Cumulative Layout Shift (CLS)",
-        metrics.cls,
-        clsVal,
-        "cls",
-        "How much the page layout jumps around as it loads. Higher = more annoying.",
-        "Users click wrong buttons when content shifts. It looks unprofessional.",
-        clsVal > 0.1
-          ? ["Add width/height to images", "Reserve space for ads"]
-          : ["Ensure all images have dimensions"],
-        0.1,
-        0.25,
-        "",
-      );
-
-      // Additional metrics section
-      yPos += 5;
-      doc.setFillColor(navy[0], navy[1], navy[2]);
-      doc.roundedRect(15, yPos, pageWidth - 30, 30, 2, 2, "F");
-      doc.setTextColor(white[0], white[1], white[2]);
-      doc.setFontSize(9);
-      doc.setFont("helvetica", "bold");
-      doc.text("ADDITIONAL METRICS", 20, yPos + 8);
-
-      doc.setFont("helvetica", "normal");
-      doc.setFontSize(8);
-      const fcpStatus = getStatus("fcp", fcpVal);
-      const siStatus = getStatus("si", siVal);
-
-      doc.text(`First Contentful Paint: ${metrics.fcp}`, 20, yPos + 18);
-      doc.setTextColor(
-        fcpStatus.color[0],
-        fcpStatus.color[1],
-        fcpStatus.color[2],
-      );
-      doc.text(`(${fcpStatus.text})`, 75, yPos + 18);
-
-      doc.setTextColor(white[0], white[1], white[2]);
-      doc.text(`Speed Index: ${metrics.si}`, 110, yPos + 18);
-      doc.setTextColor(siStatus.color[0], siStatus.color[1], siStatus.color[2]);
-      doc.text(`(${siStatus.text})`, 150, yPos + 18);
-
-      // ============================================
-      // PAGE 3: OPPORTUNITIES FOR IMPROVEMENT
-      // ============================================
-      doc.addPage();
-      addPageHeader("Opportunities for Improvement");
-
-      yPos = 35;
-      doc.setTextColor(darkGrey[0], darkGrey[1], darkGrey[2]);
-      doc.setFontSize(9);
-      doc.setFont("helvetica", "normal");
-      doc.text(
-        "These are specific issues Google found on your site. Fixing them will improve your score and user experience.",
-        15,
-        yPos,
-      );
-      yPos += 12;
-
-      // Opportunity explanations (plain English)
-      const opportunityExplanations: Record<
-        string,
-        { what: string; why: string; fix: string }
-      > = {
-        "render-blocking-resources": {
-          what: "CSS and JavaScript files that block the page from showing content",
-          why: "Your visitors stare at a blank screen while these files load",
-          fix: "Move non-critical CSS/JS to load after the page appears",
-        },
-        "unused-javascript": {
-          what: "JavaScript code that's downloaded but never used",
-          why: "Wastes bandwidth and slows down your site for no benefit",
-          fix: "Remove unused libraries or use code-splitting",
-        },
-        "unused-css-rules": {
-          what: "CSS styles that are downloaded but never applied to any element",
-          why: "Extra bytes that slow loading without adding any visual value",
-          fix: "Use PurgeCSS or audit your stylesheets",
-        },
-        "offscreen-images": {
-          what: "Images below the fold that load immediately instead of when needed",
-          why: "Delays the important content above the fold",
-          fix: "Add loading='lazy' to images below the fold",
-        },
-        "uses-optimized-images": {
-          what: "Images that could be compressed without losing visible quality",
-          why: "Large images are the #1 cause of slow websites",
-          fix: "Compress images using TinyPNG or Squoosh",
-        },
-        "uses-webp-images": {
-          what: "Images in older formats (JPEG/PNG) instead of modern WebP",
-          why: "WebP is 25-35% smaller than JPEG with the same quality",
-          fix: "Convert images to WebP format",
-        },
-        "server-response-time": {
-          what: "Your server takes too long to respond to requests",
-          why: "Everything waits for the server - this is a fundamental bottleneck",
-          fix: "Upgrade hosting, add caching, or optimise your database",
-        },
-        "mainthread-work-breakdown": {
-          what: "Too much JavaScript running on the main browser thread",
-          why: "The page feels frozen and unresponsive while this runs",
-          fix: "Defer non-critical JavaScript, remove unused code",
-        },
-        "third-party-summary": {
-          what: "External scripts (analytics, chat widgets, ads) slowing your site",
-          why: "You don't control these - they can change and slow you down anytime",
-          fix: "Delay loading of non-essential third-party scripts",
-        },
-        "dom-size": {
-          what: "Too many HTML elements on the page",
-          why: "More elements = more work for the browser = slower page",
-          fix: "Simplify your page structure, remove unnecessary wrappers",
-        },
-        "font-display": {
-          what: "Custom fonts blocking text from appearing",
-          why: "Visitors see nothing or placeholder text while fonts load",
-          fix: "Add font-display: swap to your font declarations",
-        },
-      };
-
-      // Draw opportunities from actual PageSpeed results
-      const topOpportunities = metrics.opportunities.slice(0, 6);
-
-      if (topOpportunities.length > 0) {
-        topOpportunities.forEach((opp, i) => {
-          if (yPos > 250) return; // Prevent overflow
-
-          const explanation = opportunityExplanations[opp.id] || {
-            what: opp.title,
-            why: "This affects your page performance",
-            fix: "Consult with a developer to resolve this",
-          };
-
-          // Opportunity card
-          doc.setFillColor(lightGrey[0], lightGrey[1], lightGrey[2]);
-          doc.roundedRect(15, yPos, pageWidth - 30, 32, 2, 2, "F");
-
-          // Priority indicator
-          const priority = opp.score < 0.5 ? red : orange;
-          doc.setFillColor(priority[0], priority[1], priority[2]);
-          doc.rect(15, yPos, 3, 32, "F");
-
-          // Title and savings
-          doc.setFontSize(9);
-          doc.setTextColor(navy[0], navy[1], navy[2]);
-          doc.setFont("helvetica", "bold");
-          doc.text(`${i + 1}. ${explanation.what}`, 23, yPos + 7);
-
-          if (opp.savings) {
-            doc.setTextColor(red[0], red[1], red[2]);
-            doc.setFontSize(8);
-            doc.text(
-              `Potential savings: ${opp.savings}`,
-              pageWidth - 70,
-              yPos + 7,
-            );
-          }
-
-          // Why and Fix
-          doc.setFontSize(8);
-          doc.setTextColor(darkGrey[0], darkGrey[1], darkGrey[2]);
-          doc.setFont("helvetica", "normal");
-          doc.text(`Why it matters: ${explanation.why}`, 23, yPos + 15, {
-            maxWidth: 165,
-          });
-          doc.setTextColor(green[0], green[1], green[2]);
-          doc.text(`How to fix: ${explanation.fix}`, 23, yPos + 23, {
-            maxWidth: 165,
-          });
-
-          yPos += 37;
-        });
-      } else {
-        doc.setFontSize(10);
-        doc.setTextColor(green[0], green[1], green[2]);
-        doc.text(
-          "Great news! No major opportunities for improvement were found.",
-          15,
-          yPos + 10,
-        );
-        yPos += 25;
-      }
-
-      // ============================================
-      // PAGE 4: ACTION PLAN & NEXT STEPS
-      // ============================================
-      doc.addPage();
-      addPageHeader("Your Action Plan");
-
-      yPos = 35;
-      doc.setTextColor(darkGrey[0], darkGrey[1], darkGrey[2]);
-      doc.setFontSize(10);
-      doc.setFont("helvetica", "normal");
-      doc.text(
-        "Based on your results, here's a prioritised checklist to improve your site's performance:",
-        15,
-        yPos,
-      );
-      yPos += 15;
-
-      // Priority actions based on score
-      const priorityActions = [];
-
-      if (lcpVal > 2.5) {
-        priorityActions.push({
-          priority: "HIGH",
-          action: "Fix LCP: Optimise your hero image and preload it",
-          impact: "Major",
-        });
-      }
-      if (tbtVal > 200) {
-        priorityActions.push({
-          priority: "HIGH",
-          action: "Reduce JavaScript: Defer non-critical scripts",
-          impact: "Major",
-        });
-      }
-      if (clsVal > 0.1) {
-        priorityActions.push({
-          priority: "MEDIUM",
-          action: "Fix layout shifts: Add dimensions to all images",
-          impact: "Moderate",
-        });
-      }
-      if (fcpVal > 1.8) {
-        priorityActions.push({
-          priority: "MEDIUM",
-          action: "Improve FCP: Inline critical CSS above the fold",
-          impact: "Moderate",
-        });
-      }
-
-      // Always include these
-      priorityActions.push({
-        priority: "ONGOING",
-        action: "Convert all images to WebP format",
-        impact: "Moderate",
+      const { createScannerPdf } = await import("@/lib/scanner-report");
+      const doc = await createScannerPdf({
+        url: reportUrl,
+        testedAt,
+        score,
+        screenshot,
+        metrics,
       });
-      priorityActions.push({
-        priority: "ONGOING",
-        action: "Enable browser caching for static assets",
-        impact: "Moderate",
-      });
-      priorityActions.push({
-        priority: "ONGOING",
-        action: "Delay loading of chat widgets by 3-5 seconds",
-        impact: "Minor",
-      });
-
-      // Draw action items
-      priorityActions.forEach((item, i) => {
-        const priorityColor =
-          item.priority === "HIGH"
-            ? red
-            : item.priority === "MEDIUM"
-              ? orange
-              : green;
-
-        doc.setFillColor(lightGrey[0], lightGrey[1], lightGrey[2]);
-        doc.roundedRect(15, yPos, pageWidth - 30, 14, 2, 2, "F");
-
-        // Checkbox
-        doc.setDrawColor(180, 180, 180);
-        doc.rect(20, yPos + 4, 5, 5, "S");
-
-        // Priority badge
-        doc.setFillColor(priorityColor[0], priorityColor[1], priorityColor[2]);
-        doc.roundedRect(30, yPos + 3, 18, 7, 1, 1, "F");
-        doc.setFontSize(6);
-        doc.setTextColor(white[0], white[1], white[2]);
-        doc.text(item.priority, 32, yPos + 8);
-
-        // Action text
-        doc.setFontSize(9);
-        doc.setTextColor(navy[0], navy[1], navy[2]);
-        doc.setFont("helvetica", "normal");
-        doc.text(item.action, 52, yPos + 9);
-
-        // Impact
-        doc.setFontSize(7);
-        doc.setTextColor(darkGrey[0], darkGrey[1], darkGrey[2]);
-        doc.text(`Impact: ${item.impact}`, pageWidth - 45, yPos + 9);
-
-        yPos += 17;
-      });
-
-      yPos += 10;
-
-      // CTA Box
-      doc.setFillColor(navy[0], navy[1], navy[2]);
-      doc.roundedRect(15, yPos, pageWidth - 30, 55, 4, 4, "F");
-
-      doc.setTextColor(cyan[0], cyan[1], cyan[2]);
-      doc.setFontSize(14);
-      doc.setFont("helvetica", "bold");
-      doc.text("Need Help Implementing These Fixes?", 22, yPos + 15);
-
-      doc.setTextColor(white[0], white[1], white[2]);
-      doc.setFontSize(10);
-      doc.setFont("helvetica", "normal");
-      doc.text(
-        "We specialise in performance optimisation for high-converting websites.",
-        22,
-        yPos + 26,
-      );
-      doc.text(
-        "Get in touch via our contact form and we'll create a fixed-price quote.",
-        22,
-        yPos + 34,
-      );
-
-      doc.setFontSize(9);
-      doc.setTextColor(150, 150, 150);
-      doc.text(
-        "Email: hello@kaizenweb.co.uk  |  Web: kaizenweb.co.uk/contact",
-        22,
-        yPos + 46,
-      );
-
-      // Button
-      const btnX = 140;
-      const btnY = yPos + 15;
-      const btnW = 40;
-      const btnH = 12;
-
-      doc.setFillColor(green[0], green[1], green[2]);
-      doc.roundedRect(btnX, btnY, btnW, btnH, 2, 2, "F");
-
-      doc.setTextColor(navy[0], navy[1], navy[2]);
-      doc.setFontSize(10);
-      doc.setFont("helvetica", "bold");
-
-      const text = "GET IN TOUCH";
-      const textWidth = doc.getTextWidth(text);
-      doc.text(text, btnX + btnW / 2 - textWidth / 2, btnY + 7.5);
-
-      // Link
-      doc.link(btnX, btnY, btnW, btnH, {
-        url: "https://kaizenweb.co.uk/contact",
-      });
-
       doc.save("Kaizen-Performance-Audit.pdf");
-    } catch (err: any) {
+    } catch (err) {
       console.error("PDF Error:", err);
       alert("Could not generate PDF. Please try again.");
     } finally {
@@ -961,232 +301,313 @@ export default function SpeedScanner() {
     }
   }
 
-  // --- JSX (The Visuals) ---
+  // Keep a completed report tied to the page that was actually tested.
   const shouldGate = score !== null && score < 90 && !isEmailSubmitted;
-
   return (
     <div
       id="live-performance-scanner"
-      className="w-full max-w-4xl mx-auto text-white"
+      className={`w-full mx-auto font-body text-slate-900 ${showExample ? "" : "max-w-4xl rounded-2xl bg-white p-6 md:p-10"}`}
     >
-      <div className="p-6 md:p-12 rounded-2xl border border-white/10 bg-white/4 relative overflow-hidden">
-        <div className="text-center mb-10">
-          <p className="marketing-eyebrow marketing-eyebrow--dark text-xs font-medium uppercase tracking-[0.25em] text-cyan-400/60 mb-4">
-            Free speed check
-          </p>
-          <h2 className="text-3xl md:text-4xl font-bold text-white mb-3">
-            Check how fast your page loads.
-          </h2>
-          <p className="text-white/40 text-base">
-            Enter your web address to see your score. If it is below 90, we ask
-            for your email before showing the full report. You can download the
-            report here for free.
-          </p>
-        </div>
-
-        {/* INPUT AREA */}
-        <div className="flex flex-col md:flex-row gap-4 mb-8 max-w-2xl mx-auto">
-          <div className="relative flex-1">
-            <div className="pointer-events-none absolute inset-y-0 left-5 flex items-center text-sm text-white/30">
-              https://
+      <div
+        className={
+          showExample ? "grid gap-8 lg:grid-cols-2 lg:gap-16 items-center" : ""
+        }
+      >
+        <div>
+          {children}
+          {!showExample && (
+            <div className="mb-6">
+              <p className="marketing-eyebrow mb-3 text-slate-600 uppercase tracking-[0.2em]">
+                Free speed check
+              </p>
+              <h2 className="font-heading text-3xl md:text-4xl mb-3">
+                Check how fast your page loads.
+              </h2>
+              <p className="text-slate-600">
+                Test one page as a phone visit. See what to check first.
+              </p>
             </div>
-            <input
-              type="text"
-              inputMode="url"
-              aria-label="Your website address"
-              placeholder="yourwebsite.co.uk"
-              value={url}
-              onChange={(e) => {
-                const next = e.target.value
-                  .trimStart()
-                  .replace(/^https?:\/\//i, "")
-                  .replace(/^\/+/, "");
-                setUrl(next);
-              }}
-              className="w-full px-6 py-4 pl-20 rounded-lg bg-white/[0.05] border border-white/10 text-white focus:border-cyan-500 focus:outline-none focus:ring-1 focus:ring-cyan-500 transition-all placeholder:text-white/20"
-            />
-          </div>
-          <Button
-            onPress={runAudit}
-            isDisabled={loading}
-            size="lg"
-            color="primary"
+          )}
+          <form
+            onSubmit={(event) => {
+              event.preventDefault();
+              void runAudit();
+            }}
+            noValidate
           >
-            {loading ? "Scanning..." : "Check my site"}
-          </Button>
+            <label
+              htmlFor="scanner-url"
+              className="block text-sm font-semibold mb-2"
+            >
+              Your website address
+            </label>
+            <div className="flex flex-col sm:flex-row gap-3">
+              <input
+                id="scanner-url"
+                type="text"
+                inputMode="url"
+                autoComplete="url"
+                spellCheck={false}
+                placeholder="yourwebsite.co.uk"
+                value={url}
+                disabled={loading}
+                aria-describedby="scanner-steps"
+                onChange={(e) =>
+                  setUrl(
+                    e.target.value
+                      .trimStart()
+                      .replace(/^https?:\/\//i, "")
+                      .replace(/^\/+/, ""),
+                  )
+                }
+                className="min-w-0 flex-1 rounded-lg border border-slate-400 bg-white px-4 py-3.5 text-base text-slate-900 placeholder:text-slate-500 focus:outline-2 focus:outline-offset-2 focus:outline-blue-600"
+              />
+              <Button
+                type="submit"
+                isDisabled={loading}
+                size="lg"
+                color="primary"
+              >
+                {loading ? "Scanning..." : "Check my site"}
+              </Button>
+            </div>
+            <div
+              id="scanner-steps"
+              className="mt-4 space-y-2 text-sm leading-relaxed text-slate-600"
+            >
+              <p>
+                See your score first. Below 90, enter your email for the full
+                report.
+              </p>
+              <p>
+                The test and PDF are free. Download it here; it is not emailed.
+                Tips by email are optional.
+              </p>
+            </div>
+          </form>
+          <div
+            role="status"
+            aria-live="polite"
+            className="mt-4 text-sm text-slate-700"
+          >
+            {loading
+              ? statusMsg
+              : score !== null
+                ? "Your speed test is ready below."
+                : ""}
+          </div>
+          {!loading && statusMsg.startsWith("Error") && (
+            <p role="alert" className="mt-3 text-sm text-red-700">
+              {statusMsg}
+            </p>
+          )}
+          <noscript>
+            <p className="mt-4 text-slate-700">
+              Turn on JavaScript in your browser to run the test.
+            </p>
+          </noscript>
         </div>
-
-        {/* STATUS TEXT */}
-        {loading && statusMsg && (
-          <div className="text-center text-cyan-400 animate-pulse text-sm mb-4">
-            {statusMsg}
-          </div>
+        {showExample && (
+          <figure className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-6">
+            <figcaption className="mb-4">
+              <p className="marketing-eyebrow mb-2 text-slate-600 uppercase tracking-[0.2em]">
+                A real report
+              </p>
+              <h2 className="font-heading text-2xl text-slate-900">
+                See what you will get.
+              </h2>
+              <p className="mt-2 text-sm text-slate-600">
+                Our homepage, tested on 2 October 2026. Your result will differ.
+              </p>
+            </figcaption>
+            <a
+              href="/images/scanner/kaizen-report-2026-10-02.webp"
+              className="block rounded-lg focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-blue-600"
+              aria-label="View the full-size example speed report"
+            >
+              <picture>
+                <source
+                  media="(max-width: 767px)"
+                  srcSet="/images/scanner/kaizen-report-2026-10-02-mobile.webp"
+                  width="600"
+                  height="1309"
+                />
+                <img
+                  src="/images/scanner/kaizen-report-2026-10-02.webp"
+                  width="900"
+                  height="357"
+                  alt="Kaizen's homepage report: 76 out of 100, main content loads in 4.7 seconds, no blocking time or page movement in this test."
+                  className="w-full h-auto rounded-lg border border-slate-200"
+                />
+              </picture>
+              <span className="mt-3 block text-sm font-semibold text-blue-700 underline underline-offset-4">
+                View the full-size example report
+              </span>
+            </a>
+          </figure>
         )}
-        {!loading && statusMsg.startsWith("Error") && (
-          <div className="text-center text-sm mb-4 text-red-400">
-            {statusMsg}
-          </div>
-        )}
-
-        {/* RESULTS AREA */}
-        {score !== null && (
-          <div className="grid grid-cols-1 md:grid-cols-[140px_1fr] gap-8 items-start bg-white/[0.03] p-8 rounded-xl border border-white/5 mt-8 relative overflow-hidden">
-            {/* Screenshot */}
-            <div className="relative mx-auto border-[4px] border-white/10 rounded-2xl overflow-hidden w-full max-w-[120px] aspect-[393/852] bg-gray-900">
+      </div>
+      {score !== null && (
+        <section
+          aria-labelledby="scanner-result-title"
+          className="mt-8 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm md:p-8"
+        >
+          <div data-scanner-report className="mx-auto max-w-4xl">
+            <div className="grid grid-cols-[72px_1fr] gap-5 items-start md:grid-cols-[100px_1fr] md:gap-8">
               {screenshot ? (
                 <img
                   src={screenshot}
-                  alt="Site screenshot"
-                  className="w-full h-full object-cover"
+                  alt="The page captured during your phone test"
+                  width="100"
+                  height="217"
+                  className="w-full rounded-lg border border-slate-200"
                 />
               ) : (
-                <div className="w-full h-full bg-gray-800 animate-pulse" />
+                <div className="rounded-lg bg-slate-100 p-2 text-xs text-slate-600">
+                  No page image returned.
+                </div>
               )}
-            </div>
-
-            {/* Data & Gate */}
-            <div className="flex flex-col items-center md:items-start w-full">
-              {/* Score + label */}
-              <div className="flex items-center gap-5 mb-6">
-                <div className="inline-flex items-center justify-center w-20 h-20 rounded-full border-2 border-white/10 bg-gray-950">
-                  <span
-                    className={`text-3xl font-bold ${score < 50 ? "text-red-500" : score < 90 ? "text-orange-400" : "text-green-500"}`}
-                  >
-                    {score}
-                  </span>
-                </div>
-                <div>
-                  <p className="text-white font-bold text-lg">
-                    {score >= 90
-                      ? "Strong performance."
-                      : score >= 50
-                        ? "Room for improvement."
-                        : "Needs attention."}
-                  </p>
-                  <p className="text-white/40 text-sm">
-                    Mobile score out of 100
-                  </p>
-                </div>
+              <div className="min-w-0">
+                <p className="marketing-eyebrow text-slate-600 mb-2">
+                  Your phone test
+                </p>
+                <h2
+                  id="scanner-result-title"
+                  tabIndex={-1}
+                  className="scroll-mt-28 font-heading text-2xl md:text-3xl outline-offset-4"
+                >
+                  {score >= 90
+                    ? "A good result in this test."
+                    : "There is more to check."}
+                </h2>
+                <p className="mt-2 break-words text-sm text-slate-600">
+                  {reportUrl}
+                </p>
+                <p className="mt-1 text-xs text-slate-600">
+                  {testedAt &&
+                    new Date(testedAt).toLocaleString("en-GB", {
+                      timeZone: "Europe/London",
+                      dateStyle: "medium",
+                      timeStyle: "short",
+                    })}{" "}
+                  (UK time)
+                </p>
+                <p className="mt-4 flex flex-wrap items-baseline gap-x-2 text-slate-900">
+                  <strong className="text-4xl font-heading">{score}</strong>
+                  <span className="text-sm">out of 100</span>
+                </p>
+                <p className="mt-1 text-sm font-semibold text-slate-700">
+                  {score >= 90
+                    ? "Good"
+                    : score >= 50
+                      ? "Needs improvement"
+                      : "Poor"}
+                </p>
               </div>
-
-              <div className="relative w-full">
-                <div className={shouldGate ? "hidden" : ""}>
-                  {/* Metrics Grid */}
-                  <div className="rounded-lg bg-white/[0.03] border border-white/5 p-5 mb-6">
-                    <p className="marketing-eyebrow marketing-eyebrow--dark text-xs font-medium uppercase tracking-[0.2em] text-white/30 mb-4">
-                      Your phone test
-                    </p>
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-left">
-                      <div className="rounded-lg border border-white/5 bg-white/[0.02] p-3">
-                        <p className="text-[11px] text-white/40 mb-1">
-                          Main content loads
-                        </p>
-                        <p className="text-white font-bold">
-                          {metrics.lcp || "-"}
-                        </p>
-                      </div>
-                      <div className="rounded-lg border border-white/5 bg-white/[0.02] p-3">
-                        <p className="text-[11px] text-white/40 mb-1">
-                          Time spent stuck
-                        </p>
-                        <p className="text-white font-bold">
-                          {metrics.tbt || "-"}
-                        </p>
-                      </div>
-                      <div className="rounded-lg border border-white/5 bg-white/[0.02] p-3">
-                        <p className="text-[11px] text-white/40 mb-1">
-                          Page movement
-                        </p>
-                        <p className="text-white font-bold">
-                          {metrics.cls || "-"}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-
-                  <Button
-                    onPress={downloadPDF}
-                    isDisabled={pdfLoading}
-                    size="lg"
-                    color="primary"
-                    className="w-full md:w-auto"
-                  >
-                    <svg
-                      className="w-5 h-5"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
+            </div>
+            {!shouldGate && (
+              <div className="mt-6">
+                <dl className="grid gap-3 sm:grid-cols-3">
+                  {[
+                    ["Main content loads", metrics.lcp],
+                    ["Time spent stuck", metrics.tbt],
+                    ["Page movement", metrics.cls],
+                  ].map(([label, value]) => (
+                    <div
+                      key={label}
+                      className="rounded-lg bg-slate-50 border border-slate-200 p-4"
                     >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
-                      />
-                    </svg>
-                    {pdfLoading ? "Building PDF..." : "Download PDF Report"}
-                  </Button>
-                </div>
-
-                {/* The Gate Overlay */}
-                {shouldGate && (
-                  <div className="flex items-center justify-center">
-                    <div className="w-full rounded-xl border border-white/10 bg-gray-950/80 backdrop-blur-md p-6">
-                      <h3 className="text-lg text-white font-bold mb-2">
-                        Your full report is ready.
-                      </h3>
-                      <p className="text-white/40 text-sm mb-4 leading-relaxed">
-                        Enter your email to see the results and download your
-                        PDF. Tips by email are optional.
-                      </p>
-                      <div className="flex flex-col sm:flex-row gap-2 mb-4">
-                        <input
-                          type="email"
-                          inputMode="email"
-                          aria-label="Your email address"
-                          placeholder="name@company.co.uk"
-                          className="min-w-0 flex-1 px-4 py-3 rounded-lg bg-white/[0.05] border border-white/10 text-white text-base focus:outline-none focus:ring-1 focus:ring-cyan-500 placeholder:text-white/20"
-                          value={email}
-                          onChange={(e) => setEmail(e.target.value)}
-                        />
-                        <Button
-                          onPress={handleUnlock}
-                          size="lg"
-                          color="primary"
-                        >
-                          View my report
-                        </Button>
-                      </div>
-
-                      {/* Consent Checkbox */}
-                      <label className="flex items-start gap-3 cursor-pointer">
-                        <input
-                          type="checkbox"
-                          checked={consentToMarketing}
-                          onChange={(e) =>
-                            setConsentToMarketing(e.target.checked)
-                          }
-                          className="mt-1 rounded border-white/20 cursor-pointer accent-cyan-500"
-                        />
-                        <span className="text-xs text-white/30 leading-relaxed">
-                          I&apos;m happy to receive occasional tips on website
-                          performance from Kaizen.
-                        </span>
-                      </label>
-
-                      {emailError && (
-                        <p className="text-red-400 text-xs mt-3">
-                          {emailError}
-                        </p>
-                      )}
+                      <dt className="text-sm text-slate-600">{label}</dt>
+                      <dd className="mt-2 font-heading text-2xl text-slate-900">
+                        {value || "Not available"}
+                      </dd>
                     </div>
-                  </div>
-                )}
+                  ))}
+                </dl>
+                <p className="mt-4 text-sm leading-relaxed text-slate-600">
+                  One page, at one point in time. Real visits may differ. The
+                  PDF explains these figures and lists what to check.
+                </p>
               </div>
-            </div>
+            )}
           </div>
-        )}
-      </div>
+          {shouldGate ? (
+            <form
+              onSubmit={(event) => {
+                event.preventDefault();
+                void handleUnlock();
+              }}
+              noValidate
+              className="mx-auto mt-6 max-w-4xl rounded-xl bg-slate-50 border border-slate-200 p-5 md:p-6"
+            >
+              <h3 className="font-heading text-2xl mb-2">
+                Your full report is ready.
+              </h3>
+              <p className="text-sm text-slate-600 mb-5">
+                Enter your email to see the results and download your PDF. Tips
+                by email are optional.
+              </p>
+              <label
+                htmlFor="scanner-email"
+                className="block text-sm font-semibold mb-2"
+              >
+                Your email address
+              </label>
+              <div className="flex flex-col sm:flex-row gap-3">
+                <input
+                  id="scanner-email"
+                  type="email"
+                  inputMode="email"
+                  autoComplete="email"
+                  placeholder="name@company.co.uk"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  aria-invalid={Boolean(emailError)}
+                  aria-describedby={
+                    emailError ? "scanner-email-error" : undefined
+                  }
+                  className="min-w-0 flex-1 rounded-lg bg-white border border-slate-400 px-4 py-3 text-base placeholder:text-slate-500 focus:outline-2 focus:outline-offset-2 focus:outline-blue-600"
+                />
+                <Button type="submit" size="lg" color="primary">
+                  View my report
+                </Button>
+              </div>
+              <label className="mt-4 flex items-start gap-3 cursor-pointer text-sm text-slate-600">
+                <input
+                  type="checkbox"
+                  checked={consentToMarketing}
+                  onChange={(e) => setConsentToMarketing(e.target.checked)}
+                  className="mt-1 size-4 shrink-0 accent-blue-700"
+                />
+                <span>
+                  I&apos;m happy to receive occasional tips on website
+                  performance from Kaizen.
+                </span>
+              </label>
+              {emailError && (
+                <p
+                  id="scanner-email-error"
+                  role="alert"
+                  className="mt-3 text-sm text-red-700"
+                >
+                  {emailError}
+                </p>
+              )}
+            </form>
+          ) : (
+            <div className="mx-auto mt-6 max-w-4xl">
+              <Button
+                onPress={downloadPDF}
+                isDisabled={pdfLoading}
+                size="lg"
+                color="primary"
+              >
+                {pdfLoading ? "Building PDF..." : "Download PDF Report"}
+              </Button>
+            </div>
+          )}
+        </section>
+      )}
     </div>
   );
 }

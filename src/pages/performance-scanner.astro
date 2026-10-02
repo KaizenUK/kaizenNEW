@@ -78,59 +78,15 @@ const faqs = [
   title="Free Website Speed Test for Business Sites | Kaizen Web"
   description="Test how fast your website loads on a phone. See what is slowing it down and what to fix first, in plain English. Free."
 >
-  <!-- ═══ HERO ═══ -->
-  <section class="marketing-section relative bg-[#f5f5f3]">
+  <section class="scanner-hero marketing-section bg-[#f5f5f3]">
     <div class="mx-auto max-w-[1440px] px-6 lg:px-12">
-      <div class="max-w-3xl">
-        <p
-          class="marketing-eyebrow text-xs font-medium font-body uppercase tracking-[0.25em] text-gray-400 mb-6"
-        >
-          Free website speed test
-        </p>
-        <h1
-          class="text-balance text-4xl md:text-5xl lg:text-6xl font-heading font-bold text-gray-950 leading-tight mb-8"
-        >
-          <span class="block text-balance">Test your website speed.</span>
-          <span class="block text-balance text-gray-400">Find what may be slowing it down.</span>
-        </h1>
-        <p class="text-lg md:text-xl text-gray-500 font-body leading-relaxed">
-          A slow site can make it hard to win new customers.
-          Check how your page loads on a phone. See your score first.
-          If it is below 90, enter your email for the full report.
-        </p>
+      <SpeedScanner showExample client:load>
+      <div class="max-w-3xl mb-7 md:mb-10">
+        <p class="marketing-eyebrow mb-4 text-slate-600 uppercase tracking-[0.2em]">Free website speed test</p>
+        <h1 class="font-heading text-4xl md:text-5xl lg:text-6xl text-slate-950 mb-5">Test your website speed.<br /><span class="text-slate-500">Find where to start.</span></h1>
+        <p class="max-w-2xl text-lg text-slate-600 leading-relaxed">A free check for business websites. See how one page loads on a phone, then choose what to check first.</p>
       </div>
-
-      <!-- Stats -->
-      <div class="mt-16 grid grid-cols-1 gap-6 md:grid-cols-3 max-w-4xl">
-        <div class="border-l-2 border-gray-300 pl-6">
-          <p class="text-4xl font-heading font-bold text-gray-950">Free</p>
-          <p class="mt-2 text-sm text-gray-500 font-body leading-relaxed">
-            Paste your web address to start. There is no charge for the test or report.
-          </p>
-        </div>
-        <div class="border-l-2 border-gray-300 pl-6">
-          <p class="text-4xl font-heading font-bold text-gray-950">Mobile</p>
-          <p class="mt-2 text-sm text-gray-500 font-body leading-relaxed">
-            Google's test acts like a phone on a slow connection. It checks one page at a time.
-          </p>
-        </div>
-        <div class="border-l-2 border-gray-300 pl-6">
-          <p class="text-4xl font-heading font-bold text-gray-950">PDF</p>
-          <p class="mt-2 text-sm text-gray-500 font-body leading-relaxed">
-            Save the full report to read later. It is a download, so you do not need to wait for an email.
-          </p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ═══ SCANNER ═══ -->
-  <section class="marketing-section marketing-section--compact bg-gray-950 relative overflow-hidden">
-    <div
-      class="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_50%_0%,rgba(6,182,212,0.06),transparent_60%)]"
-    ></div>
-    <div class="mx-auto max-w-[1440px] px-6 lg:px-12 relative z-10">
-      <SpeedScanner client:load />
+      </SpeedScanner>
     </div>
   </section>
 
@@ -147,7 +103,7 @@ const faqs = [
           class="text-4xl md:text-5xl font-heading font-bold text-gray-950 leading-tight"
         >
           See where your page slows down.<br />
-          <span class="text-gray-400">Find what to check first.</span>
+          <span class="text-gray-500">Find what to check first.</span>
         </h2>
       </div>
 
@@ -161,7 +117,7 @@ const faqs = [
               ]}
             >
               <div class="md:col-span-4 lg:col-span-3">
-                <span class="text-sm font-body text-cyan-600 tracking-wide block mb-2">
+                <span class="text-sm font-body text-cyan-700 tracking-wide block mb-2">
                   {item.code}
                 </span>
                 <h3 class="text-2xl md:text-3xl font-heading font-bold text-gray-950">
@@ -213,19 +169,27 @@ const faqs = [
         <h2
           class="text-4xl md:text-5xl lg:text-6xl font-heading font-bold text-white leading-tight mb-8"
         >
-          Know what's wrong.<br />
-          <span class="text-gray-500">Now let's fix it.</span>
+          Make sense of your report.<br />
+          <span class="text-gray-500">Choose what to check next.</span>
         </h2>
-        <p class="text-lg md:text-xl text-white/50 font-body leading-relaxed mb-14 max-w-2xl">
+        <p class="text-lg md:text-xl text-slate-300 font-body leading-relaxed mb-8 max-w-2xl">
           We can help you read the report and choose what to fix.
           Start with a free chat about your site.
         </p>
 
         <div class="flex flex-col sm:flex-row items-start gap-6">
-          <ContactCTAButton />
+          <div class="max-w-md">
+            <ContactCTAButton />
+            <p class="mt-4 text-sm leading-relaxed text-slate-300">One of us will get back to you the same day, or the next working day at the latest.</p>
+          </div>
           <Button href="/services/wordpress-web-design/" color="secondary" size="lg">Help with a slow WordPress site</Button>
         </div>
       </div>
     </div>
   </section>
 </StaticPageLayout>
+
+<style>
+  .scanner-hero { padding-top: 2.5rem; }
+  @media (min-width: 768px) { .scanner-hero { padding-top: 4rem; } }
+</style>
