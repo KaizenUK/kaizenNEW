@@ -13,6 +13,7 @@ import "prismjs/components/prism-tsx";
 import "prismjs/components/prism-typescript";
 import "prismjs/themes/prism-tomorrow.css";
 import { urlFor, type PortableTextBlock } from "../../lib/sanity/client";
+import { Button } from "../../../client/components/untitled/base/buttons/button";
 
 type CodeValue = {
   language?: string;
@@ -90,20 +91,20 @@ const components: PortableTextComponents = {
     // The post title is the page's only H1. Body headings saved as H1 in
     // Sanity render as section headings.
     h1: ({ children }) => (
-      <h2 className="mt-10 mb-4 text-2xl font-bold">{children}</h2>
+      <h2 className="font-heading mt-10 mb-4 text-2xl font-bold md:text-3xl">{children}</h2>
     ),
     h2: ({ children }) => (
-      <h2 className="mt-10 mb-4 text-2xl font-bold">{children}</h2>
+      <h2 className="font-heading mt-10 mb-4 text-2xl font-bold md:text-3xl">{children}</h2>
     ),
     h3: ({ children }) => (
-      <h3 className="mt-8 mb-3 text-xl font-semibold">{children}</h3>
+      <h3 className="font-heading mt-8 mb-3 text-xl font-bold md:text-2xl">{children}</h3>
     ),
     h4: ({ children }) => (
-      <h4 className="mt-6 mb-2 text-lg font-semibold">{children}</h4>
+      <h4 className="font-heading mt-6 mb-2 text-lg font-bold md:text-xl">{children}</h4>
     ),
     normal: ({ children }) => <p>{children}</p>,
     blockquote: ({ children }) => (
-      <blockquote className="my-6 border-l-4 border-sky-400/50 pl-4 italic text-gray-300">
+      <blockquote className="my-6 border-l-4 border-uui-brand-600 bg-slate-50 py-4 pr-4 pl-5 text-slate-700">
         {children}
       </blockquote>
     ),
@@ -134,7 +135,7 @@ const components: PortableTextComponents = {
     ),
     strong: ({ children }) => <strong className="font-semibold">{children}</strong>,
     code: ({ children }) => (
-      <code className="rounded bg-white/10 px-1.5 py-0.5 text-sm">{children}</code>
+      <code className="rounded bg-slate-100 px-1.5 py-0.5 text-sm text-slate-800">{children}</code>
     ),
   },
   types: {
@@ -144,9 +145,9 @@ const components: PortableTextComponents = {
       const filename = (value as CodeValue).filename;
 
       return (
-        <div className="my-6 overflow-hidden rounded-lg border border-white/10">
+        <div className="my-6 overflow-hidden rounded-lg border border-slate-200">
           {filename && (
-            <div className="border-b border-white/10 bg-white/5 px-4 py-2 text-xs text-gray-400">
+            <div className="border-b border-slate-200 bg-slate-50 px-4 py-2 text-sm text-slate-700">
               {filename}
             </div>
           )}
@@ -182,7 +183,7 @@ const components: PortableTextComponents = {
           : "Article image";
 
       return (
-        <figure className="my-8 overflow-hidden rounded-xl border border-white/10">
+        <figure className="my-8 overflow-hidden rounded-xl border border-slate-200">
           <img
             src={imageUrl}
             alt={altText}
@@ -212,19 +213,16 @@ const components: PortableTextComponents = {
 
       return (
         <div className="my-10">
-          <a
+          <Button
             href={href}
             target={openInNewTab ? "_blank" : undefined}
             rel={openInNewTab ? "noopener noreferrer" : undefined}
-            className={[
-              "inline-flex items-center gap-2 rounded-md border px-5 py-2.5 text-sm font-medium transition-colors duration-200 no-underline",
-              isGhost
-                ? "border-white/20 text-gray-200 hover:border-white/35 hover:text-white"
-                : "border-sky-400/40 bg-sky-500/20 text-sky-100 hover:border-sky-300/60 hover:bg-sky-500/30",
-            ].join(" ")}
+            className="guide-action"
+            color={isGhost ? "secondary" : "primary"}
+            size="lg"
           >
             <span>{label}</span>
-          </a>
+          </Button>
         </div>
       );
     },
@@ -238,7 +236,7 @@ const components: PortableTextComponents = {
 
       return (
         <figure className="my-8">
-          <div className="relative aspect-video overflow-hidden rounded-xl border border-white/10">
+          <div className="relative aspect-video overflow-hidden rounded-xl border border-slate-200">
             <iframe
               src={embedUrl}
               title={video.caption || "Embedded video"}
@@ -249,7 +247,7 @@ const components: PortableTextComponents = {
             />
           </div>
           {video.caption && (
-            <figcaption className="mt-2 text-center text-sm text-gray-400">
+            <figcaption className="mt-2 text-center text-sm text-slate-600">
               {video.caption}
             </figcaption>
           )}
@@ -267,17 +265,17 @@ const components: PortableTextComponents = {
       const tableRows = hasHeaderRow ? bodyRows : rows;
 
       return (
-        <figure className="my-8 overflow-hidden rounded-xl border border-white/10 bg-white/[0.03]">
+        <figure className="my-8 overflow-hidden rounded-xl border border-slate-200 bg-white">
           <div className="overflow-x-auto">
-            <table className="min-w-full border-collapse text-left text-sm text-gray-200">
+            <table className="min-w-full border-collapse text-left text-sm text-slate-700">
               {hasHeaderRow && headerRow ? (
-                <thead className="bg-white/[0.04]">
+                <thead className="bg-slate-50">
                   <tr>
                     {headerRow.map((cell, index) => (
                       <th
                         key={`head-${index}`}
                         scope="col"
-                        className="border-b border-white/10 px-4 py-3 font-semibold text-white"
+                        className="border-b border-slate-200 px-4 py-3 font-semibold text-slate-900"
                       >
                         <span className="whitespace-pre-line">{cell}</span>
                       </th>
@@ -292,7 +290,7 @@ const components: PortableTextComponents = {
                       {row.map((cell, cellIndex) => (
                         <td
                           key={`cell-${rowIndex}-${cellIndex}`}
-                          className="border-t border-white/10 px-4 py-3 text-gray-300 first:border-l-0"
+                          className="border-t border-slate-200 px-4 py-3 text-slate-700 first:border-l-0"
                         >
                           <span className="whitespace-pre-line">{cell}</span>
                         </td>
@@ -304,7 +302,7 @@ const components: PortableTextComponents = {
             </table>
           </div>
           {table.caption ? (
-            <figcaption className="border-t border-white/10 px-4 py-3 text-sm text-gray-400">
+            <figcaption className="border-t border-slate-200 px-4 py-3 text-sm text-slate-600">
               {table.caption}
             </figcaption>
           ) : null}
@@ -349,7 +347,7 @@ export default function PortableTextRenderer({
   value = [],
 }: PortableTextRendererProps) {
   return (
-    <div className="linear-prose">
+    <div className="guide-prose">
       <PortableText
         value={withPlainPunctuation(value) as unknown as SanityPortableTextBlock[]}
         components={components}

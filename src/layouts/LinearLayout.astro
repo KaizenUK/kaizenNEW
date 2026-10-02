@@ -1,6 +1,7 @@
 ---
-import "../styles/linear.css";
-import BlogNav from "../components/blog/BlogNav.astro";
+import "../../client/global.css";
+import "../styles/blog.css";
+import NavShell from "../../client/components/layout/NavShell";
 import SiteFooter from "../../client/components/layout/SiteFooter";
 import { isStagingBuild, resolveCanonicalUrl, STAGING_ROBOTS } from "../lib/site";
 
@@ -21,7 +22,7 @@ interface Props {
 const {
   title,
   author = "Kaizen Web",
-  description = "Kaizen insights on performance engineering, design systems, and conversion-focused websites.",
+  description = "Website guides for business owners from Kaizen Web.",
   canonical: canonicalProp,
   ogTitle,
   ogDescription,
@@ -47,7 +48,7 @@ const footerBuildLabel =
 ---
 
 <!doctype html>
-<html lang="en-GB" class="h-full bg-[#0a0a0a]">
+<html lang="en-GB">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -70,16 +71,19 @@ const footerBuildLabel =
     <meta name="twitter:title" content={socialTitle} />
     <meta name="twitter:description" content={socialDescription} />
     {socialImage && <meta name="twitter:image" content={socialImage} />}
+    <link rel="preload" href="/fonts/manifa-v2-bold.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800;900&display=swap"
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap"
       rel="stylesheet"
     />
   </head>
-  <body class="min-h-full bg-[#0a0a0a] text-gray-200 antialiased">
-    <BlogNav />
-    <slot />
+  <body class="marketing-page blog-page min-h-screen bg-white text-kaizen-text-dark antialiased">
+    <NavShell pathname={Astro.url.pathname} client:load />
+    <main id="main-content" tabindex="-1" class="pt-20">
+      <slot />
+    </main>
     <SiteFooter buildLabel={footerBuildLabel} />
   </body>
 </html>

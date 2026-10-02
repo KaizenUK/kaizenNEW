@@ -1,0 +1,53 @@
+/* Reading styles are scoped to the guides; marketing and builder pages keep
+   their own typography. The shared stylesheet supplies all brand tokens. */
+.blog-page .guide-prose {
+  color: #334155;
+  font-size: 1.125rem;
+  line-height: 1.75;
+  overflow-wrap: break-word;
+}
+
+.blog-page .guide-prose p {
+  margin-block: 0 1.25rem;
+}
+
+.blog-page .guide-prose :is(h2, h3, h4) {
+  color: #0f172a;
+  scroll-margin-top: 6rem;
+}
+
+.blog-page .guide-prose a:not(.guide-action) {
+  color: #0c3eb9;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+}
+
+.blog-page .guide-prose a:not(.guide-action):hover {
+  color: #102c70;
+}
+
+.blog-page :is(.guide-prose a, .guide-author-link):focus-visible {
+  border-radius: 0.125rem;
+  outline: 2px solid #266bff;
+  outline-offset: 4px;
+}
+
+.blog-page .guide-prose pre {
+  margin-block: 1.5rem;
+  overflow-x: auto;
+  border-radius: 0.75rem;
+  background: #0f172a;
+  padding: 1rem;
+  color: #e2e8f0;
+  font-size: 0.875rem;
+  line-height: 1.6;
+}
+
+.blog-page .guide-prose code {
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+}
+
+.blog-page .guide-prose > :last-child {
+  margin-bottom: 0;
+}

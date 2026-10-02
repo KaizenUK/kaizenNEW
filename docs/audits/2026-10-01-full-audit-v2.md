@@ -4,6 +4,41 @@
 **Task board:** `docs/audits/2026-10-01-task-plan.md` turns every finding below into a task any agent can pick up.
 **Rules audited against:** `.claude/skills/marketing-messaging`, `marketing-page-design`, `seo-strategy`, `docs/marketing/site-profile.md`, and Sean's standing rules (British English, reading age about 9, no em dashes, nothing that reads as AI-written, premium look).
 
+## Progress: 2 October 2026, Phase B verification
+
+B-02 to B-04 are live; B-01's new shared-site blog design has passed local build, type, copy and visual checks and awaits its final browser/deployment verification. The individual proof files and task board retain release status. The homepage, contact, pledge and both ad pages have also shipped since the Phase F checkpoint. Seven Phase P tasks remain open; their earlier copy fixes do not constitute visual completion.
+
+The fresh whole-site copy run covers 29 public pages, excluding builder and legacy redirect HTML. Nine articles replace the original ten after B-04, and the author profile is new. There are **22 remaining dashes**: 18 on the local SEO page awaiting P-03 retirement and four in the unchanged legal terms. No exclamation marks, US spelling or banned-word hits occur. The local SEO page retains ten AI-pattern flags; legal terms contain one staffing-word hit. These are remaining findings, not passes. Raw evidence: ignored `.local/marketing-20261001/phase-b-house-style.log`.
+
+| Guide | Reading age | Average sentence | Actual sentences over 20 |
+|---|---:|---:|---:|
+| Website speed report | 9.0 | 10.4 | 0 |
+| Fix or rebuild a software project | 9.8 | 11.2 | 0 |
+| WordPress versus React | 8.0 | 9.6 | 0 |
+| Hidden website costs | 8.4 | 10.0 | 0 |
+| Website mistakes | 8.8 | 9.9 | 0 |
+| Local search checklist | 9.6 | 10.3 | 0 |
+| Choosing a web designer | 9.0 | 10.5 | 0 |
+| Website costs | 9.1 | 9.8 | 0 |
+| Why we rebuilt our site | 9.2 | 10.9 | 0 |
+
+All nine guides have primary sources, real examples, service/contact links, Sean's linked byline and an explicit checked date. Original publication dates remain separate. Their hard-rule, staffing and AI-pattern counts are zero. The index reads at age 9.9; its checker merges card headings/author labels with prose, producing six artificial long sentences. Its actual ten prose paragraphs average 10.6 words per sentence, longest 17. The author page reads at 9.0; its button/reply concatenation is documented in B-02. Heading and paragraph boundaries were checked separately without weakening the checker.
+
+The B-01 visual review covers all 100 new desktop/phone tiles: index and all nine posts, with home/contact/author controls. All images load and no tile has overflow, clipping or empty card bands. Main navigation, fonts, colours and footer now match the marketing site. The 375px index is 6,188px, down from 7,192px. Four menu states and private quote/code/table/action/video captures were also inspected. The blog's missing main landmark is fixed. Open desktop menus retain one inherited axe best-practice `region` finding for the React Aria portal/hidden Dismiss control, reproduced on the unchanged homepage at both desktop widths. Resolve or explicitly reassess that shared-menu finding during final S-05; B-01 does not change its source.
+
+### Current scorecard during Phase B verification
+
+| Area | Verdict | Evidence and remaining work |
+|---|---|---|
+| SEO technical | Ownership and links verified | S-01/S-03 complete; all 23 indexable pages remain linked. Article source/author review and the B-04 direct 301 are verified. Recheck after P-03. |
+| Copy: house rules | Blog rewritten, remaining page findings identified | All nine guides meet their gate. Local SEO retirement and unchanged legal-copy flags remain. |
+| Copy: claims and proof | Reviewed sources and real examples available | Published source reviews, explicit checked dates and approved client results replace unsupported claims. No ranking or enquiry uplift is inferred. |
+| Copy: message | Main homepage released | P-01 is live; Sean's review is pending before its bespoke patterns are reused. Other P briefs/rebuilds remain. |
+| Design: premium bar | Blog locally verified; remaining P pages open | All B-01 tiles reviewed. Seven page tasks still need their final design/retirement/report-preview work. |
+| Design: consistency | Blog now uses the main foundations | Shared fonts/navigation/footer and light reading styles pass local checks. Production B-01 verification and final shared-menu follow-up remain. |
+| Mobile | Blog cards corrected | No overflow in all 100 captures; no stretched card rows. Final whole-site review follows the remaining P tasks. |
+| Measurement | Not yet verified | Monthly export reminder is set. Analytics account and 30-day conversion evidence remain S-04; Business Profile changes remain Sean's S-02 action. |
+
 ## Progress: 2 October 2026, after Phase F
 
 All seven foundations are implemented, verified and live on production at `8b263e6`. The site now has isolated Untitled UI tokens, three agreed action labels, corrected heading proportions and smaller WOFF2 loading, two section-spacing sizes, a shared server-rendered FAQ, accessible marketing navigation, one static footer and reusable client proof. Each foundation's commit and release evidence is linked from the board. P-01 remains the first full page rebuild; these changes do not mark any Phase P task complete.

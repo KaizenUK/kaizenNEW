@@ -7,6 +7,7 @@ import {
 } from "../../lib/sanity/client";
 import { getStudioUrl } from "../../lib/site";
 import { formatBlogDate, getAuthorPath, getBlogReview } from "../../lib/blog";
+import { ArrowLeft } from "@untitledui/icons";
 
 interface Props {
   post: SanityPost;
@@ -41,23 +42,22 @@ const imageFor = (
 const coverImageUrl =
   imageFor(post.mainImage, 1200, 690) ??
   imageFor(post.coverImage, 1200, 690);
-const authorImageUrl = imageFor(post.author?.image, 96, 96);
 const studioDocumentId = post._id.replace(/^drafts\./, "");
 const studioEditorCookieName = "kaizen_studio_auth";
 const studioUrl = getStudioUrl();
 ---
 
-<article class="linear-container py-14 sm:py-20">
-  <div class="mx-auto max-w-[680px]">
+<article class="marketing-section marketing-section--compact bg-white">
+  <div class="mx-auto max-w-5xl px-6 lg:px-8">
     <a
       href="/blog/"
-      class="linear-meta inline-flex items-center gap-2 text-sky-300 hover:text-sky-200"
+      class="inline-flex min-h-11 items-center gap-2 rounded-md text-sm font-semibold text-uui-brand-800 outline-uui-brand hover:text-uui-brand-700 focus-visible:outline-2 focus-visible:outline-offset-4"
     >
-      <span aria-hidden="true">&larr;</span>
-      Back to insights
+      <ArrowLeft aria-hidden="true" className="size-4" />
+      Back to guides
     </a>
 
-    <header class="mt-6">
+    <header class="mx-auto mt-5 max-w-3xl">
       <div
         id="studio-edit-link"
         class="mb-4 hidden"
@@ -66,58 +66,43 @@ const studioUrl = getStudioUrl();
         data-studio-url={studioUrl}
       />
 
-      <div class="linear-meta mb-4 flex items-center gap-4">
-        <time datetime={post.publishedAt}>{published}</time>
-        <span>&bull;</span>
-        <span>{post.readTime} min read</span>
-      </div>
-
-      <h1 class="text-4xl font-semibold tracking-tight text-white sm:text-5xl">
+      <h1 class="font-heading text-4xl font-bold text-kaizen-dark sm:text-5xl">
         {post.title}
       </h1>
 
       {
         post.excerpt ? (
-          <p class="mt-5 text-lg leading-relaxed text-gray-400">{post.excerpt}</p>
+          <p class="mt-5 text-lg leading-relaxed text-slate-700">{post.excerpt}</p>
         ) : null
       }
 
-      <div class="mt-7 flex items-center gap-3">
-        {
-          authorImageUrl ? (
-            <img
-              src={authorImageUrl}
-              alt={post.author?.name ?? "Author"}
-              width="36"
-              height="36"
-              class="size-9 rounded-full border border-white/10 object-cover"
-            />
-          ) : (
-            <span class="inline-grid size-9 place-items-center rounded-full border border-white/10 bg-white/5 text-xs font-semibold uppercase text-white">
-              {post.author?.name?.slice(0, 2) ?? "KW"}
-            </span>
-          )
-        }
-        <div class="linear-meta">
+      <div class="mt-7 flex flex-wrap gap-x-8 gap-y-4 border-y border-slate-200 py-5 text-sm text-slate-600">
+        <div>
           <p class="m-0">
             By {authorPath ? (
-              <a href={authorPath} rel="author" class="text-sky-300 underline underline-offset-4 hover:text-sky-200">
+              <a href={authorPath} rel="author" class="guide-author-link font-semibold text-uui-brand-800 underline underline-offset-4 hover:text-uui-brand-700">
                 {post.author?.name}
               </a>
             ) : (post.author?.name ?? "Kaizen")}
           </p>
-          {review && (
-            <p class="mb-0 mt-2">
-              Last checked: <time datetime={review.checkedOn}>{review.label}</time>
-            </p>
-          )}
+          <p class="mb-0 mt-1">{post.readTime} min read</p>
         </div>
+        <div>
+          <p class="m-0 font-semibold text-slate-700">Published</p>
+          <time class="mt-1 block" datetime={post.publishedAt}>{published}</time>
+        </div>
+        {review && (
+          <div>
+            <p class="m-0 font-semibold text-slate-700">Last checked:</p>
+            <time class="mt-1 block" datetime={review.checkedOn}>{review.label}</time>
+          </div>
+        )}
       </div>
     </header>
 
     {
       coverImageUrl ? (
-        <figure class="mt-10 overflow-hidden rounded-2xl border border-white/10">
+        <figure class="mt-8 overflow-hidden rounded-2xl border border-slate-200 bg-slate-50">
           <img
             src={coverImageUrl}
             width="1200"
@@ -132,7 +117,7 @@ const studioUrl = getStudioUrl();
       ) : null
     }
 
-    <section class="mt-12">
+    <section data-blog-body class="mx-auto mt-10 max-w-3xl">
       <PortableTextRenderer value={post.body ?? []} />
     </section>
   </div>
@@ -166,7 +151,7 @@ const studioUrl = getStudioUrl();
     link.target = "_blank";
     link.rel = "noreferrer";
     link.className =
-      "linear-meta inline-flex items-center gap-2 rounded-full border border-sky-400/30 bg-sky-500/10 px-3 py-1.5 text-xs text-sky-200 hover:border-sky-300/60 hover:text-sky-100";
+      "inline-flex min-h-11 items-center rounded-lg border border-slate-300 bg-slate-50 px-3 py-2 text-sm font-semibold text-uui-brand-800 outline-uui-brand hover:bg-slate-100 focus-visible:outline-2 focus-visible:outline-offset-4";
     link.textContent = "Edit in Studio";
 
     container.append(link);

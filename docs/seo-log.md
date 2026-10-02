@@ -2,6 +2,12 @@
 
 Every change that can affect search, newest first: date, URL, what changed and why. One change at a time where possible, then wait a few weeks before judging it (`seo-strategy`, "Measure, test and audit"). Positions quoted here are stale the day they are written; pull Search Console for current numbers.
 
+## 2 Oct 2026: bring the guides into the main site design (B-01)
+
+- `/blog/` and all nine article routes adopt the existing site navigation, fonts, colours and footer, with a light reading layout and main landmark. The index replaces its stretched featured grid with nine naturally sized cards and gains a descriptive author/review-policy link.
+- All 53 original documents retain their metadata and structured data. Article prose, sources, images, original publication dates, explicit checked dates, URLs and canonicals are preserved. No CMS write or sitemap change. A fresh crawl retains all service/contact links and finds no orphan or missing internal destination across 23 indexable pages.
+- Local types, full build, copy, 100 screenshot tiles and Windows test comparison pass. Eighty-eight browser views and four navigation journeys also pass; deployment verification is pending; proof: `docs/audits/2026-10-02-b01-proof.md`. No ranking or enquiry improvement is claimed.
+
 ## 2 Oct 2026: named author, real review dates and sourced guides (B-02)
 
 - All nine public blog posts now name Sean McDonnell, link to `/authors/sean-mcdonnell/` and display a checked date tied to a completed content/source review. Article author metadata matches. The new indexable profile links approved work and the company officer record, explains the review policy and provides a correction route. It is included in the sitemap and page-owner map.
