@@ -5,7 +5,7 @@
 - `/about/` now shows Midland's real before/after work and approved results, the same-person promise and a clear route from a free first chat through deposit, review and launch. Editing help and later changes are explained without technology names or new price/timing claims.
 - The company panel uses existing legal constants and distinguishes the registered office from the two service areas. Companies House and Sean's author profile are linked. Added descriptive service and pledge links; kept the Kaizen-rebuild guide. The agreed contact action and exact reply fit in the first phone screen.
 - URL, title, description, canonical, indexability and schema are preserved. All 53 baseline HTML documents retain metadata/schema; only About's body changes. No CMS write.
-- Types, full build, copy (age 8.9), all eight final tiles, eight browser views and eight keyboard contact journeys pass. Production release and live checks are pending. Proof: `docs/audits/2026-10-02-p04-proof.md`. No ranking or enquiry uplift is claimed.
+- Types, full build, copy (age 8.9), all eight final tiles, eight browser views and eight keyboard contact journeys pass. Released in `5882cef`, deployment `36981405250`; live content/search/image checks, eight live browser views and eight contact journeys pass. P-04 is complete. Proof: `docs/audits/2026-10-02-p04-proof.md`. No ranking or enquiry uplift is claimed.
 
 ## 2 Oct 2026: retire the local SEO service (P-03)
 
