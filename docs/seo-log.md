@@ -2,6 +2,12 @@
 
 Every change that can affect search, newest first: date, URL, what changed and why. One change at a time where possible, then wait a few weeks before judging it (`seo-strategy`, "Measure, test and audit"). Positions quoted here are stale the day they are written; pull Search Console for current numbers.
 
+## 2 Oct 2026: contact expectations and visible email (P-05)
+
+- `/contact/` now names the website conversation, shows the exact agreed reply time and says the first chat is free. The existing expectations band explains agreement on work/price and the non-refundable deposit, with a descriptive pledge link.
+- Added the established `hello@kaizenweb.co.uk` email near the form. A scoped Cloudflare email-obfuscation opt-out keeps this contact route usable without JavaScript. Initial autofocus is disabled on this page so phone visitors see the introduction; a named form section completes the heading order. No form fields or submission logic changed.
+- Title, description, canonical, structured data and URL are unchanged, as are the other 54 generated page bodies. Copy reads at age 8.8 with no wording or sentence-length hits. Proof: `docs/audits/2026-10-02-p05-proof.md`. No enquiry or ranking improvement is claimed.
+
 ## 2 Oct 2026: clear ad pages and contact flow (P-11)
 
 - `/get-started/` and `/review/` retain `noindex, nofollow` and stay out of the sitemap. Both now explain website work for business owners, a free first chat and the agreed reply time. Unsupported rankings, ad-cost, universal loading-time and no-monthly-fee claims are removed; the real Midland screenshot and approved result provide the proof.

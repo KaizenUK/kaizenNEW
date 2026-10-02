@@ -19,6 +19,8 @@ The expanded six-route audit found a Bing UET loader on `/get-started/` with the
 
 P-11 removes the unconfigured loader and submit listener. Browser checks on both built ad pages observe no Bing/Clarity/Google tracking request. The actual contact and scanner components, saved-lead semantics and database integration remain unchanged. S-04 still needs the existing account identified, or an agreed reporting destination, before instrumentation can be completed.
 
+The P-11 live browser check additionally observed Cloudflare edge requests to `/cdn-cgi/rum` and its challenge platform. These were absent from the earlier fetched HTML/script-graph evidence and do not establish enquiry conversion reporting. The live form smoke test blocks all writes, records these background attempts separately and confirms that walking the form without submitting generates no application write. Cloudflare account access, dashboards and any configured conversion goals remain unverified.
+
 ## Completed reminder
 
 Created and read back the active thread reminder `export-kaizen-search-console-data`, **Export Kaizen Search Console data**, for the first day of each month at 09:00 local time (Europe/London). It reminds Sean to export the previous complete calendar month and the available 16-month history, retain dated exports and compare page/query results against the SEO log. The reminder points to Google Search Console. The first scheduled monthly date after this setup is 1 November 2026.
