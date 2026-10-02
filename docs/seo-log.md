@@ -2,6 +2,13 @@
 
 Every change that can affect search, newest first: date, URL, what changed and why. One change at a time where possible, then wait a few weeks before judging it (`seo-strategy`, "Measure, test and audit"). Positions quoted here are stale the day they are written; pull Search Console for current numbers.
 
+## 2 Oct 2026: practical website-build comparison (B-03, first of five)
+
+- `/blog/wordpress-vs-react-business-roi/` now explains how to compare the editor, phone experience, quoted work and upkeep. The title/H1 is "WordPress vs React: How to Choose for Your Business"; the description and excerpt match the new buying guidance. The existing comparison topic and URL remain; Kaizen's implementation is not disclosed.
+- Added four primary-source links beside supported claims and a real Midland before-and-after example using the approved loading-time and enquiry figures. Replaced the generated cover/social image with the actual rebuilt homepage. The blog index picks up the updated card title, excerpt and image.
+- Descriptive links lead to the WordPress service, scanner, Midland case study, cost guides and contact. The rewritten article's new links omit the old tracking parameters. Publication date, author, category, canonical and indexability are unchanged; no redirect or URL change.
+- Blog body images now reserve space using their source/crop proportions. The cover sizing is unchanged. Verification and release evidence: `docs/audits/2026-10-02-b03-comparison-proof.md`. B-03 remains open for four more rewrites; B-01/B-02 retain the shared blog design and author/date work. No ranking or enquiry improvement is claimed.
+
 ## 2 Oct 2026: contact expectations and visible email (P-05)
 
 - `/contact/` now names the website conversation, shows the exact agreed reply time and says the first chat is free. The existing expectations band explains agreement on work/price and the non-refundable deposit, with a descriptive pledge link.

@@ -166,6 +166,16 @@ const components: PortableTextComponents = {
         .quality(72)
         .format("webp")
         .url();
+      // Reserve the rendered image's space, including any crop saved by the editor.
+      const parsedUrl = new URL(imageUrl);
+      const sourceSize = parsedUrl.pathname.match(/-(\d+)x(\d+)\.[^/]+$/);
+      const crop = parsedUrl.searchParams.get("rect")?.split(",").map(Number);
+      const sourceWidth = crop?.[2] || Number(sourceSize?.[1]);
+      const sourceHeight = crop?.[3] || Number(sourceSize?.[2]);
+      const width = sourceWidth > 0 ? Math.min(1200, sourceWidth) : undefined;
+      const height = width && sourceHeight > 0
+        ? Math.max(1, Math.round(width * sourceHeight / sourceWidth))
+        : undefined;
       const altText =
         typeof value?.alt === "string" && value.alt.trim()
           ? value.alt
@@ -176,9 +186,11 @@ const components: PortableTextComponents = {
           <img
             src={imageUrl}
             alt={altText}
+            width={width}
+            height={height}
             loading="lazy"
             decoding="async"
-            className="w-full object-cover"
+            className="h-auto w-full object-cover"
           />
         </figure>
       );
