@@ -2,7 +2,8 @@
  * Existing site evidence. New claims belong in the site profile first.
  * Review names, dates, ratings, text and the Google listing URL are copied from
  * src/components/homepage/Reviews.astro at commit
- * a842521519d5700d64d702f0059a73c5adf02584. These are excerpts, never rewrites.
+ * a842521519d5700d64d702f0059a73c5adf02584. These are excerpts, never rewrites;
+ * the only change is a capital letter where an excerpt starts mid-sentence.
  * The listing URL does not identify an individual review.
  */
 export const googleReviewsUrl =
@@ -23,7 +24,7 @@ export const reviews = {
     rating: 5,
     postedOn: "2026-02-26",
     postedMonth: "February 2026",
-    excerpt: "work done to an incredible high standard.",
+    excerpt: "Work done to an incredible high standard.",
   },
   cassieWolf: {
     author: "Cassie Wolf",
@@ -41,7 +42,7 @@ export const reviews = {
     postedOn: "2026-02-12",
     postedMonth: "February 2026",
     excerpt:
-      "they were easy to work with, responsive, and delivered exactly what we needed.",
+      "They were easy to work with, responsive, and delivered exactly what we needed.",
   },
 } as const;
 

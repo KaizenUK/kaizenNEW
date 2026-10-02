@@ -308,14 +308,13 @@ export const ContactFormBox = ({
                       htmlFor={`${formId}-name`}
                       className="block text-xs font-medium text-white mb-2"
                     >
-                      First Name <span className="text-red-400">*</span>
+                      First name <span className="text-red-400">*</span>
                     </label>
                     <input
                       id={`${formId}-name`}
                       type="text"
                       value={name}
                       onChange={(e) => setName(e.target.value)}
-                      placeholder="John"
                       className="w-full bg-gray-800/50 border border-white/10 text-white placeholder:text-white/40 placeholder:text-base rounded-lg px-4 py-3 text-base focus:outline-none focus:border-cyan-500 transition"
                       autoFocus={autoFocusFields}
                     />
@@ -332,7 +331,6 @@ export const ContactFormBox = ({
                       type="text"
                       value={surname}
                       onChange={(e) => setSurname(e.target.value)}
-                      placeholder="Smith"
                       className="w-full bg-gray-800/50 border border-white/10 text-white placeholder:text-white/40 placeholder:text-base rounded-lg px-4 py-3 text-base focus:outline-none focus:border-cyan-500 transition"
                     />
                   </div>
@@ -526,7 +524,7 @@ export const ContactFormBox = ({
                     aria-labelledby={`${formId}-message-label`}
                     value={message}
                     onChange={(e) => setMessage(e.target.value)}
-                    placeholder="Tell us about your project..."
+                    placeholder="For example: our site looks dated and does not bring in calls."
                     rows={4}
                     className="w-full bg-gray-800/50 border border-white/10 text-white placeholder:text-white/40 placeholder:text-base rounded-lg px-4 py-3 text-base focus:outline-none focus:border-cyan-500 transition resize-none"
                     autoFocus

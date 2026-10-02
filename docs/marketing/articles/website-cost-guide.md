@@ -12,9 +12,9 @@ Below are two published UK prices, checked on 2 October 2026. They give you conc
 
 ## Published prices come with different terms.
 
-[Webfactory's Essential package](https://www.webfactory.co.uk/bespoke-website-design) lists five pages for £399, plus £13.99 a month. Both charges exclude VAT. The package includes a web address and hosting, which keeps the site online.
+Webfactory's Essential package lists five pages for £399, plus £13.99 a month. Both charges exclude VAT. The package includes a web address and hosting, which keeps the site online.
 
-[Genius Division's Starter package](https://www.geniusdivision.com/pricing/) starts at £5,000 excluding VAT. It includes a design made for the business, editing tools and training. Its optional care plans start at £150 a month, also excluding VAT.
+Genius Division's Starter package starts at £5,000 excluding VAT. It includes a design made for the business, editing tools and training. Its optional care plans start at £150 a month, also excluding VAT.
 
 These are advertised examples, not an average price or Kaizen's rates. They do not cover the same work. Check the current terms through the source links before comparing them.
 

@@ -1,5 +1,11 @@
 # SEO change log: kaizenweb.co.uk
 
+## 2 Oct 2026: review follow-ups (Claude)
+
+- `/blog/how-much-does-a-website-cost-in-liverpool-in-2025/`: removed the links to Webfactory and Genius Division (Sean: no links to competitors). Their names and published prices stay as plain text. Changed in Sanity (`wp-post-16`) and in `docs/marketing/articles/website-cost-guide.md`.
+- `/about/`: process heading no longer breaks with one word on its own line. Home page review excerpts start with a capital letter. Contact form: "First name", no sample names, and a plainer message hint.
+- Deploy fix: `pnpm-lock.yaml` updated for the `posthog-js` package added in `b0468d0`, whose deploy failed on the out-of-date lockfile.
+
 ## 2 Oct 2026: saved-enquiry measurement (S-04)
 
 - Integrates Sean's PostHog install across public marketing layouts with working cookie choices. Counts saved contact enquiries and saved scanner email leads separately; excludes failed saves, bot confirmations and automated tests. Cookie/privacy pages now describe the collection.
