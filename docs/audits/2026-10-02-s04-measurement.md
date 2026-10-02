@@ -21,6 +21,18 @@ P-11 removes the unconfigured loader and submit listener. Browser checks on both
 
 The P-11 live browser check additionally observed Cloudflare edge requests to `/cdn-cgi/rum` and its challenge platform. These were absent from the earlier fetched HTML/script-graph evidence and do not establish enquiry conversion reporting. The live form smoke test blocks all writes, records these background attempts separately and confirms that walking the form without submitting generates no application write. Cloudflare account access, dashboards and any configured conversion goals remain unverified.
 
+## Connected PostHog follow-up after S-05
+
+The available PostHog connector was checked on 2 October 2026 after the final site audit. Read-only inventory finds one organisation named Kaizen and one Default project. Its configured website list contains three other domains; kaizenweb.co.uk is absent. The pageview event exists, and its verified hostname-property taxonomy returns one other hostname, not Kaizen's website.
+
+This identifies an accessible analytics account, but it does not identify working reporting for this website. No visitor records, session replays, event-level data or conversion reports were read. No project, tracking setting, event or dashboard was changed. Tokens are not recorded in repository evidence.
+
+[PostHog's authorised-URL documentation](https://posthog.com/docs/health-checks/authorized-urls) describes the URL setting's toolbar and filtering role; it is not treated as an exhaustive event-ingestion report. The returned taxonomy values also do not establish a 30-day zero count. The requirement remains a verified report for successful contact saves and scanner email-lead saves, with a known account and date range.
+
+The connection cannot load project-specific skills or business-knowledge documents with its current scopes; the available general query skill and official documentation were checked. That limitation was not bypassed. The identity and taxonomy checks above succeeded with the available read access.
+
+Sean was asked to identify the website's reporting tool/property, or confirm that no analytics is set up. Do not add Kaizen's website to the shared project or install new tracking merely because this connector is available. Private, token-free discovery evidence: .local/marketing-20261001/s04-posthog-discovery.json.
+
 ## Completed reminder
 
 Created and read back the active thread reminder `export-kaizen-search-console-data`, **Export Kaizen Search Console data**, for the first day of each month at 09:00 local time (Europe/London). It reminds Sean to export the previous complete calendar month and the available 16-month history, retain dated exports and compare page/query results against the SEO log. The reminder points to Google Search Console. The first scheduled monthly date after this setup is 1 November 2026.
