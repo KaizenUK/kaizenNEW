@@ -4,6 +4,8 @@ import "../styles/blog.css";
 import NavShell from "../../client/components/layout/NavShell";
 import SiteFooter from "../../client/components/layout/SiteFooter";
 import { isStagingBuild, resolveCanonicalUrl, STAGING_ROBOTS } from "../lib/site";
+import PostHog from "../components/posthog.astro";
+import AnalyticsConsent from "../components/AnalyticsConsent.astro";
 
 interface Props {
   title: string;
@@ -53,6 +55,7 @@ const footerBuildLabel =
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{title}</title>
+    <PostHog />
     <meta name="description" content={description} />
     <meta name="robots" content={robotsContent} />
     <meta name="author" content={author} />
@@ -85,5 +88,6 @@ const footerBuildLabel =
       <slot />
     </main>
     <SiteFooter buildLabel={footerBuildLabel} />
+    <AnalyticsConsent />
   </body>
 </html>

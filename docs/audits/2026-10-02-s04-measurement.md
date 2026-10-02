@@ -45,3 +45,33 @@ Created and read back the active thread reminder `export-kaizen-search-console-d
 4. Verify the live integration and record the actual account/property, event definitions, dates and totals in the site profile. Keep the task open until the board's evidence requirement is met.
 
 The existing article links include internal `utm_source=chatgpt.com` parameters. Review those when implementing attribution so internal navigation does not distort acquisition reporting. S-03 preserved them; no attribution claim is made here.
+
+## Resumed after Sean's PostHog installation, 2 October
+
+Sean selected PostHog and explicitly deferred his Business Profile until after this goal. The earlier account-selection blocker is resolved. The installed public token matches project **203621**, **Default project**, organisation **Kaizen**, on EU Cloud. Existing other-site settings are preserved. Website reports must filter to kaizenweb.co.uk.
+
+The production and staging release environment files now hold the two installed public PostHog settings. Exact-value read-back passed; protected before-change copies remain on the VPS. Tokens are not in repository evidence. Staging is excluded at runtime and has not yet been advanced.
+
+### Verified implementation
+
+- `contact_form_submitted`: only after the contact database insert returns without an error. Honeypot confirmations, invalid forms and failed saves do not count.
+- `scanner_email_lead_saved`: only after the scanner email-lead insert succeeds. A report unlock or scan completion alone does not count.
+- No name, email, phone, message or scanned URL is sent. The two existing boolean contact properties describe website ownership and marketing consent; scanner capture has only the marketing-consent boolean.
+- Tracking waits for the existing cookie-consent choice. Decline, persistence, reopening choices and withdrawal are checked. The shared notice now has working controls, and cookie/privacy prose describes the actual collection. No replay, automatic clicks, exceptions or logs are enabled by this website integration.
+- Events carry `site=kaizenweb.co.uk`, `measurement_version=1` and `is_test`. Browser automation is marked as test traffic. Stage, builder routes and framed previews are excluded.
+- URL query strings/fragments and campaign properties are removed. Existing internal UTM links therefore cannot become attributed campaigns. Acquisition campaign reporting is deliberately not claimed.
+- Analytics exceptions cannot turn a successful save into a form error. Declining analytics does not change either form.
+
+### Local evidence before release
+
+Types and the full production/Studio build pass. Vitest: before 1,561 / 1,078 passed / 439 inherited failures / 44 pending; after 1,565 / 1,082 passed / the same 439 failures / 44 pending. Four new tests pass; test-name comparison has no regressions or new failures. The Windows failures are not described as a green suite.
+
+Thirty-four browser checks pass: twelve desktop/phone consent, accessibility and overflow views across all three marketing layouts and both updated policy pages, plus twenty-two contact/scanner journeys. Success, database failure, absent database, declined consent, throwing tracker and contact honeypot paths are covered. Database boundaries and scanner responses are mocked; no enquiry, scanner lead or alert is actually sent. All twelve changed-UI viewport captures were inspected in six review sheets. The final shared-script change additionally handles consent withdrawal in another tab.
+
+All 53 built documents retain metadata and structured data. The 22-page sitemap and existing linking checks still pass. Marketing copy has zero hard-rule breaches; policy prose is reported separately from marketing reading-age targets. Private evidence is in `.local/marketing-20261001/s04-*`.
+
+The install also left builder instrumentation and a package addition in the shared checkout. These are preserved as Sean's separate work and are excluded from this marketing release, as the board requires. The web snippet does not need the unused package addition.
+
+### Reporting still to verify after deployment
+
+The connector has saved-insight read/write access. Its separate marketing-goal and governed-metric scopes are unavailable, so use a clearly described saved event-count insight, not a claim of an approved catalogue metric. Existing matching insight search returns none. Neither new conversion name exists in the pre-release event schema. There is no verified 30-day historical collection to recover. Live ingestion, report filters and counts will be recorded after this release.

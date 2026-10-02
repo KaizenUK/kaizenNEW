@@ -1,6 +1,7 @@
 import { Button } from "./untitled/base/buttons/button";
 import { useEffect, useState, type ReactNode } from "react";
 import { scannerFindingIds } from "@/lib/scanner-report";
+import { capturePostHog } from "@/lib/posthog";
 
 // Define the metrics type for comprehensive reporting
 type MetricsState = {
@@ -266,6 +267,10 @@ export default function SpeedScanner({
 
         if (error) {
           console.error("Supabase Error:", error.message);
+        } else {
+          capturePostHog("scanner_email_lead_saved", {
+            marketing_consent: consentToMarketing,
+          });
         }
       } else {
         console.warn("Supabase not connected. Check .env keys.");

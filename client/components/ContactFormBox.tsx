@@ -2,6 +2,7 @@ import { Button } from "./untitled/base/buttons/button";
 import { useId, useState } from "react";
 import { motion } from "framer-motion";
 import { Mail, Check, AlertCircle } from "lucide-react";
+import { capturePostHog } from "../lib/posthog";
 
 type SubmitStatus = "idle" | "submitting" | "success" | "error";
 type FormStep = 1 | 2 | 3 | 4 | 5;
@@ -221,6 +222,10 @@ export const ContactFormBox = ({
         setErrorMessage("Something went wrong. Please try again.");
         setStatus("error");
       } else {
+        capturePostHog("contact_form_submitted", {
+          has_website: hasWebsite === true,
+          marketing_consent: consentToMarketing,
+        });
         setStatus("success");
         resetForm();
         setTimeout(() => {

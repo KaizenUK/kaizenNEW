@@ -1,0 +1,57 @@
+<aside id="analytics-choice" aria-label="Cookie choices" hidden>
+  <div class="analytics-choice-inner">
+    <div>
+      <p class="analytics-choice-title">Help us improve this site</p>
+      <p>May we use cookies to see which pages help you? Your choice will not affect the site.</p>
+      <a href="/cookie-policy/">Read our cookie policy</a>
+    </div>
+    <div class="analytics-choice-actions">
+      <button type="button" data-analytics-choice="false">No thanks</button>
+      <button type="button" data-analytics-choice="true">Allow cookies</button>
+    </div>
+  </div>
+</aside>
+<button id="analytics-settings" type="button" hidden>Cookie choices</button>
+<script>
+  const banner = document.getElementById("analytics-choice");
+  const settings = document.getElementById("analytics-settings");
+  const key = "kaizen-cookie-consent";
+  const active = window.location.hostname === "kaizenweb.co.uk" || window.location.hostname === "localhost";
+  if (banner && settings && active && window === window.parent) {
+    let saved: { analytics?: boolean } | null = null;
+    try { saved = JSON.parse(localStorage.getItem(key) || "null"); } catch { /* Ask again if storage is unavailable. */ }
+    const hasChoice = typeof saved?.analytics === "boolean";
+    banner.hidden = hasChoice;
+    settings.hidden = !hasChoice;
+    settings.addEventListener("click", () => {
+      banner.hidden = false;
+      settings.hidden = true;
+      banner.querySelector<HTMLButtonElement>("button")?.focus();
+    });
+    banner.querySelectorAll<HTMLButtonElement>("[data-analytics-choice]").forEach(button => {
+      button.addEventListener("click", () => {
+        const analytics = button.dataset.analyticsChoice === "true";
+        try {
+          localStorage.setItem(key, JSON.stringify({ strictlyNecessary: true, functional: false, analytics }));
+        } catch { /* The choice still applies for this page. */ }
+        window.dispatchEvent(new CustomEvent("kaizen:analytics-consent", { detail: { analytics } }));
+        banner.hidden = true;
+        settings.hidden = false;
+        settings.focus({ preventScroll: true });
+      });
+    });
+  }
+</script>
+<style>
+  #analytics-choice { position: fixed; inset: auto 0 0; z-index: 60; background: #fff; color: #101828; border-top: 1px solid #d0d5dd; box-shadow: 0 -4px 20px #10182814; }
+  .analytics-choice-inner { max-width: 1200px; margin: auto; padding: 20px 24px; display: flex; align-items: center; justify-content: space-between; gap: 24px; font-size: 14px; line-height: 1.5; }
+  .analytics-choice-title { font-weight: 700; margin-bottom: 4px; font-size: 16px; }
+  a { color: #086d7e; text-decoration: underline; text-underline-offset: 3px; }
+  .analytics-choice-actions { display: flex; gap: 12px; flex-shrink: 0; }
+  button { border: 1px solid #667085; border-radius: 8px; padding: 10px 16px; background: #fff; color: #101828; font-weight: 600; cursor: pointer; min-height: 44px; }
+  button:hover { background: #f2f4f7; }
+  button:focus-visible, a:focus-visible { outline: 3px solid #0c8a9e; outline-offset: 3px; }
+  #analytics-settings { position: fixed; bottom: 12px; left: 12px; z-index: 40; font-size: 12px; box-shadow: 0 2px 8px #10182814; }
+  [hidden] { display: none !important; }
+  @media (max-width: 767px) { .analytics-choice-inner { display: block; padding: 16px; } .analytics-choice-actions { margin-top: 12px; } .analytics-choice-actions button { flex: 1; } }
+</style>

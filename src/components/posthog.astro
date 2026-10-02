@@ -1,0 +1,66 @@
+---
+const apiKey = import.meta.env.PUBLIC_POSTHOG_PROJECT_TOKEN;
+const apiHost = import.meta.env.PUBLIC_POSTHOG_HOST;
+---
+
+<script is:inline define:vars={{ apiKey, apiHost }}>
+  (() => {
+    // Stage, previews and the builder must not enter website lead reports.
+    if (location.hostname !== "kaizenweb.co.uk" && location.hostname !== "localhost") return;
+    if (location.pathname.startsWith("/builder") || window !== window.parent) return;
+    window.kaizenAnalyticsAllowed = false;
+    const cleanUrl = value => {
+      try { const url = new URL(value); return url.origin + url.pathname; } catch { return ""; }
+    };
+    const applyConsent = analytics => {
+      window.kaizenAnalyticsAllowed = analytics === true;
+      if (!analytics) {
+        try { window.posthog?.opt_out_capturing({ clear_persistence: true }); } catch { /* Optional tracker. */ }
+        return;
+      }
+      if (!apiKey || !apiHost) return;
+      if (window.posthog) {
+        window.posthog.opt_in_capturing();
+        return;
+      }
+    !function(t,e){var o,n,p,r;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.crossOrigin="anonymous",p.async=!0,p.src=s.api_host+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],Object.defineProperty(u,"toString",{configurable:!0,enumerable:!0,writable:!0,value:function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e}}),Object.defineProperty(u.people,"toString",{configurable:!0,enumerable:!0,writable:!0,value:function(){return u.toString(1)+".people (stub)"}}),o="capture identify alias people.set people.set_once set_config register register_once unregister opt_out_capturing has_opted_out_capturing opt_in_capturing reset isFeatureEnabled onFeatureFlags getFeatureFlag getFeatureFlagPayload reloadFeatureFlags group updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures getActiveMatchingSurveys getSurveys getNextSurveyStep onSessionId".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
+
+    posthog.init(apiKey, {
+      api_host: apiHost,
+      ui_host: "https://eu.posthog.com",
+      defaults: "2026-01-30",
+      autocapture: false,
+      capture_exceptions: false,
+      disable_session_recording: true,
+      enable_heatmaps: false,
+      capture_dead_clicks: false,
+      capture_performance: false,
+      capture_pageleave: false,
+      person_profiles: "never",
+      before_send: event => {
+        if (!window.kaizenAnalyticsAllowed || location.hostname !== "kaizenweb.co.uk") return null;
+        if (!["$pageview", "contact_form_submitted", "scanner_email_lead_saved"].includes(event.event)) return null;
+        const properties = event.properties;
+        // Keep enquiry text, email addresses, scanned URLs and URL parameters out.
+        for (const key of Object.keys(properties)) {
+          if (/utm_|gclid|fbclid|msclkid|\$set/.test(key)) delete properties[key];
+          else if (/url|referrer/.test(key) && typeof properties[key] === "string") properties[key] = cleanUrl(properties[key]);
+        }
+        properties.site = "kaizenweb.co.uk";
+        properties.measurement_version = 1;
+        properties.is_test = navigator.webdriver === true;
+        return event;
+      },
+    });
+    };
+    window.addEventListener("kaizen:analytics-consent", event => {
+      try { applyConsent(event.detail.analytics); } catch { /* Never affect the page or form. */ }
+    });
+    window.addEventListener("storage", event => {
+      if (event.key === "kaizen-cookie-consent" || event.key === null) {
+        try { applyConsent(JSON.parse(event.newValue || "null")?.analytics === true); } catch { applyConsent(false); }
+      }
+    });
+    try { applyConsent(JSON.parse(localStorage.getItem("kaizen-cookie-consent") || "null")?.analytics === true); } catch { /* No consent means no tracking. */ }
+  })();
+</script>

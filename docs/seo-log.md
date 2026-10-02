@@ -1,5 +1,12 @@
 # SEO change log: kaizenweb.co.uk
 
+## 2 Oct 2026: saved-enquiry measurement (S-04)
+
+- Integrates Sean's PostHog install across public marketing layouts with working cookie choices. Counts saved contact enquiries and saved scanner email leads separately; excludes failed saves, bot confirmations and automated tests. Cookie/privacy pages now describe the collection.
+- URL parameters and campaign properties are removed, so old internal UTM links do not create false acquisition campaigns. No URL, title, canonical, schema, sitemap or CMS change. Historical data and ranking gains are not invented.
+- Types, build, test-name comparison, 34 browser checks and all twelve changed-UI viewport captures pass. All 53 documents preserve search metadata; the 22-page sitemap and link coverage pass. Live ingestion/report proof will follow deployment. Details: `docs/audits/2026-10-02-s04-measurement.md`.
+
+
 ## 2 Oct 2026: final site audit and accessibility corrections (S-05)
 
 - Audited 28 current public routes after all page and blog rebuilds. The current sitemap has 22 self-canonical indexable pages. All nine guides and three service owners meet body-link coverage; no orphan, missing destination, generic anchor or retired internal link is found. Maximum depth is two.
