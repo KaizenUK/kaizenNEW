@@ -1,5 +1,11 @@
 # SEO change log: kaizenweb.co.uk
 
+## 2 Oct 2026: clearer WordPress service choices (P-02)
+
+- Rebuilt the presentation at `/services/wordpress-web-design/`: real Midland work and approved results, three distinct options, the agreed response sentence, a clear buying process and a pledge link. Removed repeated comparison copy and sales endings.
+- Preserved the URL, title, description, canonical, indexability, Service data and all ten FAQ answers/data. The existing guide and case-study links remain. All 54 built documents retain their original metadata and schema; only this page's body changes.
+- Copy reads at age 7.4. Types, full build, eight inspected tiles and eight browser views pass. Phone height falls from 9,660 to 7,553 pixels. Release and live checks pending; proof: `docs/audits/2026-10-02-p02-proof.md`. No ranking or enquiry uplift is claimed.
+
 Every change that can affect search, newest first: date, URL, what changed and why. One change at a time where possible, then wait a few weeks before judging it (`seo-strategy`, "Measure, test and audit"). Positions quoted here are stale the day they are written; pull Search Console for current numbers.
 
 ## 2 Oct 2026: show the speed check and a real report together (P-06)

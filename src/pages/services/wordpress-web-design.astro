@@ -1,62 +1,55 @@
 ---
 import { FaqSection } from "../../../client/components/untitled/faq";
-import { MarketingButton } from "../../../client/components/untitled/MarketingButton";
+import { MarketingButton, contactResponse } from "../../../client/components/untitled/MarketingButton";
+import { MetricsBlock } from "../../../client/components/untitled/proof";
+import { caseStudies } from "../../../client/components/untitled/proof/evidence";
 import StaticPageLayout from "../../layouts/StaticPageLayout.astro";
-import ContactCTAButton from "../../../client/components/ContactCTAButton";
 
 export const prerender = true;
+const midland = caseStudies.midland;
 
-/* ── Three paths ─────────────────────────────────────────────── */
 const paths = [
   {
-    "number": "01",
-    "headline": "Rebuild the site around your business.",
-    "hook": "Keep what works. Get a new site that is easier to use.",
-    "description": "We rebuild the pages your customers see. You can still edit your own pages and blog. We show you how before launch.",
-    "ideal": "Your old site holds you back, even after repeated fixes.",
-    "cta": "Talk to us about your site",
-    "tag": "A fresh start",
-    "tagColor": "cyan"
+    number: "01",
+    label: "Keep what works",
+    headline: "Improve the site you have.",
+    ideal: "You like the design, but pages are slow or hard to use on a phone.",
+    description: "We check what causes the problems and agree which fixes matter most. You get a clear plan and price before we start.",
+    editing: "Keep your pages and the editor you know.",
   },
   {
-    "number": "02",
-    "headline": "Improve the site you have.",
-    "hook": "You may not need to start again.",
-    "description": "We check your site and explain what needs work. Then we agree which fixes matter most to your business.",
-    "ideal": "You like your site but want it to load faster.",
-    "cta": "Talk to us about your site",
-    "tag": "Build on what works",
-    "tagColor": "gray"
+    number: "02",
+    label: "A fresh design",
+    headline: "Rebuild around your customers.",
+    ideal: "You have tried fixes, but the site is still hard to use or change.",
+    description: "We rebuild the pages your customers see around what they need to do. Help them find what you offer and get in touch.",
+    editing: "Edit your own pages and blog. We show you how before launch.",
   },
   {
-    "number": "03",
-    "headline": "Start with a new WordPress site.",
-    "hook": "Stay with the editor you know.",
-    "description": "We build your pages around what customers need to do. You get a site you can edit, with help when you need it.",
-    "ideal": "You want to keep WordPress and improve how your site works.",
-    "cta": "Talk to us about your site",
-    "tag": "Keep WordPress",
-    "tagColor": "gray"
-  }
+    number: "03",
+    label: "Keep WordPress",
+    headline: "Build a new WordPress site.",
+    ideal: "You want new pages while keeping an editor you know how to use.",
+    description: "We build a new WordPress site around your business. This can suit a fresh start or replace a site that no longer fits.",
+    editing: "Keep using WordPress, with help when you need it.",
+  },
 ];
 
-/* ── The problem (story-driven) ──────────────────────────────── */
-const problems = [
+const steps = [
   {
-    "stat": "The wait",
-    "detail": "A slow page makes it harder to see what you offer. Check what loads before you spend on more ads."
+    title: "Agree the work and cost.",
+    description: "The first conversation is free. We agree what needs to change, the price and dates. Work starts after a non-refundable deposit.",
   },
   {
-    "stat": "The clutter",
-    "detail": "Extra features can get in the way. Keep the parts that help people find what they need."
+    title: "See your pages before launch.",
+    description: "You see the work before it goes live. We show you how to edit your pages and blog.",
   },
   {
-    "stat": "The next step",
-    "detail": "Make it easy to call or send an enquiry. People should not have to hunt for your contact details."
-  }
+    title: "Get help with later changes.",
+    description: "You deal with the same person throughout. You can make your own changes, or ask us to do them for you.",
+  },
 ];
 
-/* ── FAQ ─────────────────────────────────────────────────────── */
 const faqs = [
   {
     "question": "How do I know which option fits?",
@@ -122,249 +115,99 @@ const serviceSchema = JSON.stringify({
 >
   <script type="application/ld+json" set:html={serviceSchema} is:inline />
 
-  <!-- ═══ HERO ═══ -->
-  <section class="marketing-section bg-white">
-    <div class="mx-auto max-w-[1440px] px-6 sm:px-10 lg:px-16 xl:px-24">
-      <p
-        class="marketing-eyebrow mb-6 text-xs font-medium font-body uppercase tracking-[0.25em] text-gray-400"
-      >
-        WordPress Web Design
-      </p>
-      <h1
-        class="max-w-6xl text-balance text-4xl sm:text-5xl font-heading font-bold leading-[1.1] text-gray-950 md:text-6xl lg:text-7xl"
-      >
-        WordPress web design that<br />
-        <span class="text-gray-400">earns its keep.</span>
-      </h1>
-      <p class="mt-8 max-w-2xl text-xl leading-relaxed text-gray-600">
-        A slow, dated site can hold your business back. We can improve it or help you start fresh.
-      </p>
-      <div class="mt-10 flex flex-col gap-4 sm:flex-row">
-        <MarketingButton action="contact" />
-      </div>
-    </div>
-  </section>
-
-  <!-- ═══ THE PROBLEM (Concrete + Emotional) ═══ -->
-  <section class="marketing-section bg-gray-950">
-    <div class="mx-auto max-w-[1440px] px-6 sm:px-10 lg:px-16 xl:px-24">
-      <p
-        class="marketing-eyebrow marketing-eyebrow--dark mb-6 text-xs font-medium font-body uppercase tracking-[0.25em] text-gray-500"
-      >
-        Make visits count
-      </p>
-      <h2
-        class="max-w-3xl text-4xl font-heading font-bold leading-tight text-white md:text-5xl"
-      >
-        Make it easier for people<br />to choose your business.
-      </h2>
-      <p class="mt-6 max-w-2xl text-lg leading-relaxed text-gray-400">
-        Your website should help people decide if you are right for them.
-        Show what you do and make the next step clear.
-      </p>
-      <div class="mt-10 md:mt-12 grid grid-cols-1 gap-12 md:grid-cols-3">
-        {
-          problems.map((item) => (
-            <div class="border-t border-white/10 pt-8">
-              <p class="text-5xl font-heading font-bold text-white md:text-6xl">
-                {item.stat}
-              </p>
-              <p class="mt-4 text-lg leading-relaxed text-gray-400">
-                {item.detail}
-              </p>
-            </div>
-          ))
-        }
-      </div>
-    </div>
-  </section>
-
-  <!-- ═══ THE THREE PATHS (Simple + Unexpected) ═══ -->
-  <section class="marketing-section bg-white">
-    <div class="mx-auto max-w-[1440px] px-6 sm:px-10 lg:px-16 xl:px-24">
-      <p
-        class="marketing-eyebrow mb-6 text-xs font-medium font-body uppercase tracking-[0.25em] text-gray-400"
-      >
-        Three clear options
-      </p>
-      <h2
-        class="max-w-3xl text-4xl font-heading font-bold leading-tight text-gray-950 md:text-5xl"
-      >
-        Three paths forward.<br />
-        <span class="text-gray-400">One of them is yours.</span>
-      </h2>
-      <div class="mt-10 md:mt-12 grid grid-cols-1 gap-8 lg:grid-cols-3">
-        {
-          paths.map((path) => (
-            <article
-              class={`relative flex flex-col rounded-2xl border p-8 md:p-10 ${path.tagColor === "cyan" ? "border-gray-950 bg-gray-950 text-white ring-2 ring-cyan-400/30" : "border-gray-200 bg-white text-gray-950"}`}
-            >
-              <span
-                class={`marketing-eyebrow mb-6 inline-block self-start rounded-full px-4 py-1.5 text-xs font-bold uppercase tracking-wider ${
-                  path.tagColor === "cyan"
-                    ? "marketing-eyebrow--dark bg-cyan-400/15 text-cyan-400"
-                    : "bg-gray-100 text-gray-500"
-                }`}
-              >
-                {path.tag}
-              </span>
-              <p
-                class={`text-sm font-medium font-body ${path.tagColor === "cyan" ? "text-gray-500" : "text-gray-400"}`}
-              >
-                {path.number}
-              </p>
-              <h3 class="mt-2 text-2xl font-heading font-bold md:text-3xl">
-                {path.headline}
-              </h3>
-              <p
-                class={`mt-4 text-lg leading-relaxed ${path.tagColor === "cyan" ? "text-gray-300" : "text-gray-600"}`}
-              >
-                {path.hook}
-              </p>
-              <p
-                class={`mt-4 leading-relaxed ${path.tagColor === "cyan" ? "text-gray-400" : "text-gray-500"}`}
-              >
-                {path.description}
-              </p>
-              <div
-                class={`mt-8 border-t pt-6 ${path.tagColor === "cyan" ? "border-white/10" : "border-gray-100"}`}
-              >
-                <p class:list={["marketing-eyebrow text-sm font-bold uppercase tracking-wider", { "marketing-eyebrow--dark": path.tagColor === "cyan" }]}>
-                  Ideal for
-                </p>
-                <p
-                  class={`mt-1 ${path.tagColor === "cyan" ? "text-gray-300" : "text-gray-600"}`}
-                >
-                  {path.ideal}
-                </p>
-              </div>
-              <div class="mt-auto pt-8">
-                <ContactCTAButton />
-              </div>
-            </article>
-          ))
-        }
-      </div>
-    </div>
-  </section>
-
-  <!-- ═══ WHY MIGRATION IS WORTH IT (Credible + Stories) ═══ -->
-  <section class="marketing-section bg-[#f5f5f3]">
-    <div class="mx-auto max-w-[1440px] px-6 sm:px-10 lg:px-16 xl:px-24">
-      <div class="grid grid-cols-1 items-start gap-8 lg:gap-16 lg:grid-cols-2">
-        <div>
-          <p
-            class="marketing-eyebrow mb-6 text-xs font-medium font-body uppercase tracking-[0.25em] text-gray-400"
-          >
-            A real rebuild
-          </p>
-          <h2
-            class="text-4xl font-heading font-bold leading-tight text-gray-950 md:text-5xl"
-          >
-            A faster site helped<br />Midland get more enquiries.
-          </h2>
-          <p class="mt-6 text-lg leading-relaxed text-gray-600">
-            Midland's old site took too long to load. We rebuilt it so buyers could find the oil they needed.
-          </p>
-          <p class="mt-4 text-lg leading-relaxed text-gray-600">
-            The new site is faster and easier to use. The result was more enquiries in the first month.
-          </p>
+  <section class="marketing-section bg-white" aria-labelledby="wordpress-heading">
+    <div class="mx-auto grid max-w-[1440px] items-center gap-10 px-6 lg:grid-cols-2 lg:gap-16 lg:px-12">
+      <div>
+        <p class="marketing-eyebrow mb-5 uppercase tracking-[0.2em]">For a slow or dated site</p>
+        <h1 id="wordpress-heading" class="text-balance font-heading text-4xl font-bold text-uui-dark sm:text-5xl lg:text-6xl">
+          WordPress web design.<br />
+          <span class="text-slate-500">Fix it or start fresh.</span>
+        </h1>
+        <p class="mt-6 max-w-xl text-lg leading-relaxed text-slate-600 md:text-xl">
+          We help business owners improve slow, dated sites or plan a new one.
+          Keep what works and change what gets in the way.
+        </p>
+        <p class="mt-5 text-base text-slate-600">Start with a free first conversation.</p>
+        <div class="mt-5">
+          <MarketingButton action="contact" />
+          <p class="mt-4 max-w-md text-sm leading-6 text-slate-600">{contactResponse}</p>
         </div>
-        <div>
-          <div class="rounded-xl bg-white p-8">
-            <p class="marketing-eyebrow text-sm font-bold uppercase tracking-wider text-gray-400">
-              Real result
-            </p>
-            <h3 class="mt-3 text-2xl font-heading font-bold text-gray-950">
-              Midland Oil Group
-            </h3>
-            <p class="mt-1 text-lg font-heading font-bold text-cyan-600">
-              More than 8 seconds → 1.2 seconds
-            </p>
-            <p class="mt-3 leading-relaxed text-gray-600">
-              Midland has over 40 years in the oil trade. Its old site took
-              <strong class="text-gray-950">more than 8 seconds</strong> to load.
-              The website needed to catch up with the business.
-            </p>
-            <p class="mt-3 leading-relaxed text-gray-600">
-              The new site loads in <strong class="text-gray-950">1.2 seconds</strong>.
-              Midland saw <strong class="text-gray-950">three times the enquiries</strong>
-              in the first month.
-            </p>
-            <MarketingButton action="caseStudy" href="/case-studies/midland-oil-group/" variant="link" className="mt-6" />
+      </div>
+      <div>
+        <figure class="overflow-hidden rounded-2xl border border-slate-200 bg-slate-50 shadow-sm">
+          <div aria-hidden="true" class="flex items-center gap-3 border-b border-slate-200 bg-white px-4 py-3">
+            <span class="flex gap-1.5">
+              <span class="size-2 rounded-full bg-slate-300"></span>
+              <span class="size-2 rounded-full bg-slate-300"></span>
+              <span class="size-2 rounded-full bg-slate-300"></span>
+            </span>
+            <span class="text-xs text-slate-600">{midland.websiteLabel}</span>
           </div>
-        </div>
+          <img src={midland.screenshot.src} alt={midland.screenshot.alt} width={midland.screenshot.width} height={midland.screenshot.height} loading="eager" decoding="async" class="block h-auto w-full" />
+          <figcaption class="border-t border-slate-200 bg-white px-5 py-4 text-sm leading-6 text-slate-600">
+            A real rebuild for Midland Oil Group. Buyers can find the right oil and send an enquiry.
+          </figcaption>
+        </figure>
+        <MetricsBlock className="mt-7" />
       </div>
     </div>
   </section>
 
-  <!-- ═══ PATTERN INTERRUPT (Unexpected + Emotional) ═══ -->
-  <section class="marketing-section bg-gray-950">
-    <div class="mx-auto max-w-[1440px] px-6 sm:px-10 lg:px-16 xl:px-24">
-      <div class="mx-auto max-w-3xl text-center">
-        <p
-          class="text-5xl font-heading font-bold leading-tight text-white md:text-6xl lg:text-7xl"
-        >
-          See what a faster<br />
-          site could do<br />
-          for your business.
-        </p>
-        <p class="mt-8 text-xl text-gray-400">
-          Start with a free chat.
-        </p>
-        <div class="mt-10 flex justify-center">
-          <ContactCTAButton />
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ═══ WHICH ONE IS RIGHT FOR ME? (Practical Value + Concrete) ═══ -->
-  <section class="marketing-section bg-white">
-    <div class="mx-auto max-w-[1440px] px-6 sm:px-10 lg:px-16 xl:px-24">
-      <div class="mb-16">
-        <p
-          class="marketing-eyebrow mb-6 text-xs font-medium font-body uppercase tracking-[0.25em] text-gray-400"
-        >
-          Which one is right for me?
-        </p>
-        <h2
-          class="max-w-3xl text-4xl font-heading font-bold leading-tight text-gray-950 md:text-5xl"
-        >
-          Rebuild, improve, or start fresh?
+  <section class="marketing-section bg-slate-50" aria-labelledby="wordpress-options-heading">
+    <div class="mx-auto max-w-[1440px] px-6 lg:px-12">
+      <div class="max-w-3xl">
+        <p class="marketing-eyebrow mb-4 uppercase tracking-[0.2em]">Choose the work you need</p>
+        <h2 id="wordpress-options-heading" class="text-balance font-heading text-4xl font-bold text-uui-dark md:text-5xl">
+          A few fixes may be enough.<br />A rebuild is another choice.
         </h2>
-        <p class="mt-6 max-w-2xl text-lg leading-relaxed text-gray-600">
-          Compare the options below. We can help you choose after a look at your site.
+        <p class="mt-5 max-w-2xl text-lg leading-relaxed text-slate-600">
+          The right option depends on what still works for you. We look at your site and explain the choices before you pay.
         </p>
-      <p class="mt-4 max-w-2xl text-lg leading-relaxed text-gray-600">
-        Our guide can help you <a href="/blog/wordpress-vs-react-business-roi/" class="underline underline-offset-4 hover:text-gray-950">compare ways to build your website</a>.
+      </div>
+      <div class="mt-8 grid gap-5 lg:mt-10 lg:grid-cols-3">
+        {paths.map((path) => (
+          <article class="flex min-w-0 flex-col rounded-2xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
+            <div class="flex items-center gap-3">
+              <span aria-hidden="true" class="flex size-9 shrink-0 items-center justify-center rounded-full bg-uui-brand-50 text-sm font-semibold text-uui-brand-800">{path.number}</span>
+              <p class="text-sm font-semibold text-slate-600">{path.label}</p>
+            </div>
+            <h3 class="mt-5 text-balance font-heading text-3xl font-bold text-uui-dark">{path.headline}</h3>
+            <p class="mt-5 text-base leading-relaxed text-slate-600">{path.ideal}</p>
+            <p class="mt-4 text-base leading-relaxed text-slate-600">{path.description}</p>
+            <div class="mt-auto pt-6">
+              <p class="border-t border-slate-200 pt-5 text-sm font-semibold leading-6 text-uui-dark">{path.editing}</p>
+            </div>
+          </article>
+        ))}
+      </div>
+      <p class="mt-7 max-w-2xl text-base leading-relaxed text-slate-600">
+        For more detail, <a href="/blog/wordpress-vs-react-business-roi/" class="font-semibold text-uui-brand-800 underline underline-offset-4 hover:text-uui-dark">compare ways to build your website</a> in our guide.
       </p>
-      </div>
+    </div>
+  </section>
 
-      <div class="space-y-4">
-        <details class="rounded-xl border border-gray-200 bg-white p-6" open>
-          <summary class="cursor-pointer text-xl font-heading font-bold text-gray-950">Pick a rebuild if your old site holds you back.</summary>
-          <p class="mt-4 text-gray-600">You have tried fixes, but your site is still slow or hard to use.</p>
-          <p class="mt-3 text-gray-600">We can plan a fresh design around what your customers need. You can still edit your own pages.</p>
-        </details>
-        <details class="rounded-xl border border-gray-200 bg-white p-6">
-          <summary class="cursor-pointer text-xl font-heading font-bold text-gray-950">Pick smaller fixes if the site still suits you.</summary>
-          <p class="mt-4 text-gray-600">You like the design, but some pages are slow or hard to use on a phone.</p>
-          <p class="mt-3 text-gray-600">We check what is causing the problems. You get a clear plan for the work, with a price before we start.</p>
-        </details>
-        <details class="rounded-xl border border-gray-200 bg-white p-6">
-          <summary class="cursor-pointer text-xl font-heading font-bold text-gray-950">Pick a new WordPress site if you want to keep its editor.</summary>
-          <p class="mt-4 text-gray-600">You know how to use WordPress, but your current site no longer fits.</p>
-          <p class="mt-3 text-gray-600">We build new pages around your business. We can make changes for you after launch too.</p>
-        </details>
-      </div>
-
-      <div class="mt-10 md:mt-12 text-center">
-        <p class="text-lg text-gray-600">
-          Still not sure? That's completely normal.
+  <section class="marketing-section bg-gray-950" aria-labelledby="wordpress-process-heading">
+    <div class="mx-auto grid max-w-[1440px] items-start gap-10 px-6 lg:grid-cols-[0.9fr_1.1fr] lg:gap-20 lg:px-12">
+      <div>
+        <p class="marketing-eyebrow marketing-eyebrow--dark mb-4 uppercase tracking-[0.2em]">Know what you are paying for</p>
+        <h2 id="wordpress-process-heading" class="text-balance font-heading text-4xl font-bold text-white md:text-5xl">See what will change.<br />Stay in control.</h2>
+        <p class="mt-6 max-w-xl text-lg leading-relaxed text-slate-300">
+          If you paid for a site that let you down, another rebuild can feel like a risk.
+          We explain the work and show you your pages before launch.
         </p>
-        <MarketingButton action="contact" className="mt-6" />
+        <a href="/pledge/" class="mt-6 inline-block font-semibold text-uui-brand-200 underline underline-offset-4 hover:text-white">Read our pledge before you decide</a>
       </div>
+      <ol class="space-y-7">
+        {steps.map((step, index) => (
+          <li class="grid grid-cols-[2rem_1fr] gap-4 border-t border-slate-700 pt-6 sm:gap-6">
+            <span aria-hidden="true" class="font-heading text-2xl font-bold text-uui-brand-200">{String(index + 1).padStart(2, "0")}</span>
+            <div>
+              <h3 class="font-heading text-2xl font-bold text-white sm:text-3xl">{step.title}</h3>
+              <p class="mt-3 text-base leading-relaxed text-slate-300">{step.description}</p>
+            </div>
+          </li>
+        ))}
+      </ol>
     </div>
   </section>
 
@@ -373,22 +216,18 @@ const serviceSchema = JSON.stringify({
     heading="Get clear answers before you decide."
     eyebrow="Common questions"
     items={faqs}
-    className="bg-[#f5f5f3]"
+    className="bg-white"
   />
 
-  <!-- ═══ CTA ═══ -->
-  <section class="marketing-section bg-gray-950">
-    <div
-      class="mx-auto max-w-[1440px] px-6 sm:px-10 lg:px-16 xl:px-24 text-center"
-    >
-      <h2 class="text-4xl font-heading font-bold text-white md:text-5xl">
-        Give your site<br />a clear next step.
-      </h2>
-      <p class="mx-auto mt-6 max-w-2xl text-xl leading-relaxed text-gray-400">
-        Tell us what is not working for you. We will help you decide what to do next.
+  <section class="marketing-section bg-slate-50" aria-labelledby="wordpress-contact-heading">
+    <div class="mx-auto max-w-[1440px] px-6 text-center lg:px-12">
+      <h2 id="wordpress-contact-heading" class="text-balance font-heading text-4xl font-bold text-uui-dark md:text-5xl">Tell us where your site falls short.</h2>
+      <p class="mx-auto mt-5 max-w-xl text-lg leading-relaxed text-slate-600">
+        Share your website and what you want to change. The first conversation is free.
       </p>
-      <div class="mt-10 flex flex-col justify-center gap-4 sm:flex-row">
+      <div class="mt-7">
         <MarketingButton action="contact" />
+        <p class="mx-auto mt-4 max-w-md text-sm leading-6 text-slate-600">{contactResponse}</p>
       </div>
     </div>
   </section>
